@@ -906,7 +906,11 @@ boolean listaddvalue (tyvaluerecord *v1, tyvaluerecord *v2, tyvaluerecord *vretu
 	m = opcountlistitems ((*v1).data.listvalue);
 	n = opcountlistitems ((*v2).data.listvalue);
 	
-	if ( m > n ) { /* the first list is longer than the second: append to the first */
+	if ( (m > n) || (**(*v2).data.listvalue).isrecord ) {
+		/* Either the first list is longer than the second:
+		   append to the first, or we are adding records so we want to
+		   de-dupe the entries always in the same way
+		*/
 		list2 = (*v2).data.listvalue;
 		*vreturned = *v1;
 		initvalue (v1, novaluetype);
@@ -921,10 +925,10 @@ boolean listaddvalue (tyvaluerecord *v1, tyvaluerecord *v2, tyvaluerecord *vretu
 			if (!copyhandle (hitem, &hitem))
 				return (false);
 
-			if ((**list3).isrecord) {
+			if ((**list3).isrecord) { /* discard duplicate keys */
 				
 				if (opgetlisthandle (list3, -1, key, &hignore))
-					disposehandle (hitem);
+					disposehandle (hitem); /* discard the duplicate. don't push it over */
 				else
 					oppushhandle (list3, key, hitem);
 				}
@@ -947,15 +951,7 @@ boolean listaddvalue (tyvaluerecord *v1, tyvaluerecord *v2, tyvaluerecord *vretu
 			if (!copyhandle (hitem, &hitem))
 				return (false);
 
-			if ((**list3).isrecord) {
-				
-				if (opgetlisthandle (list3, -1, key, &hignore))
-					disposehandle (hitem);
-				else
-					opunshifthandle (list3, key, hitem);
-				}
-			else
-				opunshifthandle (list3, key, hitem);
+			opunshifthandle (list3, key, hitem);
 			} /*for*/
 	}		
 	
