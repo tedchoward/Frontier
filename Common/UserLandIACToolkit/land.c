@@ -23,11 +23,10 @@
 
 ******************************************************************************/
 
+#include "frontier.h"
+#include "standard.h"
+
 #include "landinternal.h"
-//#include <Threads.h>
-#include <Gestalt.h>
-#include <Script.h>
-#include <AERegistry.h>
 
 #include "ops.h"
 #include "process.h"

@@ -4,8 +4,6 @@
 
 #define iacinternalinclude /*routines used internally to implementation of IAC Tools*/
 
-#include <processes.h>
-#include <Gestalt.h>
 #include "iac.h"
 
 

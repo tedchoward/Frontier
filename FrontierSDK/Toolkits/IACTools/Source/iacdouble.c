@@ -2,6 +2,9 @@
 /*© copyright 1991-96 UserLand Software, Inc. All Rights Reserved.*/
 
 
+#include "frontier.h"
+#include "standard.h"
+
 #include "iacinternal.h"
 
 
@@ -12,7 +15,7 @@
 /*  11/8/94 JWB Determine the size of C type double using compile-time tests.   */
 /*              It may be necessary to add tests to cover additional compilers. */
 
-#if defined(powerc) || defined(__powerc) || defined(applec) || defined(__SC__)
+#if defined(powerc) || defined(__powerc) || defined(applec) || defined(__SC__) || defined(__GNUC__)
 
 	#define DOUBLE_BYTES 8
 

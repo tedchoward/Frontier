@@ -23,17 +23,8 @@
 
 ******************************************************************************/
 
-#ifdef MACVERSION
-	#include <standard.h>
-#endif
-
-#ifdef WIN95VERSION
-	#include "standard.h"
-	#undef abs
-	#include <stdio.h>
-	#include <malloc.h>
-	#include <crtdbg.h>
-#endif
+#include "frontier.h"
+#include "standard.h"
 
 #include "error.h"
 #include "font.h"

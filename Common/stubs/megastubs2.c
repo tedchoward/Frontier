@@ -23,17 +23,13 @@
 
 ******************************************************************************/
 
+#include "frontier.h"
+#include "standard.h"
+
 #ifdef MACVERSION
-	#include <standard.h>
 	#include <IAC.h>
 	#include <uisharing.h>
 	#include "filealias.h"
-#endif
-
-#ifdef WIN95VERSION
-	#include "standard.h"
-//	#include "land.h"
-	#include <stdio.h>
 #endif
 
 #include "bitmaps.h"

@@ -23,13 +23,10 @@
 
 ******************************************************************************/
 
+#include "frontier.h"
+#include "standard.h"
+
 #include "landinternal.h"
-
-#ifdef	MPWC
-
-	#include <strings.h>
-	
-#endif
 
 
 #ifndef fljustfrontier

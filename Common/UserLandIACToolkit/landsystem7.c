@@ -23,9 +23,9 @@
 
 ******************************************************************************/
 
-#include <PPCToolBox.h>
-#include <Script.h>
-#include <Errors.h>
+#include "frontier.h"
+#include "standard.h"
+
 #include "landinternal.h"
 
 #include "shell.h"
@@ -191,6 +191,8 @@ static void MakePascalStringWLen (StringPtr theDest, int theDestLen, char *theSr
 	} /*MakePascalStringWLen*/
 
 
+#if TARGET_API_MAC_OS8
+
 static OSErr HCProgramToPortAndLoc (char *theName, short len, LocationNameRec *theLoc, PortInfoRec *thePort) {
 	
 	/*
@@ -297,16 +299,12 @@ static OSErr HCProgramToPortAndLoc (char *theName, short len, LocationNameRec *t
 	/*
 	Call the damm routine and try to get the stupid port back!
 	*/
-	//Code change by Timothy Paustian Monday, June 26, 2000 3:30:31 PM
-	//Send back a bogus error. We cannot do this in Carbon.
-	#if TARGET_API_MAC_CARBON == 1
-	theErr = noResponseErr;
-	#else
 	theErr = IPCListPortsSync (&thePBRec);
-	#endif
 		
 	return (theErr);
 	} /*HCProgramToPortAndLoc*/
+
+#endif
 
 
 static boolean isthisprocess (ProcessSerialNumber *targetPSN) {
@@ -356,6 +354,8 @@ static boolean landchecksameprocess (tynetworkaddress *adr) {
 		
 	} /*landchecksameprocess*/
 
+
+#if TARGET_API_MAC_OS8
 
 static boolean goodstring32 (byte s32 []) {
 	
@@ -419,6 +419,21 @@ pascal boolean landstring2networkaddress (ConstStr255Param bsadr, tynetworkaddre
 	
 	return (true);
 	} /*landstring2networkaddress*/
+
+#else
+
+pascal boolean landstring2networkaddress (ConstStr255Param bsadr, tynetworkaddress *adr) {
+
+	/*
+	2004-10-21 aradke: Can't do this on Carbon, send back a bogus error.
+	*/
+	
+	landseterror (noResponseErr);
+	
+	return (false);
+	} /*landstring2networkaddress*/
+
+#endif
 
 
 static pascal Boolean landbrowserfilter (LocationNamePtr ln, PortInfoPtr port) {
@@ -963,22 +978,15 @@ static pascal OSErr landsystem7handleevent (AppleEvent *message, AppleEvent *rep
 
 
 #if !TARGET_RT_MAC_CFM
-
 	#define landsystem7handleeventUPP ((AEEventHandlerUPP) landsystem7handleevent)
-
 #else
 	#if !TARGET_API_MAC_CARBON
-
-	static RoutineDescriptor landsystem7handleeventDesc = BUILD_ROUTINE_DESCRIPTOR (uppAEEventHandlerProcInfo, landsystem7handleevent);
-
-	#define landsystem7handleeventUPP (&landsystem7handleeventDesc)
-
+		static RoutineDescriptor landsystem7handleeventDesc = BUILD_ROUTINE_DESCRIPTOR (uppAEEventHandlerProcInfo, landsystem7handleevent);
+		#define landsystem7handleeventUPP (&landsystem7handleeventDesc)
 	#else
-	AEEventHandlerUPP	landsystem7handleeventDesc = nil;
-	#define landsystem7handleeventUPP (landsystem7handleeventDesc)
+		AEEventHandlerUPP	landsystem7handleeventDesc = nil;
+		#define landsystem7handleeventUPP (landsystem7handleeventDesc)
 	#endif
-
-	
 #endif
 
 
@@ -1422,7 +1430,7 @@ boolean landsystem7send (hdlverbrecord hverb, hdlverbrecord *hvalues) {
 	long ctparams;
 	long id;
 	
-	#if TARGET_API_MAC_CARBON == 1
+	#if TARGET_API_MAC_CARBON && TARGET_RT_MAC_CFM
 	
 		landsystem7idleUPP = NewAEIdleUPP (&landsystem7idleroutine);
 
@@ -1783,7 +1791,7 @@ boolean landsystem7eventfilter (EventRecord *ev) {
 		
 		//Code change by Timothy Paustian Friday, July 28, 2000 1:31:13 PM
 		//create the new handler if its still nil
-		#if TARGET_API_MAC_CARBON ==1
+		#if TARGET_API_MAC_CARBON && TARGET_RT_MAC_CFM
 		if (landsystem7handleeventUPP == nil)
 			landsystem7handleeventUPP = NewAEEventHandlerUPP(landsystem7handleevent);
 		#endif
@@ -1795,7 +1803,7 @@ return (landsystem7installhandlerUPP (class, typeWildCard, landsystem7handleeven
 	boolean landsystem7addfastverb (tyverbclass class, tyverbtoken token) {
 		//Code change by Timothy Paustian Friday, July 28, 2000 1:31:13 PM
 		//create the new handler is its still nil
-		#if TARGET_API_MAC_CARBON ==1
+		#if TARGET_API_MAC_CARBON && TARGET_RT_MAC_CFM
 		if (landsystem7handleeventUPP == nil)
 			landsystem7handleeventUPP = NewAEEventHandlerUPP(landsystem7handleevent);
 		#endif
@@ -1808,7 +1816,7 @@ return (landsystem7installhandlerUPP (class, typeWildCard, landsystem7handleeven
 		OSErr errcode;
 		//Code change by Timothy Paustian Friday, July 28, 2000 1:31:13 PM
 		//create the new handler is its still nil
-		#if TARGET_API_MAC_CARBON ==1
+		#if TARGET_API_MAC_CARBON && TARGET_RT_MAC_CFM
 		if (landsystem7handleeventUPP == nil)
 			landsystem7handleeventUPP = NewAEEventHandlerUPP(landsystem7handleevent);
 		#endif

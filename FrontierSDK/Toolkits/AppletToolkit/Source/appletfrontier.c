@@ -1,6 +1,8 @@
 
 /*© copyright 1991-96 UserLand Software, Inc. All Rights Reserved.*/
 
+#include "frontier.h"
+#include "standard.h"
 
 #include <iac.h>
 #include "appletdefs.h"

@@ -23,7 +23,8 @@
 
 ******************************************************************************/
 
-#include <AERegistry.h>
+#include "frontier.h"
+#include "standard.h"
 
 #include "landinternal.h"
 
@@ -64,13 +65,13 @@ pascal boolean landstartreturn (hdlverbrecord hverb) {
 
 pascal boolean landreturnboolean (hdlverbrecord hverb, Boolean x) {
 	
-	unsigned char bool;
+	unsigned char flg;
 	
-	bool = bitboolean (x);
+	flg = bitboolean (x);
 	
 	landstartreturn (hverb);
 	
-	return (landpushparam (hverb, booleantype, nil, &bool, longsizeof (bool), returnedvaluekey));
+	return (landpushparam (hverb, booleantype, nil, &flg, longsizeof (flg), returnedvaluekey));
 	} /*landreturnboolean*/
 
 

@@ -2,8 +2,10 @@
 /*© copyright 1991-96 UserLand Software, Inc. All Rights Reserved.*/
 
 
+#include "frontier.h"
+#include "standard.h"
+
 #include <appletdefs.h>
-#include <Script.h>
 #include "iac.h"
 
 #define typeTargetID 'targ'
@@ -25,6 +27,8 @@ static void MakePascalStringWLen (StringPtr theDest, int theDestLen, char *theSr
 	BlockMove (theSrc, &(theDest[1]), theDest [0]);
 	} /*MakePascalStringWLen*/
 
+
+#if TARGET_API_MAC_OS8
 
 static OSErr HCProgramToPortAndLoc (char *theName, short len, LocationNameRec *theLoc, PortInfoRec *thePort) {
 	
@@ -172,7 +176,7 @@ static pascal Boolean string2networkaddress (ConstStr255Param bsadr, TargetID *t
 	the network address may be invalid.  so a reality check is done on the port name 
 	to attempt to verify that something has actually been found
 	*/
-	
+		
 	LocationNameRec loc;
 	PortInfoRec	port;
 	OSErr ec;
@@ -201,6 +205,22 @@ static pascal Boolean string2networkaddress (ConstStr255Param bsadr, TargetID *t
 	
 	return (true);
 	} /*string2networkaddress*/
+
+#else
+
+static pascal Boolean string2networkaddress (ConstStr255Param bsadr, TargetID *target) {
+
+	/*
+	2004-10-21 aradke: Can't do this on Carbon, give up and return bogus error
+	*/
+
+	IACglobals.errorcode = noResponseErr;
+
+	return (false);
+
+	} /*string2networkaddress*/
+
+#endif
 
 
 Boolean IACnewnetworkverb (ConstStr255Param bsadr, OSType vclass, OSType vtoken, AppleEvent *event) {
