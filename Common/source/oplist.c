@@ -239,6 +239,85 @@ boolean oppushhandle (hdllistrecord hlist, ptrstring pname, Handle hdata) {
 		return (false);
 	} /*oppushhandle*/
 	
+	
+boolean opunshifthandle (hdllistrecord hlist, ptrstring pname, Handle hdata) {
+	
+	/*
+	add a new item at the beginning of the list.  link in the indicated handle in the
+	refcon field of the allocated headrecord.  return false if there's an allocation
+	error.
+	*/
+	
+	register hdllistrecord h = hlist;
+	register hdlheadrecord hstart;
+	register hdloutlinerecord ho;
+	register long ctitems;
+	hdlheadrecord hnew;
+	bigstring bs;
+	
+	if ((**h).isrecord && (pname == nil))
+		goto error;
+
+	ho = (hdloutlinerecord) (**h).houtline;
+	
+	if (!oppushoutline (ho))
+		goto error;
+	
+	ctitems = (**h).ctitems;
+	
+	copystring (pname, bs); /*checks for nil*/
+	
+	if (ctitems == 0) { /*adding to an empty list*/
+		
+		hnew = (**ho).hsummit; /*set this guy's refcon handle*/
+		
+		opsetheadstring (hnew, bs);
+		}
+		
+	else {
+		hstart = (**ho).hsummit;
+
+		if (!opaddheadline (hstart, up, bs, &hnew)) {
+
+			oppopoutline ();
+
+			goto error;
+			}
+		
+		(**ho).ctexpanded++;
+		
+		(**hnew).flexpanded = true;
+		}
+	
+	#ifdef fldebug
+	
+	if (fldebugging) {
+		
+		copystring ((ptrstring) "\x0A" "headline #", bs);
+		
+		pushint (ctitems + 1, bs);
+		
+		opsetheadstring (hnew, bs);
+		}
+	
+	#endif
+	
+	(**hnew).hrefcon = hdata; /*link in the user's data structure*/
+	
+	(**h).ctitems++;
+
+	oppopoutline ();
+
+	return (true);
+
+	error:
+		
+		disposehandle (hdata);
+
+		return (false);
+	} /*opunshifthandle*/
+	
+
 
 boolean oppushdata (hdllistrecord hlist, ptrstring pname, ptrvoid pdata, long ctbytes) {
 	

@@ -891,44 +891,73 @@ boolean listaddvalue (tyvaluerecord *v1, tyvaluerecord *v2, tyvaluerecord *vretu
 	
 	5.0.2b10 dmb: since we throw away v1 and v2, we can boost performance
 	by adding directly to v1 and making that the return value.
+	
+	10.0a1 hra: we were always looping through v2, so adding a long list to a small
+	list was significantly slower (2x or more) than adding the small list to the long
+	list. Now we always loop through the shortest of the 2 lists.
 	*/
 	
-	hdllistrecord list1 = (*v1).data.listvalue;
-	hdllistrecord list2 = (*v2).data.listvalue;
+	hdllistrecord list2;
 	hdllistrecord list3;
-	long i, n;
+	long i, n, m, min_mn;
 	Handle hitem, hignore;
 	bigstring key;
 	
-	//if (!copyvaluerecord (*v1, vreturned))
-	//	return (false);
+	m = opcountlistitems ((*v1).data.listvalue);
+	n = opcountlistitems ((*v2).data.listvalue);
 	
-	*vreturned = *v1;
-	
-	initvalue (v1, novaluetype);
+	if ( m > n ) { /* the first list is longer than the second: append to the first */
+		list2 = (*v2).data.listvalue;
+		*vreturned = *v1;
+		initvalue (v1, novaluetype);
 
-	list3 = (*vreturned).data.listvalue;
+		list3 = (*vreturned).data.listvalue;
 
-	n = opcountlistitems (list2);
-	
-	for (i = 1; i <= n; ++i) { /*copy values over from second list*/
+		for (i = 1; i <= n; ++i) { /*copy values over from second list*/
 		
-		if (!opgetlisthandle (list2, i, key, &hitem))
-			return (false);
-		
-		if (!copyhandle (hitem, &hitem))
-			return (false);
-
-		if ((**list3).isrecord) {
+			if (!opgetlisthandle (list2, i, key, &hitem))
+				return (false);
 			
-			if (opgetlisthandle (list3, -1, key, &hignore))
-				disposehandle (hitem);
+			if (!copyhandle (hitem, &hitem))
+				return (false);
+
+			if ((**list3).isrecord) {
+				
+				if (opgetlisthandle (list3, -1, key, &hignore))
+					disposehandle (hitem);
+				else
+					oppushhandle (list3, key, hitem);
+				}
 			else
 				oppushhandle (list3, key, hitem);
-			}
-		else
-			oppushhandle (list3, nil, hitem);
-		}
+			} /*for*/
+
+	} else { /* the second list is longer than the first: prepend to the second */
+		list2 = (*v1).data.listvalue;
+		*vreturned = *v2;
+		initvalue (v2, novaluetype);
+		
+		list3 = (*vreturned).data.listvalue;
+		
+		for (i = m; i >= 1; --i) { /*copy values over from first list, in reverse*/
+		
+			if (!opgetlisthandle (list2, i, key, &hitem))
+				return (false);
+			
+			if (!copyhandle (hitem, &hitem))
+				return (false);
+
+			if ((**list3).isrecord) {
+				
+				if (opgetlisthandle (list3, -1, key, &hignore))
+					disposehandle (hitem);
+				else
+					opunshifthandle (list3, key, hitem);
+				}
+			else
+				opunshifthandle (list3, key, hitem);
+			} /*for*/
+	}		
 	
 	return (true);
 	} /*listaddvalue*/
@@ -1055,7 +1084,11 @@ static boolean comparelists (hdllistrecord list1, hdllistrecord list2, tytreetyp
 				ix2 = 0;
 			
 			break;
+		
+		default:
+			break;
 		}
+
 	
 	for (; ix1 <= ix2; ++ix1) {
 		

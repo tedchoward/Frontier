@@ -54,6 +54,8 @@ extern void opdisposelist (hdllistrecord);
 
 extern boolean oppushhandle (hdllistrecord, ptrstring, Handle);
 
+extern boolean opunshifthandle (hdllistrecord, ptrstring, Handle);
+
 extern boolean oppushdata (hdllistrecord, ptrstring, ptrvoid, long);
 
 extern boolean oppushstring (hdllistrecord, ptrstring, bigstring);
