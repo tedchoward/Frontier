@@ -36,6 +36,10 @@ standard.h -- standard types and constants
 	#include "macconv.h"
 #endif
 
+#ifdef MACVERSION  /* 2005-01-09 SMD - for getmilliseconds */
+	#include "FastTimes.h"
+#endif
+
 #ifdef PACKFLIPPED
 	#define conditionallongswap(x) dolongswap(x)
 	#define conditionalshortswap(x) doshortswap(x)
@@ -373,6 +377,8 @@ void pwsetstringlength(char * bs, short len);
 
 #ifdef MACVERSION
 #define gettickcount() TickCount()
+#define getlongermilliseconds() (unsigned long long)FastMilliseconds()
+#define getmilliseconds() (long)FastMilliseconds()
 
 typedef short hdlfilenum;
 
