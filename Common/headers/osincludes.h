@@ -62,7 +62,7 @@
 
 	#if TARGET_API_MAC_CARBON
 
-		#ifdef __MACH__ /* building for Mach-O with framework-style includes */
+		#ifdef FRONTIER_FRAMEWORK_INCLUDES /* building for Mach-O with framework-style includes */
 
 			#include <Carbon/Carbon.h>
 			#include <ApplicationServices/ApplicationServices.h>

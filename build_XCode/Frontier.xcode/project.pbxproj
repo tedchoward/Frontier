@@ -630,7 +630,7 @@
 				LIBRARY_SEARCH_PATHS = ../Common/Paige;
 				OTHER_CFLAGS = "-fno-inline -malign-mac68k ";
 				OTHER_LDFLAGS = "-multiply_defined warning";
-				OTHER_REZFLAGS = "-d TARGET_API_MAC_CARBON=1 -i ../Common/headers";
+				OTHER_REZFLAGS = "-d TARGET_API_MAC_CARBON=1 -d FRONTIER_FRAMEWORK_INCLUDES=1 -i ../Common/headers";
 				PRODUCT_NAME = Frontier;
 				REZ_PREPROCESSOR_DEFINITIONS = "";
 				REZ_PREPROCESSOR_UNDEFINITIONS = "";

@@ -35,4 +35,6 @@
 #define TARGET_API_MAC_CARBON	1
 #define TARGET_API_MAC_OSX		0
 
+#define FRONTIER_FRAMEWORK_INCLUDES	1
+
 #include "frontier.h"
