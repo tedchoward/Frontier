@@ -568,7 +568,6 @@
 				651527B9072BFE0E00411831,
 				6515294B072C000500411831,
 				6515294D072C000900411831,
-				6730555D0751953E006F9CD7,
 			);
 			isa = PBXFrameworksBuildPhase;
 			runOnlyForDeploymentPostprocessing = 0;
@@ -5291,7 +5290,6 @@
 		};
 		651527B7072BFE0E00411831 = {
 			children = (
-				6730555C0751953E006F9CD7,
 				651527B8072BFE0E00411831,
 				6515294A072C000500411831,
 				6515294C072C000900411831,
@@ -8615,30 +8613,6 @@
 //652
 //653
 //654
-//670
-//671
-//672
-//673
-//674
-		6730555C0751953E006F9CD7 = {
-			isa = PBXFileReference;
-			lastKnownFileType = wrapper.framework;
-			name = Python.framework;
-			path = /System/Library/Frameworks/Python.framework;
-			refType = 0;
-			sourceTree = "<absolute>";
-		};
-		6730555D0751953E006F9CD7 = {
-			fileRef = 6730555C0751953E006F9CD7;
-			isa = PBXBuildFile;
-			settings = {
-			};
-		};
-//670
-//671
-//672
-//673
-//674
 //BB0
 //BB1
 //BB2
@@ -8657,7 +8631,7 @@
 		BB3B83620730604B0049D0C1 = {
 			fileEncoding = 30;
 			isa = PBXFileReference;
-			lastKnownFileType = text.xml;
+			lastKnownFileType = text.plist.xml;
 			path = Info.plist;
 			refType = 2;
 			sourceTree = SOURCE_ROOT;
