@@ -349,7 +349,7 @@ static boolean flpagemillfile = false;
 
 #if version42orgreater
 
-static ptraddress callbackscript = nil;
+//static ptraddress callbackscript = nil;
 
 typedef struct typrocessmacrosinfo {
 
@@ -379,7 +379,7 @@ static tyvaluerecord osaval = { binaryvaluetype };
 #pragma mark === processhtmlmacros ===
 #endif
 
-static boolean htmlcallbackerror (bigstring bsmsg, ptrstring perrorstring) {
+static boolean htmlcallbackerror (bigstring bsmsg, ptrvoid perrorstring) {
 	
 	/*
 	4.0.2b1 dmb: this error trapping isn't bullet proof, but it should 
@@ -387,12 +387,12 @@ static boolean htmlcallbackerror (bigstring bsmsg, ptrstring perrorstring) {
 	with no thread yielding.
 	*/
 	
-	copystring (bsmsg, perrorstring);
+	copystring (bsmsg, (ptrstring) perrorstring);
 	
 	return (true);
 	} /*htmlcallbackerror*/
 
-
+#if 0
 #if version42orgreater
 
 static boolean frontTextScriptCall (OSType idroutine, Handle stringparam, Handle *hresult, bigstring errorstring) {
@@ -572,6 +572,7 @@ static boolean frontTextScriptCall (OSType idroutine, Handle stringparam, Handle
 	} /*frontTextScriptCall*/
 
 #endif
+#endif
 
 
 static boolean strongcoercetostring (tyvaluerecord *val) {
@@ -624,36 +625,6 @@ static boolean langpushwithtable (hdlhashtable ht, hdlhashtable hwith) {
 	return (true);
 	} /*langpushwithtable*/
 
-/*
-static boolean langlookupstringvalue (hdlhashtable ht, bigstring bs, bigstring bsval) {
-	
-	/*
-	a genereic piece of code: look up the string value, with errors
-	%/
-	
-	tyvaluerecord val;
-	
-	if (!hashtablelookup (ht, bs, &val)) {
-		
-		langparamerror (unknownidentifiererror, bs);
-		
-		return (false);
-		}
-	
-	/*
-	if (!copyvaluerecord (val, &val) && coercetostring (&val))
-		return (false);
-	
-	exemptfromtmpstack (&val);
-	
-	*value = val.data.stringvalue;
-	%/
-	
-	pullstringvalue (&val, bsval);
-	
-	return (true);
-	} /*langlookupstringvalue*/
-
 
 static boolean htmlgetdefaultpagetable (hdlhashtable *hpagetable) {
 	
@@ -662,7 +633,7 @@ static boolean htmlgetdefaultpagetable (hdlhashtable *hpagetable) {
 	*/
 	
 	return (langfastaddresstotable (roottable, str_websitesdata, hpagetable));
-	} /*htmlgetpagetable*/
+	} /*htmlgetdefaultpagetable*/
 
 
 static boolean getoptionalpagetablevalue (hdltreenode hp1, short n, hdlhashtable *hpagetable) {
@@ -682,6 +653,8 @@ static boolean getoptionalpagetablevalue (hdltreenode hp1, short n, hdlhashtable
 	return (true);
 	} /*getoptionalpagetablevalue*/
 
+
+#if 0
 
 static boolean htmlgetpagetable (hdlhashtable *hpagetable) {
 	
@@ -710,6 +683,8 @@ static boolean htmlgetpagetable (hdlhashtable *hpagetable) {
 	
 	return (tablevaltotable (val, hpagetable, hnode));
 	} /*htmlgetpagetable*/
+
+#endif
 
 		
 static boolean htmlgetprefstable (hdlhashtable *huserprefs) {
@@ -1280,6 +1255,8 @@ static boolean htmlreportmacroerror (typrocessmacrosinfo *pmi, Handle macro, big
 	} /*htmlreportmacroerror*/
 
 
+#if 0
+
 static boolean isPunctuationChar (char ch) {
 	
 	/*return (ispunct (ch));*/
@@ -1292,6 +1269,8 @@ static boolean isPunctuationChar (char ch) {
 	
 	return (false);
 	} /*isPunctuationChar*/
+
+#endif
 	
 
 static boolean isLegalURLPunctuationChar (char ch) {
@@ -2102,8 +2081,8 @@ static boolean processhtmltext (handlestream *s, typrocessmacrosinfo *pmi) {
 				break;
 				}
 				
-			/* 4.1b12 dmb: these don't have html charactors equivalents, but we can do the mapping in the open-architecture isofilter
-			
+			/* 4.1b12 dmb: these don't have html charactors equivalents, but we can do the mapping in the open-architecture isofilter */
+			/*
 			case 'Õ': case 'Ô':
 				(*h) [i] = '\'';
 				
@@ -2142,9 +2121,9 @@ static boolean processhtmltext (handlestream *s, typrocessmacrosinfo *pmi) {
 				i += 1;
 				
 				break;
-			
-			/* 4.1b5 dmb: all of the following are html charactors and have iso8859 mappings
-			
+			*/
+			/* 4.1b5 dmb: all of the following are html charactors and have iso8859 mappings */
+			/*
 			case 'Ê': // a funny space that Word produces
 				(*h) [i] = ' ';
 				
@@ -2216,7 +2195,6 @@ static boolean autoparagraphs (handlestream *s) {
 	#define i ((*s).pos)
 	Handle h = (*s).data;
 	unsigned long remainingchars;
-	unsigned long pgfcount = 0;
 	char ch;
 	boolean flinsidetag = false;
 	
@@ -2755,7 +2733,7 @@ boolean parseargsverb (hdltreenode hparam1, tyvaluerecord *vreturned) {
 	#ifdef oplanglists
 		Handle htext, hreturnedtext = nil, hfieldname, hfieldvalue;
 		hdllistrecord list = nil;
-		short fieldnum = 1, ixlist = 1;
+		short fieldnum = 1;
 		long lenfield, lenfieldname;
 
 		flnextparamislast = true;
@@ -3483,7 +3461,8 @@ static boolean buildpagetableverb (hdltreenode hparam1, tyvaluerecord *vreturned
 	} /*buildpagetableverb*/
 
 
-/*
+#if 0
+
 static boolean refglossaryverb (hdltreenode hp1, tyvaluerecord *v) {
 	
 	/*
@@ -3495,7 +3474,7 @@ static boolean refglossaryverb (hdltreenode hp1, tyvaluerecord *v) {
 			Ç11/12/97 at 8:34:30 AM by DW		
 	*/
 	
-	/*typrocessmacrosinfo pageinfo;
+	typrocessmacrosinfo pageinfo;
 	Handle href, hresult;
 	bigstring errorstring;
 	handlestream s;
@@ -3507,6 +3486,8 @@ static boolean refglossaryverb (hdltreenode hp1, tyvaluerecord *v) {
 	
 	return (htmlrefglossary (&pageinfo, href, errorstring, &hresult));
 	} /*refglossaryverb*/
+
+#endif
 
 
 #ifdef MACVERSION
@@ -3536,52 +3517,55 @@ static boolean getprefverb (hdltreenode hp1, tyvaluerecord *v) {
 	} /*getprefverb*/
 
 
-/*
+#if 0
+
 static boolean getonedirectiveverb (hdltreenode hp1, tyvaluerecord *v) {
 	
 	/*
-on getOneDirective (directiveName, s) { Çnew in 4.0.1
-	ÇRevised for ContentServer.
-		ÇFriday, March 13, 1998 at 9:47:37 PM by PBS
-		ÇNow case-insensitive.
-		ÇRespects directivesOnlyAtBeginning pref.
-	ÇOld code
-		Çlocal (ix = string.patternMatch (string.lower (directivename), string.lower (s)))
-		Çif ix > 0
-			Çs = string.delete (s, 1, ix + sizeof (directivename))
-			Çs = string.delete (s, string.patternmatch (cr, s), infinity)
-			Çreturn (evaluate (s))
-		Çelse
-			Çreturn ("")
-	local (value = "");
-	local (flDirectivesOnlyAtBeginning = html.getPref ("directivesOnlyAtBeginning"));
-	if typeOf (s) == outlineType {
-		flDirectivesOnlyAtBeginning = false};
-	table.assign (@s, string.replaceAll (string (s), "\n", ""));
-	if directiveName beginsWith "#" { //pop off leading # character
-		directiveName = string.mid (directiveName, 2, infinity)};
-	loop { //loop through directives
-		if sizeof (s) == 0 {
-			break};
-		local (line = string.nthField (s, "\r", 1));
-		if line beginsWith "#" {
-			local (name);
-			name = string.nthField (line, ' ', 1); //get the name of the directive
-			name = string.mid (name, 2, infinity); //pop off leading # character
-			if string.lower (name) == string.lower (directiveName) { //is this the directive asked for?
-				local (ix = string.patternMatch (" ", line));
-				value = string.mid (line, ix + 1, infinity);
-				return (evaluate (value))}}
-		else {
-			if flDirectivesOnlyAtBeginning {
+	on getOneDirective (directiveName, s) { Çnew in 4.0.1
+		ÇRevised for ContentServer.
+			ÇFriday, March 13, 1998 at 9:47:37 PM by PBS
+			ÇNow case-insensitive.
+			ÇRespects directivesOnlyAtBeginning pref.
+		ÇOld code
+			Çlocal (ix = string.patternMatch (string.lower (directivename), string.lower (s)))
+			Çif ix > 0
+				Çs = string.delete (s, 1, ix + sizeof (directivename))
+				Çs = string.delete (s, string.patternmatch (cr, s), infinity)
+				Çreturn (evaluate (s))
+			Çelse
+				Çreturn ("")
+		local (value = "");
+		local (flDirectivesOnlyAtBeginning = html.getPref ("directivesOnlyAtBeginning"));
+		if typeOf (s) == outlineType {
+			flDirectivesOnlyAtBeginning = false};
+		table.assign (@s, string.replaceAll (string (s), "\n", ""));
+		if directiveName beginsWith "#" { //pop off leading # character
+			directiveName = string.mid (directiveName, 2, infinity)};
+		loop { //loop through directives
+			if sizeof (s) == 0 {
+				break};
+			local (line = string.nthField (s, "\r", 1));
+			if line beginsWith "#" {
+				local (name);
+				name = string.nthField (line, ' ', 1); //get the name of the directive
+				name = string.mid (name, 2, infinity); //pop off leading # character
+				if string.lower (name) == string.lower (directiveName) { //is this the directive asked for?
+					local (ix = string.patternMatch (" ", line));
+					value = string.mid (line, ix + 1, infinity);
+					return (evaluate (value))}}
+			else {
+				if flDirectivesOnlyAtBeginning {
+					break}};
+			s = string.delete (s, 1, sizeof (line) + 1);
+			if sizeOf (s) < 3 {
 				break}};
-		s = string.delete (s, 1, sizeof (line) + 1);
-		if sizeOf (s) < 3 {
-			break}};
-	return (value)}
-	* /
+		return (value)}
+	*/
 	
 	} /*getonedirectiveverb*/
+
+#endif
 
 
 static boolean htmlrundirective (typrocessmacrosinfo *pmi, Handle s, bigstring fieldname) {
@@ -3977,60 +3961,65 @@ on cleanForExport (text) { Çprepare text to leave Mac environment
 	} /*cleanforexportverb*/
 
 
-/*static boolean normalizenameverb (hdltreenode hp1, tyvaluerecord *v) {
+#if 0
+
+static boolean normalizenameverb (hdltreenode hp1, tyvaluerecord *v) {
 
 	/*
-on normalizeName (name, pageTable=nil, adrObject=nil) {
-	Ç2/12/98 at 3:26:44 PM by PBS
-		ÇSupport for normalizing folder names.
-		ÇURL-encode returned name.
-		ÇSupport for normalizing a name that isn't the page being generated.
-	Ç4/13/98 PBS
-		ÇThere are three contexts in which this operates:
-			Ç1) Normalizing a name of a new page that has no prefs.
-			Ç2) Normalizing a name based on the prefs of the page being rendered.
-			Ç3) Normalizing a name based on the prefs of a remote page.
+	on normalizeName (name, pageTable=nil, adrObject=nil) {
+		Ç2/12/98 at 3:26:44 PM by PBS
+			ÇSupport for normalizing folder names.
+			ÇURL-encode returned name.
+			ÇSupport for normalizing a name that isn't the page being generated.
+		Ç4/13/98 PBS
+			ÇThere are three contexts in which this operates:
+				Ç1) Normalizing a name of a new page that has no prefs.
+				Ç2) Normalizing a name based on the prefs of the page being rendered.
+				Ç3) Normalizing a name based on the prefs of a remote page.
+		
+		local (flDropNonAlphas, flLowerCaseFileNames);
+		local (maxLength);
+		local (extension = "");
+		local (flFolder = false);
+		
+		if pageTable == nil and adrObject == nil { //it's a new page without prefs
+			flDropNonAlphas = html.getPref ("dropNonAlphas");
+			flLowerCaseFileNames = html.getPref ("lowerCaseFileNames");
+			maxLength = number (html.getPref ("maxFileNameLength"));
+			extension = html.getPref ("fileExtension")}
+		else { //it's an existing page with prefs
+			if pageTable == nil {
+				pageTable = @websites.["#data"]};
+			if adrObject == nil {
+				adrObject = pageTable^.adrObject};
+			if adrObject == pageTable^.adrObject { //it's the current page
+				flDropNonAlphas = html.getPref ("dropNonAlphas", pageTable);
+				flLowerCaseFileNames = html.getPref ("lowerCaseFileNames", pageTable);
+				maxLength = number (html.getPref ("maxFileNameLength", pageTable));
+				extension = html.getPref ("fileExtension", pageTable)}
+			else { //it's a remote page
+				flDropNonAlphas = html.getPagePref ("dropNonAlphas", adrObject, pageTable);
+				flLowerCaseFileNames = html.getPagePref ("lowerCaseFileNames", adrObject, pageTable);
+				maxLength = number (html.getPagePref ("maxFileNameLength", adrObject, pageTable));
+				extension = html.getPagePref ("fileExtension", adrObject, pageTable)};
+			if typeOf (adrObject^) == tableType {
+				flFolder = true}};
+		
+		if flDropNonAlphas {
+			name = string.dropNonAlphas (name)};
+		if flLowerCaseFileNames {
+			name = string.lower (name)};
+		if flFolder {
+			extension = ""};
+		maxLength = maxLength - sizeOf (extension);
+		if sizeof (name) > maxLength {
+			name = string.mid (name, 1, maxLength)};
+		return (name)}
+	*/
 	
-	local (flDropNonAlphas, flLowerCaseFileNames);
-	local (maxLength);
-	local (extension = "");
-	local (flFolder = false);
-	
-	if pageTable == nil and adrObject == nil { //it's a new page without prefs
-		flDropNonAlphas = html.getPref ("dropNonAlphas");
-		flLowerCaseFileNames = html.getPref ("lowerCaseFileNames");
-		maxLength = number (html.getPref ("maxFileNameLength"));
-		extension = html.getPref ("fileExtension")}
-	else { //it's an existing page with prefs
-		if pageTable == nil {
-			pageTable = @websites.["#data"]};
-		if adrObject == nil {
-			adrObject = pageTable^.adrObject};
-		if adrObject == pageTable^.adrObject { //it's the current page
-			flDropNonAlphas = html.getPref ("dropNonAlphas", pageTable);
-			flLowerCaseFileNames = html.getPref ("lowerCaseFileNames", pageTable);
-			maxLength = number (html.getPref ("maxFileNameLength", pageTable));
-			extension = html.getPref ("fileExtension", pageTable)}
-		else { //it's a remote page
-			flDropNonAlphas = html.getPagePref ("dropNonAlphas", adrObject, pageTable);
-			flLowerCaseFileNames = html.getPagePref ("lowerCaseFileNames", adrObject, pageTable);
-			maxLength = number (html.getPagePref ("maxFileNameLength", adrObject, pageTable));
-			extension = html.getPagePref ("fileExtension", adrObject, pageTable)};
-		if typeOf (adrObject^) == tableType {
-			flFolder = true}};
-	
-	if flDropNonAlphas {
-		name = string.dropNonAlphas (name)};
-	if flLowerCaseFileNames {
-		name = string.lower (name)};
-	if flFolder {
-		extension = ""};
-	maxLength = maxLength - sizeOf (extension);
-	if sizeof (name) > maxLength {
-		name = string.mid (name, 1, maxLength)};
-	return (name)}
-	* /
 	} /*normalizenameverb*/
+
+#endif
 
 
 static boolean glossarypatcherverb (hdltreenode hp1, tyvaluerecord *v) {
@@ -5077,7 +5066,6 @@ static boolean langcallscriptwithaddress (tyaddress *adrscript, tyaddress *adrpa
 	hdltreenode hcode;
 	hdltreenode hscriptcode;
 	tyvaluerecord vhandler;
-	Handle hthread = nil;
 	hdlhashnode handlernode;
 		
 	if (!hashtablelookupnode ((*adrscript).ht, (*adrscript).bs, &handlernode)) {
@@ -5899,6 +5887,8 @@ static boolean webservercallfilters (tyaddress *pta, bigstring bstable, bigstrin
 		505 HTTP Version Not Supported
 */
 
+#if 0
+
 static boolean webservergetpref (bigstring bsprefname, tyvaluerecord *vreturn) {
 	
 	/*
@@ -5932,7 +5922,8 @@ static boolean webservergetpref (bigstring bsprefname, tyvaluerecord *vreturn) {
 	
 	return (true);
 	} /*webservergetpref*/
-	
+
+#endif
 
 
 static boolean webservergetrespondertableaddress (bigstring bsname, tyaddress *adr) {
@@ -6103,7 +6094,7 @@ static boolean webserverlocateresponder (hdlhashtable hparamtable, bigstring bs,
 				
 		if (coercetoboolean (&v) && v.data.flvalue) { /* found it */
 				
-			/*gethashkey (hnode, bs); /*7.0.1 PBS: commented out. We may have resolved one or more addresses.*/
+			//gethashkey (hnode, bs); /*7.0.1 PBS: commented out. We may have resolved one or more addresses.*/
 
 			copystring (bskey, bs); /*7.0.1 PBS: use the key we got before resolving addresses.*/
 				
@@ -6702,9 +6693,9 @@ static boolean webserverreadrequest (hdlhashtable ht, Handle h, long *errorcode,
 
 	/* Check for Expect header -- we may not be able to live up to the client's expectations */
 
-/*	if (hashtablesymbolexists (hheaderstable, STR_P_EXPECT)) { /*PBS 7.0b43: handle before reading body*/
+/*	if (hashtablesymbolexists (hheaderstable, STR_P_EXPECT)) { /% PBS 7.0b43: handle before reading body %/
 	
-/*		*errorcode = 417;
+		*errorcode = 417;
 		
 		flresult = true;
 		
@@ -7200,7 +7191,6 @@ static boolean inetdaddtoerrorlog (long code, bigstring bserror, hdlhashtable hp
 	*/
 
 	hdlhashtable hparenttable, hlogtable;
-	hdllistrecord hparamlist = nil;
 	tyvaluerecord vlogtable;
 	bigstring bstablename;
 	Handle hscript = nil;
@@ -7716,9 +7706,11 @@ on getFirstAddress (adrcalendar) {
 */
 
 
-static boolean findfirstnumericnodevisit (bigstring bsname, hdlhashnode nomad, tyvaluerecord val, hdlhashnode *hnode) {
-	
+static boolean findfirstnumericnodevisit (bigstring bsname, hdlhashnode nomad, tyvaluerecord val, ptrvoid refcon) {
+
 	if (isallnumeric (bsname)) {
+
+		hdlhashnode *hnode = (hdlhashnode *) refcon;
 		
 		*hnode = nomad;
 		
@@ -7853,11 +7845,15 @@ on getLastAddress (adrcalendar) {
 	scripterror ("Can't get the last address in the calendar because adrcalendar doesn't point to a valid non-empty calendar structure.")}
 */
 
-static boolean findlastnumericnodevisit (bigstring bsname, hdlhashnode nomad, tyvaluerecord val, hdlhashnode *hnode) {
+static boolean findlastnumericnodevisit (bigstring bsname, hdlhashnode nomad, tyvaluerecord val, ptrvoid refcon) {
 	
-	if (isallnumeric (bsname))
+	if (isallnumeric (bsname)) {
+	
+		hdlhashnode *hnode = (hdlhashnode *) refcon;
+	
 		*hnode = nomad;
-
+		}
+		
 	return (false);
 	}/*findlastnumericnodevisit*/
 		
@@ -8435,6 +8431,8 @@ on draw ( adrcalendar=nil, urlprefix="", colwidth=32, rowheight=22, tableborder=
 #define dayofweektocolumn(i,f) ((((i) - ((f) - 1) + 6) % 7) + 1)
 #define columntodayofweek(i,f) ((((i) + ((f) - 1) - 1) % 7) + 1)
 
+#if 0
+
 static boolean addhandle (handlestream *s, Handle h, short cttabs) {
 
 	if (cttabs > 0) { /*indent*/
@@ -8471,6 +8469,8 @@ static boolean addstring (handlestream *s, bigstring bstring, short cttabs) {
 
 	return (writehandlestreamchar (s, '\r'));
 	}/*addstring*/
+
+#endif
 
 
 static boolean addclassattribute (handlestream *s, Handle hcssprefix, bigstring bsname) {
@@ -8534,7 +8534,6 @@ static boolean addday (handlestream *s, long daynum, boolean fltoday,
 				Handle hcolwidth, Handle hrowheight, Handle hday, Handle hcssprefix, boolean flfirstcolumn) {
 
 	Handle hlink= nil;
-	Handle hurl = nil;
 	bigstring daystring;
 	bigstring paddeddaystring;
 	boolean fldaylinked;
@@ -9423,8 +9422,6 @@ static boolean issafebinaryop (hdltreenode hnode, hdlhashtable hmacrostable);
 
 static boolean issafeunaryop (hdltreenode hnode, hdlhashtable hmacrostable);
 
-static boolean issafebracketop (hdltreenode hnode, hdlhashtable hmacrostable);
-
 static boolean issafearrayop (hdltreenode hnode, hdlhashtable hmacrostable);
 
 static boolean issafelistop (hdltreenode hnode, hdlhashtable hmacrostable);
@@ -9817,9 +9814,11 @@ static boolean issafestatement (hdltreenode hnode, hdlhashtable hmacrostable) {
 
 		case noop:
 			return (true); /*noop's are very agreeable*/
+		
+		default:
+			return (false);
 		}/*switch*/
 		
-	return (false);
 	}/*issafestatement*/
 	
 
@@ -10577,7 +10576,6 @@ static boolean htmlfunctionvalue (short token, hdltreenode hparam1, tyvaluerecor
 
 		case webserverdispatchfunc: {
 			tyaddress adrparamtable;
-			Handle hrequest = nil;
 			
 			flnextparamislast = true;
 
