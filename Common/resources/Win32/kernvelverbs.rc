@@ -826,7 +826,7 @@
 	1,					//Number of "blocks" in this resource
 		"frontier\0",		//Function Processor Name
 		true,			//Window required
-			13,			//Count of verbs
+			14,			//Count of verbs
 			"getprogrampath\0",
 			"getfilepath\0",
 			"enableagents\0",
@@ -839,7 +839,8 @@
 			"hashstats\0",
 			"gethashloopcount\0",
 			"hideapplication\0",
-			"isvalidserialnumber\0"
+			"isvalidserialnumber\0",
+			"showapplication\0"
 	END
 
 1018 /*idthreadverbs*/ EFP	DISCARDABLE
