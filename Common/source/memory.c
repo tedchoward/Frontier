@@ -37,14 +37,26 @@
 
 #define safetycushionsize 0x2800 /*10K*/
 
-#ifdef fldebug
+// TRT - 20 Mar 2005 - 10.1a2 - only used for debugging on Mac OS
+#ifdef MACVERSION
 
-long cttemphandles = 0;
+	#ifdef fldebug
 
-THz tempzone;
+		long cttemphandles = 0;
+
+		THz tempzone;
+
+	#endif
+
+	#if (MEMTRACKER==1)
+
+		// for real tracking need to implement these functions
+		#define	debugaddmemhandle(h, ctbytes, filename, linenumber, threadid)
+		#define	debugremovememhandle(h)
+
+	#endif
 
 #endif
-
 
 static Handle hsafetycushion = nil; /*a buffer to allow memory error reporting*/
 
@@ -90,19 +102,32 @@ static boolean safetycushionhook (long *ctbytesneeded) {
 		extrasize = strlen(filename) + 1 + sizeof(long) + sizeof(long) + sizeof(long) + (2 * (sizeof(Handle))) + 4;
 
 		#ifdef MACVERSION
+			#if TARGET_API_MAC_CARBON == 1
+			// TRT - 13 Mar 2005 - 10.1a2
+			// There is no temp memory in Carbon or OS X so make sure 
+			// we never ask for it.
+			fltemp = false;
+			#endif
+
 			if (fltemp) { /*try grabbing temp memory first*/
 				
 				h = TempNewHandle (ctbytes + extrasize, &err);
 				
 				if (h != nil) {
 					
-					debugaddmemhandle (h, ctbytes, filename, linenumber, threadid);
+					debugaddmemhandle(h, ctbytes, filename, linenumber, threadid);
 
 					#ifdef fldebug
+					
+					// again we can't have any temp handles so this
+					// code isn't useful
+					#if TARGET_API_MAC_CARBON == 0
 					
 					++cttemphandles;
 					
 					tempzone = HandleZone (h);
+					
+					#endif
 					
 					#endif
 					
@@ -123,7 +148,7 @@ static boolean safetycushionhook (long *ctbytesneeded) {
 			h = NewHandle (ctbytes);
 
 			if (h != nil)
-				debugaddmemhandle (h, ctbytes, filename, linenumber, threadid);
+				debugaddmemhandle(h, ctbytes, filename, linenumber, threadid);
 		#endif
 		#ifdef WIN95VERSION
 			h = debugfrontierAlloc (filename, linenumber, threadid, ctbytes);
@@ -2635,6 +2660,11 @@ void disposehandlestream (handlestream *s) {
 #if (odbengine==0)
 boolean initmemory (void) {
 	
+#if (MEMTRACKER == 1)
+	// TRT - 13 Mar 2005 - 10.1a2
+	// Initialize memory debugging structures
+#endif
+
 	shellpushmemoryhook (&safetycushionhook);
 	
 	return (getsafetycushion ());
