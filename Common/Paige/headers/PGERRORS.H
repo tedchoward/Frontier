@@ -14,7 +14,7 @@ DataPak Software, Inc.  Copyright 1993-1994. 		*/
 #ifndef PGERRORS_H
 #define PGERRORS_H
 
-#include "CPUDefs.h"
+#include "CPUDEFS.H"
 
 #ifndef NO_ERROR
 #define NO_ERROR				0x0000		/* No error */

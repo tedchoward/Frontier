@@ -14,7 +14,7 @@ platform.  */
 /* File I/O has moved to pgIO.h - TRS OITC */
 
 
-#include "CPUDefs.h"
+#include "CPUDEFS.H"
 #include "pgMemMgr.h"
 
 #define DEF_MASTER_QTY		256
