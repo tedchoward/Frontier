@@ -768,7 +768,7 @@ static boolean evaluatecase (hdltreenode hcase, tyvaluerecord *valtree) {
 /*
 static boolean addmodulecontext (hdlhashtable htable, hdlhashnode hnode, bigstring bsname, hdltreenode htree) {
 	
-	/*
+	/%
 	add all of the top-level locals and modules to the current context
 	%/
 	
@@ -799,7 +799,8 @@ static boolean addmodulecontext (hdlhashtable htable, hdlhashnode hnode, bigstri
 	langpopsourcecode ();
 	
 	return (fl);
-	} /*addmodulecontext*/
+	} /%addmodulecontext%/
+*/
 
 
 static long langgetlexicalrefcon (void) {
@@ -904,7 +905,7 @@ static boolean evaluatewith (hdltreenode hwith, tyvaluerecord *valtree) {
 				goto error;
 			
 			/*
-			if (langexternalvaltocode (valtable, &hcode)) { /*5/14/93 dmb%/
+			if (langexternalvaltocode (valtable, &hcode)) { /%5/14/93 dmb%/
 				
 				if (!hashtablelookupnode (htable, bs, &hnode))
 					goto error;
@@ -1347,7 +1348,7 @@ static boolean needassignmentresult (hdltreenode hp) {
 	5.1.1 dmb: removed new rule of 5.0.2b21; too many broken scripts
 	*/
 	
-	register hdlerrorstack hs = langcallbacks.scripterrorstack;
+	//register hdlerrorstack hs = langcallbacks.scripterrorstack;
 	
 	if ((**hp).link != nil)
 		return (false);
@@ -1743,7 +1744,7 @@ static boolean evaltree (hdltreenode htree, tyvaluerecord *valtree) {
 		
 		case breakop:
 			/*
-			if (!langdebuggercall (h)) /*user killed the script%/
+			if (!langdebuggercall (h)) /%user killed the script%/
 				return (false);
 			*/
 			
@@ -1761,7 +1762,7 @@ static boolean evaltree (hdltreenode htree, tyvaluerecord *valtree) {
 		
 		case returnop:
 			/*
-			if (!langdebuggercall (h)) /*user killed the script%/
+			if (!langdebuggercall (h)) /%user killed the script%/
 				return (false);
 			*/
 			
@@ -1878,6 +1879,9 @@ static boolean evaltree (hdltreenode htree, tyvaluerecord *valtree) {
 				return (evaluateosascript (&val1, nil, zerostring, valtree));
 		#endif
 		
+		default:
+			/* do nothing for procop, assignlocalop, caseitemop, casebodyop, kernelop, globalop */
+			break;
 		} /*switch*/
 	
 	langlongparamerror (unexpectedopcodeerror, (long) op);
@@ -1902,7 +1906,9 @@ boolean evaluatetree (hdltreenode htree, tyvaluerecord *valtree) {
 	} /*evaluatetree*/
 
 
-static int ctdeferredthis = 0;
+#if lazythis_optimization
+	static int ctdeferredthis = 0;
+#endif
 
 boolean evaluatelist (hdltreenode hfirst, tyvaluerecord *val) {
 	

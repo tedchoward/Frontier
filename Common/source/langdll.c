@@ -357,7 +357,6 @@ static boolean converttyvaltoodb (tyvaluerecord * val, odbValueRecord *odbval) {
 odbBool xCALLBACK extOdbNewListValue (odbRef odb, odbValueRecord *value, odbBool flRecord) {
 	odbBool res;
 	hdllistrecord hlist;
-	hdlcancoonrecord hc = (hdlcancoonrecord) odb;
 
 	res = false;
 
@@ -386,7 +385,6 @@ odbBool xCALLBACK extOdbNewListValue (odbRef odb, odbValueRecord *value, odbBool
 				
 odbBool xCALLBACK extOdbGetListCount (odbRef odb, odbValueRecord *value, long * cnt) {
 	odbBool res;
-	hdlcancoonrecord hc = (hdlcancoonrecord) odb;
 
 	res = false;
 
@@ -406,7 +404,6 @@ odbBool xCALLBACK extOdbGetListCount (odbRef odb, odbValueRecord *value, long * 
 
 odbBool xCALLBACK extOdbDeleteListValue (odbRef odb, odbValueRecord *value, long index, char * recordname) {
 	odbBool res;
-	hdlcancoonrecord hc = (hdlcancoonrecord) odb;
 
 	res = false;
 
@@ -424,7 +421,6 @@ odbBool xCALLBACK extOdbDeleteListValue (odbRef odb, odbValueRecord *value, long
 
 odbBool xCALLBACK extOdbSetListValue (odbRef odb, odbValueRecord *value, long index, char * recordname, odbValueRecord *valueData) {
 	odbBool res;
-	hdlcancoonrecord hc = (hdlcancoonrecord) odb;
 	tyvaluerecord val;
 
 	res = false;
@@ -446,7 +442,6 @@ odbBool xCALLBACK extOdbSetListValue (odbRef odb, odbValueRecord *value, long in
 
 odbBool xCALLBACK extOdbGetListValue (odbRef odb, odbValueRecord *value, long index, char * recordname, odbValueRecord *valueReturn) {
 	odbBool res;
-	hdlcancoonrecord hc = (hdlcancoonrecord) odb;
 	tyvaluerecord valret;
 
 	res = false;
@@ -468,7 +463,6 @@ odbBool xCALLBACK extOdbGetListValue (odbRef odb, odbValueRecord *value, long in
 
 odbBool xCALLBACK extOdbAddListValue (odbRef odb, odbValueRecord *value, char * recordname, odbValueRecord *valueData) {
 	odbBool res;
-	hdlcancoonrecord hc = (hdlcancoonrecord) odb;
 	tyvaluerecord val;
 
 	res = false;
@@ -1080,7 +1074,7 @@ static void freeprocinfobuckets (tydllinfohandle hdll) {
 		
 			hnext = (**h).hashlink;
 
-			disposehandle (h);
+			disposehandle ((Handle) h);
 			
 			h = hnext;
 			}/*while*/
@@ -1558,11 +1552,11 @@ static void closelibrary (tydllinfohandle hdll) {
 
 #ifdef MACVERSION
 
-	lockhandle (hdll);
+	lockhandle ((Handle) hdll);
 	
 	CloseConnection (&(**hdll).hdllsyshandle);
 	
-	unlockhandle (hdll);
+	unlockhandle ((Handle) hdll);
 
 #endif
 	
@@ -1634,7 +1628,6 @@ static boolean initparamblock (hdltreenode hp1, typrocinfohandle hprocinfo, tydl
 	Handle hdata;
 	long kmax = (**hprocinfo).ctparams;
 	long k;
-	boolean flresult = false;
 	
 	if (!langcheckparamcount (hp1, (short) ((**hprocinfo).ctparams + 2)))
 		return (false);
@@ -1755,7 +1748,7 @@ static boolean callprocwithparams (tydllinfohandle hdll, typrocinfohandle hproci
 
 	fillcalltable (&calltable);
 
-	lockhandle (hprocinfo); /* just to be sure our data doesn't move around */
+	lockhandle ((Handle) hprocinfo); /* just to be sure our data doesn't move around */
 
 	/* If procaddress is undefined, look it up now and save it for future reference */
 	
@@ -1817,7 +1810,7 @@ static boolean callprocwithparams (tydllinfohandle hdll, typrocinfohandle hproci
 
 exit:
 
-	unlockhandle (hprocinfo);
+	unlockhandle ((Handle) hprocinfo);
 		
 	return (fl);
 	} /*callprocwithparams*/
@@ -1839,7 +1832,7 @@ static boolean callproc (hdltreenode hparam1, tydllinfohandle hdll, typrocinfoha
 	
 	/* Set up the paramblock for the call and save the original param handles */
 	
-	fl = initparamblock (hparam1, hprocinfo, &dllparamblock, &orighandles);
+	fl = initparamblock (hparam1, hprocinfo, &dllparamblock, orighandles);
 	
 	if (fl) {
 		
@@ -1849,7 +1842,7 @@ static boolean callproc (hdltreenode hparam1, tydllinfohandle hdll, typrocinfoha
 	
 		/* Restore original param handles and free heap-allocated params */
 	
-		freeparamblock (hprocinfo, &orighandles);
+		freeparamblock (hprocinfo, orighandles);
 		}
 
 	/* Decrement reference count and possibly unload if the task has been deferred to us */
@@ -1919,7 +1912,7 @@ static boolean callvolatile (hdltreenode hparam1, const tyfilespec *fs, bigstrin
 	
 	/* Dispose proc info here because we didn't ask for the hash table to be built */
 	
-	disposehandle (hprocinfo);
+	disposehandle ((Handle) hprocinfo);
 
 	/* Unload the DLL */
 

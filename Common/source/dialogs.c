@@ -61,16 +61,6 @@ short dialogcountitems (DialogPtr pdialog) {
 	//Changed to Opaque call for Carbon
 	//switched to use CountDITL. This has been around since OS 7
 	return CountDITL(pdialog);
-	/*
-	amazingly we have to klooge around to find out how many items there are
-	in a dialog's item list.
-	*/
-	
-	/*register Handle h;
-	
-	h = (*(DialogPeek) pdialog).items;
-	
-	return ((**(short **) h) + 1); /*magic incantation -- Boozer says this works*/
 	} /*dialogcountitems*/
 
 
@@ -80,19 +70,16 @@ static void dialoggeteditbuffer (DialogPtr pdialog, TEHandle *hbuffer) {
 	//Changed to Opaque call for Carbon
 	//check this I need to check to see if this is a memory leak or not. 
 	#if ACCESSOR_CALLS_ARE_FUNCTIONS == 1
-	DialogItemType  	itemType = 0;
-    Handle 				h;
-	Rect 				r = {0,0,0,0};
-	SInt16				whichField = 0;
-	h = NewHandle(0);
+		//DialogItemType  	itemType = 0;
+		//Handle 				h;
+		//Rect 				r = {0,0,0,0};
+		//SInt16				whichField = 0;
 
-	h = GetDialogTextEditHandle(pdialog);
-	
-	*hbuffer = h;
+		*hbuffer = GetDialogTextEditHandle((DialogRef) pdialog);
 	
 	#else
-	//old code
-	*hbuffer = (*(DialogPeek) pdialog).textH;
+		//old code
+		*hbuffer = (*(DialogPeek) pdialog).textH;
 	#endif
 	} /*dialoggeteditbuffer*/
 
@@ -359,7 +346,7 @@ DialogPtr newmodaldialog (short id, short defaultitem) {
 	
 	#endif
 	
-	pdialog = GetNewDialog (id, nil, (DialogPtr) -1L);
+	pdialog = GetNewDialog (id, nil, (WindowRef) -1L);
 	
 	#ifdef flcomponent
 	
@@ -405,7 +392,7 @@ void disposemodaldialog (DialogPtr pdialog) {
 	
 	DisposeDialog (pdialog);
 	
-	#if 0 /*ndef flruntime/
+	#if 0 //ndef flruntime
 	
 		/*handle all pending activate & update events*/
 		
@@ -997,10 +984,8 @@ pascal boolean modaldialogcallback (DialogPtr pdialog, EventRecord *ev, short *i
 	
  	//register short hit = 0;
  	
- 	#ifdef flcomponent
- 	
- 	long curA5 = SetUpAppA5 ();
- 	
+ 	#if !TARGET_API_MAC_CARBON && defined(flcomponent)
+		long curA5 = SetUpAppA5 ();
  	#endif
  	
  	if (whatevent != nullEvent) { /*non-null event; set global event time for background logic*/
@@ -1068,18 +1053,17 @@ pascal boolean modaldialogcallback (DialogPtr pdialog, EventRecord *ev, short *i
 			if ((defaultitem > 0) && ((*ev).message == (long) pdialog))
 				boldenbutton (pdialog, defaultitem);
 			#if TARGET_API_MAC_CARBON == 1
-			{
-			WindowRef pWindow = GetDialogWindow(pdialog);
-			CGrafPtr thePort = GetDialogPort(pdialog);
-			QDFlushPortBuffer(thePort, nil);	
-			}
+				{
+				CGrafPtr thePort = GetDialogPort(pdialog);
+				QDFlushPortBuffer(thePort, nil);	
+				}
 			#endif
 			break;
 		
 		case nullEvent:
 			
 			/*
-			shellblockevents (); /*all events are blocked when modal dialog is in front%/
+			shellblockevents (); /%all events are blocked when modal dialog is in front%/
 			
 			if (flscriptrunning)
 				langbackgroundtask ();
@@ -1094,24 +1078,22 @@ pascal boolean modaldialogcallback (DialogPtr pdialog, EventRecord *ev, short *i
 			//was to do it at every null event. The whole thing should be rewritten
 			//at some points to use ModalDialog Correctly.
 			#if TARGET_API_MAC_CARBON == 1
-			{
-			WindowRef pWindow = GetDialogWindow(pdialog);
-			CGrafPtr thePort = GetDialogPort(pdialog);
-			
-			SelectWindow(pWindow);
-			QDFlushPortBuffer(thePort, nil);	
-			}
+				{
+				WindowRef pWindow = GetDialogWindow(pdialog);
+				CGrafPtr thePort = GetDialogPort(pdialog);
+				
+				SelectWindow(pWindow);
+				QDFlushPortBuffer(thePort, nil);	
+				}
 			#else
-			SelectWindow (pdialog); /*make sure no one has screwed around with us*/
+				SelectWindow (pdialog); /*make sure no one has screwed around with us*/
 			#endif
 			break;
 		
 		} /*switch*/
 	
-	#ifdef flcomponent
-	
-	RestoreA5 (curA5);
-	
+	#if !TARGET_API_MAC_CARBON && defined(flcomponent)
+		RestoreA5 (curA5);
 	#endif
 	return (eventHandled); /*the dialog manager's version of false*/
 	} /*modaldialogcallback*/
@@ -1131,11 +1113,15 @@ static short runmodaldialog (void) {
 	#ifdef flcomponent
 		{
 		ProcPtr filter = (ProcPtr) modaldialogcallback;
-		long appA5 = SetUpCurA5 (); /*for system*/
+		#if !TARGET_API_MAC_CARBON && defined(flcomponent)
+			long appA5 = SetUpCurA5 (); /*for system*/
+		#endif
 		
 		ModalDialog ((ModalFilterUPP) filter, &itemnumber);
 		
-		RestoreA5 (appA5);
+		#if !TARGET_API_MAC_CARBON && defined(flcomponent)
+			RestoreA5 (appA5);
+		#endif
 		}
 	#else
 	
@@ -1323,7 +1309,7 @@ boolean dialogselectall (DialogPtr pdialog) {
 
 	#if TARGET_API_MAC_CARBON == 1
 		WindowClass 	wclass;
-		err = GetWindowClass (pdialog, &wclass);
+		err = GetWindowClass ((WindowRef) pdialog, &wclass);
 		if (err==noErr) {
 			if (wclass == kModalWindowClass) {
 				// it's a dialog
@@ -1331,7 +1317,7 @@ boolean dialogselectall (DialogPtr pdialog) {
 			} else if (wclass == kDocumentWindowClass) {
 			
 				// it's not a dialog, it's an olde-tyme window. The Find window, for example.
-				return (dialogsetselect (GetDialogFromWindow(pdialog), 0, infinity));
+				return (dialogsetselect (GetDialogFromWindow((WindowRef) pdialog), 0, infinity));
 			}
 			
 	} /*dialogselectall*/
@@ -1365,7 +1351,7 @@ short savedialog (bigstring bsfname) {
 	/*
 	register short id;
 	
-	if (bsfname == nil) /*file wasn't dirty; just want to confirm Quit%/
+	if (bsfname == nil) /%file wasn't dirty; just want to confirm Quit%/
 		id = quitdialogid;
 	else
 		id = savedialogid;
