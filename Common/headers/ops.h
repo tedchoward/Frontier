@@ -108,3 +108,4 @@ extern void getsystemversionstring (bigstring, bigstring);
 
 extern void getsizestring (unsigned long, bigstring);
 
+extern UInt32 bcdToLong (UInt32); /* 2004-11-16 creedon */
