@@ -57,7 +57,7 @@
 #include "langsystem7.h"
 #include "langtokens.h"
 #include "langwinipc.h"
-#include "base64.h"
+#include "BASE64.H"
 #include "tablestructure.h"
 #include "tableverbs.h"
 #include "process.h"
