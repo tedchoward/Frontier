@@ -571,7 +571,7 @@ typedef enum tyregexptoken { /*verbs that are processed by langregexp.c*/
 
 	grepfunc,
 	
-	getpatterinfofunc,
+	getpatterninfofunc,
 	
 	expandfunc,
 	
@@ -702,10 +702,10 @@ typedef boolean (*tyreplscannumberedcallback) (int ix, int len, int ref, bigstri
 
 typedef boolean (*tyreplscannamedcallback) (int ix, int len, const char *cptr, int clen, bigstring bserror, void *refcon);
 
-typedef boolean (*tyreplscanbadgroupnamecallback) (int pos, bigstring bsmsg);
+typedef void (*tyreplscanbadgroupnamecallback) (int pos, bigstring bsmsg);
 
 
-static const unsigned char *chartableptr = nil;
+static unsigned char *chartableptr = nil;
 
 
 #ifdef MACVERSION
@@ -909,7 +909,7 @@ static boolean getoptionallistparam (hdltreenode hfirst, short *ctconsumed, shor
 			return (false);
 		}
 
-	*hlist = vparam.data.binaryvalue;
+	*hlist = (hdllistrecord) vparam.data.binaryvalue;
 
 	return (true);
 	} /*getoptionallistparam*/
@@ -1029,7 +1029,7 @@ static int regexpexec (Handle hcp, char *subject, int length,
 	res = pcre_exec (getpatternref (hcp), &extra,
 						subject, length, ix, matchlen,
 						getoptions (hcp) & PUBLIC_EXEC_OPTIONS,
-						*hovector, getovectorsize (hcp), chartableptr); 
+						(int *)*hovector, getovectorsize (hcp), chartableptr); 
 
 	/* process execution errors here, presumably indicative of a bug in the PCRE library */
 	
@@ -1167,7 +1167,7 @@ static boolean regexpbuildmatchinfotable (Handle hsubject, Handle hcp, Handle ho
 		
 		initvalue (&vtemp, listvaluetype);
 		
-		vtemp.data.binaryvalue = hoffsets;
+		vtemp.data.binaryvalue = (Handle) hoffsets;
 		
 		if (!hashtableassign (ht, STR_groupOffsets, vtemp))
 			goto exit;
@@ -1178,7 +1178,7 @@ static boolean regexpbuildmatchinfotable (Handle hsubject, Handle hcp, Handle ho
 		
 		initvalue (&vtemp, listvaluetype);
 		
-		vtemp.data.binaryvalue = hlengths;
+		vtemp.data.binaryvalue = (Handle) hlengths;
 		
 		if (!hashtableassign (ht, STR_groupLengths, vtemp))
 			goto exit;
@@ -1189,7 +1189,7 @@ static boolean regexpbuildmatchinfotable (Handle hsubject, Handle hcp, Handle ho
 		
 		initvalue (&vtemp, listvaluetype);
 		
-		vtemp.data.binaryvalue = hstrings;
+		vtemp.data.binaryvalue = (Handle) hstrings;
 		
 		if (!hashtableassign (ht, STR_groupStrings, vtemp))
 			goto exit;
@@ -1287,16 +1287,6 @@ static boolean writehandlestreamreplpart (handlestream *s, tyreplacementtoken ty
 	
 	return (writehandlestream (s, &rp, sizeof (rp)));
 	} /*writehandlestreamreplpart*/
-
-
-static int regexpstringnumberfromtable (char *cptr, int len, void *refcon) {
-
-	hdlhashtable htmatchinfo = (hdlhashtable) refcon;
-	
-	
-	
-	return (PCRE_ERROR_NOSUBSTRING);
-	} /*regexpstringnumberfrompattern*/
 
 
 static int regexpstringnumberfrompattern (const char *cptr, int len, Handle hcp) {
@@ -1505,7 +1495,7 @@ static boolean regexptextsearchwritenumbered (int ix, int len, int ref, bigstrin
 	} /*regexptextsearchwritenumbered*/
 
 
-static boolean regexptextsearchwritenamed (int ix, int len, char *cptr, int clen, bigstring bserror, void *refcon) {
+static boolean regexptextsearchwritenamed (int ix, int len, const char *cptr, int clen, bigstring bserror, void *refcon) {
 	
 	tyregexpsearchinfo *info = (tyregexpsearchinfo *) refcon;
 	int ref;
@@ -1529,7 +1519,7 @@ static void replscanerror (int pos, bigstring bsmsg) {
 static void regexpcheckerror (int pos, bigstring bsmsg) {
 	
 	regexperrorwithnumber (frbadgroupnameerror, pos, bsmsg);
-	} /*replscanerror*/
+	} /*regexpcheckerror*/
 	
 
 static boolean regexpscanreplacement (const char *pstart, long len, bigstring bserror,
@@ -1598,8 +1588,6 @@ static boolean regexpscanreplacement (const char *pstart, long len, bigstring bs
 						
 						}
 					else { /*might be a named group*/
-						
-						long ref = 0;
 
 						while (p1 < pend && *p1 != '>')
 							p1++;
@@ -1664,7 +1652,7 @@ static boolean regexpscanreplacement (const char *pstart, long len, bigstring bs
 	} /*regexpscanreplacement*/
 
 
-static boolean regexpcompilereplacement (Handle hcp, char *p, long len, bigstring bserror, Handle *hreplaceparts) {
+static boolean regexpcompilereplacement (Handle hcp, char *p, long len, bigstring bserror, hdlreplacepart *hreplaceparts) {
 
 	tyreplscancompileinfo info;
 	
@@ -1687,7 +1675,7 @@ static boolean regexpcompilereplacement (Handle hcp, char *p, long len, bigstrin
 		return (false);
 		}
 	
-	*hreplaceparts = closehandlestream (&info.s);
+	*hreplaceparts = (hdlreplacepart) closehandlestream (&info.s);
 
 	return (*hreplaceparts != nil);
 	} /*regexpcompilereplacement*/
@@ -1743,7 +1731,6 @@ static boolean getcodetreefromscriptaddress (hdlhashtable htable, bigstring bsve
 	Code cribbed from langrunscript in lang.c
 	*/
 	
-	boolean fl = false;
 	tyvaluerecord vhandler;
 	hdlhashnode handlernode;
 	
@@ -1758,24 +1745,24 @@ static boolean getcodetreefromscriptaddress (hdlhashtable htable, bigstring bsve
 	
 	/*build a code tree and call the handler, with our error hook in place*/
 	
-	hcode = nil;
+	*hcode = nil;
 	
 	if (vhandler.valuetype == codevaluetype) {
 
-		hcode = vhandler.data.codevalue;
+		*hcode = vhandler.data.codevalue;
 	}
 	else if ((**htable).valueroutine == nil) { /*not a kernel table*/
 		
-		if (!langexternalvaltocode (vhandler, &hcode)) {
+		if (!langexternalvaltocode (vhandler, hcode)) {
 
 			langparamerror (notfunctionerror, bsverb);
 
 			return (false);
 			}
 		
-		if (hcode == nil) { /*needs compilation*/
+		if (*hcode == nil) { /*needs compilation*/
 			
-			if (!langcompilescript (handlernode, &hcode))
+			if (!langcompilescript (handlernode, hcode))
 				return (false);
 			}
 		}
@@ -1980,7 +1967,7 @@ static boolean regexpextractmatch (Handle hsubject, Handle hovec, int **hgroups,
 		
 		initvalue (&vtemp, listvaluetype);
 		
-		vtemp.data.binaryvalue = hsublist;
+		vtemp.data.binaryvalue = (Handle) hsublist;
 		
 		fl = langpushlistval (hresult, nil, &vtemp);
 		
@@ -2269,7 +2256,7 @@ boolean regexptextsearch (byte *ptext, long lentext, long *offset, long *lenmatc
 		res = pcre_exec (getpatternref (hcp), &extra,
 							(const char *)ptext, lentext, ixstart, lentext - ixstart,
 							getoptions (hcp) & PUBLIC_EXEC_OPTIONS,
-							*hovector, getovectorsize (hcp), chartableptr); 
+							(int *) *hovector, getovectorsize (hcp), chartableptr); 
 
 		if (res <= 0)
 			return (false);
@@ -2328,7 +2315,6 @@ static boolean regexpcompileverb (hdltreenode hp1, tyvaluerecord *v, bigstring b
 	Handle hpattern;
 	tyvaluerecord vtemp;
 	int options = 0;
-	int capturecount = 0;
 	short ctconsumed = 1;
 	short ctpositional = 1;
 	char chterminate = chnul;
@@ -2629,7 +2615,7 @@ static boolean regexpreplaceverb (hdltreenode hp1, tyvaluerecord *v, bigstring b
 	if (!fl)
 		goto exit;
 	
-	pushtmpstack (hreplaceparts);
+	pushtmpstack ((Handle) hreplaceparts);
 
 	/* run engine */
 		
@@ -2697,7 +2683,7 @@ done:
 	
 	releaseheaptmp (hovec); /*no need to accumulate these on the tmp stack*/	
 	
-	releaseheaptmp (hreplaceparts);
+	releaseheaptmp ((Handle) hreplaceparts);
 	
 	/* set result */
 
@@ -2819,7 +2805,7 @@ static boolean regexpextractverb (hdltreenode hp1, tyvaluerecord *v, bigstring b
 	if (!opnewlist (&hresult, false))
 		return (false);
 	
-	if (!setheapvalue (hresult, listvaluetype, v))
+	if (!setheapvalue ((Handle) hresult, listvaluetype, v))
 		return (false);
 	
 	/* run engine */
@@ -2907,7 +2893,7 @@ static boolean regexpsplitverb (hdltreenode hp1, tyvaluerecord *v, bigstring bse
 	if (!opnewlist (&hresult, false))
 		return (false);
 	
-	if (!setheapvalue (hresult, listvaluetype, v))
+	if (!setheapvalue ((Handle) hresult, listvaluetype, v))
 		return (false);
 
 	/* return early if the caller hasn't asked for at least one replacement */
@@ -3219,7 +3205,7 @@ static boolean regexpgrepverb (hdltreenode hp1, tyvaluerecord *v, bigstring bser
 	if (!opnewlist (&hresult, false))
 		return (false);
 	
-	if (!setheapvalue (hresult, listvaluetype, v))
+	if (!setheapvalue ((Handle) hresult, listvaluetype, v))
 		return (false);
 	
 	/* handle subject as list */
@@ -3232,7 +3218,7 @@ static boolean regexpgrepverb (hdltreenode hp1, tyvaluerecord *v, bigstring bser
 		info.hovec = hovec;
 		info.hresult = hresult;
 		info.flincludematches = flincludematches;
-		info.bserrorptr = &bserror;
+		info.bserrorptr = (StringPtr) &bserror;
 		
 		flsuccess = langvisitlistvalues (&vsubject, &regexpgreplistitemscallback, (ptrvoid) &info);
 	
@@ -3534,7 +3520,7 @@ static boolean regexpexpandverb (hdltreenode hp1, tyvaluerecord *v, bigstring bs
 			}
 		}
 			
-	info.hgroups = vtemp.data.binaryvalue;
+	info.hgroups = (hdllistrecord) vtemp.data.binaryvalue;
 
 	/* get namedGroups sub-table from info table*/
 
@@ -3611,7 +3597,7 @@ static boolean regexpfunctionvalue (short token, hdltreenode hp1, tyvaluerecord 
 		case grepfunc:
 			return (regexpgrepverb (hp1, v, bserror));
 		
-		case getpatterinfofunc:
+		case getpatterninfofunc:
 			return (regexpgetpatterninfoverb (hp1, v, bserror));
 		
 		case expandfunc:
@@ -3632,7 +3618,7 @@ boolean regexpinitverbs (void) {
 	
 	assert (sizeof (regexp_default_tables) == tables_length); /*if this fails, something changed in the PCRE library*/
 	
-	chartableptr = &regexp_default_tables; //was: pcre_maketables (); /*build char tables using current locale*/
+	chartableptr = regexp_default_tables; //was: pcre_maketables (); /*build char tables using current locale*/
 	
 	return (loadfunctionprocessor (idregexpverbs, &regexpfunctionvalue));
 	} /*regexpinitverbs*/
