@@ -12,7 +12,7 @@ file also #includes "pgMachineDefs."  */
 #ifndef PGMEMMGR_H
 #define PGMEMMGR_H
 
-#include "CPUDefs.h"
+#include "CPUDEFS.H"
 
 
 #ifdef C_LIBRARY
@@ -21,7 +21,7 @@ file also #includes "pgMachineDefs."  */
 #endif
 
 #include "pgMTraps.h"
-#include "pgSetJmp.h"
+#include "PGSETJMP.H"
 
 #ifdef PG_DEBUG
 #define PG_DEBUG_STATICS
