@@ -883,7 +883,8 @@ resource 'EFP#' (idfrontierverbs, "frontier") {
 		"hashstats",
 		"gethashloopcount",
 		"hideapplication",
-		"isvalidserialnumber"
+		"isvalidserialnumber",
+		"showapplication"
 		}
 	}
 };
