@@ -1,4 +1,6 @@
 
+/*	$Id$    */
+
 /* This header file defines "generic" errors.
 
 12/10/93 -- Codes have been #idef'd for platform-specific errors.

@@ -1,4 +1,6 @@
 
+/*	$Id$    */
+
 /******************************************************************************
 
     UserLand Frontier(tm) -- High performance Web content management,
@@ -22,7 +24,6 @@
     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
 ******************************************************************************/
-
 
 #include "frontier.r"
 #include "kernelverbdefs.h"

@@ -1,3 +1,6 @@
+
+/*	$Id$    */
+
 /* RSAGLOBAL.H - RSAREF types and constants
  */
 

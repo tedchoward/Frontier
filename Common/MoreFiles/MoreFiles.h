@@ -1,3 +1,6 @@
+
+/*	$Id$    */
+
 /*
 	File:		MoreFiles.h
 	

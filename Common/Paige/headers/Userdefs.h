@@ -1,3 +1,6 @@
+
+/*	$Id$    */
+
 /* This header file contains user definitions which you CAN MODIFY without being
 affected by DataPak's possible upgrades.
 

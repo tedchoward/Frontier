@@ -1,3 +1,6 @@
+
+/*	$Id$    */
+
 data 'STR#' (129, "Verb Errors") {
 	$"000C 2E4E 6F74 2065 6E6F 7567 6820 7061"            /* ...Not enough pa */
 	$"7261 6D65 7465 7273 2074 6F20 6576 616C"            /* rameters to eval */

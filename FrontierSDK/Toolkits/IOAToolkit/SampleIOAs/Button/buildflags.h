@@ -1,3 +1,6 @@
+
+/*	$Id$    */
+
 #ifdef __powerc
 
 	#include <MacHeadersPPC>

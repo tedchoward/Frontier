@@ -1,4 +1,6 @@
 
+/*	$Id$    */
+
 /******************************************************************************\
 *       This is a part of the Microsoft Source Code Samples. 
 *       Copyright (C) 1993-1995 Microsoft Corporation.

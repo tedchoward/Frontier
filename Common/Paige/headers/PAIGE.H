@@ -1,3 +1,6 @@
+
+/*	$Id$    */
+
 /* Paige Technology API file, copyright 1993-1995 by DataPak Software, Inc.
 	Stronger typing added by T. R. Shaw, OITC, Inc.
 	

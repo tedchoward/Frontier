@@ -1,3 +1,6 @@
+
+/*	$Id$    */
+
 /* Word Solution 2.01 Header File for "C"
     ©1993 by DataPak Software, Inc.   */
 

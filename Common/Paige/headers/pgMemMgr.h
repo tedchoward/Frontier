@@ -1,3 +1,6 @@
+
+/*	$Id$    */
+
 /* pgMemMgr.h defines the API for Paige Memory Manager. This header
 file also #includes "pgMachineDefs."  */
 

@@ -1,3 +1,6 @@
+
+/*	$Id$    */
+
 #include <Types.r>
 #include <SysTypes.r>
 

@@ -1,3 +1,6 @@
+
+/*	$Id$    */
+
 /* This header file provides function prototypes for a Mac-specific high-level
 wrapper around some of the otherwise complicated functions in PAIGE such as
 setting styles, fonts, or whatever.

@@ -1,3 +1,6 @@
+
+/*	$Id$    */
+
 /* Paige Technology, copyright 1993-1995 by DataPak Software, Inc.
 This header file defines all the components for the built-in import-export mechanism,
 including the generic Import and Export classes and default member functions for file

@@ -1,3 +1,6 @@
+
+/*	$Id$    */
+
 /* This header file defines all the default hooks in a Paige structure.
 This includes both format functions (for style and paragraph) as well as
 "global" functions that apply to the whole Paige object. The declarations

@@ -1,3 +1,6 @@
+
+/*	$Id$    */
+
 /* Default look-up tables for PAIGE import-export mechanism. Copyright 1995-96 DataPak Software,
 Inc.  Software by Gar. */
 

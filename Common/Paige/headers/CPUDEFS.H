@@ -1,3 +1,6 @@
+
+/*	$Id$    */
+
 #ifndef CPUDEFS_H
 #define CPUDEFS_H
 

@@ -1,3 +1,6 @@
+
+/*	$Id$    */
+
 /* MD5C.C - RSA Data Security, Inc., MD5 message-digest algorithm
  */
 

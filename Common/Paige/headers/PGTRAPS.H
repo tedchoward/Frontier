@@ -1,3 +1,6 @@
+
+/*	$Id$    */
+
 /* This header file maps machine-specific OS calls to the respective function
 for the currently defined platform. */
 

@@ -1,3 +1,6 @@
+
+/*	$Id$    */
+
 #ifndef PGMTRAPS_H
 #define PGMTRAPS_H
 

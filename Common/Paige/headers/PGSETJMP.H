@@ -1,3 +1,6 @@
+
+/*	$Id$    */
+
 /* Paige Exceptions Handler header.  Original source created by Tom Shaw, OITC.
 Modified by Gar for DataPak Software, Inc. to be more consistent with Paige
 syntax and parameter naming conventions.   Copyright 1993-1994    */

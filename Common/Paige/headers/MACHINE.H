@@ -1,3 +1,6 @@
+
+/*	$Id$    */
+
 /* This is the generic header file for "machinespecific.h". You do NOT need
 to modify this header as its definitions are intended to compile on various
 platforms. However, you will need to completely swap out "machinespecific.c"

@@ -1,3 +1,6 @@
+
+/*	$Id$    */
+
 /* This PAIGE file is separate to maintain compatibility with MS Foundation Class
 development for Windows (when users use pure MFC their compiler complains about
 <setjmp> code and it is not supported!  Copyright ©1994    */
