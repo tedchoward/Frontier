@@ -265,13 +265,7 @@ typedef const Rect *rectparam;
 
 typedef Rect *ptrrect;
 
-#ifdef MACVERSION
-typedef boolean (*callback) (...);
-#endif
-
-#ifdef WIN95VERSION
-typedef boolean (*callback) (void);
-#endif
+typedef boolean (*callback) (void); /* 2004-10-24 aradke: was ... instead of void on Mac */
 
 typedef	unsigned char byte, *ptrbyte;	
 
