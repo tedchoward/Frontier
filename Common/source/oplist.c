@@ -853,6 +853,12 @@ boolean opvisitlist (hdllistrecord hlist, opvisitlistcallback visit, ptrvoid ref
 	register hdlheadrecord nomad, nextnomad;
 	bigstring bskey;
 
+	/*
+	2005-03-30 smd: if the list is empty, we're done.
+	*/
+	if (opcountlistitems (hlist) == 0)
+		return (true);
+	
 	ho = (hdloutlinerecord) (**hlist).houtline;
 	
 	nomad = (**ho).hsummit;
