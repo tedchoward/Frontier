@@ -842,7 +842,7 @@ static pascal void *eventthreadmain (void *hverb) {
 	
 	(void) landhandleverb (hv);
 	
-	AEResumeTheCurrentEvent (&event, &reply, kAENoDispatch, 0);
+	AEResumeTheCurrentEvent (&event, &reply, (AEEventHandlerUPP) kAENoDispatch, 0);
 	
 	exitprocessthread ();
 	
