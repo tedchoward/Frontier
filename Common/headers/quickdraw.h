@@ -246,7 +246,7 @@ extern void getcurrentscreenbounds (Rect *);
 
 extern boolean systemhascolor (void);
 
-extern boolean colorenabled ();
+extern boolean colorenabled (void);
 
 extern short iscolorport (CGrafPtr);
 

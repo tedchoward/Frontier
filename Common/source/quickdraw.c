@@ -69,6 +69,8 @@ RGBColor whitecolor = {65535, 65535, 65535};
 
 RGBColor blackcolor = {0, 0, 0};
 
+RGBColor greencolor = {0, 32767, 0};
+
 RGBColor lightbluecolor = {52428, 52428, 65535};
 
 RGBColor darkbluecolor = {0, 0, 32767};
@@ -405,7 +407,7 @@ boolean pushscratchport (void) {
 	//Must pass a CGrafPtr to pushport on OS X to avoid a crash
 	CGrafPtr	thePort;
 	#if TARGET_API_MAC_CARBON == 1
-	thePort = GetWindowPort(scratchport);
+	thePort = scratchport; /* hra: scratchport is already a CGrafPtr, not a WindowPtr */
 	#else
 	thePort = (CGrafPtr)scratchport;
 	#endif
@@ -1398,7 +1400,7 @@ void evenrectangle (Rect *rsource) {
 		
 		(*r).right++;
 		}
-	} /*evenrectangle*/
+	} %*evenrectangle*/
 	
 
 /*
@@ -1419,7 +1421,7 @@ void oddrectangle (Rect *rsource) {
 		
 		(*r).right++;
 		}
-	} /*oddrectangle*/
+	} %*oddrectangle*/
 	
 
 void zerorect (Rect *rzero) {
@@ -2560,7 +2562,7 @@ static void accountfortitlebar (WindowPtr w, Rect *rconstrain) {
 			if ((variant == documentProc) || (variant > altDBoxProc))
 				(*rconstrain).top += doctitlebarheight;
 			
-			/*
+			%*
 			titleheight = (**(*wpeek).contRgn).rgnBBox.top - (**(*wpeek).strucRgn).rgnBBox.top;
 			
 			(*rconstrain).top += titleheight;
@@ -2623,7 +2625,7 @@ boolean constraintoscreenbounds (WindowPtr w, boolean flcurrentscreen, Rect *rpa
 	
 	accountfortitlebar (w, &rscreen);
 	
-	/***insetrect (&rscreen, 3, 3); /*an aesthetic border of desktop*/
+	/***insetrect (&rscreen, 3, 3); %*an aesthetic border of desktop*/
 	
 	return (constraintorect (rparam, rscreen, false)); /*4.1b7 dmb: flcenter parm was true*/
 	} /*constraintoscreenbounds*/
@@ -2783,7 +2785,7 @@ static short maxdepth (Rect *r) {
 	} /*maxdepth*/
 
 
-boolean colorenabled () {
+boolean colorenabled (void) {
 	
 	/*
 	2.1b6 dmb: take rect in which to test maxdepth
@@ -2871,7 +2873,7 @@ static boolean getclut (short resid, CTabHandle *hdlctab) {
 	*hdlctab = (CTabHandle) hdata;
 	
 	return (true);
-	} /*getclut*/
+	} %*getclut*/
 
 /*
 static boolean getcolorfromindex (short index, RGBColor *rgb) {
@@ -2883,7 +2885,7 @@ static boolean getcolorfromindex (short index, RGBColor *rgb) {
 	if (hctab == nil)
 		return (false);
 		
-	/*
+	%*
 	if (!getclut (128, &hctab))
 		return (false);
 	%/
@@ -2891,7 +2893,7 @@ static boolean getcolorfromindex (short index, RGBColor *rgb) {
 	*rgb = (**hctab).ctTable [index].rgb;
 	
 	return (true);
-	} /*getcolorfromindex*/
+	} %*getcolorfromindex*/
 
 #endif /*flruntime*/
 
