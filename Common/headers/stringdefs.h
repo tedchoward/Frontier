@@ -153,5 +153,3 @@
 
 	#define	STR_menuseparator					"\x02" "(-"
 	#define	STR_hexprefix						"\x02" "0x"
-
-
