@@ -137,8 +137,8 @@ boolean minisetpopupmessage (short popupnumber, bigstring bs) {
 	(**minidata).popupmessages [popupnumber] = hstring;
 	
 	invalrect ((**minidata).popuprects [popupnumber]);
-	} /*minisetpopupmessage*/
-
+	} /%minisetpopupmessage%/
+*/
 
 void minisetselect (short startsel, short endsel) {
 	
@@ -148,6 +148,8 @@ void minisetselect (short startsel, short endsel) {
 	(**minidata).flselectallpending = false; /*override*/
 	} /*minisetselect*/
 
+
+#if 0
 
 static void minigetactivetextrect (Rect *r) {
 	
@@ -159,6 +161,8 @@ static void minigetactivetextitem (short *item) {
 	
 	*item = (**minidata).textitems [(**minidata).activetextitem];
 	} /*minigetactivetextitem*/
+
+#endif
 
 
 static boolean miniselectallandactivate (short newactiveitem) {
@@ -182,7 +186,9 @@ static boolean miniselectall (void) {
 	} /*miniselectall*/
 
 
-static boolean mininextwindowvisit (WindowPtr w, WindowPtr *nextwindow) {
+static boolean mininextwindowvisit (WindowPtr w, ptrvoid refcon) {
+	
+	WindowPtr *nextwindow = (WindowPtr *) refcon;
 	
 	if (*nextwindow == nil) { /*we passed our target*/
 		
@@ -426,6 +432,8 @@ static boolean minigettargetdata (short id) {
 	} /*minigettargetdata*/
 
 
+#if 0
+
 static void minizoomtexttoicon (void) {
 	
 	Rect rfrom, rto;
@@ -460,6 +468,8 @@ static void minizoomicontomsg (void) {
 	
 	zoomrect (&rfrom, &rto, true);
 	} /*minizoomicontomsg*/
+
+#endif
 
 
 static boolean miniiconhit (boolean flanimate) {
@@ -683,7 +693,6 @@ static boolean minikeystroke (void) {
 	and interpreter are by holding down the enter key.
 	*/
 	
-	register hdlminirecord hm = minidata;
 	register char chkb = keyboardstatus.chkb;
 	
 	minicheckselectall (); /*if a selectall is pending, do it now*/
@@ -852,7 +861,7 @@ static void miniresize (void) {
 		
 	#endif
 	
-	/***(**hm).flmassiveupdate = true; /*it don't get much more massive than this!*/
+	//(**hm).flmassiveupdate = true; /*it don't get much more massive than this!*/
 	} /*miniresize*/
 	
 
@@ -977,7 +986,6 @@ static boolean mininewwindow (callback setuproutine) {
 
 static void miniupdate (void) {
 	
-	register hdlwindowinfo hw = miniwindowinfo;	
 	register hdlminirecord hm = minidata;
 	
 	(*(**hm).iconenableroutine) ();
@@ -1007,7 +1015,7 @@ static void miniactivate (boolean flactivate) {
 	} /*miniactivate*/
 
 
-static boolean minifindvisit (WindowPtr w, hdlwindowinfo *hinfo) {
+static boolean minifindvisit (WindowPtr w, ptrvoid refcon) {
 	
 	/*
 	if we're called, the w is a window with the desired config, owned 
@@ -1016,6 +1024,8 @@ static boolean minifindvisit (WindowPtr w, hdlwindowinfo *hinfo) {
 	set up mini globals and return false to terminate the visit
 	*/
 	
+	hdlwindowinfo *hinfo = (hdlwindowinfo *) refcon;
+	 
 	miniwindow = w;
 	
 	getwindowinfo (w, hinfo);
@@ -1136,8 +1146,6 @@ static boolean minidisposerecord (void) {
 
 static boolean miniadjustcursor (Point pt){
 	
-	register hdlminirecord hm = minidata;
-	
 	if (minifindtextobject (pt) >= 0) {
 			
 		setcursortype (cursorisibeam);
@@ -1212,7 +1220,7 @@ static boolean minicopy (void) {
 		if (!newtexthandle (bsmsg, &htext))
 			return (false);
 		
-		return (shellsetscrap (htext, textscraptype, disposehandle, nil));
+		return (shellsetscrap (htext, textscraptype, (shelldisposescrapcallback) disposehandle, nil));
 		}
 	else
 		return (wpcopy ());
@@ -1266,9 +1274,6 @@ static boolean minisetundoglobals (long globals, boolean flundo) {
 	in the undoglobals to avoid having to recreate the context when just 
 	tossing an undo.
 	*/
-	
-	register hdloutlinerecord ho = outlinedata;
-	register hdlheadrecord hnode = (hdlheadrecord) globals;
 	
 	if (!flundo)
 		return (true);

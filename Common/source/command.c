@@ -178,7 +178,6 @@ static pascal void *cmdthreadmain (tythreadmainparams hprocess) {
 	*/
 	
 	register hdlprocessrecord hp = (hdlprocessrecord) hprocess;
-	register hdlhashtable ht = nil;
 	tyvaluerecord val;
 	bigstring bsresult;
 	hdlhashtable hcontext = nil;

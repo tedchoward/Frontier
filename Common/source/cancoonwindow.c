@@ -375,7 +375,7 @@ static boolean ccwindowdisposerecord (void) {
 	} /*ccwindowdisposerecord*/
 
 
-static boolean findrootvisit (WindowPtr w, WindowPtr *pw) {
+static boolean findrootvisit (WindowPtr w, ptrvoid refcon) {
 	
 	hdlwindowinfo hinfo;
 	
@@ -384,6 +384,8 @@ static boolean findrootvisit (WindowPtr w, WindowPtr *pw) {
 		hdltableformats hf = (hdltableformats) (**hinfo).hdata;
 		
 		if (hf && ((**hf).refcon == (long) cancoonglobals)) { // got it
+
+			WindowPtr *pw = (WindowPtr *) refcon;
 		
 			*pw = w;
 			

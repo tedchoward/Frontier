@@ -53,9 +53,10 @@ typedef struct agentpopupinfo {
 	} tyagentpopupinfo, *ptragentpopupinfo;
 
 
-static boolean ccagentpopupvisit (bigstring bsname, hdlhashnode hnode, tyvaluerecord val, ptragentpopupinfo info) {
+static boolean ccagentpopupvisit (bigstring bsname, hdlhashnode hnode, tyvaluerecord val, ptrvoid refcon) {
 	
 	hdltreenode hcode;
+	ptragentpopupinfo info = (ptragentpopupinfo) refcon;
 	
 	if (!langexternalvaltocode (val, &hcode)) /*not a scipt, or no code*/
 		return (false);
@@ -94,7 +95,7 @@ static boolean ccfillagentpopup (hdlmenu hmenu, short *checkeditem) {
 	} /*ccfillagentpopup*/
 
 
-static boolean ccagentselectvisit (bigstring bsname, hdlhashnode hnode, tyvaluerecord val, ptragentpopupinfo info) {
+static boolean ccagentselectvisit (bigstring bsname, hdlhashnode hnode, tyvaluerecord val, ptrvoid refcon) {
 	
 	/*
 	6/28/91 dmb: never toggle agent off; selecting current agent does nothing
@@ -104,6 +105,7 @@ static boolean ccagentselectvisit (bigstring bsname, hdlhashnode hnode, tyvaluer
 	
 	hdltreenode hcode;
 	bigstring bs;
+	ptragentpopupinfo info = (ptragentpopupinfo) refcon;
 	
 	if (!langexternalvaltocode (val, &hcode)) /*not a scipt*/
 		return (false);
@@ -114,7 +116,7 @@ static boolean ccagentselectvisit (bigstring bsname, hdlhashnode hnode, tyvaluer
 		hdlprocessrecord hprocess;
 		
 		/*
-		if ((**hc).hprimaryagent == hcode) /*already selected -- toggle to off, no selection%/
+		if ((**hc).hprimaryagent == hcode) /%already selected -- toggle to off, no selection%/
 			(**hc).hprimaryagent = nil;
 		else
 		*/
