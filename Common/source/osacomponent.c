@@ -6158,10 +6158,8 @@ boolean osacomponentstart (void) {
 	
 	GetCurrentProcess (&homepsn);
 
-	#if !TARGET_API_MAC_CARBON
-		if (!initosaservers ())
-			return (false);
-	#endif
+	if (!initosaservers ())
+		return (false);
 	
 	initosacomponent ();
 	
@@ -6184,9 +6182,6 @@ boolean osacomponentstart (void) {
 	#endif
 
 	AEInstallCoercionHandler (typeType, typeObjectSpecifier, coerceTypetoObjUPP, 0, true, true);
-	
-	if (!initosaservers ())
-		return (false);
 	
 	return (newclearhandle (longsizeof (tyclientlist), (Handle *) &hclientlist));
 	} /*osacomponentstart*/
