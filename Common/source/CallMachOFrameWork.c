@@ -177,4 +177,73 @@ OSStatus LoadFrameworkBundle(CFStringRef framework, CFBundleRef *bundlePtr) /*Ad
 	}	
 	
 	return err;
-}
+} /*LoadFrameworkBundle*/
+
+
+static UInt32 gluetemplate[6] = {0x3D800000, 0x618C0000, 0x800C0000, 0x804C0004, 0x7C0903A6, 0x4E800420};
+
+void *convertcfmtomachofuncptr (void *cfmfp) {
+	
+	/*
+	2004-11-28 aradke: adapted from Apple's CFM_MachO_CFM sample:
+	
+	http://developer.apple.com/samplecode/CFM_MachO_CFM/CFM_MachO_CFM.html
+	
+	allocate a block of cfm glue code with instructions for calling the CFM function.
+	the caller is responsible for disposal via disposemachofuncptr 
+	*/
+
+    UInt32 *mfp = (UInt32*) NewPtr (sizeof(gluetemplate));
+
+    mfp[0] = gluetemplate[0] | ((UInt32) cfmfp >> 16);
+    mfp[1] = gluetemplate[1] | ((UInt32) cfmfp & 0xFFFF);
+    mfp[2] = gluetemplate[2];
+    mfp[3] = gluetemplate[3];
+    mfp[4] = gluetemplate[4];
+    mfp[5] = gluetemplate[5];
+
+    MakeDataExecutable (mfp, sizeof(gluetemplate));
+
+    return ((void *) mfp);
+	} /*convertcfmtomachofuncptr*/
+
+
+void disposemachofuncptr (void *mfp) {
+	
+	if (mfp != nil)
+		DisposePtr (mfp);
+	} /*disposemachofuncptr*/
+
+
+typedef struct tvectorstruct {
+	ProcPtr	procaddr;
+	UInt32	toc;
+	} tvectorstruct, *tvectorptr;
+
+
+void *convertmachotocfmfuncptr (void *mfp) {
+	
+	/*
+	2004-11-28 aradke: allocate a fake TVector and set its procptr entry
+	to the mach procptr handed to us by the caller. the toc entry can
+	safely be set to nil since it's ignored in this context.
+	*/
+	
+    tvectorptr cfmfp = (tvectorptr) NewPtr (sizeof(tvectorstruct));
+	
+	if (MemError()  == noErr && cfmfp != nil) {
+		
+		cfmfp->procaddr = (ProcPtr) mfp;
+		cfmfp->toc = 0; /*ignored*/
+		}
+
+    return ((void *) cfmfp);
+	} /*convertmachotocfmfuncptr*/
+
+
+void disposecfmfuncptr (void *cfmfp) {
+	
+	if (cfmfp != nil)
+		DisposePtr (cfmfp);
+	} /*disposecfmfuncptr*/
+

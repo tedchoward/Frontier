@@ -27,6 +27,15 @@
 #define callmachoframework
 
 extern boolean unixshellcall (Handle hcommand, Handle hreturn);
+
 extern OSStatus LoadFrameworkBundle(CFStringRef framework, CFBundleRef *bundlePtr);
+
+extern void *convertcfmtomachofuncptr (void *);
+
+extern void disposemachofuncptr (void *);
+
+extern void *convertmachotocfmfuncptr (void *);
+
+extern void disposecfmfuncptr (void *);
 
 #endif
