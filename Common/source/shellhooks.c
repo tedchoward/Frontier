@@ -482,7 +482,7 @@ boolean shellpushwakeuphook (wakeuphookcallback routine) {
 	} /*shellpushwakeuphook*/
 
 
-boolean shellcallwakeuphooks (struct tythreadglobals **hthread) {
+boolean shellcallwakeuphooks (hdlprocessthread hthread) {
 	
 	/*
 	we call all the routines that are hooked into wakeup opening & closing.
