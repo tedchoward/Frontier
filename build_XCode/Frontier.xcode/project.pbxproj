@@ -272,7 +272,6 @@
 				65152917072BFF8600411831,
 				65152919072BFF8800411831,
 				6515291B072BFF8A00411831,
-				6515291D072BFF8B00411831,
 				6515291F072BFF8D00411831,
 				65152921072BFFCB00411831,
 				65152923072BFFCF00411831,
@@ -298,6 +297,7 @@
 				6515294F072C000D00411831,
 				65152951072C001700411831,
 				65D516AB072CED430097D18E,
+				65BBB664072E5643008E2F34,
 			);
 			isa = PBXHeadersBuildPhase;
 			runOnlyForDeploymentPostprocessing = 0;
@@ -593,6 +593,7 @@
 				651527A9072BFC6900411831,
 				651527AA072BFC6900411831,
 				651527AB072BFC6900411831,
+				65BBB662072E563B008E2F34,
 			);
 			isa = PBXRezBuildPhase;
 			runOnlyForDeploymentPostprocessing = 0;
@@ -5006,7 +5007,9 @@
 		};
 		651527B0072BFE0100411831 = {
 			children = (
+				65BBB661072E563B008E2F34,
 				651527B1072BFE0100411831,
+				65BBB663072E5643008E2F34,
 				651527B3072BFE0300411831,
 				651527B5072BFE0400411831,
 				651527BA072BFE1000411831,
@@ -5186,7 +5189,6 @@
 				65152916072BFF8600411831,
 				65152918072BFF8800411831,
 				6515291A072BFF8A00411831,
-				6515291C072BFF8B00411831,
 				6515291E072BFF8D00411831,
 				65152920072BFFCB00411831,
 				65152922072BFFCF00411831,
@@ -7762,20 +7764,6 @@
 			settings = {
 			};
 		};
-		6515291C072BFF8B00411831 = {
-			isa = PBXFileReference;
-			lastKnownFileType = sourcecode.rez;
-			name = shell.mcp.r;
-			path = ../Common/headers/shell.mcp.r;
-			refType = 2;
-			sourceTree = SOURCE_ROOT;
-		};
-		6515291D072BFF8B00411831 = {
-			fileRef = 6515291C072BFF8B00411831;
-			isa = PBXBuildFile;
-			settings = {
-			};
-		};
 		6515291E072BFF8D00411831 = {
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.h;
@@ -8136,6 +8124,36 @@
 		};
 		65152951072C001700411831 = {
 			fileRef = 65152950072C001700411831;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		65BBB661072E563B008E2F34 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.rez;
+			name = frontier.r;
+			path = ../Common/headers/frontier.r;
+			refType = 2;
+			sourceTree = SOURCE_ROOT;
+		};
+		65BBB662072E563B008E2F34 = {
+			fileRef = 65BBB661072E563B008E2F34;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		65BBB663072E5643008E2F34 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.h;
+			name = frontierdefs.h;
+			path = ../Common/headers/frontierdefs.h;
+			refType = 2;
+			sourceTree = SOURCE_ROOT;
+		};
+		65BBB664072E5643008E2F34 = {
+			fileRef = 65BBB663072E5643008E2F34;
 			isa = PBXBuildFile;
 			settings = {
 			};
