@@ -23,6 +23,10 @@
 	#include <Timer.h>
 #endif
 
+#if TARGET_API_MAC_CARBON
+	#include "CallMachOFrameWork.h"	/*2005-01-15 aradke*/
+#endif
+
 #include "FastTimes.h"
 
 /* **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** */
@@ -119,7 +123,27 @@ void FastInitialize() {
 		if (gUpTime) gA2NS = (A2NSProcPtr) FindFunctionInSharedLib(
 				"\pDriverServicesLib", "\pAbsoluteToNanoseconds");
 		if (!gA2NS) gUpTime = nil; /* Pedantic but necessary */
+		
+		#if TARGET_API_MAC_CARBON
+		
+		/* 2005-01-15 aradke: On OS X, DriverServicesLib is no longer present,
+		   but the functions we want are available in the CoreServices framework. */
 
+		if (!gUpTime) {
+
+			gUpTime = (UpTimeProcPtr) getframeworkfuncptr (
+					CFSTR("CoreServices.framework"), CFSTR("UpTime"));
+
+			if (gUpTime)
+				gA2NS = (A2NSProcPtr) getframeworkfuncptr (
+					CFSTR("CoreServices.framework"), CFSTR("AbsoluteToNanoseconds"));
+
+			if (!gA2NS)
+				gUpTime = nil; /* Pedantic but necessary */
+			}
+		
+		#endif
+		
 		if (gUpTime) {
 			/* If we loaded UpTime(), then we need to know if the system has
 			   a native implementation of the Time Manager. If so, then it's
@@ -348,7 +372,6 @@ entry PollTBR /* Avoid CodeWarrior glue */
 /* **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** */
 
 static Ptr FindFunctionInSharedLib(StringPtr libName, StringPtr funcName) {
-	OSErr				error = noErr;
 	Str255				errorStr;
 	Ptr					func = NULL;
 	Ptr					entry = NULL;
@@ -356,9 +379,10 @@ static Ptr FindFunctionInSharedLib(StringPtr libName, StringPtr funcName) {
 	CFragConnectionID	connID;
 	
 	/* Find CFM containers for the current archecture -- CFM-PPC or CFM-68K */
-	if (/* error = */ GetSharedLibrary(libName, kCompiledCFragArch,
-			kLoadCFrag, &connID, &entry, errorStr)) return(NULL);
-	if (/* error = */ FindSymbol(connID, funcName, &func, &symClass))
+	if (GetSharedLibrary(libName, kCompiledCFragArch, kLoadCFrag, &connID, &entry, errorStr) != noErr)
+		return(NULL);
+	
+	if (FindSymbol(connID, funcName, &func, &symClass) != noErr)
 		return(NULL);
 	
 	return(func);
