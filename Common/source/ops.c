@@ -799,7 +799,7 @@ boolean listunlink (hdllinkedlist hlinkedlist, hdllinkedlist hdelete) {
 	return (false); /*didn't find it*/
 	} /*listunlink*/
 
-#if __powerc
+#if __powerc || __GNUC__
 
 typedef struct {
     long double hi;	/*maybe 8 bytes, maybe 16*/
