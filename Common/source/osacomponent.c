@@ -217,7 +217,7 @@ static pascal OSAError osaGetCreateProc (
 			OSACreateAppleEventUPP*		createProc,
 			long*						refCon);
 			
-#if !TARGET_RT_MAC_CFM
+#if 0 //!TARGET_RT_MAC_CFM
 
 	#define cmpcloseUPP	((ComponentFunctionUPP) cmpclose)
 	#define cmpcandoUPP	((ComponentFunctionUPP) cmpcando)
@@ -693,7 +693,7 @@ enum {
 
 #endif
 
-#if !TARGET_RT_MAC_CFM
+#if 0//!TARGET_RT_MAC_CFM
 	
 	#define osaclientactiveUPP (&osaclientactive)
 	
@@ -882,7 +882,7 @@ void disposecomponentglobals (hdlcomponentglobals hglobals) {
 	
 	#endif
 	
-	#if TARGET_API_MAC_CARBON && TARGET_RT_MAC_CFM
+	#if TARGET_API_MAC_CARBON
 	DisposeOSAActiveUPP((**hcg).activeproc);
 	DisposeOSASendUPP((**hcg).sendproc);
 	DisposeOSACreateAppleEventUPP((**hcg).createproc);
@@ -982,7 +982,7 @@ static pascal OSErr osadefaultsend (const AppleEvent *event, AppleEvent *reply,
 
 //Code change by Timothy Paustian Friday, July 21, 2000 10:52:57 PM
 //I think I can get away with this because only frontier code calls it.
-#if !TARGET_RT_MAC_CFM
+#if 0//!TARGET_RT_MAC_CFM
 
 	#define osadefaultactiveUPP ((OSAActiveProcPtr) &osadefaultactiveproc)
 	
@@ -1110,7 +1110,7 @@ boolean newcomponentglobals (Component self, long clienta5, hdlcomponentglobals 
 	
 	(**hcg).storagetable = storagetable;
 	
-	#if TARGET_API_MAC_CARBON && TARGET_RT_MAC_CFM
+	#if TARGET_API_MAC_CARBON
 	(**hcg).activeproc = NewOSAActiveUPP(osadefaultactiveproc);
 	
 	(**hcg).createproc = NewOSACreateAppleEventUPP(osadefaultcreate);
@@ -1477,7 +1477,7 @@ static pascal OSErr coerceTypetoObj (
 
 //Code change by Timothy Paustian Friday, June 16, 2000 1:38:13 PM
 //Changed to Opaque call for Carbon
-#if !TARGET_RT_MAC_CFM
+#if 0//!TARGET_RT_MAC_CFM
 	
 	#define coerceTEXTtoSTXTUPP ((AECoercionHandlerUPP) &coerceTEXTtoSTXT)
 	
@@ -1558,7 +1558,7 @@ static void osapushfastcontext (hdlcomponentglobals hglobals) {
 	
 	if (++osacoercionhandlerinstalled == 1)
 	{
-		#if TARGET_API_MAC_CARBON && TARGET_RT_MAC_CFM
+		#if TARGET_API_MAC_CARBON
 		if(coerceTEXTtoSTXTUPP == nil)
 			coerceTEXTtoSTXTUPP = NewAECoerceDescUPP(coerceTEXTtoSTXT);
 		#endif
@@ -1610,7 +1610,7 @@ static void osapopfastcontext (hdlcomponentglobals hglobals) {
 		AERemoveCoercionHandler (typeChar, typeStyledText, coerceTEXTtoSTXTUPP, false);
 		//Code change by Timothy Paustian Friday, July 21, 2000 11:02:21 PM
 		//added dispose of coercion handler
-		#if TARGET_API_MAC_CARBON  && TARGET_RT_MAC_CFM
+		#if TARGET_API_MAC_CARBON
 		if(coerceTEXTtoSTXTUPP != nil)
 		{
 			//DisposeAECoerceDescUPP(coerceTEXTtoSTXT);
@@ -3642,7 +3642,7 @@ static pascal OSErr coerceInsltoTEXT (
 	} /*coerceInsltoTEXT*/
 
 
-#if !TARGET_RT_MAC_CFM
+#if 0//!TARGET_RT_MAC_CFM
 	
 	#define coerceInsltoTEXTUPP ((AECoercionHandlerUPP) &coerceInsltoTEXT)
 	
@@ -3958,7 +3958,7 @@ static pascal OSErr handlerecordableevent (const AppleEvent *event, AppleEvent *
 	
 	osapushfastcontext (hcg);
 	
-	#if TARGET_API_MAC_CARBON  && TARGET_RT_MAC_CFM	
+	#if TARGET_API_MAC_CARBON	
 	coerceInsltoTEXTDesc = NewAECoerceDescUPP(coerceInsltoTEXT);
 	AEInstallCoercionHandler (typeInsertionLoc, typeObjectSpecifier, coerceInsltoTEXTDesc, 0, true, false);
 	
@@ -4197,7 +4197,7 @@ static pascal OSErr handlerecordableevent (const AppleEvent *event, AppleEvent *
 	
 	//Code change by Timothy Paustian Friday, July 21, 2000 11:03:49 PM
 	//Get rid of the UPP wer are done.
-	#if TARGET_API_MAC_CARBON && TARGET_RT_MAC_CFM
+	#if TARGET_API_MAC_CARBON
 	AERemoveCoercionHandler (typeInsertionLoc, typeChar, coerceInsltoTEXTDesc, false);
 	DisposeAECoerceDescUPP(coerceInsltoTEXTDesc);
 	#else
@@ -4213,7 +4213,7 @@ static pascal OSErr handlerecordableevent (const AppleEvent *event, AppleEvent *
 
 //Code change by Timothy Paustian Monday, June 26, 2000 9:37:56 PM
 //
-#if !TARGET_RT_MAC_CFM
+#if 0//!TARGET_RT_MAC_CFM
 	#define handlerecordableeventUPP handlerecordableevent
 
 #else
@@ -4278,7 +4278,7 @@ static pascal OSAError osaStartRecording (
 		(**hcg).recordingstate.lastappid = 0;
 		//Code change by Timothy Paustian Friday, July 28, 2000 2:40:45 PM
 		//we need to create the UPP now that we want to use it.
-		#if TARGET_API_MAC_CARBON && TARGET_RT_MAC_CFM
+		#if TARGET_API_MAC_CARBON
 		if (handlerecordableeventDesc == nil)
 			handlerecordableeventDesc = NewAEEventHandlerUPP(handlerecordableevent);
 		#endif
@@ -4338,7 +4338,7 @@ static pascal OSAError osaStopRecording (
 	disposehandle ((**hcg).recordingstate.hrecordedtext);
 	//Code change by Timothy Paustian Friday, July 28, 2000 2:43:14 PM
 	//I am assuming the osaStopRecording is called every time osaStartRecording is called.
-	#if TARGET_API_MAC_CARBON && TARGET_RT_MAC_CFM
+	#if TARGET_API_MAC_CARBON
 	DisposeAEEventHandlerUPP(handlerecordableeventDesc);
 	handlerecordableeventDesc = nil;
 	#endif
@@ -5116,7 +5116,7 @@ static pascal ComponentResult osaDispatch (ComponentParameters *params, Handle s
 				}
 			
 			case kComponentCloseSelect:
-				#if TARGET_API_MAC_CARBON && TARGET_RT_MAC_CFM
+				#if TARGET_API_MAC_CARBON
 				result = CallComponentFunctionWithStorage (storage, params, (**theGlobals).cmpcloseUPP);								
 				#else
 				result = CallComponentFunctionWithStorage (storage, params, cmpcloseUPP);
@@ -5124,7 +5124,7 @@ static pascal ComponentResult osaDispatch (ComponentParameters *params, Handle s
 				break;
 			
 			case kComponentCanDoSelect:
-				#if TARGET_API_MAC_CARBON && TARGET_RT_MAC_CFM
+				#if TARGET_API_MAC_CARBON
 				result = CallComponentFunction (params, (**theGlobals).cmpcandoUPP);			
 				#else
 				result = CallComponentFunction(params, cmpcandoUPP);
@@ -5132,7 +5132,7 @@ static pascal ComponentResult osaDispatch (ComponentParameters *params, Handle s
 				break;
 			
 			case kComponentVersionSelect:
-				#if TARGET_API_MAC_CARBON && TARGET_RT_MAC_CFM
+				#if TARGET_API_MAC_CARBON
 				result = CallComponentFunction(params, (**theGlobals).cmpversionUPP);			
 				#else
 				result = CallComponentFunction(params, cmpversionUPP);
@@ -5151,7 +5151,7 @@ static pascal ComponentResult osaDispatch (ComponentParameters *params, Handle s
 		switch (what) {
 			
 			case kOSASelectLoad:
-				#if TARGET_API_MAC_CARBON && TARGET_RT_MAC_CFM
+				#if TARGET_API_MAC_CARBON
 				func = (**theGlobals).osaLoadUPP;
 				#else
 				func = osaLoadUPP;
@@ -5159,7 +5159,7 @@ static pascal ComponentResult osaDispatch (ComponentParameters *params, Handle s
 				break;
 			
 			case kOSASelectStore:
-				#if TARGET_API_MAC_CARBON && TARGET_RT_MAC_CFM
+				#if TARGET_API_MAC_CARBON
 				func = (**theGlobals).osaStoreUPP;
 				#else
 				func = osaStoreUPP;
@@ -5167,7 +5167,7 @@ static pascal ComponentResult osaDispatch (ComponentParameters *params, Handle s
 				break;
 			
 			case kOSASelectExecute:
-				#if TARGET_API_MAC_CARBON && TARGET_RT_MAC_CFM
+				#if TARGET_API_MAC_CARBON
 				func = (**theGlobals).osaExecuteUPP;
 				#else
 				func = osaExecuteUPP;
@@ -5175,7 +5175,7 @@ static pascal ComponentResult osaDispatch (ComponentParameters *params, Handle s
 				break;
 			
 			case kOSASelectDisplay:
-				#if TARGET_API_MAC_CARBON && TARGET_RT_MAC_CFM
+				#if TARGET_API_MAC_CARBON
 				func = (**theGlobals).osaDisplayUPP;
 				#else
 				func = osaDisplayUPP;
@@ -5183,7 +5183,7 @@ static pascal ComponentResult osaDispatch (ComponentParameters *params, Handle s
 				break;
 			
 			case kOSASelectScriptError:
-				#if TARGET_API_MAC_CARBON && TARGET_RT_MAC_CFM
+				#if TARGET_API_MAC_CARBON
 				func = (**theGlobals).osaScriptErrorUPP;
 				#else
 				func = osaScriptErrorUPP;
@@ -5191,7 +5191,7 @@ static pascal ComponentResult osaDispatch (ComponentParameters *params, Handle s
 				break;
 			
 			case kOSASelectDispose:
-				#if TARGET_API_MAC_CARBON && TARGET_RT_MAC_CFM
+				#if TARGET_API_MAC_CARBON
 				func = (**theGlobals).osaDisposeUPP;
 				#else
 				func = osaDisposeUPP;
@@ -5199,7 +5199,7 @@ static pascal ComponentResult osaDispatch (ComponentParameters *params, Handle s
 				break;
 			
 			case kOSASelectSetScriptInfo:
-				#if TARGET_API_MAC_CARBON && TARGET_RT_MAC_CFM
+				#if TARGET_API_MAC_CARBON
 				func = (**theGlobals).osaSetScriptInfoUPP;
 				#else
 				func = osaSetScriptInfoUPP;
@@ -5207,7 +5207,7 @@ static pascal ComponentResult osaDispatch (ComponentParameters *params, Handle s
 				break;
 			
 			case kOSASelectGetScriptInfo:
-				#if TARGET_API_MAC_CARBON && TARGET_RT_MAC_CFM
+				#if TARGET_API_MAC_CARBON
 				func = (**theGlobals).osaGetScriptInfoUPP;
 				#else
 				func = osaGetScriptInfoUPP;
@@ -5215,7 +5215,7 @@ static pascal ComponentResult osaDispatch (ComponentParameters *params, Handle s
 				break;
 			
 			case kOSASelectCompile:
-				#if TARGET_API_MAC_CARBON && TARGET_RT_MAC_CFM
+				#if TARGET_API_MAC_CARBON
 				func = (**theGlobals).osaCompileUPP;
 				#else
 				func = osaCompileUPP;
@@ -5223,7 +5223,7 @@ static pascal ComponentResult osaDispatch (ComponentParameters *params, Handle s
 				break;
 			
 			case kOSASelectGetSource:
-				#if TARGET_API_MAC_CARBON && TARGET_RT_MAC_CFM
+				#if TARGET_API_MAC_CARBON
 				func = (**theGlobals).osaGetSourceUPP;
 				#else
 				func = osaGetSourceUPP;
@@ -5231,7 +5231,7 @@ static pascal ComponentResult osaDispatch (ComponentParameters *params, Handle s
 				break;
 			
 			case kOSASelectCoerceFromDesc:
-				#if TARGET_API_MAC_CARBON && TARGET_RT_MAC_CFM
+				#if TARGET_API_MAC_CARBON
 				func = (**theGlobals).osaCoerceFromDescUPP;
 				#else
 				func = osaCoerceFromDescUPP;
@@ -5239,7 +5239,7 @@ static pascal ComponentResult osaDispatch (ComponentParameters *params, Handle s
 				break;
 			
 			case kOSASelectCoerceToDesc:
-				#if TARGET_API_MAC_CARBON && TARGET_RT_MAC_CFM
+				#if TARGET_API_MAC_CARBON
 				func = (**theGlobals).osaCoerceToDescUPP;
 				#else
 				func = osaCoerceToDescUPP;
@@ -5247,7 +5247,7 @@ static pascal ComponentResult osaDispatch (ComponentParameters *params, Handle s
 				break;
 			
 			case kOSASelectStartRecording:
-				#if TARGET_API_MAC_CARBON && TARGET_RT_MAC_CFM
+				#if TARGET_API_MAC_CARBON
 				func = (**theGlobals).osaStartRecordingUPP;
 				#else
 				func = osaStartRecordingUPP;
@@ -5255,7 +5255,7 @@ static pascal ComponentResult osaDispatch (ComponentParameters *params, Handle s
 				break;
 			
 			case kOSASelectStopRecording:
-				#if TARGET_API_MAC_CARBON && TARGET_RT_MAC_CFM
+				#if TARGET_API_MAC_CARBON
 				func = (**theGlobals).osaStopRecordingUPP;
 				#else
 				func = osaStopRecordingUPP;
@@ -5263,7 +5263,7 @@ static pascal ComponentResult osaDispatch (ComponentParameters *params, Handle s
 				break;
 			
 			case kOSASelectScriptingComponentName:
-				#if TARGET_API_MAC_CARBON && TARGET_RT_MAC_CFM
+				#if TARGET_API_MAC_CARBON
 				func = (**theGlobals).osaScriptingComponentNameUPP;
 				#else
 				func = osaScriptingComponentNameUPP;
@@ -5271,7 +5271,7 @@ static pascal ComponentResult osaDispatch (ComponentParameters *params, Handle s
 				break;
 			
 			case kOSASelectLoadExecute:
-				#if TARGET_API_MAC_CARBON && TARGET_RT_MAC_CFM
+				#if TARGET_API_MAC_CARBON
 				func = (**theGlobals).osaLoadExecuteUPP;
 				#else
 				func = osaLoadExecuteUPP;
@@ -5279,7 +5279,7 @@ static pascal ComponentResult osaDispatch (ComponentParameters *params, Handle s
 				break;
 			
 			case kOSASelectCompileExecute:
-				#if TARGET_API_MAC_CARBON && TARGET_RT_MAC_CFM
+				#if TARGET_API_MAC_CARBON
 				func = (**theGlobals).osaCompileExecuteUPP;
 				#else
 				func = osaCompileExecuteUPP;
@@ -5287,7 +5287,7 @@ static pascal ComponentResult osaDispatch (ComponentParameters *params, Handle s
 				break;
 			
 			case kOSASelectDoScript:
-				#if TARGET_API_MAC_CARBON && TARGET_RT_MAC_CFM
+				#if TARGET_API_MAC_CARBON
 				func = (**theGlobals).osaDoScriptUPP;
 				#else
 				func = osaDoScriptUPP;
@@ -5295,7 +5295,7 @@ static pascal ComponentResult osaDispatch (ComponentParameters *params, Handle s
 				break;
 			
 			case kOSASelectMakeContext:
-				#if TARGET_API_MAC_CARBON && TARGET_RT_MAC_CFM
+				#if TARGET_API_MAC_CARBON
 				func = (**theGlobals).osaMakeContextUPP;
 				#else
 				func = osaMakeContextUPP;
@@ -5303,7 +5303,7 @@ static pascal ComponentResult osaDispatch (ComponentParameters *params, Handle s
 				break;
 			
 			case kOSASelectSetResumeDispatchProc:
-				#if TARGET_API_MAC_CARBON && TARGET_RT_MAC_CFM
+				#if TARGET_API_MAC_CARBON
 				func = (**theGlobals).osaSetResumeDispatchProcUPP;
 				#else
 				func = osaSetResumeDispatchProcUPP;
@@ -5311,7 +5311,7 @@ static pascal ComponentResult osaDispatch (ComponentParameters *params, Handle s
 				break;
 			
 			case kOSASelectGetResumeDispatchProc:
-				#if TARGET_API_MAC_CARBON && TARGET_RT_MAC_CFM
+				#if TARGET_API_MAC_CARBON
 				func = (**theGlobals).osaGetResumeDispatchProcUPP;
 				#else
 				func = osaGetResumeDispatchProcUPP;
@@ -5319,7 +5319,7 @@ static pascal ComponentResult osaDispatch (ComponentParameters *params, Handle s
 				break;
 			
 			case kOSASelectExecuteEvent:
-				#if TARGET_API_MAC_CARBON && TARGET_RT_MAC_CFM
+				#if TARGET_API_MAC_CARBON
 				func = (**theGlobals).osaExecuteEventUPP;
 				#else
 				func = osaExecuteEventUPP;
@@ -5327,7 +5327,7 @@ static pascal ComponentResult osaDispatch (ComponentParameters *params, Handle s
 				break;
 			
 			case kOSASelectDoEvent:
-				#if TARGET_API_MAC_CARBON && TARGET_RT_MAC_CFM
+				#if TARGET_API_MAC_CARBON
 				func = (**theGlobals).osaDoEventUPP;
 				#else
 				func = osaDoEventUPP;
@@ -5335,7 +5335,7 @@ static pascal ComponentResult osaDispatch (ComponentParameters *params, Handle s
 				break;
 			
 			case kOSASelectSetActiveProc:
-				#if TARGET_API_MAC_CARBON && TARGET_RT_MAC_CFM
+				#if TARGET_API_MAC_CARBON
 				func = (**theGlobals).osaSetActiveProcUPP;
 				#else
 				func = osaSetActiveProcUPP;
@@ -5343,7 +5343,7 @@ static pascal ComponentResult osaDispatch (ComponentParameters *params, Handle s
 				break;
 			
 			case kOSASelectSetDebugProc:
-				#if TARGET_API_MAC_CARBON && TARGET_RT_MAC_CFM
+				#if TARGET_API_MAC_CARBON
 				func = (**theGlobals).osaSetDebugProcUPP;
 				#else
 				func = osaSetDebugProcUPP;
@@ -5351,7 +5351,7 @@ static pascal ComponentResult osaDispatch (ComponentParameters *params, Handle s
 				break;
 			
 			case kOSASelectDebug:
-				#if TARGET_API_MAC_CARBON && TARGET_RT_MAC_CFM
+				#if TARGET_API_MAC_CARBON
 				func = (**theGlobals).osaDebugUPP;
 				#else
 				func = osaDebugUPP;
@@ -5359,7 +5359,7 @@ static pascal ComponentResult osaDispatch (ComponentParameters *params, Handle s
 				break;
 			
 			case kOSASelectSetSendProc:
-				#if TARGET_API_MAC_CARBON && TARGET_RT_MAC_CFM
+				#if TARGET_API_MAC_CARBON
 				func = (**theGlobals).osaSetSendProcUPP;
 				#else
 				func = osaSetSendProcUPP;
@@ -5367,7 +5367,7 @@ static pascal ComponentResult osaDispatch (ComponentParameters *params, Handle s
 				break;
 			
 			case kOSASelectGetSendProc:
-				#if TARGET_API_MAC_CARBON && TARGET_RT_MAC_CFM
+				#if TARGET_API_MAC_CARBON
 				func = (**theGlobals).osaGetSendProcUPP;
 				#else
 				func = osaGetSendProcUPP;
@@ -5375,7 +5375,7 @@ static pascal ComponentResult osaDispatch (ComponentParameters *params, Handle s
 				break;
 			
 			case kOSASelectSetCreateProc:
-				#if TARGET_API_MAC_CARBON && TARGET_RT_MAC_CFM
+				#if TARGET_API_MAC_CARBON
 				func = (**theGlobals).osaSetCreateProcUPP;
 				#else
 				func = osaSetCreateProcUPP;
@@ -5383,7 +5383,7 @@ static pascal ComponentResult osaDispatch (ComponentParameters *params, Handle s
 				break;
 			
 			case kOSASelectGetCreateProc:
-				#if TARGET_API_MAC_CARBON && TARGET_RT_MAC_CFM
+				#if TARGET_API_MAC_CARBON
 				func = (**theGlobals).osaGetCreateProcUPP;
 				#else
 				func = osaGetCreateProcUPP;
@@ -5393,7 +5393,7 @@ static pascal ComponentResult osaDispatch (ComponentParameters *params, Handle s
 			#if 0
 			
 			case kOSASelectSetDefaultTarget:
-				#if TARGET_API_MAC_CARBON && TARGET_RT_MAC_CFM
+				#if TARGET_API_MAC_CARBON
 				func = (**theGlobals).osaSetDefaultTargetUPP;
 				#else
 				func = osaSetDefaultTargetUPP;
@@ -6172,7 +6172,7 @@ static boolean initosacomponent (void) {
 	osagethomeresfile();
 		//Code change by Timothy Paustian Friday, July 21, 2000 11:18:39 PM
 	//create all the osa UPPs
-	#if TARGET_API_MAC_CARBON && TARGET_RT_MAC_CFM
+	#if TARGET_API_MAC_CARBON
 	
 	osaclientactiveDesc = NewOSAActiveUPP(osaclientactive);
 	osaclientsendDesc = NewOSASendUPP(osaclientsend);
@@ -6459,7 +6459,7 @@ void osacomponentshutdown (void) {
 		}
 	
 	AERemoveCoercionHandler (typeType, typeObjectSpecifier, coerceTypetoObjUPP, true);
-	#if TARGET_API_MAC_CARBON && TARGET_RT_MAC_CFM
+	#if TARGET_API_MAC_CARBON
 	DisposeAECoerceDescUPP(coerceTypetoObjDesc);
 	
 	//the next three are used to send apple events
@@ -6514,7 +6514,7 @@ boolean osacomponentstart (void) {
 	
 	RegisterComponentResourceFile (filegetapplicationrnum (), true); /*2.1b4*/
 	
-	#if TARGET_API_MAC_CARBON && TARGET_RT_MAC_CFM
+	#if TARGET_API_MAC_CARBON
 	coerceTypetoObjDesc = NewAECoerceDescUPP(coerceTypetoObj);
 	#endif
 	AEInstallCoercionHandler (typeType, typeObjectSpecifier, coerceTypetoObjUPP, 0, true, true);
