@@ -36,7 +36,7 @@
 #include "standard.h"
 #include <tlhelp32.h>
 #include <shellapi.h>
-#include "psapi.h"
+//#include "psapi.h"	/* AR 2004-10-17: not needed anymore */
 #endif
 
 #include "error.h"
