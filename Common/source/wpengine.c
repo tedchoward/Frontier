@@ -1845,8 +1845,11 @@ void wpupdate (void) {
 				; // *** 
 		
 		#endif
-		
-		
+				
+		#ifdef gray3Dlook
+		//	pushbackcolor (&whitecolor); /*2004-11-28 aradke: balance popbackcolor below*/ 
+		#endif
+
 		if (updatergn == nil)
 			pgErasePageArea (wpbuffer, MEM_NULL);
 
@@ -1860,7 +1863,7 @@ void wpupdate (void) {
 		PG_ENDTRY;
 		
 		#ifdef gray3Dlook
-			popbackcolor ();
+		//	popbackcolor (); 
 		#endif
 		
 		if (!wpisactive ())
