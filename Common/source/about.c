@@ -829,9 +829,10 @@ static void ccunblockmsg (void) {
 	} /*ccunblockmsg*/
 
 
-boolean aboutsetthreadstring (hdlthreadglobals hg, boolean flin) {
+boolean aboutsetthreadstring (hdlprocessthread hp, boolean flin) {
 	
 	register hdlcancoonrecord hc = cancoonglobals;
+	hdlthreadglobals hg = (hdlthreadglobals) hp;
 	boolean fl = false;
 	hdlwindowinfo hinfo;
 	
