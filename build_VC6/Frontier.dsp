@@ -1018,6 +1018,10 @@ SOURCE=..\Common\headers\frontierdebug.h
 # End Source File
 # Begin Source File
 
+SOURCE=..\Common\headers\frontierdefs.h
+# End Source File
+# Begin Source File
+
 SOURCE=..\Common\headers\frontierstart.h
 # End Source File
 # Begin Source File
