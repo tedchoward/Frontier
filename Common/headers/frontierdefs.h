@@ -77,6 +77,8 @@
 #undef langexternalfind_optimization
 #define PASCALSTRINGVERSION 1
 #define SPEED 1
+#undef fltracklocaladdresses		/*2004-12-08 aradke: disable [buggy] code for tracking deleted local addresses*/
+
 
 #ifdef MACVERSION
 	#define macBirdRuntime	1
@@ -104,9 +106,6 @@
 
 
 #define SystemSevenOrLater 1
-
-
-#define fltracklocaladdresses 0		/* enable code for tracking deleted local addresses */
 
 
 #endif /*__FRONTIERDEFS_H__*/
