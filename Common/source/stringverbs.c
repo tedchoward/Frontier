@@ -1358,6 +1358,9 @@ static boolean stringfunctionvalue (short token, hdltreenode hparam1, tyvaluerec
 	
 	6.1d5 AR: added urlSplit, hasSuffix.
 	string.dateString and string.timeString now optionally accept a date parameter.
+	
+	12/4/2004 smd: optimization - midfunc (ie string.mid) now uses a readonly handle for
+	the input string, and copies only the results to the output string, for performance
 	*/
 	
 	hdltreenode hp1 = hparam1;
@@ -1532,10 +1535,14 @@ static boolean stringfunctionvalue (short token, hdltreenode hparam1, tyvaluerec
 			}
 		
 		case midfunc: {
+			
+			/* 12/4/2004 smd: optimized */
+			
 			Handle hstring;
 			Handle x;
 			long ix;
 			long len;
+			
 			
 			if (!getpositivelongvalue (hp1, 2, &ix))
 				return (false);
@@ -1545,26 +1552,21 @@ static boolean stringfunctionvalue (short token, hdltreenode hparam1, tyvaluerec
 			if (!getlongvalue (hp1, 3, &len)) 
 				return (false);
 			
-			if (!getexempttextvalue (hp1, 1, &hstring)) /*get last to simplify error handling*/
+			if (!getreadonlytextvalue (hp1, 1, &hstring)) /*get last to simplify error handling*/
 				return (false);
-			
-			x = hstring; /*copy into register*/
 			
 			if (ix > 0)
 				--ix; /*convert to zero-base*/
 			
-			len = min (len, gethandlesize (x) - ix);
+			len = min (len, gethandlesize (hstring) - ix);
 			
-			if ((len > 0) && (ix > 0))
-				moveleft (*x + ix, *x, len);
-			
-			sethandlesize (x, max (len, 0));
-			
-			/*
-			if (!loadfromhandletohandle (hstring, &ix, len, &x))
-				if (!newemptyhandle (&x))
-					return (false);
-			*/
+			if (len > 0) {
+				if (!loadfromhandletohandle(hstring, &ix, len, false, &x))
+					if (!newemptyhandle (&x))
+						return (false);
+				}
+			else if (!newemptyhandle (&x))
+				return false;
 			
 			return (setheapvalue (x, stringvaluetype, v));
 			}
