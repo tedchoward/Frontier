@@ -161,6 +161,8 @@ typedef enum tyfrontiertoken { /*verbs that are processed by frontier*/
 
 	isvalidserialnumberfunc,
 
+	showapplicationfunc,
+
 	ctfrontierverbs
 	} tyfrontiertoken;
 
@@ -981,6 +983,21 @@ static boolean frontierfunctionvalue (short token, hdltreenode hparam1, tyvaluer
 			(*v).data.flvalue = isvalidserialnumber (bssn);
 
 			return (true);
+			}
+		
+		case showapplicationfunc: {	/*2004-11-28 aradke: re-emerge from system tray*/
+
+			#ifdef WIN95VERSION
+				
+				releasethreadglobals ();
+
+				ShowWindow (shellframewindow, SW_SHOW);
+
+				grabthreadglobals ();
+			
+			#endif
+
+			return (setbooleanvalue (true, v));
 			}
 
 		default:
