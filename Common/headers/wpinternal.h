@@ -30,7 +30,7 @@
 
 
 #undef abs
-#include "paige.h"
+#include "PAIGE.H"
 
 
 #undef flvariables

@@ -16,7 +16,7 @@ and/or OS. */
 #ifndef MACHINE_H
 #define MACHINE_H
 
-#include "Paige.h"
+#include "PAIGE.H"
 
 #define OFFSCREEN_SUCCESSFUL	1			/* Offscreen enable was successful */
 #define OFFSCREEN_UNSUCCESSFUL	-1			/* Offscreen enable was not successful */

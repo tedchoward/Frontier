@@ -28,7 +28,7 @@
 #include "frontier.h"
 #include "standard.h"
 
-#include "Paige.h"
+#include "PAIGE.H"
 
 #include "frontierconfig.h"
 #include "cursor.h"

@@ -10,7 +10,7 @@ in different (and hopefully appropriate) source files. */
 #ifndef DEFPROCS_H
 #define DEFPROCS_H
 
-#include "Paige.h"
+#include "PAIGE.H"
 
 #ifdef __cplusplus
 extern	"C" {
