@@ -75,6 +75,7 @@ LINK32=link.exe
 # PROP Target_Dir ""
 # ADD BASE CPP /nologo /W3 /Gm /GX /Zi /Od /D "WIN32" /D "_DEBUG" /D "_WINDOWS" /YX /c
 # ADD CPP /nologo /Zp2 /MTd /W3 /GX /Zi /Od /Ob2 /I "..\Common\headers" /I "..\Common\SystemHeaders" /I "..\Common\Paige\headers" /I "..\Common\PCRE" /D "_DEBUG" /D FRONTIERCOM=1 /D "WIN95VERSION" /D "_WINDOWS" /D "WIN32" /D "WIN32_COMPILE" /FR /FD /c
+# SUBTRACT CPP /YX /Yc /Yu
 # ADD BASE MTL /nologo /D "_DEBUG" /win32
 # ADD MTL /nologo /D "_DEBUG" /mktyplib203 /win32
 # ADD BASE RSC /l 0x409 /d "_DEBUG"
@@ -1002,6 +1003,10 @@ SOURCE=..\Common\headers\filesystem7.h
 # Begin Source File
 
 SOURCE=..\Common\headers\font.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\Common\headers\frontier.h
 # End Source File
 # Begin Source File
 
