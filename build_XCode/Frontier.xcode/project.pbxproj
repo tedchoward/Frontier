@@ -71,7 +71,7 @@
 				6515255E072BFC6500411831,
 				6515255F072BFC6500411831,
 			);
-			hasScannedForEncodings = 0;
+			hasScannedForEncodings = 1;
 			isa = PBXProject;
 			mainGroup = 6515255C072BFC6500411831;
 			productRefGroup = 6515256A072BFC6500411831;
@@ -556,7 +556,7 @@
 		65152565072BFC6500411831 = {
 			buildActionMask = 2147483647;
 			files = (
-				BB3B83630730604B0049D0C1,
+				DEA58AB407435A9500BAB271,
 			);
 			isa = PBXResourcesBuildPhase;
 			runOnlyForDeploymentPostprocessing = 0;
@@ -603,6 +603,7 @@
 				65152565072BFC6500411831,
 				65152566072BFC6500411831,
 				65152567072BFC6500411831,
+				DEA58A9E074359BA00BAB271,
 			);
 			buildRules = (
 			);
@@ -630,7 +631,7 @@
 				OTHER_CFLAGS = "-fno-inline -malign-mac68k ";
 				OTHER_LDFLAGS = "-multiply_defined warning";
 				OTHER_REZFLAGS = "-d TARGET_API_MAC_CARBON=1 -d FRONTIER_FRAMEWORK_INCLUDES=1 -i ../Common/headers";
-				PRODUCT_NAME = Frontier;
+				PRODUCT_NAME = "Userland Frontier™";
 				REZ_PREPROCESSOR_DEFINITIONS = "";
 				REZ_PREPROCESSOR_UNDEFINITIONS = "";
 				REZ_SCRIPT_TYPE = Roman;
@@ -656,7 +657,7 @@
 			explicitFileType = wrapper.application;
 			includeInIndex = 0;
 			isa = PBXFileReference;
-			path = Frontier.app;
+			path = "Userland Frontier™.app";
 			refType = 3;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
@@ -682,6 +683,7 @@
 			sourceTree = "<group>";
 		};
 		6515256D072BFC6700411831 = {
+			fileEncoding = 30;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.c;
 			name = appletbits.c;
@@ -690,6 +692,7 @@
 			sourceTree = SOURCE_ROOT;
 		};
 		6515256E072BFC6700411831 = {
+			fileEncoding = 30;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.c;
 			name = appletfrontier.c;
@@ -698,6 +701,7 @@
 			sourceTree = SOURCE_ROOT;
 		};
 		6515256F072BFC6700411831 = {
+			fileEncoding = 30;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.c;
 			name = appletglue.c;
@@ -706,6 +710,7 @@
 			sourceTree = SOURCE_ROOT;
 		};
 		65152570072BFC6700411831 = {
+			fileEncoding = 30;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.c;
 			name = applettextedit.c;
@@ -742,6 +747,7 @@
 			sourceTree = "<group>";
 		};
 		65152573072BFC6700411831 = {
+			fileEncoding = 30;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.c;
 			name = filealias.c;
@@ -750,6 +756,7 @@
 			sourceTree = SOURCE_ROOT;
 		};
 		65152574072BFC6700411831 = {
+			fileEncoding = 30;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.c;
 			name = filelaunch.c;
@@ -758,6 +765,7 @@
 			sourceTree = SOURCE_ROOT;
 		};
 		65152575072BFC6700411831 = {
+			fileEncoding = 30;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.c;
 			name = file.c;
@@ -766,6 +774,7 @@
 			sourceTree = SOURCE_ROOT;
 		};
 		65152576072BFC6700411831 = {
+			fileEncoding = 30;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.c;
 			name = filedialog.c;
@@ -774,6 +783,7 @@
 			sourceTree = SOURCE_ROOT;
 		};
 		65152577072BFC6700411831 = {
+			fileEncoding = 30;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.c;
 			name = fileloop.c;
@@ -782,6 +792,7 @@
 			sourceTree = SOURCE_ROOT;
 		};
 		65152578072BFC6700411831 = {
+			fileEncoding = 30;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.c;
 			name = filemp3.c;
@@ -790,6 +801,7 @@
 			sourceTree = SOURCE_ROOT;
 		};
 		65152579072BFC6700411831 = {
+			fileEncoding = 30;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.c;
 			name = fileops.c;
@@ -798,6 +810,7 @@
 			sourceTree = SOURCE_ROOT;
 		};
 		6515257A072BFC6700411831 = {
+			fileEncoding = 30;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.c;
 			name = filepath.c;
@@ -806,6 +819,7 @@
 			sourceTree = SOURCE_ROOT;
 		};
 		6515257B072BFC6700411831 = {
+			fileEncoding = 30;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.c;
 			name = fileverbs.c;
@@ -814,6 +828,7 @@
 			sourceTree = SOURCE_ROOT;
 		};
 		6515257C072BFC6700411831 = {
+			fileEncoding = 30;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.c;
 			name = findinfile.c;
@@ -822,6 +837,7 @@
 			sourceTree = SOURCE_ROOT;
 		};
 		6515257D072BFC6700411831 = {
+			fileEncoding = 30;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.c;
 			name = resources.c;
@@ -864,6 +880,7 @@
 			sourceTree = "<group>";
 		};
 		6515257F072BFC6700411831 = {
+			fileEncoding = 30;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.c;
 			name = iac.c;
@@ -872,6 +889,7 @@
 			sourceTree = SOURCE_ROOT;
 		};
 		65152580072BFC6700411831 = {
+			fileEncoding = 30;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.c;
 			name = iacapps.c;
@@ -880,6 +898,7 @@
 			sourceTree = SOURCE_ROOT;
 		};
 		65152581072BFC6700411831 = {
+			fileEncoding = 30;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.c;
 			name = iacasynch.c;
@@ -888,6 +907,7 @@
 			sourceTree = SOURCE_ROOT;
 		};
 		65152582072BFC6700411831 = {
+			fileEncoding = 30;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.c;
 			name = iacbinary.c;
@@ -896,6 +916,7 @@
 			sourceTree = SOURCE_ROOT;
 		};
 		65152583072BFC6700411831 = {
+			fileEncoding = 30;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.c;
 			name = iacboolean.c;
@@ -904,6 +925,7 @@
 			sourceTree = SOURCE_ROOT;
 		};
 		65152584072BFC6700411831 = {
+			fileEncoding = 30;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.c;
 			name = iacdate.c;
@@ -912,6 +934,7 @@
 			sourceTree = SOURCE_ROOT;
 		};
 		65152585072BFC6700411831 = {
+			fileEncoding = 30;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.c;
 			name = iacdouble.c;
@@ -920,6 +943,7 @@
 			sourceTree = SOURCE_ROOT;
 		};
 		65152586072BFC6700411831 = {
+			fileEncoding = 30;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.c;
 			name = iacfilespec.c;
@@ -928,6 +952,7 @@
 			sourceTree = SOURCE_ROOT;
 		};
 		65152587072BFC6700411831 = {
+			fileEncoding = 30;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.c;
 			name = iachandler.c;
@@ -936,6 +961,7 @@
 			sourceTree = SOURCE_ROOT;
 		};
 		65152588072BFC6700411831 = {
+			fileEncoding = 30;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.c;
 			name = iaclist.c;
@@ -944,6 +970,7 @@
 			sourceTree = SOURCE_ROOT;
 		};
 		65152589072BFC6700411831 = {
+			fileEncoding = 30;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.c;
 			name = iaclong.c;
@@ -952,6 +979,7 @@
 			sourceTree = SOURCE_ROOT;
 		};
 		6515258A072BFC6700411831 = {
+			fileEncoding = 30;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.c;
 			name = iacnetwork.c;
@@ -960,6 +988,7 @@
 			sourceTree = SOURCE_ROOT;
 		};
 		6515258B072BFC6700411831 = {
+			fileEncoding = 30;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.c;
 			name = iacnewsystemverb.c;
@@ -968,6 +997,7 @@
 			sourceTree = SOURCE_ROOT;
 		};
 		6515258C072BFC6700411831 = {
+			fileEncoding = 30;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.c;
 			name = iacops.c;
@@ -976,6 +1006,7 @@
 			sourceTree = SOURCE_ROOT;
 		};
 		6515258D072BFC6700411831 = {
+			fileEncoding = 30;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.c;
 			name = iacpoint.c;
@@ -984,6 +1015,7 @@
 			sourceTree = SOURCE_ROOT;
 		};
 		6515258E072BFC6700411831 = {
+			fileEncoding = 30;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.c;
 			name = iacreceive.c;
@@ -992,6 +1024,7 @@
 			sourceTree = SOURCE_ROOT;
 		};
 		6515258F072BFC6700411831 = {
+			fileEncoding = 30;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.c;
 			name = iacrect.c;
@@ -1000,6 +1033,7 @@
 			sourceTree = SOURCE_ROOT;
 		};
 		65152590072BFC6700411831 = {
+			fileEncoding = 30;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.c;
 			name = iacrecord.c;
@@ -1008,6 +1042,7 @@
 			sourceTree = SOURCE_ROOT;
 		};
 		65152591072BFC6700411831 = {
+			fileEncoding = 30;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.c;
 			name = iacrgb.c;
@@ -1016,6 +1051,7 @@
 			sourceTree = SOURCE_ROOT;
 		};
 		65152592072BFC6700411831 = {
+			fileEncoding = 30;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.c;
 			name = iacsend.c;
@@ -1024,6 +1060,7 @@
 			sourceTree = SOURCE_ROOT;
 		};
 		65152593072BFC6700411831 = {
+			fileEncoding = 30;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.c;
 			name = iacshort.c;
@@ -1032,6 +1069,7 @@
 			sourceTree = SOURCE_ROOT;
 		};
 		65152594072BFC6700411831 = {
+			fileEncoding = 30;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.c;
 			name = iacstring.c;
@@ -1040,6 +1078,7 @@
 			sourceTree = SOURCE_ROOT;
 		};
 		65152595072BFC6700411831 = {
+			fileEncoding = 30;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.c;
 			name = iacstring4.c;
@@ -1048,6 +1087,7 @@
 			sourceTree = SOURCE_ROOT;
 		};
 		65152596072BFC6700411831 = {
+			fileEncoding = 30;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.c;
 			name = iacsysevents.c;
@@ -1056,6 +1096,7 @@
 			sourceTree = SOURCE_ROOT;
 		};
 		65152597072BFC6700411831 = {
+			fileEncoding = 30;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.c;
 			name = iactable.c;
@@ -1064,6 +1105,7 @@
 			sourceTree = SOURCE_ROOT;
 		};
 		65152598072BFC6700411831 = {
+			fileEncoding = 30;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.c;
 			name = iactext.c;
@@ -1099,6 +1141,7 @@
 			sourceTree = "<group>";
 		};
 		6515259A072BFC6700411831 = {
+			fileEncoding = 30;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.c;
 			name = ioa.c;
@@ -1107,6 +1150,7 @@
 			sourceTree = SOURCE_ROOT;
 		};
 		6515259B072BFC6700411831 = {
+			fileEncoding = 30;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.h;
 			name = ioa.h;
@@ -1115,6 +1159,7 @@
 			sourceTree = SOURCE_ROOT;
 		};
 		6515259C072BFC6700411831 = {
+			fileEncoding = 30;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.c;
 			name = ioabutton.c;
@@ -1123,6 +1168,7 @@
 			sourceTree = SOURCE_ROOT;
 		};
 		6515259D072BFC6700411831 = {
+			fileEncoding = 30;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.c;
 			name = ioacheckbox.c;
@@ -1131,6 +1177,7 @@
 			sourceTree = SOURCE_ROOT;
 		};
 		6515259E072BFC6700411831 = {
+			fileEncoding = 30;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.c;
 			name = ioacolorpopup.c;
@@ -1139,6 +1186,7 @@
 			sourceTree = SOURCE_ROOT;
 		};
 		6515259F072BFC6700411831 = {
+			fileEncoding = 30;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.h;
 			name = ioacolorpopup.h;
@@ -1147,6 +1195,7 @@
 			sourceTree = SOURCE_ROOT;
 		};
 		651525A0072BFC6700411831 = {
+			fileEncoding = 30;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.c;
 			name = ioaedittext.c;
@@ -1155,6 +1204,7 @@
 			sourceTree = SOURCE_ROOT;
 		};
 		651525A1072BFC6700411831 = {
+			fileEncoding = 30;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.h;
 			name = ioaedittext.h;
@@ -1163,6 +1213,7 @@
 			sourceTree = SOURCE_ROOT;
 		};
 		651525A2072BFC6700411831 = {
+			fileEncoding = 30;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.c;
 			name = ioaframe.c;
@@ -1171,6 +1222,7 @@
 			sourceTree = SOURCE_ROOT;
 		};
 		651525A3072BFC6700411831 = {
+			fileEncoding = 30;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.c;
 			name = ioaicon.c;
@@ -1179,6 +1231,7 @@
 			sourceTree = SOURCE_ROOT;
 		};
 		651525A4072BFC6700411831 = {
+			fileEncoding = 30;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.h;
 			name = ioaicon.h;
@@ -1187,6 +1240,7 @@
 			sourceTree = SOURCE_ROOT;
 		};
 		651525A5072BFC6700411831 = {
+			fileEncoding = 30;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.c;
 			name = ioapicture.c;
@@ -1195,6 +1249,7 @@
 			sourceTree = SOURCE_ROOT;
 		};
 		651525A6072BFC6700411831 = {
+			fileEncoding = 30;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.c;
 			name = ioapopup.c;
@@ -1203,6 +1258,7 @@
 			sourceTree = SOURCE_ROOT;
 		};
 		651525A7072BFC6700411831 = {
+			fileEncoding = 30;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.h;
 			name = ioapopup.h;
@@ -1211,6 +1267,7 @@
 			sourceTree = SOURCE_ROOT;
 		};
 		651525A8072BFC6700411831 = {
+			fileEncoding = 30;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.c;
 			name = ioaradio.c;
@@ -1219,6 +1276,7 @@
 			sourceTree = SOURCE_ROOT;
 		};
 		651525A9072BFC6700411831 = {
+			fileEncoding = 30;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.c;
 			name = ioarect.c;
@@ -1227,6 +1285,7 @@
 			sourceTree = SOURCE_ROOT;
 		};
 		651525AA072BFC6700411831 = {
+			fileEncoding = 30;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.c;
 			name = ioascrollbar.c;
@@ -1235,6 +1294,7 @@
 			sourceTree = SOURCE_ROOT;
 		};
 		651525AB072BFC6700411831 = {
+			fileEncoding = 30;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.h;
 			name = ioascrollbar.h;
@@ -1243,6 +1303,7 @@
 			sourceTree = SOURCE_ROOT;
 		};
 		651525AC072BFC6700411831 = {
+			fileEncoding = 30;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.c;
 			name = ioastatic.c;
@@ -1268,6 +1329,7 @@
 			sourceTree = "<group>";
 		};
 		651525AE072BFC6700411831 = {
+			fileEncoding = 30;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.c;
 			name = iowaattributes.c;
@@ -1276,6 +1338,7 @@
 			sourceTree = SOURCE_ROOT;
 		};
 		651525AF072BFC6700411831 = {
+			fileEncoding = 30;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.c;
 			name = iowacomponent.c;
@@ -1284,6 +1347,7 @@
 			sourceTree = SOURCE_ROOT;
 		};
 		651525B0072BFC6700411831 = {
+			fileEncoding = 30;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.c;
 			name = iowacore.c;
@@ -1292,6 +1356,7 @@
 			sourceTree = SOURCE_ROOT;
 		};
 		651525B1072BFC6700411831 = {
+			fileEncoding = 30;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.c;
 			name = iowafrontier.c;
@@ -1300,6 +1365,7 @@
 			sourceTree = SOURCE_ROOT;
 		};
 		651525B2072BFC6700411831 = {
+			fileEncoding = 30;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.c;
 			name = iowainit.c;
@@ -1308,6 +1374,7 @@
 			sourceTree = SOURCE_ROOT;
 		};
 		651525B3072BFC6700411831 = {
+			fileEncoding = 30;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.c;
 			name = iowaparser.c;
@@ -1316,6 +1383,7 @@
 			sourceTree = SOURCE_ROOT;
 		};
 		651525B4072BFC6700411831 = {
+			fileEncoding = 30;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.c;
 			name = iowaruntime.c;
@@ -1324,6 +1392,7 @@
 			sourceTree = SOURCE_ROOT;
 		};
 		651525B5072BFC6700411831 = {
+			fileEncoding = 30;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.c;
 			name = iowascript.c;
@@ -1332,6 +1401,7 @@
 			sourceTree = SOURCE_ROOT;
 		};
 		651525B6072BFC6700411831 = {
+			fileEncoding = 30;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.c;
 			name = iowavalidate.c;
@@ -1356,6 +1426,7 @@
 			sourceTree = "<group>";
 		};
 		651525B8072BFC6700411831 = {
+			fileEncoding = 30;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.c;
 			name = land.c;
@@ -1364,6 +1435,7 @@
 			sourceTree = SOURCE_ROOT;
 		};
 		651525B9072BFC6700411831 = {
+			fileEncoding = 30;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.c;
 			name = landgetparam.c;
@@ -1372,6 +1444,7 @@
 			sourceTree = SOURCE_ROOT;
 		};
 		651525BA072BFC6700411831 = {
+			fileEncoding = 30;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.c;
 			name = landops.c;
@@ -1380,6 +1453,7 @@
 			sourceTree = SOURCE_ROOT;
 		};
 		651525BB072BFC6700411831 = {
+			fileEncoding = 30;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.c;
 			name = landpush.c;
@@ -1388,6 +1462,7 @@
 			sourceTree = SOURCE_ROOT;
 		};
 		651525BC072BFC6700411831 = {
+			fileEncoding = 30;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.c;
 			name = landqueue.c;
@@ -1396,6 +1471,7 @@
 			sourceTree = SOURCE_ROOT;
 		};
 		651525BD072BFC6700411831 = {
+			fileEncoding = 30;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.c;
 			name = landreturn.c;
@@ -1404,6 +1480,7 @@
 			sourceTree = SOURCE_ROOT;
 		};
 		651525BE072BFC6700411831 = {
+			fileEncoding = 30;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.c;
 			name = landsystem7.c;
@@ -1412,6 +1489,7 @@
 			sourceTree = SOURCE_ROOT;
 		};
 		651525BF072BFC6700411831 = {
+			fileEncoding = 30;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.c;
 			name = landverbarray.c;
@@ -1430,6 +1508,7 @@
 			sourceTree = "<group>";
 		};
 		651525C1072BFC6700411831 = {
+			fileEncoding = 30;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.c;
 			name = MoreFilesX.c;
@@ -1438,6 +1517,7 @@
 			sourceTree = SOURCE_ROOT;
 		};
 		651525C2072BFC6700411831 = {
+			fileEncoding = 30;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.h;
 			name = MoreFilesX.h;
@@ -1476,6 +1556,7 @@
 			sourceTree = "<group>";
 		};
 		651525C6072BFC6700411831 = {
+			fileEncoding = 30;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.c;
 			name = get.c;
@@ -1484,6 +1565,7 @@
 			sourceTree = SOURCE_ROOT;
 		};
 		651525C7072BFC6700411831 = {
+			fileEncoding = 30;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.c;
 			name = maketables.c;
@@ -1492,6 +1574,7 @@
 			sourceTree = SOURCE_ROOT;
 		};
 		651525C8072BFC6700411831 = {
+			fileEncoding = 30;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.c;
 			name = pcre.c;
@@ -1500,6 +1583,7 @@
 			sourceTree = SOURCE_ROOT;
 		};
 		651525C9072BFC6700411831 = {
+			fileEncoding = 30;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.h;
 			name = pcre.h;
@@ -1508,6 +1592,7 @@
 			sourceTree = SOURCE_ROOT;
 		};
 		651525CA072BFC6700411831 = {
+			fileEncoding = 30;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.c;
 			name = study.c;
@@ -1526,6 +1611,7 @@
 			sourceTree = "<group>";
 		};
 		651525CC072BFC6700411831 = {
+			fileEncoding = 30;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.c;
 			name = pict.c;
@@ -1534,6 +1620,7 @@
 			sourceTree = SOURCE_ROOT;
 		};
 		651525CD072BFC6700411831 = {
+			fileEncoding = 30;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.c;
 			name = pictverbs.c;
@@ -1565,6 +1652,7 @@
 			sourceTree = "<group>";
 		};
 		651525CF072BFC6700411831 = {
+			fileEncoding = 30;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.rez;
 			name = aeut.r;
@@ -1573,6 +1661,7 @@
 			sourceTree = SOURCE_ROOT;
 		};
 		651525D0072BFC6700411831 = {
+			fileEncoding = 30;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.rez;
 			name = BNDL.r;
@@ -1581,6 +1670,7 @@
 			sourceTree = SOURCE_ROOT;
 		};
 		651525D1072BFC6700411831 = {
+			fileEncoding = 30;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.rez;
 			name = kernvelverbs.r;
@@ -1589,6 +1679,7 @@
 			sourceTree = SOURCE_ROOT;
 		};
 		651525D2072BFC6700411831 = {
+			fileEncoding = 30;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.rez;
 			name = lang.r;
@@ -1597,6 +1688,7 @@
 			sourceTree = SOURCE_ROOT;
 		};
 		651525D3072BFC6700411831 = {
+			fileEncoding = 30;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.rez;
 			name = osacomponent.r;
@@ -1605,6 +1697,7 @@
 			sourceTree = SOURCE_ROOT;
 		};
 		651525D4072BFC6700411831 = {
+			fileEncoding = 30;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.rez;
 			name = SHELL.R;
@@ -1613,6 +1706,7 @@
 			sourceTree = SOURCE_ROOT;
 		};
 		651525D5072BFC6700411831 = {
+			fileEncoding = 30;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.rez;
 			name = sicn.r;
@@ -1621,6 +1715,7 @@
 			sourceTree = SOURCE_ROOT;
 		};
 		651525D6072BFC6700411831 = {
+			fileEncoding = 30;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.rez;
 			name = opicons.r;
@@ -1629,6 +1724,7 @@
 			sourceTree = SOURCE_ROOT;
 		};
 		651525D7072BFC6700411831 = {
+			fileEncoding = 30;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.rez;
 			name = ioaapp.r;
@@ -1637,6 +1733,7 @@
 			sourceTree = SOURCE_ROOT;
 		};
 		651525D8072BFC6700411831 = {
+			fileEncoding = 30;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.rez;
 			name = iowaruntime.r;
@@ -1645,6 +1742,7 @@
 			sourceTree = SOURCE_ROOT;
 		};
 		651525D9072BFC6700411831 = {
+			fileEncoding = 30;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.rez;
 			name = ppat.r;
@@ -1653,6 +1751,7 @@
 			sourceTree = SOURCE_ROOT;
 		};
 		651525DA072BFC6700411831 = {
+			fileEncoding = 30;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.rez;
 			name = clut.r;
@@ -1661,6 +1760,7 @@
 			sourceTree = SOURCE_ROOT;
 		};
 		651525DB072BFC6700411831 = {
+			fileEncoding = 30;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.rez;
 			name = icns.r;
@@ -1669,6 +1769,7 @@
 			sourceTree = SOURCE_ROOT;
 		};
 		651525DC072BFC6700411831 = {
+			fileEncoding = 30;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.rez;
 			name = windoidWDEF.r;
@@ -1687,6 +1788,7 @@
 			sourceTree = "<group>";
 		};
 		651525DE072BFC6700411831 = {
+			fileEncoding = 30;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.rez;
 			name = carb.r;
@@ -1695,6 +1797,7 @@
 			sourceTree = SOURCE_ROOT;
 		};
 		651525DF072BFC6700411831 = {
+			fileEncoding = 30;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.rez;
 			name = osxdialogs.r;
@@ -1762,6 +1865,7 @@
 			sourceTree = "<group>";
 		};
 		651525E3072BFC6700411831 = {
+			fileEncoding = 30;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.c;
 			name = aeutils.c;
@@ -1770,6 +1874,7 @@
 			sourceTree = SOURCE_ROOT;
 		};
 		651525E4072BFC6700411831 = {
+			fileEncoding = 30;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.c;
 			name = bitmaps.c;
@@ -1778,6 +1883,7 @@
 			sourceTree = SOURCE_ROOT;
 		};
 		651525E5072BFC6700411831 = {
+			fileEncoding = 30;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.c;
 			name = dialogs.c;
@@ -1786,6 +1892,7 @@
 			sourceTree = SOURCE_ROOT;
 		};
 		651525E6072BFC6700411831 = {
+			fileEncoding = 30;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.c;
 			name = mac.c;
@@ -1794,6 +1901,7 @@
 			sourceTree = SOURCE_ROOT;
 		};
 		651525E7072BFC6700411831 = {
+			fileEncoding = 30;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.c;
 			name = player.c;
@@ -1802,6 +1910,7 @@
 			sourceTree = SOURCE_ROOT;
 		};
 		651525E8072BFC6700411831 = {
+			fileEncoding = 30;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.c;
 			name = services.c;
@@ -1810,6 +1919,7 @@
 			sourceTree = SOURCE_ROOT;
 		};
 		651525E9072BFC6700411831 = {
+			fileEncoding = 30;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.c;
 			name = uisharing.c;
@@ -1818,6 +1928,7 @@
 			sourceTree = SOURCE_ROOT;
 		};
 		651525EA072BFC6700411831 = {
+			fileEncoding = 30;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.c;
 			name = zoom.c;
@@ -1826,6 +1937,7 @@
 			sourceTree = SOURCE_ROOT;
 		};
 		651525EB072BFC6700411831 = {
+			fileEncoding = 30;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.c;
 			name = about.c;
@@ -1834,6 +1946,7 @@
 			sourceTree = SOURCE_ROOT;
 		};
 		651525EC072BFC6700411831 = {
+			fileEncoding = 30;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.c;
 			name = assert.c;
@@ -1842,6 +1955,7 @@
 			sourceTree = SOURCE_ROOT;
 		};
 		651525ED072BFC6700411831 = {
+			fileEncoding = 30;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.c;
 			name = base64.c;
@@ -1850,6 +1964,7 @@
 			sourceTree = SOURCE_ROOT;
 		};
 		651525EE072BFC6700411831 = {
+			fileEncoding = 30;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.c;
 			name = cursor.c;
@@ -1858,6 +1973,7 @@
 			sourceTree = SOURCE_ROOT;
 		};
 		651525EF072BFC6700411831 = {
+			fileEncoding = 30;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.c;
 			name = dockmenu.c;
@@ -1866,6 +1982,7 @@
 			sourceTree = SOURCE_ROOT;
 		};
 		651525F0072BFC6700411831 = {
+			fileEncoding = 30;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.c;
 			name = error.c;
@@ -1874,6 +1991,7 @@
 			sourceTree = SOURCE_ROOT;
 		};
 		651525F1072BFC6700411831 = {
+			fileEncoding = 30;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.c;
 			name = font.c;
@@ -1882,6 +2000,7 @@
 			sourceTree = SOURCE_ROOT;
 		};
 		651525F2072BFC6700411831 = {
+			fileEncoding = 30;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.c;
 			name = frontierconfig.c;
@@ -1890,6 +2009,7 @@
 			sourceTree = SOURCE_ROOT;
 		};
 		651525F3072BFC6700411831 = {
+			fileEncoding = 30;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.c;
 			name = frontierdebug.c;
@@ -1898,6 +2018,7 @@
 			sourceTree = SOURCE_ROOT;
 		};
 		651525F4072BFC6700411831 = {
+			fileEncoding = 30;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.c;
 			name = frontierstart.c;
@@ -1906,6 +2027,7 @@
 			sourceTree = SOURCE_ROOT;
 		};
 		651525F5072BFC6700411831 = {
+			fileEncoding = 30;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.c;
 			name = frontierwindows.c;
@@ -1914,6 +2036,7 @@
 			sourceTree = SOURCE_ROOT;
 		};
 		651525F6072BFC6700411831 = {
+			fileEncoding = 30;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.c;
 			name = icon.c;
@@ -1922,6 +2045,7 @@
 			sourceTree = SOURCE_ROOT;
 		};
 		651525F7072BFC6700411831 = {
+			fileEncoding = 30;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.c;
 			name = kb.c;
@@ -1930,6 +2054,7 @@
 			sourceTree = SOURCE_ROOT;
 		};
 		651525F8072BFC6700411831 = {
+			fileEncoding = 30;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.c;
 			name = launch.c;
@@ -1938,6 +2063,7 @@
 			sourceTree = SOURCE_ROOT;
 		};
 		651525F9072BFC6700411831 = {
+			fileEncoding = 30;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.c;
 			name = main.c;
@@ -1946,6 +2072,7 @@
 			sourceTree = SOURCE_ROOT;
 		};
 		651525FA072BFC6700411831 = {
+			fileEncoding = 30;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.c;
 			name = md5.c;
@@ -1954,6 +2081,7 @@
 			sourceTree = SOURCE_ROOT;
 		};
 		651525FB072BFC6700411831 = {
+			fileEncoding = 30;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.c;
 			name = memory.c;
@@ -1962,6 +2090,7 @@
 			sourceTree = SOURCE_ROOT;
 		};
 		651525FC072BFC6700411831 = {
+			fileEncoding = 30;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.c;
 			name = menu.c;
@@ -1970,6 +2099,7 @@
 			sourceTree = SOURCE_ROOT;
 		};
 		651525FD072BFC6700411831 = {
+			fileEncoding = 30;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.c;
 			name = mouse.c;
@@ -1978,6 +2108,7 @@
 			sourceTree = SOURCE_ROOT;
 		};
 		651525FE072BFC6700411831 = {
+			fileEncoding = 30;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.c;
 			name = notify.c;
@@ -1986,6 +2117,7 @@
 			sourceTree = SOURCE_ROOT;
 		};
 		651525FF072BFC6700411831 = {
+			fileEncoding = 30;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.c;
 			name = ops.c;
@@ -1994,6 +2126,7 @@
 			sourceTree = SOURCE_ROOT;
 		};
 		65152600072BFC6700411831 = {
+			fileEncoding = 30;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.c;
 			name = popup.c;
@@ -2002,6 +2135,7 @@
 			sourceTree = SOURCE_ROOT;
 		};
 		65152601072BFC6700411831 = {
+			fileEncoding = 30;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.c;
 			name = process.c;
@@ -2010,6 +2144,7 @@
 			sourceTree = SOURCE_ROOT;
 		};
 		65152602072BFC6700411831 = {
+			fileEncoding = 30;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.c;
 			name = quickdraw.c;
@@ -2018,6 +2153,7 @@
 			sourceTree = SOURCE_ROOT;
 		};
 		65152603072BFC6700411831 = {
+			fileEncoding = 30;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.c;
 			name = scrap.c;
@@ -2026,6 +2162,7 @@
 			sourceTree = SOURCE_ROOT;
 		};
 		65152604072BFC6700411831 = {
+			fileEncoding = 30;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.c;
 			name = scripts.c;
@@ -2034,6 +2171,7 @@
 			sourceTree = SOURCE_ROOT;
 		};
 		65152605072BFC6700411831 = {
+			fileEncoding = 30;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.c;
 			name = scrollbar.c;
@@ -2042,6 +2180,7 @@
 			sourceTree = SOURCE_ROOT;
 		};
 		65152606072BFC6700411831 = {
+			fileEncoding = 30;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.c;
 			name = search.c;
@@ -2050,6 +2189,7 @@
 			sourceTree = SOURCE_ROOT;
 		};
 		65152607072BFC6700411831 = {
+			fileEncoding = 30;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.c;
 			name = serialnumber.c;
@@ -2058,6 +2198,7 @@
 			sourceTree = SOURCE_ROOT;
 		};
 		65152608072BFC6700411831 = {
+			fileEncoding = 30;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.c;
 			name = smallicon.c;
@@ -2066,6 +2207,7 @@
 			sourceTree = SOURCE_ROOT;
 		};
 		65152609072BFC6700411831 = {
+			fileEncoding = 30;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.c;
 			name = sounds.c;
@@ -2074,6 +2216,7 @@
 			sourceTree = SOURCE_ROOT;
 		};
 		6515260A072BFC6700411831 = {
+			fileEncoding = 30;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.c;
 			name = textedit.c;
@@ -2082,6 +2225,7 @@
 			sourceTree = SOURCE_ROOT;
 		};
 		6515260B072BFC6700411831 = {
+			fileEncoding = 30;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.c;
 			name = threads.c;
@@ -2090,6 +2234,7 @@
 			sourceTree = SOURCE_ROOT;
 		};
 		6515260C072BFC6700411831 = {
+			fileEncoding = 30;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.c;
 			name = timedate.c;
@@ -2112,6 +2257,7 @@
 			sourceTree = "<group>";
 		};
 		6515260E072BFC6700411831 = {
+			fileEncoding = 30;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.c;
 			name = cancoon.c;
@@ -2120,6 +2266,7 @@
 			sourceTree = SOURCE_ROOT;
 		};
 		6515260F072BFC6700411831 = {
+			fileEncoding = 30;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.c;
 			name = cancoonpopup.c;
@@ -2128,6 +2275,7 @@
 			sourceTree = SOURCE_ROOT;
 		};
 		65152610072BFC6700411831 = {
+			fileEncoding = 30;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.c;
 			name = cancoonverbs.c;
@@ -2136,6 +2284,7 @@
 			sourceTree = SOURCE_ROOT;
 		};
 		65152611072BFC6700411831 = {
+			fileEncoding = 30;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.c;
 			name = cancoonwindow.c;
@@ -2144,6 +2293,7 @@
 			sourceTree = SOURCE_ROOT;
 		};
 		65152612072BFC6700411831 = {
+			fileEncoding = 30;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.c;
 			name = command.c;
@@ -2152,6 +2302,7 @@
 			sourceTree = SOURCE_ROOT;
 		};
 		65152613072BFC6700411831 = {
+			fileEncoding = 30;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.c;
 			name = miniwindow.c;
@@ -2173,6 +2324,7 @@
 			sourceTree = "<group>";
 		};
 		65152615072BFC6700411831 = {
+			fileEncoding = 30;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.c;
 			name = claybrowserexpand.c;
@@ -2181,6 +2333,7 @@
 			sourceTree = SOURCE_ROOT;
 		};
 		65152616072BFC6700411831 = {
+			fileEncoding = 30;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.c;
 			name = claybrowserstruc.c;
@@ -2189,6 +2342,7 @@
 			sourceTree = SOURCE_ROOT;
 		};
 		65152617072BFC6700411831 = {
+			fileEncoding = 30;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.c;
 			name = claybrowservalidate.c;
@@ -2197,6 +2351,7 @@
 			sourceTree = SOURCE_ROOT;
 		};
 		65152618072BFC6700411831 = {
+			fileEncoding = 30;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.c;
 			name = claycallbacks.c;
@@ -2205,6 +2360,7 @@
 			sourceTree = SOURCE_ROOT;
 		};
 		65152619072BFC6700411831 = {
+			fileEncoding = 30;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.c;
 			name = claylinelayout.c;
@@ -2225,6 +2381,7 @@
 			sourceTree = "<group>";
 		};
 		6515261B072BFC6700411831 = {
+			fileEncoding = 30;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.c;
 			name = db.c;
@@ -2233,6 +2390,7 @@
 			sourceTree = SOURCE_ROOT;
 		};
 		6515261C072BFC6700411831 = {
+			fileEncoding = 30;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.c;
 			name = dbstats.c;
@@ -2241,6 +2399,7 @@
 			sourceTree = SOURCE_ROOT;
 		};
 		6515261D072BFC6700411831 = {
+			fileEncoding = 30;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.c;
 			name = dbverbs.c;
@@ -2249,6 +2408,7 @@
 			sourceTree = SOURCE_ROOT;
 		};
 		6515261E072BFC6700411831 = {
+			fileEncoding = 30;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.c;
 			name = odbengine.c;
@@ -2309,6 +2469,7 @@
 			sourceTree = "<group>";
 		};
 		65152621072BFC6700411831 = {
+			fileEncoding = 30;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.c;
 			name = CallMachOFrameWork.c;
@@ -2317,6 +2478,7 @@
 			sourceTree = SOURCE_ROOT;
 		};
 		65152622072BFC6700411831 = {
+			fileEncoding = 30;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.c;
 			name = langcard.c;
@@ -2325,6 +2487,7 @@
 			sourceTree = SOURCE_ROOT;
 		};
 		65152623072BFC6700411831 = {
+			fileEncoding = 30;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.c;
 			name = langdialog.c;
@@ -2333,6 +2496,7 @@
 			sourceTree = SOURCE_ROOT;
 		};
 		65152624072BFC6700411831 = {
+			fileEncoding = 30;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.c;
 			name = langipc.c;
@@ -2341,6 +2505,7 @@
 			sourceTree = SOURCE_ROOT;
 		};
 		65152625072BFC6700411831 = {
+			fileEncoding = 30;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.c;
 			name = langipcmenus.c;
@@ -2349,6 +2514,7 @@
 			sourceTree = SOURCE_ROOT;
 		};
 		65152626072BFC6700411831 = {
+			fileEncoding = 30;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.c;
 			name = langmodeless.c;
@@ -2357,6 +2523,7 @@
 			sourceTree = SOURCE_ROOT;
 		};
 		65152627072BFC6700411831 = {
+			fileEncoding = 30;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.c;
 			name = langquicktime.c;
@@ -2365,6 +2532,7 @@
 			sourceTree = SOURCE_ROOT;
 		};
 		65152628072BFC6700411831 = {
+			fileEncoding = 30;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.c;
 			name = OpenTransportNetEvents.c;
@@ -2381,6 +2549,7 @@
 			sourceTree = "<group>";
 		};
 		6515262A072BFC6700411831 = {
+			fileEncoding = 30;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.c;
 			name = lang.c;
@@ -2389,6 +2558,7 @@
 			sourceTree = SOURCE_ROOT;
 		};
 		6515262B072BFC6700411831 = {
+			fileEncoding = 30;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.c;
 			name = langcallbacks.c;
@@ -2397,6 +2567,7 @@
 			sourceTree = SOURCE_ROOT;
 		};
 		6515262C072BFC6700411831 = {
+			fileEncoding = 30;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.c;
 			name = langdate.c;
@@ -2405,6 +2576,7 @@
 			sourceTree = SOURCE_ROOT;
 		};
 		6515262D072BFC6700411831 = {
+			fileEncoding = 30;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.c;
 			name = langdll.c;
@@ -2413,6 +2585,7 @@
 			sourceTree = SOURCE_ROOT;
 		};
 		6515262E072BFC6700411831 = {
+			fileEncoding = 30;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.c;
 			name = langerror.c;
@@ -2421,6 +2594,7 @@
 			sourceTree = SOURCE_ROOT;
 		};
 		6515262F072BFC6700411831 = {
+			fileEncoding = 30;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.c;
 			name = langerrorwindow.c;
@@ -2429,6 +2603,7 @@
 			sourceTree = SOURCE_ROOT;
 		};
 		65152630072BFC6700411831 = {
+			fileEncoding = 30;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.c;
 			name = langevaluate.c;
@@ -2437,6 +2612,7 @@
 			sourceTree = SOURCE_ROOT;
 		};
 		65152631072BFC6700411831 = {
+			fileEncoding = 30;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.c;
 			name = langexternal.c;
@@ -2445,6 +2621,7 @@
 			sourceTree = SOURCE_ROOT;
 		};
 		65152632072BFC6700411831 = {
+			fileEncoding = 30;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.c;
 			name = langhash.c;
@@ -2453,6 +2630,7 @@
 			sourceTree = SOURCE_ROOT;
 		};
 		65152633072BFC6700411831 = {
+			fileEncoding = 30;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.c;
 			name = langhtml.c;
@@ -2461,6 +2639,7 @@
 			sourceTree = SOURCE_ROOT;
 		};
 		65152634072BFC6800411831 = {
+			fileEncoding = 30;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.c;
 			name = langlist.c;
@@ -2469,6 +2648,7 @@
 			sourceTree = SOURCE_ROOT;
 		};
 		65152635072BFC6800411831 = {
+			fileEncoding = 30;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.c;
 			name = langops.c;
@@ -2477,6 +2657,7 @@
 			sourceTree = SOURCE_ROOT;
 		};
 		65152636072BFC6800411831 = {
+			fileEncoding = 30;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.c;
 			name = langpack.c;
@@ -2485,6 +2666,7 @@
 			sourceTree = SOURCE_ROOT;
 		};
 		65152637072BFC6800411831 = {
+			fileEncoding = 30;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.c;
 			name = langparser.c;
@@ -2493,6 +2675,7 @@
 			sourceTree = SOURCE_ROOT;
 		};
 		65152638072BFC6800411831 = {
+			fileEncoding = 30;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.c;
 			name = langregexp.c;
@@ -2501,6 +2684,7 @@
 			sourceTree = SOURCE_ROOT;
 		};
 		65152639072BFC6800411831 = {
+			fileEncoding = 30;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.c;
 			name = langpython.c;
@@ -2509,6 +2693,7 @@
 			sourceTree = SOURCE_ROOT;
 		};
 		6515263A072BFC6800411831 = {
+			fileEncoding = 30;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.c;
 			name = langscan.c;
@@ -2517,6 +2702,7 @@
 			sourceTree = SOURCE_ROOT;
 		};
 		6515263B072BFC6800411831 = {
+			fileEncoding = 30;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.c;
 			name = langstartup.c;
@@ -2525,6 +2711,7 @@
 			sourceTree = SOURCE_ROOT;
 		};
 		6515263C072BFC6800411831 = {
+			fileEncoding = 30;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.c;
 			name = langsystypes.c;
@@ -2533,6 +2720,7 @@
 			sourceTree = SOURCE_ROOT;
 		};
 		6515263D072BFC6800411831 = {
+			fileEncoding = 30;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.c;
 			name = langtmpstack.c;
@@ -2541,6 +2729,7 @@
 			sourceTree = SOURCE_ROOT;
 		};
 		6515263E072BFC6800411831 = {
+			fileEncoding = 30;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.c;
 			name = langtrace.c;
@@ -2549,6 +2738,7 @@
 			sourceTree = SOURCE_ROOT;
 		};
 		6515263F072BFC6800411831 = {
+			fileEncoding = 30;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.c;
 			name = langtree.c;
@@ -2557,6 +2747,7 @@
 			sourceTree = SOURCE_ROOT;
 		};
 		65152640072BFC6800411831 = {
+			fileEncoding = 30;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.c;
 			name = langvalue.c;
@@ -2565,6 +2756,7 @@
 			sourceTree = SOURCE_ROOT;
 		};
 		65152641072BFC6800411831 = {
+			fileEncoding = 30;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.c;
 			name = langverbs.c;
@@ -2573,6 +2765,7 @@
 			sourceTree = SOURCE_ROOT;
 		};
 		65152642072BFC6800411831 = {
+			fileEncoding = 30;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.c;
 			name = langwinipc.c;
@@ -2581,6 +2774,7 @@
 			sourceTree = SOURCE_ROOT;
 		};
 		65152643072BFC6800411831 = {
+			fileEncoding = 30;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.c;
 			name = langxml.c;
@@ -2604,6 +2798,7 @@
 			sourceTree = "<group>";
 		};
 		65152645072BFC6800411831 = {
+			fileEncoding = 30;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.c;
 			name = menubar.c;
@@ -2612,6 +2807,7 @@
 			sourceTree = SOURCE_ROOT;
 		};
 		65152646072BFC6800411831 = {
+			fileEncoding = 30;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.c;
 			name = menueditor.c;
@@ -2620,6 +2816,7 @@
 			sourceTree = SOURCE_ROOT;
 		};
 		65152647072BFC6800411831 = {
+			fileEncoding = 30;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.c;
 			name = menufind.c;
@@ -2628,6 +2825,7 @@
 			sourceTree = SOURCE_ROOT;
 		};
 		65152648072BFC6800411831 = {
+			fileEncoding = 30;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.c;
 			name = menupack.c;
@@ -2636,6 +2834,7 @@
 			sourceTree = SOURCE_ROOT;
 		};
 		65152649072BFC6800411831 = {
+			fileEncoding = 30;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.c;
 			name = menuresize.c;
@@ -2644,6 +2843,7 @@
 			sourceTree = SOURCE_ROOT;
 		};
 		6515264A072BFC6800411831 = {
+			fileEncoding = 30;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.c;
 			name = menuverbs.c;
@@ -2652,6 +2852,7 @@
 			sourceTree = SOURCE_ROOT;
 		};
 		6515264B072BFC6800411831 = {
+			fileEncoding = 30;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.c;
 			name = meprograms.c;
@@ -2693,6 +2894,7 @@
 			sourceTree = "<group>";
 		};
 		6515264D072BFC6800411831 = {
+			fileEncoding = 30;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.c;
 			name = op.c;
@@ -2701,6 +2903,7 @@
 			sourceTree = SOURCE_ROOT;
 		};
 		6515264E072BFC6800411831 = {
+			fileEncoding = 30;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.c;
 			name = opbuttons.c;
@@ -2709,6 +2912,7 @@
 			sourceTree = SOURCE_ROOT;
 		};
 		6515264F072BFC6800411831 = {
+			fileEncoding = 30;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.c;
 			name = opdisplay.c;
@@ -2717,6 +2921,7 @@
 			sourceTree = SOURCE_ROOT;
 		};
 		65152650072BFC6800411831 = {
+			fileEncoding = 30;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.c;
 			name = opdraggingmove.c;
@@ -2725,6 +2930,7 @@
 			sourceTree = SOURCE_ROOT;
 		};
 		65152651072BFC6800411831 = {
+			fileEncoding = 30;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.c;
 			name = opedit.c;
@@ -2733,6 +2939,7 @@
 			sourceTree = SOURCE_ROOT;
 		};
 		65152652072BFC6800411831 = {
+			fileEncoding = 30;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.c;
 			name = opexpand.c;
@@ -2741,6 +2948,7 @@
 			sourceTree = SOURCE_ROOT;
 		};
 		65152653072BFC6800411831 = {
+			fileEncoding = 30;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.c;
 			name = ophoist.c;
@@ -2749,6 +2957,7 @@
 			sourceTree = SOURCE_ROOT;
 		};
 		65152654072BFC6800411831 = {
+			fileEncoding = 30;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.c;
 			name = opicons.c;
@@ -2757,6 +2966,7 @@
 			sourceTree = SOURCE_ROOT;
 		};
 		65152655072BFC6800411831 = {
+			fileEncoding = 30;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.c;
 			name = opinit.c;
@@ -2765,6 +2975,7 @@
 			sourceTree = SOURCE_ROOT;
 		};
 		65152656072BFC6800411831 = {
+			fileEncoding = 30;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.c;
 			name = oplangtext.c;
@@ -2773,6 +2984,7 @@
 			sourceTree = SOURCE_ROOT;
 		};
 		65152657072BFC6800411831 = {
+			fileEncoding = 30;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.c;
 			name = oplineheight.c;
@@ -2781,6 +2993,7 @@
 			sourceTree = SOURCE_ROOT;
 		};
 		65152658072BFC6800411831 = {
+			fileEncoding = 30;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.c;
 			name = oplist.c;
@@ -2789,6 +3002,7 @@
 			sourceTree = SOURCE_ROOT;
 		};
 		65152659072BFC6800411831 = {
+			fileEncoding = 30;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.c;
 			name = opops.c;
@@ -2797,6 +3011,7 @@
 			sourceTree = SOURCE_ROOT;
 		};
 		6515265A072BFC6800411831 = {
+			fileEncoding = 30;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.c;
 			name = oppack.c;
@@ -2805,6 +3020,7 @@
 			sourceTree = SOURCE_ROOT;
 		};
 		6515265B072BFC6800411831 = {
+			fileEncoding = 30;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.c;
 			name = oppopup.c;
@@ -2813,6 +3029,7 @@
 			sourceTree = SOURCE_ROOT;
 		};
 		6515265C072BFC6800411831 = {
+			fileEncoding = 30;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.c;
 			name = opprint.c;
@@ -2821,6 +3038,7 @@
 			sourceTree = SOURCE_ROOT;
 		};
 		6515265D072BFC6800411831 = {
+			fileEncoding = 30;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.c;
 			name = oprefcon.c;
@@ -2829,6 +3047,7 @@
 			sourceTree = SOURCE_ROOT;
 		};
 		6515265E072BFC6800411831 = {
+			fileEncoding = 30;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.c;
 			name = opscreenmap.c;
@@ -2837,6 +3056,7 @@
 			sourceTree = SOURCE_ROOT;
 		};
 		6515265F072BFC6800411831 = {
+			fileEncoding = 30;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.c;
 			name = opscrollbar.c;
@@ -2845,6 +3065,7 @@
 			sourceTree = SOURCE_ROOT;
 		};
 		65152660072BFC6800411831 = {
+			fileEncoding = 30;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.c;
 			name = opstructure.c;
@@ -2853,6 +3074,7 @@
 			sourceTree = SOURCE_ROOT;
 		};
 		65152661072BFC6800411831 = {
+			fileEncoding = 30;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.c;
 			name = opvalidate.c;
@@ -2861,6 +3083,7 @@
 			sourceTree = SOURCE_ROOT;
 		};
 		65152662072BFC6800411831 = {
+			fileEncoding = 30;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.c;
 			name = opverbs.c;
@@ -2869,6 +3092,7 @@
 			sourceTree = SOURCE_ROOT;
 		};
 		65152663072BFC6800411831 = {
+			fileEncoding = 30;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.c;
 			name = opvisit.c;
@@ -2877,6 +3101,7 @@
 			sourceTree = SOURCE_ROOT;
 		};
 		65152664072BFC6800411831 = {
+			fileEncoding = 30;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.c;
 			name = opxml.c;
@@ -2885,6 +3110,7 @@
 			sourceTree = SOURCE_ROOT;
 		};
 		65152665072BFC6800411831 = {
+			fileEncoding = 30;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.c;
 			name = textdisplay.c;
@@ -2905,6 +3131,7 @@
 			sourceTree = "<group>";
 		};
 		65152667072BFC6800411831 = {
+			fileEncoding = 30;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.c;
 			name = osacomponent.c;
@@ -2913,6 +3140,7 @@
 			sourceTree = SOURCE_ROOT;
 		};
 		65152668072BFC6800411831 = {
+			fileEncoding = 30;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.c;
 			name = osadroplet.c;
@@ -2921,6 +3149,7 @@
 			sourceTree = SOURCE_ROOT;
 		};
 		6515266A072BFC6800411831 = {
+			fileEncoding = 30;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.c;
 			name = osaparseaete.c;
@@ -2929,6 +3158,7 @@
 			sourceTree = SOURCE_ROOT;
 		};
 		6515266B072BFC6800411831 = {
+			fileEncoding = 30;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.c;
 			name = osawindows.c;
@@ -2967,6 +3197,7 @@
 			sourceTree = "<group>";
 		};
 		6515266D072BFC6800411831 = {
+			fileEncoding = 30;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.c;
 			name = shell.c;
@@ -2975,6 +3206,7 @@
 			sourceTree = SOURCE_ROOT;
 		};
 		6515266E072BFC6800411831 = {
+			fileEncoding = 30;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.c;
 			name = shellactivate.c;
@@ -2983,6 +3215,7 @@
 			sourceTree = SOURCE_ROOT;
 		};
 		6515266F072BFC6800411831 = {
+			fileEncoding = 30;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.c;
 			name = shellblocker.c;
@@ -2991,6 +3224,7 @@
 			sourceTree = SOURCE_ROOT;
 		};
 		65152670072BFC6800411831 = {
+			fileEncoding = 30;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.c;
 			name = shellbuttons.c;
@@ -2999,6 +3233,7 @@
 			sourceTree = SOURCE_ROOT;
 		};
 		65152671072BFC6800411831 = {
+			fileEncoding = 30;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.c;
 			name = shellcallbacks.c;
@@ -3007,6 +3242,7 @@
 			sourceTree = SOURCE_ROOT;
 		};
 		65152672072BFC6800411831 = {
+			fileEncoding = 30;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.c;
 			name = shellfile.c;
@@ -3015,6 +3251,7 @@
 			sourceTree = SOURCE_ROOT;
 		};
 		65152673072BFC6800411831 = {
+			fileEncoding = 30;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.c;
 			name = shellhooks.c;
@@ -3023,6 +3260,7 @@
 			sourceTree = SOURCE_ROOT;
 		};
 		65152674072BFC6800411831 = {
+			fileEncoding = 30;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.c;
 			name = shelljuggler.c;
@@ -3031,6 +3269,7 @@
 			sourceTree = SOURCE_ROOT;
 		};
 		65152675072BFC6800411831 = {
+			fileEncoding = 30;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.c;
 			name = shellkb.c;
@@ -3039,6 +3278,7 @@
 			sourceTree = SOURCE_ROOT;
 		};
 		65152676072BFC6800411831 = {
+			fileEncoding = 30;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.c;
 			name = shellmenu.c;
@@ -3047,6 +3287,7 @@
 			sourceTree = SOURCE_ROOT;
 		};
 		65152677072BFC6800411831 = {
+			fileEncoding = 30;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.c;
 			name = shellmouse.c;
@@ -3055,6 +3296,7 @@
 			sourceTree = SOURCE_ROOT;
 		};
 		65152678072BFC6800411831 = {
+			fileEncoding = 30;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.c;
 			name = shellops.c;
@@ -3063,6 +3305,7 @@
 			sourceTree = SOURCE_ROOT;
 		};
 		65152679072BFC6800411831 = {
+			fileEncoding = 30;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.c;
 			name = shellprint.c;
@@ -3071,6 +3314,7 @@
 			sourceTree = SOURCE_ROOT;
 		};
 		6515267A072BFC6800411831 = {
+			fileEncoding = 30;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.c;
 			name = shellscrap.c;
@@ -3079,6 +3323,7 @@
 			sourceTree = SOURCE_ROOT;
 		};
 		6515267B072BFC6800411831 = {
+			fileEncoding = 30;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.c;
 			name = shellscroll.c;
@@ -3087,6 +3332,7 @@
 			sourceTree = SOURCE_ROOT;
 		};
 		6515267C072BFC6800411831 = {
+			fileEncoding = 30;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.c;
 			name = shellsysverbs.c;
@@ -3095,6 +3341,7 @@
 			sourceTree = SOURCE_ROOT;
 		};
 		6515267D072BFC6800411831 = {
+			fileEncoding = 30;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.c;
 			name = shellundo.c;
@@ -3103,6 +3350,7 @@
 			sourceTree = SOURCE_ROOT;
 		};
 		6515267E072BFC6800411831 = {
+			fileEncoding = 30;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.c;
 			name = shellupdate.c;
@@ -3111,6 +3359,7 @@
 			sourceTree = SOURCE_ROOT;
 		};
 		6515267F072BFC6800411831 = {
+			fileEncoding = 30;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.c;
 			name = shellverbs.c;
@@ -3119,6 +3368,7 @@
 			sourceTree = SOURCE_ROOT;
 		};
 		65152680072BFC6800411831 = {
+			fileEncoding = 30;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.c;
 			name = shellwindow.c;
@@ -3127,6 +3377,7 @@
 			sourceTree = SOURCE_ROOT;
 		};
 		65152681072BFC6800411831 = {
+			fileEncoding = 30;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.c;
 			name = shellwindowmenu.c;
@@ -3135,6 +3386,7 @@
 			sourceTree = SOURCE_ROOT;
 		};
 		65152682072BFC6800411831 = {
+			fileEncoding = 30;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.c;
 			name = shellwindowverbs.c;
@@ -3153,6 +3405,7 @@
 			sourceTree = "<group>";
 		};
 		65152684072BFC6800411831 = {
+			fileEncoding = 30;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.c;
 			name = strings.c;
@@ -3161,6 +3414,7 @@
 			sourceTree = SOURCE_ROOT;
 		};
 		65152685072BFC6800411831 = {
+			fileEncoding = 30;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.c;
 			name = stringverbs.c;
@@ -3192,6 +3446,7 @@
 			sourceTree = "<group>";
 		};
 		65152687072BFC6800411831 = {
+			fileEncoding = 30;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.c;
 			name = tablecompare.c;
@@ -3200,6 +3455,7 @@
 			sourceTree = SOURCE_ROOT;
 		};
 		65152688072BFC6800411831 = {
+			fileEncoding = 30;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.c;
 			name = tabledisplay.c;
@@ -3208,6 +3464,7 @@
 			sourceTree = SOURCE_ROOT;
 		};
 		65152689072BFC6800411831 = {
+			fileEncoding = 30;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.c;
 			name = tableedit.c;
@@ -3216,6 +3473,7 @@
 			sourceTree = SOURCE_ROOT;
 		};
 		6515268A072BFC6800411831 = {
+			fileEncoding = 30;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.c;
 			name = tableexternal.c;
@@ -3224,6 +3482,7 @@
 			sourceTree = SOURCE_ROOT;
 		};
 		6515268B072BFC6800411831 = {
+			fileEncoding = 30;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.c;
 			name = tablefind.c;
@@ -3232,6 +3491,7 @@
 			sourceTree = SOURCE_ROOT;
 		};
 		6515268C072BFC6800411831 = {
+			fileEncoding = 30;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.c;
 			name = tableformats.c;
@@ -3240,6 +3500,7 @@
 			sourceTree = SOURCE_ROOT;
 		};
 		6515268D072BFC6800411831 = {
+			fileEncoding = 30;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.c;
 			name = tableops.c;
@@ -3248,6 +3509,7 @@
 			sourceTree = SOURCE_ROOT;
 		};
 		6515268E072BFC6800411831 = {
+			fileEncoding = 30;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.c;
 			name = tablepack.c;
@@ -3256,6 +3518,7 @@
 			sourceTree = SOURCE_ROOT;
 		};
 		6515268F072BFC6800411831 = {
+			fileEncoding = 30;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.c;
 			name = tablepopup.c;
@@ -3264,6 +3527,7 @@
 			sourceTree = SOURCE_ROOT;
 		};
 		65152690072BFC6800411831 = {
+			fileEncoding = 30;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.c;
 			name = tablerunbutton.c;
@@ -3272,6 +3536,7 @@
 			sourceTree = SOURCE_ROOT;
 		};
 		65152691072BFC6800411831 = {
+			fileEncoding = 30;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.c;
 			name = tablescrap.c;
@@ -3280,6 +3545,7 @@
 			sourceTree = SOURCE_ROOT;
 		};
 		65152692072BFC6800411831 = {
+			fileEncoding = 30;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.c;
 			name = tablestructure.c;
@@ -3288,6 +3554,7 @@
 			sourceTree = SOURCE_ROOT;
 		};
 		65152693072BFC6800411831 = {
+			fileEncoding = 30;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.c;
 			name = tablevalidate.c;
@@ -3296,6 +3563,7 @@
 			sourceTree = SOURCE_ROOT;
 		};
 		65152694072BFC6800411831 = {
+			fileEncoding = 30;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.c;
 			name = tableverbs.c;
@@ -3304,6 +3572,7 @@
 			sourceTree = SOURCE_ROOT;
 		};
 		65152695072BFC6800411831 = {
+			fileEncoding = 30;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.c;
 			name = tablewindow.c;
@@ -3322,6 +3591,7 @@
 			sourceTree = "<group>";
 		};
 		65152697072BFC6800411831 = {
+			fileEncoding = 30;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.c;
 			name = wpengine.c;
@@ -3330,6 +3600,7 @@
 			sourceTree = SOURCE_ROOT;
 		};
 		65152698072BFC6800411831 = {
+			fileEncoding = 30;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.c;
 			name = wpverbs.c;
@@ -4973,6 +5244,7 @@
 			};
 		};
 		651527B1072BFE0100411831 = {
+			fileEncoding = 30;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.h;
 			name = frontier.h;
@@ -4987,6 +5259,7 @@
 			};
 		};
 		651527B3072BFE0300411831 = {
+			fileEncoding = 30;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.h;
 			name = font.h;
@@ -5001,6 +5274,7 @@
 			};
 		};
 		651527B5072BFE0400411831 = {
+			fileEncoding = 30;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.h;
 			name = appletdefs.h;
@@ -5040,6 +5314,7 @@
 			};
 		};
 		651527BA072BFE1000411831 = {
+			fileEncoding = 30;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.h;
 			name = standard.h;
@@ -5054,6 +5329,7 @@
 			};
 		};
 		651527BC072BFE1B00411831 = {
+			fileEncoding = 30;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.h;
 			name = iac.h;
@@ -5068,6 +5344,7 @@
 			};
 		};
 		651527BE072BFE1D00411831 = {
+			fileEncoding = 30;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.h;
 			name = appletmemory.h;
@@ -5082,6 +5359,7 @@
 			};
 		};
 		651527C0072BFE1E00411831 = {
+			fileEncoding = 30;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.h;
 			name = appletstrings.h;
@@ -5096,6 +5374,7 @@
 			};
 		};
 		651527C2072BFE2000411831 = {
+			fileEncoding = 30;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.h;
 			name = appletfiles.h;
@@ -5110,6 +5389,7 @@
 			};
 		};
 		651527C4072BFE2100411831 = {
+			fileEncoding = 30;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.h;
 			name = appletprocess.h;
@@ -5124,6 +5404,7 @@
 			};
 		};
 		651527C6072BFE2400411831 = {
+			fileEncoding = 30;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.h;
 			name = appletfrontier.h;
@@ -5138,6 +5419,7 @@
 			};
 		};
 		651527C8072BFE2500411831 = {
+			fileEncoding = 30;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.h;
 			name = aeutils.h;
@@ -5152,6 +5434,7 @@
 			};
 		};
 		651527CA072BFE2700411831 = {
+			fileEncoding = 30;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.h;
 			name = uisinternal.h;
@@ -5166,6 +5449,7 @@
 			};
 		};
 		651527CC072BFE2900411831 = {
+			fileEncoding = 30;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.h;
 			name = appletbits.h;
@@ -5180,6 +5464,7 @@
 			};
 		};
 		651527CE072BFE2B00411831 = {
+			fileEncoding = 30;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.h;
 			name = quickdraw.h;
@@ -5194,6 +5479,7 @@
 			};
 		};
 		651527D0072BFE2C00411831 = {
+			fileEncoding = 30;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.h;
 			name = memory.h;
@@ -5208,6 +5494,7 @@
 			};
 		};
 		651527D2072BFE2E00411831 = {
+			fileEncoding = 30;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.h;
 			name = file.h;
@@ -5222,6 +5509,7 @@
 			};
 		};
 		651527D4072BFE3000411831 = {
+			fileEncoding = 30;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.h;
 			name = launch.h;
@@ -5236,6 +5524,7 @@
 			};
 		};
 		651527D6072BFE3200411831 = {
+			fileEncoding = 30;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.h;
 			name = shelltypes.h;
@@ -5250,6 +5539,7 @@
 			};
 		};
 		651527D8072BFE3300411831 = {
+			fileEncoding = 30;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.h;
 			name = appletfont.h;
@@ -5264,6 +5554,7 @@
 			};
 		};
 		651527DA072BFE3400411831 = {
+			fileEncoding = 30;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.h;
 			name = appletquickdraw.h;
@@ -5278,6 +5569,7 @@
 			};
 		};
 		651527DC072BFE3600411831 = {
+			fileEncoding = 30;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.h;
 			name = applettextedit.h;
@@ -5292,6 +5584,7 @@
 			};
 		};
 		651527DE072BFE3800411831 = {
+			fileEncoding = 30;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.h;
 			name = error.h;
@@ -5306,6 +5599,7 @@
 			};
 		};
 		651527E0072BFE3900411831 = {
+			fileEncoding = 30;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.h;
 			name = strings.h;
@@ -5320,6 +5614,7 @@
 			};
 		};
 		651527E2072BFE3B00411831 = {
+			fileEncoding = 30;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.h;
 			name = shell.rsrc.h;
@@ -5334,6 +5629,7 @@
 			};
 		};
 		651527E4072BFE3C00411831 = {
+			fileEncoding = 30;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.h;
 			name = resources.h;
@@ -5348,6 +5644,7 @@
 			};
 		};
 		651527E6072BFE3D00411831 = {
+			fileEncoding = 30;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.h;
 			name = lang.h;
@@ -5362,6 +5659,7 @@
 			};
 		};
 		651527E8072BFE3F00411831 = {
+			fileEncoding = 30;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.h;
 			name = langinternal.h;
@@ -5376,6 +5674,7 @@
 			};
 		};
 		651527EA072BFE4100411831 = {
+			fileEncoding = 30;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.h;
 			name = ops.h;
@@ -5390,6 +5689,7 @@
 			};
 		};
 		651527EC072BFE4200411831 = {
+			fileEncoding = 30;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.h;
 			name = langexternal.h;
@@ -5404,6 +5704,7 @@
 			};
 		};
 		651527EE072BFE4400411831 = {
+			fileEncoding = 30;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.h;
 			name = langsystem7.h;
@@ -5418,6 +5719,7 @@
 			};
 		};
 		651527F0072BFE4600411831 = {
+			fileEncoding = 30;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.h;
 			name = process.h;
@@ -5432,6 +5734,7 @@
 			};
 		};
 		651527F2072BFE4700411831 = {
+			fileEncoding = 30;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.h;
 			name = kernelverbs.h;
@@ -5446,6 +5749,7 @@
 			};
 		};
 		651527F4072BFE4900411831 = {
+			fileEncoding = 30;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.h;
 			name = filesystem7.h;
@@ -5460,6 +5764,7 @@
 			};
 		};
 		651527F6072BFE4A00411831 = {
+			fileEncoding = 30;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.h;
 			name = filealias.h;
@@ -5474,6 +5779,7 @@
 			};
 		};
 		651527F8072BFE4C00411831 = {
+			fileEncoding = 30;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.h;
 			name = tablestructure.h;
@@ -5488,6 +5794,7 @@
 			};
 		};
 		651527FA072BFE4D00411831 = {
+			fileEncoding = 30;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.h;
 			name = kernelverbdefs.h;
@@ -5502,6 +5809,7 @@
 			};
 		};
 		651527FC072BFE4F00411831 = {
+			fileEncoding = 30;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.h;
 			name = winregistry.h;
@@ -5516,6 +5824,7 @@
 			};
 		};
 		651527FE072BFE5100411831 = {
+			fileEncoding = 30;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.h;
 			name = cursor.h;
@@ -5530,6 +5839,7 @@
 			};
 		};
 		65152800072BFE5200411831 = {
+			fileEncoding = 30;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.h;
 			name = dialogs.h;
@@ -5544,6 +5854,7 @@
 			};
 		};
 		65152802072BFE5400411831 = {
+			fileEncoding = 30;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.h;
 			name = timedate.h;
@@ -5558,6 +5869,7 @@
 			};
 		};
 		65152804072BFE5500411831 = {
+			fileEncoding = 30;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.h;
 			name = frontierwindows.h;
@@ -5572,6 +5884,7 @@
 			};
 		};
 		65152806072BFE5700411831 = {
+			fileEncoding = 30;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.h;
 			name = shell.h;
@@ -5586,6 +5899,7 @@
 			};
 		};
 		65152808072BFE5900411831 = {
+			fileEncoding = 30;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.h;
 			name = SetUpA5.h;
@@ -5600,6 +5914,7 @@
 			};
 		};
 		6515280A072BFE5B00411831 = {
+			fileEncoding = 30;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.h;
 			name = oplist.h;
@@ -5614,6 +5929,7 @@
 			};
 		};
 		6515280C072BFE5C00411831 = {
+			fileEncoding = 30;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.h;
 			name = fileloop.h;
@@ -5628,6 +5944,7 @@
 			};
 		};
 		6515280E072BFE5E00411831 = {
+			fileEncoding = 30;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.h;
 			name = mac.h;
@@ -5642,6 +5959,7 @@
 			};
 		};
 		65152810072BFE6000411831 = {
+			fileEncoding = 30;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.h;
 			name = scrap.h;
@@ -5656,6 +5974,7 @@
 			};
 		};
 		65152812072BFE6100411831 = {
+			fileEncoding = 30;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.h;
 			name = threads.h;
@@ -5670,6 +5989,7 @@
 			};
 		};
 		65152814072BFE6300411831 = {
+			fileEncoding = 30;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.h;
 			name = MoreFilesExtras.h;
@@ -5684,6 +6004,7 @@
 			};
 		};
 		65152816072BFE6700411831 = {
+			fileEncoding = 30;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.h;
 			name = iacinternal.h;
@@ -5698,6 +6019,7 @@
 			};
 		};
 		65152818072BFE6A00411831 = {
+			fileEncoding = 30;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.h;
 			name = appleticons.h;
@@ -5712,6 +6034,7 @@
 			};
 		};
 		6515281A072BFE6C00411831 = {
+			fileEncoding = 30;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.h;
 			name = appletkb.h;
@@ -5726,6 +6049,7 @@
 			};
 		};
 		6515281C072BFE6E00411831 = {
+			fileEncoding = 30;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.h;
 			name = appletops.h;
@@ -5740,6 +6064,7 @@
 			};
 		};
 		6515281E072BFE7000411831 = {
+			fileEncoding = 30;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.h;
 			name = appletmenuops.h;
@@ -5754,6 +6079,7 @@
 			};
 		};
 		65152820072BFE7100411831 = {
+			fileEncoding = 30;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.h;
 			name = applet.h;
@@ -5768,6 +6094,7 @@
 			};
 		};
 		65152822072BFE7300411831 = {
+			fileEncoding = 30;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.h;
 			name = iowacore.h;
@@ -5782,6 +6109,7 @@
 			};
 		};
 		65152824072BFE7400411831 = {
+			fileEncoding = 30;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.h;
 			name = iowascript.h;
@@ -5796,6 +6124,7 @@
 			};
 		};
 		65152826072BFE7700411831 = {
+			fileEncoding = 30;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.h;
 			name = iowaparser.h;
@@ -5810,6 +6139,7 @@
 			};
 		};
 		65152828072BFE7900411831 = {
+			fileEncoding = 30;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.h;
 			name = iowafrontier.h;
@@ -5824,6 +6154,7 @@
 			};
 		};
 		6515282A072BFE7A00411831 = {
+			fileEncoding = 30;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.h;
 			name = iowaattributes.h;
@@ -5838,6 +6169,7 @@
 			};
 		};
 		6515282C072BFE7C00411831 = {
+			fileEncoding = 30;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.h;
 			name = iowaruntime.h;
@@ -5852,6 +6184,7 @@
 			};
 		};
 		6515282E072BFE7D00411831 = {
+			fileEncoding = 30;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.h;
 			name = appletresource.h;
@@ -5866,6 +6199,7 @@
 			};
 		};
 		65152830072BFE7F00411831 = {
+			fileEncoding = 30;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.h;
 			name = UserTalk.h;
@@ -5880,6 +6214,7 @@
 			};
 		};
 		65152832072BFE8200411831 = {
+			fileEncoding = 30;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.h;
 			name = appletfiledesktop.h;
@@ -5894,6 +6229,7 @@
 			};
 		};
 		65152834072BFE8300411831 = {
+			fileEncoding = 30;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.h;
 			name = iowainit.h;
@@ -5908,6 +6244,7 @@
 			};
 		};
 		65152836072BFE8500411831 = {
+			fileEncoding = 30;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.h;
 			name = appletmouse.h;
@@ -5922,6 +6259,7 @@
 			};
 		};
 		65152838072BFE8700411831 = {
+			fileEncoding = 30;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.h;
 			name = appletcursor.h;
@@ -5936,6 +6274,7 @@
 			};
 		};
 		6515283A072BFE8900411831 = {
+			fileEncoding = 30;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.h;
 			name = appletcardops.h;
@@ -5950,6 +6289,7 @@
 			};
 		};
 		6515283C072BFE8A00411831 = {
+			fileEncoding = 30;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.h;
 			name = appletzoom.h;
@@ -5964,6 +6304,7 @@
 			};
 		};
 		6515283E072BFE8C00411831 = {
+			fileEncoding = 30;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.h;
 			name = appletcard.h;
@@ -5978,6 +6319,7 @@
 			};
 		};
 		65152840072BFE8D00411831 = {
+			fileEncoding = 30;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.h;
 			name = landinternal.h;
@@ -5992,6 +6334,7 @@
 			};
 		};
 		65152842072BFE9000411831 = {
+			fileEncoding = 30;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.h;
 			name = search.h;
@@ -6006,6 +6349,7 @@
 			};
 		};
 		65152844072BFE9100411831 = {
+			fileEncoding = 30;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.h;
 			name = shellprint.h;
@@ -6020,6 +6364,7 @@
 			};
 		};
 		65152846072BFE9500411831 = {
+			fileEncoding = 30;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.h;
 			name = shellundo.h;
@@ -6034,6 +6379,7 @@
 			};
 		};
 		65152848072BFE9700411831 = {
+			fileEncoding = 30;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.h;
 			name = cancoon.h;
@@ -6048,6 +6394,7 @@
 			};
 		};
 		6515284A072BFE9800411831 = {
+			fileEncoding = 30;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.h;
 			name = pict.h;
@@ -6062,6 +6409,7 @@
 			};
 		};
 		6515284C072BFE9A00411831 = {
+			fileEncoding = 30;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.h;
 			name = pictverbs.h;
@@ -6076,6 +6424,7 @@
 			};
 		};
 		6515284E072BFE9C00411831 = {
+			fileEncoding = 30;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.h;
 			name = bitmaps.h;
@@ -6090,6 +6439,7 @@
 			};
 		};
 		65152850072BFE9E00411831 = {
+			fileEncoding = 30;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.h;
 			name = mouse.h;
@@ -6104,6 +6454,7 @@
 			};
 		};
 		65152852072BFE9F00411831 = {
+			fileEncoding = 30;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.h;
 			name = scrollbar.h;
@@ -6118,6 +6469,7 @@
 			};
 		};
 		65152854072BFEA100411831 = {
+			fileEncoding = 30;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.h;
 			name = zoom.h;
@@ -6132,6 +6484,7 @@
 			};
 		};
 		65152856072BFEA200411831 = {
+			fileEncoding = 30;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.h;
 			name = shellhooks.h;
@@ -6146,6 +6499,7 @@
 			};
 		};
 		65152858072BFEA400411831 = {
+			fileEncoding = 30;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.h;
 			name = menu.h;
@@ -6160,6 +6514,7 @@
 			};
 		};
 		6515285A072BFEA500411831 = {
+			fileEncoding = 30;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.h;
 			name = popup.h;
@@ -6174,6 +6529,7 @@
 			};
 		};
 		6515285C072BFEA700411831 = {
+			fileEncoding = 30;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.h;
 			name = meprograms.h;
@@ -6188,6 +6544,7 @@
 			};
 		};
 		6515285E072BFEA900411831 = {
+			fileEncoding = 30;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.h;
 			name = dockmenu.h;
@@ -6202,6 +6559,7 @@
 			};
 		};
 		65152860072BFEAA00411831 = {
+			fileEncoding = 30;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.h;
 			name = opinternal.h;
@@ -6216,6 +6574,7 @@
 			};
 		};
 		65152862072BFEAB00411831 = {
+			fileEncoding = 30;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.h;
 			name = menuverbs.h;
@@ -6230,6 +6589,7 @@
 			};
 		};
 		65152864072BFEAE00411831 = {
+			fileEncoding = 30;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.h;
 			name = kb.h;
@@ -6244,6 +6604,7 @@
 			};
 		};
 		65152866072BFEB100411831 = {
+			fileEncoding = 30;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.h;
 			name = shellmenu.h;
@@ -6258,6 +6619,7 @@
 			};
 		};
 		65152868072BFEB400411831 = {
+			fileEncoding = 30;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.h;
 			name = land.h;
@@ -6272,6 +6634,7 @@
 			};
 		};
 		6515286A072BFEBE00411831 = {
+			fileEncoding = 30;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.cpp.h;
 			name = BASE64.H;
@@ -6286,6 +6649,7 @@
 			};
 		};
 		6515286C072BFEC000411831 = {
+			fileEncoding = 30;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.h;
 			name = versions.h;
@@ -6300,6 +6664,7 @@
 			};
 		};
 		6515286E072BFEC100411831 = {
+			fileEncoding = 30;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.h;
 			name = icon.h;
@@ -6314,6 +6679,7 @@
 			};
 		};
 		65152870072BFEC300411831 = {
+			fileEncoding = 30;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.h;
 			name = smallicon.h;
@@ -6328,6 +6694,7 @@
 			};
 		};
 		65152872072BFEC500411831 = {
+			fileEncoding = 30;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.h;
 			name = textedit.h;
@@ -6342,6 +6709,7 @@
 			};
 		};
 		65152874072BFEC600411831 = {
+			fileEncoding = 30;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.h;
 			name = windowlayout.h;
@@ -6356,6 +6724,7 @@
 			};
 		};
 		65152876072BFEC800411831 = {
+			fileEncoding = 30;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.h;
 			name = shellprivate.h;
@@ -6370,6 +6739,7 @@
 			};
 		};
 		65152878072BFEC900411831 = {
+			fileEncoding = 30;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.h;
 			name = about.h;
@@ -6384,6 +6754,7 @@
 			};
 		};
 		6515287A072BFECB00411831 = {
+			fileEncoding = 30;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.h;
 			name = cancooninternal.h;
@@ -6398,6 +6769,7 @@
 			};
 		};
 		6515287C072BFECC00411831 = {
+			fileEncoding = 30;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.h;
 			name = processinternal.h;
@@ -6412,6 +6784,7 @@
 			};
 		};
 		6515287E072BFECE00411831 = {
+			fileEncoding = 30;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.h;
 			name = WinLand.h;
@@ -6426,6 +6799,7 @@
 			};
 		};
 		65152880072BFED000411831 = {
+			fileEncoding = 30;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.h;
 			name = OSXSpecifics.h;
@@ -6440,6 +6814,7 @@
 			};
 		};
 		65152882072BFED200411831 = {
+			fileEncoding = 30;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.h;
 			name = player.h;
@@ -6454,6 +6829,7 @@
 			};
 		};
 		65152884072BFED300411831 = {
+			fileEncoding = 30;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.h;
 			name = frontierconfig.h;
@@ -6468,6 +6844,7 @@
 			};
 		};
 		65152886072BFED500411831 = {
+			fileEncoding = 30;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.h;
 			name = db.h;
@@ -6482,6 +6859,7 @@
 			};
 		};
 		65152888072BFED600411831 = {
+			fileEncoding = 30;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.h;
 			name = tableverbs.h;
@@ -6496,6 +6874,7 @@
 			};
 		};
 		6515288A072BFED800411831 = {
+			fileEncoding = 30;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.h;
 			name = opverbs.h;
@@ -6510,6 +6889,7 @@
 			};
 		};
 		6515288C072BFEDA00411831 = {
+			fileEncoding = 30;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.h;
 			name = scripts.h;
@@ -6524,6 +6904,7 @@
 			};
 		};
 		6515288E072BFEDC00411831 = {
+			fileEncoding = 30;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.h;
 			name = wpverbs.h;
@@ -6538,6 +6919,7 @@
 			};
 		};
 		65152890072BFEDD00411831 = {
+			fileEncoding = 30;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.h;
 			name = command.h;
@@ -6552,6 +6934,7 @@
 			};
 		};
 		65152892072BFEDF00411831 = {
+			fileEncoding = 30;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.h;
 			name = osacomponent.h;
@@ -6566,6 +6949,7 @@
 			};
 		};
 		65152894072BFEE200411831 = {
+			fileEncoding = 30;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.h;
 			name = iowaverbs.h;
@@ -6580,6 +6964,7 @@
 			};
 		};
 		65152896072BFEE400411831 = {
+			fileEncoding = 30;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.h;
 			name = frontierstart.h;
@@ -6594,6 +6979,7 @@
 			};
 		};
 		65152898072BFEE500411831 = {
+			fileEncoding = 30;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.h;
 			name = frontierdebug.h;
@@ -6608,6 +6994,7 @@
 			};
 		};
 		6515289A072BFEE700411831 = {
+			fileEncoding = 30;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.cpp.h;
 			name = PAIGE.H;
@@ -6622,6 +7009,7 @@
 			};
 		};
 		6515289C072BFEE900411831 = {
+			fileEncoding = 30;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.cpp.h;
 			name = PGDEFTBL.H;
@@ -6636,6 +7024,7 @@
 			};
 		};
 		6515289E072BFEEA00411831 = {
+			fileEncoding = 30;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.h;
 			name = notify.h;
@@ -6650,6 +7039,7 @@
 			};
 		};
 		651528A0072BFEED00411831 = {
+			fileEncoding = 30;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.h;
 			name = md5.h;
@@ -6664,6 +7054,7 @@
 			};
 		};
 		651528A2072BFEEF00411831 = {
+			fileEncoding = 30;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.h;
 			name = services.h;
@@ -6678,6 +7069,7 @@
 			};
 		};
 		651528A4072BFEF100411831 = {
+			fileEncoding = 30;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.h;
 			name = serialnumber.h;
@@ -6692,6 +7084,7 @@
 			};
 		};
 		651528A6072BFEF200411831 = {
+			fileEncoding = 30;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.h;
 			name = langregexp.h;
@@ -6706,6 +7099,7 @@
 			};
 		};
 		651528A8072BFEF500411831 = {
+			fileEncoding = 30;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.h;
 			name = shellbuttons.h;
@@ -6720,6 +7114,7 @@
 			};
 		};
 		651528AA072BFEF600411831 = {
+			fileEncoding = 30;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.h;
 			name = op.h;
@@ -6734,6 +7129,7 @@
 			};
 		};
 		651528AC072BFEF800411831 = {
+			fileEncoding = 30;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.h;
 			name = menueditor.h;
@@ -6748,6 +7144,7 @@
 			};
 		};
 		651528AE072BFEFA00411831 = {
+			fileEncoding = 30;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.h;
 			name = tableinternal.h;
@@ -6762,6 +7159,7 @@
 			};
 		};
 		651528B0072BFEFD00411831 = {
+			fileEncoding = 30;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.h;
 			name = sounds.h;
@@ -6776,6 +7174,7 @@
 			};
 		};
 		651528B2072BFEFF00411831 = {
+			fileEncoding = 30;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.h;
 			name = uisharing.h;
@@ -6790,6 +7189,7 @@
 			};
 		};
 		651528B4072BFF0200411831 = {
+			fileEncoding = 30;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.h;
 			name = miniwindow.h;
@@ -6804,6 +7204,7 @@
 			};
 		};
 		651528B6072BFF0400411831 = {
+			fileEncoding = 30;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.h;
 			name = wpengine.h;
@@ -6818,6 +7219,7 @@
 			};
 		};
 		651528B8072BFF0700411831 = {
+			fileEncoding = 30;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.h;
 			name = tableformats.h;
@@ -6832,6 +7234,7 @@
 			};
 		};
 		651528BA072BFF0900411831 = {
+			fileEncoding = 30;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.h;
 			name = langipc.h;
@@ -6846,6 +7249,7 @@
 			};
 		};
 		651528BC072BFF0C00411831 = {
+			fileEncoding = 30;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.h;
 			name = dbinternal.h;
@@ -6860,6 +7264,7 @@
 			};
 		};
 		651528BE072BFF0F00411831 = {
+			fileEncoding = 30;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.h;
 			name = WinSockNetEvents.h;
@@ -6874,6 +7279,7 @@
 			};
 		};
 		651528C0072BFF1000411831 = {
+			fileEncoding = 30;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.h;
 			name = opdisplay.h;
@@ -6888,6 +7294,7 @@
 			};
 		};
 		651528C2072BFF1200411831 = {
+			fileEncoding = 30;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.h;
 			name = opicons.h;
@@ -6902,6 +7309,7 @@
 			};
 		};
 		651528C4072BFF1300411831 = {
+			fileEncoding = 30;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.h;
 			name = claybrowser.h;
@@ -6916,6 +7324,7 @@
 			};
 		};
 		651528C6072BFF1500411831 = {
+			fileEncoding = 30;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.h;
 			name = claybrowserstruc.h;
@@ -6930,6 +7339,7 @@
 			};
 		};
 		651528C8072BFF1700411831 = {
+			fileEncoding = 30;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.h;
 			name = claybrowserexpand.h;
@@ -6944,6 +7354,7 @@
 			};
 		};
 		651528CA072BFF1900411831 = {
+			fileEncoding = 30;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.h;
 			name = claycallbacks.h;
@@ -6958,6 +7369,7 @@
 			};
 		};
 		651528CC072BFF1A00411831 = {
+			fileEncoding = 30;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.h;
 			name = claybrowservalidate.h;
@@ -6972,6 +7384,7 @@
 			};
 		};
 		651528CE072BFF1C00411831 = {
+			fileEncoding = 30;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.h;
 			name = oplineheight.h;
@@ -6986,6 +7399,7 @@
 			};
 		};
 		651528D0072BFF1F00411831 = {
+			fileEncoding = 30;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.h;
 			name = odbinternal.h;
@@ -7000,6 +7414,7 @@
 			};
 		};
 		651528D2072BFF2200411831 = {
+			fileEncoding = 30;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.h;
 			name = CallMachOFrameWork.h;
@@ -7014,6 +7429,7 @@
 			};
 		};
 		651528D4072BFF2500411831 = {
+			fileEncoding = 30;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.h;
 			name = langhtml.h;
@@ -7028,6 +7444,7 @@
 			};
 		};
 		651528D6072BFF2700411831 = {
+			fileEncoding = 30;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.h;
 			name = langxml.h;
@@ -7042,6 +7459,7 @@
 			};
 		};
 		651528D8072BFF2900411831 = {
+			fileEncoding = 30;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.h;
 			name = langxcmd.h;
@@ -7056,6 +7474,7 @@
 			};
 		};
 		651528DA072BFF2C00411831 = {
+			fileEncoding = 30;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.h;
 			name = langdll.h;
@@ -7070,6 +7489,7 @@
 			};
 		};
 		651528DC072BFF2D00411831 = {
+			fileEncoding = 30;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.h;
 			name = langtokens.h;
@@ -7084,6 +7504,7 @@
 			};
 		};
 		651528DE072BFF2F00411831 = {
+			fileEncoding = 30;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.h;
 			name = langwinipc.h;
@@ -7098,6 +7519,7 @@
 			};
 		};
 		651528E0072BFF3100411831 = {
+			fileEncoding = 30;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.h;
 			name = htmlcontrol.h;
@@ -7112,6 +7534,7 @@
 			};
 		};
 		651528E2072BFF3300411831 = {
+			fileEncoding = 30;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.h;
 			name = langpython.h;
@@ -7126,6 +7549,7 @@
 			};
 		};
 		651528E4072BFF3600411831 = {
+			fileEncoding = 30;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.h;
 			name = pcre_internal.h;
@@ -7140,6 +7564,7 @@
 			};
 		};
 		651528E6072BFF3D00411831 = {
+			fileEncoding = 30;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.h;
 			name = yytab.h;
@@ -7154,6 +7579,7 @@
 			};
 		};
 		651528E8072BFF3E00411831 = {
+			fileEncoding = 30;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.h;
 			name = langparser.h;
@@ -7168,6 +7594,7 @@
 			};
 		};
 		651528EA072BFF4100411831 = {
+			fileEncoding = 30;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.h;
 			name = menubar.h;
@@ -7182,6 +7609,7 @@
 			};
 		};
 		651528EC072BFF4400411831 = {
+			fileEncoding = 30;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.c;
 			name = iso8859.c;
@@ -7196,6 +7624,7 @@
 			};
 		};
 		651528EE072BFF4700411831 = {
+			fileEncoding = 30;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.h;
 			name = FrontierWinMain.h;
@@ -7210,6 +7639,7 @@
 			};
 		};
 		651528F0072BFF4B00411831 = {
+			fileEncoding = 30;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.yacc;
 			name = langparser.y;
@@ -7224,6 +7654,7 @@
 			};
 		};
 		651528F2072BFF4E00411831 = {
+			fileEncoding = 30;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.h;
 			name = menuinternal.h;
@@ -7238,6 +7669,7 @@
 			};
 		};
 		651528F4072BFF5100411831 = {
+			fileEncoding = 30;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.h;
 			name = textdisplay.h;
@@ -7252,6 +7684,7 @@
 			};
 		};
 		651528F6072BFF5300411831 = {
+			fileEncoding = 30;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.h;
 			name = opxml.h;
@@ -7266,6 +7699,7 @@
 			};
 		};
 		651528F8072BFF5600411831 = {
+			fileEncoding = 30;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.h;
 			name = opbuttons.h;
@@ -7280,6 +7714,7 @@
 			};
 		};
 		651528FA072BFF5900411831 = {
+			fileEncoding = 30;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.h;
 			name = opdraggingmove.h;
@@ -7294,6 +7729,7 @@
 			};
 		};
 		651528FC072BFF5C00411831 = {
+			fileEncoding = 30;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.h;
 			name = osadroplet.h;
@@ -7308,6 +7744,7 @@
 			};
 		};
 		651528FE072BFF5D00411831 = {
+			fileEncoding = 30;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.h;
 			name = osainternal.h;
@@ -7322,6 +7759,7 @@
 			};
 		};
 		65152900072BFF6000411831 = {
+			fileEncoding = 30;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.h;
 			name = osamenus.h;
@@ -7336,6 +7774,7 @@
 			};
 		};
 		65152902072BFF6300411831 = {
+			fileEncoding = 30;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.h;
 			name = osaparseaete.h;
@@ -7350,6 +7789,7 @@
 			};
 		};
 		65152904072BFF6400411831 = {
+			fileEncoding = 30;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.h;
 			name = osawindows.h;
@@ -7364,6 +7804,7 @@
 			};
 		};
 		65152906072BFF6800411831 = {
+			fileEncoding = 30;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.h;
 			name = tabledisplay.h;
@@ -7378,6 +7819,7 @@
 			};
 		};
 		65152908072BFF6900411831 = {
+			fileEncoding = 30;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.h;
 			name = claylinelayout.h;
@@ -7392,6 +7834,7 @@
 			};
 		};
 		6515290A072BFF6C00411831 = {
+			fileEncoding = 30;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.cpp.h;
 			name = PGTRAPS.H;
@@ -7406,6 +7849,7 @@
 			};
 		};
 		6515290C072BFF7500411831 = {
+			fileEncoding = 30;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.cpp.h;
 			name = PGEXCEPS.H;
@@ -7420,6 +7864,7 @@
 			};
 		};
 		6515290E072BFF7900411831 = {
+			fileEncoding = 30;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.cpp.h;
 			name = DEFPROCS.H;
@@ -7434,6 +7879,7 @@
 			};
 		};
 		65152910072BFF7A00411831 = {
+			fileEncoding = 30;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.cpp.h;
 			name = MACHINE.H;
@@ -7448,6 +7894,7 @@
 			};
 		};
 		65152912072BFF7D00411831 = {
+			fileEncoding = 30;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.h;
 			name = pgHLevel.h;
@@ -7462,6 +7909,7 @@
 			};
 		};
 		65152914072BFF8400411831 = {
+			fileEncoding = 30;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.h;
 			name = wpinternal.h;
@@ -7476,6 +7924,7 @@
 			};
 		};
 		65152916072BFF8600411831 = {
+			fileEncoding = 30;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.h;
 			name = WSE.h;
@@ -7490,6 +7939,7 @@
 			};
 		};
 		65152918072BFF8800411831 = {
+			fileEncoding = 30;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.c;
 			name = chartables.c;
@@ -7504,6 +7954,7 @@
 			};
 		};
 		6515291A072BFF8A00411831 = {
+			fileEncoding = 30;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.rez;
 			name = config.r;
@@ -7518,6 +7969,7 @@
 			};
 		};
 		6515291E072BFF8D00411831 = {
+			fileEncoding = 30;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.h;
 			name = osincludes.h;
@@ -7532,6 +7984,7 @@
 			};
 		};
 		65152922072BFFCF00411831 = {
+			fileEncoding = 30;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.h;
 			name = macconv.h;
@@ -7546,6 +7999,7 @@
 			};
 		};
 		65152924072BFFD200411831 = {
+			fileEncoding = 30;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.h;
 			name = stringdefs.h;
@@ -7560,6 +8014,7 @@
 			};
 		};
 		65152926072BFFD600411831 = {
+			fileEncoding = 30;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.h;
 			name = Optimization.h;
@@ -7574,6 +8029,7 @@
 			};
 		};
 		65152928072BFFDA00411831 = {
+			fileEncoding = 30;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.h;
 			name = OptimizationEnd.h;
@@ -7588,6 +8044,7 @@
 			};
 		};
 		6515292A072BFFDC00411831 = {
+			fileEncoding = 30;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.h;
 			name = appletundo.h;
@@ -7602,6 +8059,7 @@
 			};
 		};
 		6515292C072BFFDF00411831 = {
+			fileEncoding = 30;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.h;
 			name = appletpalette.h;
@@ -7616,6 +8074,7 @@
 			};
 		};
 		6515292E072BFFE100411831 = {
+			fileEncoding = 30;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.h;
 			name = appletwires.h;
@@ -7630,6 +8089,7 @@
 			};
 		};
 		65152930072BFFE200411831 = {
+			fileEncoding = 30;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.h;
 			name = appletscrollbar.h;
@@ -7644,6 +8104,7 @@
 			};
 		};
 		65152932072BFFE400411831 = {
+			fileEncoding = 30;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.h;
 			name = appletpopup.h;
@@ -7658,6 +8119,7 @@
 			};
 		};
 		65152934072BFFE600411831 = {
+			fileEncoding = 30;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.h;
 			name = iowavalidate.h;
@@ -7672,6 +8134,7 @@
 			};
 		};
 		65152936072BFFE700411831 = {
+			fileEncoding = 30;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.h;
 			name = iowa.h;
@@ -7686,6 +8149,7 @@
 			};
 		};
 		65152938072BFFE900411831 = {
+			fileEncoding = 30;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.h;
 			name = iowaprefs.h;
@@ -7700,6 +8164,7 @@
 			};
 		};
 		6515293A072BFFEB00411831 = {
+			fileEncoding = 30;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.h;
 			name = opscreenmap.h;
@@ -7714,6 +8179,7 @@
 			};
 		};
 		6515293C072BFFEE00411831 = {
+			fileEncoding = 30;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.h;
 			name = pgMemMgr.h;
@@ -7728,6 +8194,7 @@
 			};
 		};
 		6515293E072BFFF400411831 = {
+			fileEncoding = 30;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.h;
 			name = Userdefs.h;
@@ -7742,6 +8209,7 @@
 			};
 		};
 		65152940072BFFF600411831 = {
+			fileEncoding = 30;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.cpp.h;
 			name = CPUDEFS.H;
@@ -7756,6 +8224,7 @@
 			};
 		};
 		65152942072BFFFC00411831 = {
+			fileEncoding = 30;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.h;
 			name = pgTxr.h;
@@ -7770,6 +8239,7 @@
 			};
 		};
 		65152944072C000000411831 = {
+			fileEncoding = 30;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.h;
 			name = FDllCall.h;
@@ -7784,6 +8254,7 @@
 			};
 		};
 		65152946072C000100411831 = {
+			fileEncoding = 30;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.h;
 			name = pcre_config.h;
@@ -7798,6 +8269,7 @@
 			};
 		};
 		65152948072C000300411831 = {
+			fileEncoding = 30;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.cpp.h;
 			name = PGSETJMP.H;
@@ -7840,6 +8312,7 @@
 			};
 		};
 		6515294E072C000D00411831 = {
+			fileEncoding = 30;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.h;
 			name = pgMTraps.h;
@@ -7854,6 +8327,7 @@
 			};
 		};
 		65152950072C001700411831 = {
+			fileEncoding = 30;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.cpp.h;
 			name = PGERRORS.H;
@@ -8147,6 +8621,7 @@
 		BB3B83610730603C0049D0C1 = {
 			children = (
 				BB3B83620730604B0049D0C1,
+				DEA58AB307435A9500BAB271,
 			);
 			isa = PBXGroup;
 			name = Resources;
@@ -8156,13 +8631,46 @@
 		BB3B83620730604B0049D0C1 = {
 			fileEncoding = 30;
 			isa = PBXFileReference;
-			lastKnownFileType = text.xml;
+			lastKnownFileType = text.plist.xml;
 			path = Info.plist;
 			refType = 2;
 			sourceTree = SOURCE_ROOT;
 		};
-		BB3B83630730604B0049D0C1 = {
-			fileRef = BB3B83620730604B0049D0C1;
+//BB0
+//BB1
+//BB2
+//BB3
+//BB4
+//DE0
+//DE1
+//DE2
+//DE3
+//DE4
+		DEA58A9E074359BA00BAB271 = {
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+				"${SRCROOT}/../Common/headers/versions.h\n\"${SRCROOT}/../Common/headers/versions.h\"\n",
+			);
+			isa = PBXShellScriptBuildPhase;
+			outputPaths = (
+				"${BUILT_PRODUCTS_DIR}/${CONTENTS_FOLDER_PATH}/Info.plist",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "# debug\n#set -x\n#printenv\n\n# Build Frontier.icns file\n# There seems to be some bugs here, so just use\n# pre-created Frontier.icns file.\n# Also add \"icns.r\" path to Input files and\n# \"Frontier.icns\" path to Output files below.\n\n#/Developer/Tools/Rez \"${SRCROOT}/../resources/Frontier/icns.r\" -d TARGET_API_MAC_CARBON=1 -d FRONTIER_FRAMEWORK_INCLUDES=1 -i \"${SRCROOT}/../Common/headers\" -useDF -o \"${BUILT_PRODUCTS_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/Frontier.icns\"\n\n# Strip trademark character to prevent problems wuth shell quoting\n#product_str=`echo ${PRODUCT_NAME} | awk -F '\\342' '{print $1};'`\n\nproduct_str=${PRODUCT_NAME}\n\n# Parse the \"versions.h\" file for useful variables\n\nversion_str=`grep \"frontier_version_string\" \"${SRCROOT}/../Common/headers/versions.h\" | awk -F \\\" '{print $2};'`\ncopyright_year_str=`grep \"copyright_year_string\" \"${SRCROOT}/../Common/headers/versions.h\" | awk -F \\\" '{print $2};'`\n\n# Update the Info.plist\n# Could append \"(dbg)\" to product name for Development build style\n\n#defaults write \"${BUILT_PRODUCTS_DIR}/${CONTENTS_FOLDER_PATH}/Info\" CFBundleVersion ${version_str}\n\n# or use sed\n\nsed -e \"s/\\${PRODUCT_NAME_STR}/${product_str}/g\" -e \"s/\\${PRODUCT_VERSION_STR}/${version_str}/g\" -e \"s/\\${COPYRIGHT_YEAR_STR}/${copyright_year_str}/g\" \"${SRCROOT}/Info.Plist\" > \"${BUILT_PRODUCTS_DIR}/${CONTENTS_FOLDER_PATH}/Info.plist\"";
+		};
+		DEA58AB307435A9500BAB271 = {
+			isa = PBXFileReference;
+			lastKnownFileType = image.icns;
+			name = Frontier.icns;
+			path = ../resources/Frontier/Frontier.icns;
+			refType = 2;
+			sourceTree = SOURCE_ROOT;
+		};
+		DEA58AB407435A9500BAB271 = {
+			fileRef = DEA58AB307435A9500BAB271;
 			isa = PBXBuildFile;
 			settings = {
 			};
