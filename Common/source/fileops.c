@@ -2091,10 +2091,11 @@ boolean langgetextendedvolumeinfo (const tyfilespec *fs, double *totalbytes, dou
 
 #ifdef MACVERSION
 
+	 /* 2005-01-24 creedon - reversed free and total parameters to match FSGetVInfo and XGetVInfo functions < http://groups.yahoo.com/group/frontierkernel/message/846 > */
 	#if TARGET_API_MAC_CARBON
-		errnum = FSGetVInfo (fs->vRefNum, nil, &ui64totalbytes, &ui64freebytes);
+		errnum = FSGetVInfo (fs->vRefNum, nil, &ui64freebytes, &ui64totalbytes);
 	#else
-		errnum = XGetVInfo (fs->vRefNum, nil, &vrefnum, &ui64totalbytes, &ui64freebytes);
+		errnum = XGetVInfo (fs->vRefNum, nil, &vrefnum, &ui64freebytes, &ui64totalbytes);
 	#endif
 
 	if (errnum != noErr) {
