@@ -64,9 +64,19 @@
 
 		#ifdef FRONTIER_FRAMEWORK_INCLUDES /* building for Mach-O with framework-style includes */
 
+			#ifdef FRONTIER_FLAT_HEADERS /* building for Mach-O with flat header-style includes */
+
+				#include <Carbon.h>
+				#include <ApplicationServices.h>
+				#include <Movies.h>
+
+			#else
+			
 			#include <Carbon/Carbon.h>
 			#include <ApplicationServices/ApplicationServices.h>
 			#include <QuickTime/Movies.h>
+
+			#endif
 
 			#define	ELASTERRNO	ELAST
 
