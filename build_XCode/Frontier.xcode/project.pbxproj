@@ -625,7 +625,7 @@
 				GCC_WARN_UNUSED_PARAMETER = NO;
 				GCC_WARN_UNUSED_VALUE = NO;
 				GCC_WARN_UNUSED_VARIABLE = NO;
-				LIBRARY_SEARCH_PATHS = "\"/Volumes/Data/Development/Frontier Open Source Release/cvsroot/Frontier/Common/Paige\"";
+				LIBRARY_SEARCH_PATHS = ../Common/Paige;
 				OTHER_CFLAGS = "-fno-inline -malign-mac68k ";
 				OTHER_LDFLAGS = "-multiply_defined warning";
 				OTHER_REZFLAGS = "-d TARGET_API_MAC_CARBON=1 -i ../Common/headers";
