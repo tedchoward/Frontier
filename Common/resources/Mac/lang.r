@@ -1300,19 +1300,19 @@ resource 'DITL' (263, "twoway", purgeable) {
 resource 'DITL' (264, "threeway", purgeable) {
 	{	/* array DITLarray: 4 elements */
 		/* [1] */
-		{72, 261, 92, 331},
+		{72, 246, 92, 331},
 		Button {
 			enabled,
 			"Yes"
 		},
 		/* [2] */
-		{72, 178, 92, 248},
+		{72, 148, 92, 233},
 		Button {
 			enabled,
 			"No"
 		},
 		/* [3] */
-		{72, 95, 92, 165},
+		{72, 50, 92, 135},
 		Button {
 			enabled,
 			"Cancel"
