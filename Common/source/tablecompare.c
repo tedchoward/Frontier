@@ -36,18 +36,29 @@
 
 
 static short tablecomparenames (hdlhashnode hnode1, hdlhashnode hnode2) {
+	
+	/*
+	2004-11-09 aradke: optimized by calling compareidentifiers which does
+	an in-place case-insensitive compare instead of copying both key strings,
+	converting both copies completely to lowercase, and running a case-sensitive
+	compare on the resulting lowercase strings.
+	*/
 
+	return (compareidentifiers ((**hnode1).hashkey, (**hnode2).hashkey));
+	
+	/*
 	bigstring bs1, bs2;
 	
 	gethashkey (hnode1, bs1);
 
 	gethashkey (hnode2, bs2);
 	
-	alllower (bs1); /*comparison is unicase*/
+	alllower (bs1); /%comparison is unicase%/
 	
 	alllower (bs2);
 	
 	return (comparestrings (bs1, bs2));
+	*/
 	} /*tablecomparenames*/
 
 
