@@ -34,8 +34,8 @@ syntax and parameter naming conventions.   Copyright 1993-1994    */
 #ifndef PGSETJMP_H
 #define PGSETJMP_H
 
-#include "CPUDefs.h"
-#include "pgErrors.h"
+#include "CPUDEFS.H"
+#include "PGERRORS.H"
 
 /* PG_VOLATILE - Any variable or parameter that is modified in a PG_TRY block and 
 	used in the PG_CATCH block should be declared as volatile or it may have an incorrect 
