@@ -23,9 +23,12 @@
 
 ******************************************************************************/
 
+#ifdef TARGET_API_MAC_CARBON
+#include <Carbon/Carbon.r>
+#else
 #include <MacTypes.r>
 #include <Icons.r>
-
+#endif
 
 #if 0
 
