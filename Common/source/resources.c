@@ -217,7 +217,7 @@ boolean writeresource (ResType type, short id, bigstring bsname, long ctwrite, v
 		if (!sethandlecontents (pdata, ctwrite, hresource)) /*couldn't increase size of handle*/
 			return (false);
 		
-		/*SetResInfo (hresource, id, bsname); /*set the name of the resource*/
+		//SetResInfo (hresource, id, bsname); /*set the name of the resource*/
 		
 		ChangedResource (hresource);
 		}

@@ -2175,7 +2175,8 @@ static boolean writeverb (hdltreenode hparam1, tyvaluerecord *v) {
 	} /*writeverb*/
 
 
-/*
+#if 0
+
 static boolean writewholefileverb (hdltreenode hparam1, tyvaluerecord *v) {
 
 	/*
@@ -2196,7 +2197,6 @@ static boolean writewholefileverb (hdltreenode hparam1, tyvaluerecord *v) {
 		return (true)}
 	*/
 	
-	/*
 	tyfilespec fs;
 	tyvaluerecord val;
 	
@@ -2215,6 +2215,8 @@ static boolean writewholefileverb (hdltreenode hparam1, tyvaluerecord *v) {
 	
 	return (true);
 	} /*writewholefileverb*/
+
+#endif
 
 
 static boolean comparefilesverb (hdltreenode hparam1, tyvaluerecord *v) {
@@ -2405,7 +2407,6 @@ static boolean filefunctionvalue (short token, hdltreenode hparam1, tyvaluerecor
 	
 	register hdltreenode hp1 = hparam1;
 	register tyvaluerecord *v = vreturned;
-	register short errornum = 0;
 	
 	setbooleanvalue (false, v); /*by default, file functions return false*/
 	

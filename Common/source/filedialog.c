@@ -489,19 +489,14 @@ static pascal Boolean knowntypesfilter (ParmBlkPtr pb, tysfdata *pdata) {
 	//I am going to hack the heck out of this routine. See what you think
 	*/
 	
-	//register short id;
-	Point pt = {-1, -1};
-	short cttypes = -1;
-	OSType *types = nil;
 	Str255 bs;
-	//DlgHookYDUPP sfhook = nil;
-	//FileFilterYDUPP sffilefilter = nil;
 	tysfdata sfdata;
 	FSSpec *fs = &sfdata.sfreply.sfFile;
 	OSErr	anErr = noErr;
 	#ifdef flcomponent
 	long appA5;
 	#endif
+
 	//move the switch statement to below because it's smarter to call it there when using 
 	//the new routines for Nav services.
 	
@@ -1084,7 +1079,7 @@ TimsGetFile(bigstring prompt, ptrsftypelist filetypes, StandardFileReply * 	outR
 			NavTypeListPtr	typesP = nil;
 			SInt32			hSize = (sizeof(NavTypeList) +
 							sizeof(OSType) * (filetypes->cttypes - 1));
-			newhandle(hSize, &typeList);
+			newhandle(hSize, (Handle*) &typeList);
 			typesP = (NavTypeListPtr) *((Handle) typeList);
 			
 			typesP->componentSignature	= 'LAND';

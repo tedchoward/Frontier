@@ -240,7 +240,7 @@ Boolean IACinit (void) {
 	
 	#if TARGET_API_MAC_CARBON == 1
 	
-		IACwaitroutineUPP = NewAEIdleUPP (IACwaitroutine);
+		IACwaitroutineUPP = NewAEIdleUPP ((AEIdleProcPtr) &IACwaitroutine);
 	
 	#else
 

@@ -1409,40 +1409,6 @@ boolean largefilebuffer (Handle *hbuffer) {
 	return (newhandle (ctbytes, hbuffer)); /*shouldn't fail at this point, but let's be sure*/
 	} /*largefilebuffer*/
 
-/*
-static boolean xlargefilebuffer (Handle *hbuffer) {
-	
-	/*
-	allocate a "large" buffer for a file copy or some kind of transfer.
-	
-	we compact the application heap, and then ask for half of what's
-	available, divisble by 1024.
-
-	we think this is a particularly efficient size for the FS routines.
-	is it?
-	
-	12/30/91 dmb: generate memoryerror when returning false.
-	%/
-	
-	register long ctbytes;
-	
-	ctbytes = CompactMem (maxSize); /*compact the heap, find out how much is free%/
-	
-	ctbytes = ctbytes / 2; /*we'll ask for approx half of the memory available%/
-	
-	if (ctbytes < 1024) { /*couldn't allocate a minimum size block%/
-		
-		memoryerror ();
-		
-		*hbuffer = nil;
-		
-		return (false);
-		}
-		
-	ctbytes = (ctbytes / 1024) * 1024; /*an even multiple of 1024%/
-	
-	return (newhandle (ctbytes, hbuffer)); /*shouldn't fail at this point, but let's be sure%/
-	} /*xlargefilebuffer*/
 
 #ifdef MACVERSION
 
@@ -1887,7 +1853,7 @@ boolean getspecialfolderpath (bigstring bsvol, bigstring bsfolder, boolean flcre
 		errcode = FSMakeFSSpec (vnum, dirid, nil, fs);
 		
 		/*
-		if (!directorytopath (dirid, vnum, bspath)) /*shouldn't fail%/
+		if (!directorytopath (dirid, vnum, bspath)) /%shouldn't fail%/
 			errcode = dirNFErr;
 		*/
 		}
@@ -2271,32 +2237,6 @@ boolean volumecreated (const tyfilespec *fs, unsigned long *createdate) {
 	} /*volumecreated*/
 
 
-/*
-boolean renamevolume (bsoldname, bsnewname) bigstring bsoldname, bsnewname; {
-	
-	/*
-	6/x/91 mao
-	%/
-	
-	short vnum;
-	HParamBlockRec pb;
-	
-	if (!pathtovolume (bsoldname, &vnum))
-		return (false);
-	
-	clearbytes (&pb, sizeof (pb));
-	
-	pb.volumeParam.ioVRefNum = vnum;
-	
-	if (oserror (PBHGetVInfoSync (&pb)))
-		return (false);
-		
-	pb.volumeParam.ioNamePtr = bsnewname;
-	
-	return (!oserror (PBSetVInfoSync (&pb)));
-	} /*renamevolume*/
-
-
 boolean lockvolume (const tyfilespec *fs, boolean fllock) {
 #ifdef MACVERSION
 	//Code change by Timothy Paustian Sunday, June 25, 2000 9:19:49 PM
@@ -2342,40 +2282,6 @@ boolean lockvolume (const tyfilespec *fs, boolean fllock) {
 #ifdef WIN95VERSION
 	return (false);
 #endif
-	} /*lockvolume*/
-
-
-/*
-static boolean xlockvolume (bigstring bsname, boolean fllock) {
-	
-	/*
-	6/x/91 mao
-	%/
-	
-	short vnum;
-	HParamBlockRec pb;
-	
-	if (!pathtovolume (bsname, &vnum))
-		return (false);
-	
-	clearbytes (&pb, sizeof (pb));
-	
-	pb.volumeParam.ioVRefNum = vnum;
-	
-	if (oserror (PBHGetVInfoSync (&pb)))
-		return (false);
-	
-	if (fllock)
-		BitSet (&pb.volumeParam.ioVAtrb, 0);
-	else
-		BitClr (&pb.volumeParam.ioVAtrb, 0);
-	
-	if (oserror (PBSetVInfoSync (&pb)))
-		return (false);
-	
-	PBFlushVolSync (&pb);
-	
-	return (true);
 	} /*lockvolume*/
 
 
@@ -2439,7 +2345,7 @@ boolean unmountvolume (const tyfilespec *fs) {
 
 boolean drivenumtovolname (short drivenum, bigstring bsvol) {
 	
-	ParamBlockRec pb;
+	HParamBlockRec pb;
 	
 	clearbytes (&pb, sizeof (pb));
 	
@@ -2569,7 +2475,8 @@ boolean findapplication (OSType creator, tyfilespec *fsapp) {
 	} /*findapplication*/
 
 
-/*
+#if 0
+
 static boolean getdesktopdatabasepath (short vnum, DTPBRec *dt) {
 	
 	if (!hasdesktopmanager (vnum))
@@ -2579,6 +2486,8 @@ static boolean getdesktopdatabasepath (short vnum, DTPBRec *dt) {
 	
 	return (PBDTGetPath (&dt) == noErr);
 	} /*getdesktopdatabasepath*/
+
+#endif
 
 
 boolean getfilecomment (const tyfilespec *fs, bigstring bscomment) {
@@ -2834,11 +2743,11 @@ boolean mountvolume (bigstring volumepath, bigstring username, bigstring passwor
 
 
 #ifdef NEWFILESPECTYPE
-boolean fileparsevolname (bigstring bspath, long *vnum, bigstring bsvol) {
+boolean fileparsevolname (bigstring bspath, long *vnum, bigstring bsvol)
 #else
-boolean fileparsevolname (bigstring bspath, short *vnum, bigstring bsvol) {
+boolean fileparsevolname (bigstring bspath, short *vnum, bigstring bsvol)
 #endif
-
+	{
 	/*
 	convert a full path, which might contain a volume name at the beginning
 	to a path with no volume name, and it's associated volume number in vnum.
@@ -2860,7 +2769,7 @@ boolean fileparsevolname (bigstring bspath, short *vnum, bigstring bsvol) {
 	
 	short ix = 1;
 	bigstring bsvolname;
-	ParamBlockRec pb;
+	HParamBlockRec pb;
 	short drivenum;
 	bigstring bs;
 	OSErr err;
@@ -3057,7 +2966,9 @@ boolean getfileparentfolder (const tyfilespec *fs, tyfilespec *fsparent) {
 	return (!oserror (FSMakeFSSpec ((*fs).vRefNum, dirid, nil, fsparent)));
 	} /*getfileparentfolder*/
 
-/*
+
+#if 0
+
 boolean getdefaultpath (bigstring bs) {
 
 	ParamBlockRec pb;
@@ -3074,6 +2985,10 @@ boolean getdefaultpath (bigstring bs) {
 	
 	return (filegetpath (pb.fileParam.ioVRefNum, bs));
 	} /*getdefaultpath*/
+
+#endif
+
+
 #endif
 
 boolean movefile (const tyfilespec *fs, const tyfilespec *fsto) {
