@@ -56,7 +56,9 @@ typedef struct tytransportinfo {
 
 static THz landzone;
 
-static Handle landresmap;
+#if !TARGET_API_MAC_CARBON
+	static Handle landresmap;
+#endif
 
 static short landresfile;
 
@@ -114,9 +116,7 @@ pascal void landpopfastcontext (const tyfastverbcontext *savecontext) {
 
 	
 pascal hdllandglobals landgetglobals (void) {
-	
-	/*extern pascal hdllandglobals landgetlandglobals (); /*implemented in landstorage.a.¹*/
-	
+		
 	return (landgetlandglobals ()); /*return value of asm routine*/
 	} /*landgetglobals*/
 
@@ -510,7 +510,7 @@ pascal boolean landeventfilter (EventRecord *ev) {
 	register hdllandglobals hg = landgetglobals ();
 	
 	/*
-	if (landwindoweventfilter (ev)) /*event consumed by stats window%/
+	if (landwindoweventfilter (ev)) /%event consumed by stats window%/
 		return (true);
 	*/
 	
@@ -638,7 +638,7 @@ pascal boolean landsetapplicationid (tyapplicationid tynewid) {
 	/*
 	register hdllandglobals hg = landgetglobals ();
 	
-	if ((**hg).transport == macsystem7) /*DW 6/25/91%/
+	if ((**hg).transport == macsystem7) /%DW 6/25/91%/
 		return (false);
 	
 	return (landsystem6setapplicationid (tynewid));
@@ -649,9 +649,11 @@ pascal boolean landsetapplicationid (tyapplicationid tynewid) {
 
 static landqueuepopcallback threadvisit;
 
-static pascal boolean sleepingthreadvisit (hdltransportinfo ht, long refcon) {
+static pascal boolean sleepingthreadvisit (Handle htinfo, long refcon) {
 	
-	if ((*threadvisit) ((**ht).hthread, refcon)) {
+	hdltransportinfo ht = (hdltransportinfo) htinfo;
+	
+	if ((*threadvisit) ((Handle) (**ht).hthread, refcon)) {
 		
 		processwake ((**ht).hthread);
 		
@@ -776,7 +778,7 @@ pascal boolean landinit (void) {
 	
 	(**hg).flconnected = true;
 	
-	/**landsetmemstats (); /*copy freemem into globals -- for use in stats window*/
+	//landsetmemstats (); /*copy freemem into globals -- for use in stats window*/
 	
 	return (true);
 	} /*landinit*/

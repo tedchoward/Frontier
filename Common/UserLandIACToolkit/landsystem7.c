@@ -131,7 +131,7 @@ static void suspendcurrentevent(AppleEvent *ev) {
 	
 		AEEventID eventID;
 		DescType typeCode;
-		int ctbytes;
+		Size ctbytes;
 		
 		if (AEGetAttributePtr(ev, keyEventIDAttr, typeType, &typeCode,
 				(void*) &eventID, sizeof(eventID), &ctbytes) == noErr) {
@@ -173,6 +173,9 @@ static void suspendcurrentevent(AppleEvent *ev) {
   }
 */
 
+
+#if TARGET_API_MAC_OS8
+
 static void MakePascalStringWLen (StringPtr theDest, int theDestLen, char *theSrc, int theSrcLen) {
 	
 	/*
@@ -190,8 +193,6 @@ static void MakePascalStringWLen (StringPtr theDest, int theDestLen, char *theSr
 	BlockMove (theSrc, &(theDest[1]), theDest [0]);
 	} /*MakePascalStringWLen*/
 
-
-#if TARGET_API_MAC_OS8
 
 static OSErr HCProgramToPortAndLoc (char *theName, short len, LocationNameRec *theLoc, PortInfoRec *thePort) {
 	
@@ -436,6 +437,10 @@ pascal boolean landstring2networkaddress (ConstStr255Param bsadr, tynetworkaddre
 #endif
 
 
+#if !TARGET_API_MAC_CARBON
+	//Code change by Timothy Paustian Friday, July 21, 2000 10:40:43 PM
+	//we don't do anything on Carbon because we can't use this anyway.
+
 static pascal Boolean landbrowserfilter (LocationNamePtr ln, PortInfoPtr port) {
 	
 	#pragma unused (ln)
@@ -445,9 +450,7 @@ static pascal Boolean landbrowserfilter (LocationNamePtr ln, PortInfoPtr port) {
 	long type;
 	
 	#ifdef flcomponent
-	
-	long curA5 = SetUpAppA5 ();
-	
+		long curA5 = SetUpAppA5 ();
 	#endif
 	
 	hg = landgetglobals ();
@@ -455,9 +458,7 @@ static pascal Boolean landbrowserfilter (LocationNamePtr ln, PortInfoPtr port) {
 	id = (**hg).macnetglobals.idforbrowser;
 	
 	#ifdef flcomponent
-	
-	RestoreA5 (curA5);
-	
+		RestoreA5 (curA5);
 	#endif
 	
 	if (id == 0) /*no filtering, everything qualifies*/
@@ -472,22 +473,17 @@ static pascal Boolean landbrowserfilter (LocationNamePtr ln, PortInfoPtr port) {
 	} /*landbrowserfilter*/
 
 
-#if !TARGET_RT_MAC_CFM
+	#if !TARGET_RT_MAC_CFM
 
-	#define landbrowserfilterUPP (&landbrowserfilter)
+		#define landbrowserfilterUPP (&landbrowserfilter)
 
-#else
-
-	#if TARGET_API_MAC_CARBON == 1
-	//Code change by Timothy Paustian Friday, July 21, 2000 10:40:43 PM
-	//we don't do anything because we can't use this anyway.
 	#else
-		
-	static RoutineDescriptor landbrowserfilterDesc = BUILD_ROUTINE_DESCRIPTOR (uppPPCFilterProcInfo, landbrowserfilter);
+				
+		static RoutineDescriptor landbrowserfilterDesc = BUILD_ROUTINE_DESCRIPTOR (uppPPCFilterProcInfo, landbrowserfilter);
 
-	#define landbrowserfilterUPP (&landbrowserfilterDesc)
+		#define landbrowserfilterUPP (&landbrowserfilterDesc)
+	
 	#endif
-		
 	
 #endif
 
@@ -797,12 +793,6 @@ pascal boolean landsystem7unpackverb (AppleEvent *message, AppleEvent *reply, hd
 		(**ht).sys7reply = *reply;
 	
 	return (true); /*loop completed, all params popped with no errors*/
-	
-	error:
-	
-	landdisposeverb (hv);
-	
-	return (false);
 	} /*landsystem7unpackverb*/
 
 
@@ -990,7 +980,9 @@ static pascal OSErr landsystem7handleevent (AppleEvent *message, AppleEvent *rep
 #endif
 
 
-static pascal boolean replyidvisit (hdlsys7transportinfo ht, long id) {
+static pascal boolean replyidvisit (Handle htinfo, long id) {
+	
+	hdlsys7transportinfo ht = (hdlsys7transportinfo) htinfo;
 	
 	return ((**ht).replyid == (short) id);
 	} /*replyidvisit*/
@@ -1374,14 +1366,6 @@ static pascal Boolean landsystem7idleroutine (EventRecord *ev, long *sleep, RgnH
 #endif
 
 
-static pascal Boolean landsystem7filterroutine (EventRecord *ev, long returnid, long transactionid, AEAddressDesc *sender) {
-	
-	#pragma unused (ev, returnid, transactionid, sender)
-	
-	return (true); /*accept the event*/
-	} /*landsystem7filterroutine*/
-
-
 pascal boolean landsystem7geteventrecords (hdlverbrecord hverb, AppleEvent *event, AppleEvent *reply) {
 	
 	/*
@@ -1598,12 +1582,6 @@ boolean landsystem7send (hdlverbrecord hverb, hdlverbrecord *hvalues) {
 	return (fl);
 	} /*landsystem7send*/
 
-/*
-static pascal boolean timeoutvisit (hdlsys7transportinfo ht, long ticksnow) {
-	
-	return ((**ht).waketime <= (unsigned long) ticksnow); //sleeping too long
-	} /*timeoutvisit*/
-
 
 static pascal void landsystem7checktimeouts (EventRecord *ev) {
 	
@@ -1746,7 +1724,6 @@ boolean landsystem7eventfilter (EventRecord *ev) {
 		//Code change by Timothy Paustian Monday, June 26, 2000 3:45:05 PM
 		//A5 worlds make no sense on PPC so why pass this as our refcon
 		#if TARGET_API_MAC_CARBON == 1
-		long	landCode = 'LAND';
 		errcode = AEInstallEventHandler (class, token, handler, (long) nil, true);
 		#else
 		errcode = AEInstallEventHandler (class, token, handler, (long) LMGetCurrentA5 (), true);
@@ -1763,11 +1740,11 @@ boolean landsystem7eventfilter (EventRecord *ev) {
 		*/
 		#if TARGET_API_MAC_CARBON == 1
 
-			return (landsystem7installhandlerUPP (class, id, NewAEEventHandlerUPP (handler)));
+			return (landsystem7installhandlerUPP (class, id, NewAEEventHandlerUPP ((AEEventHandlerProcPtr) handler)));
 		
 		#else
 
-			return (landsystem7installhandlerUPP (class, id, NewAEEventHandlerProc (handler)));
+			return (landsystem7installhandlerUPP (class, id, NewAEEventHandlerProc ((AEEventHandlerProcPtr) handler)));
 		
 		#endif
 		} /*landsystem7installhandler*/
@@ -1777,11 +1754,11 @@ boolean landsystem7eventfilter (EventRecord *ev) {
 		
 		#if TARGET_API_MAC_CARBON == 1
 	
-			return (landsystem7installfasthandlerUPP (class, token, NewAEEventHandlerUPP (handler)));
+			return (landsystem7installfasthandlerUPP (class, token, NewAEEventHandlerUPP ((AEEventHandlerProcPtr) handler)));
 		
 		#else
 
-			return (landsystem7installfasthandlerUPP (class, token, NewAEEventHandlerProc (handler)));
+			return (landsystem7installfasthandlerUPP (class, token, NewAEEventHandlerProc ((AEEventHandlerProcPtr) handler)));
 		
 		#endif
 		} /*landsystem7installfasthandler*/
@@ -1796,7 +1773,7 @@ boolean landsystem7eventfilter (EventRecord *ev) {
 			landsystem7handleeventUPP = NewAEEventHandlerUPP(landsystem7handleevent);
 		#endif
 		
-return (landsystem7installhandlerUPP (class, typeWildCard, landsystem7handleeventUPP));
+		return (landsystem7installhandlerUPP (class, typeWildCard, landsystem7handleeventUPP));
 		} /*landsystem7addclass*/
 	
 	
@@ -1949,7 +1926,7 @@ pascal boolean landsystem7getparam (const AERecord *evt, typaramkeyword key, typ
 	(*param).key = key;
 	
 	/*
-	fl = landsystem7unpackdesc (&desc, key, param); /*may set desc's data to nil%/
+	fl = landsystem7unpackdesc (&desc, key, param); /%may set desc's data to nil%/
 	
 	AEDisposeDesc (&desc);
 	*/
@@ -1989,7 +1966,7 @@ pascal boolean landsystem7getnthparam (const AERecord *evt, short n, typaramreco
 	return (true);
 	
 	/*
-	fl = landsystem7unpackdesc (&desc, key, param); /*may set desc's data to nil%/
+	fl = landsystem7unpackdesc (&desc, key, param); /%may set desc's data to nil%/
 	
 	AEDisposeDesc (&desc);
 	
@@ -2057,7 +2034,7 @@ boolean landsystem7close (void) {
 	} /*landsystem7close*/
 
 
-static pascal OSErr whyinternational (DescType itxt, Ptr x, long len, DescType text, long refcon, AEDesc *result) {
+static pascal OSErr whyinternational (DescType itxt, const void *x, Size len, DescType text, SInt32 refcon, AEDesc *result) {
 	
 	if (*(short *) x != smRoman) /*can't treat this as plain text*/
 		return (errAECoercionFail);

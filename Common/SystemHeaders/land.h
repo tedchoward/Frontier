@@ -573,8 +573,6 @@ typedef struct tylandglobals {
 	
 	pascal boolean landdeleteverb (tyverbclass, tyverbtoken);
 	
-	pascal void landsystem7checktimeouts (EventRecord *ev);
-	
 	pascal boolean landeventfilter (EventRecord *);
 	
 	pascal boolean landsettimeout (long);
