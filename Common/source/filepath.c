@@ -309,16 +309,31 @@ boolean pathtofilespec (bigstring bspath, tyfilespec *fs) {
 
 
 boolean setfsfile (tyfilespec *fs, bigstring bsfile) {
+
+	/*
+	2004-10-26 aradke: Since the getmacfileinfo/foldertest gymnastics do not
+	seem to fit any particular purpose and since none of our callers
+	seem to rely it since they usually pass in a file rather than a directory,
+	I commented it out.
+		
+	The only time we get called with a directory is apparently by
+	shellopendefaultfile on startup in the Carbon/Mach-O build.
+	getapplicationfilespec returns a directory in that case and
+	the code below somehow screwed up when called to set the
+	filename to Frontier.root so that it wouldn't be found.
+	*/
 	
 	#ifdef MACVERSION
+		/*
 		CInfoPBRec pb;
-		
+
 		if (getmacfileinfo (fs, &pb) && foldertest (&pb)) {
 		
 			FSMakeFSSpec ((*fs).vRefNum, pb.dirInfo.ioDrDirID, bsfile, fs);
 			
 			return (false);
 			}
+		*/
 		
 		copystring (bsfile, (*fs).name);
 
