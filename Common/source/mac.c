@@ -23,14 +23,8 @@
 
 ******************************************************************************/
 
-#include <Gestalt.h>
-
-#include <standard.h>
-//Code change by Timothy Paustian Sunday, June 25, 2000 10:26:34 AM
-//Code for Navigation services
-#ifdef MACVERSION
-#include <Navigation.h>
-#endif
+#include "frontier.h"
+#include "standard.h"
 
 #include "mac.h"
 #include "memory.h"

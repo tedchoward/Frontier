@@ -23,14 +23,9 @@
 
 ******************************************************************************/
 
-#ifdef MACVERSION
-	#include <Packages.h>
-	#include <Palettes.h>
-	#include <standard.h>
-#endif
-#ifdef WIN95VERSION
-	#include "standard.h"
-#endif
+#include "frontier.h"
+#include "standard.h"
+
 #include "font.h"
 #include "icon.h"
 #include "ops.h"

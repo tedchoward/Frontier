@@ -23,21 +23,14 @@
 
 ******************************************************************************/
 
-#ifdef MACVERSION
-#include <standard.h>
-#endif
-
-#ifdef WIN95VERSION
+#include "frontier.h"
 #include "standard.h"
-#endif
 
 #include "about.h"
 #include "frontierdebug.h"
 #include "process.h"
 #include "processinternal.h"
 #include "strings.h"
-
-#include <stdio.h>
 
 
 static const char debuglogname[] = "frontierdebuglog.txt";

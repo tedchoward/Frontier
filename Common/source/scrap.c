@@ -27,15 +27,8 @@
 scrap.c -- routines that support use of the desk scrap.
 */
 
-#ifdef MACVERSION
-	#include <standard.h>
-#endif
-
-#ifdef WIN95VERSION
-	#include <wtypes.h>
-	#include <winerror.h>
-	#include "standard.h"
-#endif
+#include "frontier.h"
+#include "standard.h"
 
 #include "shelltypes.h"
 #include "scrap.h"

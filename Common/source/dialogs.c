@@ -23,15 +23,8 @@
 
 ******************************************************************************/
 
-#ifdef MACVERSION
-#include <standard.h>
-#include "mac.h"
-#endif
-
-#ifdef WIN95VERSION
+#include "frontier.h"
 #include "standard.h"
-#include <string.h>
-#endif
 
 #include "quickdraw.h"
 #include "bitmaps.h"
@@ -51,7 +44,6 @@
 #include "dialogs.h"
 #include "lang.h"
 #include "mac.h"
-#include <string.h>
 
 #ifdef flcomponent
 

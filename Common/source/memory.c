@@ -23,16 +23,9 @@
 
 ******************************************************************************/
 
-#ifdef MACVERSION
-#include <standard.h>
-#endif
-
-#ifdef WIN95VERSION
+#include "frontier.h"
 #include "standard.h"
-#endif
 
-#include <ctype.h>
-#include <string.h>		/* 2002-11-12 AR: for memmove, used in moveleft and moveright */
 #include "error.h"
 #include "memory.h"
 #include "ops.h"

@@ -23,20 +23,12 @@
 
 ******************************************************************************/
 
-#ifdef MACVERSION
-#include <AppleEvents.h>
-#include <Processes.h>
-#include <Aliases.h>
-#include <land.h>
-#include <standard.h>
-#include "mac.h"
-#endif
-
-#ifdef WIN95VERSION
+#include "frontier.h"
 #include "standard.h"
-#include <tlhelp32.h>
-#include <shellapi.h>
-//#include "psapi.h"	/* AR 2004-10-17: not needed anymore */
+
+#ifdef MACVERSION
+#include <land.h>
+#include "mac.h"
 #endif
 
 #include "error.h"

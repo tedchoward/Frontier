@@ -23,9 +23,9 @@
 
 ******************************************************************************/
 
-#include <ctype.h>
-#include <AppleEvents.h>
-#include <standard.h>
+#include "frontier.h"
+#include "standard.h"
+
 #include "strings.h"
 #include "osaparseaete.h"
 

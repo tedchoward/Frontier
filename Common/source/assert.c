@@ -23,9 +23,8 @@
 
 ******************************************************************************/
 
-
-#include <standard.h>
-
+#include "frontier.h"
+#include "standard.h"
 
 #ifdef fldebug
 
@@ -192,7 +191,7 @@
 
 #endif	/*TARGET_API_MAC_OS8*/
 
-#endif	/* MACVERSION */
+#endif	/*MACVERSION*/
 	
 
 #ifdef WIN95VERSION
@@ -272,9 +271,9 @@
 			return (0);
 			} /*__assert*/
 
-	#endif	/* __MWERKS__ */
+	#endif	/*__MWERKS__*/
 
-#endif	/* WIN95VERSION */
+#endif	/*WIN95VERSION*/
 
-#endif	/* fldebug */
+#endif	/*fldebug*/
 

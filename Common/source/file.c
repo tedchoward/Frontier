@@ -23,19 +23,15 @@
 
 ******************************************************************************/
 
-#ifdef MACVERSION
-#include <Files.h>
-#include <Folders.h>
-#include <Gestalt.h>
-#include <Script.h>
-#include <StandardFile.h>
-#include <standard.h>
-#include "MoreFilesExtras.h"
-#endif
-
-
-#ifdef WIN95VERSION
+#include "frontier.h"
 #include "standard.h"
+
+#ifdef MACVERSION
+	#if TARGET_API_MAC_CARBON
+		#include "MoreFilesX.h"
+	#else
+		#include "MoreFilesExtras.h"
+	#endif
 #endif
 
 #include "filealias.h"
@@ -426,37 +422,31 @@ boolean filereadhandle (hdlfilenum fnum, Handle *hreturned) {
 
 
 #ifdef MACVERSION	
+
 //Code change by Timothy Paustian Monday, June 19, 2000 3:15:01 PM
 //Changed to Opaque call for Carbon
 
+static pascal void iocompletion (ParmBlkPtr pb) {
+
+	DisposePtr ((Ptr) pb);
+	} /*iocompletion*/
+
 #if TARGET_RT_MAC_CFM
-
-	static pascal void iocompletion (ParmBlkPtr pb) {
-	
-		DisposePtr ((Ptr) pb);
-		} /*iocompletion*/
-	
 	#if !TARGET_API_MAC_CARBON
-	static RoutineDescriptor iocompletionDesc = BUILD_ROUTINE_DESCRIPTOR (uppIOCompletionProcInfo, iocompletion);
-	
-	#define iocompletionUPP (&iocompletionDesc)
+		static RoutineDescriptor iocompletionDesc = BUILD_ROUTINE_DESCRIPTOR (uppIOCompletionProcInfo, iocompletion);
+		#define iocompletionUPP (&iocompletionDesc)
 	#else
-	//looks like we need some kind of file UPP
-	//do we need to create a UPP, yes we do.
-	IOCompletionUPP	iocompletionDesc = nil;
-	#define iocompletionUPP (iocompletionDesc)
+		//looks like we need some kind of file UPP
+		//do we need to create a UPP, yes we do.
+		IOCompletionUPP	iocompletionDesc = nil;
+		#define iocompletionUPP (iocompletionDesc)
 	#endif
+#endif /*TARGET_RT_MAC_CFM*/
 
-#else
+#if TARGET_RT_MAC_MACHO
+	static IOCompletionUPP iocompletionUPP = &iocompletion;
+#endif /*TARGET_RT_MAC_MACHO*/
 
-	static pascal void iocompletion (ParmBlkPtr pb : __A0) {
-	
-		DisposePtr ((Ptr) pb);
-		} /*iocompletion*/
-	
-	#define iocompletionUPP ((Register68kProcPtr) iocompletion)
-
-#endif //TARGET_RT_MAC_CFM
 #endif //MACVERSION
 
 boolean flushvolumechanges (const tyfilespec *fs, hdlfilenum fnum) {
@@ -492,7 +482,7 @@ extern void fileinit ();
 
 void fileinit()
 {
-	#if TARGET_API_MAC_CARBON == 1
+	#if TARGET_API_MAC_CARBON && TARGET_RT_MAC_CFM
 	if(iocompletionDesc == nil)
 		iocompletionDesc = NewIOCompletionUPP(iocompletion);
 	#endif
@@ -500,7 +490,7 @@ void fileinit()
 extern void fileshutdown ();
 void fileshutdown()
 {
-	#if TARGET_API_MAC_CARBON == 1
+	#if TARGET_API_MAC_CARBON  && TARGET_RT_MAC_CFM
 	if(iocompletionDesc != nil)
 		DisposeIOCompletionUPP(iocompletionDesc);
 	#endif
@@ -525,20 +515,14 @@ static boolean filecreateandopen (const tyfilespec *fs, OSType creator, OSType f
 		return (false); /*failed to open the file for writing*/
 		}
 	
-		#if TARGET_API_MAC_CARBON == 1
-			{
-			FSRef		myRef;
-		// Update the finder
-		// I don't have it using the oserror function yet because I don't quite understand
-		// all of the inctricacies of the oserror function.
+	#if TARGET_API_MAC_CARBON
+		{
+		FSRef	myRef;
 		err = FSpMakeFSRef (fs,&myRef);
-		// take that, rewind it back...
-			FSpSetNameLocked(&fs);
-		FSGetCatalogInfo (&myRef,kFSCatInfoNone,NULL,NULL,NULL,&myRef);
-		if (err==noErr) err = FNNotify(&myRef, kFNDirectoryModifiedMessage, kNilOptions);
-		// end updating the finder.
-			}
-		#endif
+		if (!err)
+			FSSetNameLocked(&myRef);
+		}
+	#endif
 		
 	return (true);
 #endif
@@ -575,7 +559,13 @@ boolean fileopenorcreate (const tyfilespec *fs, OSType creator, OSType filetype,
 	
 	if (FSpOpenDF (fs, fsRdWrPerm, fnum) == noErr) {
 		/*file exists and is open*/
-		FSpSetNameLocked(&fs);
+		#if TARGET_API_MAC_CARBON
+			FSRef	myRef;
+			if (FSpMakeFSRef (fs,&myRef))
+				FSSetNameLocked(&myRef);
+		#else
+			FSpSetNameLocked(&fs);
+		#endif
 		return (true);
 	}
 	return (filecreateandopen (fs, creator, filetype, fnum));
@@ -651,7 +641,17 @@ boolean openfile (const tyfilespec *fs, hdlfilenum *fnum, boolean flreadonly) {
 		
 		return (false);
 		}
-	err = FSpSetNameLocked(fs);
+	#if TARGET_API_MAC_CARBON
+		{
+		FSRef	myRef;
+		err = FSpMakeFSRef (fs,&myRef);
+		if (!err)
+			err = FSSetNameLocked(&myRef);
+		}
+	#else
+		err = FSpSetNameLocked(fs);
+	#endif
+	
 	if (err!=noErr){
 		//sprintf(s,"error locking file name: %d",err);
 		//WriteToConsole(s);
@@ -702,7 +702,6 @@ so that I can clear the finder name lock from the file prior to closing it.
 boolean closefile (hdlfilenum fnum) {
 #ifdef MACVERSION	
 	OSStatus	err = noErr;
-	FSSpec		fs;
 //	char		s[256];
 		
 	/*
@@ -710,15 +709,26 @@ boolean closefile (hdlfilenum fnum) {
 	*/
 	
 	if (fnum != 0) {
-		err = FSpGetFileLocation(fnum,&fs);
-		if (err==noErr) FSpClearNameLocked(&fs);
-		else {
-			//sprintf(s,"Error is %d",err);
-			//WriteToConsole(s);
-		}
+		#if TARGET_API_MAC_CARBON
+			FSRef myRef;
+			err = FileRefNumGetFSRef (fnum, &myRef);
+			if (err == noErr) {
+				FSClearNameLocked (&myRef);
+				}
+		#else
+			FSSpec fs;
+			err = FSpGetFileLocation (fnum,&fs);
+			if (err==noErr) {
+				FSpClearNameLocked (&fs);
+				}
+		#endif
+			else {
+				//sprintf(s,"Error is %d",err);
+				//WriteToConsole(s);
+				}
+				
 		return (!oserror (FSClose (fnum)));
-	
-	}
+		}
 	
 	return (true);
 #endif
@@ -749,7 +759,15 @@ boolean deletefile (const tyfilespec *fs) {
 	
 	#ifdef MACVERSION
 		setfserrorparam (fs); /*in case error message takes a filename parameter*/
-		FSpClearNameLocked(&fs);
+		#if TARGET_API_MAC_CARBON
+			{
+			FSRef	myRef;
+			if (FSpMakeFSRef (fs,&myRef))
+				FSClearNameLocked(&myRef);
+			}
+		#else
+			FSpClearNameLocked(fs);
+		#endif
 		return (!oserror (FSpDelete (fs)));
 	#endif
 

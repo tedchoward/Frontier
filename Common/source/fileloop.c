@@ -23,20 +23,8 @@
 
 ******************************************************************************/
 
- 
-
-#ifdef MACVERSION
-#include <Files.h> /*explicity include this so we can get to it from titlebar popup menu*/
-#include <standard.h>
-#if TARGET_API_MAC_CARBON == 1
-#include <UnicodeConverter.h>
-#endif
-#endif
-
-#ifdef WIN95VERSION
+#include "frontier.h"
 #include "standard.h"
-#endif
-
 
 #include "memory.h"
 #include "strings.h"

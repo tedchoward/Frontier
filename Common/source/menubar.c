@@ -23,14 +23,12 @@
 
 ******************************************************************************/
 
+#include "frontier.h"
+#include "standard.h"
+
 #ifdef MACVERSION
-	#include <standard.h>
 	#include <uisharing.h>
 	#include "langipc.h"
-#endif
-
-#ifdef WIN95VERSION
-	#include "standard.h"
 #endif
 
 #include "cursor.h"

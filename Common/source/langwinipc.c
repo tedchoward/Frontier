@@ -23,16 +23,11 @@
 
 ******************************************************************************/
 
-#include <stdlib.h>
+#include "frontier.h"
+#include "standard.h"
 
 #ifdef MACVERSION
-#include <standard.h>
 #include "langxcmd.h"
-#endif
-
-#ifdef WIN95VERSION
-#include "standard.h"
-#include <objbase.h>
 #endif
 
 #include "memory.h"

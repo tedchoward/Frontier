@@ -23,7 +23,9 @@
 
 ******************************************************************************/
 
-#include <standard.h>
+#include "frontier.h"
+#include "standard.h"
+
 #include "quickdraw.h"
 #include "cursor.h"
 #include "ops.h"

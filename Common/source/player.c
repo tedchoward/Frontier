@@ -31,20 +31,8 @@ PBS 08/08/00
 
 #ifdef MACVERSION /*This is a Mac-only feature.*/
 
-//#ifdef MACVERSION
-	#include <standard.h>
-	#include <Movies.h>
-	//#include <Components.h>
-	//#include <QuickTimeComponents.h>
-	//#include <QDOffscreen.h>
-	//#include <ImageCompression.h>
-	//#include <Windows.h>
-	//#include <Types.h>
-	//#include <Quickdraw.h>
-//#endif
-//#ifdef WIN95VERSION
-//	#include "standard.h"
-//#endif
+#include "frontier.h"
+#include "standard.h"
 
 #include "quickdraw.h"
 #include "strings.h"

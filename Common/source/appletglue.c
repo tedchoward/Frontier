@@ -23,7 +23,9 @@
 
 ******************************************************************************/
 
-#include <standard.h>
+#include "frontier.h"
+#include "standard.h"
+
 #include "quickdraw.h"
 #include "memory.h"
 #include "file.h"

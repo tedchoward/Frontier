@@ -23,6 +23,9 @@
 
 ******************************************************************************/
 
+#include "frontier.h"
+#include "standard.h"
+
 /*Forked. Carbon version at the top, "good" version at the bottom. This file should be
 reconciled later.*/
 
@@ -31,14 +34,7 @@ reconciled later.*/
  
 /*© Copyright 1992-1993 UserLand Software, Inc.  All Rights Reserved.*/
 
-
-#include <Processes.h>
-#include <AERegistry.h>
-#include <Menus.h>
-#include <Components.h>
-#include <OSA.h>
 #include <land.h>
-#include <standard.h>
 #include "dialogs.h"
 #include "ops.h"
 #include "kb.h"
@@ -1094,7 +1090,7 @@ static boolean installmenusharinghandlers (hdlcomponentglobals hglobals) {
 	register hdlcomponentglobals hcg = hglobals;
 	OSErr err;
 	
-	#if TARGET_API_MAC_CARBON == 1	
+	#if TARGET_API_MAC_CARBON && TARGET_RT_MAC_CFM
 	HandleMenuDirtyDesc = NewAEEventHandlerUPP(HandleMenuDirty);
 	#endif
 	err = AEInstallEventHandler (MSglobals.clientid, 'updm', HandleMenuDirtyUPP, (long) hcg, false);
@@ -1369,7 +1365,7 @@ static pascal ComponentResult closesharedmenus (hdlcomponentglobals hglobals) {
 	
 	//Code change by Timothy Paustian Friday, July 21, 2000 11:32:00 PM
 	//get rid of the UPPs
-	#if TARGET_API_MAC_CARBON == 1
+	#if TARGET_API_MAC_CARBON && TARGET_RT_MAC_CFM
 	DisposeComponentFunctionUPP(menucandofunctionDesc);
 	DisposeComponentFunctionUPP(osaInitSharedMenusDesc);
 	DisposeComponentFunctionUPP(osaSharedMenuHitDesc);
@@ -1410,7 +1406,7 @@ static pascal ComponentResult osaInitSharedMenus (hdlcomponentglobals hglobals) 
 	register hdlcomponentglobals hcg = hglobals;
 	long id;
 	
-	#if TARGET_API_MAC_CARBON == 1
+	#if TARGET_API_MAC_CARBON && TARGET_RT_MAC_CFM
 	//Code change by Timothy Paustian Friday, July 21, 2000 11:28:35 PM
 	//create the upps
 	//I have to dispose of these at shutdown.
@@ -1644,14 +1640,7 @@ boolean initmenusharingcomponent (void) {
 
 /*© Copyright 1992-1993 UserLand Software, Inc.  All Rights Reserved.*/
 
-
-#include <Processes.h>
-#include <AERegistry.h>
-#include <Menus.h>
-#include <Components.h>
-#include <OSA.h>
 #include <land.h>
-#include <standard.h>
 #include "dialogs.h"
 #include "ops.h"
 #include "kb.h"

@@ -32,12 +32,8 @@ http://developer.apple.com/techpubs/macosx/Carbon/HumanInterfaceToolbox/MenuMana
 7.1b42 PBS 12/14/01
 */ 
 
-#ifdef MACVERSION
-	#include <standard.h>
-#endif
-#ifdef WIN95VERSION
-	#include "standard.h"
-#endif
+#include "frontier.h"
+#include "standard.h"
 
 #include "menu.h"
 #include "strings.h"

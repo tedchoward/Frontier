@@ -31,13 +31,8 @@ Spec: http://radio.userland.com/opmlspec.html
 7.0b21 PBS 09/00
 */
 
-#ifdef MACVERSION 
-#include <standard.h>
-#endif
-
-#ifdef WIN95VERSION 
+#include "frontier.h"
 #include "standard.h"
-#endif
 
 #include "op.h"
 #include "opinternal.h"

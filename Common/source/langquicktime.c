@@ -27,13 +27,11 @@
 7.0b4 PBS 08/09/00: QuickTime verbs.
 */
 
+#include "frontier.h"
+#include "standard.h"
 
 #ifdef MACVERSION /*7.0b4 PBS: QuickTime verbs are Mac-only.*/
 
-
-#include <standard.h>
-#include <ctype.h>
-#include <string.h>
 #include "memory.h"
 #include "strings.h"
 #include "ops.h"

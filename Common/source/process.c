@@ -23,14 +23,12 @@
 
 ******************************************************************************/
 
+#include "frontier.h"
+#include "standard.h"
+
 #ifdef MACVERSION
 #include <land.h>
-#include <standard.h>
 #include "mac.h"
-#endif
-
-#ifdef WIN95VERSION
-#include "standard.h"
 #endif
 
 #include "memory.h"

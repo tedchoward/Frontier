@@ -23,18 +23,15 @@
 
 ******************************************************************************/
 
-#ifdef MACVERSION 
-#include <standard.h>
-#define GetDoubleClickTime() GetDblTime()
-#endif
-
-#ifdef WIN95VERSION
+#include "frontier.h"
 #include "standard.h"
+
+#ifdef MACVERSION 
+#define GetDoubleClickTime() GetDblTime()
 #endif
 
 #include "quickdraw.h"
 #include "mouse.h"
-
 
 
 

@@ -23,17 +23,9 @@
 
 ******************************************************************************/
 
-#ifdef MACVERSION
-#include <Packages.h>
-#include <ctype.h>
-#include <standard.h>
-#include <UnicodeConverter.h>
-#include <TextEncodingConverter.h>
-#endif
 
-#ifdef WIN95VERSION
+#include "frontier.h"
 #include "standard.h"
-#endif
 
 #include "font.h"
 #include "memory.h"
@@ -167,8 +159,6 @@ short comparestrings (bigstring bs1, bigstring bs2) {
 	} /*comparestrings*/
 
 #else
-
-#include <string.h>
 
 short comparestrings (bigstring bs1, bigstring bs2) {
 

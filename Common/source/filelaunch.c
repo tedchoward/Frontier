@@ -23,15 +23,9 @@
 
 ******************************************************************************/
 
-#undef SystemSevenOrLater
-#define SystemSevenOrLater 1
+#include "frontier.h"
+#include "standard.h"
 
-#include <AppleEvents.h>
-#include <Aliases.h>
-#include <PPCToolbox.h>
-#include <Folders.h>
-#include <Gestalt.h>
-#include <standard.h>
 #include "file.h"
 #include "filesystem7.h"
 #include "ops.h"

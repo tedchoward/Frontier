@@ -23,12 +23,10 @@
 
 ******************************************************************************/
 
-#include <Script.h>
-#include <AppleEvents.h>
-#include <AERegistry.h>
-#include <Processes.h>
+#include "frontier.h"
+#include "standard.h"
+
 #include <land.h>
-#include <standard.h>
 #include "error.h"
 #include "memory.h"
 #include "ops.h"
@@ -52,7 +50,6 @@
 #include "process.h"
 #include "processinternal.h"
 #ifdef flcomponent
-	#include <OSA.h>
 	#include <uisharing.h>
 	#include <uisinternal.h>
 	#include "osacomponent.h"
@@ -66,10 +63,12 @@
 
 // Subroutine Events:
 
+/*
 enum {
 	kASSubroutineEvent			= 'psbr',
 	keyASSubroutineName			= 'snam'
 };
+*/
 
 #define keykerneltable 'ktbl'
 #define keycurrenttable 'ctbl'

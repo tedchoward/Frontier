@@ -23,19 +23,11 @@
 
 ******************************************************************************/
 
+#include "frontier.h"
+#include "standard.h"
+
 #ifdef MACVERSION
-	
-	#if TARGET_API_MAC_CARBON == 1
-	#include <MacHelp.h>
-	#endif	
-
-	#include <Balloons.h>
-	#include <standard.h>
 	#include <uisharing.h>
-#endif
-
-#ifdef WIN95VERSION
-	#include "standard.h"
 #endif
 
 #include "memory.h"

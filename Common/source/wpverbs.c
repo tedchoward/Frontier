@@ -23,19 +23,10 @@
 
 ******************************************************************************/
 
-#ifdef MACVERSION 
-//	#pragma syspath_once off
-#endif
+#include "frontier.h"
+#include "standard.h"
 
 #include "Paige.h"
-
-#ifdef MACVERSION 
-	#include <standard.h>
-#endif
-
-#ifdef WIN95VERSION
-	#include "standard.h"
-#endif
 
 #include "frontierconfig.h"
 #include "cursor.h"

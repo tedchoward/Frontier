@@ -23,8 +23,10 @@
 
 ******************************************************************************/
 
+#include "frontier.h"
+#include "standard.h"
+
 #include <land.h>
-#include <standard.h>
 #include "error.h"
 #include "kb.h"
 #include "memory.h"

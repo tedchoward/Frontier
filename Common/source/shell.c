@@ -23,19 +23,14 @@
 
 ******************************************************************************/
 
+#include "frontier.h"
+#include "standard.h"
   
 #ifdef MACVERSION 
 #include <land.h>
-#include <standard.h>
 #include <SetUpA5.h>
-#include "WinSockNetEvents.h"
 #include "player.h" /*7.0b4 PBS*/
 #endif
-
-#ifdef WIN95VERSION 
-#include "standard.h"
-#endif
-
 
 #include "frontierconfig.h"
 #include "about.h"
@@ -80,6 +75,7 @@
 #include "frontierdebug.h" /*6.2b7 AR*/
 #include "dockmenu.h"
 #include "services.h"
+#include "WinSockNetEvents.h"
 
 #ifdef flcomponent
 	#include <uisharing.h>
@@ -975,7 +971,7 @@ void shellmaineventloop (void) {
 	shellpushblock (networkMask, true); /*for network toolkit; block network events%/
 	*/
 
-#ifdef MACVERSION
+#if defined(MACVERSION) && !TARGET_API_MAC_CARBON
 	UnloadSeg (&initsegment);
 #endif
 	

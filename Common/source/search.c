@@ -23,16 +23,9 @@
 
 ******************************************************************************/
 
-#ifdef MACVERSION 
-#include <Script.h>
-#include <standard.h>
-#endif
-
-#ifdef WIN95VERSION 
+#include "frontier.h"
 #include "standard.h"
-#endif
 
-#include <ctype.h>
 #include "memory.h"
 #include "cursor.h"
 #include "strings.h"

@@ -244,9 +244,9 @@
       Source: http://www.mp3-tech.org/programmer/frame_header.html
  */
 
-#ifdef WIN95VERSION
+
+#include "frontier.h"
 #include "standard.h"
-#endif
 
 #include "file.h"
 #include "shell.h"

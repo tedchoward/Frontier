@@ -28,14 +28,11 @@
 quickdraw.c -- code which builds on top of basic quickdraw operations.
 */
 
-#ifdef MACVERSION
-	#include <Gestalt.h>
-	#include <standard.h>
-	#include "mac.h"
-#endif
+#include "frontier.h"
+#include "standard.h"
 
-#ifdef WIN95VERSION
-	#include "standard.h"
+#ifdef MACVERSION
+	#include "mac.h"
 #endif
 
 #include "font.h"

@@ -23,16 +23,8 @@
 
 ******************************************************************************/
 
-#ifdef MACVERSION
-	#include <EPPC.h>
-	#include <standard.h>
-#endif
-
-
-#ifdef WIN95VERSION
-	#include "standard.h"
-#endif
-
+#include "frontier.h"
+#include "standard.h"
 
 #include "memory.h"
 #include "dialogs.h"

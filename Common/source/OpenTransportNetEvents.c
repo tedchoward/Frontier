@@ -23,6 +23,9 @@
 
 ******************************************************************************/
 
+#include "frontier.h"
+#include "standard.h"
+
 #ifdef NeverDefine_For_Reference
 For reference I am listing the error codes from the windows winsock.h file here
 
@@ -268,18 +271,8 @@ static unsigned char * stdcliberrorstrings [80] = {
 	"\x21" "Inappropriate file type or format",	/* 79 */
 	}; //tcperrorstrings
 
-#include <ctype.h>
-#include <string.h>
 #define wsprintf sprintf
 
-#ifndef OTDEBUG
-	#define OTDEBUG	1
-#endif
-#define OTUNIXERRORS	1
-#include <OpenTransport.h>
-#include <OpenTptInternet.h>
-
-#include <standard.h>
 #include "mac.h"
 #include "error.h"
 #include "kb.h"
@@ -298,7 +291,8 @@ static unsigned char * stdcliberrorstrings [80] = {
 #include "frontierdebug.h"
 #include "file.h"
 
-#if TARGET_CARBON
+
+#ifndef OTAssert
 	#define OTAssert(name, cond)	((cond) ? ((void) 0) : (DebugStr( __FILE__ ": " #name ": " #cond )))
 #endif
 
@@ -534,7 +528,6 @@ static char * TCPGETTYPE (tysocktypeid typeID) {
 
 #if (TCPTRACKER == 3)
 #pragma message ("*********************** TCPTRACKER is ON: Full output to tcpfile.txt ***********************")
-#include <stdio.h>
 
 static boolean fllogger = true;
 
@@ -603,8 +596,6 @@ static void TCPTRACKERCLOSE () {
 
 #elif (TCPTRACKER == 2)
 #pragma message ("*********************** TCPTRACKER is ON: Error output to tcpfile.txt **********************")
-
-#include <stdio.h>
 
 static boolean fllogger = true;
 
@@ -1572,7 +1563,7 @@ static OSStatus SetIpReuseAddrOption (EndpointRecordRef epref) {
 	
 	opt.len = sizeof(TOption);
 	opt.level = INET_IP;
-	opt.name = IP_REUSEADDR;
+	opt.name = kIP_REUSEADDR;
 	opt.status = 0;
 	opt.value[0] = 1;
 	
@@ -3307,7 +3298,7 @@ boolean fwsNetEventListenStream (unsigned long port, long depth, bigstring callb
 	
 	opt.len = sizeof (TOption);
 	opt.level = INET_IP;
-	opt.name = IP_REUSEADDR;
+	opt.name = kIP_REUSEADDR;
 	opt.status = 0;
 	opt.value[0] = 1;
 

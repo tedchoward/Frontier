@@ -23,20 +23,8 @@
 
 ******************************************************************************/
 
-  
-
-
-#ifdef MACVERSION
-#include <AppleEvents.h>
-#include <AERegistry.h>
-#include <Errors.h>
-#include <OSA.h>
-#include <standard.h>
-#endif
-
-#ifdef WIN95VERSION
+#include "frontier.h"
 #include "standard.h"
-#endif
 
 #include "memory.h"
 #include "strings.h"

@@ -39,6 +39,12 @@ Created 7/20/97 Robert Bierman
   format internally.
 
 **************************************************************************/
+
+
+#include "frontier.h"
+#include "standard.h"
+
+
 #ifdef NeverDefine_For_Reference
 For reference I am listing the error codes from the windows winsock.h file here
 
@@ -240,8 +246,6 @@ static unsigned char * tcperrorstrings [80] = {
 	}; //tcperrorstrings
 
 
-#include <ctype.h>
-
 #define ACCEPT_CONN_WITHOUT_GLOBALS		1
 
 #ifdef WIN95VERSION
@@ -251,7 +255,6 @@ static unsigned char * tcperrorstrings [80] = {
 #ifdef MACVERSION
 	#ifdef FRONTIER_GUSI_2
 		#include <compat.h>
-		#include <string.h>
 		#include <fcntl.h>
 		#include <inttypes.h>
 		#include <netdb.h>
@@ -285,17 +288,7 @@ static unsigned char * tcperrorstrings [80] = {
 	#endif
 
 	#include <sys/errno.h>
-	#include <standard.h>
 	#include "mac.h"
-#endif
-
-#ifdef WIN95VERSION
-	#include "standard.h"
-	#undef abs
-//	#include <winsock.h>
-	#include <winsock2.h>
-	#include <mswsock.h>
-	#include <malloc.h>
 #endif
 
 #include "error.h"
@@ -522,7 +515,6 @@ static char * TCPGETTYPE (tysocktypeid typeID) {
 
 #if (TCPTRACKER == 3)
 #pragma message ("*********************** TCPTRACKER is ON: Full output to tcpfile.txt ***********************")
-#include <stdio.h>
 
 static boolean fllogger = true;
 
@@ -636,8 +628,6 @@ static void TCPTRACKERCLOSE () {
 
 #elif (TCPTRACKER == 2)
 #pragma message ("*********************** TCPTRACKER is ON: Error output to tcpfile.txt **********************")
-
-#include <stdio.h>
 
 static boolean fllogger = true;
 

@@ -24,13 +24,9 @@
 ******************************************************************************/
 
  
-#ifdef MACVERSION
-#include <standard.h>
-#endif
 
-#ifdef WIN95VERSION
+#include "frontier.h"
 #include "standard.h"
-#endif
 
 #include "cursor.h"
 #include "memory.h"

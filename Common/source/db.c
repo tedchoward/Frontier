@@ -23,13 +23,8 @@
 
 ******************************************************************************/
 
-#ifdef MACVERSION 
-#include <standard.h>
-#endif
-
-#ifdef WIN95VERSION 
+#include "frontier.h"
 #include "standard.h"
-#endif
 
 #include "memory.h"
 #include "cursor.h"
@@ -107,8 +102,6 @@ static long allocs = 0, newallocs = 0, allocloops = 0; /*more statistics*/
 #ifdef DATABASE_DEBUG
 
 #pragma message ("*********************** DATABASE_DEBUG is ON: output to dblog.txt ***********************")
-#include <stdio.h>
-#include <string.h>
 
 #define dberror(num) debug_dberror(num, __LINE__, true)
 #define dblogerror(num) debug_dberror(num, __LINE__, false)

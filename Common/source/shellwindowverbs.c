@@ -23,13 +23,11 @@
 
 ******************************************************************************/
 
-#ifdef MACVERSION 
-#include <standard.h>
-#include "player.h" /*7.0b4 PBS: QuickTime Player window*/
-#endif
-
-#ifdef WIN95VERSION 
+#include "frontier.h"
 #include "standard.h"
+
+#ifdef MACVERSION 
+#include "player.h" /*7.0b4 PBS: QuickTime Player window*/
 #endif
 
 #include "about.h"

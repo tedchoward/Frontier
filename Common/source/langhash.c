@@ -23,16 +23,8 @@
 
 ******************************************************************************/
 
-#ifdef MACVERSION
-#include <ctype.h>
-#include <stdlib.h>
-#include <standard.h>
-#endif
-
-#ifdef WIN95VERSION
-#include <stdlib.h>
+#include "frontier.h"
 #include "standard.h"
-#endif
 
 #include "error.h"
 #include "memory.h"

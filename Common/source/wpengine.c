@@ -23,9 +23,7 @@
 
 ******************************************************************************/
 
-#ifdef MACVERSION 
-//	#pragma syspath_once off
-#endif
+#include "frontier.h"
 
 #include "Paige.h"
 #include "pgTraps.h"
@@ -34,16 +32,8 @@
 #include "machine.h"
 #include "pgHLevel.h"
 
-#ifdef MACVERSION 
-	#include <standard.h>
-	#include <Script.h>
-#endif
+#include "standard.h"
 
-#ifdef WIN95VERSION
-	#include "standard.h"
-#endif
-
-#include <ctype.h>
 #include "bitmaps.h"
 #include "cursor.h"
 #include "error.h"

@@ -24,13 +24,8 @@
 ******************************************************************************/
 
   
-#ifdef MACVERSION
-	#include <standard.h>
-#endif
-
-#ifdef WIN95VERSION
-	#include "standard.h"
-#endif
+#include "frontier.h"
+#include "standard.h"
 
 #include "kb.h"
 #include "memory.h"
@@ -82,6 +77,8 @@ static void shelldisposeinternalscrap (void) {
 	} /*shelldisposeinternalscrap*/
 
 
+#ifdef WIN95VERSION
+
 void shelldisposescrap (void) {
 	
 	if (!shellscrap.fllocked) {
@@ -91,6 +88,8 @@ void shelldisposescrap (void) {
 		handlescrapdisposed ();
 		}
 	} /*shelldisposescrap*/
+
+#endif
 
 
 static boolean shellsetinternalscrap (void * hscrap, tyscraptype type, shelldisposescrapcallback disposeroutine, shellexportscrapcallback exportroutine) {

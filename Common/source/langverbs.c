@@ -23,16 +23,14 @@
 
 ******************************************************************************/
 
- 
-#include <stdlib.h>
+#include "frontier.h"
+#include "standard.h"
 
 #ifdef MACVERSION
-#include <standard.h>
 #include "langxcmd.h"
 #endif
 
 #ifdef WIN95VERSION
-#include "standard.h"
 #include "htmlcontrol.h"
 #endif
 
@@ -1376,14 +1374,40 @@ static boolean threewayfunc (hdltreenode hparam1, tyvaluerecord *v) {
 
 
 #if MACVERSION
-//Code change by Timothy Paustian Wednesday, June 14, 2000 9:05:27 PM
-//Changed to Opaque call for Carbon
+
+#if TARGET_API_MAC_CARBON
+
+static boolean callxcmdverb (hdltreenode hparam1, tyvaluerecord *vreturned) {
+
+	/*
+	2004-10-21 aradke: XCMDs and XCFNs are not supported on OS X
+	*/
+	
+	bigstring bssourcemessage = "\pCan't call Ò^0Ó because XCMDs and XFCNs are not supported in the Carbon version.";
+	bigstring bserrormessage;
+	bigstring bsxcmd;
+	hdlhashtable htable;
+	tyvaluerecord val;
+	hdlhashnode hnode;
+
+	if (!getvarvalue (hparam1, 1, &htable, bsxcmd, &val, &hnode))
+		return (false);
+
+	parsedialogstring (bssourcemessage, bsxcmd, nil, nil, nil, bserrormessage);
+	
+	langerrormessage (bserrormessage);
+	return (false);
+
+	} /*callxcmdverb*/
+
+#else
+
 #if !TARGET_RT_MAC_CFM
 		
-		#define xcmdcallbackUPP ((UniversalProcPtr) &xcmdcallback)
+	#define xcmdcallbackUPP ((UniversalProcPtr) &xcmdcallback)
 		
-	#else
-		enum {
+#else
+	enum {
 		XCmdProcInfo = kPascalStackBased
 			 | STACK_ROUTINE_PARAMETER(1, SIZE_CODE(sizeof(XCmdPtr)))
 	};
@@ -1392,16 +1416,11 @@ static boolean threewayfunc (hdltreenode hparam1, tyvaluerecord *v) {
 		xcmdcallbackProcInfo = kPascalStackBased
 	};
 	
-	#if TARGET_API_MAC_CARBON == 1
-	//lets try being lazy with this one.
-	
-	#define xcmdcallbackUPP ((UniversalProcPtr) &xcmdcallback)
-	#else
 	static RoutineDescriptor xcmdcallbackDesc = BUILD_ROUTINE_DESCRIPTOR (xcmdcallbackProcInfo, xcmdcallback);
 	
 	#define xcmdcallbackUPP (&xcmdcallbackDesc)
-	#endif
 #endif
+
 static boolean callxcmdverb (hdltreenode hparam1, tyvaluerecord *vreturned) {
 	
 	/*
@@ -1439,20 +1458,6 @@ static boolean callxcmdverb (hdltreenode hparam1, tyvaluerecord *vreturned) {
 		
 		return (false);
 		}
-
-	#if TARGET_API_MAC_CARBON == 1 /*7.0b48 PBS: it's an error on OS X*/
-	
-		{
-		bigstring bssourcemessage = "\pCan't call Ò^0Ó because XCMDs and XFCNs are not supported in the Carbon version.";
-		bigstring bserrormessage;
-	
-		parsedialogstring (bssourcemessage, bsxcmd, nil, nil, nil, bserrormessage);
-		
-		langerrormessage (bserrormessage);
-		return (false);
-		}
-		
-	#endif
 		
 	hxcmd = val.data.binaryvalue; /*copy into register*/
 	
@@ -1561,6 +1566,7 @@ static boolean callxcmdverb (hdltreenode hparam1, tyvaluerecord *vreturned) {
 	return (fl);
 	} /*callxcmdverb*/
 
+#endif
 #endif
 
 

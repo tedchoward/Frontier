@@ -29,13 +29,8 @@ oppopup.c -- handle right-click popup menus in outlines.
 7.0b10 PBS
 */
 
-#ifdef MACVERSION 
-#include <standard.h>
-#endif
-
-#ifdef WIN95VERSION 
+#include "frontier.h"
 #include "standard.h"
-#endif
 
 #include "quickdraw.h"
 #include "op.h"

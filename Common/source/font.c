@@ -23,17 +23,11 @@
 
 ******************************************************************************/
 
+#include "frontier.h"
+#include "standard.h"
+
 #include "Paige.h"
 #include "pgdeftbl.h"
-
-#ifdef MACVERSION
-#include <standard.h>
-#endif
-
-#ifdef WIN95VERSION
-#include "standard.h"
-#include <string.h>
-#endif
 
 #include "strings.h"
 #include "font.h"

@@ -23,14 +23,8 @@
 
 ******************************************************************************/
 
-#ifdef MACVERSION 
-#include <standard.h>
-#include <Gestalt.h>
-#endif
-
-#ifdef WIN95VERSION 
+#include "frontier.h"
 #include "standard.h"
-#endif
 
 #include "memory.h"
 #include "cursor.h"

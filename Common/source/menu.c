@@ -23,12 +23,10 @@
 
 ******************************************************************************/
 
-#ifdef MACVERSION
-	#include <standard.h>
-#endif
+#include "frontier.h"
+#include "standard.h"
 
 #ifdef WIN95VERSION
-	#include "standard.h"
 	#include "font.h"
 #endif
 

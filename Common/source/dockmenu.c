@@ -29,12 +29,8 @@ Broken out from FrontierWinMain.c
 7.1b22 11/08/01 PBS
 */
 
-#ifdef MACVERSION
-	#include <standard.h>
-#endif
-#ifdef WIN95VERSION
-	#include "standard.h"
-#endif
+#include "frontier.h"
+#include "standard.h"
 
 #include "menu.h"
 #include "strings.h"

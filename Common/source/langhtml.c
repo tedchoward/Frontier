@@ -25,18 +25,13 @@
 
 /*dmb 6/17/96 4.0.2b1: integrated macroprocessor ucmd code*/
 
-#ifdef MACVERSION
-#include <AppleEvents.h>
-#include <iac.h>
-#include <standard.h>
-#endif
-
-#ifdef WIN95VERSION
+#include "frontier.h"
 #include "standard.h"
+
+#ifdef MACVERSION
+#include <iac.h>
 #endif
 
-#include <ctype.h>
-#include <string.h>
 #include "error.h"
 #include "file.h"
 #include "memory.h"

@@ -23,23 +23,12 @@
 
 ******************************************************************************/
 
-#ifdef MACVERSION
-#include <Files.h>
-#include <Folders.h>
-#include <Gestalt.h>
-#include <Script.h>
-#include <StandardFile.h>
-#include <standard.h>
-#include <Math64.h> /*6.1b15 AR: for langgetextendedvolumeinfo*/
-#endif
+#include "frontier.h"
+#include "standard.h"
 
 #ifdef WIN95VERSION
-#include "standard.h"
 #include "winregistry.h"
-#undef abs
-#include <shlobj.h>
 #endif
-
 
 #include "filealias.h"
 #include "cursor.h"
@@ -57,37 +46,43 @@
 #include "shell.rsrc.h"
 #include "langinternal.h" /*for langbackgroundtask*/
 
-
 #ifdef MACVERSION
-#ifdef flcomponent
 
-	#include "SetUpA5.h"
-
-#endif
-#endif
-
-#define hasOpenDeny(volParms)		(((volParms).vMAttrib & (1L << bHasOpenDeny)) != 0)
-
-enum { /*permissions used by MoreFile 1.1 code*/
+	#if TARGET_API_MAC_CARBON
+		#include "MoreFilesX.h"
+	#else
+		pascal OSErr XGetVInfo(short volReference, StringPtr volName, short *vRefNum,
+												UInt64 *freeBytes, UInt64 *totalBytes);
+	#endif
 	
-	dmNone			= 0x0000,
-	dmNoneDenyRd	= 0x0010,
-	dmNoneDenyWr	= 0x0020,
-	dmNoneDenyRdWr	= 0x0030,
-	dmRd			= 0x0001,	/* Single writer, multiple readers; the readers */
-	dmRdDenyRd		= 0x0011,
-	dmRdDenyWr		= 0x0021,	/* Browsing - equivalent to fsRdPerm */
-	dmRdDenyRdWr	= 0x0031,
-	dmWr			= 0x0002,
-	dmWrDenyRd		= 0x0012,
-	dmWrDenyWr		= 0x0022,
-	dmWrDenyRdWr	= 0x0032,
-	dmRdWr			= 0x0003,	/* Shared access - equivalent to fsRdWrShPerm */
-	dmRdWrDenyRd	= 0x0013,
-	dmRdWrDenyWr	= 0x0023,	/* Single writer, multiple readers; the writer */
-	dmRdWrDenyRdWr	= 0x0033	/* Exclusive access - equivalent to fsRdWrPerm */
-	};
+	#ifdef flcomponent
+		#include "SetUpA5.h"
+	#endif
 
+	#define hasOpenDeny(volParms)		(((volParms).vMAttrib & (1L << bHasOpenDeny)) != 0)
+	
+	#ifndef __MOREFILESEXTRAS__
+		enum { /*permissions used by MoreFile 1.1 code*/
+			dmNone			= 0x0000,
+			dmNoneDenyRd	= 0x0010,
+			dmNoneDenyWr	= 0x0020,
+			dmNoneDenyRdWr	= 0x0030,
+			dmRd			= 0x0001,	/* Single writer, multiple readers; the readers */
+			dmRdDenyRd		= 0x0011,
+			dmRdDenyWr		= 0x0021,	/* Browsing - equivalent to fsRdPerm */
+			dmRdDenyRdWr	= 0x0031,
+			dmWr			= 0x0002,
+			dmWrDenyRd		= 0x0012,
+			dmWrDenyWr		= 0x0022,
+			dmWrDenyRdWr	= 0x0032,
+			dmRdWr			= 0x0003,	/* Shared access - equivalent to fsRdWrShPerm */
+			dmRdWrDenyRd	= 0x0013,
+			dmRdWrDenyWr	= 0x0023,	/* Single writer, multiple readers; the writer */
+			dmRdWrDenyRdWr	= 0x0033	/* Exclusive access - equivalent to fsRdWrPerm */
+			};
+	#endif
+	
+#endif
 
 
 #ifdef flsystem6
@@ -132,16 +127,6 @@ static OSType specialfolders [] = {
 	};
 #endif
 
-
-#ifdef MACVERSION
-	//copied from MoreFilesExtras.h
-	extern pascal OSErr XGetVInfo(short volReference,
-						  StringPtr volName,
-						  short *vRefNum,
-						  UnsignedWide *freeBytes,
-						  UnsignedWide *totalBytes);
-
-#endif
 
 typedef struct tyfileinfo tyvolinfo;
 
@@ -2107,8 +2092,10 @@ boolean langgetextendedvolumeinfo (const tyfilespec *fs, double *totalbytes, dou
 	OSErr errnum = noErr;
 	bigstring volname;
 #ifdef MACVERSION
-	short vrefnum;
-	UnsignedWide uwtotalbytes, uwfreebytes;
+	UInt64 ui64totalbytes, ui64freebytes;
+	#if !TARGET_API_MAC_CARBON
+		short vrefnum;
+	#endif
 #endif
 
 	*totalbytes = 0.0;
@@ -2136,19 +2123,20 @@ boolean langgetextendedvolumeinfo (const tyfilespec *fs, double *totalbytes, dou
 
 #ifdef MACVERSION
 
-	errnum = XGetVInfo (fs->vRefNum, nil, &vrefnum, &uwfreebytes, &uwtotalbytes);
-	
+	#if TARGET_API_MAC_CARBON
+		errnum = FSGetVInfo (fs->vRefNum, nil, &ui64totalbytes, &ui64freebytes);
+	#else
+		errnum = XGetVInfo (fs->vRefNum, nil, &vrefnum, &ui64totalbytes, &ui64freebytes);
+	#endif
+
 	if (errnum != noErr) {
-
 		volumeinfoerror (errnum);
-
 		return (false);
 		}
 
-	*totalbytes = (double) UnsignedWideToUInt64 (uwtotalbytes);
-	
-	*freebytes = (double) UnsignedWideToUInt64 (uwfreebytes);
-	
+	*totalbytes = (double) ui64totalbytes;
+	*freebytes = (double) ui64freebytes;
+
 #endif
 
 
@@ -3372,36 +3360,6 @@ boolean newfile (const tyfilespec *fs, OSType creator, OSType filetype) {
 
 #ifdef MACVERSION
 
-#if TARGET_RT_MAC_CFM
-
-	static pascal void iocompletion (ParmBlkPtr pb) {
-	
-		DisposePtr ((Ptr) pb);
-		} /*iocompletion*/
-	
-	#if !TARGET_API_MAC_CARBON
-	static RoutineDescriptor iocompletionDesc = BUILD_ROUTINE_DESCRIPTOR (uppIOCompletionProcInfo, iocompletion);
-	
-	#define iocompletionUPP (&iocompletionDesc)
-	#else
-	//IOCompletionUPP	iocompletionDesc = nil;
-	//#define iocompletionUPP(iocompletionDesc)
-	#endif
-
-
-#else
-
-	static pascal void iocompletion (ParmBlkPtr pb : __A0) {
-	
-		DisposePtr ((Ptr) pb);
-		} /*iocompletion*/
-	
-	#define iocompletionUPP ((Register68kProcPtr) iocompletion)
-
-#endif
-		
-
-
 boolean getfullfilepath (bigstring bspath) {
 	
 	FSSpec fs;
@@ -3423,7 +3381,9 @@ boolean filemakespec (short vnum, long dirid, bigstring fname, ptrfilespec pfs) 
 	
 	return ((ec == noErr) || (ec == fnfErr));
 	} /*filemakespec*/
-#endif
+
+#endif /*MACVERSION*/
+
 
 boolean initfile (void) {
 

@@ -23,14 +23,8 @@
 
 ******************************************************************************/
 
-#ifdef MACVERSION
-#include <string.h>
-#include <standard.h>
-#endif
-
-#ifdef WIN95VERSION
+#include "frontier.h"
 #include "standard.h"
-#endif
 
 #include "frontierconfig.h"
 #include "memory.h"

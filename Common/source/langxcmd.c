@@ -23,7 +23,9 @@
 
 ******************************************************************************/
 
-#include <standard.h>
+#include "frontier.h"
+#include "standard.h"
+
 #include "memory.h"
 #include "search.h"
 #include "strings.h"

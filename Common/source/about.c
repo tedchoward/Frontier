@@ -31,12 +31,8 @@ Make sure you have a STR# resource number 128, with exactly six strings in it.
 Not too big, kind of sexy, and certainly better than nothing!
 */ 
 
-#ifdef MACVERSION
-	#include <standard.h>
-#endif
-#ifdef WIN95VERSION
-	#include "standard.h"
-#endif
+#include "frontier.h"
+#include "standard.h"
 
 #include "versions.h" /*9.1b3 JES*/
 #include "quickdraw.h"

@@ -52,8 +52,9 @@
 **
 ******************************************************************************/
 
-#include <Gestalt.h>
-#include <standard.h>
+#include "frontier.h"
+#include "standard.h"
+
 #include "filealias.h"
 #include "error.h"
 #include "resources.h"

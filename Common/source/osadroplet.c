@@ -23,15 +23,11 @@
 
 ******************************************************************************/
 
-#include <AppleEvents.h>
-#include <Aliases.h>
-#include <Gestalt.h>
-#include <Folders.h>
+#include "frontier.h"
+#include "standard.h"
+
 #include <uisharing.h>
 #include <land.h>
-#include <standard.h>
-#include <Components.h>
-#include <OSA.h>
 #include "dialogs.h"
 #include "strings.h"
 #include "osainternal.h"

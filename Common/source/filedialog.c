@@ -23,25 +23,11 @@
 
 ******************************************************************************/
 
-#ifdef MACVERSION
-#include <Files.h>
-#include <Folders.h>
-#include <Gestalt.h>
-#include <Script.h>
-#include <StandardFile.h>
-#include <standard.h>
-//Code change by Timothy Paustian Sunday, June 25, 2000 10:33:54 AM
-//We need
-#include <Navigation.h>
-#include "mac.h"
-#endif
-
-#ifdef WIN95VERSION
+#include "frontier.h"
 #include "standard.h"
-#include <commdlg.h>
-#undef abs
-#include <shlobj.h>
-#include <objidl.h>
+
+#ifdef MACVERSION
+#include "mac.h"
 #endif
 
 #include "filealias.h"
@@ -61,8 +47,10 @@
 #include "shell.rsrc.h"
 #include "langinternal.h" /*for langbackgroundtask*/
 
+
 #ifdef MACVERSION
-	#include "SetUpA5.h"
+
+#include "SetUpA5.h"
 
 #define sfgetfileid 5000
 #define sfputfileid 5001
@@ -84,6 +72,8 @@ typedef struct tysfdata { /*data passed to hook routines*/
 	ptrsftypelist sftypes;
 	} tysfdata, *ptrsfdata;
 
+
+#if !TARGET_API_MAC_CARBON
 
 static pascal short sfputfilehook (short item, DialogPtr pdialog, tysfdata *pdata) {
 	
@@ -420,6 +410,7 @@ static pascal Boolean knowntypesfilter (ParmBlkPtr pb, tysfdata *pdata) {
 	return (-1); // didn't find it in our list
 	} /*knowntypesfilter*/
 
+
 		
 #if !TARGET_RT_MAC_CFM
 	
@@ -452,6 +443,9 @@ static pascal Boolean knowntypesfilter (ParmBlkPtr pb, tysfdata *pdata) {
 
 
 #endif
+
+#endif /* !TARGET_API_MAC_CARBON */
+
 	
 	boolean sfdialog (tysfverb sfverb, bigstring bsprompt, ptrsftypelist filetypes, tyfilespec *fspec) {
 	
@@ -500,8 +494,8 @@ static pascal Boolean knowntypesfilter (ParmBlkPtr pb, tysfdata *pdata) {
 	short cttypes = -1;
 	OSType *types = nil;
 	Str255 bs;
-	DlgHookYDUPP sfhook = nil;
-	FileFilterYDUPP sffilefilter = nil;
+	//DlgHookYDUPP sfhook = nil;
+	//FileFilterYDUPP sffilefilter = nil;
 	tysfdata sfdata;
 	FSSpec *fs = &sfdata.sfreply.sfFile;
 	OSErr	anErr = noErr;

@@ -23,10 +23,9 @@
 
 ******************************************************************************/
 
-#include <AppleEvents.h>
-#include <Components.h> 
-#include <Gestalt.h>
-#include <Processes.h>
+#include "frontier.h"
+#include "standard.h"
+ 
 #include <uisharing.h>
 #include <uisinternal.h>
 

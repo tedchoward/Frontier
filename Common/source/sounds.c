@@ -23,15 +23,8 @@
 
 ******************************************************************************/
 
-#ifdef MACVERSION
-#include <standard.h>
-#include <Sound.h>
-#endif
-
-#ifdef WIN95VERSION
+#include "frontier.h"
 #include "standard.h"
-#include <mmsystem.h>
-#endif
 
 #include "error.h"
 #include "strings.h"

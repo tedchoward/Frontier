@@ -23,13 +23,8 @@
 
 ******************************************************************************/
 
-#ifdef MACVERSION 
-#include <standard.h>
-#endif
-
-#ifdef WIN95VERSION 
+#include "frontier.h"
 #include "standard.h"
-#endif
 
 #include "scrollbar.h"
 #include "quickdraw.h"
@@ -282,36 +277,25 @@ static pascal void shellvertscroll (hdlscrollbar ctrl, short part) {
 //Code change by Timothy Paustian Friday, June 16, 2000 3:14:00 PM
 //Changed to Opaque call for Carbon
 
-#if !TARGET_RT_MAC_CFM
-	
-	#define shellvertscrollUPP (&shellvertscroll)
-	
-	#define shellhorizscrollUPP (&shellhorizscroll)
-	
-#else
-
+#if TARGET_RT_MAC_MACHO
+	#define shellvertscrollUPP	(&shellvertscroll)
+	#define shellhorizscrollUPP	(&shellhorizscroll)
+	#define	shelllivescrollupp	(&ScrollThumbActionProc)
+#elif TARGET_RT_MAC_CFM
 	#if TARGET_API_MAC_CARBON
-	ControlActionUPP	shellvertscrollDesc;
-	
-	ControlActionUPP	shellhorizscrollDesc;
-	
-	ControlActionUPP	shelllivescrollupp;
-	
-	#define shellvertscrollUPP (shellvertscrollDesc)
-	
-	#define shellhorizscrollUPP (shellhorizscrollDesc)
-	
+		ControlActionUPP	shellvertscrollDesc;
+		ControlActionUPP	shellhorizscrollDesc;
+		ControlActionUPP	shelllivescrollupp;
+		#define shellvertscrollUPP (shellvertscrollDesc)
+		#define shellhorizscrollUPP (shellhorizscrollDesc)
 	#else
-	static RoutineDescriptor shellvertscrollDesc = BUILD_ROUTINE_DESCRIPTOR (uppControlActionProcInfo, shellvertscroll);
-	
-	static RoutineDescriptor shellhorizscrollDesc = BUILD_ROUTINE_DESCRIPTOR (uppControlActionProcInfo, shellhorizscroll);
-	
-	#define shellvertscrollUPP (&shellvertscrollDesc)
-	
-	#define shellhorizscrollUPP (&shellhorizscrollDesc)
+		static RoutineDescriptor shellvertscrollDesc = BUILD_ROUTINE_DESCRIPTOR (uppControlActionProcInfo, shellvertscroll);
+		static RoutineDescriptor shellhorizscrollDesc = BUILD_ROUTINE_DESCRIPTOR (uppControlActionProcInfo, shellhorizscroll);
+		#define shellvertscrollUPP (&shellvertscrollDesc)
+		#define shellhorizscrollUPP (&shellhorizscrollDesc)
 	#endif
-	
 #endif
+
 #if TARGET_API_MAC_CARBON == 1
 
 /*The live scrolling code descends from Apple sample code, hence the different style of code.*/
@@ -550,9 +534,11 @@ void shellinitscroll()
 	//Code change by Timothy Paustian Saturday, July 22, 2000 12:04:35 AM
 	//Needed in shellscroll
 	#if TARGET_API_MAC_CARBON
-	shellvertscrollDesc = NewControlActionUPP(shellvertscroll);
-	shellhorizscrollDesc = NewControlActionUPP(shellhorizscroll);
-	shelllivescrollupp = NewControlActionUPP (ScrollThumbActionProc);
+		#if TARGET_RT_MAC_CFM
+			shellvertscrollDesc = NewControlActionUPP(shellvertscroll);
+			shellhorizscrollDesc = NewControlActionUPP(shellhorizscroll);
+			shelllivescrollupp = NewControlActionUPP (ScrollThumbActionProc);
+		#endif
 	#endif
 }
 
@@ -561,12 +547,13 @@ extern void shellshutdownscroll ();
 void shellshutdownscroll()
 {
 	#if TARGET_API_MAC_CARBON
-	DisposeControlActionUPP(shellvertscrollDesc);
-	DisposeControlActionUPP(shellhorizscrollDesc);
-	DisposeControlActionUPP (shelllivescrollupp);
+		#if TARGET_RT_MAC_CFM
+			DisposeControlActionUPP(shellvertscrollDesc);
+			DisposeControlActionUPP(shellhorizscrollDesc);
+			DisposeControlActionUPP (shelllivescrollupp);
+		#endif
 	#endif
 }
-
 
 
 void shellscroll (boolean flvert, hdlscrollbar sb, short part, Point pt) {

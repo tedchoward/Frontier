@@ -23,7 +23,8 @@
 
 ******************************************************************************/
 
-#include <stdio.h>
+#include "frontier.h"
+#include "standard.h"
 
 #define NEEDMOREWIN 1
 

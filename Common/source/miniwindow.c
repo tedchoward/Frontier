@@ -23,13 +23,8 @@
 
 ******************************************************************************/
 
-#ifdef MACVERSION
-#include <standard.h>
-#endif
-
-#ifdef WIN95VERSION
+#include "frontier.h"
 #include "standard.h"
-#endif
 
 #include "bitmaps.h"
 #include "cursor.h"
@@ -49,7 +44,6 @@
 #include "zoom.h"
 #include "shell.h"
 #include "shellundo.h"
-#include "icon.h"
 #include "cancoon.h"
 #include "miniwindow.h"
 #include "wpengine.h"

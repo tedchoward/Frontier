@@ -23,22 +23,11 @@
 
 ******************************************************************************/
 
-#include <stdlib.h>
-#include <stdio.h>
+#include "frontier.h"
+#include "standard.h"
 
 #ifdef MACVERSION
-	#include <fp.h>
-	#include <ctype.h>
-	#include <Gestalt.h>
-	#include <Script.h>
-	#include <standard.h>
 	#include "mac.h"
-#endif
-
-#ifdef WIN95VERSION
-	#include <ctype.h>
-	#include <math.h>
-	#include "standard.h"
 #endif
 
 #include "error.h"

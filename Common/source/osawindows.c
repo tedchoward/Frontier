@@ -25,13 +25,14 @@
 
 /*Forked file. Carbon at top, "good" version at bottom. This file should be reconciled later.*/
 
+#include "frontier.h"
+#include "standard.h"
+
 #if TARGET_API_MAC_CARBON == 1
 
-#include <Components.h>
 #include <uisharing.h>
 #include <uisinternal.h>
 #include <land.h>
-#include <standard.h>
 #include "ops.h"
 #include "kb.h"
 #include "memory.h"
@@ -402,7 +403,7 @@ static boolean installwindowsharinghandlers (void) {
 	
 	OSErr err;
 	
-	#if TARGET_API_MAC_CARBON == 1	
+	#if TARGET_API_MAC_CARBON && TARGET_RT_MAC_CFM	
 	if (handleselectwindowDesc == nil)
 		handleselectwindowDesc = NewAEEventHandlerUPP(handleselectwindow);
 	#endif
@@ -418,7 +419,7 @@ static boolean removewindowsharinghandlers (void) {
 	OSErr err;
 	
 	err = AERemoveEventHandler ('SHUI', 'selw', handleselectwindowUPP, false);
-	#if TARGET_API_MAC_CARBON == 1	
+	#if TARGET_API_MAC_CARBON && TARGET_RT_MAC_CFM	
 	if (handleselectwindowDesc != nil)
 		DisposeAEEventHandlerUPP(handleselectwindowDesc);
 	
@@ -557,7 +558,7 @@ boolean initwindowsharingcomponent (void) {
 	RememberA5 ();
 	#endif
 	
-	#if TARGET_API_MAC_CARBON == 1
+	#if TARGET_API_MAC_CARBON && TARGET_RT_MAC_CFM
 	windowcandofunctionDesc = NewComponentFunctionUPP(windowcandofunction, windowcandofunctionProcInfo);
 	handlewindoweventcommandDesc = NewComponentFunctionUPP(handlewindoweventcommand, handlewindoweventcommandProcInfo);
 	windowiscardcommandDesc = NewComponentFunctionUPP(windowiscardcommand, windowiscardcommandProcInfo);
@@ -580,11 +581,9 @@ boolean initwindowsharingcomponent (void) {
 
 #else
 
-#include <Components.h>
 #include <uisharing.h>
 #include <uisinternal.h>
 #include <land.h>
-#include <standard.h>
 #include "ops.h"
 #include "kb.h"
 #include "memory.h"

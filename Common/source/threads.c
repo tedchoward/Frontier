@@ -23,17 +23,13 @@
 
 ******************************************************************************/
 
+#include "frontier.h"
+#include "standard.h"
+
 #ifdef MACVERSION
-//#include <Threads.h>
 #include <SetUpA5.h>
-#include <standard.h>
 #include "mac.h"
 #include "processinternal.h"
-#endif
-
-#ifdef WIN95VERSION
-#include <stdlib.h>
-#include "standard.h"
 #endif
 
 #include "error.h"

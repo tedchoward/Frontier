@@ -23,17 +23,15 @@
 
 ******************************************************************************/
 
+#include "frontier.h"
+#include "standard.h"
+
 #ifdef MACVERSION
-	#include <standard.h>
 	#include "OSXSpecifics.h"
 	#include "player.h" /*7.0b4: QuickTime Player*/
 #endif
-#ifdef WIN95VERSION
-	#include "standard.h"
-#endif
 
 #include "about.h"
-
 #include "frontierconfig.h"
 #include "db.h" /*stats*/
 #include "file.h" /*6.1b15 AR: filestart*/

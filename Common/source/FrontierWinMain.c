@@ -23,20 +23,12 @@
 
 ******************************************************************************/
 
+#include "frontier.h"
+#include "standard.h"
+
 #ifdef PIKE
 	#define _WIN32_IE 0x0500
 #endif
-
-#include <stdio.h>
-/* This allows additional Windows includes  8/26/00 by RAB*/
-#define NEEDMOREWIN 1
-
-#include "standard.h"
-
-//#ifdef PIKE
-	#include <Shlwapi.h>		/* 9/24/01 RAB */
-	#include <Shellapi.h>		/* 9/24/01 RAB */
-//#endif
 
 #include "WinLand.h"
 #include "dialogs.h"

@@ -23,13 +23,8 @@
 
 ******************************************************************************/
 
-#ifdef MACVERSION 
-#include <standard.h>
-#endif
-
-#ifdef WIN95VERSION 
+#include "frontier.h"
 #include "standard.h"
-#endif
 
 #include "memory.h"
 #include "cursor.h"
@@ -44,7 +39,10 @@
 
 
 #ifdef MACVERSION
-CGrafPtr currentprintport = NULL;
+	CGrafPtr currentprintport = NULL;
+	#if TARGET_API_MAC_CARBON
+		#define iPrAbort kPMCancel
+	#endif
 #endif
 
 #ifdef WIN95VERSION

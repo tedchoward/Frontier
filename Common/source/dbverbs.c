@@ -27,14 +27,12 @@
 	4.1b4 dmb: new verbs based on ODB Engine API
 */
 
+#include "frontier.h"
+#include "standard.h"
+
 #ifdef MACVERSION
 #include <land.h>
-#include <standard.h>
 #include "mac.h"
-#endif
-
-#ifdef WIN95VERSION
-#include "standard.h"
 #endif
 
 #include "ops.h"

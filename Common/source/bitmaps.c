@@ -31,12 +31,10 @@ initbitmaps takes a boolean.  if false, then all subsequent calls to bitmap rout
 nothing but return.
 */
 
-#include <land.h>
+#include "frontier.h"
+#include "standard.h"
 
-#include <Gestalt.h>
-#include <qdoffscreen.h>
-#include <standard.h> 
-#include <QuickDraw.h>
+#include <land.h>
 #include "mac.h"
 #include "quickdraw.h"
 #include "font.h"

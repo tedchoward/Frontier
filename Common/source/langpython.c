@@ -23,6 +23,9 @@
 
 ******************************************************************************/
 
+#include "frontier.h"
+#include "standard.h"
+
 #define xxxFRONTIER_PYTHON 1
 
 #ifdef FRONTIER_PYTHON
@@ -32,17 +35,9 @@
 #endif
 
 #ifdef MACVERSION
-#include <AppleEvents.h>
 #include <iac.h>
-#include <standard.h>
 #endif
 
-#ifdef WIN95VERSION
-#include "standard.h"
-#endif
-
-#include <ctype.h>
-#include <string.h>
 #include "error.h"
 #include "file.h"
 #include "memory.h"

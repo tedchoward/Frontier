@@ -23,15 +23,12 @@
 
 ******************************************************************************/
 
+#include "frontier.h"
+#include "standard.h"
+
 #ifdef MACVERSION 
 #include <land.h>
-#include <standard.h>
-#include <string.h>
 #define wsprintf sprintf
-#endif
-
-#ifdef WIN95VERSION 
-#include "standard.h"
 #endif
 
 #include "ops.h"
