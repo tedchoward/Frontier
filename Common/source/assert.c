@@ -42,9 +42,10 @@
 	#include "timedate.h"
 #endif
 
-	short __assert (char *expr, char *file, short line) {
 
-#ifdef TARGET_API_MAC_CARBON
+#if 0 //TARGET_API_MAC_CARBON	/* 2004-10-23 aradke: rely on Debugging.h instead */
+
+	short __assert (char *expr, char *file, short line) {
 	
 		/*
 		On OS X, DebugStr output gets automatically rerouted to stderr
@@ -154,8 +155,15 @@
 		
 		flnorentry = false;
 
-#else
+		return (0);
+	} /*__assert*/
+
+#endif	/*TARGET_API_MAC_CARBON*/
+
+#if TARGET_API_MAC_OS8
 		
+	short __assert (char *expr, char *file, short line) {
+
 		bigstring bsfile, bsline, bsmessage;
 		static boolean flnorentry = false;
 		
@@ -179,9 +187,10 @@
 		
 		flnorentry = false;
 
-#endif
 		return (0);
 	} /*__assert*/
+
+#endif	/*TARGET_API_MAC_OS8*/
 
 #endif	/* MACVERSION */
 	
@@ -194,7 +203,6 @@
 	#ifdef _MSC_VER		/* 2002-11-09 AR: use _assert from debug version of Microsoft C runtime library*/
 
 		#include <assert.h>
-		#include <crtdbg.h>
 		#include "threads.h"
 
 		short __assert (char *expr, char *file, short line) {
@@ -224,9 +232,6 @@
 	#endif	/* _MSC_VER */
 
 	#ifdef __MWERKS__		/* 2002-11-09 AR: put up MessageBox with Cancel button to abort application */
-
-		#undef abs
-		#include <stdlib.h>
 
 		short __assert (char *expr, char *file, short line) {
 		
