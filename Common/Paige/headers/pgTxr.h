@@ -9,7 +9,7 @@ transfer. */
 #ifndef PGTXR_H
 #define PGTXR_H
 
-#include "Paige.h"
+#include "PAIGE.H"
 
 #define MINIMUM_RTF_VERSION		0x00010015 /* Minimum PAIGE version for RTF */
 
