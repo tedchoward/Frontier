@@ -186,7 +186,7 @@ static void logtofile (char *str, char *category) {
 	#endif
 
 	#ifdef MACVERSION
-		fprintf (logfile, "%08X (%04ld) | %04X | %s | %s\n", (unsigned long) ticks, (ticks - lastticks), idthread, category, str);
+		fprintf (logfile, "%08lX (%04ld) | %08lX | %s | %s\n", (unsigned long) ticks, (ticks - lastticks), idthread, category, str);
 	#endif
 
 	lastticks = ticks;

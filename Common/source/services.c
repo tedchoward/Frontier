@@ -192,7 +192,6 @@ pascal OSStatus serviceshandlerpaste (EventHandlerCallRef nextHandler, EventRef 
 
 pascal OSStatus serviceshandlergettypes (EventHandlerCallRef nextHandler, EventRef inEvent, void* userData) {
 	
-	boolean fltextselection = true;
 	CFMutableArrayRef copytypes, pastetypes;
 	short ix, count;
 	

@@ -1575,9 +1575,9 @@ boolean newtempmenu (hdlmenu *hmenu, short *idmenu) {
 	
 	register hdlmenu h;
 	
-	h = NewMenu (idtempmenu, (ptrstring) "\p¹"); /*name is irrelevent in a popup%/
+	h = NewMenu (idtempmenu, (ptrstring) "\p¹"); /%name is irrelevent in a popup%/
 	
-	if (h == nil) { /*error allocating new menu%/
+	if (h == nil) { /%error allocating new menu%/
 		
 		sysbeep ();
 		
@@ -1589,7 +1589,8 @@ boolean newtempmenu (hdlmenu *hmenu, short *idmenu) {
 	*idmenu = idtempmenu;
 	
 	return (true);
-	} /*newtempmenu*/
+	} /%newtempmenu%/
+*/
 	
 	
 short getprevmenuitem (hdlmenu hmenu) {

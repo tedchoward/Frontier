@@ -227,7 +227,8 @@ static boolean resizehandle (Handle hresize, long size) {
 	} /*resizehandle*/
 
 
-/*
+#if 0
+
 heapmess (void) {
 	
 	Handle ray [1000];
@@ -243,18 +244,18 @@ heapmess (void) {
 			break;
 		
 		ray [ixray++] = h;
-		} /*while%/
+		} /*while*/
 	
 	for (i = 0; i < ixray; i++)
 		disposehandle (ray [i]);
 	} /*heapmess*/
 
-/*
+
 boolean analyzeheap (void) {
 	
 	/*
 	get some statistics about the heap.  doesn't work in 32-bit mode.
-	%/
+	*/
 	
 	register byte *pblock;
 	register long size;
@@ -263,23 +264,23 @@ boolean analyzeheap (void) {
 	static long ctbytes;
 	static long avghandlesize;
 	
-	pblock = (byte *) &(*TheZone).heapData; /*point for first block in heap zone%/
+	pblock = (byte *) &(*TheZone).heapData; /*point for first block in heap zone*/
 	
 	plimit = (byte *) (*TheZone).bkLim;
 	
 	cthandles = 0;
 	
-	ctbytes = 0; /*logical size of each handle%/
+	ctbytes = 0; /*logical size of each handle*/
 	
 	while (pblock < plimit) {
 		
 		size = *(long *)pblock & 0x00ffffff;
 		
-		if (*pblock & 0x80) { /*a relocateable block%/
+		if (*pblock & 0x80) { /*a relocateable block*/
 			
-			ctbytes += size; /*add physical size%/
+			ctbytes += size; /*add physical size*/
 			
-			/*ctbytes -= 8 + (*pblock & 0x0f); /*subtract header & size correction%/
+			//ctbytes -= 8 + (*pblock & 0x0f); /*subtract header & size correction*/
 			
 			++cthandles;
 			}
@@ -289,6 +290,8 @@ boolean analyzeheap (void) {
 	
 	avghandlesize = ctbytes / cthandles;
 	} /*analyzeheap*/
+
+#endif
 
 
 boolean haveheapspace (long size) {
@@ -556,9 +559,9 @@ void moveright (ptrvoid psource, ptrvoid pdest, long length) {
 	
 	if (ctloops > 0) {
 	
-		ps = (ptrbyte) psource + length - 1; /*right edge of source+/
+		ps = (ptrbyte) psource + length - 1; /%right edge of source%/
 	
-		pd = (ptrbyte) pdest + length - 1; /*right edge of destination+/
+		pd = (ptrbyte) pdest + length - 1; /%right edge of destination%/
 	
 		while (ctloops--) 
 			*pd-- = *ps--;
@@ -853,10 +856,10 @@ boolean prepareforgrowing (Handle h) {
 	register long ctgrab = getidealchunksize ();
 	register long ctorig = gethandlesize (h);
 	
-	if (h == nil) /*defensive driving%/
+	if (h == nil) /%defensive driving%/
 		return (false);
 	
-	ctgrab >>= 1; /*cut in half%/
+	ctgrab >>= 1; /%cut in half%/
 	
 	if (ctgrab > ctorig) {
 		
@@ -1186,7 +1189,6 @@ boolean insertinhandle (Handle hgrow, long ix, ptrvoid pdata, long ctgrow) {
 	8.1.97 dmb: if pdata is nil, initialize new data to zeros
 	*/
 	
-	Handle h = hgrow;
 	unsigned long origsize;
 	
 	if (ctgrow == 0)
@@ -1359,7 +1361,8 @@ boolean pushtexthandle (const bigstring bs, Handle htext) {
 	} /*pushtexthandle*/
 
 
-/*
+#if 0
+
 boolean pushindentedline (short level, bigstring bs, Handle htext) {
 	
 	/*
@@ -1367,17 +1370,17 @@ boolean pushindentedline (short level, bigstring bs, Handle htext) {
 	terminated with a carriage return.
 	
 	return false if it failed, we dispose of htext if it failed.
-	%/
+	*/
 	
 	bigstring bsoutput;
 	
-	filledstring (chtab, level, bsoutput); /*put out leading tabs%/
+	filledstring (chtab, level, bsoutput); /*put out leading tabs*/
 	
-	pushstring (bs, bsoutput); /*put out the string itself%/
+	pushstring (bs, bsoutput); /*put out the string itself*/
 	
-	pushchar (chreturn, bsoutput); /*put out a terminating carriage return character%/
+	pushchar (chreturn, bsoutput); /*put out a terminating carriage return character*/
 	
-	if (!pushtexthandle (bsoutput, htext)) { /*out of memory%/
+	if (!pushtexthandle (bsoutput, htext)) { /*out of memory*/
 	
 		disposehandle (htext);
 		
@@ -1386,6 +1389,8 @@ boolean pushindentedline (short level, bigstring bs, Handle htext) {
 	
 	return (true);
 	} /*pushindentedline*/
+
+#endif
 	   
 
 #if (MEMTRACKER == 1)
@@ -1416,9 +1421,9 @@ boolean setheapstring (const bigstring bs, hdlstring hstring) {
 
 
 /*
-boolean concatheapstrings (h1, h2, hreturned) hdlstring *h1, *h2, *hreturned; {
+boolean concatheapstrings (hdlstring *h1, hdlstring *h2, hdlstring *hreturned) {
 
-	/*
+	/%
 	given two heap strings, return a heap string that's the result of 
 	concatenating the two strings.
 	
@@ -1452,7 +1457,7 @@ boolean concatheapstrings (h1, h2, hreturned) hdlstring *h1, *h2, *hreturned; {
 	moveleft (&bs2 [1], &bs [1 + len1], len2);
 		
 	return (newheapstring (bs, hreturned));
-	} /*concatheapstrings%/
+	} /%concatheapstrings%/
 */
 
 

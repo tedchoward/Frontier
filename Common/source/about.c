@@ -458,6 +458,8 @@ static short ccgetneededheight (boolean flbigwindow) {
 	} /*ccgetneededheight*/
 
 
+#if 0
+
 static boolean ccfindagentvisit (bigstring bsname, hdlhashnode hnode, tyvaluerecord val, ptrvoid refcon) {
 	
 	hdltreenode hcode;
@@ -470,6 +472,8 @@ static boolean ccfindagentvisit (bigstring bsname, hdlhashnode hnode, tyvaluerec
 	
 	return (false);
 	} /*ccfindagentvisit*/
+
+#endif
 
 
 static void ccdrawagentpopup (void) {
@@ -506,6 +510,8 @@ static void ccdrawagentpopup (void) {
 	} /*ccdrawagentpopup*/
 
 
+#if 0
+
 static void cceraseagentpopup (void) {
 	
 	Rect r;
@@ -513,6 +519,8 @@ static void cceraseagentpopup (void) {
 	if (ccgetagentpopuprect (&r))
 		eraserect (r);
 	} /*cceraseagentpopup*/
+
+#endif
 
 
 static void ccgetmsgrect (Rect *rmsg) {
@@ -554,7 +562,7 @@ static boolean ccdrawmsg (void) {
 	*/
 	
 	register hdlcancoonrecord hc = cancoonglobals;
-	register hdlwindowinfo hw = aboutwindowinfo;
+	//register hdlwindowinfo hw = aboutwindowinfo;
 	register hdlstring hstring;
 	register boolean flbitmap = false;
 	bigstring bs;
@@ -581,7 +589,7 @@ static boolean ccdrawmsg (void) {
 	hstring = (**hc).hprimarymsg;
 	
 	/*
-	if (hstring == nil) /*no primary message, display file name%/
+	if (hstring == nil) /%no primary message, display file name%/
 		hstring = (**hw).hfilename;
 	*/
 	
@@ -895,7 +903,7 @@ boolean aboutsetmiscstring (bigstring bsmisc) {
 		//an implicit cast. This will not work on OS X
 		CGrafPtr	thePort;
 		#if TARGET_API_MAC_CARBON == 1
-		thePort = GetWindowPort(aboutport);
+		thePort = GetWindowPort((WindowRef) aboutport);
 		#else
 		thePort = (CGrafPtr)aboutport;		
 		#endif
@@ -1215,7 +1223,6 @@ static void aboutsetconfigminimum (void) {
 static boolean aboutzoom (hdlwindowinfo hinfo, boolean flgrow) {
 	
 
-	hdlcancoonrecord hc = cancoonglobals;
 	hdlaboutrecord ha = aboutdata;
 	register hdlwindowinfo hw = hinfo;
 	Rect rwindow;
@@ -1350,14 +1357,16 @@ static boolean aboutkeystroke (void) {
 	} /*aboutkeystroke*/
 
 
+#ifndef version42orgreater
+
 static void drawtextitem (WindowPtr w, short item, short font, short size, short style) {
 	
 	Rect ritem;
 	bigstring bsitem;
 	
-	getdialogtext (w, item, bsitem);
+	getdialogtext ((DialogPtr) w, item, bsitem);
 	
-	dialoggetobjectrect (w, item, &ritem);
+	dialoggetobjectrect ((DialogPtr) w, item, &ritem);
 	
 	edittextbox (bsitem, ritem, font, size, style);
 	} /*drawtextitem*/
@@ -1368,7 +1377,7 @@ static boolean runurlscript () {
 	bigstring bsurl;
 	bigstring bsscript;
 	//this is a problem. aboutwindow is a window
-	getdialogtext (aboutwindow, urlitem, bsurl);
+	getdialogtext ((DialogPtr) aboutwindow, urlitem, bsurl);
 	
 	if (!getsystemtablescript (idopenurlscript, bsscript))
 		return (false);
@@ -1395,8 +1404,6 @@ static void drawurlitem (boolean flpressed) {
 	popforecolor ();
 	} /*drawurlitem*/
 
-
-#ifndef version42orgreater
 
 #define aboutresnumber 128 /*the id of the various "about" resources*/
 

@@ -341,25 +341,29 @@ boolean mousedoubleclick (void) {
 	return (mousestatus.fldoubleclick);
 	} /*mousedoubleclick*/
 
+
 boolean ismouseleftclick (void) {
 
 	return (mousestatus.whichbutton == leftmousebuttonaction);
-	} /*mousedoubleclick*/
+	} /*ismouseleftclick*/
+
 
 boolean ismouserightclick (void) {
 
 	return (mousestatus.whichbutton == rightmousebuttonaction);
-	} /*mousedoubleclick*/
+	} /*ismouserightclick*/
+
 
 boolean ismousecenterclick (void) {
 
 	return (mousestatus.whichbutton == centermousebuttonaction);
-	} /*mousedoubleclick*/
+	} /*ismousecenterclick*/
+
 
 boolean ismousewheelclick (void) {
 
 	return (mousestatus.whichbutton == wheelmousebuttonaction);
-	} /*mousedoubleclick*/
+	} /*ismousewheelclick*/
 
 
 static short translatemouseeventtype (long eventwhat) {
@@ -507,7 +511,7 @@ smashmousetester (void) {
 		
 		for (j = 0; j <= 100; j++) {
 			
-			/*
+			/%
 			if (optionkeydown ())
 				return;
 			%/
@@ -518,7 +522,7 @@ smashmousetester (void) {
 			
 			smashmouse (pt);
 			
-			/*
+			/%
 			copystring ("\p(h = ", bs);
 			
 			pushint (i, bs);
@@ -533,7 +537,8 @@ smashmousetester (void) {
 			%/
 			}
 		}
-	} /*smashmousetester*/
+	} /%smashmousetester%/
+*/
 
 
 void showmousecursor (void) {

@@ -67,7 +67,7 @@ extern void diskgetfontname (short, diskfontstring);
 
 extern void diskgetfontnum (diskfontstring, short *);
 
-extern boolean initfonts ();
+extern boolean initfonts (void);
 
 #ifdef WIN95VERSION
 

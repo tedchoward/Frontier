@@ -80,7 +80,7 @@ extern void mouseup (long eventwhen, long eventposx, long eventposy, long eventw
 
 extern void mousedown (long eventwhen, long eventposx, long eventposy, long eventwhat);
 
-extern boolean mousedoubleclick ();
+extern boolean mousedoubleclick (void);
 
 extern boolean ismouseleftclick (void);
 

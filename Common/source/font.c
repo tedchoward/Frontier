@@ -424,12 +424,13 @@ void getfontsizestyle (short *fontnum, short *fontsize, short *fontstyle) {
 	} /*getfontsizestyle*/
 
 
-/*
+#if 0
+
 void fontstring (short fontnum, short fontsize, boolean flhavefont, boolean flhavesize, bigstring bs) {
 	
 	bigstring bsint;
 	
-	setstringlength(bs,0); /*set it to the empty string%/
+	setstringlength(bs,0); /*set it to the empty string*/
 	
 	if (flhavefont)
 		fontgetname (fontnum, bs);
@@ -450,7 +451,7 @@ void fontstring (short fontnum, short fontsize, boolean flhavefont, boolean flha
 	} /*fontstring*/
 
 
-/*
+
 void getstyle (style, flplain, flbold, flitalic, flunderline, floutline, flshadow) 
 
 	/*
@@ -459,13 +460,13 @@ void getstyle (style, flplain, flbold, flitalic, flunderline, floutline, flshado
 	
 	if none of the others are true, we set flplain to true.  otherwise 
 	flplain is false.
-	%/
+	*/
 
 	short style; 
 	boolean *flplain, *flbold, *flitalic, *flunderline, *floutline, *flshadow; 
 	
 	{
-	*flplain = true;  /*default values%/
+	*flplain = true;  /*default values*/
 	
 	*flbold = false;
 	
@@ -522,7 +523,9 @@ void getstyle (style, flplain, flbold, flitalic, flunderline, floutline, flshado
 		*flplain = false;
 		}
 	} /*getstyle*/
-   
+
+#endif
+
 
 void diskgetfontname (short fontnum, diskfontstring fontname) {
 	
@@ -551,7 +554,7 @@ void diskgetfontnum (diskfontstring fontname, short *fontnum) {
 	} /*diskloadfontname*/
 	
 		
-boolean initfonts () {
+boolean initfonts (void) {
 	
 	#ifdef WIN95VERSION
 		HDC hdc;

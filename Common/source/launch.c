@@ -952,10 +952,8 @@ static OSErr getlaunchappparams (const tyfilespec *fsdoc, AppParametersHandle *a
 		
 		AECreateList (nil, 0, false, &doclist); /*create list for the fsspec*/
 		
-		/*
-		AEPutPtr (&doclist, 0, typeFSS, (Ptr) &fs, sizeof (fs)); /* put filespec on the list%/
-		*/		
-		
+		//AEPutPtr (&doclist, 0, typeFSS, (Ptr) &fs, sizeof (fs)); /* put filespec on the list%/
+				
 		#if TARGET_API_MAC_CARBON == 1 /*PBS 03/14/02: AE OS X fix.*/
 		
 			newdescwithhandle (&docdesc, typeAlias, (Handle) halias);
@@ -986,7 +984,7 @@ static OSErr getlaunchappparams (const tyfilespec *fsdoc, AppParametersHandle *a
 	
 	#if TARGET_API_MAC_CARBON == 1 /*PBS 03/14/02: AE OS X fix.*/
 		
-		copydatahandle (&launchdesc, appparams);
+		copydatahandle (&launchdesc, (Handle*) appparams);
 
 	#else
 	
@@ -1069,9 +1067,9 @@ static boolean system7launch (tyfilespec *fsapp, const tyfilespec *fsdoc, boolea
 			
 			if (!fileexists (fsapp, &flfolder)) {
 			
-				(*fsapp).name [0] = lenname; /*pop off the .app suffix+/
-				} /*if+/
-			} /*if+/
+				(*fsapp).name [0] = lenname; /%pop off the .app suffix%/
+				} /%if%/
+			} /%if%/
 		}
 		*/
 	#endif

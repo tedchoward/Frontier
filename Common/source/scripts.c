@@ -135,15 +135,13 @@ typedef struct tydebuggerrecord {
 	
 	hdlhashnode localtablestack [maxchainedlocals]; /*nodes of tables in the runtimestack*/
 	
-	/***Handle localtableformatsstack [maxchainedlocals]; /*nodes of tables in the runtimestack*/
+	//Handle localtableformatsstack [maxchainedlocals]; /*nodes of tables in the runtimestack*/
 	
 	short toplocaltable; /*table stack pointer*/
 	
-	/*
-	short deferredbuttonnum; /*see scriptdeferbutton%/
+	//short deferredbuttonnum; /*see scriptdeferbutton*/
 	
-	WindowPtr deferredwindow; /*ditto%/
-	*/
+	//WindowPtr deferredwindow; /*ditto*/
 	
 	hdlheadrecord hbarcursor; /*the headline we've most recently shown*/
 	
@@ -183,9 +181,9 @@ typedef struct tydebuggerrecord {
 
 static hdldebuggerrecord debuggerdata = nil;
 
-static boolean flenablemenus = false;
+//static boolean flenablemenus = false;
 
-static short scriptbackgrounddisable = 0; /*it's possible to temporarily disable backgrounding*/
+//static short scriptbackgrounddisable = 0; /*it's possible to temporarily disable backgrounding*/
 
 //static long scriptbackgroundtime = 0;
 
@@ -208,13 +206,13 @@ static boolean scriptsetglobals (void) {
 disablescriptbackground (void) {
 	
 	++scriptbackgrounddisable;
-	} /*disablescriptbackground%/
+	} /%disablescriptbackground%/
 
 
 enablescriptbackground (void) {
 	
 	--scriptbackgrounddisable;
-	} /*enablescriptbackground%/
+	} /%enablescriptbackground%/
 */
 
 
@@ -231,8 +229,8 @@ static boolean scriptbackgroundenabled (void) {
 /*static void scriptresetbackgroundtime (void) {
 	
 	scriptbackgroundtime = gettickcount ();
-	} /*scriptresetbackgroundtime*/
-
+	} /%scriptresetbackgroundtime%/
+*/
 
 static boolean isheadrecordhandle (long refcon) {
 	
@@ -493,9 +491,9 @@ static boolean scriptcompiler (hdlhashnode hnode, hdltreenode *hcode) {
 	opverblinkcode (hv, (Handle) hnewcode); /*link code into the outline variable record*/
 	
 	/*
-	if (hashnodeintable (hnode, agentstable)) { /*special stuff for agents%/
+	if (hashnodeintable (hnode, agentstable)) { /%special stuff for agents%/
 		
-		if (!processreplacecode (holdcode, hnewcode)) { /*no replacement, add new process%/
+		if (!processreplacecode (holdcode, hnewcode)) { /%no replacement, add new process%/
 			
 			langdisposetree (holdcode);
 			
@@ -1161,7 +1159,7 @@ static boolean scriptdebugerrordebugger (bigstring bsmsg, ptrvoid refcon) {
 	tyvaluerecord val;
 	bigstring bstrap;
 	boolean fl;
-	boolean scriptdebuggereventloop (void); //forward
+	static boolean scriptdebuggereventloop (void); //forward
 	hdlhashnode hhashnode;
 	#define str_userdebugprefs ("\x10" "user.prefs.debug")
 	
@@ -1443,7 +1441,7 @@ static void scriptkillbutton (void) {
 
 #ifdef flcomponent
 
-static pascal OSErr handlerecordedtext (AppleEvent *event, AppleEvent *reply, long refcon) {
+static pascal OSErr handlerecordedtext (const AppleEvent *event, AppleEvent *reply, SInt32 refcon) {
 	
 	/*
 	2.1b3 dmb: ignore extra syntax/lines needed for text-based recording
@@ -1683,7 +1681,7 @@ static void scriptstoprecordbutton (void) {
 	} /*scriptstoprecordbutton*/
 
 
-static pascal OSErr handlestoprecording (AppleEvent *event, AppleEvent *reply, long refcon) {
+static pascal OSErr handlestoprecording (const AppleEvent *event, AppleEvent *reply, SInt32 refcon) {
 	
 	/*
 	2.1b5 dmb: special event handler for QuicKeys recording panel
@@ -1871,7 +1869,7 @@ static boolean scriptinstallbutton (void) {
 	langerrorclear (); /*be sure error window is empty*/
 	
 	/*
-	if (!processyieldtoagents ()) /*file closed while agents were finishing up%/
+	if (!processyieldtoagents ()) /%file closed while agents were finishing up%/
 		return (false);
 	*/
 	
@@ -1917,7 +1915,7 @@ static boolean scriptbutton (short buttonnum) {
 		opsettextmode (false);
 	
 	/*
-	if ((**hd).flscriptsuspended && !debuggingcurrentprocess ()) { /*defer background hits%/
+	if ((**hd).flscriptsuspended && !debuggingcurrentprocess ()) { /%defer background hits%/
 		
 		if (buttonnum != installbutton) {
 			
@@ -2101,7 +2099,7 @@ static boolean scriptbuttonenabled (short buttonnum) {
 	/*
 	else {
 		
-		if ((x != runbutton) && (x != debugbutton) && (x != installbutton)) /*rule 1%/
+		if ((x != runbutton) && (x != debugbutton) && (x != installbutton)) /%rule 1%/
 			return (false);
 		}
 	*/
@@ -2251,7 +2249,8 @@ static boolean scriptbuttonstatus (short buttonnum, tybuttonstatus *status) {
 	} /*scriptbuttonstatus*/
 
 
-/*
+#if 0
+
 boolean scriptkilled (void) {
 	
 	/*
@@ -2261,29 +2260,29 @@ boolean scriptkilled (void) {
 	7/2/91 dmb: no longer check the scriptkilled debuggerdata flag here; 
 	it's handled by returning false from the debugger routine.  checking 
 	it here will wrongly terminate some other process
-	%/
+	*/
 	
 	register hdldebuggerrecord hd = debuggerdata;
 	
 	/*
 	if ((**hd).flscriptkilled) {
 		
-		if (processisoneshot (false)) { /*we're running a one-shot process%/
+		if (processisoneshot (false)) { /%we're running a one-shot process%/
 			
-			(**hd).flscriptkilled = false; /*consume it%/
+			(**hd).flscriptkilled = false; /%consume it%/
 			
 			scriptprocesskilled ();
 			
 			return (true);
 			}
 		}
-	%/
+	*/
 	
-	if (keyboardescape ()) { /*user pressed cmd-period or something like that%/
+	if (keyboardescape ()) { /*user pressed cmd-period or something like that*/
 		
-		if (processisoneshot (true)) { /*cmd-period doesn't kill background tasks%/
+		if (processisoneshot (true)) { /*cmd-period doesn't kill background tasks*/
 			
-			keyboardclearescape (); /*consume it%/
+			keyboardclearescape (); /*consume it*/
 			
 			return (true);
 			}
@@ -2291,6 +2290,8 @@ boolean scriptkilled (void) {
 		
 	return (false);
 	} /*scriptkilled*/
+
+#endif
 
 
 static boolean scriptdebuggercallback (void) {
@@ -2306,7 +2307,7 @@ static boolean scriptdebuggercallback (void) {
 	assert (!(**hd).flwindowclosed); /*if it was closed, script shouldn't be suspended*/
 	
 	/*
-	if ((**hd).deferredbuttonnum > 0) /*a script button hit was deferred%/
+	if ((**hd).deferredbuttonnum > 0) /%a script button hit was deferred%/
 		return (false);
 	*/
 	
@@ -2340,7 +2341,7 @@ static boolean scriptdebuggereventloop (void) {
 			shelleventloop (&scriptdebuggercallback);
 		
 		/*
-		if ((**hd).deferredbuttonnum > 0) { /*a background button click was deferred%/
+		if ((**hd).deferredbuttonnum > 0) { /%a background button click was deferred%/
 			
 			shellpushglobals ((**hd).deferredwindow);
 			
@@ -2348,7 +2349,7 @@ static boolean scriptdebuggereventloop (void) {
 			
 			shellpopglobals ();
 			
-			(**hd).deferredbuttonnum = 0; /*consume it%/
+			(**hd).deferredbuttonnum = 0; /%consume it%/
 			}
 		*/
 		}
@@ -2422,7 +2423,7 @@ boolean scriptdebugger (hdltreenode hnode) {
 	long lnum = (**hn).lnum;
 	short diff;
 	
-	/*shellshorteventloop (); /*suck up and process any waiting events*/
+	//shellshorteventloop (); /*suck up and process any waiting events*/
 	
 	if (languserescaped (true)) /*stop running the script immediately*/
 		return (false);
@@ -2471,28 +2472,28 @@ boolean scriptdebugger (hdltreenode hnode) {
 		*/
 		
 		switch ((**hd).stepdir) {
-			
+				
 			case down:
 				if (diff == 0)
 					flshowline = lnum != lastlnum;
 				else
 					flshowline = diff < 0;
-				
 				break;
 			
 			case right:
 				flshowline = diff != 0; /*if less then zero, In step fails and stops*/
-				
 				break;
 			
 			case left:
 				flshowline = diff < 0;
-				
 				break;
 			
 			case nodirection: /*following*/
 				flshowline = false;
-				
+				break;
+			
+			default:
+				/* do nothing for up, flatup, flatdown, sorted, pageup, pagedown, pageleft, pageright */
 				break;
 			}
 		
@@ -2915,11 +2916,14 @@ boolean scriptzoomwindow (Rect rwindow, Rect rzoom, hdlheadrecord hcursor, Windo
 	} /*scriptzoomwindow*/
 
 
-/*
+#if 0
+
 static boolean scripthaslinkedtextroutine (hdlheadrecord hnode) {
 	
-	return (false); /*no linked text for script lines%/
+	return (false); /*no linked text for script lines*/
 	} /*scripthaslinkedtextroutine*/
+
+#endif
 
 
 static boolean optogglebreakpoint (hdlheadrecord hnode) {
@@ -3053,7 +3057,9 @@ static boolean scriptexportscrap (hdloutlinerecord houtline, tyscraptype totype,
 
 static boolean scriptsetscraproutine (hdloutlinerecord houtline) {
 	
-	return (shellsetscrap ((Handle) houtline, scriptscraptype, &scriptdisposescrap, &scriptexportscrap));
+	return (shellsetscrap ((Handle) houtline, scriptscraptype, 
+				(shelldisposescrapcallback) &scriptdisposescrap,
+				(shellexportscrapcallback) &scriptexportscrap));
 	} /*scriptsetscraproutine*/
 
 
@@ -3163,11 +3169,11 @@ void scriptsetcallbacks (hdloutlinerecord houtline) {
 	
 	(**ho).doubleclickcallback = &scriptdoubleclick;
 	
-	(**ho).setscrapcallback = &scriptsetscraproutine;
+	(**ho).setscrapcallback = (opsetscrapcallback) &scriptsetscraproutine;
 	
-	(**ho).getscrapcallback = &scriptgetscraproutine;
+	(**ho).getscrapcallback = (opgetscrapcallback) &scriptgetscraproutine;
 	
-	(**ho).texttooutlinecallback = &scripttexttooutlineroutine;
+	(**ho).texttooutlinecallback = (optexttooutlinecallback) &scripttexttooutlineroutine;
 
 	} /*scriptsetcallbacks*/
 
@@ -3181,8 +3187,6 @@ boolean scriptsetdata (WindowPtr w, hdlheadrecord hnode, hdloutlinerecord houtli
 	*/
 	
 	register hdloutlinerecord ho = houtline;
-	WindowPtr origoutlinewindow = outlinewindow;
-	hdlwindowinfo origoutlinewindowinfo = outlinewindowinfo;
 	hdlwindowinfo hinfo;
 	bigstring bs;
 	
@@ -3316,7 +3320,7 @@ static boolean scriptverifycompilation () {
 	langerrorclear (); /*be sure error window is empty*/
 	
 	/*
-	if (!processyieldtoagents ()) /*file closed while agents were finishing up%/
+	if (!processyieldtoagents ()) /%file closed while agents were finishing up%/
 		return (false);
 	*/
 	
@@ -3749,7 +3753,7 @@ static void scriptupdateserverpopup (void) {
 	eraserect (r);
 	
 	#if flstacktrace
-	/*** hs = langcallbacks.scripterrorstack; /*langerrorgetstack ();*/
+	//hs = langcallbacks.scripterrorstack; /*langerrorgetstack ();*/
 	
 	if (scriptinruntimestack () /*hs != nil*/ ) /*popup is stack, not language*/
 		copystring ("\x06" "Stack:", bs);
@@ -4103,6 +4107,8 @@ static boolean scriptdirtyhook (void) {
 	} /*scriptdirtyhook*/
 
 
+#if 0
+
 static boolean opwinnewrecord (void) {
 	
 	tyvaluerecord val;
@@ -4197,6 +4203,8 @@ static boolean opwinsavefile (hdlfilenum fnum, short rnum, boolean flsaveas) {
 	
 	return (fl);
 	} /*opwinsavefile*/
+
+#endif
 
 
 boolean scriptstart (void) {
@@ -4317,7 +4325,7 @@ boolean scriptstart (void) {
 	
 	(*cb).gettargetdataroutine = &scriptgettargetdata;
 	
-	(*cb).getvariableroutine = &scriptgetvariable;
+	(*cb).getvariableroutine = (shellgetvariablecallback) &scriptgetvariable;
 	
 	(*cb).settextmoderoutine = &opsettextmode;
 	

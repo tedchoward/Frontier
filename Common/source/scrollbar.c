@@ -83,7 +83,7 @@ void validscrollbar (hdlscrollbar hscrollbar) {
 	//Changed to Opaque call for Carbon
 	
 	#if ACCESSOR_CALLS_ARE_FUNCTIONS == 1
-	CGrafPtr	contrlOwner = GetControlOwner(h);
+	CGrafPtr	contrlOwner = (CGrafPtr) GetControlOwner(h);
 	Rect		contrlRect;
 	
 	//assert (h == nil || GetQDGlobalsThePort() == contrlOwner);
@@ -101,26 +101,6 @@ void validscrollbar (hdlscrollbar hscrollbar) {
 	
 #endif
 	} /*validscrollbar*/
-	
-	
-static void invalscrollbar (hdlscrollbar hscrollbar) {
-#ifdef MACVERSION
-	register hdlscrollbar h = hscrollbar;
-	//Code change by Timothy Paustian Friday, May 5, 2000 10:16:35 PM
-	//Changed to Opaque call for Carbon
-	//This routine is never called in the PPC OT version.
-	if (h != nil) 
-	{	
-		#if ACCESSOR_CALLS_ARE_FUNCTIONS == 1
-		Rect contrlRect;
-		GetControlBounds(h, &contrlRect);
-		invalrect (contrlRect);
-		#else
-		invalrect((**h).contrlRect);
-		#endif
-	}
-#endif
-	} /*invalscrollbar*/
 	
 	
 boolean pointinscrollbar (Point pt, hdlscrollbar hscrollbar) {
@@ -365,7 +345,7 @@ void displayscrollbar (hdlscrollbar hscrollbar) {
 		
 	getscrollbarinfo (h, &scrollinfo);
 	
-/*	if (scrollinfo.min <= scrollinfo.max) /*there's something to scroll to*/
+	//if (scrollinfo.min <= scrollinfo.max) /*there's something to scroll to*/
 
 	/*7.0b17 PBS: scroll if min < max, not if min <= max.*/
 
@@ -416,13 +396,13 @@ void setscrollbarinfo (hdlscrollbar hscrollbar, const tyscrollinfo *scrollinfo) 
 	
 	SetControlValue (h, min (infinity, (*scrollinfo).cur));
 	
-#if __powerc
+//#if __powerc || __GNUC__
 
 	if (flmacproportionalthumbs) /*7.0b18 PBS: proportional thumbs on Macs*/
 	
 		SetControlViewSize (h, (*scrollinfo).pag);
 
-#endif
+//#endif
 	
 	scrollbarpopclip ();
 	

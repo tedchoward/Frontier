@@ -47,7 +47,7 @@ extern boolean scriptrunresumescripts (void);
 
 extern long specialoneshotscriptsrunning (void);
 
-extern boolean scriptinstallscripts (hdlhashtable);
+//extern boolean scriptinstallscripts (hdlhashtable);
 
 extern boolean scriptinstallagent (hdlhashnode);
 

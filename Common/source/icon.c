@@ -194,7 +194,6 @@ struct tycustomicontypeinfo icontypes [maxcustomicontypes]; /*array*/
 
 static short ixnexticon = 0; /*keep track of which is next to load*/
 
-customiconload (bigstring bsiconname, short *resid);
 
 boolean customicongetrnum (bigstring bstype, short *rnum) {
 	
@@ -226,17 +225,15 @@ boolean customicongetrnum (bigstring bstype, short *rnum) {
 	} /*customicongetresid*/
 
 
-customiconload (bigstring bsiconname, short *rnum) {
+static boolean customiconload (bigstring bsiconname, short *rnum) {
 	
 	/*
 	7.0b9 PBS: Open a resource file just once, store info about it,
 	so it doesn't have to be opened for each rendering.
 	*/
 	
-	short customresid = 128; /*always 128 in the icon files*/
 	bigstring bsappearancefolder = "\pAppearance";
 	bigstring bsiconsfolder = "\pIcons";
-	boolean flcreate = false;
 	OSErr err;
 	CInfoPBRec pb;
 	long dirid;
@@ -435,16 +432,18 @@ boolean ploticoncustom (const Rect *r, short align, short transform, bigstring b
 	} /*ploticoncustom*/
 
 
+#if 0
+
 /*7.0b9 PBS: saved version that had test code for getting a bitmap from the odb.*/
 
-/*boolean ploticoncustom (const Rect *r, short align, short transform) {
+boolean ploticoncustom (const Rect *r, short align, short transform) {
 	
 	/*
 	7.0b9 PBS: plot a custom icon.
 	*/
 	
 
-/*#ifdef WIN95VERSION
+#ifdef WIN95VERSION
 	HBITMAP hbm, oldbm;
 	BITMAP bm;
 	HDC hdcsrc, hdc;
@@ -553,6 +552,8 @@ boolean ploticoncustom (const Rect *r, short align, short transform, bigstring b
 #endif
 	} /*ploticoncustom*/
 
+#endif
+
 
 boolean ploticon (const Rect *r, short id) {
 	
@@ -659,19 +660,21 @@ drawiconsequence (Rect r, short firsticon, short lasticon, bigstring bs) {
 		
 		delayticks (1);
 		}
-	} /*drawiconsequence*/
+	} /%drawiconsequence%/
+*/
 
 
 #if TARGET_API_MAC_CARBON == 1
 
 	static void MyThemeButtonDrawCallback (const Rect *bounds, ThemeButtonKind kind, const ThemeButtonDrawInfo *info,
-		bigstring bs, SInt16 depth, Boolean isColorDev) {
+		UInt32 refcon, SInt16 depth, Boolean isColorDev) {
 		
 		/*
 		7.0b48 PBS: draw the arrow for a pushbutton. It will be centered.
 		*/
 		
 		Rect rarrow;
+		//ptrstring bsptr = (ptrstring) refcon;
 		
 		setrect (&rarrow, 0, 0, 9, 9);
 		

@@ -31,12 +31,12 @@
 #include "shellprivate.h"
 #include "frontierstart.h"
 
-void main (void) {
+int main (void) {
 	
 	boolean fl;
 	
 	if (!shellinit ())
-		return;
+		return (1);
 	
 	grabthreadglobals ();
 	
@@ -46,6 +46,8 @@ void main (void) {
 	
 	if (fl)
 		shellmaineventloop ();
+	
+	return (0);
 	} /*mainstart*/
 
 
