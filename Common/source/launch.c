@@ -1357,12 +1357,17 @@ static boolean activateprocess (ProcessSerialNumber psn) {
 	of at the beginning. the process may already be in the front.
 	
 	2.1b14 dmb: make sure we call the waitcallback before timing out.
+	
+	10.0a4 trt/karstenw: avoid -600 (no such process) error in Classic
+	even if the app is already launched.
 	*/
 	
 	long startticks;
 	
+#if defined(TARGET_API_MAC_OS8) && (TARGET_API_MAC_OS8 == 1)
 	if (oserror (WakeUpProcess (&psn)))
 		return (false);
+#endif
 	
 	if (oserror (SetFrontProcess (&psn)))
 		return (false);
