@@ -23,8 +23,6 @@
 
 ******************************************************************************/
 
-#ifdef flregexpverbs
-
 
 #ifdef MACVERSION
 #include <standard.h>
@@ -33,6 +31,8 @@
 #ifdef WIN95VERSION
 #include "standard.h"
 #endif
+
+#ifdef flregexpverbs
 
 #include <ctype.h>
 #include "error.h"
