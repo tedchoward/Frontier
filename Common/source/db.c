@@ -2485,7 +2485,7 @@ boolean dbnew (hdlfilenum fnum) {
 	} /*dbnew*/
 	
 
-boolean dbopen (hdlfilenum fnum, boolean flreadonly) {
+boolean dbopenfile (hdlfilenum fnum, boolean flreadonly) {
 	
 	/*
 	4.1b9 dmb: allow opening of databases newer than us, as long as 
@@ -2572,7 +2572,7 @@ boolean dbopen (hdlfilenum fnum, boolean flreadonly) {
 	databasedata = nil;
 	
 	return (false); /*error loading in header*/
-	} /*dbopen*/
+	} /*dbopenfile*/
 
 
 boolean dbclose (void) {

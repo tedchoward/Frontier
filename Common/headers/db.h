@@ -167,7 +167,7 @@ extern boolean dbdispose (void);
 
 extern boolean dbnew (hdlfilenum);
 
-extern boolean dbopen (hdlfilenum, boolean);
+extern boolean dbopenfile (hdlfilenum, boolean);
 
 extern boolean dbclose (void);
 

@@ -770,7 +770,7 @@ boolean ccloadfile (hdlfilenum fnum, short rnum) {
 	
 	cancoondata = nil; /*default error return*/
 	
-	if (!dbopen (fnum, false))
+	if (!dbopenfile (fnum, false))
 		return (false);
 	
 	#ifdef fltrialsize
@@ -799,7 +799,7 @@ boolean ccloadfile (hdlfilenum fnum, short rnum) {
 	
 	//(**cancoonwindowinfo).hdata = (Handle) hc; /*link data to window*/
 	
-	(**hc).hdatabase = databasedata; /*result from dbopen*/
+	(**hc).hdatabase = databasedata; /*result from dbopenfile*/
 	
 	switch (versionnumber) {
 		

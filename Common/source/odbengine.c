@@ -506,7 +506,7 @@ pascal boolean odbOpenFile (hdlfilenum fnum, odbref *odb, boolean flreadonly) {
 	
 	#endif
 	
-	if (!dbopen (fnum, flreadonly))
+	if (!dbopenfile (fnum, flreadonly))
 		return (false);
 	
 	dbgetview (cancoonview, &adr);
@@ -521,7 +521,7 @@ pascal boolean odbOpenFile (hdlfilenum fnum, odbref *odb, boolean flreadonly) {
 	
 	hc = cancoonglobals;
 	
-	(**hc).hdatabase = databasedata; /*result from dbopen*/
+	(**hc).hdatabase = databasedata; /*result from dbopenfile*/
 	
 	switch (versionnumber) {
 		
