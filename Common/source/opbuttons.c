@@ -46,13 +46,16 @@ void opbuttonsattach (hdlwindowinfo hinfo, hdlhashtable htable) {
 
 	hdlhashnode hn;
 	short ct = 0;
+	hdllistrecord hlist;
 
 	(**hinfo).flhidebuttons = false;
 
 	(**hinfo).flsyntheticbuttons = true;
 
-	opnewlist (&(hdllistrecord) (**hinfo).buttonlist, false);
-
+	opnewlist (&hlist, false);
+	
+	(**hinfo).buttonlist = (Handle) hlist;
+	
 	/*loop through all of the items in the table*/
 	
 	for (hn = (**htable).hfirstsort; hn != nil; hn = (**hn).sortedlink) {
