@@ -31,8 +31,8 @@ development for Windows (when users use pure MFC their compiler complains about
 #ifndef PGEXCEPS_H
 #define PGEXCEPS_H
 
-#include "cpudefs.h"
-#include "pgSetJmp.h"
+#include "CPUDEFS.H"
+#include "PGSETJMP.H"
 
 #include <setjmp.h>
 #ifdef _INC_SETJMP
