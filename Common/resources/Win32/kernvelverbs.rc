@@ -497,7 +497,7 @@
 			"delete\0",
 			"read\0",
 			"gettype\0",
-			"write\0",
+			"write\0"
 	END
 
 
@@ -506,7 +506,7 @@
 	1,					//Number of "blocks" in this resource
 		"string\0",		//Function Processor Name
 		false,			//Window required
-			56			//Count of verbs
+			56,			//Count of verbs
 			"delete\0",		
 			"insert\0",	
 			"popleading\0",
@@ -562,7 +562,7 @@
 			"utf8toansi\0",
 			"ansitoutf8\0",
 			"ansitoutf16\0",
-			"multiplereplaceall\0",
+			"multiplereplaceall\0"
 	END
 
 
@@ -794,7 +794,7 @@
 			"os\0",
 			"getenvironmentvariable\0",
 			"setenvironmentvariable\0",
-			"unixshellcommand\0",
+			"unixshellcommand\0"
 	END
 
 1014 /*idlaunchverbs*/	EFP		DISCARDABLE
@@ -998,7 +998,7 @@
 			"getserverstring\0",
 
 		"inetd\0",
-		false
+		false,
 			1,
 			"supervisor\0"
 

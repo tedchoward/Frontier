@@ -181,14 +181,14 @@ ID_OPML_ICON			ICON	DISCARDABLE		radioDoc.ico /*7.0b24 PBS*/
 #if defined(APSTUDIO_INVOKED) || !defined(_MAC)
 IDMULTIPAD1 MENU DISCARDABLE
 BEGIN
-	MENUITEM "Dummy"						500
+	MENUITEM "Dummy",						500
 END
 #endif
 
 #if defined(APSTUDIO_INVOKED) || !defined(_MAC)
 IDMULTIPAD MENU DISCARDABLE
 BEGIN
- 	MENUITEM "Dummy"						500
+ 	MENUITEM "Dummy",						500
 END
 #endif
 
@@ -237,7 +237,7 @@ BEGIN
         MENUITEM "&Close\tCtrl+W",               filemenu+closeitem
         MENUITEM SEPARATOR
         MENUITEM "&Save\tCtrl+S",                filemenu+saveitem
-		MENUITEM "Save as Runnable..."			 filemenu+saverunnableitem
+		MENUITEM "Save as Runnable...",			 filemenu+saverunnableitem
         MENUITEM "Save a &Copy...",              filemenu+saveasitem
         MENUITEM "&Revert",                      filemenu+revertitem
         MENUITEM SEPARATOR
@@ -852,7 +852,7 @@ BEGIN
 		#endif
 #else
 		#ifdef fltrialsize
-            VALUE "ProductVersion", "Trial " forntier_version_string "\0"
+            VALUE "ProductVersion", "Trial " frontier_version_string "\0"
 		#else
             VALUE "ProductVersion", frontier_version_string "\0"
 		#endif
@@ -1364,7 +1364,7 @@ END
 	92 Lang_Errors DISCARDABLE BEGIN "Can't operate on object specifier value because the system software in use does not support Apple events.\0" END
 	93 Lang_Errors DISCARDABLE BEGIN "\042^0\042 is not a supported key format specification.  Valid formats are 'name', 'indx' and 'prop'.\0" END
 	94 Lang_Errors DISCARDABLE BEGIN "Can't perform the operation because the address of a binary value is required here.\0" END
-	95 Lang_Errors DISCARDABLE BEGIN "Can't coerce the string \042^0\042 into a floating point number because it isn't in the form \0421.234\042.\0" END
+	95 Lang_Errors DISCARDABLE BEGIN "Can't coerce the string \042^0\042 into a floating point number because it isn't in the form \042\061.234\042.\0" END
 	96 Lang_Errors DISCARDABLE BEGIN "Can't call \042^0\042 as an XCMD because it isn't a binary value with binary type 'XCMD' or 'XFCN'.\0" END
 	97 Lang_Errors DISCARDABLE BEGIN "Can't call \042^0\042 as a UCMD because it isn't a binary value with binary type 'UCMD'.\0" END
 	98 Lang_Errors DISCARDABLE BEGIN "Can't run \042^0\042 as a card because it isn't a binary value with binary type 'CARD'.\0" END
@@ -1410,7 +1410,7 @@ END
 	138 Lang_Errors DISCARDABLE BEGIN "Can't create item \042^0.^1\042 because \042^1\042 is an illegal name.\0" END
 	139 Lang_Errors DISCARDABLE BEGIN "Can't save the database because there was an ^0.\0" END
 	140 Lang_Errors DISCARDABLE BEGIN "Can't rename \042^0\042 as \042^1\042 because an item with that name already exists.\0" END
-	141 Lang_Errors DISCARDABLE BEGIN "Can't encode \042^0\042 as an IP address because it isn't in the form  \0420.0.0.0\042.\0" END
+	141 Lang_Errors DISCARDABLE BEGIN "Can't encode \042^0\042 as an IP address because it isn't in the form  \042\060.0.0.0\042.\0" END
 	142 Lang_Errors DISCARDABLE BEGIN "Can't decode \042^0\042 as an IP address.\0" END
 	143 Lang_Errors DISCARDABLE BEGIN "Can't ^0 the specified window because it doesn't exist.\0" END
 	144 Lang_Errors DISCARDABLE BEGIN "Can't parse the address because of a syntax error.\0" END
@@ -1891,7 +1891,7 @@ BEGIN
 	size12,
 	plain,
 	0,
-	40L, 40L, 460L, 100L,
+	40L, 40L, 460L, 100L
 	END
 
 	/*resource 'cnfg' (137, "about") {*/
@@ -1922,7 +1922,7 @@ BEGIN
 	size12,
 	plain,
 	0,
-	40L, 40L, 460L, 100L,
+	40L, 40L, 460L, 100L
 	END
 
 /*resource 'cnfg' (138, "quick script") {*/
