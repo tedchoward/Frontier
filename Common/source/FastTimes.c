@@ -87,8 +87,8 @@ static Boolean			gUseTBR = false;
 static double			gScaleUSec = 1.0 / 1000.0;    /* 1 / ( nsec / usec) */
 static double			gScaleMSec = 1.0 / 1000000.0; /* 1 / ( nsec / msec) */
 
-static asm UnsignedWide PollRTC(void);
-static asm UnsignedWide PollTBR(void);
+static __asm__ UnsignedWide PollRTC(void);
+static __asm__ UnsignedWide PollTBR(void);
 static Ptr FindFunctionInSharedLib(StringPtr libName, StringPtr funcName);
 
 /* Functions loaded from DriverServicesLib */
@@ -313,7 +313,7 @@ StringPtr FastMethod() {
 #pragma mark -
 
 #if TARGET_CPU_PPC
-asm static UnsignedWide PollRTC_() {
+__asm__ static UnsignedWide PollRTC_() {
 entry PollRTC /* Avoid CodeWarrior glue */
 	machine 601
 @AGAIN:
@@ -330,7 +330,7 @@ entry PollRTC /* Avoid CodeWarrior glue */
 /* **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** */
 /* **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** */
 
-asm static UnsignedWide PollTBR_() {
+__asm__ static UnsignedWide PollTBR_() {
 entry PollTBR /* Avoid CodeWarrior glue */
 	machine 604
 @AGAIN:
