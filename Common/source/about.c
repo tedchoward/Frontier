@@ -135,7 +135,7 @@ static bigstring bsmiscinfo = "";
 
 #define aboutlineheight 14
 
-#define aboutlinewidth 300
+#define aboutlinewidth 250 /*2005-01-12 aradke*/
 
 #define aboutvertstart 0
 
@@ -159,26 +159,26 @@ static bigstring bsmiscinfo = "";
 
 #define versionwidth 56
 
-#define minaboutwidth  (aboutlinewidth + abouthorizgap + 2 * abouthorizinset)
+#define minaboutwidth  (aboutlinewidth + abouthorizgap + 2 * abouthorizinset + 4 * abouticonsize)	/*2005-01-12 aradke*/
 
 #define agentmenuhorizgap 10
 
 static byte * aboutstrings [] = {
 
-#ifdef PIKE
-	"\x2b" "The power of Web publishing on your desktop", /*7.0b1 PBS*/
-#else
-	"\x2e" "Powerful cross-platform web content management", /*6.1 AR*/
-#endif
+//#ifdef PIKE
+//	"\x2b" "The power of Web publishing on your desktop", /*7.0b1 PBS*/
+//#else
+//	"\x2e" "Powerful cross-platform web content management", /*6.1 AR*/
+//#endif
 		
-    /*"\x25" "Powerful cross-platform web scripting",*/
+    "\x25" "Powerful cross-platform web scripting", /*2005-01-12 aradke: re-enabled*/
 	
 	"\x23" "© 1992-" copyright_year_string " UserLand Software, Inc.",
 
 #ifdef PIKE
-	"\x1a" "http://radio.userland.com/", /*7.0d8 PBS*/
+	"\x26" "http://frontierkernel.sourceforge.net/", /*2005-01-12 aradke*/
 #else
-	"\x1d" "http://frontier.userland.com/",
+	"\x26" "http://frontierkernel.sourceforge.net/", /*2005-01-12 aradke*/
 #endif
 	
 	"\x02" "^0",
@@ -201,21 +201,11 @@ static byte * aboutstrings [] = {
 	"\x0f" "Current Time:  ",
 	
 #ifdef PIKE
-	#ifdef MACVERSION
-		"\x0f" "Radio UserLand\xaa", /*7.0d8 PBS*/
-	#endif
-	#ifdef WIN95VERSION
-		"\x0f" "Radio UserLand\x99", /*7.0d8 PBS*/
-	#endif
+	"\x05" "Radio", /*2005-01-12 aradke*/
 	
-	"\x14" "About Radio UserLand", /*7.0d8 PBS*/
+	"\x0b" "About Radio", /*2005-01-12 aradke*/
 #else
-	#ifdef MACVERSION
-		"\x12" "UserLand Frontier\xaa",
-	#endif
-	#ifdef WIN95VERSION
-		"\x12" "UserLand Frontier\x99",
-	#endif
+	"\x08" "Frontier", /*2005-01-12 aradke*/
 	
 	"\x0e" "About Frontier",
 #endif
@@ -755,6 +745,8 @@ static void	ccdrawabout (void) {
 		
 		setglobalfontsizestyle (geneva, 9, bold);
 	
+		rabout.left += abouticonsize; /*2005-01-12 aradke: shorter frontieritem, indent it too*/ 
+
 		movepento (rabout.left, rabout.top + abouticonsize + globalfontinfo.ascent);
 		
 		pendrawstring (aboutstrings [frontieritem]);
@@ -765,7 +757,7 @@ static void	ccdrawabout (void) {
 		#endif
 		
 
-		rabout.left += abouticonsize;
+		//rabout.left += abouticonsize; /*2005-01-12 aradke*/
 		
 		rabout.right = rabout.left + abouticonsize;
 		
