@@ -317,7 +317,7 @@ static void drawbuttonbackground (Rect r) {
 		//Changed to Opaque call for Carbon
 		if ((**shellwindowinfo).flwindowactive) {
 			
-			if (colorenabled (r))
+			if (colorenabled ())
 				
 				#if TARGET_API_MAC_CARBON == 1
 				
