@@ -71,24 +71,24 @@
 	#define MSG_1(x)		LAND_MSG((x), LAND_GENERALLOG_TARGET, LAND_GENERALLOG_NAME)
 	#define ASSERT_1(x)		LAND_ASSERT((x), LAND_GENERALLOG_TARGET, LAND_GENERALLOG_NAME))
 #else
-	#define MSG_1(x)		((void *) nil)
-	#define ASSERT_1(x)		((void *) nil)
+	#define MSG_1(x)
+	#define ASSERT_1(x)
 #endif
 
 #if (LAND_GENERALLOG_LEVEL >= LAND_LOGLEVEL_2)
 	#define MSG_2(x)		LAND_MSG((x), LAND_GENERALLOG_TARGET, LAND_GENERALLOG_NAME)
 	#define ASSERT_2(x)		LAND_ASSERT((x), LAND_GENERALLOG_TARGET, LAND_GENERALLOG_NAME))
 #else
-	#define MSG_2(x)		((void *) nil)
-	#define ASSERT_2(x)		((void *) nil)
+	#define MSG_2(x)
+	#define ASSERT_2(x)
 #endif
 
 #if (LAND_GENERALLOG_LEVEL >= LAND_LOGLEVEL_3)
 	#define MSG_3(x)		LAND_MSG((x), LAND_GENERALLOG_TARGET, LAND_GENERALLOG_NAME)
 	#define ASSERT_3(x)		LAND_ASSERT((x), LAND_GENERALLOG_TARGET, LAND_GENERALLOG_NAME))
 #else
-	#define MSG_3(x)		((void *) nil)
-	#define ASSERT_3(x)		((void *) nil)
+	#define MSG_3(x)
+	#define ASSERT_3(x)
 #endif
 
 
@@ -98,24 +98,24 @@
 	#define TCP_MSG_1(x)		LAND_MSG((x), LAND_TCPLOG_TARGET, LAND_TCPLOG_NAME)
 	#define TCP_ASSERT_1(x)		LAND_ASSERT((x), LAND_TCPLOG_TARGET, LAND_TCPLOG_NAME))
 #else
-	#define TCP_MSG_1(x)		((void *) nil)
-	#define TCP_ASSERT_1(x)		((void *) nil)
+	#define TCP_MSG_1(x)
+	#define TCP_ASSERT_1(x)
 #endif
 
 #if (LAND_TCPLOG_LEVEL >= LAND_LOGLEVEL_2)
 	#define TCP_MSG_2(x)		LAND_MSG((x), LAND_TCPLOG_TARGET, LAND_TCPLOG_NAME)
 	#define TCP_ASSERT_2(x)		LAND_ASSERT((x), LAND_TCPLOG_TARGET, LAND_TCPLOG_NAME))
 #else
-	#define TCP_MSG_2(x)		((void *) nil)
-	#define TCP_ASSERT_2(x)		((void *) nil)
+	#define TCP_MSG_2(x)
+	#define TCP_ASSERT_2(x)
 #endif
 
 #if (LAND_TCPLOG_LEVEL >= LAND_LOGLEVEL_3)
 	#define TCP_MSG_3(x)		LAND_MSG((x), LAND_TCPLOG_TARGET, LAND_TCPLOG_NAME)
 	#define TCP_ASSERT_3(x)		LAND_ASSERT((x), LAND_TCPLOG_TARGET, LAND_TCPLOG_NAME))
 #else
-	#define TCP_MSG_3(x)		((void *) nil)
-	#define TCP_ASSERT_3(x)		((void *) nil)
+	#define TCP_MSG_3(x)
+	#define TCP_ASSERT_3(x)
 #endif
 
 
@@ -125,24 +125,24 @@
 	#define DB_MSG_1(x)		LAND_MSG((x), LAND_DBLOG_TARGET, LAND_DBLOG_NAME)
 	#define DB_ASSERT_1(x)		LAND_ASSERT((x), LAND_DBLOG_TARGET, LAND_DBLOG_NAME))
 #else
-	#define DB_MSG_1(x)		((void *) nil)
-	#define DB_ASSERT_1(x)		((void *) nil)
+	#define DB_MSG_1(x)
+	#define DB_ASSERT_1(x)
 #endif
 
 #if (LAND_DBLOG_LEVEL >= LAND_LOGLEVEL_2)
 	#define DB_MSG_2(x)		LAND_MSG((x), LAND_DBLOG_TARGET, LAND_DBLOG_NAME)
 	#define DB_ASSERT_2(x)		LAND_ASSERT((x), LAND_DBLOG_TARGET, LAND_DBLOG_NAME))
 #else
-	#define DB_MSG_2(x)		((void *) nil)
-	#define DB_ASSERT_2(x)		((void *) nil)
+	#define DB_MSG_2(x)
+	#define DB_ASSERT_2(x)
 #endif
 
 #if (LAND_DBLOG_LEVEL >= LAND_LOGLEVEL_3)
 	#define DB_MSG_3(x)		LAND_MSG((x), LAND_DBLOG_TARGET, LAND_DBLOG_NAME)
 	#define DB_ASSERT_3(x)		LAND_ASSERT((x), LAND_DBLOG_TARGET, LAND_DBLOG_NAME))
 #else
-	#define DB_MSG_3(x)		((void *) nil)
-	#define DB_ASSERT_3(x)		((void *) nil)
+	#define DB_MSG_3(x)
+	#define DB_ASSERT_3(x)
 #endif
 
 
@@ -152,24 +152,24 @@
 	#define THREADS_MSG_1(x)		LAND_MSG((x), LAND_THREADSLOG_TARGET, LAND_THREADSLOG_NAME)
 	#define THREADS_ASSERT_1(x)		LAND_ASSERT((x), LAND_THREADSLOG_TARGET, LAND_THREADSLOG_NAME))
 #else
-	#define THREADS_MSG_1(x)		((void *) nil)
-	#define THREADS_ASSERT_1(x)		((void *) nil)
+	#define THREADS_MSG_1(x)
+	#define THREADS_ASSERT_1(x)
 #endif
 
 #if (LAND_THREADSLOG_LEVEL >= LAND_LOGLEVEL_2)
 	#define THREADS_MSG_2(x)		LAND_MSG((x), LAND_THREADSLOG_TARGET, LAND_THREADSLOG_NAME)
 	#define THREADS_ASSERT_2(x)		LAND_ASSERT((x), LAND_THREADSLOG_TARGET, LAND_THREADSLOG_NAME))
 #else
-	#define THREADS_MSG_2(x)		((void *) nil)
-	#define THREADS_ASSERT_2(x)		((void *) nil)
+	#define THREADS_MSG_2(x)
+	#define THREADS_ASSERT_2(x)
 #endif
 
 #if (LAND_THREADSLOG_LEVEL >= LAND_LOGLEVEL_3)
 	#define THREADS_MSG_3(x)		LAND_MSG((x), LAND_THREADSLOG_TARGET, LAND_THREADSLOG_NAME)
 	#define THREADS_ASSERT_3(x)		LAND_ASSERT((x), LAND_THREADSLOG_TARGET, LAND_THREADSLOG_NAME))
 #else
-	#define THREADS_MSG_3(x)		((void *) nil)
-	#define THREADS_ASSERT_3(x)		((void *) nil)
+	#define THREADS_MSG_3(x)
+	#define THREADS_ASSERT_3(x)
 #endif
 
 
