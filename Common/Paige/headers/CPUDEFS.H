@@ -114,6 +114,15 @@ some each compiler seems to interpret differently.  */
 #endif
 #endif
 
+//Auto configure for WINE - TRT - 29 Dec 2004
+#ifdef __GNUC__
+	#ifdef __WINE__
+		#define WIN32_COMPILE
+		//#define WINDOWS_EMULATE_COMPILE   /* Fakes Windows environment on Mac */
+	#else
+#endif
+#endif
+
 #ifdef ACCESS_MS_DLL
 #define MS_DLL
 #endif
