@@ -52,6 +52,9 @@
 #include "tablestructure.h"
 #include "cancoon.h"
 
+#ifdef WIN95VERSION
+#include "FrontierWinMain.h"
+#endif
 
 
 
@@ -2472,6 +2475,10 @@ boolean shellzoomwindow (hdlwindowinfo hinfo, boolean flzoomin) {
 		constraintoscreenbounds (w, true, &rzoom);
 		
 		insetrect (&rzoom, 3, 3);
+		
+		#ifdef WIN95VERSION
+			rzoom.bottom -= getstatusbarheight();  /* 2005-01-30 SMD (and arp) */
+		#endif
 		
 		if ((rfull.right - rfull.left) <= (rzoom.right - rzoom.left)) /*can fit full horiz*/
 			flscrollleft = true;

@@ -1013,7 +1013,8 @@ static boolean shellpushcancoonglobals (void) {
 	} /*shellpushcancoonglobals*/
 	
 
-static long getstatusbarheight () {
+extern long getstatusbarheight () {
+	/* 2005-01-30 SMD - made extern */
 	RECT rectStatus;
 
 	if (hwndStatus != NULL) {

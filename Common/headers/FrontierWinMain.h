@@ -41,6 +41,7 @@ extern CHAR sz_frontierstartsearch [];
 extern UINT wm_startreplace;
 extern UINT wm_startsearch;
 
+extern long getstatusbarheight (void);  /* 2005-01-30 SMD */
 extern boolean openwindowsparamlinefiles (void);
 
 EventAvail (unsigned short mask, EventRecord * ev);
