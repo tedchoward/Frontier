@@ -1320,9 +1320,9 @@ boolean shellinit (void) {
 	
 	quicktimeinitverbs ();
 	
-	dllinitverbs (); /*2004-11-29 aradke: langdll.c*/
-	
 #endif
+	
+	dllinitverbs (); /*2004-11-29 aradke: langdll.c*/
 	
 	if (keyboardescape ()) /*check again before landinit; after this, must do shellquit*/
 		exittooperatingsystem ();
