@@ -67,6 +67,9 @@
 #include "kernelverbdefs.h"
 #include "langdll.h"
 
+#if defined(MACVERSION) && TARGET_RT_MAC_MACHO
+#include "CallMachOFramework.h"
+#endif
 
 #define NEW_DLL_INTERFACE 1 /* 2002-11-03 AR: defined to enable new DLL interface */
 //#undef NEW_DLL_INTERFACE
@@ -135,52 +138,9 @@
 	/* static variables */
 	
 	static tydllinfohandle loadeddlls; /* linked list of currently loaded stay-resident DLLs */
-/*
-	static const XDLLProcTable dllcallbacks = { /+ we create a copy of this struct on the stack for every call +/
-		extfrontierAlloc,
-		extfrontierReAlloc,
-		extfrontierLock,
-		extfrontierUnlock,
-		extfrontierFree,
-		extfrontierSize,
 
-		extOdbGetCurrentRoot,
-		extOdbNewFile,
-		extOdbOpenFile,
-		extOdbSaveFile,
-		extOdbCloseFile,
-		extOdbDefined,
-		extOdbDelete,
-		extOdbGetType,
-		extOdbCountItems,
-		extOdbGetNthItem,
-		extOdbGetValue,
-		extOdbSetValue,
-		extOdbNewTable,
-		extOdbGetModDate,
-		extOdbDisposeValue,
-		extOdbGetError,
+	static XDLLProcTable *dllcallbacks; /* global pointer to array of callback functions */
 
-		extDoScript,
-		extDoScriptText,
-
-		extOdbNewListValue,
-		extOdbGetListCount,
-		extOdbDeleteListValue,
-		extOdbSetListValue,
-		extOdbGetListValue,
-		extOdbAddListValue,
-
-		extInvoke,
-		extCoerce,
-
-		extCallScript,
-		extCallScriptText,
-		
-		extThreadYield,
-		extThreadSleep
-		};
-*/
 #else
 
 	typedef struct tydllmoduleinfo {
@@ -1073,6 +1033,10 @@ static void freeprocinfobuckets (tydllinfohandle hdll) {
 		while (h != nil) {
 		
 			hnext = (**h).hashlink;
+			
+			#if defined(MACVERSION) && TARGET_RT_MAC_MACHO
+				disposemachofuncptr ((void *) (**h).procaddress);	
+			#endif
 
 			disposehandle ((Handle) h);
 			
@@ -1722,6 +1686,10 @@ static boolean lookupprocaddress (tydllinfohandle hdll, typrocinfohandle hprocin
 				(**hprocinfo).moduledesc.routineRecords[0].procDescriptor = (ProcPtr) (**hprocinfo).procaddress;	/* fill in the blank */
 				(**hprocinfo).moduleUPP = (UniversalProcPtr) &(**hprocinfo).moduledesc;
 				}
+		#elif TARGET_RT_MAC_MACHO
+			if (err == noErr) {
+				(**hprocinfo).procaddress = convertcfmtomachofuncptr ((**hprocinfo).procaddress);
+				}
 		#endif
 	#endif
 
@@ -1743,10 +1711,7 @@ static boolean callprocwithparams (tydllinfohandle hdll, typrocinfohandle hproci
 	After completing the call, we set up the result value or the error message
 	*/
 	
-	XDLLProcTable calltable;
 	boolean fl = false;
-
-	fillcalltable (&calltable);
 
 	lockhandle ((Handle) hprocinfo); /* just to be sure our data doesn't move around */
 
@@ -1769,12 +1734,12 @@ static boolean callprocwithparams (tydllinfohandle hdll, typrocinfohandle hproci
 	
 	#if MACVERSION && !TARGET_API_MAC_CARBON
 		#if GENERATINGCFM
-			fl = CallUniversalProc ((**hprocinfo).moduleUPP, uppdllcallProcInfo, params, &calltable);
+			fl = CallUniversalProc ((**hprocinfo).moduleUPP, uppdllcallProcInfo, params, dllcallbacks);
 		#else
-			fl = (*(tyDLLEXTROUTINE) ((**hprocinfo).moduleUPP)) (params, &calltable);
+			fl = (*(tyDLLEXTROUTINE) ((**hprocinfo).moduleUPP)) (params, dllcallbacks);
 		#endif
 	#else
-		fl = (*(**hprocinfo).procaddress) (params, &calltable);
+		fl = (*(**hprocinfo).procaddress) (params, dllcallbacks);
 	#endif
 	
 	grabthreadglobals ();
@@ -1911,6 +1876,10 @@ static boolean callvolatile (hdltreenode hparam1, const tyfilespec *fs, bigstrin
 	fl = callproc (hparam1, hdll, hprocinfo, vreturned);
 	
 	/* Dispose proc info here because we didn't ask for the hash table to be built */
+	
+#if defined(MACVERSION) && TARGET_RT_MAC_MACHO
+	disposemachofuncptr ((void*) (**hprocinfo).procaddress);
+#endif
 	
 	disposehandle ((Handle) hprocinfo);
 
@@ -2374,35 +2343,25 @@ static boolean langcalldll (tydllmoduleinfo *dllinfo, tydllparamblock *dllcall) 
 	/*
 	call the dll. 
 	*/
-	XDLLProcTable calltable;
 	boolean fl = false;
-
-	/*Need to initialize the callback table*/
-	fillcalltable (&calltable);
-//#endif
-
-	
-	// dllcall.frontiercallback = ???
-
-	//
 
 	releasethreadglobals ();
 
 	#ifdef WIN95VERSION
-		fl = (*(dllinfo->procAddress)) (dllcall, &calltable);
+		fl = (*(dllinfo->procAddress)) (dllcall, dllcallbacks);
 	#endif
 
 	#ifdef MACVERSION
 		#if TARGET_API_MAC_CARBON == 1
 			//Code change by Timothy Paustian Friday, June 16, 2000 1:13:28 PM
 			//Changed to Opaque call for Carbon - we don't need UPPs in Carbon.
-			//fl = (*(tyDLLEXTROUTINE) (dllinfo->moduleUPP)) (dllcall, &calltable); // call it
-			fl = (*(dllinfo->procAddress)) (dllcall, &calltable); // call it
+			//fl = (*(tyDLLEXTROUTINE) (dllinfo->moduleUPP)) (dllcall, dllcallbacks); // call it
+			fl = (*(dllinfo->procAddress)) (dllcall, dllcallbacks); // call it
 		#else
 			#if GENERATINGCFM
-				fl = CallUniversalProc (dllinfo->moduleUPP, uppdllcallProcInfo, dllcall, &calltable);
+				fl = CallUniversalProc (dllinfo->moduleUPP, uppdllcallProcInfo, dllcall, dllcallbacks);
 			#else
-				fl = (*(tyDLLEXTROUTINE) (dllinfo->moduleUPP)) (dllcall, &calltable); // call it
+				fl = (*(tyDLLEXTROUTINE) (dllinfo->moduleUPP)) (dllcall, dllcallbacks); // call it
 			#endif
 		#endif
 	#endif
@@ -2414,73 +2373,160 @@ static boolean langcalldll (tydllmoduleinfo *dllinfo, tydllparamblock *dllcall) 
 	return fl;
 	} /*langcalldll*/
 
-
 #endif /* NEW_DLL_INTERFACE */
 
-	
-void fillcalltable (XDLLProcTable * calltable) {
 
-	/*
-	2003-06-16 AR: We got some crash reports on Mac OS Classic
-	implicating the new DLL interface where the stdlogs did not
-	include a proper stack backtrace. Therefore, let's abandon
-	the idea of using a global dllcallbacks table and switch
-	back to building it on the fly for every call.
-	*/
+void fillcalltable (XDLLProcTable *pt) {
 
-/*
-#ifdef NEW_DLL_INTERFACE
+	#if defined(MACVERSION) && TARGET_RT_MAC_MACHO
 
-	*calltable = dllcallbacks;
-	
-#else
-*/
-	calltable->xMemAlloc = extfrontierAlloc;
-	calltable->xMemResize = extfrontierReAlloc;
-	calltable->xMemLock = extfrontierLock;
-	calltable->xMemUnlock = extfrontierUnlock;
-	calltable->xMemFree = extfrontierFree;
-	calltable->xMemGetSize = extfrontierSize;
+		pt->xMemAlloc = convertmachotocfmfuncptr (&extfrontierAlloc);
+		pt->xMemResize = convertmachotocfmfuncptr (&extfrontierReAlloc);
+		pt->xMemLock = convertmachotocfmfuncptr (&extfrontierLock);
+		pt->xMemUnlock = convertmachotocfmfuncptr (&extfrontierUnlock);
+		pt->xMemFree = convertmachotocfmfuncptr (&extfrontierFree);
+		pt->xMemGetSize = convertmachotocfmfuncptr (&extfrontierSize);
 
-	calltable->xOdbGetCurrentRoot = extOdbGetCurrentRoot;
-	calltable->xOdbNewFile = extOdbNewFile;
-	calltable->xOdbOpenFile = extOdbOpenFile;
-	calltable->xOdbSaveFile = extOdbSaveFile;
-	calltable->xOdbCloseFile = extOdbCloseFile;
-	calltable->xOdbDefined = extOdbDefined;
-	calltable->xOdbDelete = extOdbDelete;
-	calltable->xOdbGetType = extOdbGetType;
-	calltable->xOdbCountItems = extOdbCountItems;
-	calltable->xOdbGetNthItem = extOdbGetNthItem;
-	calltable->xOdbGetValue = extOdbGetValue;
-	calltable->xOdbSetValue = extOdbSetValue;
-	calltable->xOdbNewTable = extOdbNewTable;
-	calltable->xOdbGetModDate = extOdbGetModDate;
-	calltable->xOdbDisposeValue = extOdbDisposeValue;
-	calltable->xOdbGetError = extOdbGetError;
+		pt->xOdbGetCurrentRoot = convertmachotocfmfuncptr (&extOdbGetCurrentRoot);
+		pt->xOdbNewFile = convertmachotocfmfuncptr (&extOdbNewFile);
+		pt->xOdbOpenFile = convertmachotocfmfuncptr (&extOdbOpenFile);
+		pt->xOdbSaveFile = convertmachotocfmfuncptr (&extOdbSaveFile);
+		pt->xOdbCloseFile = convertmachotocfmfuncptr (&extOdbCloseFile);
+		pt->xOdbDefined = convertmachotocfmfuncptr (&extOdbDefined);
+		pt->xOdbDelete = convertmachotocfmfuncptr (&extOdbDelete);
+		pt->xOdbGetType = convertmachotocfmfuncptr (&extOdbGetType);
+		pt->xOdbCountItems = convertmachotocfmfuncptr (&extOdbCountItems);
+		pt->xOdbGetNthItem = convertmachotocfmfuncptr (&extOdbGetNthItem);
+		pt->xOdbGetValue = convertmachotocfmfuncptr (&extOdbGetValue);
+		pt->xOdbSetValue = convertmachotocfmfuncptr (&extOdbSetValue);
+		pt->xOdbNewTable = convertmachotocfmfuncptr (&extOdbNewTable);
+		pt->xOdbGetModDate = convertmachotocfmfuncptr (&extOdbGetModDate);
+		pt->xOdbDisposeValue = convertmachotocfmfuncptr (&extOdbDisposeValue);
+		pt->xOdbGetError = convertmachotocfmfuncptr (&extOdbGetError);
 
-	calltable->xDoScript = extDoScript;
-	calltable->xDoScriptText = extDoScriptText;
+		pt->xDoScript = convertmachotocfmfuncptr (&extDoScript);
+		pt->xDoScriptText = convertmachotocfmfuncptr (&extDoScriptText);
 
-	calltable->xOdbNewListValue = extOdbNewListValue;
-	calltable->xOdbGetListCount = extOdbGetListCount;
-	calltable->xOdbDeleteListValue = extOdbDeleteListValue;
-	calltable->xOdbSetListValue = extOdbSetListValue;
-	calltable->xOdbGetListValue = extOdbGetListValue;
-	calltable->xOdbAddListValue = extOdbAddListValue;
+		pt->xOdbNewListValue = convertmachotocfmfuncptr (&extOdbNewListValue);
+		pt->xOdbGetListCount = convertmachotocfmfuncptr (&extOdbGetListCount);
+		pt->xOdbDeleteListValue = convertmachotocfmfuncptr (&extOdbDeleteListValue);
+		pt->xOdbSetListValue = convertmachotocfmfuncptr (&extOdbSetListValue);
+		pt->xOdbGetListValue = convertmachotocfmfuncptr (&extOdbGetListValue);
+		pt->xOdbAddListValue = convertmachotocfmfuncptr (&extOdbAddListValue);
 
-	calltable->xInvoke = extInvoke;
-	calltable->xCoerce = extCoerce;
-	
-	calltable->xCallScript = extCallScript;
-	calltable->xCallScriptText = extCallScriptText;
-	
-	calltable->xThreadYield = extThreadYield;
-	calltable->xThreadSleep = extThreadSleep;
-/*
-#endif
-*/
+		pt->xInvoke = convertmachotocfmfuncptr (&extInvoke);
+		pt->xCoerce = convertmachotocfmfuncptr (&extCoerce);
+		
+		pt->xCallScript = convertmachotocfmfuncptr (&extCallScript);
+		pt->xCallScriptText = convertmachotocfmfuncptr (&extCallScriptText);
+		
+		pt->xThreadYield = convertmachotocfmfuncptr (&extThreadYield);
+		pt->xThreadSleep = convertmachotocfmfuncptr (&extThreadSleep);
+
+	#else
+
+		pt->xMemAlloc = &extfrontierAlloc;
+		pt->xMemResize = &extfrontierReAlloc;
+		pt->xMemLock = &extfrontierLock;
+		pt->xMemUnlock = &extfrontierUnlock;
+		pt->xMemFree = &extfrontierFree;
+		pt->xMemGetSize = &extfrontierSize;
+
+		pt->xOdbGetCurrentRoot = &extOdbGetCurrentRoot;
+		pt->xOdbNewFile = &extOdbNewFile;
+		pt->xOdbOpenFile = &extOdbOpenFile;
+		pt->xOdbSaveFile = &extOdbSaveFile;
+		pt->xOdbCloseFile = &extOdbCloseFile;
+		pt->xOdbDefined = &extOdbDefined;
+		pt->xOdbDelete = &extOdbDelete;
+		pt->xOdbGetType = &extOdbGetType;
+		pt->xOdbCountItems = &extOdbCountItems;
+		pt->xOdbGetNthItem = &extOdbGetNthItem;
+		pt->xOdbGetValue = &extOdbGetValue;
+		pt->xOdbSetValue = &extOdbSetValue;
+		pt->xOdbNewTable = &extOdbNewTable;
+		pt->xOdbGetModDate = &extOdbGetModDate;
+		pt->xOdbDisposeValue = &extOdbDisposeValue;
+		pt->xOdbGetError = &extOdbGetError;
+
+		pt->xDoScript = &extDoScript;
+		pt->xDoScriptText = &extDoScriptText;
+
+		pt->xOdbNewListValue = &extOdbNewListValue;
+		pt->xOdbGetListCount = &extOdbGetListCount;
+		pt->xOdbDeleteListValue = &extOdbDeleteListValue;
+		pt->xOdbSetListValue = &extOdbSetListValue;
+		pt->xOdbGetListValue = &extOdbGetListValue;
+		pt->xOdbAddListValue = &extOdbAddListValue;
+
+		pt->xInvoke = &extInvoke;
+		pt->xCoerce = &extCoerce;
+		
+		pt->xCallScript = &extCallScript;
+		pt->xCallScriptText = &extCallScriptText;
+		
+		pt->xThreadYield = &extThreadYield;
+		pt->xThreadSleep = &extThreadSleep;
+
+	#endif
+
 	} /*fillcalltable*/
+
+
+#if 0
+
+void smashcalltable (XDLLProcTable *pt) {
+
+	#if defined(MACVERSION) && TARGET_RT_MAC_MACHO
+
+		disposecfmfuncptr (pt->xMemAlloc);
+		disposecfmfuncptr (pt->xMemResize);
+		disposecfmfuncptr (pt->xMemLock);
+		disposecfmfuncptr (pt->xMemUnlock);
+		disposecfmfuncptr (pt->xMemFree);
+		disposecfmfuncptr (pt->xMemGetSize);
+
+		disposecfmfuncptr (pt->xOdbGetCurrentRoot);
+		disposecfmfuncptr (pt->xOdbNewFile);
+		disposecfmfuncptr (pt->xOdbOpenFile);
+		disposecfmfuncptr (pt->xOdbSaveFile);
+		disposecfmfuncptr (pt->xOdbCloseFile);
+		disposecfmfuncptr (pt->xOdbDefined);
+		disposecfmfuncptr (pt->xOdbDelete);
+		disposecfmfuncptr (pt->xOdbGetType);
+		disposecfmfuncptr (pt->xOdbCountItems);
+		disposecfmfuncptr (pt->xOdbGetNthItem);
+		disposecfmfuncptr (pt->xOdbGetValue);
+		disposecfmfuncptr (pt->xOdbSetValue);
+		disposecfmfuncptr (pt->xOdbNewTable);
+		disposecfmfuncptr (pt->xOdbGetModDate);
+		disposecfmfuncptr (pt->xOdbDisposeValue);
+		disposecfmfuncptr (pt->xOdbGetError);
+
+		disposecfmfuncptr (pt->xDoScript);
+		disposecfmfuncptr (pt->xDoScriptText);
+
+		disposecfmfuncptr (pt->xOdbNewListValue);
+		disposecfmfuncptr (pt->xOdbGetListCount);
+		disposecfmfuncptr (pt->xOdbDeleteListValue);
+		disposecfmfuncptr (pt->xOdbSetListValue);
+		disposecfmfuncptr (pt->xOdbGetListValue);
+		disposecfmfuncptr (pt->xOdbAddListValue);
+
+		disposecfmfuncptr (pt->xInvoke);
+		disposecfmfuncptr (pt->xCoerce);
+		
+		disposecfmfuncptr (pt->xCallScript);
+		disposecfmfuncptr (pt->xCallScriptText);
+		
+		disposecfmfuncptr (pt->xThreadYield);
+		disposecfmfuncptr (pt->xThreadSleep);
+
+	#endif
+	
+	} /*smashcalltable*/
+
+#endif
 
 
 boolean dllisloadedverb (hdltreenode hparam1, tyvaluerecord *vreturned) {
@@ -2737,3 +2783,14 @@ boolean dllcallverb (hdltreenode hparam1, tyvaluerecord *vreturned) {
 
 	} /*calldllverb*/
 
+
+void dllinitverbs (void) {
+	
+	if (dllcallbacks == nil) {
+
+		dllcallbacks = (XDLLProcTable *) malloc (sizeof (XDLLProcTable));
+		
+		if (dllcallbacks != nil)
+			fillcalltable (dllcallbacks);
+		}
+	} /*initdllverbs*/

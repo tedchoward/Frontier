@@ -76,6 +76,7 @@
 #include "dockmenu.h"
 #include "services.h"
 #include "WinSockNetEvents.h"
+#include "langdll.h" /*2004-11-29 aradke: for dllinitverbs*/
 
 #ifdef flcomponent
 	#include <uisharing.h>
@@ -1318,6 +1319,8 @@ boolean shellinit (void) {
 #ifdef MACVERSION /*7.0b4 PBS: initialize QuickTime verbs*/
 	
 	quicktimeinitverbs ();
+	
+	dllinitverbs (); /*2004-11-29 aradke: langdll.c*/
 	
 #endif
 	

@@ -74,7 +74,9 @@ odbBool xCALLBACK extCallScriptText (odbString bspath, odbValueRecord *vparams, 
 odbBool xCALLBACK extThreadYield (void); /* 2003-04-22 AR */
 odbBool xCALLBACK extThreadSleep (long sleepticks); /* 2003-04-22 AR */
 
-extern void fillcalltable (XDLLProcTable * calltable);
+extern void dllinitverbs (void); /*2004-11-29 aradke*/
+
+extern void fillcalltable (XDLLProcTable *);
 
 extern boolean dllisloadedverb (hdltreenode hparam1, tyvaluerecord *vreturned);
 
