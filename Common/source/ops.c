@@ -952,10 +952,10 @@ void getsizestring (unsigned long size, bigstring bs) {
 	} /*getsizestring*/		
 
 
-UInt32 bcdToLong (UInt32 bcd) { /* 2004-11-16 creedon */
+unsigned long bcdToLong (unsigned long bcd) { /* 2004-11-16 creedon */
 
-	UInt32	ret = 0;
-	UInt16	i;
+	unsigned long ret = 0;
+	short i;
 
 	for (i = 0; i < 8; i++) {
 		if (i > 0)
