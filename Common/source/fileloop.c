@@ -269,7 +269,10 @@ boolean fileinitloop (const tyfilespec *fs, tyfileloopcallback filefilter, Handl
 		
 		if (errcode == dirNFErr) /*On OS X, this is what's returned for a read permission error. Weird.*/
 			return (true);
-				
+
+		if (errcode == afpAccessDenied) /* 2005-01-05 creedon - don't bail when user does not have the correct permissions < http://sourceforge.net/tracker/index.php?func=detail&aid=1096641&group_id=120666&atid=687798 > */
+			return (true);
+
 		#endif
 		
 		if (oserror (errcode)) /*errcode != noErr*/
