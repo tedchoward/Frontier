@@ -23,15 +23,17 @@
 
 ******************************************************************************/
 
+#ifndef langinternalinclude
 #define langinternalinclude
 
 
 #ifndef langinclude
-
 	#include "lang.h"
-	
 #endif
 
+#ifndef processinclude
+	#include "process.h"
+#endif
 
 
 #define langerrorlist 257
@@ -564,7 +566,7 @@ extern boolean evaluatereadonlyparam (hdltreenode hparam, tyvaluerecord *vparam)
 
 extern boolean langinitbuiltins (void); /*langverbs.h*/
 
-extern boolean langreleasesemaphores (struct typrocessrecord **);
+extern boolean langreleasesemaphores (hdlprocessrecord);
 
 
 // langxml.c
@@ -578,3 +580,4 @@ extern boolean langremotefunctioncall (hdltreenode htree, hdltreenode hparam1, t
 extern boolean langrunscriptcode (hdlhashtable htable, bigstring bsverb, hdltreenode hcode, tyvaluerecord *vparams, hdlhashtable hcontext, tyvaluerecord *vreturned);
 
 
+#endif /*langinternalinclude*/
