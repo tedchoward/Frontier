@@ -1077,7 +1077,7 @@ static boolean isgarbagetype (tyvaluetype type) {
 #endif
 
 
-static void disposevalues (tyvaluerecord *val1, tyvaluerecord *val2) {
+void disposevalues (tyvaluerecord *val1, tyvaluerecord *val2) {
 	
 	/*
 	the assertion made by the caller is that val1 and val2 have served
@@ -1101,6 +1101,8 @@ static void disposevalues (tyvaluerecord *val1, tyvaluerecord *val2) {
 	
 	5.0.2b10 dmb: dispose heap values that are actually on the tmp stack; don't
 	base it on their type
+	
+	2004-12-30 SMD: now extern instead of static
 	*/
 	
 	register tyvaluerecord *v1 = val1;
@@ -3670,7 +3672,7 @@ static short coercionweight (tyvaluetype type) {
 	} /*coercionweight*/
 
 
-static boolean coercetypes (tyvaluerecord *v1, tyvaluerecord *v2) {
+boolean coercetypes (tyvaluerecord *v1, tyvaluerecord *v2) {
 	
 	/*
 	the caller wants to do a binary operation with the two valuerecords.
@@ -3690,6 +3692,8 @@ static boolean coercetypes (tyvaluerecord *v1, tyvaluerecord *v2) {
 	
 	9/22/92 dmb: use new coercionweight function instead of langheaptype; it 
 	offers more granularity, and is written specifically to serve this routine
+	
+	2004-12-30 SMD: now extern instead of static
 	*/
 	
 	register tyvaluetype t1 = (*v1).valuetype;

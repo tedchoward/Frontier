@@ -1324,6 +1324,8 @@ boolean shellinit (void) {
 	
 #endif
 	
+	mathinitverbs (); /*2004-12-30 smd: langmath.c*/
+	
 	dllinitverbs (); /*2004-11-29 aradke: langdll.c*/
 	
 	if (keyboardescape ()) /*check again before landinit; after this, must do shellquit*/

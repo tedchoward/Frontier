@@ -218,6 +218,8 @@ typedef enum tylangtoken { /*verbs that are processed by langverbs.c*/
 		
 		tickcountfunc,
 		
+		millisecondcountfunc,
+		
 		delayfunc,
 		
 		delaysixtiethsfunc,
@@ -3001,6 +3003,13 @@ static boolean langfunctionvalue (short token, hdltreenode hparam1, tyvaluerecor
 				break;
 			
 			return (setlongvalue (gettickcount (), v));
+		
+		case millisecondcountfunc: {  /* 2005-01-08 SMD */
+			if (!langcheckparamcount (hparam1, 0))
+				break;
+			
+			return (setlongvalue (getmilliseconds (), v));
+			}
 		
 		case delayfunc: {
 			long ctseconds;
