@@ -173,7 +173,7 @@ typedef struct tywpvariable {
 
 #endif
 
-static errornum = 0; /*error number exclusively for wp routines*/
+static short errornum = 0; /*error number exclusively for wp routines*/
 
 
 #if !flruntime
@@ -515,7 +515,6 @@ boolean wpverbpack (hdlexternalvariable h, Handle *hpacked, boolean *flnewdbaddr
 	*/
 
 	register hdlwpvariable hv = (hdlwpvariable) h;
-	register boolean flpacked = (**hv).flpacked;
 	register hdlwprecord hwp;
 	register boolean fl;
 	Handle hpackedwp;
@@ -805,6 +804,8 @@ boolean wpverbsettimes (hdlexternalvariable h, long timecreated, long timemodifi
 	} /*wpverbsettimes*/
 
 
+#if 0
+
 static boolean getwpparam (hdltreenode hfirst, short pnum, hdlwpvariable *hv) {
 	
 	/*
@@ -838,6 +839,8 @@ static boolean getwpparam (hdltreenode hfirst, short pnum, hdlwpvariable *hv) {
 	
 	return (true);
 	} /*getwpparam*/
+
+#endif
 
 
 boolean wpwindowopen (hdlexternalvariable hvariable, hdlwindowinfo *hinfo) {
@@ -1811,7 +1814,6 @@ boolean wpverbfind (hdlexternalvariable hvariable, boolean *flzoom) {
 	boolean fltempload;
 	boolean flwindowopen;
 	hdlwindowinfo hinfo;
-	boolean flfromtop = true;
 	
 	fltempload = !(**hv).flinmemory;
 	
@@ -1909,21 +1911,17 @@ static boolean wpverbtitleclick (Point pt) {
 	} /*wpverbtitleclick*/
 
 
-static boolean wpverbgetvariable (hdlexternalvariable *hvariable) {
+static boolean wpverbgetvariable (void *hvariable) {
+	
+	hdlexternalvariable *hv = (hdlexternalvariable *) hvariable;
 	
 	if (wpdata == nil)
 		return (false);
 	
-	*hvariable = (hdlexternalvariable) (**wpdata).wprefcon;
+	*hv = (hdlexternalvariable) (**wpdata).wprefcon;
 	
 	return (true);
 	} /*wpverbgetvariable*/
-
-
-static boolean wpverbgetwpdata (void) {
-	
-	return (true);
-	} /*wpverbgetwpdata*/
 
 
 static boolean wpverbgettargetdata (short id) {

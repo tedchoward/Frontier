@@ -92,7 +92,9 @@ static pg_globals ws_globals;
 
 // static Handle hlastundodata = nil;
 
-static boolean fldestroycaret = false; /*7.0b16 PBS: global for destroying caret in main thread on Windows.*/
+#ifdef WIN95VERSION
+	static boolean fldestroycaret = false; /*7.0b16 PBS: global for destroying caret in main thread on Windows.*/
+#endif
 
 
 #define ctwpstack 5 /*we can remember wp contexts up to 5 levels deep*/
@@ -1378,6 +1380,8 @@ static boolean wpapplyhtmlstyles (Handle htext, pg_ref pg, boolean flredraw) {
 	} /*wpapplyhtmlstyles*/
 
 
+#if 0
+
 static boolean wpfilterstyles (Handle htext, pg_ref pg, boolean redraw) {
 
 	/*
@@ -1393,6 +1397,8 @@ static boolean wpfilterstyles (Handle htext, pg_ref pg, boolean redraw) {
 
 	return (false);
 	} /*wpfilterstyles*/
+
+#endif
 
 
 boolean wpmeasuretext (Handle htext, Rect *r, tywpflags wpflags) {
@@ -4501,8 +4507,6 @@ void wpidle (void) {
 	Next time this routine is called from the main thread it destroys the caret.
 	*/
 	
-	hdlwprecord wp = wpdata;
-
 	if (wpsetglobals ()) {
 		
 		wppushdraw ();

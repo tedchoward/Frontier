@@ -41,6 +41,8 @@
 
 #endif
 
+typedef struct tywprecord *ptrwprecord, **hdlwprecord; /* forward declaration */
+
 #if !TARGET_CARBON
 #if GENERATINGCFM
 		typedef UniversalProcPtr TrackClickUPP;
@@ -58,7 +60,7 @@
 		#define CallTrackClickProc(userRoutine, wp, pt)		\
 				CallUniversalProc((UniversalProcPtr)(userRoutine), uppTrackClickProcInfo, wp, pt)
 	#else
-		typedef pascal void (*TrackClickProcPtr) (struct tywprecord **, Point);
+		typedef pascal void (*TrackClickProcPtr) (hdlwprecord, Point);
 		
 		typedef TrackClickProcPtr TrackClickUPP;
 		
@@ -69,7 +71,7 @@
 				(*(userRoutine))(wp, pt)
 #endif
 #else //TARGET CARBON Timothy Paustian
-		typedef pascal void (*TrackClickProcPtr) (struct tywprecord **, Point);
+		typedef pascal void (*TrackClickProcPtr) (hdlwprecord, Point);
 		
 		typedef TrackClickProcPtr TrackClickUPP;
 		/*this ain't used.
@@ -165,7 +167,7 @@ typedef struct tywprecord {
 	boolean flalwaysmeasuretext; //keep track of text's width or height?
 	
 	boolean fleditingnow; //between pre- and postedit?
-	} tywprecord, *ptrwprecord, **hdlwprecord;
+	} tywprecord;
 
 
 extern WindowPtr wpwindow;
