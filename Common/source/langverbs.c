@@ -3141,6 +3141,12 @@ static boolean langfunctionvalue (short token, hdltreenode hparam1, tyvaluerecor
 		case callscriptfunc:
 			return (callscriptverb (hparam1, v));
 
+	#if defined(WIN95VERSION) || (defined(MACVERSION) && !TARGET_RT_MAC_MACHO)
+		/*
+		2004-11-09 aradke: calling DLLs through the Code Fragment Manager (CFM)
+		doesn't work yet on Carbon/Mach-O. throw an error instead of crashing.
+		*/
+		
 		case dllcallfunc:
 		case calldllfunc:		/* this is remaining for historical usage per Dave. rab: 5.0b4 1/6/98 */
 			return (dllcallverb (hparam1, v));
@@ -3153,7 +3159,8 @@ static boolean langfunctionvalue (short token, hdltreenode hparam1, tyvaluerecor
 		
 		case dllisloadedfunc:
 			return (dllisloadedverb (hparam1, v));
-		
+	#endif
+	
 		case packwindowfunc:
 			return (langpackwindowverb (hparam1, v));
 		
