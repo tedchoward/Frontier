@@ -83,7 +83,7 @@ typedef pascal OSErr (*landnoparamcallback) (void);
 
 typedef pascal OSErr (*landfilespeccallback) (FSSpec *);
 
-typedef pascal boolean (*landqueuepopcallback) (...);
+typedef pascal boolean (*landqueuepopcallback) (Handle, long);	/* 2004-10-24 aradke: param list was ... */
 
 typedef pascal OSErr (*tyeventcreatecallback)(AEEventClass theAEEventClass, AEEventID theAEEventID, const AEAddressDesc *target, short returnID, long transactionID, AppleEvent *result);
 
