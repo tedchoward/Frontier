@@ -770,37 +770,37 @@ static void regexperrorwithnumber (short stringnum, int x, bigstring bserror) {
 #endif
 
 
-static inline int getoptions (Handle hcp) {
+static int getoptions (Handle hcp) {
 	return ((**((tycompiledpattern**)hcp)).options);
 	} /*getoptions*/
 
 
-static inline int getcapturecount (Handle hcp) {
+static int getcapturecount (Handle hcp) {
 	return ((**((tycompiledpattern**)hcp)).capturecount);
 	} /*getcapturecount*/
 
 
-static inline int getovectorsize (Handle hcp) {
+static int getovectorsize (Handle hcp) {
 	return ((**((tycompiledpattern**)hcp)).ovecsize);
 	} /*getovectorsize*/
 
 
-static inline int getgroupoffset (Handle hovec, int ix) {
+static int getgroupoffset (Handle hovec, int ix) {
 	return (*((int*)(*hovec) + 2 * ix));
 	} /*getgroupoffset*/
 
 
-static inline int getgroupend (Handle hovec, int ix) {
+static int getgroupend (Handle hovec, int ix) {
 	return (*((int*)(*hovec) + 2 * ix + 1));
 	} /*getgroupend*/
 
 
-static inline int getgrouplength (Handle hovec, int ix) {
+static int getgrouplength (Handle hovec, int ix) {
 	return (getgroupend (hovec, ix) - getgroupoffset (hovec, ix));
 	} /*getgrouplength*/
 
 
-static inline pcre * getpatternref (Handle hcp) {
+static pcre * getpatternref (Handle hcp) {
 	
 	/*
 	Compute a ptr to the pcre part of the handle that is only valid
@@ -811,7 +811,7 @@ static inline pcre * getpatternref (Handle hcp) {
 	} /*getpatternref*/
 
 
-static inline real_pcre * getrealpatternref (Handle hcp) {
+static real_pcre * getrealpatternref (Handle hcp) {
 	
 	/*
 	Compute a ptr to the pcre part of the handle that is only valid
@@ -822,7 +822,7 @@ static inline real_pcre * getrealpatternref (Handle hcp) {
 	} /*getrealpatternref*/
 
 
-static inline void * getstudydata (Handle hcp) {
+static void * getstudydata (Handle hcp) {
 	
 	/*
 	Compute a ptr to the study_data part of the handle that is only valid
