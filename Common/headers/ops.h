@@ -96,7 +96,7 @@ extern boolean listlink (hdllinkedlist, hdllinkedlist);
 
 extern boolean listunlink (hdllinkedlist, hdllinkedlist);
 
-#if __powerc
+#if __powerc || __GNUC__
 
 extern void safex80told (const extended80 *x80, long double *x);
 

@@ -247,7 +247,7 @@ void initearth (void) {
 	earthstate = cursorisearth1;
 	
 	ticklastroll = gettickcount ();
-	} /*initearth%/
+	} /%initearth%/
 
 
 void rollearth (void) {
@@ -258,14 +258,14 @@ void rollearth (void) {
 	
 		state = earthstate + 1; 
 		
-		if (state > cursorisearth7) /*wrap around%/
+		if (state > cursorisearth7) /%wrap around%/
 			state = cursorisearth1;
 						
 		setcursortype (state);
 		
 		earthstate = state;
 		}
-	} /*rollearth%/
+	} /%rollearth%/
 */
 
 
