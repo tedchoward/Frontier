@@ -1,0 +1,13 @@
+AppleScript vs Frontier -- Not!
+
+There is a face-off between AppleScript and Frontier, and there isn’t. There is a face-off because they can be used to do some of the same things. You can write scripts to drive FileMaker that perform equally well, using either Frontier or AppleScript. 
+
+But it isn’t a face-off because Frontier’s feature set is so vastly different from AppleScript’s that it’s like comparing a draw program with QuickDraw. They do kind-of the same thing, but one is system software technology and the other is a tool for building on that technology. 
+
+Frontier goes way beyond application scripting, providing a powerful script editor and debugger, menubar editor, object database and on-line documentation tool. Frontier scripts can drive the file system, operating system, networks and scriptable applications.
+
+Frontier and AppleScript already work very well together; in the future they will work much more closely. You’ll be able to use Frontier’s script editing and storage system to develop AppleScript scripts. You can use our language to drive the system and networks, and use AppleScript to drive a recordable application, for example. 
+
+And both products agree on one very important thing: applications should be scriptable. Script writers are very powerful people, they can buy hundreds or thousands of copies of your software, if you provide a way for them to script it. There’s a lot of power locked up behind the user interface of your application. 
+
+We believe the world of scriptable applications is a big world, with room for lots of different approaches and tools. AppleScript and Frontier have similarites and at the same time, are complementary. Different tools for different jobs. Like MPW and Think C, some people will prefer one, and some people will use both. 
