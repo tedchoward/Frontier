@@ -87,19 +87,42 @@ extern CHAR szFrame[];
 
 static long dolongswap(long foo)
 	{
-	//#ifndef __MWERKS__
+#if defined(__i386__) && defined(__GNUC__)
+	/*
+		10.0a5 - TRT - 29 Dec 2004
+		GNU by default uses the AT&T assembly code syntax;
+		MSC/MWERKS uses the Intel assembly code syntax;
+		some versions of 'gcc' accept -masm=att|intel to
+		specify which syntax to use; but for those that don't...
+	*/
+	__asm__("mov foo,%eax\nbswap %eax\nmov %eax,foo\n");
+#elif defined(__powerpc__) && defined(__GNUC__)
+	foo = Endian32_Swap(foo);
+#else
 	_asm
 		{
 		mov eax,foo
 		bswap eax
 		mov foo,eax
 		}
-	//#endif
+#endif
 	return (foo);
 	}
 
 static short doshortswap(short foo)
 	{
+#if defined(__i386__) && defined(__GNUC__)
+	/*
+		10.0a5 - TRT - 29 Dec 2004
+		GNU by default uses the AT&T assembly code syntax;
+		MSC/MWERKS uses the Intel assembly code syntax;
+		some versions of 'gcc' accept -masm=att|intel to
+		specify which syntax to use; but for those that don't...
+	*/
+	__asm__("mov foo,%ax\n mov %al,%bh\nmov %ah,%bl\nmov %bx,foo");
+#elif defined(__powerpc__) && defined(__GNUC__)
+	foo = Endian16_Swap(foo);
+#else
 	_asm
 		{
 		mov ax,foo
@@ -107,6 +130,7 @@ static short doshortswap(short foo)
 		mov bl,ah
 		mov foo,bx
 		}
+#endif
 	return (foo);
 	}
 
