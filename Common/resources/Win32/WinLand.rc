@@ -30,9 +30,9 @@
 #define WIN95VERSION 1
 //#include "resource.h"
 
-/* 2004-10-17 AR: pick up flregexpverbs and possibly other definitions */
+/* 2004-11-03 AR: pick up flregexpverbs and possibly other definitions */
+#include "frontierdefs.h"
 #include "standard.h"
-
 
 #define APSTUDIO_READONLY_SYMBOLS
 /////////////////////////////////////////////////////////////////////////////
