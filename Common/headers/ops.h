@@ -108,4 +108,4 @@ extern void getsystemversionstring (bigstring, bigstring);
 
 extern void getsizestring (unsigned long, bigstring);
 
-extern unsigned long bcdToLong (unsigned long); /* 2004-11-16 creedon */
+extern unsigned long bcdtolong (unsigned long); /* 2004-11-16 creedon */
