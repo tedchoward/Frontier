@@ -25,7 +25,6 @@
 
 #ifndef callmachoframework
 #define callmachoframework
-#include <CFBundle.h>
 
 extern boolean unixshellcall (Handle hcommand, Handle hreturn);
 extern OSStatus LoadFrameworkBundle(CFStringRef framework, CFBundleRef *bundlePtr);
