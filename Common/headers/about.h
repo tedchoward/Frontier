@@ -23,7 +23,12 @@
 
 ******************************************************************************/
 
+#ifndef aboutinclude
 #define aboutinclude
+
+#ifndef processinclude
+	#include "process.h"
+#endif
 
 
 /*prototypes*/
@@ -40,8 +45,10 @@ extern boolean aboutstart (void);
 
 extern boolean aboutsetmiscstring (bigstring);
 
-extern boolean aboutsetthreadstring (struct tythreadglobals **, boolean);
+extern boolean aboutsetthreadstring (hdlprocessthread, boolean);
 
 boolean aboutstatsshowing (void);
 
 void aboutsetstatsflag (boolean fl);
+
+#endif /*aboutinclude*/
