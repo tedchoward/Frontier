@@ -1361,6 +1361,10 @@ static boolean stringfunctionvalue (short token, hdltreenode hparam1, tyvaluerec
 	
 	12/4/2004 smd: optimization - midfunc (ie string.mid) now uses a readonly handle for
 	the input string, and copies only the results to the output string, for performance
+	
+	12/5/2004 smd: optimization - deletefunc now uses a readonly handle for the input
+	string, creates a new handle sized precisely for the output string, and copies 
+	two parts from the input to the output (substrings before and after the deleted chars)
 	*/
 	
 	hdltreenode hp1 = hparam1;
@@ -1389,9 +1393,17 @@ static boolean stringfunctionvalue (short token, hdltreenode hparam1, tyvaluerec
 			return (setcharvalue (chword, v));
 	
 		case deletefunc: {
+			/* 12/5/2004 smd: optimized */
+			
 			Handle x;
+			Handle hstring;
 			long ctdelete;
 			long ixdelete;
+			long lenbefore;
+			long ixbefore;
+			long ixafter;
+			long lenafter;
+			long hlen;
 			
 			if (!getpositivelongvalue (hp1, 2, &ixdelete))
 				return (false);
@@ -1401,16 +1413,34 @@ static boolean stringfunctionvalue (short token, hdltreenode hparam1, tyvaluerec
 			if (!getpositivelongvalue (hp1, 3, &ctdelete))
 				return (false);
 			
-			if (!getexempttextvalue (hp1, 1, &x))
+			if (!getreadonlytextvalue (hp1, 1, &hstring))
 				return (false);
 			
-			--ixdelete; /*convert to zero-base*/
+			hlen = gethandlesize (hstring);
 			
-			if (!pullfromhandle (x, ixdelete, ctdelete, nil)) { /*ctdelete too large*/
-				
-				if (ixdelete >= 0)
-					sethandlesize (x, min (ixdelete, gethandlesize (x)));
-				}
+			if (ixdelete > 0)
+				--ixdelete; /*convert to zero-base*/
+			
+			lenbefore = ixdelete;
+			
+			ctdelete = min (ctdelete, hlen - ixdelete); /* in case ctdelete is too big */
+			
+			ixafter = ixdelete + ctdelete;
+			
+			lenafter = hlen - ixafter;
+			
+			if (!newhandle (lenbefore + lenafter, &x))
+				return false;
+			
+			ixbefore = 0;
+			if (lenbefore > 0)
+				if (!loadfromhandle (hstring, &ixbefore, lenbefore, *x))
+					return false;
+			
+			ixbefore += ctdelete;
+			if (lenafter > 0)
+				if (!loadfromhandle (hstring, &ixbefore, lenafter, &((*x) [lenbefore]) ))
+					return false;
 			
 			return (setheapvalue (x, stringvaluetype, v));
 			}
