@@ -2085,7 +2085,11 @@ resource 'cnfg' (140, "stats") {
 	onehalf,
 	'BigD',
 	'STAT',
+#if	TARGET_API_MAC_CARBON
+	133,	/* normal window */
+#else
 	128,
+#endif
 	{100, 25, 175, 200},
 	2,
 	size9,
