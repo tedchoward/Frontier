@@ -1961,7 +1961,7 @@ void numbertohexstring (long number, bigstring bshex) {
 
 	if ((number < -32768) || (number > 32767))  {
 		
-		if (memtodisklong (number)) { }; /* hra 10/27/04: bypass 'statement with no effect' warning */
+		memtodisklong (number);
 
 		bytestohexstring (&number, sizeof (long), bshex);
 		}
@@ -1970,7 +1970,7 @@ void numbertohexstring (long number, bigstring bshex) {
 		
 		short x = number;
 		
-		if (memtodiskshort (x)) { }; /* hra 10/27/04: bypass 'statement with no effect' warning */
+		memtodiskshort (x);
 
 		bytestohexstring (&x, sizeof (short), bshex);
 		}

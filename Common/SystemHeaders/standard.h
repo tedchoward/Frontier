@@ -54,10 +54,10 @@ standard.h -- standard types and constants
 	#define memlong(x) x
 	#define diskshort(x) x
 	#define memshort(x) x
-	#define disktomemshort(x) ((void *)0)
-	#define disktomemlong(x) ((void *)0)
-	#define memtodiskshort(x) ((void *)0)
-	#define memtodisklong(x) ((void *)0)
+	#define disktomemshort(x)
+	#define disktomemlong(x)
+	#define memtodiskshort(x)
+	#define memtodisklong(x)
 #endif
 
 #include "stringdefs.h"		/* embedded string definitions */
