@@ -1030,17 +1030,19 @@ static boolean stringmultiplereplaceallverb (hdltreenode hp, tyvaluerecord *v) {
 	} /*stringmultiplereplaceallverb*/
 
 
-static void grabnthfield (Handle htext, long fieldnum, byte chdelim, boolean flstrict) {
-
+static void grabnthfield (Handle htext, long fieldnum, byte chdelim, Handle *hfield, boolean flstrict) {
+	
+	/* 12/5/2004 smd: optimization - now takes hfield parameter, a pointer to the 
+	handle for the extracted field */
+	
 	long ixword, lenword;
 	
 	if (!textnthword ((ptrbyte) *htext, gethandlesize (htext), fieldnum, chdelim, flstrict, &ixword, &lenword))
 		lenword = 0;
 	
-	if ((lenword > 0) && (ixword > 0))
-		moveleft (*htext + ixword, *htext, lenword);
+	if (!loadfromhandletohandle (htext, &ixword, lenword, false, hfield))
+		newemptyhandle (hfield);
 	
-	sethandlesize (htext, lenword);
 	} /*grabnthfield*/
 
 
@@ -1591,7 +1593,7 @@ static boolean stringfunctionvalue (short token, hdltreenode hparam1, tyvaluerec
 			len = min (len, gethandlesize (hstring) - ix);
 			
 			if (len > 0) {
-				if (!loadfromhandletohandle(hstring, &ix, len, false, &x))
+				if (!loadfromhandletohandle (hstring, &ix, len, false, &x))
 					if (!newemptyhandle (&x))
 						return (false);
 				}
@@ -1624,6 +1626,7 @@ static boolean stringfunctionvalue (short token, hdltreenode hparam1, tyvaluerec
 		
 		case nthfieldfunc: {
 			Handle htext;
+			Handle x;
 			char chdelim;
 			long fieldnum;
 			
@@ -1642,12 +1645,12 @@ static boolean stringfunctionvalue (short token, hdltreenode hparam1, tyvaluerec
 				return (false);
 				} /*if*/			
 
-			if (!getexempttextvalue (hp1, 1, &htext)) /*get last to simplify error handing*/
+			if (!getreadonlytextvalue (hp1, 1, &htext)) /*get last to simplify error handing*/
 				return (false);
 
-			grabnthfield (htext, fieldnum, chdelim, true);
+			grabnthfield (htext, fieldnum, chdelim, &x, true);
 			
-			return (setheapvalue (htext, stringvaluetype, v));
+			return (setheapvalue (x, stringvaluetype, v));
 			}
 		
 		case countfieldsfunc: {
@@ -1672,15 +1675,16 @@ static boolean stringfunctionvalue (short token, hdltreenode hparam1, tyvaluerec
 		
 		case firstwordfunc: {
 			Handle htext;
+			Handle x;
 			
 			flnextparamislast = true;
 			
-			if (!getexempttextvalue (hp1, 1, &htext)) /*get last to simplify error handing*/
+			if (!getreadonlytextvalue (hp1, 1, &htext)) /*get last to simplify error handing*/
 				return (false);
 			
-			grabnthfield (htext, 1, chword, false);
+			grabnthfield (htext, 1, chword, &x, false);
 			
-			return (setheapvalue (htext, stringvaluetype, v));
+			return (setheapvalue (x, stringvaluetype, v));
 			}
 		
 		case lastwordfunc: {
@@ -1698,6 +1702,7 @@ static boolean stringfunctionvalue (short token, hdltreenode hparam1, tyvaluerec
 	
 		case nthwordfunc: {
 			Handle htext;
+			Handle x;
 			long wordnum;
 			
 			flnextparamislast = true;
@@ -1705,12 +1710,12 @@ static boolean stringfunctionvalue (short token, hdltreenode hparam1, tyvaluerec
 			if (!getpositivelongvalue (hp1, 2, &wordnum))
 				return (false);
 			
-			if (!getexempttextvalue (hp1, 1, &htext)) /*get last to simplify error handing*/
+			if (!getreadonlytextvalue (hp1, 1, &htext)) /*get last to simplify error handing*/
 				return (false);
 			
-			grabnthfield (htext, wordnum, chword, false);
+			grabnthfield (htext, wordnum, chword, &x, false);
 			
-			return (setheapvalue (htext, stringvaluetype, v));
+			return (setheapvalue (x, stringvaluetype, v));
 			}
 		
 		case countwordsfunc: {
