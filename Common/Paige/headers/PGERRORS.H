@@ -20,7 +20,7 @@ DataPak Software, Inc.  Copyright 1993-1994. 		*/
 
 #ifdef MAC_PLATFORM
 
-#include <errors.h>
+#include <MacErrors.h>		/* 2004-09-29 AR: renamed from errors.h */
 
 /* Memory errors */
 

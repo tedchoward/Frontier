@@ -31,12 +31,12 @@ for the currently defined platform. */
 #include <Memory.h>
 #include <Events.h>
 #include <fonts.h>
-#include <Packages.h>
+//#include <Packages.h>		/* 2004-09-29 AR: unused */
 #include <OSUtils.h>
 #include <ToolUtils.h>
 #include <Resources.h>
 #include <files.h>
-#include <errors.h>
+#include <MacErrors.h>		/* 2004-09-29 AR: renamed from errors.h */
 #include <gestalt.h>
 
 #endif

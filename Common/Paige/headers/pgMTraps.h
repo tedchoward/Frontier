@@ -18,7 +18,7 @@ platform.  */
 
 #ifdef MAC_PLATFORM
 
-#include <Types.h>
+#include <MacTypes.h>		/* 2004-09-29 AR: renamed from Types.h */
 #include <Files.h>
 #include <Memory.h>
 

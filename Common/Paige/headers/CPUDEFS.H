@@ -447,7 +447,7 @@ some each compiler seems to interpret differently.  */
 
 #ifdef MAC_PLATFORM
 
-#include <types.h>
+#include <MacTypes.h>		/* 2004-09-29 AR: renamed from types.h */
 #include <quickdraw.h>		// for RGBColor
 #include <OSUtils.h>		// for DateTimeRec
 
