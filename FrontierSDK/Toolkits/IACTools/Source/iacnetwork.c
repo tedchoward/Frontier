@@ -10,6 +10,9 @@
 
 #define typeTargetID 'targ'
 
+
+#if TARGET_API_MAC_OS8
+
 static void MakePascalStringWLen (StringPtr theDest, int theDestLen, char *theSrc, int theSrcLen) {
 	
 	/*
@@ -27,8 +30,6 @@ static void MakePascalStringWLen (StringPtr theDest, int theDestLen, char *theSr
 	BlockMove (theSrc, &(theDest[1]), theDest [0]);
 	} /*MakePascalStringWLen*/
 
-
-#if TARGET_API_MAC_OS8
 
 static OSErr HCProgramToPortAndLoc (char *theName, short len, LocationNameRec *theLoc, PortInfoRec *thePort) {
 	

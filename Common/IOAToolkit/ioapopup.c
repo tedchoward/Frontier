@@ -97,13 +97,14 @@ typedef char smalliconbits [32];
 
 typedef smalliconbits *ptrsmalliconbits, **hdlsmalliconbits;
 
+#if !TARGET_API_MAC_CARBON
 
 static boolean plotsmallicon (Rect r, short iconlist, short iconnum, boolean flinvert) {
 
 	hdlsmalliconbits hbits;
 	short mode;
 	BitMap bmap;
-	WindowPtr w;
+	GrafPtr w;
 	
 	GetPort (&w);
 	
@@ -141,15 +142,11 @@ static boolean plotsmallicon (Rect r, short iconlist, short iconnum, boolean fli
 	#endif
 	return (true);
 	} /*plotsmallicon*/
-	
-	
-static long texthandlewidth (Handle htext) {
 
-	return (TextWidth (*htext, 0, GetHandleSize (htext)));
-	} /*texthandlewidth*/
-	
-	
-static void disposehandle (h) Handle h; {
+#endif
+
+
+static void disposehandle (Handle h) {
 	
 	if (h != nil) DisposeHandle (h);
 	} /*disposehandle*/
@@ -514,16 +511,19 @@ static boolean clickpopup (hdlobject listhead, hdlobject h, Point pt, boolean fl
 #if TARGET_API_MAC_CARBON == 1
 
 	static void MyThemeButtonDrawCallback (const Rect *bounds, ThemeButtonKind kind, const ThemeButtonDrawInfo *info,
-		bigstring bs, SInt16 depth, Boolean isColorDev) {
+		UInt32 refcon, SInt16 depth, Boolean isColorDev) {
 		
 		/*
 		7.0b48 PBS: draw the label for a popup menu.
 		*/
+		
+		StringPtr sptr = (StringPtr) refcon;
+		
 		pushstyle (geneva, 10, 0);
 
 		movepento ((*bounds).left, (*bounds).top + 12);
 		
-		pendrawstring (bs);
+		pendrawstring (sptr);
 
 		popstyle ();
 		} /*MyThemeButtonDrawCallback*/
@@ -680,6 +680,8 @@ static boolean recalcpopup (hdlobject h, boolean flmajorrecalc) {
 	} /*recalcpopup*/
 
 
+#if 0
+
 static boolean xxxrecalcpopup (hdlobject h, boolean flmajorrecalc) {
 	
 	hdlpopupdata hdata = (hdlpopupdata) (**h).objectdata;
@@ -703,6 +705,8 @@ static boolean xxxrecalcpopup (hdlobject h, boolean flmajorrecalc) {
 	
 	return (true); 
 	} /*xxxrecalcpopup*/
+
+#endif
 
 
 static boolean getpopupinvalrect (hdlobject h, Rect *r) {

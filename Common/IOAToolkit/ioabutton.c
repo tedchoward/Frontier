@@ -107,12 +107,13 @@ static boolean debugbutton (hdlobject h, bigstring errorstring) {
 #if TARGET_API_MAC_CARBON == 1
 
 	static void MyThemeButtonDrawCallback (const Rect *bounds, ThemeButtonKind kind, const ThemeButtonDrawInfo *info,
-		Handle htext, SInt16 depth, Boolean isColorDev) {
+		UInt32 refcon, SInt16 depth, Boolean isColorDev) {
 		
 		/*
 		7.0b48 PBS: draw the label for a popup menu.
 		*/
 		
+		Handle htext = (Handle) refcon;
 		ThemeFontID idfont;
 		bigstring fontname, bs;
 		short fontsize;

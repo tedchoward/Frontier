@@ -21,7 +21,7 @@ Boolean IACinstallhandler (AEEventClass eventclass, AEEventID id, ProcPtr handle
 	
 	#if TARGET_API_MAC_CARBON == 1
 
-		ec = AEInstallEventHandler (eventclass, id, NewAEEventHandlerUPP (handler), 0, false);
+		ec = AEInstallEventHandler (eventclass, id, NewAEEventHandlerUPP ((AEEventHandlerProcPtr) handler), 0, false);
 	
 	#else
 	
@@ -92,8 +92,8 @@ Boolean IACinstallcoercionhandler (DescType fromtype, DescType totype, ProcPtr h
 	OSErr ec;
 	
 	#if TARGET_API_MAC_CARBON == 1
-	AECoercePtrUPP	theHandler = NewAECoercePtrUPP(handler);
-	ec = AEInstallCoercionHandler (fromtype, totype, theHandler, (long) 0, false, false);
+	AECoercePtrUPP	theHandler = NewAECoercePtrUPP((AECoercePtrProcPtr) handler);
+	ec = AEInstallCoercionHandler (fromtype, totype, (AECoercionHandlerUPP) theHandler, (long) 0, false, false);
 	//should we delete this, my gut feeling is no, not until the app ends
 	#else
 	ec = AEInstallCoercionHandler (fromtype, totype, (AECoercionHandlerUPP) NewAECoercePtrProc (handler), (long) 0, false, false);

@@ -93,6 +93,8 @@ static boolean systemhascolor (void) {
 	} /*systemhascolor*/
 
 
+#if !TARGET_API_MAC_CARBON
+
 static void getitemrect (short item, Rect *ritem) {
 
 	short x, y;
@@ -141,7 +143,7 @@ static void frameitem (short item, Rect menurect) {
 	IOApopforecolor ();
 	} /*frameitem*/
 	
-	
+
 static pascal void colormenuhandler (short msg, MenuHandle hmenu, Rect *menurect, Point pt, short *item) {
 
 	#ifndef IOAinsideApp
@@ -269,7 +271,7 @@ static pascal void colormenuhandler (short msg, MenuHandle hmenu, Rect *menurect
 	
 	#endif
 	} /*colormenuhandler*/
-	
+
 	
 static void DebugNum (long num) {
 	
@@ -280,7 +282,6 @@ static void DebugNum (long num) {
 	DebugStr (bs);
 	} /*DebugNum*/
 
-#if !TARGET_API_MAC_CARBON
 #if !GENERATINGCFM
 
 typedef struct Jump68kDescriptor {
@@ -476,6 +477,8 @@ static boolean canreplicatecolorpopup (hdlobject h) {
 	} /*canreplicatecolorpopup*/
 	
 
+#if 0
+
 static boolean getcheckboxeditrect (hdlobject h, Rect *r) {
 
 	*r = (**h).objectrect;
@@ -484,6 +487,8 @@ static boolean getcheckboxeditrect (hdlobject h, Rect *r) {
 	
 	return (true); /*it can be edited*/
 	} /*getcheckboxeditrect*/
+
+#endif
 	
 
 static void pushlong (long num, bigstring bs) {

@@ -80,7 +80,6 @@ static boolean checkcontrolexists (hdlobject h) {
 
 static boolean cleanscrollbar (hdlobject h, short textheight, short textwidth, Rect *r) {
 	
-	hdlscrollbardata hdata = (hdlscrollbardata) (**h).objectdata;
 	short height, width;
 	
 	if (!checkcontrolexists (h))

@@ -116,7 +116,9 @@ static boolean debugradio (hdlobject h, bigstring errorstring) {
 #if TARGET_API_MAC_CARBON == 1
 
 	static void MyThemeButtonDrawCallback (const Rect *bounds, ThemeButtonKind kind, const ThemeButtonDrawInfo *info,
-		bigstring bs, SInt16 depth, Boolean isColorDev) {
+		UInt32 refcon, SInt16 depth, Boolean isColorDev) {
+		
+		//StringPtr bs = (StringPtr) refcon;
 		
 		//pushstyle (geneva, 10, 0);
 
@@ -162,7 +164,6 @@ static boolean drawradio (hdlobject h) {
 				
 		DrawThemeButton (&r, kThemeRadioButton, &drawinfo, nil, nil, drawupp, (unsigned long) nil);
 		
-		//DisposeThemeButtonDrawUPP (MyThemeButtonDrawCallback);
 		DisposeThemeButtonDrawUPP (drawupp);
 		}
 		
