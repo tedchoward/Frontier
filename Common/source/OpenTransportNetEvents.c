@@ -326,15 +326,19 @@ typedef struct tyepstatsrecord {
 	long	ctworking;
 	long	ctwaiting;
 	} tyepstatsrecord;
+
+/*
+	2004-10-28 aradke: OTLink and OTLIFO must be aligned on 32-bit boundaries!
+*/
 	
 typedef struct tylistenrecord {
 	EndpointRef			ep;
-	UInt8				stateflags;
 	OTLink				validationlink;		/* Link into an OT FIFO (not atomic) */
 	OTLIFO				idleEPs;			/* Endpoints ready to accept a new incoming connection */
 	OTLIFO				brokenEPs;			/* Collect failed endpoints for recycling by worker thread */
 	OTLIFO				readyEPs;			/* Ready to be picked up by the worker thread which will spawn a thread to call the daemon */
 	OTLIFO				waitingEPs;			/* Endpoints waiting to complete an orderly disconnect */
+	UInt8				stateflags;
 	OTConfigurationRef	masterconfig;
 	EndpointRecordRef	acceptors;
 	long				maxdepth;
