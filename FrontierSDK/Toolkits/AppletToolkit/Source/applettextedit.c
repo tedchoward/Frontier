@@ -89,9 +89,10 @@ static short getTEjustification (tyjustification justification) {
 			
 		case rightjustified:
 			return (teJustRight);
+		
+		default:
+			return (teJustLeft);
 		} /*switch*/
-
-	return (teJustLeft);
 	} /*getTEjustification*/
 	
 
@@ -246,13 +247,13 @@ void editupdateport (hdleditrecord hbuffer, Rect rport, WindowPtr w) {
 	
 	olddest = (**macbuffer).destRect; 
 	
-	oldport = (**macbuffer).inPort;
+	oldport = (WindowPtr) (**macbuffer).inPort;	/* inPort is a GrafPtr */
 	
 	(**macbuffer).viewRect = rport;
 	
 	(**macbuffer).destRect = rport;
 	
-	(**macbuffer).inPort = w;
+	(**macbuffer).inPort = (GrafPtr) w;
 	
 	TEUpdate (&rport, macbuffer);
 	
@@ -260,7 +261,7 @@ void editupdateport (hdleditrecord hbuffer, Rect rport, WindowPtr w) {
 	
 	(**macbuffer).destRect = olddest;
 	
-	(**macbuffer).inPort = oldport;
+	(**macbuffer).inPort = (GrafPtr) oldport;
 	} /*editupdateport*/
 	
 	
