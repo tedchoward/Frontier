@@ -2774,21 +2774,29 @@ extern boolean langsettarget (hdlhashtable htable, bigstring bsname, tyvaluereco
 extern boolean langcleartarget (tyvaluerecord *prevtarget);
 
 static boolean opvisitallvisit (hdlheadrecord hnode, ptrvoid bsscriptname) {
-//static boolean opvisitallvisit (hdlheadrecord hnode, tyvaluerecord val) {	
+
 	/*
 	7.0b17 PBS: visit every headline in an outline, calling a callback script for each.
 	
 	It's a wrapper for opvisiteverything.
+
+	2004-11-03 aradke: Take advantage of langrunscript now accepting
+	a nil pointer if the script doesn't take any parameters.
+	We don't need to create an empty list anymore.
 	*/
 	
-	tyvaluerecord vreturned, vparams;
-	hdllistrecord hlist;
+	tyvaluerecord vreturned;
 	
-	if (!opnewlist (&hlist, false)) /*create a list*/
+	/*
+	tyvaluerecord vparams;
+	hdllistrecord hlist;
+		
+	if (!opnewlist (&hlist, false)) /%create a list%/
 		return (false);
 
 	if (!setheapvalue ((Handle) hlist, listvaluetype, &vparams))
 		return (false);
+	*/
 
 	oppushoutline (outlinedata);
 		
@@ -2796,7 +2804,7 @@ static boolean opvisitallvisit (hdlheadrecord hnode, ptrvoid bsscriptname) {
 		
 	(**outlinedata).flwindowopen = true;
 	
-	langrunscript (bsscriptname, &vparams, nil, &vreturned);
+	langrunscript (bsscriptname, nil, nil, &vreturned);
 	
 	oppopoutline ();
 	

@@ -1334,7 +1334,7 @@ boolean langbuildparamlist (tyvaluerecord * listval, hdltreenode *hparams) {
 	hdltreenode hparam;
 	boolean flpushedroot;
 	register boolean fl = false;
-	
+
 	if ((*listval).valuetype == recordvaluetype) /*7.0b41 PBS: build named param list if a record*/
 		return (langbuildnamedparamlist (listval, hparams));
 	
@@ -1382,13 +1382,16 @@ boolean langrunscriptcode (hdlhashtable htable, bigstring bsverb, hdltreenode hc
 	
 	/*
 	02/04/02 dmb: the guts of langrunscript
+
+	2004-11-03 aradke: Accept nil for vparams, meaning the function
+	doesn't take any parameters, so we simply bypass langbuildparamlist.
 	*/
 	
 	boolean fl = false;
 	boolean flchained;
 	tyvaluerecord val;
 	hdltreenode hfunctioncall;
-	hdltreenode hparamlist;
+	hdltreenode hparamlist = nil;
 	boolean fltmpval;
 	
 	if (!setaddressvalue (htable, bsverb, &val))
@@ -1400,31 +1403,34 @@ boolean langrunscriptcode (hdlhashtable htable, bigstring bsverb, hdltreenode hc
 /*	if (hcontext != nil)
 		pushhashtable (hcontext);
 */
-	if (hcontext != nil) {
+	flchained = (hcontext != nil) && (**hcontext).flchained;
+
+	if (vparams != nil) {
+
+		if (hcontext != nil) {
+						
+			if (flchained)
+				pushhashtable (hcontext);
+			else
+				chainhashtable (hcontext); /*establishes outer local context*/
+			}
 		
-		flchained = (**hcontext).flchained;
+		fl = langbuildparamlist (vparams, &hparamlist);
 		
-		if (flchained)
-			pushhashtable (hcontext);
-		else
-			chainhashtable (hcontext); /*establishes outer local context*/
-		}
-	
-	fl = langbuildparamlist (vparams, &hparamlist);
-	
-	if (hcontext != nil) {
+		if (hcontext != nil) {
+			
+			if (flchained)
+				pophashtable ();
+			else
+				unchainhashtable ();
+			}
 		
-		if (flchained)
-			pophashtable ();
-		else
-			unchainhashtable ();
-		}
-	
-	if (!fl) {
-		
-		langdisposetree (hfunctioncall);
-		
-		goto exit;
+		if (!fl) {
+			
+			langdisposetree (hfunctioncall);
+			
+			goto exit;
+			}
 		}
 	
 	if (!pushfunctioncall (hfunctioncall, hparamlist, &hcode)) /*consumes input parameters*/
