@@ -12,11 +12,13 @@
 /* This file is Copyright (C) Matt Slot, 1999-2000. It is hereby placed into 
    the public domain. The author makes no warranty as to fitness or stability */
 
-#include <Gestalt.h>
-#include <LowMem.h>
-#include <CodeFragments.h>
-#include <DriverServices.h>
-#include <Timer.h>
+#include "frontier.h"
+#include "standard.h"
+
+#if !FRONTIER_FRAMEWORK_INCLUDES
+	#include <DriverServices.h>
+	#include <Timer.h>
+#endif
 
 #include "FastTimes.h"
 
@@ -144,9 +146,11 @@ void FastInitialize() {
 
 			/* Wait for the beginning of the very next tick */
 #if TARGET_API_MAC_CARBON
-			for(tick = TickCount() + 1; tick > TickCount(); );
+			for(tick = TickCount() + 1; tick > TickCount(); )
+				;
 #else
-			for(tick = MyLMGetTicks() + 1; tick > MyLMGetTicks(); );
+			for(tick = MyLMGetTicks() + 1; tick > MyLMGetTicks(); )
+				;
 #endif /* TARGET_API_MAC_CARBON */
 
 			/* Poll the selected timer and prepare it (since we have time) */
@@ -156,9 +160,11 @@ void FastInitialize() {
 			
 			/* Wait for the exact 60th tick to roll over */
 #if TARGET_API_MAC_CARBON
-			while(tick + 60 > TickCount());
+			while(tick + 60 > TickCount())
+				;
 #else
-			while(tick + 60 > MyLMGetTicks());
+			while(tick + 60 > MyLMGetTicks())
+				;
 #endif /* TARGET_API_MAC_CARBON */
 
 			/* Poll the selected timer again and prepare it  */
