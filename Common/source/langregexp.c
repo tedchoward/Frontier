@@ -1522,22 +1522,6 @@ static void regexpcheckerror (int pos, bigstring bsmsg) {
 	} /*regexpcheckerror*/
 	
 
-/*
-   12/11/2004 smd:
-   regexpscanreplacement() should be converting double backslashes
-   to single backslashes, but isn't. In the replacement pattern, 
-   double backslashes should be collapsed to single backslashes.
-   
-   This line:
-   msg( re.replace( re.compile( "(a)(b)" ), "\\1\\\\\\2", "ab" ) )
-   
-   should display "a\b" but is instead showing "a\\b". There's no way
-   to "insert" a single (or any odd number) of backslashes to the result.
-   I've fixed it, but Andre is worried that it could cause breakage. 
-   To make it work, uncomment the following line.
-*/
-/*#define REGEX_COMPACT_BACKSLASHES 1*/
-
 static boolean regexpscanreplacement (const char *pstart, long len, bigstring bserror,
 										tyreplscanliteralcallback literalfunc,
 										tyreplscannumberedcallback numberedfunc,
@@ -1629,18 +1613,16 @@ static boolean regexpscanreplacement (const char *pstart, long len, bigstring bs
 					return (false);				
 					}
 				}
-#ifdef REGEX_COMPACT_BACKSLASHES
 			else if (*p1 == '\\') {
 				/* 2004/12/11 smd: double backslashes should be collapsed into singles */
 				
 				if (!literalfunc (plast - pstart, (p - plast) + 1, bserror, refcon))
 					return (false);
 				
-				p = plast = p1 + 1;
+				p = plast = ++p1;
 				
 				continue; /*avoid incrementation of p*/				
 				}
-#endif
 			else if (isdigit (*p1)) {
 				
 				long ref = 0;
