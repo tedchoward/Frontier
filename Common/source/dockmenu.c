@@ -429,7 +429,6 @@ pascal OSStatus dockcommandhandler (EventHandlerCallRef nextHandler, EventRef th
 
 static void dockmenuinstallhandler (void) {
 	
-	OSErr ec = noErr;		
 	EventTypeSpec myevents = {kEventClassCommand, kEventCommandProcess};
 	
 	InstallApplicationEventHandler (NewEventHandlerUPP (dockcommandhandler), 1, &myevents, 0, NULL);

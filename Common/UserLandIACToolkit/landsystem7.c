@@ -2039,7 +2039,7 @@ static pascal OSErr whyinternational (DescType itxt, const void *x, Size len, De
 	if (*(short *) x != smRoman) /*can't treat this as plain text*/
 		return (errAECoercionFail);
 	
-	return (AECreateDesc (text, x + 4, len - 4, result)); /*skip over script & language codes*/
+	return (AECreateDesc (text, ((Ptr) x) + 4, len - 4, result)); /*skip over script & language codes*/
 	} /*whyinternational*/
 
 

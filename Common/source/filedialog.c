@@ -493,6 +493,11 @@ static pascal Boolean knowntypesfilter (ParmBlkPtr pb, tysfdata *pdata) {
 	tysfdata sfdata;
 	FSSpec *fs = &sfdata.sfreply.sfFile;
 	OSErr	anErr = noErr;
+	#if !TARGET_API_MAC_CARBON
+	 	Point pt = {-1, -1};
+	 	short cttypes = -1;
+	 	OSType *types = nil;
+	#endif	
 	#ifdef flcomponent
 	long appA5;
 	#endif
