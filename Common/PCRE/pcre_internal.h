@@ -222,7 +222,10 @@ variable-length repeat, or a anything other than literal characters. */
 
 /* Miscellaneous definitions */
 
+#if !defined(__WINE_WINDEF_H)
+/* 2004-12-29 trt: BOOL defined by MS WIN32 SDK windef.h - WINE doesn't define/use _WINDEF_H  */
 typedef int BOOL;
+#endif
 
 #undef FALSE		/*2003-05-03 AR*/
 #undef TRUE			/*2003-05-03 AR*/
