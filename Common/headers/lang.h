@@ -436,6 +436,12 @@ typedef struct tyhashnode {
 	
 	byte ctlocks: 8;
 	
+	#ifdef flv10tables
+	
+	unsigned long hashval; /*2004-11-10 aradke: cache of hashfunction(hashkey)*/
+
+	#endif
+	
 	byte hashkey []; /*the identifier of this table element, lives in extension of record*/
 	
 	} tyhashnode, *ptrhashnode, **hdlhashnode;
@@ -443,9 +449,27 @@ typedef struct tyhashnode {
 	
 #define HNoNode ((hdlhashnode) -1)
 #define gethashkey(h,bs)	copystring ((**h).hashkey, bs);
-	
 
-#define ctbuckets 11 /*should be a prime number?*/
+	
+#ifdef flv10tables
+
+	#define ctinitialbuckets 11
+	
+	typedef hdlhashnode **hdlhashbucketarray;
+	
+	#define nthhashbucket(ht,i)	((*((**(ht)).hbuckets))[i])
+	
+	#define gethashbucketcount(ht)	((**(ht)).ctbuckets)
+
+#else
+
+	#define ctbuckets 11 /*should be a prime number?*/
+	
+	#define nthhashbucket(ht,i)	((**(ht)).hashbucket[i])
+	
+	#define gethashbucketcount(ht)	ctbuckets
+
+#endif
 
 
 typedef boolean (*langvaluecallback) (short, hdltreenode, tyvaluerecord *, bigstring);
@@ -453,8 +477,18 @@ typedef boolean (*langvaluecallback) (short, hdltreenode, tyvaluerecord *, bigst
 
 typedef struct tyhashtable {
 	
-	hdlhashnode hashbucket [ctbuckets];
+	#ifdef flv10tables
 	
+	unsigned long ctbuckets;
+	
+	hdlhashbucketarray hbuckets;
+	
+	#else
+	
+	hdlhashnode hashbucket [ctbuckets];
+
+	#endif
+
 	hdlhashnode hfirstsort; /*the alphabetically-first hash node*/
 	
 	struct tyhashtable **prevhashtable; /*allow tables to be linked*/
