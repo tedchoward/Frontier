@@ -7,10 +7,10 @@ for the currently defined platform. */
 #ifndef PGTRAPS_H
 #define PGTRAPS_H
 
-#include "CPUDefs.h"
+#include "CPUDEFS.H"
 
 #ifndef PAIGE_H
-#include "Paige.h"
+#include "PAIGE.H"
 #endif
 
 #define RIGHT_FONT_FLAG			0x8000		/* Font is right-to-left */
