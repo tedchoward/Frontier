@@ -97,7 +97,7 @@ boolean diskinitloop (tyfileloopcallback diskfilter, Handle *hdiskloop) {
 	
 	(**h).hfilelist = hlist;
 	
-	(**hlist).releaseitemcallback = &fileloopreleaseitem;
+	opsetreleaseitemcallback (hlist, &fileloopreleaseitem);
 	
 	ix = 1; /*start with file index 1*/
 	
@@ -242,7 +242,7 @@ boolean fileinitloop (const tyfilespec *fs, tyfileloopcallback filefilter, Handl
 		
 	(**h).hfilelist = hlist;
 	
-	(**hlist).releaseitemcallback = &fileloopreleaseitem;
+	opsetreleaseitemcallback (hlist, &fileloopreleaseitem);
 	
 	ix = 1; /*start with file index 1*/
 	

@@ -33,17 +33,13 @@
 #endif
 
 
+/*types*/
 
-typedef struct tylistrecord {
-	
-	struct tyoutlinerecord ** houtline; /*the list is stored in an outline*/
-	
-	long ctitems; /*number of items in the list, can be gotten without traversal*/
+typedef struct tylistrecord **hdllistrecord;	/* 2004-11-04 aradke: now opaque */
 
-	boolean isrecord; /*do items have names?*/
-	
-	boolean (*releaseitemcallback) (Handle); /*routine that releases one of **your** handles*/
-	} tylistrecord, *ptrlistrecord, **hdllistrecord;
+typedef boolean (*oplistreleaseitemcallback) (Handle);	/* 2004-11-04 aradke: part of tylistrecord */
+
+typedef boolean (*opvisitlistcallback) (Handle, ptrstring, ptrvoid);	/* 2004-11-04 aradke */
 
 
 /*prototypes*/
@@ -72,6 +68,12 @@ extern boolean opsetlistdata (hdllistrecord, long, ptrstring, ptrvoid, long);
 
 extern long opcountlistitems (hdllistrecord);
 
+extern boolean opgetisrecord (hdllistrecord);	/* 2004-11-04 aradke */
+
+extern void opsetisrecord (hdllistrecord hlist, boolean flisrecord);	/* 2004-11-04 aradke */
+
+extern oplistreleaseitemcallback opsetreleaseitemcallback (hdllistrecord, oplistreleaseitemcallback);	/* 2004-11-04 aradke */
+
 extern boolean opdeletelistitem (hdllistrecord, long, ptrstring);
 
 extern boolean oppacklist (hdllistrecord, Handle *);
@@ -82,6 +84,5 @@ extern boolean opcopylist (hdllistrecord, hdllistrecord *);
 
 extern boolean oploadstringlist (short, hdllistrecord *);
 
-
-
+extern boolean opvisitlist (hdllistrecord, opvisitlistcallback, ptrvoid);	/* 2004-11-04 aradke */
 

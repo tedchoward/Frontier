@@ -296,6 +296,7 @@ static boolean listtostring (hdllistrecord hlist, tyvaluerecord *val) {
 	tyvaluerecord itemval;
 	bigstring bs;
 	Handle hstring;
+	boolean flisrecord = opgetisrecord (hlist);
 	
 	n = opcountlistitems (hlist);
 	
@@ -307,7 +308,7 @@ static boolean listtostring (hdllistrecord hlist, tyvaluerecord *val) {
 		if (!getnthlistval (hlist, i, key, &itemval))
 			goto error;
 		
-		if ((**hlist).isrecord) {
+		if (flisrecord) {
 			
 			langdeparsestring (key, chdoublequote); /*add needed escape sequences*/
 			
@@ -736,7 +737,7 @@ boolean coercelistvalue (tyvaluerecord *val, tyvaluetype totype) {
 	switch (totype) {
 		
 		case listvaluetype:
-			(**hlist).isrecord = false;
+			opsetisrecord (hlist, false);
 
 			return (true);
 		
@@ -906,7 +907,7 @@ boolean listaddvalue (tyvaluerecord *v1, tyvaluerecord *v2, tyvaluerecord *vretu
 	m = opcountlistitems ((*v1).data.listvalue);
 	n = opcountlistitems ((*v2).data.listvalue);
 	
-	if ( (m > n) || (**(*v2).data.listvalue).isrecord ) {
+	if ( (m > n) || opgetisrecord ((*v2).data.listvalue) ) {
 		/* Either the first list is longer than the second:
 		   append to the first, or we are adding records so we want to
 		   de-dupe the entries always in the same way
@@ -925,7 +926,7 @@ boolean listaddvalue (tyvaluerecord *v1, tyvaluerecord *v2, tyvaluerecord *vretu
 			if (!copyhandle (hitem, &hitem))
 				return (false);
 
-			if ((**list3).isrecord) { /* discard duplicate keys */
+			if (opgetisrecord (list3)) { /* discard duplicate keys */
 				
 				if (opgetlisthandle (list3, -1, key, &hignore))
 					disposehandle (hitem); /* discard the duplicate. don't push it over */
@@ -990,7 +991,7 @@ boolean listsubtractvalue (tyvaluerecord *v1, tyvaluerecord *v2, tyvaluerecord *
 	
 	n2 = opcountlistitems (list2);
 	
-	if ((**list3).isrecord) {
+	if (opgetisrecord (list3)) {
 		
 		for (ix1 = 1; ix1 <= n2; ++ix1) { /*delete values that appear in second record*/
 			
@@ -1051,7 +1052,7 @@ static boolean comparelists (hdllistrecord list1, hdllistrecord list2, tytreetyp
 	if (ix2 < 0) /*v1 can't beginwith, endwith, contain or be equal to v2*/
 		goto exit;
 	
-	flbykey = (**list1).isrecord;
+	flbykey = opgetisrecord (list1);
 	
 	switch (comparisonop) {
 		
@@ -1236,43 +1237,46 @@ boolean listdeletevalue (tyvaluerecord *vlist, bigstring bsname, register tyvalu
 	} /*listdeletevalue*/
 
 
+typedef struct tylangvisitlistinfo {
+	ptrvoid refcon;
+	langvisitlistvaluescallback visit;
+	} tylangvisitlistinfo;
+
+
+static boolean langvisitlistvaluesvisit (Handle hdata, ptrstring bskey, ptrvoid refcon) {
+	
+	/*
+	2004-11-04 aradke: helper for langvisitlistvalues, called from opvisitlist.
+	*/
+
+	tylangvisitlistinfo *info = (tylangvisitlistinfo *) refcon;
+	tyvaluerecord val;
+	boolean fl;
+	
+	if (!langunpackvalue (hdata, &val))
+		return (false);
+		
+	fl = (*info).visit (&val, (*info).refcon);
+	
+	disposevaluerecord (val, true);
+
+	return (fl);
+	} /*langvisitlistvaluesvisit*/
+
+
 boolean langvisitlistvalues (tyvaluerecord *vlist, langvisitlistvaluescallback visit, ptrvoid refcon) {
 	
 	/*
-	2003-04-28 AR: Visit all items in a list without recursion.
+	2004-11-04 aradke: rewritten to use opvisitlist, called from langregexp.c.
 	*/
 	
 	hdllistrecord hlist = (hdllistrecord) (*vlist).data.binaryvalue;
-	hdloutlinerecord ho;
-	register hdlheadrecord nomad, nextnomad;
-	tyvaluerecord v;
-	boolean fl;
-
-	ho = (hdloutlinerecord) (**hlist).houtline;
+	tylangvisitlistinfo info;
 	
-	nomad = (**ho).hsummit;
+	info.refcon = refcon;
+	info.visit = visit;
 	
-	while (true) {
-		
-		nextnomad = (**nomad).headlinkdown;
-	
-		if (!langunpackvalue ((**nomad).hrefcon, &v))
-			return (false);
-			
-		fl = visit (&v, refcon);
-		
-		disposevaluerecord (v, true);
-		
-		if (!fl)
-			return (false);
-			
-		if (nextnomad == nomad) 
-			break;
-			
-		nomad = nextnomad;
-		} /*while*/
-
-	return (true);
+	return (opvisitlist (hlist, &langvisitlistvaluesvisit, &info));
 	} /*langvisitlistvalues*/
 
 

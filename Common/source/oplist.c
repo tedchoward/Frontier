@@ -67,6 +67,18 @@ goals.  so here goes!
 #endif
 
 
+typedef struct tylistrecord {
+	
+	struct tyoutlinerecord ** houtline; /*the list is stored in an outline*/
+	
+	long ctitems; /*number of items in the list, can be gotten without traversal*/
+
+	boolean isrecord; /*do items have names?*/
+	
+	oplistreleaseitemcallback releaseitemcallback; /*routine that releases one of **your** handles*/
+	} tylistrecord;
+
+
 typedef struct tydisklistrecord {
 	
 	short recordsize; /*number of bytes in this header*/
@@ -489,6 +501,40 @@ long opcountlistitems (hdllistrecord hlist) {
 	} /*opcountlistitems*/
 
 
+boolean opgetisrecord (hdllistrecord hlist) {
+	
+	/*
+	2004-11-04 aradke: accessor function.
+	*/
+
+	return ((**hlist).isrecord);
+	} /*oplistisrecord*/
+
+
+void opsetisrecord (hdllistrecord hlist, boolean flisrecord) {
+	
+	/*
+	2004-11-04 aradke: accessor function.
+	*/
+
+	(**hlist).isrecord = flisrecord;
+	} /*oplistisrecord*/
+
+
+oplistreleaseitemcallback opsetreleaseitemcallback (hdllistrecord hlist, oplistreleaseitemcallback cb) {
+	
+	/*
+	2004-11-04 aradke: accessor function. set the callback and return previous callback.
+	*/
+	
+	oplistreleaseitemcallback oldcb = (**hlist).releaseitemcallback;
+	
+	(**hlist).releaseitemcallback = cb;
+	
+	return (oldcb);
+	} /*opsetreleaseitemcallback*/
+
+
 static boolean opdeletelistnode (hdloutlinerecord ho, hdlheadrecord hdelete) {
 	
 	hdlheadrecord hother;
@@ -794,4 +840,36 @@ boolean oploadstringlist (short resnum, hdllistrecord *hnewlist) {
 	} /*oploadstringlist*/
 
 
+boolean opvisitlist (hdllistrecord hlist, opvisitlistcallback visit, ptrvoid refcon) {
+	
+	/*
+	2004-11-04 aradke: Visit all items in a list without recursion.
+	The callback should return false to break out of the loop.
+	*/
+	
+	hdloutlinerecord ho;
+	register hdlheadrecord nomad, nextnomad;
+	bigstring bskey;
+
+	ho = (hdloutlinerecord) (**hlist).houtline;
+	
+	nomad = (**ho).hsummit;
+	
+	while (true) {
+		
+		nextnomad = (**nomad).headlinkdown;
+		
+		opgetheadstring (nomad, bskey);
+		
+		if (!(*visit) ((**nomad).hrefcon, bskey, refcon))
+			return (false);
+			
+		if (nextnomad == nomad) 
+			break;
+			
+		nomad = nextnomad;
+		} /*while*/
+
+	return (true);
+	} /*opvisitlist*/
 

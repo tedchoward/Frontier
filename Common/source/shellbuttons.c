@@ -88,7 +88,7 @@ static long shellgetbuttonlistcount (hdlwindowinfo hinfo) {
 	if (buttonlist == nil)
 		return (0L);
 
-	return ((**buttonlist).ctitems);
+	return (opcountlistitems (buttonlist));
 	} /*shellgetbuttonlistcount*/
 
 
@@ -512,6 +512,7 @@ void shelldrawbuttons (void) {
 	hdllistrecord buttonlist;
 	Rect r;
 	short i;
+	short ctbuttons;
 	
 	//buttonlist = (hdllistrecord) shellglobals.buttonlist;
 
@@ -548,7 +549,9 @@ void shelldrawbuttons (void) {
 		//#endif
 	#endif
 	
-	for (i = 1; i <= (**buttonlist).ctitems; i++)
+	ctbuttons = opcountlistitems (buttonlist);
+	
+	for (i = 1; i <= ctbuttons; i++)
 		shelldrawbutton (i, false);
 		
 	if (flbuttonbitmap) {
