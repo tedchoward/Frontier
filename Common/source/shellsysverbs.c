@@ -912,7 +912,7 @@ static boolean frontierfunctionvalue (short token, hdltreenode hparam1, tyvaluer
 			}
 		
 		case isnativefunc:
-			#if __powerc
+			#if __powerc || __GNUC__
 				(*v).data.flvalue = true;
 			#else
 			
