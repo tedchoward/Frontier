@@ -1932,16 +1932,20 @@ boolean getapplicationfilespec (bigstring bsprogram, tyfilespec *fs) {
 	/*
 	5.0.2b21 dmb: clear unused fields on Win
 	
+	2000-06-09 Timothy Paustian: Changed because using SysEnvisons
+	and SysEnvRec is like Really old style. This was changed to Gestalt calls
+	with two new globals see mac.c initmacintosh.
+	
 	2002-11-14 AR: Switch from using globals to a local struct for providing
 	context to the getprocesspathvisit callback routine
+	
+	2004-10-26 aradke: New Carbon/Mach-O implementation for obtaining
+	a filespec to our application bundle, i.e. the Frontier.app "folder".
 	*/
 
 #ifdef MACVERSION
 	typrocessvisitinfo info;
 	boolean flsystem7;
-	//Code change by Timothy Paustian Friday, June 9, 2000 2:36:02 PM
-	//Changed because using SysEnvisons and SysEnvRec is like Really old style
-	//This was changed to Gestalt calls with two new globals see mac.c initmacintosh
 	
 	flsystem7 = (gSystemVersion >= 0x0700);
 	
@@ -1950,23 +1954,52 @@ boolean getapplicationfilespec (bigstring bsprogram, tyfilespec *fs) {
 	
 	if (bsprogram == nil) { /*get path to this process*/
 		
-		ProcessInfoRec processinfo;
-		ProcessSerialNumber psn;
-		
-		processinfo.processInfoLength = sizeof (processinfo);
-		
-		processinfo.processName = nil; /*place to store process name*/
-		
-		processinfo.processAppSpec = fs; /*place to store process filespec*/
-		
-		psn.highLongOfPSN = 0;
-		
-		psn.lowLongOfPSN = kCurrentProcess;
-		
-		if (GetProcessInformation (&psn, &processinfo) != noErr)
-			return (false);
-		
-		return (true);
+		#if TARGET_RT_MAC_MACHO
+			CFBundleRef mybundleref;
+			CFURLRef myurlref;
+			FSRef myfsref;
+			boolean res;
+			OSErr err;
+			
+			mybundleref = CFBundleGetMainBundle();
+			
+			if (mybundleref == NULL)
+				return (false);
+			
+			myurlref = CFBundleCopyBundleURL(mybundleref);
+			
+			if (myurlref == NULL)
+				return (false);
+
+			res = CFURLGetFSRef(myurlref, &myfsref);
+			
+			CFRelease(myurlref);
+			
+			if (!res)
+				return (false);
+			
+			err = FSGetCatalogInfo(&myfsref, kFSCatInfoNone, NULL, NULL, fs, NULL);
+			
+			return (err == noErr);
+		#else
+			ProcessInfoRec processinfo;
+			ProcessSerialNumber psn;
+			
+			processinfo.processInfoLength = sizeof (processinfo);
+			
+			processinfo.processName = nil; /*place to store process name*/
+			
+			processinfo.processAppSpec = fs; /*place to store process filespec*/
+			
+			psn.highLongOfPSN = 0;
+			
+			psn.lowLongOfPSN = kCurrentProcess;
+			
+			if (GetProcessInformation (&psn, &processinfo) != noErr)
+				return (false);
+			
+			return (true);
+		#endif
 		}
 	
 	initprocessvisitinfo (&info);
