@@ -204,10 +204,18 @@ boolean loadsmallicon (short resnum, hdlsmalliconbits *hbits) {
 	
 #ifdef MACVERSION
 	Handle h;
+	boolean fl;
+	SInt8 hState;
 	
 	h = GetResource ('SICN', resnum);
 	
-	return (copyhandle (h, (Handle *) hbits));
+	LoadResource(h); /*in case resource was purged*/
+	hState = HGetState(h);
+	HNoPurge(h); /*in case resource is purgeable*/
+	fl = copyhandle (h, (Handle *) hbits);
+	HSetState(h, hState);
+	
+	return (fl);
 #endif
 
 #ifdef WIN95VERSION
