@@ -8,7 +8,7 @@ Inc.  Software by Gar. */
 #define PGDEFTBL_H
 
 #include "CPUDEFS.H"
-#include "pgtxr.h"
+#include "pgTxr.h"
 
 #ifdef __cplusplus
 extern "C" {
