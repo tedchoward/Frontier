@@ -862,7 +862,7 @@ void getsystemversionstring (bigstring bs, bigstring bsextrainfo) {
 		
 		gestalt (gestaltSystemVersion, &x);
 		
-		numbertostring (bcdToLong (x >> 8), bs); /* high byte is major rev., 2004-11-16 creedon - convert from bcd for correct display on Mac OS X */
+		numbertostring (bcdtolong (x >> 8), bs); /* high byte is major rev., 2004-11-16 creedon - convert from bcd for correct display on Mac OS X */
 		
 		pushchar ('.', bs);
 		
@@ -952,17 +952,23 @@ void getsizestring (unsigned long size, bigstring bs) {
 	} /*getsizestring*/		
 
 
-unsigned long bcdToLong (unsigned long bcd) { /* 2004-11-16 creedon */
+unsigned long bcdtolong (unsigned long bcd) { /* 2004-11-23 creedon, aradke */ 
+
+	/*
+	convert a long value from BCD notation
+	*/
 
 	unsigned long ret = 0;
-	short i;
+	unsigned long m = 1;
 
-	for (i = 0; i < 8; i++) {
-		if (i > 0)
-			ret += i * 10 * (bcd & 0x0000000f);
-		else
-			ret += bcd & 0x0000000f;
+	do {
+		ret += m * (bcd & 0x0000000f);
+
+		m *= 10;
+
 		bcd >>= 4;
-		}
+
+		} while (bcd != 0);
+
 	return (ret);
-	} /* bcdToLong */
+	} /* bcdtolong */
