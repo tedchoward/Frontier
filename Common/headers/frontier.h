@@ -43,8 +43,6 @@
 	#define PACKFLIPPED		/* enable little endian / big endian conversion for database file functions */
 	#define FRONTIERCOM 1
 	#define FRONTIERWEB 0
-	#undef lazythis_optimization
-	#undef langexternalfind_optimization
 	#undef winhybrid
 	#define fljustpacking 0
 	#undef flcomponent
@@ -80,6 +78,8 @@
 #define threadverbs 1
 #define oplanglists 1
 #define flregexpverbs 1
+#undef lazythis_optimization
+#undef langexternalfind_optimization
 
 #ifdef MACVERSION
 	#define macBirdRuntime	1
