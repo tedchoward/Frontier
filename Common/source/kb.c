@@ -434,7 +434,7 @@ void keyboardclearescape (void) {
 
 void keyboardsetescape (void) {
 	
-	/*ouch (); /*audible feedback asap, multimedia!*/
+	/*ouch (); %*audible feedback asap, multimedia!*/
 	
 	/*
 	shellfrontrootwindowmessage ("\pCancelled.");
@@ -515,7 +515,7 @@ boolean keyboardescape (void) {
 boolean enterkeydown (void) {	
 	
 	return (keydown (75));
-	} /*enterkeydown*/
+	} %*enterkeydown*/
 	
 	
 boolean optionkeydown (void) {

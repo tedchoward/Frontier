@@ -42,15 +42,13 @@
 #define kAEOpenSelection 'sope'
 #define kAEPrintSelection 'spri'
 
-
+#if TARGET_API_MAC_CARBON == 1
+#else
 static ProcessSerialNumber FinderNumber;
 //Code change by Timothy Paustian Wednesday, June 21, 2000 4:04:43 PM
 //in Carbon you have to use high level apple events. Since what we are trying 
 //to do is launch an application, lets try that.
 static OSErr GetFinderPort(void) {
-	#if TARGET_API_MAC_CARBON == 1
-	return noErr;
-	#else
 		
 	IPCListPortsPBRec ipc;
 	PPCPortRec port;
@@ -88,9 +86,9 @@ static OSErr GetFinderPort(void) {
 		GetProcessSerialNumberFromPortName(&FinderPort.name, &FinderNumber);
 		return 0;
 	};
-	#endif
 		
 }
+#endif
 
 /*
 the MFDispatch calls are only needed if you want to make the request

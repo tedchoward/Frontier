@@ -384,7 +384,6 @@ boolean fifcomparefiles (const tyfilespec *fs1, const tyfilespec *fs2) {
 	equal. only compares the data forks of the files.
 	*/
 	
-	register long ctmatches = 0;
 	hdlfilenum fnum1 = 0, fnum2 = 0;
 	Handle hbuffer1 = nil, hbuffer2 = nil;
 	long ctbytes1, ctbytes2;

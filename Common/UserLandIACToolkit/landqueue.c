@@ -47,7 +47,7 @@ boolean landpushqueue (Handle h) {
 	
 	register hdllandglobals hg = landgetglobals ();
 	register hdlqueuerecord x;
-	register hdlqueuerecord hlast;
+	register hdlqueuerecord hlast = nil;
 	register short queuedepth = 0;
 	hdlqueuerecord hnew;
 	tyqueuerecord q;

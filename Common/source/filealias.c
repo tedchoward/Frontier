@@ -79,12 +79,12 @@ typedef struct {
 
 	// Forward declarations
 	
-Boolean FSpIsVolume(const FSSpec* fsSpec);
-Boolean FSpIsFolder(const FSSpec* fsSpec, long* dirID, unsigned short* fdFlags);
-Boolean CopyCustomIcons(const FSSpec* source, short sourceID,
+static Boolean FSpIsVolume(const FSSpec* fsSpec);
+static Boolean FSpIsFolder(const FSSpec* fsSpec, long* dirID, unsigned short* fdFlags);
+static Boolean CopyCustomIcons(const FSSpec* source, short sourceID,
 							short destRefnum, short destID);
-Boolean CopyDriverIcon(const FSSpec* volSpec, short destRefnum, short destID);
-OSErr DetermineAliasInfo(const FSSpec* fsSpec, OSType* creator, OSType* fType,
+static Boolean CopyDriverIcon(const FSSpec* volSpec, short destRefnum, short destID);
+static OSErr DetermineAliasInfo(const FSSpec* fsSpec, OSType* creator, OSType* fType,
 							Boolean* gotCustom, FSSpec* iconSpec, short* rsrcID, unsigned short* fdFlags);
 
 
