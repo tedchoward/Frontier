@@ -1242,6 +1242,9 @@ boolean shellinit (void) {
 	//#ifndef PIKE
 		openabout (true, macmemoryconfig.reserveforcode); /*show about window, do zoom -- closed by shellmaineventloop*/
 	//#endif
+	
+		FastInitialize(); /*2005-01-14 aradke: init timer, may take up to a second to callibrate*/
+	
 	#endif
 	
 	#ifdef WIN95VERSION
