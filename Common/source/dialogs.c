@@ -1309,15 +1309,19 @@ boolean dialogselectall (DialogPtr pdialog) {
 
 	#if TARGET_API_MAC_CARBON == 1
 		WindowClass 	wclass;
-		err = GetWindowClass ((WindowRef) pdialog, &wclass);
+		
+		/* 12/9/2004 smd: use carbon's casting function, as "(WindowRef)pdialog" doesn't work */
+		WindowPtr	pwin = GetDialogWindow (pdialog);
+		
+		err = GetWindowClass (pwin, &wclass);
 		if (err==noErr) {
 			if (wclass == kModalWindowClass) {
 				// it's a dialog
-	return (dialogsetselect (pdialog, 0, infinity));
+				return (dialogsetselect (pdialog, 0, infinity));
 			} else if (wclass == kDocumentWindowClass) {
 			
 				// it's not a dialog, it's an olde-tyme window. The Find window, for example.
-				return (dialogsetselect (GetDialogFromWindow((WindowRef) pdialog), 0, infinity));
+				return (dialogsetselect (GetDialogFromWindow (pwin), 0, infinity));
 			}
 			
 	} /*dialogselectall*/
