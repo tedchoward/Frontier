@@ -331,8 +331,10 @@ boolean pictdisposerecord (hdlpictrecord hpict) {
 	
 	return (true);
 	} /*pictdisposerecord*/
-	
-/*
+
+
+#if 0
+
 static boolean pictdebug (PicHandle macpicture) { 
 
 	Rect r, rbounds;
@@ -353,7 +355,6 @@ static boolean pictdebug (PicHandle macpicture) {
 	} /*pictdebug*/
 	
 
-/*
 boolean pictreadfile (bigstring fname, PicHandle *macpicture) {
 	
 	register PicHandle hp = nil;
@@ -366,7 +367,7 @@ boolean pictreadfile (bigstring fname, PicHandle *macpicture) {
 	
 	ctbytes = filegetsize (fnum) - pictstartrealdata;
 	
-	if (ctbytes <= 0) /*error, this can't be a PICT file%/
+	if (ctbytes <= 0) /*error, this can't be a PICT file*/
 		goto error;
 	
 	if (!filesetposition (fnum, pictstartrealdata))
@@ -375,7 +376,7 @@ boolean pictreadfile (bigstring fname, PicHandle *macpicture) {
 	if (!newhandle (ctbytes, (Handle *) macpicture))
 		goto error;
 	
-	hp = *macpicture; /*copy into register%/
+	hp = *macpicture; /*copy into register*/
 	
 	lockhandle ((Handle) hp);
 	
@@ -388,7 +389,7 @@ boolean pictreadfile (bigstring fname, PicHandle *macpicture) {
 	
 	closefile (fnum);
 	
-	/*pictdebug (*macpicture);%/
+	/*pictdebug (*macpicture);*/
 	
 	return (true);
 		
@@ -403,6 +404,8 @@ boolean pictreadfile (bigstring fname, PicHandle *macpicture) {
 	return (false);
 	} /*pictreadfile*/
 	
+#endif
+
 
 void pictresetscrollbars (void) {
 	

@@ -635,6 +635,8 @@ boolean pictedit (hdlexternalvariable hvariable, hdlwindowinfo hparent, ptrfiles
 	} /*pictedit*/
 
 
+#if 0
+
 static boolean getpictparam (hdltreenode hfirst, short pnum, hdlpictvariable *hv) {
 	
 	short id;
@@ -656,6 +658,8 @@ static boolean getpictparam (hdltreenode hfirst, short pnum, hdlpictvariable *hv
 	return (true);
 	} /*getpictparam*/
 
+#endif
+
 
 static boolean pictverbscheduleupdate (hdltreenode hparam1, tyvaluerecord *v) {
 	
@@ -674,6 +678,8 @@ static boolean pictverbscheduleupdate (hdltreenode hparam1, tyvaluerecord *v) {
 	} /*pictverbscheduleupdate*/
 			
 
+#if 0
+
 static boolean pictverbbitmapupdate (hdltreenode hparam1, tyvaluerecord *v) {
 	
 	boolean flbitmap;
@@ -689,6 +695,8 @@ static boolean pictverbbitmapupdate (hdltreenode hparam1, tyvaluerecord *v) {
 	
 	return (true);
 	} /*pictverbbitmapupdate*/
+
+#endif
 	
 			
 static boolean pictverbevaluator (hdltreenode hparam1, tyvaluerecord *v) {
@@ -707,12 +715,14 @@ static boolean pictverbevaluator (hdltreenode hparam1, tyvaluerecord *v) {
 	return (true);
 	} /*pictverbevaluator*/
 
-/*
+
+#if 0
+
 static boolean pictverbgetbounds (hdltreenode hparam1, tyvaluerecord *v) {
 	
 	Rect r;
 	
-	if (!langcheckparamcount (hparam1, 0)) /*shouldn't have any parameters%/
+	if (!langcheckparamcount (hparam1, 0)) /*shouldn't have any parameters*/
 		return (false);
 	
 	if (!pictgetframerect (pictdata, &r))
@@ -720,6 +730,8 @@ static boolean pictverbgetbounds (hdltreenode hparam1, tyvaluerecord *v) {
 	
 	return (!newheapvalue (&r, sizeof (r), rectvaluetype, v));
  	} /*pictverbgetbounds*/
+
+#endif
 
 
 static boolean pictverbgetpicture (hdltreenode hparam1, tyvaluerecord *v) {
@@ -972,7 +984,7 @@ static boolean pictcopy (void) {
 	if (hpicture == nil)
 		return (false);
 	
-	return (shellsetscrap (hpicture, pictscraptype, disposehandle, nil));
+	return (shellsetscrap (hpicture, pictscraptype, (shelldisposescrapcallback) &disposehandle, nil));
 	} /*pictcopy*/
 
 
@@ -1025,7 +1037,9 @@ static boolean pictsearch (void) {
 	} /*pictsearch*/
 
 
-static boolean pictgetvariable (hdlexternalvariable *hvariable) {
+static boolean pictgetvariable (void *refcon) {
+	
+	hdlexternalvariable *hvariable = (hdlexternalvariable *) refcon;
 	
 	if (pictdata == nil)
 		return (false);
