@@ -1,4 +1,3 @@
-
 /*	$Id$    */
 
 /* File "FastTimes.c" - Original code by Matt Slot <fprefect@ambrosiasw.com>  */
@@ -91,8 +90,13 @@ static Boolean			gUseTBR = false;
 static double			gScaleUSec = 1.0 / 1000.0;    /* 1 / ( nsec / usec) */
 static double			gScaleMSec = 1.0 / 1000000.0; /* 1 / ( nsec / msec) */
 
-static __asm__ UnsignedWide PollRTC(void);
-static __asm__ UnsignedWide PollTBR(void);
+	#if (! TARGET_API_MAC_CARBON)
+	
+	static __asm__ UnsignedWide PollRTC(void);
+	static __asm__ UnsignedWide PollTBR(void);
+
+	#endif
+
 static Ptr FindFunctionInSharedLib(StringPtr libName, StringPtr funcName);
 
 /* Functions loaded from DriverServicesLib */
@@ -175,10 +179,21 @@ void FastInitialize() {
 #if TARGET_API_MAC_CARBON
 			for(tick = TickCount() + 1; tick > TickCount(); )
 				;
+
+			/* Poll the selected timer and prepare it (since we have time) */
+			wide = (*gA2NS)((*gUpTime)());
+			usec1 = WideTo64bit(wide);
+			
+			/* Wait for the exact 60th tick to roll over */
+			while(tick + 60 > TickCount())
+				;
+
+			/* Poll the selected timer again and prepare it  */
+			wide = (*gA2NS)((*gUpTime)());
+			usec2 = WideTo64bit(wide);
 #else
 			for(tick = MyLMGetTicks() + 1; tick > MyLMGetTicks(); )
 				;
-#endif /* TARGET_API_MAC_CARBON */
 
 			/* Poll the selected timer and prepare it (since we have time) */
 			wide = (gUpTime) ? (*gA2NS)((*gUpTime)()) : 
@@ -186,19 +201,15 @@ void FastInitialize() {
 			usec1 = (gUseRTC) ? RTCToNano(wide) : WideTo64bit(wide);
 			
 			/* Wait for the exact 60th tick to roll over */
-#if TARGET_API_MAC_CARBON
-			while(tick + 60 > TickCount())
-				;
-#else
 			while(tick + 60 > MyLMGetTicks())
 				;
-#endif /* TARGET_API_MAC_CARBON */
 
 			/* Poll the selected timer again and prepare it  */
 			wide = (gUpTime) ? (*gA2NS)((*gUpTime)()) : 
 					((gUseRTC) ? PollRTC() : PollTBR());
 			usec2 = (gUseRTC) ? RTCToNano(wide) : WideTo64bit(wide);
-			
+#endif /* TARGET_API_MAC_CARBON */
+
 			/* Calculate a scale value that will give microseconds per second.
 			   Remember, there are actually 60.15 ticks in a second, not 60.  */
 			gScaleUSec = (60.0 * 1000000.0) / ((usec2 - usec1) * 60.15);
@@ -233,6 +244,9 @@ UInt64 FastMicroseconds() {
 		wide = (*gA2NS)((*gUpTime)());
 		usec = (double) WideTo64bit(wide) * gScaleUSec + 0.5;
 		}
+
+	#if (! TARGET_API_MAC_CARBON)
+	
 	  else if (gUseTBR) {
 		/* On a recent PowerPC, we poll the TBR directly */
 		wide = PollTBR();
@@ -243,6 +257,9 @@ UInt64 FastMicroseconds() {
 		wide = PollRTC();
 		usec = (double) RTCToNano(wide) * gScaleUSec + 0.5;
 		}
+	
+	#endif /* TARGET_API_MAC_CARBON */
+
 	  else 
 #endif /* TARGET_CPU_PPC */
 		{
@@ -275,6 +292,9 @@ UInt64 FastMilliseconds() {
 		wide = (*gA2NS)((*gUpTime)());
 		msec = (double) WideTo64bit(wide) * gScaleMSec + 0.5;
 		}
+	
+	#if (! TARGET_API_MAC_CARBON)
+	
 	  else if (gUseTBR) {
 		/* On a recent PowerPC, we poll the TBR directly */
 		wide = PollTBR();
@@ -285,6 +305,9 @@ UInt64 FastMilliseconds() {
 		wide = PollRTC();
 		msec = (double) RTCToNano(wide) * gScaleMSec + 0.5;
 		}
+	
+	#endif /* ! TARGET_API_MAC_CARBON */
+	
 	  else 
 #endif /* TARGET_CPU_PPC */
 		{
@@ -314,6 +337,8 @@ StringPtr FastMethod() {
 		/* Use DriverServices if it's available -- it's fast and compatible */
 		method = "\pUpTime()";
 		}
+	
+	#if (! TARGET_API_MAC_CARBON)
 	  else if (gUseTBR) {
 		/* On a recent PowerPC, we poll the TBR directly */
 		method = "\pPowerPC TBR";
@@ -322,6 +347,8 @@ StringPtr FastMethod() {
 		/* On a 601, we can poll the RTC instead */
 		method = "\pPowerPC RTC";
 		}
+	#endif
+	
 	  else 
 #endif /* TARGET_CPU_PPC */
 		{
@@ -337,6 +364,8 @@ StringPtr FastMethod() {
 #pragma mark -
 
 #if TARGET_CPU_PPC
+	#if (! TARGET_API_MAC_CARBON)
+	
 __asm__ static UnsignedWide PollRTC_() {
 entry PollRTC /* Avoid CodeWarrior glue */
 	machine 601
@@ -367,6 +396,8 @@ entry PollTBR /* Avoid CodeWarrior glue */
 	stw		r5,4(r3)
 	blr
 	}
+	
+	#endif
 
 /* **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** */
 /* **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** */
