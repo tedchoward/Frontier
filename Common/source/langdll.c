@@ -61,7 +61,7 @@
 #include "langsystem7.h"
 #include "langtokens.h"
 #include "oplist.h"
-#include "base64.h"
+#include "BASE64.H"
 #include "tablestructure.h"
 #include "tableverbs.h"
 #include "process.h"
@@ -70,7 +70,7 @@
 #include "langdll.h"
 
 #if defined(MACVERSION) && TARGET_RT_MAC_MACHO
-#include "CallMachOFramework.h"
+#include "CallMachOFrameWork.h"
 #endif
 
 #define NEW_DLL_INTERFACE 1 /* 2002-11-03 AR: defined to enable new DLL interface */
