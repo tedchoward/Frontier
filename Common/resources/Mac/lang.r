@@ -1031,6 +1031,13 @@ resource 'STR#' (268, "Window Errors", purgeable) {
 	}
 };
 
+resource 'STR#' (269, "Math Errors", purgeable) {
+	{	/* array StringArray: 1 elements */
+		/* [1] */
+		"Internal error running \"math.^0\"."
+	}
+};
+
 resource 'DLOG' (259, "notify", purgeable) {
 	{0, 0, 107, 375},
 	dBoxProc,

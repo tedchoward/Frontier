@@ -962,6 +962,7 @@ END
 #define Menu_Verb_Errors		266
 #define PICT_Errors				267
 #define Window_Errors			268
+#define Math_errors				269
 #define Script_Window_Buttons	300
 #define Outline_Window_Buttons	301
 #define Home_Window_Buttons		302
@@ -1553,6 +1554,8 @@ END
 	2 PICT_Errors DISCARDABLE BEGIN "The address of a picture was expected here.\0" END
 
 	1 Window_Errors DISCARDABLE BEGIN "Internal error running \042window.^0\042.\0" END
+	
+	1 Math_Errors DISCARDABLE BEGIN "Internal error running \042math.^0\042.\0" END
 
 	1 Script_Window_Buttons DISCARDABLE BEGIN "Run\0" END
 	2 Script_Window_Buttons DISCARDABLE BEGIN "Debug\0" END

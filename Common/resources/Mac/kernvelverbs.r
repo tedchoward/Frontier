@@ -337,6 +337,7 @@ resource 'EFP#' (idlangverbs, "lang") {
 		"set",
 		"sleepfor",
 		"ticks",
+		"milliseconds",  /* 2005-01-08 SMD */
 		"waitseconds",
 		"waitsixtieths"
 		},
@@ -1099,3 +1100,14 @@ resource 'EFP#' (idregexpverbs, "re") { /*2003-04-22 AR: regular expression verb
 	}
 };
 
+resource 'EFP#' (idmathverbs, "math") { /*2004-12-29 SMD: math verbs*/
+	
+	{
+	"math", false, {
+		
+		"min",
+		"max",
+		"sqrt"
+		}
+	}
+};

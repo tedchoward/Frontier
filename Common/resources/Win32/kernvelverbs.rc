@@ -302,11 +302,12 @@
 
 		"clock\0", 
 		false,
-			6,
+			7,
 			"now\0",
 			"set\0",
 			"sleepfor\0",
 			"ticks\0",
+			"milliseconds\0",
 			"waitseconds\0",
 			"waitsixtieths\0",
 	
@@ -1036,3 +1037,14 @@
 	END
 
 #endif //flregexpverbs
+
+1024 /*mathverbs*/ EFP DISCARDABLE
+	BEGIN
+	1,					//Number of "blocks" in this resource
+		"math\0",		//Function Processor name
+		false,			//Window required
+			3,			//Count of verbs
+			"min\0",
+			"max\0",
+			"sqrt\0"
+	END
