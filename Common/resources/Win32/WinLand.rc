@@ -886,7 +886,7 @@ END
 
 STRINGTABLE DISCARDABLE
 BEGIN
-    IDS_CLIENTTITLE         "Radio UserLand " radio_version_string /*7.0d8 PBS: name change*/
+    IDS_CLIENTTITLE         "Radio UserLand" //radio_version_string /*7.0d8 PBS: name change*/
     IDS_UNTITLED            "Untitled"
     IDS_APPNAME             "Radio UserLand"
     IDS_PRINTJOB            "Radio UserLand - "
@@ -897,7 +897,7 @@ END
 
 STRINGTABLE DISCARDABLE
 BEGIN
-    IDS_CLIENTTITLE         "Frontier " frontier_version_string
+    IDS_CLIENTTITLE         "Frontier" //frontier_version_string
     IDS_UNTITLED            "Untitled"
     IDS_APPNAME             "Frontier"
     IDS_PRINTJOB            "Frontier - "
