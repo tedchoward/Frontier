@@ -82,14 +82,6 @@ static tycardwindow **hwindowarray = nil; /*dynamic array of WindowPtrs managed 
 boolean flquickrecalc = true; /*set false in cardrunner.c, under special circumstances*/
 
 
-
-
-
-
-static void defaultActivate (boolean flactivate) {
-	} /*defaultActivate*/
-	
-	
 static short sizewindowarray (void) {
 	
 	if (hwindowarray == nil)
@@ -2179,7 +2171,9 @@ static pascal OSErr appleEventHandler (const AppleEvent *event, AppleEvent *repl
 	we need to set up our A5 globals
 	*/
 	
+	#if !TARGET_API_MAC_CARBON
 	long curA5 = SetUpAppA5 ();
+	#endif
 
 	IACglobals.event = (AppleEvent *) event; 
 	
@@ -2232,9 +2226,11 @@ static pascal OSErr appleEventHandler (const AppleEvent *event, AppleEvent *repl
 			
 			break;
 		} /*switch*/
-	
+
+	#if !TARGET_API_MAC_CARBON
 	RestoreA5 (curA5);
-	
+	#endif
+		
 	return (noErr);
 	} /*appleEventHandler*/
 

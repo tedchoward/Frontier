@@ -321,7 +321,7 @@ static boolean newevent (OSType token, AppleEvent *event) {
 	} /*newevent*/
 
 
-boolean findfrontiercomponent () {
+boolean findfrontiercomponent (void) {
 	
 	return (findlangcomponent (idfrontier) != 0);
 	} /*findfrontiercomponent*/
@@ -511,7 +511,7 @@ boolean frontSetRuntimeCard (boolean flswitchingin, boolean flmajorswitch) {
 		tablename [0] = 0;
 	
 	/*
-	if (equalstrings (tablename, lasttablename) && (lasttablewasmajor || !flmajorswitch)) /*minimize AE traffic%/
+	if (equalstrings (tablename, lasttablename) && (lasttablewasmajor || !flmajorswitch)) /%minimize AE traffic%/
 		return (true);
 	
 	copystring (tablename, lasttablename);

@@ -75,7 +75,6 @@ static void checkobjectname (hdlobject h) {
 	
 static boolean validateobjectlist (hdlobject hlist) {
 	
-	hdlcard hc = iowadata;
 	hdlobject h = hlist;
 	
 	while (h != nil) {
@@ -202,7 +201,7 @@ boolean iowavalidate (boolean flruntimecard) {
 		thePort = quickdrawglobal (thePort);
 		#endif
 		
-		if (thePort != (**iowadata).drawwindow)	/*dmb 1.31.96: use quickdrawglobal*/
+		if (thePort != (CGrafPtr) (**iowadata).drawwindow)	/*dmb 1.31.96: use quickdrawglobal*/
 			invalid ("\pdrawing into the wrong port");
 		}
 		#ifdef iowaRuntimeInApp 

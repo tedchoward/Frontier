@@ -117,7 +117,7 @@ static ComponentInstance findcomponent (long objectTypeID) {
 		
 		#define	getconfigGlueParamSize	(sizeof (config))
 		
-		struct getconfigGlueGluePB {
+		struct getconfigGlueGluePB {	/* extension of ComponentParameters system type */
 			unsigned char componentFlags;
 			unsigned char componentParamSize;
 			short componentWhat;
@@ -135,7 +135,7 @@ static ComponentInstance findcomponent (long objectTypeID) {
 		
 		#if TARGET_API_MAC_CARBON == 1
 		{
-		return  CallComponentDispatch(&pb);
+		return  CallComponentDispatch((ComponentParameters*) &pb);
 		}
 		#else	
 		return CallUniversalProc(CallComponentUPP, uppCallComponentProcInfo, &pb);
@@ -164,7 +164,7 @@ static ComponentInstance findcomponent (long objectTypeID) {
 		pb.comp = comp;
 		
 		#if TARGET_API_MAC_CARBON == 1
-		return  CallComponentDispatch(&pb);
+		return  CallComponentDispatch((ComponentParameters*) &pb);
 		#else	
 		return CallUniversalProc(CallComponentUPP, uppCallComponentProcInfo, &pb);
 		#endif
@@ -175,7 +175,7 @@ static ComponentInstance findcomponent (long objectTypeID) {
 		
 		#define	initobjectGlueParamSize	(sizeof (obj))
 		
-		struct initobjectGlueGluePB {
+		struct initobjectGlueGluePB {	/* extension of ComponentParameters system type */
 			unsigned char componentFlags;
 			unsigned char componentParamSize;
 			short componentWhat;
@@ -192,7 +192,7 @@ static ComponentInstance findcomponent (long objectTypeID) {
 		pb.comp = comp;
 		
 		#if TARGET_API_MAC_CARBON == 1
-		return  CallComponentDispatch(&pb);
+		return  CallComponentDispatch((ComponentParameters*) &pb);
 		#else	
 		return CallUniversalProc(CallComponentUPP, uppCallComponentProcInfo, &pb);
 		#endif
@@ -203,7 +203,7 @@ static ComponentInstance findcomponent (long objectTypeID) {
 		
 		#define	debugGlueParamSize	(sizeof (h) + sizeof (errorstring))
 		
-		struct debugGlueGluePB {
+		struct debugGlueGluePB {	/* extension of ComponentParameters system type */
 			unsigned char componentFlags;
 			unsigned char componentParamSize;
 			short componentWhat;
@@ -222,7 +222,7 @@ static ComponentInstance findcomponent (long objectTypeID) {
 		pb.comp = comp;
 		
 		#if TARGET_API_MAC_CARBON == 1
-		return  CallComponentDispatch(&pb);
+		return  CallComponentDispatch((ComponentParameters*) &pb);
 		#else	
 		return CallUniversalProc(CallComponentUPP, uppCallComponentProcInfo, &pb);
 		#endif
@@ -233,7 +233,7 @@ static ComponentInstance findcomponent (long objectTypeID) {
 		
 		#define	clickGlueParamSize	(sizeof (listhead) + sizeof (h) + sizeof (pt) + sizeof (short) + sizeof (short))
 		
-		struct clickGlueGluePB {
+		struct clickGlueGluePB {	/* extension of ComponentParameters system type */
 			unsigned char componentFlags;
 			unsigned char componentParamSize;
 			short componentWhat;
@@ -260,7 +260,7 @@ static ComponentInstance findcomponent (long objectTypeID) {
 		pb.comp = comp;
 		
 		#if TARGET_API_MAC_CARBON == 1
-		return  CallComponentDispatch(&pb);
+		return  CallComponentDispatch((ComponentParameters*) &pb);
 		#else	
 		return CallUniversalProc(CallComponentUPP, uppCallComponentProcInfo, &pb);
 		#endif
@@ -271,7 +271,7 @@ static ComponentInstance findcomponent (long objectTypeID) {
 		
 		#define	cleanGlueParamSize	(sizeof (h) + sizeof (height) + sizeof (width) + sizeof (r))
 		
-		struct cleanGlueGluePB {
+		struct cleanGlueGluePB {	/* extension of ComponentParameters system type */
 			unsigned char componentFlags;
 			unsigned char componentParamSize;
 			short componentWhat;
@@ -294,7 +294,7 @@ static ComponentInstance findcomponent (long objectTypeID) {
 		pb.comp = comp;
 		
 		#if TARGET_API_MAC_CARBON == 1
-		return  CallComponentDispatch(&pb);
+		return  CallComponentDispatch((ComponentParameters*) &pb);
 		#else	
 		return CallUniversalProc(CallComponentUPP, uppCallComponentProcInfo, &pb);
 		#endif
@@ -305,7 +305,7 @@ static ComponentInstance findcomponent (long objectTypeID) {
 		
 		#define	recalcGlueParamSize	(sizeof (h) + sizeof (short))
 		
-		struct recalcGlueGluePB {
+		struct recalcGlueGluePB {	/* extension of ComponentParameters system type */
 			unsigned char componentFlags;
 			unsigned char componentParamSize;
 			short componentWhat;
@@ -325,7 +325,7 @@ static ComponentInstance findcomponent (long objectTypeID) {
 		pb.comp = comp;
 		
 		#if TARGET_API_MAC_CARBON == 1
-		return  CallComponentDispatch(&pb);
+		return  CallComponentDispatch((ComponentParameters*) &pb);
 		#else	
 		return CallUniversalProc(CallComponentUPP, uppCallComponentProcInfo, &pb);
 		#endif
@@ -336,7 +336,7 @@ static ComponentInstance findcomponent (long objectTypeID) {
 		
 		#define	editGlueParamSize	(sizeof (h) + sizeof (short))
 		
-		struct editGlueGluePB {
+		struct editGlueGluePB {	/* extension of ComponentParameters system type */
 			unsigned char componentFlags;
 			unsigned char componentParamSize;
 			short componentWhat;
@@ -356,7 +356,7 @@ static ComponentInstance findcomponent (long objectTypeID) {
 		pb.comp = comp;
 		
 		#if TARGET_API_MAC_CARBON == 1
-		return  CallComponentDispatch(&pb);
+		return  CallComponentDispatch((ComponentParameters*) &pb);
 		#else	
 		return CallUniversalProc(CallComponentUPP, uppCallComponentProcInfo, &pb);
 		#endif
@@ -367,7 +367,7 @@ static ComponentInstance findcomponent (long objectTypeID) {
 		
 		#define	keyGlueParamSize	(sizeof (h) + sizeof (ch))
 		
-		struct keyGlueGluePB {
+		struct keyGlueGluePB {	/* extension of ComponentParameters system type */
 			unsigned char componentFlags;
 			unsigned char componentParamSize;
 			short componentWhat;
@@ -386,7 +386,7 @@ static ComponentInstance findcomponent (long objectTypeID) {
 		pb.comp = comp;
 		
 		#if TARGET_API_MAC_CARBON == 1
-		return  CallComponentDispatch(&pb);
+		return  CallComponentDispatch((ComponentParameters*) &pb);
 		#else	
 		return CallUniversalProc(CallComponentUPP, uppCallComponentProcInfo, &pb);
 		#endif
@@ -397,7 +397,7 @@ static ComponentInstance findcomponent (long objectTypeID) {
 		
 		#define	idleGlueParamSize	(sizeof (h))
 		
-		struct idleGlueGluePB {
+		struct idleGlueGluePB {	/* extension of ComponentParameters system type */
 			unsigned char componentFlags;
 			unsigned char componentParamSize;
 			short componentWhat;
@@ -414,7 +414,7 @@ static ComponentInstance findcomponent (long objectTypeID) {
 		pb.comp = comp;
 		
 		#if TARGET_API_MAC_CARBON == 1
-		return  CallComponentDispatch(&pb);
+		return  CallComponentDispatch((ComponentParameters*) &pb);
 		#else	
 		return CallUniversalProc(CallComponentUPP, uppCallComponentProcInfo, &pb);
 		#endif
@@ -425,7 +425,7 @@ static ComponentInstance findcomponent (long objectTypeID) {
 		
 		#define	getvalueGlueParamSize	(sizeof (h) + sizeof (r))
 		
-		struct getvalueGlueGluePB {
+		struct getvalueGlueGluePB {	/* extension of ComponentParameters system type */
 			unsigned char componentFlags;
 			unsigned char componentParamSize;
 			short componentWhat;
@@ -444,7 +444,7 @@ static ComponentInstance findcomponent (long objectTypeID) {
 		pb.comp = comp;
 		
 		#if TARGET_API_MAC_CARBON == 1
-		return  CallComponentDispatch(&pb);
+		return  CallComponentDispatch((ComponentParameters*) &pb);
 		#else	
 		return CallUniversalProc(CallComponentUPP, uppCallComponentProcInfo, &pb);
 		#endif
@@ -455,7 +455,7 @@ static ComponentInstance findcomponent (long objectTypeID) {
 		
 		#define	setvalueGlueParamSize	(sizeof (h) + sizeof (hvalue))
 		
-		struct setvalueGlueGluePB {
+		struct setvalueGlueGluePB {	/* extension of ComponentParameters system type */
 			unsigned char componentFlags;
 			unsigned char componentParamSize;
 			short componentWhat;
@@ -474,7 +474,7 @@ static ComponentInstance findcomponent (long objectTypeID) {
 		pb.comp = comp;
 		
 		#if TARGET_API_MAC_CARBON == 1
-		return  CallComponentDispatch(&pb);
+		return  CallComponentDispatch((ComponentParameters*) &pb);
 		#else	
 		return CallUniversalProc(CallComponentUPP, uppCallComponentProcInfo, &pb);
 		#endif
@@ -485,7 +485,7 @@ static ComponentInstance findcomponent (long objectTypeID) {
 		
 		#define	setcursorGlueParamSize	(sizeof (h) + sizeof (pt))
 		
-		struct setcursorGlueGluePB {
+		struct setcursorGlueGluePB {	/* extension of ComponentParameters system type */
 			unsigned char componentFlags;
 			unsigned char componentParamSize;
 			short componentWhat;
@@ -504,7 +504,7 @@ static ComponentInstance findcomponent (long objectTypeID) {
 		pb.comp = comp;
 		
 		#if TARGET_API_MAC_CARBON == 1
-		return  CallComponentDispatch(&pb);
+		return  CallComponentDispatch((ComponentParameters*) &pb);
 		#else	
 		return CallUniversalProc(CallComponentUPP, uppCallComponentProcInfo, &pb);
 		#endif
@@ -515,7 +515,7 @@ static ComponentInstance findcomponent (long objectTypeID) {
 		
 		#define	unpackdataGlueParamSize	(sizeof (h))
 		
-		struct unpackdataGlueGluePB {
+		struct unpackdataGlueGluePB {	/* extension of ComponentParameters system type */
 			unsigned char componentFlags;
 			unsigned char componentParamSize;
 			short componentWhat;
@@ -532,7 +532,7 @@ static ComponentInstance findcomponent (long objectTypeID) {
 		pb.comp = comp;
 		
 		#if TARGET_API_MAC_CARBON == 1
-		return  CallComponentDispatch(&pb);
+		return  CallComponentDispatch((ComponentParameters*) &pb);
 		#else	
 		return CallUniversalProc(CallComponentUPP, uppCallComponentProcInfo, &pb);
 		#endif
@@ -543,7 +543,7 @@ static ComponentInstance findcomponent (long objectTypeID) {
 		
 		#define	getattributesGlueParamSize	(sizeof (h) + sizeof (event))
 		
-		struct getattributesGlueGluePB {
+		struct getattributesGlueGluePB {	/* extension of ComponentParameters system type */
 			unsigned char componentFlags;
 			unsigned char componentParamSize;
 			short componentWhat;
@@ -562,7 +562,7 @@ static ComponentInstance findcomponent (long objectTypeID) {
 		pb.comp = comp;
 		
 		#if TARGET_API_MAC_CARBON == 1
-		return  CallComponentDispatch(&pb);
+		return  CallComponentDispatch((ComponentParameters*) &pb);
 		#else	
 		return CallUniversalProc(CallComponentUPP, uppCallComponentProcInfo, &pb);
 		#endif
@@ -573,7 +573,7 @@ static ComponentInstance findcomponent (long objectTypeID) {
 		
 		#define	setattributesGlueParamSize	(sizeof (h) + sizeof (event))
 		
-		struct setattributesGlueGluePB {
+		struct setattributesGlueGluePB {	/* extension of ComponentParameters system type */
 			unsigned char componentFlags;
 			unsigned char componentParamSize;
 			short componentWhat;
@@ -592,18 +592,19 @@ static ComponentInstance findcomponent (long objectTypeID) {
 		pb.comp = comp;
 		
 		#if TARGET_API_MAC_CARBON == 1
-		return  CallComponentDispatch(&pb);
+		return  CallComponentDispatch((ComponentParameters*) &pb);
 		#else	
 		return CallUniversalProc(CallComponentUPP, uppCallComponentProcInfo, &pb);
 		#endif
 		} /*setattributesGlue*/
 	
+#ifndef iowaRuntime
 	
 	static pascal ComponentResult geticonGlue (ComponentInstance comp, Handle *h) {
 		
 		#define	geticonGlueParamSize	(sizeof (h))
 		
-		struct geticonGlueGluePB {
+		struct geticonGlueGluePB {	/* extension of ComponentParameters system type */
 			unsigned char componentFlags;
 			unsigned char componentParamSize;
 			short componentWhat;
@@ -620,18 +621,20 @@ static ComponentInstance findcomponent (long objectTypeID) {
 		pb.comp = comp;
 		
 		#if TARGET_API_MAC_CARBON == 1
-		return  CallComponentDispatch(&pb);
+		return  CallComponentDispatch((ComponentParameters*) &pb);
 		#else	
 		return CallUniversalProc(CallComponentUPP, uppCallComponentProcInfo, &pb);
 		#endif
 		} /*geticonGlue*/
+
+#endif
 	
 	
 	static pascal ComponentResult getcardGlue (ComponentInstance comp, Handle *hcard) {
 		
 		#define	getcardGlueParamSize	(sizeof (hcard))
 		
-		struct getcardGlueGluePB {
+		struct getcardGlueGluePB {	/* extension of ComponentParameters system type */
 			unsigned char componentFlags;
 			unsigned char componentParamSize;
 			short componentWhat;
@@ -648,7 +651,7 @@ static ComponentInstance findcomponent (long objectTypeID) {
 		pb.comp = comp;
 		
 		#if TARGET_API_MAC_CARBON == 1
-		return  CallComponentDispatch(&pb);
+		return  CallComponentDispatch((ComponentParameters*) &pb);
 		#else	
 		return CallUniversalProc(CallComponentUPP, uppCallComponentProcInfo, &pb);
 		#endif
@@ -659,7 +662,7 @@ static ComponentInstance findcomponent (long objectTypeID) {
 		
 		#define	packdataGlueParamSize	(sizeof (h) + sizeof (hpackeddata))
 		
-		struct packdataGlueGluePB {
+		struct packdataGlueGluePB {	/* extension of ComponentParameters system type */
 			unsigned char componentFlags;
 			unsigned char componentParamSize;
 			short componentWhat;
@@ -678,7 +681,7 @@ static ComponentInstance findcomponent (long objectTypeID) {
 		pb.comp = comp;
 		
 		#if TARGET_API_MAC_CARBON == 1
-		return  CallComponentDispatch(&pb);
+		return  CallComponentDispatch((ComponentParameters*) &pb);
 		#else	
 		return CallUniversalProc(CallComponentUPP, uppCallComponentProcInfo, &pb);
 		#endif
@@ -689,7 +692,7 @@ static ComponentInstance findcomponent (long objectTypeID) {
 		
 		#define	disposedataGlueParamSize	(sizeof (h))
 		
-		struct disposedataGlueGluePB {
+		struct disposedataGlueGluePB {	/* extension of ComponentParameters system type */
 			unsigned char componentFlags;
 			unsigned char componentParamSize;
 			short componentWhat;
@@ -706,7 +709,7 @@ static ComponentInstance findcomponent (long objectTypeID) {
 		pb.comp = comp;
 		
 		#if TARGET_API_MAC_CARBON == 1
-		return  CallComponentDispatch(&pb);
+		return  CallComponentDispatch((ComponentParameters*) &pb);
 		#else	
 		return CallUniversalProc(CallComponentUPP, uppCallComponentProcInfo, &pb);
 		#endif
@@ -717,7 +720,7 @@ static ComponentInstance findcomponent (long objectTypeID) {
 		
 		#define	canreplicateGlueParamSize	(sizeof (h))
 		
-		struct canreplicateGlueGluePB {
+		struct canreplicateGlueGluePB {	/* extension of ComponentParameters system type */
 			unsigned char componentFlags;
 			unsigned char componentParamSize;
 			short componentWhat;
@@ -734,7 +737,7 @@ static ComponentInstance findcomponent (long objectTypeID) {
 		pb.comp = comp;
 		
 		#if TARGET_API_MAC_CARBON == 1
-		return  CallComponentDispatch(&pb);
+		return  CallComponentDispatch((ComponentParameters*) &pb);
 		#else	
 		return CallUniversalProc(CallComponentUPP, uppCallComponentProcInfo, &pb);
 		#endif
@@ -745,7 +748,7 @@ static ComponentInstance findcomponent (long objectTypeID) {
 		
 		#define	catchreturnGlueParamSize	(sizeof (h))
 		
-		struct catchreturnGlueGluePB {
+		struct catchreturnGlueGluePB {	/* extension of ComponentParameters system type */
 			unsigned char componentFlags;
 			unsigned char componentParamSize;
 			short componentWhat;
@@ -762,7 +765,7 @@ static ComponentInstance findcomponent (long objectTypeID) {
 		pb.comp = comp;
 		
 		#if TARGET_API_MAC_CARBON == 1
-		return  CallComponentDispatch(&pb);
+		return  CallComponentDispatch((ComponentParameters*) &pb);
 		#else	
 		return CallUniversalProc(CallComponentUPP, uppCallComponentProcInfo, &pb);
 		#endif
@@ -773,7 +776,7 @@ static ComponentInstance findcomponent (long objectTypeID) {
 		
 		#define	getinvalrectGlueParamSize	(sizeof (h) + sizeof (r))
 		
-		struct getinvalrectGlueGluePB {
+		struct getinvalrectGlueGluePB {	/* extension of ComponentParameters system type */
 			unsigned char componentFlags;
 			unsigned char componentParamSize;
 			short componentWhat;
@@ -792,7 +795,7 @@ static ComponentInstance findcomponent (long objectTypeID) {
 		pb.comp = comp;
 		
 		#if TARGET_API_MAC_CARBON == 1
-		return  CallComponentDispatch(&pb);
+		return  CallComponentDispatch((ComponentParameters*) &pb);
 		#else	
 		return CallUniversalProc(CallComponentUPP, uppCallComponentProcInfo, &pb);
 		#endif
@@ -803,7 +806,7 @@ static ComponentInstance findcomponent (long objectTypeID) {
 		
 		#define	geteditrectGlueParamSize	(sizeof (h) + sizeof (r))
 		
-		struct geteditrectGlueGluePB {
+		struct geteditrectGlueGluePB {	/* extension of ComponentParameters system type */
 			unsigned char componentFlags;
 			unsigned char componentParamSize;
 			short componentWhat;
@@ -822,7 +825,7 @@ static ComponentInstance findcomponent (long objectTypeID) {
 		pb.comp = comp;
 		
 		#if TARGET_API_MAC_CARBON == 1
-		return  CallComponentDispatch(&pb);
+		return  CallComponentDispatch((ComponentParameters*) &pb);
 		#else	
 		return CallUniversalProc(CallComponentUPP, uppCallComponentProcInfo, &pb);
 		#endif
@@ -933,11 +936,15 @@ static ComponentInstance findcomponent (long objectTypeID) {
 		ComponentCallNow (IOAsetattributescommand, sizeof (hdlobject) + sizeof (AppleEvent *)); 
 		/*setattributesGlue*/
 	
+
+#ifndef iowaRuntime
 	
 	static pascal ComponentResult geticonGlue (ComponentInstance comp, Handle *h) 
 		
 		ComponentCallNow (IOAgeticoncommand, sizeof (Handle *)); 
 		/*geticonGlue*/
+
+#endif
 	
 	
 	static pascal ComponentResult getcardGlue (ComponentInstance comp, Handle *hcard) 

@@ -43,10 +43,6 @@
 	#include <appletquickdraw.h>
 	#include "iowaruntime.h"
 
-	static hdlruntimerecord oldruntimedata = nil;
-
-	static hdlcard oldiowadata = nil;
-
 #endif
 
 
@@ -106,6 +102,8 @@ boolean namedobjecterror (Handle objectname, hdlobject *hobject) {
 	} /*namedobjecterror*/
 
 
+#if 0
+
 static boolean IACpushobjectparam (hdlobject hobject, OSType keyword) {
 
 	boolean fl;
@@ -122,6 +120,8 @@ static boolean IACpushobjectparam (hdlobject hobject, OSType keyword) {
 	
 	return (fl);
 	} /*IACpushobjectparam*/
+
+#endif
 
 	
 boolean IACgetobjectattributes (Handle objectname) {

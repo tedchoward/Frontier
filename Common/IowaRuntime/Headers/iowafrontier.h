@@ -28,7 +28,7 @@
 
 #define idfrontier 			'LAND'
 
-boolean findfrontiercomponent ();
+boolean findfrontiercomponent (void);
 
 boolean frontStartCard (AEDesc *);
 

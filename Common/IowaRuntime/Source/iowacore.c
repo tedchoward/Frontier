@@ -1589,11 +1589,15 @@ static void checkrectoperation (Rect r) {
 	checkminmax (pt);
 	} /*checkrectoperation*/
 	
+
+#if 0
 	
 static boolean trackingandhot (void) {
 
 	return ((**iowadata).tracking && (**iowadata).trackerpressed);
 	} /*trackingandhot*/
+
+#endif
 	
 	
 static void resetclonerect (hdlobject h) {
@@ -2568,7 +2572,9 @@ boolean runbuttonscript (hdlobject h) {
 	return (true);
 	} /*runbuttonscript*/
 	
-	
+
+#if 0
+
 static boolean afterclonevisit (hdlobject h) {
 	
 	if ((**h).objecttmpbit) {
@@ -2578,6 +2584,8 @@ static boolean afterclonevisit (hdlobject h) {
 	
 	return (true);
 	} /*afterclonevisit*/
+
+#endif
 	
 	
 boolean recalcclone (hdlobject h) {
