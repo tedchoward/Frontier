@@ -166,6 +166,7 @@ static unsigned char * xtierrorstrings [] = {
 	"\x19" "The command was cancelled"						/* 3180 */
 	};
 
+#if 0
 
 static unsigned char * dnserrorstrings [5] = {
 	"",
@@ -174,7 +175,8 @@ static unsigned char * dnserrorstrings [5] = {
 	"\x22" "Non-recoverable error. (DNS error)",						/* 3 */
 	"\x39" "Valid name, no data record of requested type. (DNS error)",	/* 4 */
 	};
-
+	
+#endif
 
 static unsigned char * stdcliberrorstrings [80] = {
 	"",
@@ -327,7 +329,7 @@ typedef struct tyepstatsrecord {
 	
 typedef struct tylistenrecord {
 	EndpointRef			ep;
-	long				stateflags;
+	UInt8				stateflags;
 	OTLink				validationlink;		/* Link into an OT FIFO (not atomic) */
 	OTLIFO				idleEPs;			/* Endpoints ready to accept a new incoming connection */
 	OTLIFO				brokenEPs;			/* Collect failed endpoints for recycling by worker thread */
@@ -350,8 +352,8 @@ typedef struct tyendpointrecord {
 	EndpointRef			ep;
 	OTLink				link;			/* Used for linking into TCP low-level lists (atomic) */
 	OTLink				validationlink; /* Used for linking into worker thread lists (atomic) */
-	long				stateflags;
-	long				completionflags;
+	UInt8				stateflags;
+	UInt8				completionflags;
 	OSStatus			result;
 	tysocktypeid		typeID;
 	long				timestamp;		/* System time when we started waiting for an orderly disconnect */
@@ -462,7 +464,7 @@ static OSStatus DoSndOrderlyDisconnect (EndpointRecordRef epref, boolean flrecur
 static OSStatus DoSndDisconnect (EndpointRecordRef epref);
 static OSStatus EnterSndDisconnect (EndpointRecordRef epref);
 static void ReadAllAndClose (EndpointRecordRef epref);
-static void DoWaitList (ListenRecordRef listenref);
+//static void DoWaitList (ListenRecordRef listenref);
 static pascal void DNRNotifier (void *context, OTEventCode event, OTResult result, void *cookie);
 static pascal void ListenNotifier (void *context, OTEventCode code, OTResult result, void *cookie);
 static pascal void Notifier (void *context, OTEventCode code, OTResult result, void *cookie);
@@ -472,7 +474,7 @@ static void Recycle (ListenRecordRef listenref);
 
 /*Code change by Timothy Paustian Monday, September 25, 2000 8:58:07 PM
 needed to add a declaration to get the new carbon stuff to compile.*/
-static void *fwsacceptingthreadmain (long *param);
+static void *fwsacceptingthreadmain (void *param);
 
 
 /* TCPTRACKER stuff */
@@ -703,26 +705,26 @@ static void TCPTRACKERIN (char * functionName, int linenumber, EndpointRecordRef
 	
 		if (epref) {
 			if (!CheckEndpointList (epref)) {
-				wsprintf (TCPmsg, "Entering %s at line %d, EndpointRecordRef = %08lx - INVALID ENPOINT.", functionName, linenumber, epref);
+				wsprintf (TCPmsg, "Entering %s at line %d, EndpointRecordRef = %08lx - INVALID ENPOINT.", functionName, linenumber, (long) epref);
 				TCPWRITEMSG ();
 				return;
 				}
 
 			wsprintf (TCPmsg, "Entering %s at line %d, EndpointRecordRef = %08lx, Endpoint = %08lx, Type = %s, State Flags = %02x, Completion Flags = %02x, Listen Ref = %08lX.",
-				functionName, linenumber, epref, epref->ep, TCPGETTYPE (epref->typeID), epref->stateflags, epref->completionflags, epref->listener);
+				functionName, linenumber, (long) epref, (long) epref->ep, TCPGETTYPE (epref->typeID), epref->stateflags, epref->completionflags, (long) epref->listener);
 		
 			TCPWRITEMSG ();
 			}
 
 		if (listenref) {
 			if (!CheckListenList (listenref)) {
-				wsprintf (TCPmsg, "Entering %s at line %d, ListenRecordRef = %08lx - INVALID ENPOINT.", functionName, linenumber, listenref);
+				wsprintf (TCPmsg, "Entering %s at line %d, ListenRecordRef = %08lx - INVALID ENPOINT.", functionName, linenumber, (long) listenref);
 				TCPWRITEMSG ();
 				return;
 				}
 
-			wsprintf (TCPmsg, "Entering %s at line %d, ListenRecordRef = %08lx, Endpoint = %08lx, Type = %s, Max Depth = %d, Refcon = %08lX, Thread = %d",
-				functionName, linenumber, listenref, listenref->ep, TCPGETTYPE (listenref->typeID), listenref->maxdepth, listenref->refcon, listenref->idthread);
+			wsprintf (TCPmsg, "Entering %s at line %d, ListenRecordRef = %08lx, Endpoint = %08lx, Type = %s, Max Depth = %ld, Refcon = %08lX, Thread = %ld",
+				functionName, linenumber, (long) listenref, (long) listenref->ep, TCPGETTYPE (listenref->typeID), listenref->maxdepth, listenref->refcon, listenref->idthread);
 		
 			TCPWRITEMSG ();
 			}
@@ -735,26 +737,26 @@ static void TCPTRACKEROUT (char * functionName, int linenumber, EndpointRecordRe
 	
 		if (epref) {
 			if (!CheckEndpointList (epref)) {
-				wsprintf (TCPmsg, "Exiting %s at line %d, EndpointRecordRef = %08lx - INVALID ENPOINT.", functionName, linenumber, epref);
+				wsprintf (TCPmsg, "Exiting %s at line %d, EndpointRecordRef = %08lx - INVALID ENPOINT.", functionName, linenumber, (long) epref);
 				TCPWRITEMSG ();
 				return;
 				}
 
 			wsprintf (TCPmsg, "Exiting %s at line %d, EndpointRecordRef = %08lx, Endpoint = %08lx, Type = %s, State Flags = %02x, Completion Flags = %02x, Listen Ref = %08lX.",
-				functionName, linenumber, epref, epref->ep, TCPGETTYPE (epref->typeID), epref->stateflags, epref->completionflags, epref->listener);
+				functionName, linenumber, (long) epref, (long) epref->ep, TCPGETTYPE (epref->typeID), epref->stateflags, epref->completionflags, (long) epref->listener);
 		
 			TCPWRITEMSG ();
 			}
 
 		if (listenref) {
 			if (!CheckListenList (listenref)) {
-				wsprintf (TCPmsg, "Exiting %s at line %d, ListenRecordRef = %08lx - INVALID ENPOINT.", functionName, linenumber, listenref);
+				wsprintf (TCPmsg, "Exiting %s at line %d, ListenRecordRef = %08lx - INVALID ENPOINT.", functionName, linenumber, (long) listenref);
 				TCPWRITEMSG ();
 				return;
 				}
 
-			wsprintf (TCPmsg, "Exiting %s at line %d, ListenRecordRef = %08lx, Endpoint = %08lx, Type = %s, Max Depth = %d, Refcon = %08lX, Thread = %d",
-				functionName, linenumber, listenref, listenref->ep, TCPGETTYPE (listenref->typeID), listenref->maxdepth, listenref->refcon, listenref->idthread);
+			wsprintf (TCPmsg, "Exiting %s at line %d, ListenRecordRef = %08lx, Endpoint = %08lx, Type = %s, Max Depth = %ld, Refcon = %08lX, Thread = %ld",
+				functionName, linenumber, (long) listenref, (long) listenref->ep, TCPGETTYPE (listenref->typeID), listenref->maxdepth, listenref->refcon, listenref->idthread);
 		
 			TCPWRITEMSG ();
 			}
@@ -781,7 +783,7 @@ static void TCPTRACKEROUT (char * functionName, int linenumber, EndpointRecordRe
 
 #endif
 
-extern long ctconnections = 0;
+static long ctconnections = 0;
 
 
 long fwsNetEventGetConnectionCount (void) {
@@ -826,7 +828,7 @@ static void decrementconnectioncounter (void) {
 
 static pascal boolean listendatabasevisit (const void* ref, OTLink* linkToCheck) {
 	
-	hdldatabaserecord hdatabase = (ListenRecordRef) ref;
+	hdldatabaserecord hdatabase = (hdldatabaserecord) ref;
 
 	return (hdatabase == (OTGetLinkObject (linkToCheck, tylistenrecord, validationlink))->hdatabase);
 	}/*listendatabasevisit*/
@@ -850,7 +852,7 @@ static pascal boolean endpointlinkvisit (const void* ref, OTLink* linkToCheck) {
 
 static boolean CheckEndpointList (EndpointRecordRef epref) {
 	
-	OTList *eplink;
+	OTLink *eplink;
 	
 	#if TARGET_API_MAC_CARBON == 1
 		eplink = OTFindLink (&sEndpointList, gEndListSearchUPP, (void *) epref);
@@ -864,7 +866,7 @@ static boolean CheckEndpointList (EndpointRecordRef epref) {
 
 static boolean CheckListenList (ListenRecordRef listenref) {
 	
-	OTList *listenlink;
+	OTLink *listenlink;
 	
 	#if TARGET_API_MAC_CARBON == 1
 		listenlink = OTFindLink (&sListenList, gListSearchUPP, (void *) listenref);
@@ -1164,8 +1166,8 @@ static void DoListenAccept (ListenRecordRef listenref) {
 	OSStatus err;
 	
 /*	if (!incrementconnectioncounter ()) {
-		OTSndDisconnect (listenref->ep, nil); /*6.2b13 AR: reject connection (PIKE) */
-/*		return;
+		OTSndDisconnect (listenref->ep, nil); /%6.2b13 AR: reject connection (PIKE) %/
+		return;
 		}*/
 	
 	if (!incrementconnectioncounter ()) {
@@ -1343,7 +1345,9 @@ static OSStatus DoSndOrderlyDisconnect (EndpointRecordRef epref, boolean flrecur
 	return (err);
 	}/*DoSndOrderlyDisconnect*/
 
-/*static OSStatus EnterSndOrderlyDisconnect (EndpointRecordRef epref) {
+#if 0
+
+static OSStatus EnterSndOrderlyDisconnect (EndpointRecordRef epref) {
 
 	OSStatus err;
 	boolean doLeave = OTEnterNotifier (epref->ep);
@@ -1356,6 +1360,7 @@ static OSStatus DoSndOrderlyDisconnect (EndpointRecordRef epref, boolean flrecur
 	return (err);
 	}/*EnterSndOrderlyDisconnect*/
 
+#endif
 
 //
 //	DoSndDisconnect
@@ -2380,6 +2385,7 @@ static void neterror (char * cannot, long errcode) {
 	langerrormessage (errbs);
 	} /*neterror*/
 
+#if 0
 
 static void dnserror (char *cannot, long errcode) {
 	
@@ -2412,6 +2418,9 @@ static void dnserror (char *cannot, long errcode) {
 
 	neterror (cannot, errcode);
 	}
+
+#endif
+
 
 static void intneterror (long errcode) {
 	bigstring bs;
@@ -2816,7 +2825,7 @@ boolean fwsNetEventNameToAddress (bigstring domainName, unsigned long * addr) {
 			
 	*addr = hostinfo.addrs[0];
 
-	TCPprintf (wsprintf(TCPmsg, "Leaving fwsNetEventNameToAddress at line %d.  Address: %ld.", __LINE__, addr));
+	TCPprintf (wsprintf(TCPmsg, "Leaving fwsNetEventNameToAddress at line %d.  Address: %08lx.", __LINE__, *addr));
 	TCPWRITEMSG();
 
 	return (true);
@@ -3056,7 +3065,8 @@ static long fwsprocesspendingconnections (ListenRecordRef listenref) {
 		
 		epref->typeID = SOCKTYPE_OPEN;
 
-		TCPprintf (wsprintf (TCPmsg, "In fwsacceptpendingconnections at line %d.  Accepted new connection #%08ld on listener %08lx: %s (%08lx, %ld).", __LINE__, ct, listenref, stringbaseaddress (listenref->callback), epref, listenref->refcon));
+		TCPprintf (wsprintf (TCPmsg, "In fwsacceptpendingconnections at line %d.  Accepted new connection #%08ld on listener %08lx: %s (%08lx, %ld).",
+										__LINE__, ct, (long) listenref, stringbaseaddress (listenref->callback), (long) epref, listenref->refcon));
 		TCPWRITEMSG();
 
 		fl = fwsruncallback (epref);
@@ -3150,15 +3160,15 @@ static void fwscleanuplistener (ListenRecordRef listenref) {
 
 	disposehandle (listenref->hcallbacktree);
 	
-	DisposePtr (listenref->acceptors);
+	DisposePtr ((Ptr) listenref->acceptors);
 	
-	DisposePtr (listenref);
+	DisposePtr ((Ptr) listenref);
 	
 	return;
 	}/*fwscleanuplistener*/
 
 
-static void *fwsacceptingthreadmain (long *param) {
+static void *fwsacceptingthreadmain (void *param) {
 
 	/*
 	We sit in a loop waiting for connections that are ready to be picked up and sent to the daemon.
@@ -3187,7 +3197,8 @@ static void *fwsacceptingthreadmain (long *param) {
 		TCP_ASSERT_1 (err == kOTNoError);	
 		}/*while*/
 	
-	TCPprintf (wsprintf (TCPmsg, "In fwsacceptingthreadmain at line %d, broke out of loop after accepting %ld connections on listener %08lx. Now starting clean-up.", __LINE__, ct, listenref));
+	TCPprintf (wsprintf (TCPmsg, "In fwsacceptingthreadmain at line %d, broke out of loop after accepting %ld connections on listener %08lx. Now starting clean-up.",
+							__LINE__, ct, (long) listenref));
 	TCPWRITEMSG();
 
 	fwscleanuplistener (listenref);	
@@ -3284,8 +3295,9 @@ boolean fwsNetEventListenStream (unsigned long port, long depth, bigstring callb
 	err = OTSetBlocking (listenref->ep);
 	
 	if (kOTNoError != err) {
-		OSStatus junk = OTCloseProvider (listenref->ep);	
-		OTAssert ("fwsNetEventListenStream: Could not close listener", junk == kOTNoError);
+		OSStatus status;
+		status = OTCloseProvider (listenref->ep);	
+		OTAssert ("fwsNetEventListenStream: Could not close listener", status == kOTNoError);
 		neterror ("set listen stream to blocking mode", err);
 		goto exit;
 		}
@@ -3305,8 +3317,9 @@ boolean fwsNetEventListenStream (unsigned long port, long depth, bigstring callb
 	err = OTOptionManagement (listenref->ep, &optReq, nil);
 
 	if (kOTNoError != err) {
-		OSStatus junk = OTCloseProvider (listenref->ep);	
-		OTAssert ("fwsNetEventListenStream: Could not close listener", junk == kOTNoError);
+		OSStatus status;
+		status = OTCloseProvider (listenref->ep);	
+		OTAssert ("fwsNetEventListenStream: Could not close listener", status == kOTNoError);
 		neterror ("set IP_REUSEADDR option on listen stream", err);
 		goto exit;
 		}
@@ -3324,8 +3337,9 @@ boolean fwsNetEventListenStream (unsigned long port, long depth, bigstring callb
 	err = OTBind (listenref->ep, &bindReq, nil);
 
 	if (kOTNoError != err) {
-		OSStatus junk = OTCloseProvider (listenref->ep);	
-		OTAssert ("fwsNetEventListenStream: Could not close listener", junk == kOTNoError);
+		OSStatus status;
+		status = OTCloseProvider (listenref->ep);	
+		OTAssert ("fwsNetEventListenStream: Could not close listener", status == kOTNoError);
 		neterror ("bind listen stream", err);
 		goto exit;
 		}	
@@ -3338,8 +3352,9 @@ boolean fwsNetEventListenStream (unsigned long port, long depth, bigstring callb
 	#endif
 		
 	if (kOTNoError != err) {
-		OSStatus junk = OTCloseProvider (listenref->ep);	
-		OTAssert ("fwsNetEventListenStream: Could not close listener", junk == kOTNoError);
+		OSStatus status;
+		status = OTCloseProvider (listenref->ep);	
+		OTAssert ("fwsNetEventListenStream: Could not close listener", status == kOTNoError);
 		neterror ("install notifier for listen stream", err);
 		goto exit;
 		}
@@ -3347,8 +3362,9 @@ boolean fwsNetEventListenStream (unsigned long port, long depth, bigstring callb
 	err = OTSetAsynchronous (listenref->ep);
 	
 	if (kOTNoError != err) {
-		OSStatus junk = OTCloseProvider (listenref->ep);	
-		OTAssert ("fwsNetEventListenStream: Could not close listener", junk == kOTNoError);
+		OSStatus status;
+		status = OTCloseProvider (listenref->ep);	
+		OTAssert ("fwsNetEventListenStream: Could not close listener", status == kOTNoError);
 		neterror ("set listen stream to async mode", err);
 		goto exit;
 		}
@@ -3360,8 +3376,9 @@ boolean fwsNetEventListenStream (unsigned long port, long depth, bigstring callb
 	/* Launch the worker thread that manages incoming connections */
 	
 	if (!fwslaunchacceptingthread (listenref)) { /* takes care of closing ep and cleaning up, even if we fail further down */
-		OSStatus junk = OTCloseProvider (listenref->ep);	
-		OTAssert ("fwsNetEventListenStream: Could not close listener", junk == kOTNoError);
+		OSStatus status;
+		status = OTCloseProvider (listenref->ep);	
+		OTAssert ("fwsNetEventListenStream: Could not close listener", status == kOTNoError);
 		goto exit;
 		}
 
@@ -3463,7 +3480,7 @@ boolean fwsNetEventCloseListen (unsigned long stream) {
 	err = OTSetSynchronous (listenref->ep);
 	
 	if (kOTNoError != err) {
-		TCPERRORprintf (wsprintf (TCPmsg, "In fwscleanuplistener at line %d, error %ld setting listener %08lx to synchronous mode.", __LINE__, err, listenref));
+		TCPERRORprintf (wsprintf (TCPmsg, "In fwscleanuplistener at line %d, error %ld setting listener %08lx to synchronous mode.", __LINE__, err, (long) listenref));
 		TCPERRORWRITEMSG();
 		}
 	
@@ -3472,7 +3489,7 @@ boolean fwsNetEventCloseListen (unsigned long stream) {
 	err = OTCloseProvider (listenref->ep);
 	
 	if (kOTNoError != err) {
-		TCPERRORprintf (wsprintf (TCPmsg, "In fwscleanuplistener at line %d, error %ld closing listener %08lx.", __LINE__, err, listenref));
+		TCPERRORprintf (wsprintf (TCPmsg, "In fwscleanuplistener at line %d, error %ld closing listener %08lx.", __LINE__, err, (long) listenref));
 		TCPERRORWRITEMSG();
 		}
 	
@@ -3619,7 +3636,7 @@ static boolean fwsOpenStream (TCall *ptrSndCall, unsigned long * stream) {
 		err = EPOpen (epref, OTCloneConfiguration (sMasterConfig));
 		
 		if (kOTNoError != err) {
-			DisposePtr (epref);
+			DisposePtr ((Ptr) epref);
 			neterror ("open stream", err);
 			decrementconnectioncounter();
 			return (false);
@@ -3809,7 +3826,7 @@ boolean fwsNetEventAbortStream (unsigned long stream) {
 	err = EnterSndDisconnect (epref);
 	
 	if (kOTNoError != err) { // Scripts don't have to care about this error, it has already been taken care off anyway
-		TCPERRORprintf (wsprintf (TCPmsg, "In fwsNetEventAbortStream at line %d, error %ld disconnecting endpoint %08lx.", __LINE__, err, epref));
+		TCPERRORprintf (wsprintf (TCPmsg, "In fwsNetEventAbortStream at line %d, error %ld disconnecting endpoint %08lx.", __LINE__, err, (long) epref));
 		TCPERRORWRITEMSG();
 		}
 
@@ -4154,7 +4171,7 @@ boolean fwsNetEventStatusStream (unsigned long stream, bigstring status, unsigne
 		
 			copyctopstring ("OPEN", status);
 		
-			result = OTCountDataBytes (epref->ep, (size_t*) bytesPending);
+			result = OTCountDataBytes (epref->ep, (OTByteCount*) bytesPending);
 			
 			switch (result) {
 				
