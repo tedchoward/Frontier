@@ -998,21 +998,38 @@ long searchhandle (Handle hsearch, Handle hpattern, long ixstart, long ixlimit) 
 	8/12/92 dmb: make sure ixstart is in range
 	
 	8/14/92 dmb: added ixlimit parameter
+	
+	2004-11-13 aradke: accept nil handles for hsearch and hpattern as valid input.
+	this fixes a crashing bug when accessing an empty result received from filemaker
+	via apple events. [thanks to Karsten Wolf for the bug report and investigation]
 	*/
 	
-	register ptrbyte psearch = (ptrbyte) *hsearch;
-	register ptrbyte ppattern = (ptrbyte) *hpattern;
-	register long ixstring = ixstart;
+	register ptrbyte psearch;
+	register ptrbyte ppattern;
+	register long ixstring;
 	register long i;
-	register long lensearch = gethandlesize (hsearch);
-	register long lenpattern = gethandlesize (hpattern);
+	register long lensearch;
+	register long lenpattern;
 	register byte chfirst;
+	
+	if ((hsearch == nil) || (hpattern == nil))
+		return (-1L);
+
+	lensearch = gethandlesize (hsearch);
+	
+	lenpattern = gethandlesize (hpattern);
 	
 	lensearch = min (ixlimit, lensearch) - lenpattern + 1;
 	
+	ixstring = ixstart;
+	
 	if ((lensearch <= 0) || (lenpattern == 0) || (ixstring >= lensearch))
 		return (-1L);
+
+	psearch = (ptrbyte) *hsearch;
 	
+	ppattern = (ptrbyte) *hpattern;
+
 	chfirst = ppattern [0];
 	
 	while (true) {
@@ -1046,23 +1063,40 @@ long searchhandleunicase (Handle hsearch, Handle hpattern, long ixstart, long ix
 	8/12/92 dmb: make sure ixstart is in range
 	
 	8/14/92 dmb: added ixlimit parameter
+	
+	2004-11-13 aradke: accept nil handles for hsearch and hpattern as valid input.
+	this fixes a crashing bug when accessing an empty result received from filemaker
+	via apple events. [thanks to Karsten Wolf for the bug report and investigation]
 	*/
 	
-	register ptrbyte psearch = (ptrbyte) *hsearch;
-	register ptrbyte ppattern = (ptrbyte) *hpattern;
-	register long ixstring = ixstart;
+	register ptrbyte psearch;
+	register ptrbyte ppattern;
+	register long ixstring;
 	register long i;
-	register long lensearch = gethandlesize (hsearch);
-	register long lenpattern = gethandlesize (hpattern);
+	register long lensearch;
+	register long lenpattern;
 	register byte chfirst;
 	
+	if ((hsearch == nil) || (hpattern == nil))
+		return (-1L);
+
+	lensearch = gethandlesize (hsearch);
+	
+	lenpattern = gethandlesize (hpattern);
+
 	lensearch = min (ixlimit, lensearch) - lenpattern + 1;
+	
+	ixstring = ixstart;
 	
 	if ((lensearch <= 0) || (lenpattern == 0) || (ixstring >= lensearch))
 		return (-1L);
 	
-	chfirst = getlower (ppattern [0]);
+	psearch = (ptrbyte) *hsearch;
 	
+	ppattern = (ptrbyte) *hpattern;
+
+	chfirst = getlower (ppattern [0]);
+
 	while (true) {
 		
 		if (getlower (psearch [ixstring]) == chfirst) { /*matched at least first character in string*/
