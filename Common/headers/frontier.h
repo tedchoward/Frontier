@@ -48,6 +48,10 @@
 	#undef flcomponent
 	#define gray3Dlook 1
 	#define noextended 1
+	#define NEWFILESPECTYPE 1	
+	#ifndef __MWERKS__
+		#pragma warning (disable: 4244 4761; error: 4013)
+	#endif
 #endif /* WIN95VERSION */
 
 
@@ -80,6 +84,8 @@
 #define flregexpverbs 1
 #undef lazythis_optimization
 #undef langexternalfind_optimization
+#define PASCALSTRINGVERSION 1
+#define SPEED 1
 
 #ifdef MACVERSION
 	#define macBirdRuntime	1

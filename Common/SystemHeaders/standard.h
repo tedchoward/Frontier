@@ -30,22 +30,9 @@ standard.h -- standard types and constants
 #ifndef standardinclude
 #define standardinclude /*so other modules can tell that we've been included*/
 
-#define PASCALSTRINGVERSION 1
-#define SPEED 1
-
 #ifdef WIN95VERSION
-	#ifndef __MWERKS__
-		#pragma warning (disable: 4244 4761; error: 4013)
-		#include "shell.msvs.h"
-	#endif
-	#define NEWFILESPECTYPE 1	
 	#include "macconv.h"
-#elif defined (MACVERSION)
-	
-#else
-	#pragma error "must define MACVERSION or WIN95VERSION"
 #endif
-
 
 #ifdef PACKFLIPPED
 	#define conditionallongswap(x) dolongswap(x)
