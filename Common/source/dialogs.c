@@ -771,7 +771,7 @@ boolean ptinuseritem (Point pt, DialogPtr pdialog, short item) {
 	
 #endif
 
-boolean setuseritemdrawroutine (DialogPtr pdialog, short item, callback drawroutine) {
+boolean setuseritemdrawroutine (DialogPtr pdialog, short item, dialogcallback drawroutine) {
 	
 	short itemtype;
 	Handle itemhandle;

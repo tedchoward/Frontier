@@ -850,11 +850,11 @@ static boolean initdropletwindow (hdlcomponentglobals hcg, boolean fl2click) {
 	
 	#endif
 	
-	setuseritemdrawroutine (w, iconitem, (callback) &drawiconitem);
+	setuseritemdrawroutine (w, iconitem, &drawiconitem);
 	
-	setuseritemdrawroutine (w, titleitem, (callback) &drawtitleitem);
+	setuseritemdrawroutine (w, titleitem, &drawtitleitem);
 	
-	setuseritemdrawroutine (w, msgitem, (callback) &drawmessageitem);
+	setuseritemdrawroutine (w, msgitem, &drawmessageitem);
 	
 	ShowWindow (w);
 	

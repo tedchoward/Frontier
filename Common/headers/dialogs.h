@@ -155,7 +155,7 @@ extern boolean dialogsetfontsize (DialogPtr, short, short);
 
 extern boolean ptinuseritem (Point, DialogPtr, short);
 
-extern boolean setuseritemdrawroutine (DialogPtr, short, callback);
+extern boolean setuseritemdrawroutine (DialogPtr, short, dialogcallback);
 
 extern pascal boolean modaldialogcallback (DialogPtr, EventRecord *, short *);
 
