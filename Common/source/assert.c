@@ -144,7 +144,7 @@
 		/*ouput message*/
 		
 		parsedialogstring (
-				"\p\r^0: Assertion failed in file ^1, at line ^2.  Probably no big deal, but please tell frontier-bugs@userland.com.  Thanks!\r",
+				"\p\r^0: Assertion failed in file ^1, at line ^2.\r",
 				bslogstamp, bsfile, bsline, nil,
 				bsmessage);
 				
@@ -178,7 +178,7 @@
 		numbertostring ((long) line, bsline);
 		
 		parsedialogstring (
-				"\pAssertion failed in file ^0, at line ^1.  Probably no big deal, but please tell frontier-bugs@userland.com.  Thanks!",
+				"\pAssertion failed in file ^0, at line ^1.",
 				bsfile, bsline, nil, nil,
 				bsmessage);
 		
@@ -245,7 +245,7 @@
 				
 				flnorentry = true;
 
-				sprintf(buf,"Assertion failed in %s, at line %d.\n\nExpression: %s\n\nProbably no big deal, but please tell frontier-bugs@userland.com. Thanks!\n", file, line, expr);
+				sprintf(buf,"Assertion failed in %s, at line %d.\n\nExpression: %s\n\n", file, line, expr);
 				
 				//releasethreadglobals ();	/* 2002-11-10 AR: other threads should not continue running if we hit an assertion failure */
 				
