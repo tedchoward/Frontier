@@ -294,7 +294,6 @@ static unsigned char * stdcliberrorstrings [80] = {
 #include "shell.h"
 #include "shellhooks.h"
 #include "timedate.h"
-#include "winreg.h"
 #include "winsocknetevents.h"
 #include "frontierdebug.h"
 #include "file.h"

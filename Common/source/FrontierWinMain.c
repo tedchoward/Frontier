@@ -59,7 +59,7 @@
 #include "frontierstart.h"
 #include "WinSockNetEvents.h"
 #include "FrontierWinMain.h"
-#include "WinReg.h"
+#include "winregistry.h"
 #include "langdll.h"
 #include "htmlcontrol.h"  /*8/26/00 by RAB*/
 #include "langinternal.h" /*7.0b31 PBS*/

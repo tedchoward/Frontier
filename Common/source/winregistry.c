@@ -35,7 +35,7 @@
 #include "memory.h"
 #include "strings.h"
 #include "lang.h"
-#include "winreg.h"
+#include "winregistry.h"
 
 boolean setRegKeyString (Handle regkey, bigstring subkey, bigstring itemname, bigstring bsval) {
     HKEY hkey;

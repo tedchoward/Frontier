@@ -73,7 +73,7 @@
 #include "langpython.h"
 
 #ifdef WIN95VERSION
-	#include "winreg.h"
+	#include "winregistry.h"
 #endif
 
 static byte nametargetval [] = "\x08" "_target_";

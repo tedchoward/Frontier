@@ -311,7 +311,6 @@ static unsigned char * tcperrorstrings [80] = {
 #include "processinternal.h"
 #include "shell.h"
 #include "shellhooks.h"
-#include "winreg.h"
 #ifdef WIN95VERSION
 	#include "FrontierWinMain.h"
 #endif

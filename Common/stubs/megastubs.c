@@ -67,7 +67,7 @@
 #include "tablestructure.h"
 #include "Winland.h"
 #include "odbinternal.h"
-#include "WinReg.h"
+#include "winregistry.h"
 
 #if (MEMTRACKER == 1)
 	#pragma message ("***************************************MEMORY TRACKING IS ON!!***************************************")

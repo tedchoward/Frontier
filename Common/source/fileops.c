@@ -35,7 +35,7 @@
 
 #ifdef WIN95VERSION
 #include "standard.h"
-#include "WinReg.h"
+#include "winregistry.h"
 #undef abs
 #include <shlobj.h>
 #endif
