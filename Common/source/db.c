@@ -716,7 +716,7 @@ static void dbclearshadowavaillist (void) {
 				#ifdef DATABASE_DEBUG
 					char str[256];
 
-					sprintf (str, "dbrelease failed for address %ld.", (**hdb).u.extensions.availlistblock));
+					sprintf (str, "dbrelease failed for address %ld.", (**hdb).u.extensions.availlistblock);
 
 					DB_MSG_2 (str);
 				#endif
