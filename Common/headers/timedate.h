@@ -114,5 +114,10 @@ extern long getcurrenttimezonebias(void);
 
 extern boolean isLeapYear (short year);
 
+#ifdef WIN95VERSION
+
+extern long getmilliseconds(void);
+
+#endif /* WIN95VERSION */
 
 #endif /*timedateinclude*/

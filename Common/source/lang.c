@@ -46,6 +46,11 @@
 #include "op.h"
 #include "shell.rsrc.h"
 #include "shellhooks.h"
+
+#ifdef WIN95VERSION
+	#include "timedate.h" /* for the milliseconds function */
+#endif
+
 #include "process.h"
 #include "tablestructure.h"
 
@@ -144,7 +149,8 @@ boolean langstartprofiling (void) {
 	register hdlprocessrecord hp = currentprocess;
 	//short ix, ixtop;
 	tyerrorrecord *pe;
-	unsigned long ticksnow = gettickcount ();
+	/*unsigned long ticksnow = gettickcount ();*/
+	unsigned long msnow = getmilliseconds ();
 	
 	if ((hs == nil) || ((**hs).toperror <= 0))
 		return (false);
@@ -165,7 +171,7 @@ boolean langstartprofiling (void) {
 		*/
 		pe = &(**hs).stack [(**hs).toperror - 1];
 		
-		(*pe).profilebase = ticksnow;
+		(*pe).profilebase = msnow;
 		
 		(*pe).profiletotal = 0;
 		}
@@ -184,7 +190,8 @@ boolean langstopprofiling (void) {
 	register hdlprocessrecord hp = currentprocess;
 	short ix;
 	tyerrorrecord item;
-	unsigned long ticksnow = gettickcount ();
+	/*unsigned long ticksnow = gettickcount ();*/
+	unsigned long msnow = getmilliseconds ();
 	
 	if ((hs == nil) || ((**hs).toperror <= 0))
 		return (false);
@@ -197,7 +204,7 @@ boolean langstopprofiling (void) {
 			
 			if (item.profilebase != 0) { // included in profile
 			
-				item.profiletotal += ticksnow - item.profilebase;
+				item.profiletotal += msnow - item.profilebase;
 				
 				langtracktimeslice (&item);
 				}
@@ -235,7 +242,8 @@ boolean langpusherrorcallback (langerrorcallback errorroutine, long errorrefcon)
 	
 	if (hp && (**hp).flprofiling) {
 		
-		item.profilebase = gettickcount ();
+		/* item.profilebase = gettickcount (); */
+		item.profilebase = getmilliseconds ();
 		
 		item.profiletotal = 0;
 	
@@ -279,7 +287,8 @@ boolean langpoperrorcallback (void) {
 		
 		item = (**hs).stack [ixtop]; // the one we just popped
 		
-		item.profiletotal += gettickcount () - item.profilebase;
+		/* item.profiletotal += gettickcount () - item.profilebase; */
+		item.profiletotal += getmilliseconds () - item.profilebase;
 		
 		pe = &(**hs).stack [ixtop - 1]; // new new current top item
 		
@@ -287,7 +296,8 @@ boolean langpoperrorcallback (void) {
 			langtracktimeslice (&item);
 		
 		if ((**hp).flprofilesliced && (ixtop > 0)) // restart previous function timer
-			(*pe).profilebase = gettickcount ();
+			/* (*pe).profilebase = gettickcount (); */
+			(*pe).profilebase = getmilliseconds ();
 		}
 	
 	#endif

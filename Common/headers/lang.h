@@ -1166,6 +1166,10 @@ extern boolean coercetobinary (tyvaluerecord *);
 
 extern boolean coercevalue (tyvaluerecord *, tyvaluetype);
 
+extern boolean coercetypes (tyvaluerecord *, tyvaluerecord *);
+
+extern void disposevalues (tyvaluerecord *, tyvaluerecord *);
+
 extern boolean langgetidentifier (hdltreenode, bigstring);
 
 extern boolean langtablelookup (hdlhashtable, bigstring, hdlhashtable *);

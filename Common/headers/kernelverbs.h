@@ -52,3 +52,5 @@ extern boolean htmlinitverbs (void); /*langhtml.c*/
 extern boolean quicktimeinitverbs (void); /*langquicktime.c*/
 
 extern boolean regexpinitverbs (void); /* langregexp.c */
+
+extern boolean mathinitverbs (void); /* langmath.c */

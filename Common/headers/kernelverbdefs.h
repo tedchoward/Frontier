@@ -49,4 +49,4 @@
 #define idhtmlverbs			1021
 #define idquicktimeverbs	1022 /*7.0b4 PBS: QuickTime Player window verbs*/
 #define idregexpverbs		1023 /*2003-04-22 AR: regular expression verbs*/
-
+#define idmathverbs			1024 /*2004-12-29 SMD: extended math verbs*/

@@ -34,6 +34,7 @@
 #include "ops.h"
 #include "langinternal.h"
 #include "shell.h"
+
 #include "timedate.h"
 
 #ifdef MACVERSION
@@ -1535,6 +1536,27 @@ long getcurrenttimezonebias(void) {
 	} /*getcurrenttimezonebias*/
 
 
+#ifdef WIN95VERSION
+
+static unsigned long long getlongermilliseconds (void) {
+	LARGE_INTEGER counter, freq;
+	unsigned long long freqLong;
+	
+	QueryPerformanceCounter (&counter);  /* counter hits since boot-up */
+	
+	QueryPerformanceFrequency (&freq);   /* frequency of coutner hits (per second) */
+	
+	freqLong = ( freq.LowPart | ( freq.HighPart << 32 ) ) / 1000;
+	
+	return ( counter.LowPart | ( counter.HighPart << 32 ) ) / freqLong;
+} /* getlongermilliseconds */
+
+
+extern long getmilliseconds(void) {
+	return ((long) getlongermilliseconds ());
+} /* getmilliseconds */
+
+#endif
 
 
 #ifdef WIN95VERSION
