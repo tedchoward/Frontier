@@ -189,15 +189,37 @@ static boolean getNewLocaleString (unsigned long lc, char ** foo, char * defValu
 
 
 static boolean getNewLocalePatternString (unsigned long lc, char ** foo, char * defValue) {
+	
+	/*
+	2004-12-09 aradke: site of a mysterious crashing bug, possibly a CodeWarrior 8.x compiler bug.
+	with full optimizations, the cw compiler produces the following code for Win32:
 
+		221:                      buf2[j++] = '%';
+			00420257   movsx       eax,word ptr [j]
+			0042025E   movsx       edi,word ptr [j]
+		222:                      buf2[j++] = '%';
+			00420265   movsx       edx,word ptr [edi+1]
+			00420269   mov         byte ptr buf2[eax],25h
+		
+	the instruction at 00420265 ends up attempting to read from address 0x00000001.
+	details are available in bug #1081295 on sourceforge.net:
+	http://sourceforge.net/tracker/index.php?func=detail&aid=1081295&group_id=120666&atid=687798
+	
+	the crashes disappear when the type of the integer variables is switched from short to int,
+	so that's what we'll do for now.
+	
+	also, check len for failed GetLocaleInfo call before decrementing it.
+	*/
+	
 	char buf[256];
 	char buf2[256];
-	short i, j, cnt, len;
+	int i, j, cnt, len; /*2004-12-09 aradke*/
 	char c;
 
 	len = GetLocaleInfo (LOCALE_USER_DEFAULT, lc, buf, 256);
-	--len;
-	if (len != 0) {
+	
+	if (len > 0) {
+		--len; /*2004-12-09 aradke: dont't attempt to parse trailing nil char*/
 		i = 0;
 		j = 0;
 
