@@ -285,6 +285,3 @@ extern void shellwindowmenuselect (short);
 extern void shelladjustundo (void); /*7.0fc1 PBS: no longer static*/
 
 extern boolean pikequit (void); /*7.0 PBS: called when the X in the frame window is clicked in Windows.*/
-
-
-
