@@ -50,106 +50,107 @@ struct {
 
 	short errornumber; /*an error result passed back by a Mac system routine*/
 	
-	/***short errorindex; /*index into the STR# resource for the appropriate message*/
+	/***short errorindex; #*index into the STR# resource for the appropriate message*/
 	}
 
 #ifdef MACVERSION
 
 systemerrortable [ctsystemerrors] = {
 	
-	-33,	//dirFulErr
-	-34,	//dskFulErr
-	-35,	//nsvErr
-	-36,	//ioErr
-	-37,	//bdNamErr
-	-38,	//fnOpnErr
-	-39,	//eofErr
-	-40,	//posErr
-	-41,	//mFulErr
-	-42,	//tmfoErr
-	-43,	//fnfErr
-	-44,	//wPrErr
-	-45,	//fLckdErr
-	-46,	//vLckdErr
-	-47,	//fBsyErr
-	-48,	//dupFNErr
-	-49,	//opWrErr
-	-50,
-	-51,	//rfNumErr
-	-52,	//gfpErr
-	-53,	//volOffLinErr
-	-54,	//permErr
-	-55,	//volOnLinErr
-	-56,	//nsDrvErr
-	-57,	//noMacDskErr
-	-58,	//extFSErr
-	-59,	//fsRnErr
-	-60,	//badMDBErr
-	-61,	//wrPermErr
-	-64,	//noDriveErr
-	-65,	//offLinErr
-	-66,	//noNybErr
-	-67,	//noAdrMkErr
-	-68,	//dataVerErr
-	-69,	//badCksmErr
-	-70,	//badBtSlpErr
-	-71,	//noDtaMkErr
-	-72,	//badDCksum
-	-73,
-	-74,
-	-75,
-	-76,
-	-77,
-	-78,
-	-79,
-	-80,
-	-81,
-	-120,	//dirNFErr
-	-121,
-	-122,	//badMovErr
-	-123,	//wrgVolTypErr
-	-192,	//resNotFound
-	-193,	//resFNotFound
-	-194,	//addResFailed
-	-196,	//rmvResFailed
-	-198,	//resAttrErr
-	-199,	//mapReadErr
-	-100,
-	-102,
-	-108,	//memFullErr
-	-109,	//nilHandleErr
-	-111,
-	-112,
-	-117,
-	-1703,
-	-1719,
-	-1704,
-	-1705,
-	-1708,
-	-1712,
-	-1711,
-	-906,
-	-1700,
-	-1701,
-	-1723,
-	-1728,
-	-5000,
-	-5016,
-	-5019,
-	-5023,
-	-5063,
-	-10000,
-	-10007,
-	-10011,
-	-10003,
-	-10014,
+	{-33},	//dirFulErr
+	{-34},	//dskFulErr
+	{-35},	//nsvErr
+	{-36},	//ioErr
+	{-37},	//bdNamErr
+	{-38},	//fnOpnErr
+	{-39},	//eofErr
+	{-40},	//posErr
+	{-41},	//mFulErr
+	{-42},	//tmfoErr
+	{-43},	//fnfErr
+	{-44},	//wPrErr
+	{-45},	//fLckdErr
+	{-46},	//vLckdErr
+	{-47},	//fBsyErr
+	{-48},	//dupFNErr
+	{-49},	//opWrErr
+	{-50},
+	{-51},	//rfNumErr
+	{-52},	//gfpErr
+	{-53},	//volOffLinErr
+	{-54},	//permErr
+	{-55},	//volOnLinErr
+	{-56},	//nsDrvErr
+	{-57},	//noMacDskErr
+	{-58},	//extFSErr
+	{-59},	//fsRnErr
+	{-60},	//badMDBErr
+	{-61},	//wrPermErr
+	{-64},	//noDriveErr
+	{-65},	//offLinErr
+	{-66},	//noNybErr
+	{-67},	//noAdrMkErr
+	{-68},	//dataVerErr
+	{-69},	//badCksmErr
+	{-70},	//badBtSlpErr
+	{-71},	//noDtaMkErr
+	{-72},	//badDCksum
+	{-73},
+	{-74},
+	{-75},
+	{-76},
+	{-77},
+	{-78},
+	{-79},
+	{-80},
+	{-81},
+	{-120},	//dirNFErr
+	{-121},
+	{-122},	//badMovErr
+	{-123},	//wrgVolTypErr
+	{-192},	//resNotFound
+	{-193},	//resFNotFound
+	{-194},	//addResFailed
+	{-196},	//rmvResFailed
+	{-198},	//resAttrErr
+	{-199},	//mapReadErr
+	{-100},
+	{-102},
+	{-108},	//memFullErr
+	{-109},	//nilHandleErr
+	{-111},
+	{-112},
+	{-117},
+	{-1703},
+	{-1719},
+	{-1704},
+	{-1705},
+	{-1708},
+	{-1712},
+	{-1711},
+	{-906},
+	{-1700},
+	{-1701},
+	{-1723},
+	{-1728},
+	{-5000},
+	{-5016},
+	{-5019},
+	{-5023},
+	{-5063},
+	{-10000},
+	{-10007},
+	{-10011},
+	{-10003},
+	{-10014},
 
-	errAENewerVersion,
-	errOSAScriptError,
-	errAECantHandleClass,
-	connectionInvalid,
-	noUserInteractionAllowed,
-	errOSASourceNotAvailable
+	{errAENewerVersion},
+	{errOSAScriptError},
+	{errAECantHandleClass},
+	{connectionInvalid},
+	{noUserInteractionAllowed},
+	{errOSASourceNotAvailable}
+	
 	}; /*systemerrortable*/
 
 #endif
@@ -158,93 +159,93 @@ systemerrortable [ctsystemerrors] = {
 
 systemerrortable [ctsystemerrors] = {
 	
-	-33,	//dirFulErr
-	-34,	//dskFulErr
-	-35,	//nsvErr
-	-36,	//ioErr
-	-37,	//bdNamErr
-	-38,	//fnOpnErr
-	-39,	//eofErr
-	-40,	//posErr
-	-41,	//mFulErr
-	ERROR_TOO_MANY_OPEN_FILES,	//tmfoErr
-	ERROR_FILE_NOT_FOUND,	//fnfErr
-	-44,	//wPrErr
-	-45,	//fLckdErr
-	-46,	//vLckdErr
-	ERROR_SHARING_VIOLATION,	//fBsyErr
-	-48,	//dupFNErr
-	-49,	//opWrErr
-	-50,
-	-51,	//rfNumErr
-	-52,	//gfpErr
-	-53,	//volOffLinErr
-	-54,	//permErr
-	-55,	//volOnLinErr
-	-56,	//nsDrvErr
-	-57,	//noMacDskErr
-	-58,	//extFSErr
-	-59,	//fsRnErr
-	-60,	//badMDBErr
-	-61,	//wrPermErr
-	-64,	//noDriveErr
-	-65,	//offLinErr
-	-66,	//noNybErr
-	-67,	//noAdrMkErr
-	-68,	//dataVerErr
-	-69,	//badCksmErr
-	-70,	//badBtSlpErr
-	-71,	//noDtaMkErr
-	-72,	//badDCksum
-	-73,
-	-74,
-	-75,
-	-76,
-	-77,
-	-78,
-	-79,
-	-80,
-	-81,
-	ERROR_PATH_NOT_FOUND,	//dirNFErr
-	-121,
-	-122,	//badMovErr
-	-123,	//wrgVolTypErr
-	-192,	//resNotFound
-	-193,	//resFNotFound
-	-194,	//addResFailed
-	-196,	//rmvResFailed
-	-198,	//resAttrErr
-	-199,	//mapReadErr
-	-100,
-	-102,
-	ERROR_OUTOFMEMORY,	//memFullErr
-	-109,	//nilHandleErr
-	-111,
-	-112,
-	-117,
-	-1703,
-	-1719,
-	-1704,
-	-1705,
-	-1708,
-	-1712,
-	-1711,
-	-906,
-	-1700,
-	-1701,
-	-1723,
-	-1728,
-	ERROR_ACCESS_DENIED,
-	-5016,
-	-5019,
-	-5023,
-	-5063,
-	-10000,
-	-10007,
-	-10011,
-	-10003,
-	-10014,
-
+	{-33},	//dirFulErr
+	{-34},	//dskFulErr
+	{-35},	//nsvErr
+	{-36},	//ioErr
+	{-37},	//bdNamErr
+	{-38},	//fnOpnErr
+	{-39},	//eofErr
+	{-40},	//posErr
+	{-41},	//mFulErr
+	{ERROR_TOO_MANY_OPEN_FILES},	//tmfoErr
+	{ERROR_FILE_NOT_FOUND},	//fnfErr
+	{-44},	//wPrErr
+	{-45},	//fLckdErr
+	{-46},	//vLckdErr
+	{ERROR_SHARING_VIOLATION},	//fBsyErr
+	{-48},	//dupFNErr
+	{-49},	//opWrErr
+	{-50},
+	{-51},	//rfNumErr
+	{-52},	//gfpErr
+	{-53},	//volOffLinErr
+	{-54},	//permErr
+	{-55},	//volOnLinErr
+	{-56},	//nsDrvErr
+	{-57},	//noMacDskErr
+	{-58},	//extFSErr
+	{-59},	//fsRnErr
+	{-60},	//badMDBErr
+	{-61},	//wrPermErr
+	{-64},	//noDriveErr
+	{-65},	//offLinErr
+	{-66},	//noNybErr
+	{-67},	//noAdrMkErr
+	{-68},	//dataVerErr
+	{-69},	//badCksmErr
+	{-70},	//badBtSlpErr
+	{-71},	//noDtaMkErr
+	{-72},	//badDCksum
+	{-73},
+	{-74},
+	{-75},
+	{-76},
+	{-77},
+	{-78},
+	{-79},
+	{-80},
+	{-81},
+	{ERROR_PATH_NOT_FOUND},	//dirNFErr
+	{-121},
+	{-122},	//badMovErr
+	{-123},	//wrgVolTypErr
+	{-192},	//resNotFound
+	{-193},	//resFNotFound
+	{-194},	//addResFailed
+	{-196},	//rmvResFailed
+	{-198},	//resAttrErr
+	{-199},	//mapReadErr
+	{-100},
+	{-102},
+	{ERROR_OUTOFMEMORY},	//memFullErr
+	{-109},	//nilHandleErr
+	{-111},
+	{-112},
+	{-117},
+	{-1703},
+	{-1719},
+	{-1704},
+	{-1705},
+	{-1708},
+	{-1712},
+	{-1711},
+	{-906},
+	{-1700},
+	{-1701},
+	{-1723},
+	{-1728},
+	{ERROR_ACCESS_DENIED},
+	{-5016},
+	{-5019},
+	{-5023},
+	{-5063},
+	{-10000},
+	{-10007},
+	{-10011},
+	{-10003},
+	{-10014},
+	
 	}; /*systemerrortable*/
 
 #endif
@@ -262,7 +263,7 @@ static bigstring lasterrormessage = "";
 */
 
 
-setoserrorparam (bigstring bs) {
+boolean setoserrorparam (bigstring bs) {
 	
 	return (setparseparams (bs, nil, nil, nil));
 	} /*setoserrorparam*/
@@ -277,7 +278,7 @@ OSErr getoserror (void) {
 void getoserrormessage (bigstring bs) {
 	
 	copystring (lasterrormessage, bs);
-	} /*getoserrormessage*/
+	} #*getoserrormessage*/
 
 
 boolean getsystemerrorstring (OSErr errcode, bigstring bs) {

@@ -108,7 +108,7 @@ boolean putdeschandle (AEDesc *desc, DescType typeCode, Handle h) {
 	AEInitializeDescInline (desc);
 	
 	return (AECreateDesc (typeNull, nil, 0, desc) != noErr);
-	} /*newdescnull*/
+	} #*newdescnull*/
 boolean newdescnull (AEDesc *desc, DescType typeCode) {  // MJL 08/12/03: Broken boolean obj spec fix
     AEInitializeDescInline (desc);
     return (AECreateDesc (typeCode, nil, 0, desc) != noErr);

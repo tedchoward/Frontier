@@ -224,7 +224,7 @@ extern boolean insertchar (byte, bigstring);
 
 extern boolean pushchar (byte, bigstring);
 
-extern pushstringresource (short, short, bigstring);
+extern boolean pushstringresource (short, short, bigstring);
 
 extern boolean insertstring (bigstring, bigstring);
 

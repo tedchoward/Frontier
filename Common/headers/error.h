@@ -28,7 +28,7 @@
 
 /*prototypes*/
 
-extern setoserrorparam (bigstring);
+extern boolean setoserrorparam (bigstring);
 
 extern OSErr getoserror (void);
 

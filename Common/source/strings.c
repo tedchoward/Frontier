@@ -189,7 +189,7 @@ short comparestrings (bigstring bs1, bigstring bs2) {
 /*
 short comparestrings (bigstring bs1, bigstring bs2) {
 
-	/*
+	#*
 	return zero if the two strings (pascal type, with length-byte) are
 	equal.  return -1 if bs1 is less than bs2, or +1 if bs1 is greater than
 	bs2.
@@ -199,7 +199,7 @@ short comparestrings (bigstring bs1, bigstring bs2) {
 	%/
 	
 	return (IUCompString (bs1, bs2));
-	} /*comparestrings*/
+	} #*comparestrings*/
 
 #endif
 
@@ -380,7 +380,7 @@ pushboolean (boolean flboo, bigstring bsdest) {
 		copystring ((ptrstring) "\pfalse", bsboo);
 		
 	pushstring (bsboo, bsdest);
-	} /*pushboolean*/
+	} #*pushboolean*/
 	
 	
 /*
@@ -391,7 +391,7 @@ pushstringresource (short listnum, short resnum, bigstring bs) {
 	GetIndString (bsres, listnum, resnum);
 	
 	pushstring (bsres, bs);
-	} /*pushstringresource*/
+	} #*pushstringresource*/
 	
 	
 boolean insertstring (bigstring bssource, bigstring bsdest) {
@@ -955,7 +955,7 @@ void commentdelete (byte chdelim, bigstring bs) {
 	
 	long i;
 	
-	i = (chdelim, stringbaseaddress (bs), stringlength (bs));
+	i = langcommentdelete (chdelim, stringbaseaddress (bs), stringlength (bs));
 	
 	if (i >= 0)
 		setstringlength (bs, i);
@@ -1178,7 +1178,7 @@ void copystring (const bigstring bssource, bigstring bsdest) {
 	1/17/97 dmb: recoded with string macros
 	*/
 
-	register len;
+	register short len;
 	
 	if (bssource == nil) { /*special case, handled at lowest level*/
 		
@@ -1490,7 +1490,7 @@ void parsedialogstring (const bigstring bssource, ptrstring bs0, ptrstring bs1, 
 			}
 		} /*for*/
 	
-	/***subtractstrings (bsresult, "\p рс", bsresult); /*in case there was a missing param*/
+	/***subtractstrings (bsresult, "\p рс", bsresult); #*in case there was a missing param*/
 	} /*parsedialogstring*/
 
 boolean parsedialoghandle (Handle hsource, Handle h0, Handle h1, Handle h2, Handle h3) {
@@ -1961,7 +1961,7 @@ void numbertohexstring (long number, bigstring bshex) {
 
 	if ((number < -32768) || (number > 32767))  {
 		
-		memtodisklong (number);
+		if (memtodisklong (number)) { }; /* hra 10/27/04: bypass 'statement with no effect' warning */
 
 		bytestohexstring (&number, sizeof (long), bshex);
 		}
@@ -1970,7 +1970,7 @@ void numbertohexstring (long number, bigstring bshex) {
 		
 		short x = number;
 		
-		memtodiskshort (x);
+		if (memtodiskshort (x)) { }; /* hra 10/27/04: bypass 'statement with no effect' warning */
 
 		bytestohexstring (&x, sizeof (short), bshex);
 		}
@@ -2426,7 +2426,7 @@ boolean utf16toansi (Handle h, Handle hresult) {
 			
 		sethandlesize (hresult, ctansibytes);
 		
-		sethandlesize (hresult, gethandlesize (hresult) - 1); /*pop trailing terminator*/
+		sethandlesize (hresult, gethandlesize (hresult) - 1); #*pop trailing terminator*/
 		
 	#endif
 
@@ -2440,10 +2440,10 @@ boolean utf8toansi (Handle h, Handle hresult) {
 	70b42 PBS: convert from UTF-8 to ANSI.
 	*/
 
-	long lentext = gethandlesize (h);
-	
 	#ifdef WIN95VERSION
-	
+
+		long lentext = gethandlesize (h);
+
 		Handle htemp;
 
 		newemptyhandle (&htemp);
@@ -2469,6 +2469,8 @@ boolean utf8toansi (Handle h, Handle hresult) {
 		converttextencoding (h, hresult, 0x08000100, kTextEncodingWindowsLatin1);
 
 /*		OSErr err = noErr;
+
+		long lentext = gethandlesize (h);
 	
 		TECObjectRef converter;
 		
@@ -2478,11 +2480,11 @@ boolean utf8toansi (Handle h, Handle hresult) {
 
 		(*h) [lentext] = '\0';
 		
-		err = TECCreateConverter (&converter, 0x08000100, kTextEncodingWindowsLatin1); /*0x08000100 is UTF-8*/
+		err = TECCreateConverter (&converter, 0x08000100, kTextEncodingWindowsLatin1); #*0x08000100 is UTF-8*/
 		
 /*		sethandlesize (hresult, lentext * 2);
 		
-		if (((*h) [0] == '\xFF') || ((*h) [0] == '\xEF')) /*pop byte order mark*/
+		if (((*h) [0] == '\xFF') || ((*h) [0] == '\xEF')) #*pop byte order mark*/
 		
 /*			pullfromhandle (h, 0, 3, NULL);
 		
@@ -2496,7 +2498,7 @@ boolean utf8toansi (Handle h, Handle hresult) {
 			
 		sethandlesize (hresult, ctansibytes);
 		
-		sethandlesize (hresult, gethandlesize (hresult) - 1); /*pop trailing terminator*/
+		sethandlesize (hresult, gethandlesize (hresult) - 1); #*pop trailing terminator*/
 	
 	#endif
 
