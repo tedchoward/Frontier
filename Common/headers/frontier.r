@@ -31,8 +31,12 @@
 #define __FRONTIER_R__
 
 
-#ifdef TARGET_API_MAC_CARBON
-	#include <Carbon/Carbon.r>
+#if TARGET_API_MAC_CARBON
+	#ifdef FRONTIER_FRAMEWORK_INCLUDES
+		#include <Carbon/Carbon.r>
+	#else
+		#include <Carbon.r>
+	#endif
 #else
 	#include <MacTypes.r>
 	#include <AEUserTermTypes.r>

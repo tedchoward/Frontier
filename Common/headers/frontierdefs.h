@@ -48,7 +48,7 @@
 	#define flcomponent 1
 	#ifdef __powerc
 		#define noextended 1
-	#elif __GNUC__
+	#elif defined(__GNUC__)
 		#define noextended 1
 	#else
 		#define noextended 0
