@@ -75,8 +75,6 @@
 #define flregexpverbs 1
 #undef lazythis_optimization
 #undef langexternalfind_optimization
-#define flv10tables 1			/* 2004-11-10 aradke: for new hash table implementation [EXPERIMENTAL] */
-
 #define PASCALSTRINGVERSION 1
 #define SPEED 1
 

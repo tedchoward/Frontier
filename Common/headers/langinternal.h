@@ -415,11 +415,7 @@ extern boolean evaluatelist (hdltreenode, tyvaluerecord *);
 
 extern boolean hashflushcache (long *); /*langhash.h*/
 
-#ifdef flv10tables
-	extern unsigned long hashfunction (const bigstring); /* 2004-11-10 aradke */
-#else
-	extern short hashfunction (const bigstring);
-#endif
+extern short hashfunction (const bigstring);
 
 extern boolean hashresolvevalue (hdlhashtable, hdlhashnode);
 
