@@ -1,0 +1,1035 @@
+
+/******************************************************************************
+
+    UserLand Frontier(tm) -- High performance Web content management,
+    object database, system-level and Internet scripting environment,
+    including source code editing and debugging.
+
+    Copyright (C) 1992-2004 UserLand Software, Inc.
+
+    This program is free software; you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation; either version 2 of the License, or
+    (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program; if not, write to the Free Software
+    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+
+******************************************************************************/
+
+#define true 1
+#define false 0
+#undef flvariables
+#define EFP EFP_
+
+
+1000  /*idopverbs*/ EFP 	DISCARDABLE
+	BEGIN
+	3,					//Number of "blocks" in this resource
+
+	"op\0",			//Function Processor Name
+		true,			//Window required
+			45,			//Count of verbs
+			"getlinetext\0",	
+			"level\0",	
+			"countsubs\0",	
+			"countsummits\0",	
+			"go\0",	
+			"firstsummit\0",	
+			"expand\0",	
+			"collapse\0",	
+			"subsexpanded\0",
+			"insert\0",	/*10*/
+			"find\0",		
+			"sort\0",		
+			"setlinetext\0",		
+			"reorg\0",		
+			"promote\0",		
+			"demote\0",
+			"hoist\0",		
+			"dehoist\0",		
+			"deletesubs\0",		
+			"deleteline\0",	/*20*/	
+			"tabkeyreorg\0",		
+			"flatcursorkeys\0",		
+			"getdisplay\0",		
+			"setdisplay\0",		
+			"getcursor\0",		
+			"setcursor\0",		
+			"getrefcon\0",		
+			"setrefcon\0",
+			"getexpansionstate\0",
+			"setexpansionstate\0", /*30*/
+			"getscrollstate\0",
+			"setscrollstate\0",
+			"getsuboutline\0",
+			"insertoutline\0",
+			"setmodified\0",
+			"getselection\0",
+			"getheadnumber\0", /*70b17 PBS*/
+			"visitall\0", /*7.0b17 PBS*/
+			"getselectedsuboutlines\0",
+			"xmltooutline\0", /*7.0b21 PBS*/
+			"outlinetoxml\0", /*7.0b21 PBS*/
+			"sethtmlformatting\0", /*7.0b28 PBS*/
+			"gethtmlformatting\0",
+			"setdynamic\0", /*7.0b30 PBS*/
+			"getdynamic\0", /*7.0b30 PBS*/
+
+		"opattributes\0",
+		true,
+			5,
+			"addgroup\0",
+			"getall\0",
+			"getone\0",
+			"makeempty\0",
+			"setone\0",
+
+		"script\0", 
+		true,
+			13,
+			"compile\0",		
+			"uncompile\0",		
+			"getcode\0",		
+			"getlanguage\0",
+			"setlanguage\0",	
+			"makecomment\0",	
+			"uncomment\0",		
+			"iscomment\0",		
+			"getbreakpoint\0",		
+			"setbreakpoint\0",		
+			"clearbreakpoint\0",
+			"startprofile\0",
+			"stopprofile\0",
+
+		"osa\0",
+		false,
+			2,	
+			"compile\0",
+			"getsource\0"
+	END
+
+
+1001 /*idtableverbs*/	EFP		DISCARDABLE
+	BEGIN
+	1,					//Number of "blocks" in this resource
+		"table\0",		//Function Processor Name
+		true,			//Window required
+			18,			//Count of verbs
+			"move\0",		
+			"copy\0",		
+			"rename\0",		
+			"moveandrename\0",		
+			"assign\0",
+			"validate\0",		
+			"sortby\0",		
+			"getcursor\0",
+			"getselection\0",
+			"go\0",		
+			"goto\0",		
+			"gotoname\0",		
+			"jettison\0",		
+			"packtable\0",		
+			"emptytable\0",
+			"getdisplaysettings\0",
+			"setdisplaysettings\0",
+			"getsortorder\0"
+	END
+
+
+1002 /*idmenuverbs*/		EFP		DISCARDABLE
+	BEGIN
+	1,					//Number of "blocks" in this resource
+		"menu\0",		//Function Processor Name
+		true,			//Window required
+			14,			//Count of verbs
+			"zoomscript\0",		
+			"buildmenubar\0",		
+			"clearmenubar\0",		
+			"isinstalled\0",		
+			"install\0",	
+			"remove\0",
+			"getscript\0",		
+			"setscript\0",
+			"addmenucommand\0",
+			"deletemenucommand\0",
+			"addsubmenu\0",
+			"deletesubmenu\0",
+			"getcommandkey\0",
+			"setcommandkey\0"
+	END
+
+
+1003 /*idwpverbs*/	EFP		DISCARDABLE
+	BEGIN
+	1,					//Number of "blocks" in this resource
+		"wp\0",			//Function Processor Name
+		true,			//Window required
+			#ifdef flvariables	
+				36,			//Count of verbs
+			#else
+				27,			//Count of verbs
+			#endif
+	
+			"intextmode\0",		
+			"settextmode\0",		
+			"gettext\0",		
+			"settext\0",		
+			"getseltext\0",		
+			"getdisplay\0",		
+			"setdisplay\0",		
+			"getruler\0",		
+			"setruler\0",		
+			"getindent\0",		
+			"setindent\0",		
+			"getleftmargin\0",		
+			"setleftmargin\0",		
+			"getrightmargin\0",		
+			"setrightmargin\0",		
+			"setspacing\0",		
+			"setjustification\0",		
+			"settab\0",		
+			"cleartabs\0",		
+			"getselect\0",		
+			"setselect\0",		
+			"insert\0",
+			
+			#ifdef flvariables
+			"newvariable\0",		
+			"deletevariable\0",		
+			"getnthvariable\0",		
+			"setvariablevalue\0",		
+			"getvariablevalue\0",		
+			"insertvariable\0",		
+			"getevaluate\0",		
+			"setevaluate\0",		
+			"hilitevariables\0",		
+			#endif
+			
+			"rulerlength\0",	
+			"go\0",	
+			"selectword\0",		
+			"selectline\0",	
+			"selectparagraph\0"
+	END
+
+
+1004 /*idpictverbs*/ EFP		DISCARDABLE
+	BEGIN
+	1,					//Number of "blocks" in this resource
+		"pict\0",		//Function Processor Name
+		true,			//Window required
+			4,			//Count of verbs
+			"scheduleupdate\0",
+			"expressions\0",		
+			"getpicture\0",		
+			"setpicture\0"
+	END
+
+
+1005 /*idlangverbs*/	EFP		DISCARDABLE
+	BEGIN
+	20,					//Number of "blocks" in this resource
+		"lang\0",		//Function Processor Name
+		true,			//Window required
+			58,			//Count of verbs
+			"scripterror\0",		
+			"new\0",		
+			"delete\0",
+			"edit\0",		
+			"close\0",
+			"timecreated\0",		
+			"timemodified\0",		
+			"settimecreated\0",		
+			"settimemodified\0",		
+			"boolean\0", 		
+			"char\0",		
+			"short\0",		
+			"long\0",
+			"date\0",		
+			"direction\0",		
+			"string4\0",		
+			"string\0",		
+			"displaystring\0",		
+			"address\0",		
+			"binary\0",		
+			"getbinarytype\0",		
+			"setbinarytype\0",		
+			"point\0",		
+			"rect\0",		
+			"rgb\0",		
+			"pattern\0",		
+			"fixed\0",		
+			"single\0",		
+			"double\0",		
+			"filespec\0",		
+			"alias\0",		
+			"list\0",		
+			"record\0",		
+			"enum\0",		
+			"memavail\0",		
+			"flushmemory\0",		
+			"random\0",		
+			"evaluate\0",		
+			"evaluatethread\0",		
+			"rollbeachball\0",		
+			"abs\0",		
+			"seteventtimeout\0",		
+			"seteventtransactionid\0",		
+			"seteventinteraction\0",		
+			"geteventattribute\0",		
+			"coerceappleitem\0",		
+			"getapplelistitem\0",		
+			"putapplelistitem\0",		
+			"countapplelistitems\0",		
+			"systemevent\0",		
+			"DDEevent\0",		
+			"transactionEvent\0",		
+			"msg\0",		
+			"callxcmd\0",
+			"calldll\0",
+			"packwindow\0",
+			"unpackwindow\0",
+			"callscript\0",
+
+		"clock\0", 
+		false,
+			6,
+			"now\0",
+			"set\0",
+			"sleepfor\0",
+			"ticks\0",
+			"waitseconds\0",
+			"waitsixtieths\0",
+	
+		"date\0", 
+		false,
+			24,
+			"get\0",
+			"set\0",
+			"abbrevstring\0",
+			"dayofweek\0",
+			"daysinmonth\0",
+			"daystring\0",
+			"firstofmonth\0",
+			"lastofmonth\0",
+			"longstring\0",
+			"nextmonth\0",
+			"nextweek\0",
+			"nextyear\0",
+			"prevmonth\0",
+			"prevweek\0",
+			"prevyear\0",
+			"shortstring\0",
+			"tomorrow\0",
+			"weeksinmonth\0",
+			"yesterday\0",
+			"getcurrenttimezone\0",
+			"netstandardstring\0",
+			"monthtostring\0",
+			"dayofweektostring\0",
+			"versionlessthan\0",
+
+
+		"dialog\0", 
+		true,
+			19,			//Count of verbs
+			"alert\0",	
+			"run\0",
+			"runmodeless\0",
+			"runcard\0",
+			"runmodalcard\0",		
+			"ismodalcard\0",		
+			"setmodalcardtimeout\0",		
+			"getvalue\0",		
+			"setvalue\0",		
+			"setitemenable\0",		
+			"showitem\0",		
+			"hideitem\0",	
+			"twoway\0",	
+			"threeway\0",	
+			"ask\0",	
+			"getint\0",	
+			"notify\0",
+			"getuserinfo\0",
+			"getpassword\0",
+
+		"kb\0", 
+		false,
+			4,
+			"optionkey\0",
+			"cmdkey\0",		
+			"shiftkey\0",		
+			"controlkey\0",
+	
+		"mouse\0",
+		false,
+			2,
+			"button\0",
+			"location\0",
+	
+		"point\0", 
+		false, 
+			2,
+			"get\0",
+			"set\0",
+	
+		"rectangle\0",
+		false, 
+			2,
+			"get\0",
+			"set\0",
+
+		"rgb\0",
+		false, 
+			2,
+			"get\0",
+			"set\0",
+	
+		"speaker\0", 
+		false,
+			3,
+			"beep\0",
+			"sound\0",
+			"playnamedsound\0",
+	
+		"target\0", 
+		true,
+			3,
+			"get\0",		
+			"set\0",		
+			"clear\0",	
+	
+		"bit\0", 
+		false,
+			8,
+			"get\0",
+			"set\0",	
+			"clear\0",
+			"logicaland\0",
+			"logicalor\0",
+			"logicalxor\0",
+			"shiftleft\0",
+			"shiftright\0",
+		
+		"semaphore\0", 
+		false,
+			2,	
+			"lock\0",		
+			"unlock\0",
+		
+		"base64\0", 
+		false,
+			2,	
+			"encode\0",		
+			"decode\0",
+		
+		"tcp\0", 
+		false,
+			23,	
+			"addressdecode\0",
+			"addressencode\0",
+			"addresstoname\0",
+			"nametoaddress\0",
+			"myaddress\0",
+			"abortstream\0",
+			"closestream\0",
+			"closelisten\0",
+			"openaddrstream\0",
+			"opennamestream\0",
+			"readstream\0",
+			"writestream\0",
+			"listenstream\0",
+			"statusstream\0",
+			"getpeeraddress\0",
+			"getpeerport\0",
+			"writestringtostream\0",
+			"writefiletostream\0",
+			"readstreamuntil\0",
+			"readstreambytes\0",
+			"readstreamuntilclosed\0",
+			"getstats\0",
+			"countconnections\0",
+
+		"dll\0", 
+		false,
+			4,	
+			"call\0",
+			"load\0",
+			"unload\0",
+			"isloaded\0",
+
+		"python\0",
+		false,
+			1,
+			"doscript\0",
+
+		"htmlcontrol\0",
+		false,
+			8,
+			"back\0",
+			"forward\0",
+			"refresh\0",
+			"home\0",
+			"stop\0",
+			"navigate\0",
+			"isoffline\0",
+			"setoffline\0",
+
+		"statusbar\0",
+		false,
+			5,
+			"msg\0",
+			"setsections\0",
+			"getsections\0",
+			"getsectionone\0",
+			"getmessage\0",
+		
+		"winregistry\0", /*Radio 7.0.2b1 PBS*/
+		false,
+			4,
+			"delete\0",
+			"read\0",
+			"gettype\0",
+			"write\0",
+	END
+
+
+1006 /*idstringverbs*/	EFP		DISCARDABLE
+	BEGIN
+	1,					//Number of "blocks" in this resource
+		"string\0",		//Function Processor Name
+		false,			//Window required
+			56			//Count of verbs
+			"delete\0",		
+			"insert\0",	
+			"popleading\0",
+			"poptrailing\0",
+			"trimwhitespace\0",
+			"popsuffix\0",
+			"hassuffix\0",
+			"mid\0",		
+			"nthchar\0",		
+			"nthfield\0",		
+			"countfields\0",		
+			"setwordchar\0",		
+			"getwordchar\0",		
+			"firstword\0",			
+			"lastword\0",			
+			"nthword\0",		
+			"countwords\0",
+			"commentdelete\0",			
+			"firstsentence\0",		
+			"patternmatch\0",		
+			"hex\0",		
+			"timestring\0",		
+			"datestring\0",	
+			"upper\0",	
+			"lower\0",		
+			"filledstring\0",		
+			"addcommas\0",		
+			"replace\0",
+			"replaceall\0",		
+			"length\0",		
+			"isalpha\0",	
+			"isnumeric\0",	
+			"ispunctuation\0",		
+			"processhtmlmacros\0",
+			"urldecode\0",		
+			"urlencode\0",		
+			"parsehttpargs\0",		
+			"iso8859encode\0",
+			"getgifheightwidth\0",
+			"getjpegheightwidth\0",
+			"wrap\0",
+			"davenetmassager\0",
+			"parseaddress\0",
+			"dropnonalphas\0",
+			"padwithzeros\0",
+			"ellipsize\0",
+			"innercasename\0",
+			"urlsplit\0",
+			"hashMD5\0",
+			"latintomac\0",
+			"mactolatin\0",
+			"utf16toansi\0",
+			"utf8toansi\0",
+			"ansitoutf8\0",
+			"ansitoutf16\0",
+			"multiplereplaceall\0",
+	END
+
+
+1007 /*idfileverbs*/ EFP		DISCARDABLE
+	BEGIN
+	1,					//Number of "blocks" in this resource
+		"file\0",		//Function Processor Name
+		false,			//Window required
+			82,			//Count of verbs
+			"created\0",
+			"modified\0",
+			"type\0",
+			"creator\0",
+			"setcreated\0",
+			"setmodified\0",
+			"settype\0",
+			"setcreator\0",
+			"isfolder\0",
+			"isvolume\0",
+			"islocked\0",
+			"lock\0",
+			"unlock\0",
+			"copy\0",
+			"copydatafork\0",
+			"copyresourcefork\0",
+			"delete\0",
+			"rename\0",
+			"exists\0",
+			"size\0",
+			"fullpath\0",
+			"getpath\0",
+			"setpath\0",
+			"filefrompath\0",
+			"folderfrompath\0",
+			"getsystemfolderpath\0",
+			"getspecialfolderpath\0",
+			"new\0",
+			"newfolder\0",
+			"newalias\0",
+			"getfiledialog\0",
+			"putfiledialog\0",
+			"getfolderdialog\0",
+			"getdiskdialog\0",
+			"geticonpos\0",
+			"seticonpos\0",
+			"getversion\0",
+			"setversion\0",
+			"getfullversion\0",
+			"setfullversion\0",
+			"getcomment\0",
+			"setcomment\0",
+			"getlabel\0",
+			"setlabel\0",
+			"findapplication\0",
+			"isbusy\0",
+			"hasbundle\0",
+			"setbundle\0",
+			"isalias\0",
+			"isvisible\0",
+			"setvisible\0",
+			"followalias\0",
+			"move\0",
+			"eject\0",
+			"isejectable\0",
+			"freespaceonvolume\0",
+			"volumesize\0",
+			"volumeblocksize\0",
+			"filesonvolume\0",
+			"foldersonvolume\0",
+			"unmountvolume\0",
+			"mountservervolume\0",
+			"findinfile\0",
+			"countlines\0",
+			"open\0",
+			"close\0",
+			"endoffile\0",
+			"setendoffile\0",
+			"getendoffile\0",
+			"setposition\0",
+			"getposition\0",
+			"readline\0",
+			"writeline\0",
+			"read\0",
+			"write\0",
+			"compare\0",
+			"writewholefile\0",
+			"getpathchar\0",
+			"freespaceonvolumedouble\0",
+			"volumesizedouble\0",
+			"getmp3info\0" /*7.0b12 PBS: André's file.getMp3Info verb*/
+	END
+
+1008 /*idrezverbs*/ EFP 	DISCARDABLE
+	BEGIN
+	1,					//Number of "blocks" in this resource
+		"rez\0",		//Function Processor Name
+		false,			//Window required
+			15,			//Count of verbs
+			"getresource\0",
+			"putresource\0",
+			"getnamedresource\0",
+			"putnamedresource\0",
+			"countrestypes\0",
+			"getnthrestype\0",
+			"countresources\0",
+			"getnthresource\0",
+			"getnthresinfo\0",
+			"resourceexists\0",
+			"namedresourceexists\0",
+			"deleteresource\0",
+			"deletenamedresource\0",
+			"getresourceattributes\0",		
+			"setresourceattributes\0"
+	END
+
+
+1009 /*idwindowverbs*/ EFP	DISCARDABLE
+	BEGIN
+	1,					//Number of "blocks" in this resource
+		"window\0",		//Function Processor Name
+		true,			//Window required
+			30,			//Count of verbs
+			"isopen\0", 
+			"open\0",
+			"isfront\0",
+			"bringtofront\0",
+			"sendtoback\0",
+			"frontmost\0",
+			"next\0",
+			"isvisible\0",
+			"show\0",
+			"hide\0",
+			"close\0",
+			"update\0",
+			"ismenuscript\0",
+			"getposition\0",
+			"setposition\0",
+			"getsize\0",
+			"setsize\0",
+			"zoom\0",
+			"runselection\0",
+			"scroll\0",
+			"msg\0",
+			"dbstats\0",
+			"quickscript\0",
+			"ismodified\0",
+			"setmodified\0",
+			"gettitle\0",
+			"settitle\0",	
+			"about\0",
+			"getfile\0",
+			"isreadonly\0"
+	END
+
+
+1010 /*idsearchverbs*/	EFP		DISCARDABLE
+	BEGIN
+	1,					//Number of "blocks" in this resource
+		"search\0",		//Function Processor Name
+		true,			//Window required
+			6,			//Count of verbs
+			"reset\0",
+			"findnext\0",
+			"replace\0",	
+			"replaceall\0",
+			"findtextdialog\0",
+			"replacetextdialog\0"
+	END
+
+1011 /*idfilemenuverbs*/	EFP		DISCARDABLE
+	BEGIN
+	1,					//Number of "blocks" in this resource
+		"filemenu\0",		//Function Processor Name
+		true,			//Window required
+			9,			//Count of verbs
+			"new\0",
+			"open\0",
+			"close\0",
+			"closeall\0",
+			"save\0",
+			"savecopy\0",
+			"revert\0",
+			"print\0",
+			"quit\0"
+	END
+
+
+1012 /*ideditmenuverbs*/	EFP		DISCARDABLE
+	BEGIN
+	1,					//Number of "blocks" in this resource
+		"editmenu\0",		//Function Processor Name
+		true,			//Window required
+			16,			//Count of verbs
+			"undo\0",
+			"cut\0",
+			"copy\0",
+			"paste\0",
+			"clear\0",
+			"selectall\0",
+			"getfont\0",
+			"getfontsize\0",
+			"setfont\0",
+			"setfontsize\0",
+			"plaintext\0",
+			"setbold\0",
+			"setitalic\0",
+			"setunderline\0",
+			"setoutline\0",
+			"setshadow\0"
+	END
+
+1013 /*idsysverbs*/ EFP 	DISCARDABLE
+	BEGIN
+	1,					//Number of "blocks" in this resource
+		"sys\0",			//Function Processor Name
+		false,			//Window required
+			14,			//Count of verbs
+			"osversion\0", /*sys*/
+			"systemtask\0",
+			"browsenetwork\0",
+			"appisrunning\0",
+			"frontmostapp\0",
+			"bringapptofront\0",
+			"countapps\0",
+			"getnthapp\0",
+			"getapppath\0",	
+			"memavail\0",
+			"machine\0",
+			"os\0",
+			"getenvironmentvariable\0",
+			"setenvironmentvariable\0",
+			"unixshellcommand\0",
+	END
+
+1014 /*idlaunchverbs*/	EFP		DISCARDABLE
+	BEGIN
+	1,					//Number of "blocks" in this resource
+		"launch\0",		//Function Processor Name
+		false,			//Window required
+			5,			//Count of verbs
+			"applemenu\0",	
+			"application\0",
+			"appwithdocument\0",
+			"resource\0",
+			"anything\0"
+	END
+
+
+1015 /*idclipboardverbs*/	EFP		DISCARDABLE
+	BEGIN
+	1,					//Number of "blocks" in this resource
+		"clipboard\0",	//Function Processor Name
+		false,			//Window required
+			2,			//Count of verbs
+			"get\0",	
+			"put\0"
+	END
+
+1016 /*idfrontierverbs*/		EFP		DISCARDABLE
+	BEGIN
+	1,					//Number of "blocks" in this resource
+		"frontier\0",		//Function Processor Name
+		true,			//Window required
+			13,			//Count of verbs
+			"getprogrampath\0",
+			"getfilepath\0",
+			"enableagents\0",
+			"requesttofront\0",
+			"isruntime\0",
+			"countthreads\0",
+			"ispowerpc\0",
+			"reclaimmemory\0",
+			"version\0",
+			"hashstats\0",
+			"gethashloopcount\0",
+			"hideapplication\0",
+			"isvalidserialnumber\0"
+	END
+
+1018 /*idthreadverbs*/ EFP	DISCARDABLE
+	BEGIN
+	1,					//Number of "blocks" in this resource
+		"thread\0",		//Function Processor Name
+		true,			//Window required
+			17,			//Count of verbs
+			"exists\0",
+			"evaluate\0",
+			"callscript\0",
+			"getcurrentid\0",
+			"getcount\0",
+			"getnthid\0",
+			"sleep\0",
+			"sleepfor\0",
+			"sleepticks\0",
+			"issleeping\0",
+			"wake\0",
+			"kill\0",
+			"gettimeslice\0",
+			"settimeslice\0",
+			"getdefaulttimeslice\0",
+			"setdefaulttimeslice\0",
+			"getstats\0"
+	END
+
+
+1017 /*idcancoonverbs*/ EFP 	DISCARDABLE
+	BEGIN
+	1,					//Number of "blocks" in this resource
+		"mainwindow\0",	//Function Processor Name
+		false,			//Window required
+			7,			//Count of verbs
+			"showflag\0", 		
+			"hideflag\0", 		
+			"showpopup\0", 		
+			"hidepopup\0", 		
+			"showbuttons\0", 	
+			"hidebuttons\0",
+			"showserverstats\0"
+	END
+
+
+
+
+1019 /*iddbverbs*/	EFP		DISCARDABLE
+	BEGIN
+	1,					//Number of "blocks" in this resource
+		"db\0",			//Function Processor Name
+		false,			//Window required
+			13,			//Count of verbs
+			"new\0",
+			"open\0",
+			"save\0",
+			"close\0",
+			"defined\0",
+			"getvalue\0",
+			"setvalue\0",
+			"delete\0",
+			"newTable\0",
+			"isTable\0",
+			"countitems\0",
+			"getnthitem\0",	
+			"getmoddate\0"
+	END
+
+
+1020 /*idxmlverbs*/ EFP 	DISCARDABLE
+	BEGIN
+	1,					//Number of "blocks" in this resource
+		"xml\0",		//Function Processor Name
+		false,			//Window required
+			14,			//Count of verbs
+			"addtable\0",
+			"addvalue\0",
+			"compile\0",
+			"decompile\0",
+			"getaddress\0",
+			"getaddresslist\0",
+			"getattribute\0",
+			"getattributevalue\0",
+			"getvalue\0",
+			"valtostring\0",
+			"frontiervaluetotaggedtext\0",
+			"structtofrontiervalue\0",
+			"getpathaddress\0",
+			"converttodisplayname\0"
+	END
+
+
+1021 /*idhtmlverbs*/ EFP 	DISCARDABLE
+	BEGIN
+	5,					//Number of "blocks" in this resource
+		"html\0",		//Function Processor Name
+		false,			//Window required
+			23,			//Count of verbs
+			"processmacros\0",
+			"urldecode\0",
+			"urlencode\0",
+			"parsehttpargs\0",
+			"iso8859encode\0",
+			"getgifheightwidth\0",
+			"getjpegheightwidth\0",
+			"buildpagetable\0",
+			"refglossary\0",
+			"getpref\0",
+			"getonedirective\0",
+			"rundirective\0",
+			"rundirectives\0",
+			"runoutlinedirectives\0",
+			"cleanforexport\0",
+			"normalizename\0",
+			"glossarypatcher\0",
+			"expandurls\0",
+			"traversalskip\0",
+			"getpagetableaddress\0",
+			"neutermacros\0",
+			"neutertags\0",
+			"drawcalendar\0",
+		
+		"searchengine\0",
+		false,
+			5,
+			"stripmarkup\0",
+			"deindexpage\0",
+			"indexpage\0",
+			"cleanindex\0",
+			"mergeresults\0",
+
+		"mrcalendar\0",
+		false,
+			11,
+			"getaddressday\0",
+			"getdayaddress\0",
+			"getfirstaddress\0",
+			"getfirstday\0",
+			"getlastaddress\0",
+			"getlastday\0",
+			"getmostrecentaddress\0",
+			"getmostrecentday\0",
+			"getnextaddress\0",
+			"getnextday\0",
+			"navigate\0",
+
+		"webserver\0",			//Function Processor Name
+		false,					//Window required
+			7,					//Count of verbs
+			"server\0",
+			"dispatch\0",
+			"parseheaders\0",
+			"parsecookies\0",
+			"buildresponse\0",
+			"builderrorpage\0",
+			"getserverstring\0",
+
+		"inetd\0",
+		false
+			1,
+			"supervisor\0"
+
+	END
+		
+	/*
+	"rundirective"
+	"rundirectives"
+	"runoutlinedirective"
+	"getonedirective"
+	"getpref"
+	"getpagepref"
+	*/
+
+#ifdef flregexpverbs
+
+1023 /*idregexpverbs*/ EFP 	DISCARDABLE
+	BEGIN
+	1,					//Number of "blocks" in this resource
+		"re\0",			//Function Processor Name
+		false,			//Window required
+			10,			//Count of verbs
+			"compile\0",
+			"match\0",
+			"replace\0",
+			"extract\0",
+			"split\0",
+			"join\0",
+			"visit\0",
+			"grep\0",
+			"getpatterninfo\0",
+			"expand\0"
+	END
+
+#endif //flregexpverbs
