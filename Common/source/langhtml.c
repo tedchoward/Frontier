@@ -151,9 +151,9 @@ extern boolean sysos (tyvaluerecord *v); //implemted in shellsysverbs.c
 #else
 
 	#if TARGET_API_MAC_CARBON == 1
-		#define STR_P_SERVERSTRING				"\x18" "UserLand Frontier/^0-^1X"
+		#define STR_P_SERVERSTRING			"\x0f" "Frontier/^0-^1X" /* 2005-01-04 creedon - removed UserLand for open source release */
 	#else
-		#define STR_P_SERVERSTRING				"\x17" "UserLand Frontier/^0-^1"
+		#define STR_P_SERVERSTRING			"\x0e" "Frontier/^0-^1" /* 2005-01-04 creedon - removed UserLand for open source release */
 	#endif
 
 #endif
