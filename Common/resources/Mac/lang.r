@@ -23,8 +23,8 @@
 
 ******************************************************************************/
 
-#include <Types.r>
-//#include <Systypes.r>
+#include <MacTypes.r>
+#include <Dialogs.r>
 
 resource 'STR#' (135, "Directions", purgeable) {
 	{	/* array StringArray: 13 elements */

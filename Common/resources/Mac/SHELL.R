@@ -25,9 +25,12 @@
 
 #define oldTemp
 
-#include <Types.r>
-//#include <Systypes.r>
+#include <MacTypes.r>
 #include <AEUserTermTypes.r>
+#include <Controls.r>
+#include <Dialogs.r>
+#include <Icons.r>
+#include <Menus.r>
 #include "config.r"
 #include "versions.h"
 
@@ -1690,7 +1693,11 @@ resource 'WIND' (128, "Windoid") {
 
 resource 'WIND' (130, "Home") {
 	{76, 184, 180, 460},
-	rDocProc,
+#if TARGET_API_MAC_CARBON
+	noGrowDocProc,
+#else
+	rDocProc,	/* 2004-10-20 aradke: not supported in Carbon */
+#endif
 	invisible,
 	goAway,
 	0x0,

@@ -23,8 +23,8 @@
 
 ******************************************************************************/
 
-#include <Types.r>
-//#include <SysTypes.r>
+#include <MacTypes.r>
+#include <Icons.r>
 
 
 #if 0
