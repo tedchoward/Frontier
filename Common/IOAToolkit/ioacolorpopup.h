@@ -36,4 +36,9 @@ typedef struct tycolordata {
 	} tycolordata, **hdlcolordata;
 	
 
+extern RGBColor blackcolor, whitecolor, greencolor, lightbluecolor, lightgraycolor, graycolor, darkgraycolor;
+
+extern RGBColor lightyellowcolor, lightgreencolor, lightpurplecolor, lightredcolor;
+
+extern RGBColor darkredcolor, darkbluecolor, darkgreencolor, mediumgraycolor, darkpurplecolor;
 

@@ -48,22 +48,6 @@
 #define flstructurelines true
 
 
-static RGBColor lightgreencolor = {52428, 65535, 52428};
-
-static RGBColor lightredcolor = {65535, 52428, 52428};
-
-static RGBColor darkredcolor = {32767, 0, 0};
-
-static RGBColor darkbluecolor = {0, 0, 32767};
-
-static RGBColor darkgreencolor = {0, 32767, 0};
-
-static RGBColor verydarkgreencolor = {0, 32767 / 4, 0};
-
-static RGBColor mediumgraycolor = {52428, 52428, 52428};
-
-static RGBColor yellowcolor = {64512, 62333, 1327}; 
-
 static RGBColor invertedbackcolor, invertedtextcolor;
 
 

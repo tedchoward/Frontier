@@ -48,14 +48,6 @@
 
 #define unimplementedtrap 0xA09F
 
-static RGBColor greencolor = {0, 32767, 0};
-
-static RGBColor whitecolor = {65535, 65535, 65535};
-
-static RGBColor blackcolor = {0, 0, 0};
-
-static RGBColor lightbluecolor = {52428, 52428, 65535};
-
 
 static boolean gestaltavailable (void) {
 	//Code change by Timothy Paustian Sunday, June 25, 2000 10:33:59 PM
