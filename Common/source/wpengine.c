@@ -1847,7 +1847,9 @@ void wpupdate (void) {
 		#endif
 				
 		#ifdef gray3Dlook
-		//	pushbackcolor (&whitecolor); /*2004-11-28 aradke: balance popbackcolor below*/ 
+			pushbackcolor (&whitecolor);
+		
+			eraserect (rcontent);
 		#endif
 
 		if (updatergn == nil)
@@ -1863,7 +1865,7 @@ void wpupdate (void) {
 		PG_ENDTRY;
 		
 		#ifdef gray3Dlook
-		//	popbackcolor (); 
+			popbackcolor (); 
 		#endif
 		
 		if (!wpisactive ())
