@@ -437,7 +437,7 @@ extern boolean getfsfile (const tyfilespec *, bigstring);
 extern boolean getfsvolume (const tyfilespec *, long *);
 
 
-extern filecheckdefaultpath (bigstring); /*fileverbs.c*/
+//extern filecheckdefaultpath (bigstring); /*fileverbs.c*/
 
 extern boolean filegetprogramversion (bigstring);
 

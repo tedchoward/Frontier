@@ -120,7 +120,7 @@ extern void shellhandlejugglerevent (void); /*shelljuggler.c*/
 extern void shelladjustmenus (void); /*shellmenu.c*/
 
 
-/* 5.0a5 dmb - no longer needed: extern void shellsetscrollbarinfo (void); /*shellops.c*/
+/* 5.0a5 dmb - no longer needed: extern void shellsetscrollbarinfo (void); /%shellops.c*/
 
 
 extern boolean shellgetgrowiconrect (hdlwindowinfo, Rect *); /*shellwindow.c*/

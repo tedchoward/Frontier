@@ -103,7 +103,7 @@ typedef struct typrocesslist {
 	
 	hdlprocessrecord hfirstprocess; /*head of list*/
 	
-	/*hdlprocessrecord processlistmarker; /*for scheduler, pick up search from here*/
+	/*hdlprocessrecord processlistmarker; /%for scheduler, pick up search from here*/
 	
 	short ctrunning; /*number of processes in this list currently running*/
 	

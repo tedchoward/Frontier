@@ -65,12 +65,12 @@ extern boolean initmacintosh (void);
 
 extern short countinitialfiles (void);
 
-extern getinitialfile (short, bigstring, short *);
+extern void getinitialfile (short, bigstring, short *);
 
 extern boolean installgestaltfunction (void);
 
 #ifdef MACVERSION //JES 2004.03.29: MacOS Specific function declarations
-	extern WriteToConsole (char *s);
-	extern DoErrorAlert(OSStatus status, CFStringRef errorFormatString);
+	extern void WriteToConsole (char *s);
+	extern void DoErrorAlert(OSStatus status, CFStringRef errorFormatString);
 #endif
 

@@ -200,7 +200,7 @@ typedef struct tyOLD42savedmenuinfo {
 		
 		/***boolean flpopupactive;*/
 		
-		/***boolean flzoomscriptwindow; /*zoom out the window in the next idle?*/
+		/***boolean flzoomscriptwindow; /%zoom out the window in the next idle?*/
 		
 		long menurefcon; /*for use by application, menueditor doesn't touch it, but menuverbs does*/
 		} tymenurecord, *ptrmenurecord, **hdlmenurecord;

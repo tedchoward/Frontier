@@ -32,7 +32,7 @@ extern hdltreenode yylval, yyval;
 
 #define tokentype short /*something that's returned by parsegettoken*/
 
-/***extern tymodulerecord parseresult; /*this is what yyparse returns*/
+/***extern tymodulerecord parseresult; /%this is what yyparse returns*/
 
 
 /*prototypes*/

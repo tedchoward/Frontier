@@ -333,7 +333,7 @@ short langcounttreenodes (hdltreenode hnode) {
 	} /*langcounttreenodes*/
 			
 
-langdisposetree (hdltreenode htree) {
+boolean langdisposetree (hdltreenode htree) {
 
 	/*
 	5.7.97 dmb: protect herrornode global

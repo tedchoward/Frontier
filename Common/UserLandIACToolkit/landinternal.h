@@ -121,7 +121,7 @@ extern pascal void landsetlandglobals (hdllandglobals);
 extern pascal boolean landmenuscriptcompleted (void);
 
 
-extern landdisposeallparams (hdlverbrecord); /*land.c*/
+//extern landdisposeallparams (hdlverbrecord); /*land.c*/
 
 extern boolean landhandleverb (hdlverbrecord);
 
@@ -290,7 +290,7 @@ extern boolean landsetstatsinfo (hdlverbrecord, boolean); /*landwindow.c*/
 
 extern boolean landstatswindowisopen (void);
 
-extern landsetmemstats (void);
+// extern landsetmemstats (void);
 
 extern boolean landwindoweventfilter (EventRecord *);
 

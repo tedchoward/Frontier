@@ -911,7 +911,7 @@ extern boolean hashsetnodekey (hdlhashtable, hdlhashnode, const bigstring);
 
 extern boolean hashinsert (const bigstring, tyvaluerecord);
 
-extern hashmerge (hdlhashtable, hdlhashtable);
+//extern hashmerge (hdlhashtable, hdlhashtable);
 
 extern boolean hashlocate (const bigstring, hdlhashnode *, hdlhashnode *);
 
@@ -1050,7 +1050,7 @@ extern boolean disposetmpvalue (tyvaluerecord *);
 extern boolean exemptfromtmpstack (tyvaluerecord *);
 
 
-extern langdisposetree (hdltreenode); /*langtree.c*/
+extern boolean langdisposetree (hdltreenode); /*langtree.c*/
 
 
 extern boolean langsymbolreference (hdlhashtable, bigstring, tyvaluerecord *, hdlhashnode *); /*langvalue.c*/
@@ -1306,9 +1306,9 @@ extern boolean andandvalue (tyvaluerecord, hdltreenode, tyvaluerecord *);
 
 extern boolean ororvalue (tyvaluerecord, hdltreenode, tyvaluerecord *);
 
-extern unaryminusvalue (tyvaluerecord, tyvaluerecord *);
+extern boolean unaryminusvalue (tyvaluerecord, tyvaluerecord *);
 
-extern notvalue (tyvaluerecord, tyvaluerecord *);
+extern boolean notvalue (tyvaluerecord, tyvaluerecord *);
 
 extern boolean kernelfunctionvalue (hdlhashtable, bigstring, hdltreenode, tyvaluerecord *);
 

@@ -72,9 +72,10 @@
 		typedef pascal void (*TrackClickProcPtr) (struct tywprecord **, Point);
 		
 		typedef TrackClickProcPtr TrackClickUPP;
-		//this ain't used.
-		//#define NewTrackClickProc(userRoutine)		\
-		//		((TrackClickUPP) (userRoutine))
+		/*this ain't used.
+		#define NewTrackClickProc(userRoutine)		\
+			((TrackClickUPP) (userRoutine))
+		*/
 		
 		#define CallTrackClickProc(userRoutine, wp, pt)		\
 				((userRoutine))(wp, pt)

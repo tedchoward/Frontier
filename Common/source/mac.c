@@ -213,7 +213,7 @@ short countinitialfiles (void) {
 	} /*countinitialfiles*/
 	
 	
-getinitialfile (short ix, bigstring fname, short *vnum) {
+void getinitialfile (short ix, bigstring fname, short *vnum) {
 
 	AppFile appfilerecord;
 
@@ -259,17 +259,16 @@ boolean installgestaltfunction (void) {
 
 
 
-#if TARGET_API_MAC_CARBON == 0
+#if TARGET_API_MAC_CARBON
 
-int WriteToConsole (char *s)
+void WriteToConsole (char *s)
 {
 
 	CFShow(CFStringCreateWithCString(NULL,s,kCFStringEncodingMacRoman));
 		
-	return 0;
 }
 
-int DoErrorAlert(OSStatus status, CFStringRef errorFormatString)
+void DoErrorAlert(OSStatus status, CFStringRef errorFormatString)
 {	
     CFStringRef formatStr = NULL, printErrorMsg = NULL;
     SInt16      alertItemHit = 0;
@@ -296,8 +295,6 @@ int DoErrorAlert(OSStatus status, CFStringRef errorFormatString)
            CFRelease (formatStr);                             
         }
     }
-
-	return 0;
 }
 	
 #endif

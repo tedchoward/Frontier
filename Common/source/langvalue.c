@@ -7300,7 +7300,7 @@ boolean ororvalue (tyvaluerecord v1, hdltreenode hp2, tyvaluerecord *vreturned) 
 	} /*ororvalue*/
 	
 	
-unaryminusvalue (tyvaluerecord v1, tyvaluerecord *vreturned) {
+boolean unaryminusvalue (tyvaluerecord v1, tyvaluerecord *vreturned) {
 	
 	register boolean fl = true;
 	
@@ -7355,7 +7355,7 @@ unaryminusvalue (tyvaluerecord v1, tyvaluerecord *vreturned) {
 	} /*unaryminusvalue*/
 
 
-notvalue (tyvaluerecord v1, tyvaluerecord *vreturned) {
+boolean notvalue (tyvaluerecord v1, tyvaluerecord *vreturned) {
 	
 	/*
 	7/10/91 dmb: rewrote to coerce to boolean, rather than applying the 

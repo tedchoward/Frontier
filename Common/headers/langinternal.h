@@ -350,7 +350,7 @@ extern boolean langpoplocalchain (hdlhashtable);
 
 extern boolean languserescaped (boolean);
 
-extern langprogramkilled (void);
+//extern langprogramkilled (void);
 
 extern boolean langdebuggercall (hdltreenode);
 

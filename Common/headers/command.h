@@ -28,9 +28,9 @@
 
 /*prototypes*/
 
-extern cmdprocessstarted (void) ;
+//extern cmdprocessstarted (void) ;
 
-extern cmdprocesskilled (void);
+//extern cmdprocesskilled (void);
 
 extern boolean startcmddialog (void);
 
