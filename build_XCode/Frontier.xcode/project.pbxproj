@@ -631,7 +631,7 @@
 				OTHER_CFLAGS = "-fno-inline -malign-mac68k ";
 				OTHER_LDFLAGS = "-multiply_defined warning";
 				OTHER_REZFLAGS = "-d TARGET_API_MAC_CARBON=1 -d FRONTIER_FRAMEWORK_INCLUDES=1 -i ../Common/headers";
-				PRODUCT_NAME = "Userland Frontier™";
+				PRODUCT_NAME = Frontier;
 				REZ_PREPROCESSOR_DEFINITIONS = "";
 				REZ_PREPROCESSOR_UNDEFINITIONS = "";
 				REZ_SCRIPT_TYPE = Roman;
@@ -657,7 +657,7 @@
 			explicitFileType = wrapper.application;
 			includeInIndex = 0;
 			isa = PBXFileReference;
-			path = "Userland Frontier™.app";
+			path = Frontier.app;
 			refType = 3;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
@@ -8631,7 +8631,7 @@
 		BB3B83620730604B0049D0C1 = {
 			fileEncoding = 30;
 			isa = PBXFileReference;
-			lastKnownFileType = text.plist.xml;
+			lastKnownFileType = text.xml;
 			path = Info.plist;
 			refType = 2;
 			sourceTree = SOURCE_ROOT;
