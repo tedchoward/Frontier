@@ -75,8 +75,8 @@ extern boolean shellpagesetup (void);
 
 extern boolean shellprint (WindowPtr, boolean);
 
-extern boolean iscurrentportprintport ();
+extern boolean iscurrentportprintport (void);
 
-extern boolean isprintingactive ();
+extern boolean isprintingactive (void);
 
 extern boolean getprintscale (long * scaleMult, long * scaleDiv);

@@ -841,7 +841,8 @@ boolean opdefaultdrawtext (hdlheadrecord hnode, const Rect *rtext, boolean flsel
 		/*
 		getpenpoint (&pt);
 		
-		rframe.right = pt.h + 2; /*leave 2 extra pixels for prettier bar cursor*/
+		rframe.right = pt.h + 2; //leave 2 extra pixels for prettier bar cursor
+		*/
 		
 		if (flinverted)
 			invertrect (rframe);
@@ -975,7 +976,7 @@ void opdrawline (hdlheadrecord hnode, Rect linerect) {
 	register hdloutlinerecord ho = outlinedata;
 	Rect iconrect, textrect;
 	Rect rclip = linerect;
-	boolean flbitmap = false;
+	//boolean flbitmap = false;
 	boolean flinverted, flselected;
 	
 	if (hnode == nil) /*defensive driving, old versions would erase the rect*/
@@ -1307,6 +1308,8 @@ static boolean ophorizscroll (long ctpixels) {
 	} /*ophorizscroll*/
 	
 
+#if 0
+
 static long opvisiupcountpixels (hdlheadrecord nomad, long vscroll) {
 	
 	long i, ct = 0;
@@ -1335,6 +1338,8 @@ static long opvisidowncountpixels (hdlheadrecord nomad, long vscroll) {
 		
 	return (ct);
 	} /*opvisidowncountpixels*/
+
+#endif
 
 
 static boolean opvertscroll (long ctlines) {
@@ -1413,7 +1418,7 @@ void opjumpdisplayto (hdlheadrecord holdcursor, hdlheadrecord hnewcursor) {
 	} /*opjumpdisplayto*/
 
 
-static boolean opscrollto (long h, long v) {
+boolean opscrollto (long h, long v) {
 	
 	/*
 	DW 10/27/93: new version bends over backwards to avoid 
@@ -1829,7 +1834,7 @@ void opvisisubheads (hdlheadrecord hnode) {
 	} /*opvisisubheads*/
 
 
-static boolean opgetmaxwidthvisit (hdlheadrecord hnode, long *maxheadwidth) {
+static boolean opgetmaxwidthvisit (hdlheadrecord hnode, ptrvoid refcon) {
 	
 	short width;
 	hdloutlinerecord ho = outlinedata;
@@ -1842,12 +1847,12 @@ static boolean opgetmaxwidthvisit (hdlheadrecord hnode, long *maxheadwidth) {
 		
 		width = scrollquantum (width);
 		
-		if (width > *maxheadwidth)
-			*maxheadwidth = width;
+		if (width > *(long*)refcon)
+			*(long*)refcon = width;
 		}
 	
 	return (true);
-	} /*opgetwidthvisit*/
+	} /*opgetmaxwidthvisit*/
 
 
 boolean opgetoutinesize (long *width, long *height) {

@@ -263,7 +263,7 @@ static boolean opundounlink (hdldepositinfo hdepositinfo, boolean flundo) {
 		
 		register hdldepositinfo hdi = hdepositinfo;
 		register hdlheadrecord hdeposit = (**hdi).hdeposit;
-		register level = (**hdeposit).headlevel;
+		register short level = (**hdeposit).headlevel;
 		
 		opdeposit ((**hdi).hpre, (**hdi).dir, (**hdi).hdeposit);
 		
@@ -987,6 +987,10 @@ boolean opmovecursor (hdlheadrecord hpre, tydirection dirmove, long units, hdlhe
 				h = opgetnextexpanded (h);
 				
 				break;
+			
+			default:
+				/* nothing to do */
+				break;
 				
 			} /*switch*/
 			
@@ -1364,6 +1368,7 @@ boolean opsortlevel (hdlheadrecord hnode) {
 	} /*opsortlevel*/
 
 
+/*
 static boolean opdefaultcanmove (hdlheadrecord hnode, tydirection dir) {
 	
 	register hdlheadrecord h = hnode;
@@ -1392,7 +1397,8 @@ static boolean opdefaultcanmove (hdlheadrecord hnode, tydirection dir) {
 		}
 	
 	return (fl);
-	} /*opdefaultcanmove*/
+	} /%opdefaultcanmove%/
+*/
 
 
 typedef struct tymoveinfo {
@@ -1403,7 +1409,7 @@ typedef struct tymoveinfo {
 	} tymoveinfo;
 
 
-static boolean opvalidatecanmove (hdlheadrecord hnode, tymoveinfo *moveinfo) {
+static boolean opvalidatecanmove (hdlheadrecord hnode, ptrvoid refcon) {
 	
 	/*
 	5.0a18 dmb: added moveinfo parameter, so we can test move against
@@ -1411,6 +1417,7 @@ static boolean opvalidatecanmove (hdlheadrecord hnode, tymoveinfo *moveinfo) {
 	*/
 	
 	hdloutlinerecord ho = outlinedata;
+	tymoveinfo *moveinfo = (tymoveinfo *) refcon;
 	hdlheadrecord hpre = (*moveinfo).hpre;
 	tydirection dir = (*moveinfo).dir;
 	
@@ -1714,7 +1721,7 @@ boolean opdemote (void) {
 	} /*opdemote*/
 
 
-static boolean opdeletesubvisit (hdlheadrecord hnode, hdlheadrecord hsafe) {
+static boolean opdeletesubvisit (hdlheadrecord hnode, ptrvoid refcon) {
 	
 	/*
 	5.0.1 dmb: new routline betweeen opdeletesubs and opreleasenode,
@@ -1724,6 +1731,7 @@ static boolean opdeletesubvisit (hdlheadrecord hnode, hdlheadrecord hsafe) {
 	in case we're tossing expanded nodes
 	*/
 
+	hdlheadrecord hsafe = (hdlheadrecord) refcon;
 	hdloutlinerecord ho = outlinedata;
 
 	if ((**ho).hbarcursor == hnode)
@@ -1752,7 +1760,6 @@ boolean opdeletesubs (hdlheadrecord hnode) {
 	
 	register hdlheadrecord h = hnode;
 	hdlscreenmap hmap;
-	boolean fltable = false;
 	
 	if (opanymarked ())
 		return (false);
@@ -1781,8 +1788,9 @@ boolean opdeletesubs (hdlheadrecord hnode) {
 	} /*opdeletesubs*/
 	
 
-static boolean opcopyvisit (hdlheadrecord hnode, ptrcopyinfo copyinfo) {
+static boolean opcopyvisit (hdlheadrecord hnode, ptrvoid refcon) {
 	
+	ptrcopyinfo copyinfo = (ptrcopyinfo) refcon;
 	register hdlheadrecord hcopy;
 	register hdlheadrecord htarget;
 	register short level, lastlevel;
@@ -2065,7 +2073,7 @@ static boolean opsetbarcursorvisit (hdlheadrecord hnode, ptrvoid refcon) {
 	} /*opsetbarcursorvisit*/
 
 
-#ifdef fldebug
+#if 0
 
 static boolean debugmarkedvisit (hdlheadrecord hnode, long *intforrecursion) {
 	
@@ -2445,6 +2453,8 @@ boolean opcut (void) {
 	} /*opcut*/
 
 
+#if 0
+
 static boolean opundopaste (hdlheadrecord hnode, boolean flundo) {
 
 	if (flundo) {
@@ -2456,6 +2466,8 @@ static boolean opundopaste (hdlheadrecord hnode, boolean flundo) {
 
 	return (true);
 	} /*opundopaste*/
+
+#endif
 
 
 boolean isoutlinetext (Handle htext) {
@@ -2798,7 +2810,7 @@ boolean opinsertstructure (hdlheadrecord hnode, tydirection dir) {
 
 boolean opsettmpbitvisit (hdlheadrecord hnode, ptrvoid flset) {
 	
-	(**hnode).tmpbit = (boolean) flset;
+	(**hnode).tmpbit = (boolean) ((long) flset);
 	
 	return (true);
 	} /*opsettmpbitvisit*/

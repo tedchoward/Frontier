@@ -35,7 +35,7 @@
 	#include "ops.h"
 	#include "shell.h"
 
-#ifdef TARGET_API_MAC_CARBON
+#if TARGET_API_MAC_CARBON
 	#include "file.h"
 	#include "launch.h"
 	#include "timedate.h"

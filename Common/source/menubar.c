@@ -333,7 +333,7 @@ static boolean mepushmenubarstack (const tymenubarstackelement *pitem) {
 	} /*mepushmenubarstack*/
 
 
-static void medirtymenubar (void) {
+void medirtymenubar (void) {
 	
 	fldirtymenubar = true;
 	
@@ -1018,7 +1018,7 @@ boolean menewmenubar (hdloutlinerecord houtline, hdlmenubarstack *hstack) {
 	(**hs).ixdeletedmenu = -1; /*no halfway deleted menu*/
 	
 	/*
-	if (pushmenubarlist (hs)) /*add it to the end of our list%/
+	if (pushmenubarlist (hs)) /%add it to the end of our list%/
 		
 		(**hs).flactive = (**menubarlist).flactive;
 	*/
@@ -1153,8 +1153,8 @@ static boolean meinsertmenu (const tymenubarstackelement *menuinfo) {
 static void menubarchanged (hdlmenubarstack hstack) {
 	
 	(*menubarcallbacks.menubarchangedroutine) (hstack);
-	} /*menubarchanged*/
-
+	} /%menubarchanged%/
+*/
 
 boolean memenuitemchanged (hdlmenubarstack hstack, hdlheadrecord hnode) {
 	
@@ -1277,7 +1277,7 @@ static short megetmenuindex (hdlmenu hmenu /*short id*/) {
 	
 	for (i = 0; i < topstack; i++) {
 		
-		/*if ((**hs).stack [i].idmenu == id) /*found match -- it's a whole menu*/
+		//if ((**hs).stack [i].idmenu == id) /*found match -- it's a whole menu*/
 		if ((**hs).stack [i].hmenu == hmenu)
 			return (i);
 		} /*for*/
@@ -1372,9 +1372,9 @@ short mecheckdeletedmenu (short ixstack, boolean fldrawmenubar) {
 	} /*mecheckdeletedmenu*/
 
 
-static boolean mefindvisit (hdlheadrecord h, hdlheadrecord hfind) {
+static boolean mefindvisit (hdlheadrecord h, ptrvoid refcon) {
 
-	return (h != hfind);
+	return (h != (hdlheadrecord) refcon);
 	} /*mefindvisit*/
 
 
@@ -1578,7 +1578,7 @@ boolean memenuitemdeleted (hdlmenubarstack hstack, hdlheadrecord hnode) {
 	
 	if (mefindinmenubar (hnode, true, &ixstack, &itemnumber)) { /*deleting a whole menu*/
 		
-		/***2.1b3 mecheckdeletedmenu (ixstack, false); /*note match or flush previous deletion*/
+		//2.1b3 mecheckdeletedmenu (ixstack, false); /*note match or flush previous deletion*/
 		
 		(**hs).ixdeletedmenu = ixstack; /*save for later, if not reinserted*/
 		
@@ -1651,7 +1651,6 @@ boolean purgefrommenubarlist (long refcon) {
 	
 	register hdlmenubarlist hlist = menubarlist;
 	register hdlmenubarstack hstack, hnext;
-	boolean fl = true;
 	
 	if (hlist == nil)
 		return (true);
@@ -1796,7 +1795,7 @@ boolean mecheckformulas (short ixstack) {
 /*
 boolean memenuupdate (void) {
 	
-	/*
+	/%
 	respond to a menubarlist menu selection
 	%/
 	
@@ -1812,11 +1811,12 @@ boolean memenuupdate (void) {
 			mecheckformulas (h);
 			
 			h = (**h).hnext;
-			} /*while%/
+			} /%while%/
 		}
 	
-	return (false); /*didn't handle the menu%/
-	} /*memenuupdate*/	
+	return (false); /%didn't handle the menu%/
+	} /%memenuupdate%/
+*/
 
 
 boolean memenuhit (short idmenu, short ixmenu, hdlheadrecord *hnode) {

@@ -38,7 +38,7 @@
 
 unsigned long timelastkeystroke = 0; /*the value of tickcount for last keystroke*/
 
-static flouchlocked = false;	/*4.0b7 dmb*/
+static boolean flouchlocked = false;	/*4.0b7 dmb*/
 
 
 #ifdef MACVERSION	
@@ -299,13 +299,13 @@ void shellhandlekeystroke (void) {
 			}
 		
 		/*
-		if (shellpushfrontglobals ()) { /*a window is open%/
+		if (shellpushfrontglobals ()) { /%a window is open%/
 			
 			fl = (*shellglobals.cmdkeyfilterroutine) (keyboardstatus.chkb);
 			
 			shellpopglobals ();
 			
-			if (!fl) /*cmd-key was consumed%/
+			if (!fl) /%cmd-key was consumed%/
 				return;
 			}
 		*/

@@ -90,11 +90,9 @@ typedef enum tylinetableitemflags {
 	#define diskchnotequals			((byte) 0xad)	/* '­' */
 	#define diskchdivide			((byte) 0xd6)	/* 'Ö' */
 	#define diskchellipses			((byte) 0xc9)	/* 'É' */
+
+	static byte bsellipses [] = "\x03...";
 #endif
-
-
-static byte bsellipses [] = "\x03...";
-
 
 #define opversionnumber 2
 
@@ -162,7 +160,7 @@ typedef struct tyoppackinfo {
 	} tyoppackinfo, *ptroppackinfo;
 
 
-static boolean outtablevisit (hdlheadrecord hnode, ptroppackinfo packinfo) {
+static boolean outtablevisit (hdlheadrecord hnode, ptrvoid refcon) {
 	
 	/*
 	4.1b7 dmb: we should never dispose of the packhandle.
@@ -175,6 +173,7 @@ static boolean outtablevisit (hdlheadrecord hnode, ptroppackinfo packinfo) {
 	register hdlheadrecord hn = hnode;
 	register Handle hrefcon = (**hn).hrefcon;
 	register long lenrefcon;
+	ptroppackinfo packinfo = (ptroppackinfo) refcon;
 	tylinetableitem item;
 	
 	clearbytes (&item, sizeof (item));
@@ -304,6 +303,8 @@ static boolean pushdiskchar (byte ch, handlestream *deststream) {
 	} /*pushdiskchar*/
 
 
+#if 0
+
 static boolean xxxpushstringtodisk (bigstring bssource, bigstring bsdest) {
 
 	/*
@@ -369,6 +370,8 @@ static boolean xxxpushstringtodisk (bigstring bssource, bigstring bsdest) {
 	
 	return (true);
 	} /*pushstringtodisk*/
+
+#endif
 
 
 static boolean outtextvisit (hdlheadrecord hnode, ptroppackinfo packinfo) {
@@ -439,7 +442,7 @@ static boolean opoutlinetotext (hdlheadrecord hnode, handlestream *textstream, l
 	
 	packinfo.flpackcomments = true;
 	
-	if (!opsiblingvisiter (hnode, false, &outtextvisit, &packinfo))
+	if (!opsiblingvisiter (hnode, false, (opvisitcallback) &outtextvisit, &packinfo))
 		return (false);
 	
 	*ctbytes = (*textstream).eof - origbytes;
@@ -635,13 +638,14 @@ boolean oppackoutline (hdloutlinerecord houtline, Handle *hpackedoutline) {
 	} /*oppackoutline*/
 
 
-static boolean intablevisit (hdlheadrecord hnode, ptroppackinfo packinfo) {
+static boolean intablevisit (hdlheadrecord hnode, ptrvoid refcon) {
 	
 	/*
 	5.1.5b9 dmb: validate expanded bit in case structure changes with overflow
 	*/
 	
 	register hdlheadrecord hn = hnode;
+	ptroppackinfo packinfo = (ptroppackinfo) refcon;
 	register long lenrefcon;
 	Handle hrefcon;
 	tylinetableitem item;
@@ -780,7 +784,7 @@ static boolean opgetlinetext (boolean flmapchars, handlestream *textstream, shor
 		}
 	
 /*
-	while (*p == chtab) { /*count the leading tab chars
+	while (*p == chtab) { /%count the leading tab chars
 
 		ct++;
 		
@@ -788,7 +792,7 @@ static boolean opgetlinetext (boolean flmapchars, handlestream *textstream, shor
 		
 		ixtext++;
 		
-		if (ixtext >= sizetext) /*no text on the line
+		if (ixtext >= sizetext) /%no text on the line
 			return (false);
 		
 		fltabindent = true;
@@ -796,7 +800,7 @@ static boolean opgetlinetext (boolean flmapchars, handlestream *textstream, shor
 
 	if (!fltabindent) {
 		
-		while (*p == chspace) { /*count the leading tab chars
+		while (*p == chspace) { /%count the leading tab chars
 			
 			ct++;
 			
@@ -804,13 +808,13 @@ static boolean opgetlinetext (boolean flmapchars, handlestream *textstream, shor
 			
 			ixtext++;
 			
-			if (ixtext >= sizetext) /*no text on the line
+			if (ixtext >= sizetext) /%no text on the line
 				return (false);
 			}
 		
 		if (ct > 0) {
 			
-			if (spacesforlevel == 0) /*first run of spaces
+			if (spacesforlevel == 0) /%first run of spaces
 				spacesforlevel = (short) ct;
 			
 			ct = divround (ct, spacesforlevel);
@@ -877,7 +881,7 @@ static boolean opunpacktexttooutline (long platform, handlestream *packstream, h
 	*/
 	
 	register hdlheadrecord h = nil;
-	register short lastlevel;
+	register short lastlevel = 0;
 	register tydirection dir;
 	Handle hlinetext;
 	hdlheadrecord hnewnode;
@@ -1261,7 +1265,7 @@ boolean optextscraptooutline (hdloutlinerecord houtline, Handle htext, hdlheadre
 static short outscraplevel = 0; /*for communications while sending to scrap*/
 
 
-static boolean outscrapvisit (hdlheadrecord hnode, ptroppackinfo packinfo) {
+static boolean outscrapvisit (hdlheadrecord hnode, ptrvoid refcon) {
 	
 	/*
 	6/12/91 dmb: validate outlinedata.  currently, menubar scraps will only 
@@ -1270,6 +1274,7 @@ static boolean outscrapvisit (hdlheadrecord hnode, ptroppackinfo packinfo) {
 	*/
 	
 	register hdlheadrecord h = hnode;
+	ptroppackinfo packinfo = (ptroppackinfo) refcon;
 	handlestream *s;
 	
 	if (!outtextvisit (h, packinfo))
@@ -1369,7 +1374,7 @@ boolean opoutlinetonewtextscrap (hdloutlinerecord houtline, Handle *htext) {
 /*
 boolean opsuboutlinetonewtextscrap (hdlheadrecord hnode, Handle *htext) {
 	
-	/*
+	/%
 	similar to opoutlinetotextscrap above, but allocated new handle and 
 	only visits hnode and its subheads
 	%/
@@ -1389,7 +1394,7 @@ boolean opsuboutlinetonewtextscrap (hdlheadrecord hnode, Handle *htext) {
 	disposehandle (*htext);
 	
 	return (false);
-	} /*opsuboutlinetonewtextscrap*/
-
+	} /%opsuboutlinetonewtextscrap%/
+*/
 
 

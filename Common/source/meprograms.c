@@ -52,8 +52,9 @@ typedef struct findnodeinfo{
 	} tyfindnodeinfo;
 
 
-static boolean mefindnodevisit (WindowPtr w, tyfindnodeinfo *findinfo) {
+static boolean mefindnodevisit (WindowPtr w, ptrvoid refcon) {
 	
+	tyfindnodeinfo *findinfo = (tyfindnodeinfo *) refcon;
 	boolean fl;
 	
 	shellpushglobals (w);
@@ -196,7 +197,6 @@ boolean megetnodelangtext (hdlheadrecord hnode, Handle *htext, long *signature) 
 	hdloutlinerecord houtline;
 	register boolean fl;
 	boolean fldispose = false;
-	long ixload = 0;
 	
 	#if !flruntime
 	

@@ -48,8 +48,8 @@ static void opgetprintdisplayinfo (tytextdisplayinfo *info) {
 		shellprintinfo.paperrect, (**ho).fontnum, (**ho).fontsize, (**ho).fontstyle, 
 		
 		(**ho).linespacing, (**ho).lineindent, info);
-	} /*opgetprintdisplayinfo*/
-
+	} /%opgetprintdisplayinfo%/
+*/
 
 static short opgetpagecount (void) {
 	
@@ -166,7 +166,7 @@ boolean opprint (short pagenumber) {
 	tyscrollinfo oldvertscrollinfo, oldhorizscrollinfo;
 	hdlheadrecord oldline1;
 	short oldline1linesabove;
-	typrintinfo *pi = &shellprintinfo;
+	//typrintinfo *pi = &shellprintinfo;
 	Rect printrect;
 //	Rect oldoutlinerect;
 	short olddefaultlineheight;

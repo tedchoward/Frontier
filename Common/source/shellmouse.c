@@ -198,7 +198,9 @@ void shellhandlemouse (void) {
 	short windowpart;
 	WindowPtr macwindow;
 	register WindowPtr w;
+#ifdef WIN95VERSION		
 	tyclickflags flags = clicknormal;
+#endif
 
 	#ifdef MACVERSION
 		Point localpt;
@@ -505,7 +507,6 @@ static pascal OSStatus mousewheelhandler (EventHandlerCallRef nextHandler, Event
 
 static void shellinstallmousewheelhandler (void) {
 	
-	OSErr ec = noErr;		
 	EventTypeSpec myevents = {kEventClassMouse, kEventMouseWheelMoved};
 	
 	InstallApplicationEventHandler (NewEventHandlerUPP (mousewheelhandler), 1, &myevents, 0, NULL);	

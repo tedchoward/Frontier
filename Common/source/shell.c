@@ -119,9 +119,9 @@ static Point adjustcursorlastpoint = {-1, -1}; /*optimizes adjustcursor routine*
 
 static boolean floverridebeachball = false; /*set true when user action occurs*/
 
-static flipcstarted = false;
+static boolean flipcstarted = false;
 
-static flbackgroundtasksdisabled = true; /*will be set to false when initialization is complete*/
+static boolean flbackgroundtasksdisabled = true; /*will be set to false when initialization is complete*/
 
 static boolean flshelleventposted = false;
 
@@ -280,17 +280,15 @@ boolean shellquit (void) {
 	} /*shellquit*/
 
 
-#ifdef MACVERSION
+#if defined(MACVERSION) && TARGET_API_MAC_OS8
 static void shellhandlediskinsertion (void) {
 	//Code change by Timothy Paustian Friday, June 16, 2000 2:21:17 PM
 	//Changed to Opaque call for Carbon
 	//The system takes care of bad mounted disks, we don't need to.
-	#if !TARGET_API_MAC_CARBON
 	Point pt = {0, 0};
 	
 	if (HiWord (shellevent.message) != 0)
 		DIBadMount (pt, shellevent.message);
-	#endif
 
 	} /*shellhandlediskinsertion*/
 #endif
@@ -386,7 +384,7 @@ static void shellhandleevent (void) {
 		case diskEvt:
 			//Code change by Timothy Paustian Friday, June 16, 2000 2:22:47 PM
 			//Changed to Opaque call for Carbon
-			#if !TARGET_API_MAC_CARBON
+			#if TARGET_API_MAC_OS8
 			shellhandlediskinsertion ();
 			#endif
 
@@ -892,13 +890,13 @@ static boolean shellshortbreakproc (void) {
 	/*
 	EventRecord ev;
 	
-	if (shelleventsblocked ()) /*all events are blocked -- don't ask the OS for any%/
+	if (shelleventsblocked ()) /%all events are blocked -- don't ask the OS for any%/
 		return (false);
 	
 	if (EventAvail (shellgeteventmask (), &ev))
 		return (true);
 	
-	return (landeventfilter (&ev)); /*null event consumed by IAC toolkit%/
+	return (landeventfilter (&ev)); /%null event consumed by IAC toolkit%/
 	*/
 	
 	} /*shellshortbreakproc*/
@@ -967,11 +965,9 @@ void shellmaineventloop (void) {
 	5.0a22 dmb: need thread globals to shutdown
 	*/
 	
-	/*
-	shellpushblock (networkMask, true); /*for network toolkit; block network events%/
-	*/
-
-#if defined(MACVERSION) && !TARGET_API_MAC_CARBON
+	//shellpushblock (networkMask, true); /*for network toolkit; block network events%/
+	
+#if defined(MACVERSION) && TARGET_API_MAC_OS8
 	UnloadSeg (&initsegment);
 #endif
 	
@@ -1022,7 +1018,7 @@ boolean shellstart (void) {
 		long itemIndex = 1;
 		OSErr err = noErr;
 		
-		err = GetIndMenuItemWithCommandID (NULL, kHICommandPreferences, 1, &hmenu, &itemIndex);
+		err = GetIndMenuItemWithCommandID (NULL, kHICommandPreferences, 1, &hmenu, (MenuItemIndex*) &itemIndex);
 	
 		if (err == noErr) {
 			deletemenuitem (hmenu, itemIndex);
@@ -1099,20 +1095,24 @@ static shelltrashresource (OSType type, short id) {
 	clearhandle (h);
 	
 	ChangedResource (h);
-	} /*shelltrashresource*/
-
+	} /%shelltrashresource%/
+*/
 
 #ifdef MACVERSION
 static pascal long shellgrowzone (Size ctbytesneeded) {
 	
 	long ctstillneeded = ctbytesneeded;
 	
+	#if TARGET_API_MAC_OS8
 	long curA5 = SetUpAppA5 ();
+	#endif
 	
 	shellcallmemoryhooks (&ctstillneeded);
 	
+	#if TARGET_API_MAC_OS8
 	RestoreA5 (curA5);
-	
+	#endif
+		
 	return (ctbytesneeded - ctstillneeded);
 	} /*shellgrowzone*/
 #endif
@@ -1385,7 +1385,7 @@ boolean shellinit (void) {
 
 	} /*shellinit*/
 
-#if TARGET_API_MAC_CARBON == 1
+#if 0 //TARGET_API_MAC_CARBON == 1
 static pascal void idleTimer (EventLoopTimerRef theTimer, void * userData)
 {
 	//I hate warnings, shut up the compiler

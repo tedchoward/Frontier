@@ -118,7 +118,7 @@ static boolean visitonemenu (short idmenu, boolean (*visitproc) (hdlmenu, short)
 	} /*visitonemenu*/
 
 
-static visitmenuitems (boolean (*visitproc) (hdlmenu, short)) {
+static boolean visitmenuitems (boolean (*visitproc) (hdlmenu, short)) {
 	
 	register short lastmenu = topmenustack;
 	register short i, j;
@@ -142,34 +142,35 @@ static visitmenuitems (boolean (*visitproc) (hdlmenu, short)) {
 	} /*visitmenuitems*/
 
 
+#if 0 //TARGET_API_MAC_CARBON == 1
+
 static void setfontmenustyles (void) {
 
 	/*
 	7.0b47 PBS: set font styles for the items in the Font menu.
 	*/
 
-	#if TARGET_API_MAC_CARBON == 1
+	short i, lastitem, idfont;
+	hdlmenu hfontmenu;
+	bigstring bsitem;
+	
+	hfontmenu = shellmenuhandle (fontmenu);
+	
+	lastitem = countmenuitems (hfontmenu);
+	
+	for (i = 1; i <= lastitem; i++) {
+	
+		getmenuitem (hfontmenu, i, bsitem);
+		
+		fontgetnumber (bsitem, &idfont);
+	
+		SetMenuItemFontID (hfontmenu, i, idfont);	
+		} /*for*/
 
-		short i, lastitem, idfont;
-		hdlmenu hfontmenu;
-		bigstring bsitem;
-		
-		hfontmenu = shellmenuhandle (fontmenu);
-		
-		lastitem = countmenuitems (hfontmenu);
-		
-		for (i = 1; i <= lastitem; i++) {
-		
-			getmenuitem (hfontmenu, i, bsitem);
-			
-			fontgetnumber (bsitem, &idfont);
-		
-			SetMenuItemFontID (hfontmenu, i, idfont);	
-			} /*for*/
-
-	#endif
 	} /*setfontmenustyles*/
 	
+#endif
+
 
 hdlmenu shellmenuhandle (short idmenu) {
 
@@ -833,7 +834,7 @@ static void shellcheckfontsizestyle (void) {
 
 void shelladjustundo (void) {
 	
-	register hdlstring hstring;
+	register hdlstring hstring = nil;
 	register boolean flundoable = false;
 	register hdlmenu hmenu;
 	bigstring bs;
@@ -1299,7 +1300,6 @@ void shelladjustmenus (void) {
 	register WindowPtr w = shellwindow;
 	boolean flwindow = w != nil;
 	boolean flchanges;
-	WindowPtr topwindow = getfrontwindow ();
 	boolean flanywindow = (getfrontwindow () != nil);
 	hdlwindowinfo hrootinfo = nil;
 	tyselectioninfo x;

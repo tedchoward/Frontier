@@ -378,7 +378,9 @@ boolean opnthsummit (long n, hdlheadrecord *hsummit) {
 	} /*opnthsummit*/
 
 
-static boolean opgetnthnodevisit (hdlheadrecord hnode, ptrscanrecord scanrecord) {
+static boolean opgetnthnodevisit (hdlheadrecord hnode, ptrvoid refcon) {
+
+	ptrscanrecord scanrecord = (ptrscanrecord) refcon;
 	
 	if ((*scanrecord).lnumcurrent == (*scanrecord).lnumlookfor) { /*we're at the node*/
 		
@@ -1071,7 +1073,9 @@ void opsetexpandedbits (hdlheadrecord hsummit, boolean fl) {
 	} /*opsetexpandedbits*/
 
 
-static boolean opcontainsvisit (hdlheadrecord hnode, ptrscanrecord scanrecord) {
+static boolean opcontainsvisit (hdlheadrecord hnode, ptrvoid refcon) {
+	
+	ptrscanrecord scanrecord = (ptrscanrecord) refcon;
 	
 	if (hnode == (*scanrecord).hnodelookfor) {
 		
@@ -1201,7 +1205,7 @@ boolean opreleasevisit (hdlheadrecord hnode, ptrvoid refcon) {
 		
 		#if !fljustpacking
 		
-			(*(**outlinedata).releaserefconcallback) (hnode, (boolean) refcon);
+			(*(**outlinedata).releaserefconcallback) (hnode, (boolean) ((long) refcon));
 			
 			#endif
 		
@@ -1220,7 +1224,7 @@ boolean opreleasevisit (hdlheadrecord hnode, ptrvoid refcon) {
 
 void opreleasenode (hdlheadrecord hnode, boolean fldisk) {
 	
-	opreleasevisit (hnode, (ptrvoid) fldisk);
+	opreleasevisit (hnode, (ptrvoid) ((long) fldisk));
 	} /*opreleasenode*/
 
 
@@ -1469,7 +1473,7 @@ void opdisposestructure (hdlheadrecord hnode, boolean fldisk) {
 	too.
 	*/
 	
-	opsiblingvisiter (hnode, true, &opreleasevisit, (ptrvoid) fldisk);
+	opsiblingvisiter (hnode, true, &opreleasevisit, (ptrvoid) ((long) fldisk));
 	} /*opdisposestructure*/
 
 
@@ -1565,9 +1569,9 @@ hdlheadrecord opfirstatlevel (hdlheadrecord hnode) {
 	} /*opfirstatlevel*/
 	
 
-static boolean opcountvisit (hdlheadrecord hnode, long *count) {
+static boolean opcountvisit (hdlheadrecord hnode, ptrvoid refcon) {
 	
-	(*count)++; /*the simplest visit routine*/
+	(*(long*)refcon)++; /*the simplest visit routine*/
 	
 	return (true);
 	} /*opcountvisit*/
@@ -1602,9 +1606,9 @@ long opcountheads (void) {
 	} /*opcountheads*/
 	
 
-static boolean opnotinoutlinevisit (hdlheadrecord hnode, ptrscanrecord scanrecord) {
+static boolean opnotinoutlinevisit (hdlheadrecord hnode, ptrvoid refcon) {
 	
-	return (hnode != (*scanrecord).hnodelookfor);
+	return (hnode != (*(ptrscanrecord)refcon).hnodelookfor);
 	} /*opnotinoutlinevisit*/
 
 

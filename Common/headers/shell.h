@@ -721,13 +721,13 @@ extern void shellsetscrollbars (WindowPtr);
 extern void shellscroll (boolean, hdlscrollbar, short, Point);
 //Code change by Timothy Paustian Saturday, July 22, 2000 9:56:19 PM
 //two new routines to allow initialization and destruction of the scroll UPPs
-extern void	shellinitscroll();
+extern void	shellinitscroll(void);
 
-extern void shellshutdownscroll();
+extern void shellshutdownscroll(void);
 
-extern void fileinit();
+extern void fileinit(void);
 
-extern void	fileshutdown();
+extern void	fileshutdown(void);
 
 #ifdef WIN95VERSION
 void winscroll (boolean isvertscroll, int scrolltype, long pos);

@@ -119,7 +119,7 @@ typedef struct tymenuvariable { /*7.0b6 PBS: moved from menuverbs.c*/
 #endif
 
 		
-static errornum = 0; /*error number exclusively for menu routines*/
+static short errornum = 0; /*error number exclusively for menu routines*/
 
 
 
@@ -222,7 +222,6 @@ boolean menuverbgetdisplaystring (hdlexternalvariable hvariable, bigstring bs) {
 	get string for table display.  variable is in memory
 	*/
 	
-	register hdlmenuvariable hv = (hdlmenuvariable) hvariable;
 	long ctheads;
 	
 	if (!menuverbgetsize (hvariable, &ctheads))
@@ -483,12 +482,13 @@ boolean menuverbsettimes (hdlexternalvariable h, long timecreated, long timemodi
 	} /*menuverbsettimes*/
 
 
-static boolean mefindusedblocksvisit (hdlheadrecord hnode, ptrstring bsparent) {
+static boolean mefindusedblocksvisit (hdlheadrecord hnode, ptrvoid refcon) {
 	
 	/*
 	if there's a script attached to hnode, note the database usage.
 	*/
 	
+	ptrstring bsparent = (ptrstring) refcon;
 	tymenuiteminfo item;
 	bigstring bspath;
 	
@@ -1180,7 +1180,7 @@ static boolean detachscript (hdlmenurecord hmenu, hdlheadrecord hnode) {
 	
 	shellpopglobals ();
 	
-	/* meunloadscript (); /*detach the script from the window*/
+	// meunloadscript (); /*detach the script from the window*/
 	
 	(**hm).scriptnode = nil;
 	
@@ -1258,15 +1258,15 @@ static boolean menusetscriptverb (hdltreenode hparam1, tyvaluerecord *v) {
 	attachscript (hm, hcursor, hcopy);
 	
 	/*
-	megetmenuiteminfo (hcursor, &item); /*gets prior cmd key, or clears bytes%/
+	megetmenuiteminfo (hcursor, &item); /%gets prior cmd key, or clears bytes%/
 	
 	mereleaserefconroutine (hcursor, true);
 	
-	(**hcopy).fldirty = true; /*force save on this guy's script%/
+	(**hcopy).fldirty = true; /%force save on this guy's script%/
 	
 	item.linkedscript.houtline = hcopy;
 	
-	item.linkedscript.adrlink = nildbaddress; /*hasn't been allocated yet%/
+	item.linkedscript.adrlink = nildbaddress; /%hasn't been allocated yet%/
 	
 	mesetmenuiteminfo (hcursor, &item);
 	
@@ -1288,8 +1288,9 @@ typedef struct tyfindinfo {
 	} tyfindinfo, *ptrfindinfo;
 
 
-static boolean findheadlinevisit (hdlheadrecord hnode, ptrfindinfo findinfo) {
+static boolean findheadlinevisit (hdlheadrecord hnode, ptrvoid refcon) {
 	
+	ptrfindinfo findinfo = (ptrfindinfo) refcon;
 	bigstring bs;
 	
 	opgetheadstring (hnode, bs);
@@ -2310,7 +2311,7 @@ boolean menustart (void) {
 	
 	(*cb).gettargetdataroutine = &menuverbgettargetdata;
 	
-	(*cb).getvariableroutine = &menuverbgetvariable;
+	(*cb).getvariableroutine = (shellgetvariablecallback) &menuverbgetvariable;
 	
 	(*cb).settextmoderoutine = &opsettextmode;
 	

@@ -372,9 +372,10 @@ static boolean opredocopy (hdlheadrecord hnode, boolean flundo) {
 	} /*opredocopy*/
 
 
-static boolean movetohotspotvisit (hdlheadrecord hnode, ptrdraginfo draginfo) {
+static boolean movetohotspotvisit (hdlheadrecord hnode, ptrvoid refcon) {
 	
 	register hdlheadrecord h = hnode;
+	ptrdraginfo draginfo = (ptrdraginfo) refcon;
 	register hdlheadrecord hpre = (*draginfo).hnode;
 	tydirection dir = (*draginfo).dir;
 	
@@ -432,7 +433,7 @@ boolean opmovetohotspot (tyhotspot *hotspot) {
 	*/
 	
 	register tyhotspot *hs = hotspot;
-	hdlheadrecord hsource = (*hs).hsource;
+	//hdlheadrecord hsource = (*hs).hsource;
 	hdlheadrecord htarget = (*hs).htarget;
 	tydirection dir = (*hs).dir;
 	hdlheadrecord horigcursor = (**outlinedata).hbarcursor;
@@ -491,7 +492,7 @@ boolean opmovetohotspot (tyhotspot *hotspot) {
 	
 	/*DW 9/3/93 -- defend against the target getting deleted in predragcallback*/ {
 	
-		hdlheadrecord htargetparent = (**htarget).headlinkleft;
+		//hdlheadrecord htargetparent = (**htarget).headlinkleft;
 		
 		switch ((*(**outlinedata).predragcallback) (&htarget, &dir)) {
 			
@@ -550,7 +551,7 @@ boolean opmovetohotspot (tyhotspot *hotspot) {
 	} /*opmovetohotspot*/
 
 
-static void opscrollfordrag (tyhotspot *hotspot, tydirection scrolldir) {
+void opscrollfordrag (tyhotspot *hotspot, tydirection scrolldir) {
 	
 	register hdloutlinerecord ho = outlinedata;
 	register long vertcurrent = (**ho).vertscrollinfo.cur;

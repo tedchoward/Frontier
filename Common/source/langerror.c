@@ -61,7 +61,7 @@ boolean langerrorenabled (void) {
 /*
 static boolean fllocalerrorhook = false;
 
-langerrordispatch (bigstring bs) { /**finish this someday%/
+langerrordispatch (bigstring bs) { /%finish this someday%/
 	
 	hdltreenode hcode;
 	
@@ -75,8 +75,8 @@ langerrordispatch (bigstring bs) { /**finish this someday%/
 		}
 	
 	langerrormessage (bs);
-	} /*langerrordispatch*/
-
+	} /%langerrordispatch%/
+*/
 
 void langerror (short stringnum) {
 	

@@ -117,7 +117,9 @@ boolean mecopyrefconroutine (hdlheadrecord hsource, hdlheadrecord hdest) {
 	} /*mecopyrefconroutine*/
 
 
-static boolean headleveloffsetvisit (hdlheadrecord hnode, long *headleveloffset) {
+static boolean headleveloffsetvisit (hdlheadrecord hnode, ptrvoid refcon) {
+	
+	long *headleveloffset = (long *) refcon;
 	
 	(**hnode).headlevel += *headleveloffset;
 	
@@ -203,9 +205,10 @@ typedef struct typackinfo {
 	} typackinfo, *ptrpackinfo;
 
 
-static boolean mesavescriptvisit (hdlheadrecord hnode, ptrpackinfo packinfo) {
+static boolean mesavescriptvisit (hdlheadrecord hnode, ptrvoid refcon) {
 	
 	register hdlheadrecord h = hnode;
+	//ptrpackinfo packinfo = (ptrpackinfo) refcon;
 	register hdloutlinerecord ho;
 	tymenuiteminfo item;
 	
@@ -289,7 +292,7 @@ static boolean mesaveasscriptvisit (hdlheadrecord hnode, ptrvoid refcon) {
 	} /*mesaveasscriptvisit*/
 
 
-static boolean mepackscriptvisit (hdlheadrecord hnode, ptrpackinfo packinfo) {
+static boolean mepackscriptvisit (hdlheadrecord hnode, ptrvoid refcon) {
 	
 	/*
 	if there's a script attached to hnode, pack it onto the end of 
@@ -297,6 +300,7 @@ static boolean mepackscriptvisit (hdlheadrecord hnode, ptrpackinfo packinfo) {
 	*/
 	
 	register hdlheadrecord h = hnode;
+	ptrpackinfo packinfo = (ptrpackinfo) refcon;
 	register hdloutlinerecord ho;
 	tymenuiteminfo item;
 	Handle hpackedoutline;
@@ -365,7 +369,7 @@ static boolean mesavemenustructure (tysavedmenuinfo *info, dbaddress *adr) {
 	} /*mesavemenustructure*/
 
 
-static boolean mepackmenustructure (tysavedmenuinfo *info, Handle *hpacked) {
+boolean mepackmenustructure (tysavedmenuinfo *info, Handle *hpacked) {
 	
 	/*
 	analogous to mesavemenustructure above, except we're packing everything 
@@ -431,7 +435,6 @@ boolean mesavemenurecord (hdlmenurecord hmenurecord, boolean flpreservelinks, bo
 	tysavedmenuinfo info;
 	register WindowPtr w;
 	Rect r;
-	long ixload = 0;
 	long lnumcursor;
 	
 	opvalidate (ho);
@@ -550,7 +553,7 @@ boolean mesavemenurecord (hdlmenurecord hmenurecord, boolean flpreservelinks, bo
 	} /*mesavemenurecord*/
 
 
-static boolean mesetupmenurecord (tysavedmenuinfo *info, hdloutlinerecord houtline, hdlmenurecord *hmenurecord) { 
+boolean mesetupmenurecord (tysavedmenuinfo *info, hdloutlinerecord houtline, hdlmenurecord *hmenurecord) { 
 	
 	/*
 	create a new menu record with the given outline and setup info
@@ -602,13 +605,14 @@ static boolean mesetupmenurecord (tysavedmenuinfo *info, hdloutlinerecord houtli
 	} /*mesetupmenurecord*/
 
 
-static boolean meunpackscriptvisit (hdlheadrecord hnode, ptrpackinfo packinfo) {
+static boolean meunpackscriptvisit (hdlheadrecord hnode, ptrvoid refcon) {
 	
 	/*
 	4/30/91 dmb: set dirty bit on outline to make sure it gets saved
 	*/
 	
 	register hdlheadrecord h = hnode;
+	ptrpackinfo packinfo = (ptrpackinfo) refcon;
 	hdloutlinerecord houtline;
 	tymenuiteminfo item;
 	
@@ -764,7 +768,9 @@ static boolean meexportscrap (hdloutlinerecord houtline, tyscraptype totype, Han
 
 boolean mesetscraproutine (hdloutlinerecord houtline) {
 	
-	return (shellsetscrap ((Handle) houtline, menuscraptype, &medisposescrap, &meexportscrap));
+	return (shellsetscrap ((Handle) houtline, menuscraptype,
+								(shelldisposescrapcallback) &medisposescrap,
+								(shellexportscrapcallback) &meexportscrap));
 	} /*mesetscraproutine*/
 
 

@@ -604,7 +604,7 @@ void langtraperrors (bigstring bserror, langerrormessagecallback *savecallback, 
 	
 	langcallbacks.errormessagerefcon = bserror;
 	
-	langcallbacks.errormessagecallback = &langtraperrormessage;
+	langcallbacks.errormessagecallback = (langerrormessagecallback) &langtraperrormessage;
 	} /*langtraperrors*/
 
 
@@ -753,7 +753,7 @@ boolean langrun (Handle htext, tyvaluerecord *val) {
 	/*tylangcallbacks savecallbacks;*/
 	boolean fltmpval;
 	register boolean flscriptalreadyrunning = flscriptrunning;
-	register boolean fltablealreadypushed;
+	register boolean fltablealreadypushed = false;
 	unsigned short savelines = ctscanlines;
 	unsigned short savechars = ctscanchars;
 	
@@ -917,7 +917,7 @@ boolean langruntraperror (Handle htext, tyvaluerecord *v, bigstring bserror) {
 	
 	saverefcon = langcallbacks.errormessagerefcon;
 	
-	langcallbacks.errormessagecallback = &langtraperror;
+	langcallbacks.errormessagecallback = (langerrormessagecallback) &langtraperror;
 	
 	langcallbacks.errormessagerefcon = bserror;
 	
@@ -941,7 +941,7 @@ boolean langrunhandletraperror (Handle htext, bigstring bsresult, bigstring bser
 	*/
 #ifdef MACVERSION	
 	boolean fl;
-	callback savecallback;
+	langerrormessagecallback savecallback;
 	ptrvoid saverefcon;
 	GrafPtr saveport;
 	//Code change by Timothy Paustian Wednesday, June 14, 2000 4:32:31 PM
@@ -956,7 +956,7 @@ boolean langrunhandletraperror (Handle htext, bigstring bsresult, bigstring bser
 	
 	saverefcon = langcallbacks.errormessagerefcon;
 	
-	langcallbacks.errormessagecallback = &langtraperror;
+	langcallbacks.errormessagecallback = (langerrormessagecallback) &langtraperror;
 	
 	langcallbacks.errormessagerefcon = bserror;
 	
@@ -1079,11 +1079,11 @@ boolean langreduceformula (bigstring bs) {
 	if (isemptystring (bscopy)) /*nothing but an = sign, not a formula*/
 		return (false);
 	
-	/*agentsdisable (true); /*temporarily disable agents*/
+	//agentsdisable (true); /*temporarily disable agents*/
 	
 	fl = langrunstringnoerror (bscopy, bsresult);
 	
-	/*agentsdisable (false); /*restore*/
+	//agentsdisable (false); /*restore*/
 	
 	if (!fl) /*syntax or runtime error*/
 		return (false);
@@ -1113,7 +1113,7 @@ boolean langruncode (hdltreenode htree, hdlhashtable hcontext, tyvaluerecord *vr
 	register boolean flscriptwasrunning = flscriptrunning;
 	register hdlhashtable ht = hcontext;
 	register boolean fl;
-	register boolean flchained;
+	register boolean flchained = false;
 	
 	if (htree == nil) /*defensive driving*/
 		return (false);
@@ -1389,7 +1389,6 @@ boolean langrunscriptcode (hdlhashtable htable, bigstring bsverb, hdltreenode hc
 	tyvaluerecord val;
 	hdltreenode hfunctioncall;
 	hdltreenode hparamlist;
-	Handle hthread = nil;
 	boolean fltmpval;
 	
 	if (!setaddressvalue (htable, bsverb, &val))
@@ -1483,7 +1482,6 @@ boolean langrunscript (bigstring bsscriptname, tyvaluerecord *vparams, hdlhashta
 	hdltreenode hcode;
 	hdlhashtable htable;
 	tyvaluerecord vhandler;
-	Handle hthread = nil;
 	hdlhashnode handlernode;
 	
 	pushhashtable (roottable);
@@ -1608,6 +1606,6 @@ boolean langrunscript (bigstring bsscriptname, tyvaluerecord *vparams, hdlhashta
 	exit:
 	
 	return (fl);
-	} /*langrunscript*/
-
+	} /%langrunscript%/
+*/
 

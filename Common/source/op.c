@@ -139,7 +139,7 @@ boolean opistextmode (void) {
 	} /*opistextmode*/
 
 
-static boolean ophaslinkedtext (hdlheadrecord hnode) {
+boolean ophaslinkedtext (hdlheadrecord hnode) {
 	
 	return ((*(**outlinedata).haslinkedtextcallback) (hnode));
 	} /*ophaslinkedtext*/
@@ -230,7 +230,7 @@ void oppoststylechange (void) {
 static boolean undosetfont (Handle hdata, boolean flundo) {
 	
 	if (flundo)
-		opsetfont ((short) hdata);
+		opsetfont ((short) ((long) hdata));
 	
 	return (true);
 	} /*undosetfont*/
@@ -247,7 +247,7 @@ boolean opsetfont (short fontnum) {
 	if ((**ho).fontnum == fontnum)
 		return (false);
 	
-	pushundostep (&undosetfont, (Handle) (**ho).fontnum);
+	pushundostep (&undosetfont, (Handle) ((long) (**ho).fontnum));
 	
 	(**ho).fontnum = fontnum;
 	
@@ -260,7 +260,7 @@ boolean opsetfont (short fontnum) {
 static boolean undosetsize (Handle hdata, boolean flundo) {
 	
 	if (flundo)
-		opsetsize ((short) hdata);
+		opsetsize ((short) ((long) hdata));
 	
 	return (true);
 	} /*undosetsize*/
@@ -273,7 +273,7 @@ boolean opsetsize (short fontsize) {
 	if ((**ho).fontsize == fontsize)
 		return (false);
 	
-	pushundostep (&undosetsize, (Handle) (**ho).fontsize);
+	pushundostep (&undosetsize, (Handle) ((long) (**ho).fontsize));
 	
 	(**ho).fontsize = fontsize;
 	
@@ -337,7 +337,7 @@ boolean opsettextmode (boolean fltextmode) {
 	} /*opsettextmode*/
 
 
-static void optoggletextmode (void) {
+void optoggletextmode (void) {
 	
 	opsettextmode (!opistextmode ());
 	} /*optoggletextmode*/
@@ -717,7 +717,8 @@ void opresize (Rect r) {
 /*void opupdate (void) {
 	
 	opindenteddisplay ();
-	} /*opupdate*/
+	} /%opupdate%/
+*/
 	
 	
 boolean opdefaultadjustcursor (hdlheadrecord hnode, Point pt, const Rect *textrect) {
@@ -1062,7 +1063,8 @@ boolean opdefaultreturnkey (tydirection dir) {
 	boolean flcomment = keyboardstatus.flshiftkey;
 	
 	return (opinsertheadline (emptystring, dir, flcomment));
-	} /*opdefaultreturnkey*/
+	} /%opdefaultreturnkey%/
+*/
 
 
 static void opreturnkey (void) {
@@ -1087,7 +1089,7 @@ static void opreturnkey (void) {
 		
 	langopruncallbackscripts (idopreturnkeyscript); /* DW 1/19/00, let the opReturnKey callbacks have a chance to hook in */
 	
-/*	if (flsplit) { /* AR 2/16/00, split the current headline at the cursor position %/
+/*	if (flsplit) { /% AR 2/16/00, split the current headline at the cursor position %/
 	
 		long maxpos, startsel, endsel;
 		
@@ -1231,7 +1233,6 @@ static boolean opstructuretextkey (byte chkey) {
 	11/17/92 dmb: use time of event, not time we get here
 	*/
 	
-	register byte c = chkey;
 	register long timethiskey;
 	hdlheadrecord hnode;
 	
@@ -1251,6 +1252,8 @@ static boolean opstructuretextkey (byte chkey) {
 	return (true);
 	} /*opstructuretextkey*/
 
+
+#ifdef PIKE
 
 static boolean opstructuretabkey (tydirection dir) {
 	
@@ -1280,8 +1283,8 @@ static boolean opstructuretabkey (tydirection dir) {
 	return (true);
 	} /*opstructuretabkey*/
 
-
-#endif
+#endif	/*PIKE*/
+#endif	/*version42orgreater*/
 
 boolean opkeystroke (void) {
 	

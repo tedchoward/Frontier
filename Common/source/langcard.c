@@ -375,7 +375,7 @@ boolean langruncard (hdltreenode hparam1, boolean flmodal, tyvaluerecord *vretur
 			
 			disposehandle (hcard);
 			
-			langerror (0); //***
+			langerror (0);
 			
 			return (false);
 			}
@@ -385,8 +385,7 @@ boolean langruncard (hdltreenode hparam1, boolean flmodal, tyvaluerecord *vretur
 		fl = uisRunModalHandle (hcard, true, bscard, 0, 0, &modalcardeventfilter);
 	else
 		fl = uisOpenHandle (hcard, true, bscard, 0, 0, nil);
-	
-	/*
+
 	uisClose ();
 	*/
 	

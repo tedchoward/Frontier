@@ -81,7 +81,7 @@ hdldialogrecord langdialogdata = nil;
 static boolean langdialogselectall (void) {
 	
 	
-	return (dialogselectall (langdialogwindow));
+	return (dialogselectall ((DialogPtr) langdialogwindow));
 	} /*langdialogselectall*/
 
 
@@ -195,7 +195,7 @@ static boolean langdialogclose (void) {
 		
 		#if TARGET_API_MAC_CARBON
 
-			while (((char)(*hd) != -1) && ((**hd).flstillalive)) { /*make sure it's handled before window is disposed*/
+			while (((char)((long)*hd) != -1) && ((**hd).flstillalive)) { /*make sure it's handled before window is disposed*/
 				
 				processchecktimeouts ();
 				
@@ -260,9 +260,7 @@ static void langdialogactivate (boolean flactivate) {
 
 
 static boolean langdialogadjustcursor (Point pt){
-	
-	register hdldialogrecord hd = langdialogdata;
-	
+		
 	setcursortype (cursorisarrow);
 	
 	return (true);
@@ -277,23 +275,24 @@ static boolean langdialogsetfontsize (void) {
 	dialogsetfontsize (langdialogwindow, (**hw).defaultfont, (**hw).defaultsize);
 	
 	return (true);
-	} /*langdialogsetfontsize%/
+	} /%langdialogsetfontsize%/
 
 
 static boolean langdialogsetfont (void) {
 	
-	shelldefaultfontroutine (); /*set windowinfo record defaultfont field%/
+	shelldefaultfontroutine (); /%set windowinfo record defaultfont field%/
 	
 	return (langdialogsetfontsize ());
-	} /*langdialogsetfont%/
+	} /%langdialogsetfont%/
 	
 
 static boolean langdialogsetsize (void) {
 	
-	shelldefaultsizeroutine (); /*set windowinfo record defaultfont field%/
+	shelldefaultsizeroutine (); /%set windowinfo record defaultfont field%/
 	
 	return (langdialogsetfontsize ());
-	} /*langdialogsetsize*/
+	} /%langdialogsetsize%/
+*/
 
 
 static boolean langdialogsetselectioninfo (void) {
@@ -331,7 +330,7 @@ static boolean langdialogcopy (void) {
 	if (!copyhandle (TEScrapHandle (), &htext))
 		return (false);
 	
-	return (shellsetscrap (htext, textscraptype, &disposehandle, nil));
+	return (shellsetscrap (htext, textscraptype, (shelldisposescrapcallback) &disposehandle, nil));
 	} /*langdialogcopy*/
 
 
@@ -385,7 +384,7 @@ static boolean langdialogcut (void) {
 	} /*langdialogcut*/
 
 
-static callback savedebugger;
+static langtreenodecallback savedebugger;
 
 
 static boolean langdialogdebugger (hdltreenode hnode) {
@@ -418,7 +417,6 @@ static boolean langdialogitemhit (hdltreenode htree, short itemnumber, boolean f
 	we'll form the code tree for the parameter list (itemnumber) by hand.
 	*/
 	
-	register hdldialogrecord hd = langdialogdata;
 	hdltreenode hparam;
 	tyvaluerecord val;
 	register boolean fl;
@@ -491,8 +489,9 @@ typedef struct finddialoginfo {
 	} tyfinddialoginfo, *ptrfinddialoginfo;
 
 
-static boolean finddialogvisit (WindowPtr w, ptrfinddialoginfo findinfo) {
+static boolean finddialogvisit (WindowPtr w, ptrvoid refcon) {
 	
+	ptrfinddialoginfo findinfo = (ptrfinddialoginfo) refcon;
 	hdlwindowinfo hinfo;
 	hdldialogrecord hd;
 	
@@ -749,7 +748,7 @@ boolean langrunmodeless (hdltreenode hparam1, tyvaluerecord *vreturned) {
 			#if TARGET_API_MAC_CARBON == 1
 			
 				flzoomscript = false; 	/*7.1b37 PBS: wiring off a feature that: 1. no one knows about and 2. crashes anyway.*/
-										/*Attempting to support this feature also causes crashes.
+										/*Attempting to support this feature also causes crashes.*/
 										/*That's why it's gone.*/
 			
 			#endif

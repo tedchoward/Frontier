@@ -63,6 +63,9 @@ structures, set it true.
 
 #define cthoists 5 /*depth of hoist stack*/
 
+typedef struct tyoutlinerecord *ptroutlinerecord, **hdloutlinerecord; /*forward declaration*/
+
+typedef struct tyheadrecord *ptrheadrecord, **hdlheadrecord;/*forward declaration*/
 
 typedef struct tyheadrecord {
 	
@@ -111,7 +114,7 @@ typedef struct tyheadrecord {
 	Handle hrefcon; /*for use by application, see opgetrefcon*/
 	
 	Handle headstring; /*text of headline lives in its own block*/
-	} tyheadrecord, *ptrheadrecord, **hdlheadrecord;
+	} tyheadrecord;
 
 
 typedef struct tyhoistelement {
@@ -177,9 +180,9 @@ typedef boolean (*opgetrectcallback) (hdlheadrecord, const Rect *, Rect *);
 
 typedef boolean (*opgefullrectcallback) (hdlheadrecord, Rect *);
 
-typedef boolean (*opsetscrapcallback) (struct tyoutlinerecord **);
+typedef boolean (*opsetscrapcallback) (hdloutlinerecord);
 
-typedef boolean (*opgetscrapcallback) (struct tyoutlinerecord ** *, boolean *);
+typedef boolean (*opgetscrapcallback) (hdloutlinerecord *, boolean *);
 
 typedef boolean (*optextchangedcallback) (hdlheadrecord, bigstring);
 
@@ -201,7 +204,7 @@ typedef boolean (*opgetwindowhandlecallback) (Point, Handle *);
 
 typedef boolean (*opsetwindowhandlecontextcallback) (Handle);
 
-typedef	boolean (*optexttooutlinecallback) (struct tyoutlinerecord **, Handle, hdlheadrecord *);
+typedef	boolean (*optexttooutlinecallback) (hdloutlinerecord, Handle, hdlheadrecord *);
 
 
 typedef struct tyoutlinerecord {
@@ -443,7 +446,7 @@ typedef struct tyoutlinerecord {
 	long outlinetype; /*for use by application. types in opinternal.h*/
 	
 	long outlinerefcon; /*for use by application*/
-	} tyoutlinerecord, *ptroutlinerecord, **hdloutlinerecord;
+	} tyoutlinerecord;
 
 
 

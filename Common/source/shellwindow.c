@@ -957,22 +957,22 @@ boolean indexwindowlist (short windownumber, hdlwindowinfo *hwindow) {
 
 boolean firstrootwindow (hdlwindowinfo *hinfo) {
 	
-	/*
+	/%
 	a root window is one with no parent.  we travel through the window
 	list and return the info record for the first such window.
 	
 	return false if there aren't any root windows;
 	%/
 	
-	*hinfo = hfirstwindow; /*start search with first window%/
+	*hinfo = hfirstwindow; /%start search with first window%/
 	
 	return (nextrootwindow (hinfo));
-	} /*firstrootwindow%/
+	} /%firstrootwindow%/
 	
 
 boolean nextrootwindow (hdlwindowinfo *hinfo) {
 	
-	/*
+	/%
 	a root window is one with no parent.  we travel through the window
 	list and return the info record for the next such window.
 	
@@ -983,12 +983,12 @@ boolean nextrootwindow (hdlwindowinfo *hinfo) {
 	register hdlwindowinfo firstnomad = nomad;
 	register hdlwindowinfo nextnomad;
 	
-	if (nomad == nil) /*empty list, no more root windows%/
+	if (nomad == nil) /%empty list, no more root windows%/
 		return (false);
 	
-	while (true) { /*check each node in the window list%/
+	while (true) { /%check each node in the window list%/
 		
-		if ((**nomad).parentwindow == nil) { /*a root window%/
+		if ((**nomad).parentwindow == nil) { /%a root window%/
 			
 			*hinfo = nomad;
 			
@@ -997,7 +997,7 @@ boolean nextrootwindow (hdlwindowinfo *hinfo) {
 	
 		nextnomad = (**nomad).nextwindow;
 		
-		if (nextnomad == hfirstwindow) { /*reached end of list, no more root windows%/
+		if (nextnomad == hfirstwindow) { /%reached end of list, no more root windows%/
 			
 			*hinfo = nil;
 			
@@ -1005,8 +1005,8 @@ boolean nextrootwindow (hdlwindowinfo *hinfo) {
 			}
 			
 		nomad = nextnomad;
-		} /*while%/
-	} /*nextrootwindow%/
+		} /%while%/
+	} /%nextrootwindow%/
 
 
 boolean visitrootwindows (boolean (*visit) ()) {
@@ -1023,13 +1023,13 @@ boolean visitrootwindows (boolean (*visit) ()) {
 		
 		nomad = (**nomad).nextwindow;
 		
-		if (nomad == hfirstwindow) /*wrapped around to head of list%/
+		if (nomad == hfirstwindow) /%wrapped around to head of list%/
 			return (true);
 		
-		if (!nextrootwindow (&nomad)) /*finished visiting%/
+		if (!nextrootwindow (&nomad)) /%finished visiting%/
 			return (true);
-		} /*while%/
-	} /*visitrootwindows%/
+		} /%while%/
+	} /%visitrootwindows%/
 */
 
 
@@ -1212,9 +1212,9 @@ boolean shellvisittypedwindows (short id, shellwindowvisitcallback visit, ptrvoi
 	} /*shellvisittypedwindows*/
 
 
-static boolean counttypedvisit (WindowPtr w,  short *windowcount) {
+static boolean counttypedvisit (WindowPtr w,  ptrvoid refcon) {
 	
-	(*windowcount)++;
+	(*(short *)refcon)++;
 	
 	return (true);
 	} /*counttypedvisit*/
@@ -1238,8 +1238,9 @@ typedef struct finddatainfo {
 	} tyfinddatainfo;
 
 
-static boolean shellfinddatavisit (WindowPtr w, tyfinddatainfo *findinfo) {
+static boolean shellfinddatavisit (WindowPtr w, ptrvoid refcon) {
 	
+	tyfinddatainfo *findinfo = (tyfinddatainfo *) refcon;
 	hdlwindowinfo hinfo;
 	
 	if (getwindowinfo (w, &hinfo)) {
@@ -1289,13 +1290,14 @@ typedef struct findfileinfo {
 	} tyfindfileinfo;
 
 
-static boolean shellfindfilevisit (WindowPtr w, tyfindfileinfo *findinfo) {
+static boolean shellfindfilevisit (WindowPtr w, ptrvoid refcon) {
 	
 	/*
 	if the filespec for the given window is the one we're
 	 looking for, select that window and stop visiting
 	*/
 	
+	tyfindfileinfo *findinfo = (tyfindfileinfo *) refcon;
 	tyfilespec fs;
 	
 	windowgetfspec (w, &fs);
@@ -1337,8 +1339,9 @@ typedef struct findtitleinfo {
 	} tyfindtitleinfo;
 
 
-static boolean findpathvisit (WindowPtr w, tyfindtitleinfo *findinfo) {
+static boolean findpathvisit (WindowPtr w, ptrvoid refcon) {
 	
+	tyfindtitleinfo *findinfo = (tyfindtitleinfo *) refcon;
 	bigstring bs;
 	
 	if (windowgetpath (w, bs) && equalidentifiers (bs, (*findinfo).pwindowtitle)) { /*found it -- set values and terminate visit*/
@@ -1352,8 +1355,9 @@ static boolean findpathvisit (WindowPtr w, tyfindtitleinfo *findinfo) {
 	} /*findpathvisit*/
 
 
-static boolean findtitlevisit (WindowPtr w, tyfindtitleinfo *findinfo) {
+static boolean findtitlevisit (WindowPtr w, ptrvoid refcon) {
 	
+	tyfindtitleinfo *findinfo = (tyfindtitleinfo *) refcon;
 	hdlwindowinfo hinfo;
 	bigstring bs;
 	
@@ -1783,7 +1787,6 @@ boolean newfilewindow (ptrfilespec fspec, hdlfilenum fnum, short rnum, boolean f
 	register WindowPtr w;
 	register hdlwindowinfo hinfo;
 	register hdlscrollbar vertbar, horizbar;
-	hdlstring hfilename = nil;
 	hdlwindowinfo hwindowinfo = nil;
 	tywindowposition wpos;
 	bigstring bspath;
@@ -3052,7 +3055,9 @@ typedef struct findtargetinfo {
 	} tyfindtargetinfo;
 
 
-static boolean findtargetvisit (WindowPtr w, tyfindtargetinfo *findinfo) {
+static boolean findtargetvisit (WindowPtr w, ptrvoid refcon) {
+	
+	tyfindtargetinfo *findinfo = (tyfindtargetinfo *) refcon;
 	
 	if (windowvisible (w)) { /*hidden windows aren't condidates for default target*/
 		

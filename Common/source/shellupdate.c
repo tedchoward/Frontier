@@ -269,7 +269,7 @@ void shellupdatecontent (Rect contentrect) {
 		//Changed to Opaque call for Carbon
 		#ifdef MACVERSION
 			#if TARGET_API_MAC_CARBON == 1
-			ValidWindowRgn(hw, contentrgn);
+			ValidWindowRgn((WindowRef) hw, contentrgn);
 			#else
 			ValidRgn (contentrgn); /*no need to draw it again.  do now to simulate beginupdate*/
 			#endif

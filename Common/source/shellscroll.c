@@ -224,7 +224,6 @@ void winscroll (boolean isvertscroll, int scrolltype, long pos)
 #ifdef MACVERSION
 static pascal void shellhorizscroll (hdlscrollbar ctrl, short part) {
 	
-	register WindowPtr w = shellwindow;
 	register hdlwindowinfo h = shellwindowinfo;
 	boolean flleft, flpage;
 	register tydirection dir;
@@ -250,7 +249,6 @@ static pascal void shellhorizscroll (hdlscrollbar ctrl, short part) {
 
 static pascal void shellvertscroll (hdlscrollbar ctrl, short part) {
 	
-	register WindowPtr w = shellwindow;
 	register hdlwindowinfo h = shellwindowinfo;
 	boolean flup, flpage;
 	register tydirection dir;
@@ -320,7 +318,7 @@ enum
 
 static ControlRef   gControl;
 static SInt32		gValueSlop;
-static SInt32		gSaveValue;
+//static SInt32		gSaveValue;
 static SInt32		gStartValue;
 
 static SInt32	CalcValueFromPoint ( ControlRef theControl, Point thePoint );
@@ -484,7 +482,6 @@ pascal void ScrollThumbActionProc (void) {
 
 static OSErr BeginThumbTracking ( ControlRef theControl ) {
 
-	const SInt32 kMinLowMem	= 512;
 	OSErr theErr = noErr;
 	Point thePoint;
 
@@ -511,7 +508,7 @@ static OSErr BeginThumbTracking ( ControlRef theControl ) {
 
 static void EndThumbTracking ( void ) {
 	
-	hdlwindowinfo h = shellwindowinfo;
+//	hdlwindowinfo h = shellwindowinfo;
 
 	EnableDrawing ();
 
@@ -529,7 +526,7 @@ static void EndThumbTracking ( void ) {
 
 extern void shellinitscroll ();
 
-void shellinitscroll()
+void shellinitscroll(void)
 {
 	//Code change by Timothy Paustian Saturday, July 22, 2000 12:04:35 AM
 	//Needed in shellscroll
@@ -544,7 +541,7 @@ void shellinitscroll()
 
 extern void shellshutdownscroll ();
 
-void shellshutdownscroll()
+void shellshutdownscroll(void)
 {
 	#if TARGET_API_MAC_CARBON
 		#if TARGET_RT_MAC_CFM
@@ -558,17 +555,15 @@ void shellshutdownscroll()
 
 void shellscroll (boolean flvert, hdlscrollbar sb, short part, Point pt) {
 	
-	register WindowPtr w = shellwindow;
+//	register WindowPtr w = shellwindow;
 	register long oldscrollbarcurrent;
 	#if TARGET_API_MAC_CARBON != 1
 		register long ctscroll;
 		tydirection dir;
 	#endif
 	
-	/*
-	pushclip ((*w).portRect); /*allow drawing in whole window%/
-	*/
-	
+	//pushclip ((*w).portRect); /*allow drawing in whole window%/
+		
 	if (part == kControlIndicatorPart) {
 		
 		oldscrollbarcurrent = getscrollbarcurrent (sb);
@@ -583,7 +578,7 @@ void shellscroll (boolean flvert, hdlscrollbar sb, short part, Point pt) {
 			
 			BeginThumbTracking (sb);
 			
-			TrackControl (sb, pt, shelllivescrollupp);
+			TrackControl (sb, pt, (ControlActionUPP) shelllivescrollupp);
 			
 			EndThumbTracking ();			
 		

@@ -160,7 +160,8 @@ static boolean mesetscrollbarsroutine (void) {
 	} /*mesetscrollbarsroutine*/
 
 
-static medeactivateoutline (void) {
+/*
+static boolean medeactivateoutline (void) {
 	
 	mecheckglobals ();
 	
@@ -168,8 +169,8 @@ static medeactivateoutline (void) {
 		opactivate (false);
 	
 	return (true);
-	} /*medeactivateoutline*/
-
+	} /%medeactivateoutline%/
+*/
 
 static void meactivateoutline (void) {
 	
@@ -925,7 +926,7 @@ static void medisplaycmdkeypopup (void) {
 /*
 static medisplaycmdkey (void) { 
 	
-	/*
+	/%
 	10/7/91 dmb: resurrected the seperate item for the setting the command key
 	%/
 	
@@ -970,7 +971,8 @@ static medisplaycmdkey (void) {
 	popclip ();
 	
 	closebitmap (menuwindow);
-	} /*medisplaycmdkey*/
+	} /%medisplaycmdkey%/
+*/
 
 
 static void mezoomdownwindow (WindowPtr w) {
@@ -1065,7 +1067,7 @@ boolean mescriptwindowclosed (void) {
 	
 	popport ();
 	
-	/*windowsetchanges (menuwindow, true); /*the window is dirty*/	
+	//windowsetchanges (menuwindow, true); /*the window is dirty*/	
 	
 	return (true);
 	} /*mescriptwindowclosed*/
@@ -1334,7 +1336,7 @@ static boolean mescriptitemhit (boolean flmousedriven) {
 	
 	mezoomscriptwindow ();
 	
-	/*windowsetchanges (menuwindow, true); /*the window is dirty*/
+	//windowsetchanges (menuwindow, true); /*the window is dirty*/
 	
 	return (true);
 	} /*mescriptitemhit*/
@@ -1386,7 +1388,7 @@ boolean memousedown (Point pt, tyclickflags flags) {
 			
 			(**menudata).menuactiveitem = item;
 			
-			medisplaycmdkey (); /*show it in its active form%/
+			medisplaycmdkey (); /%show it in its active form%/
 			
 			break;
 		*/
@@ -1428,7 +1430,7 @@ boolean mesetundoglobals (long globals, boolean flundo) {
 /*
 merotateactiveitem (boolean flforward) {
 	
-	/*
+	/%
 	this is the response to a tab key (flforward == true) or a backtab 
 	key (flforward == false).  we rotate to the next text item in the
 	dialog box.
@@ -1440,7 +1442,7 @@ merotateactiveitem (boolean flforward) {
 	register hdlmenurecord hm = menudata;
 	register short activeitem = (**hm).menuactiveitem;
 	
-	if (activeitem == menuoutlineitem) { /*switch from outline to command keys%/
+	if (activeitem == menuoutlineitem) { /%switch from outline to command keys%/
 		
 		medeactivateoutline ();
 		
@@ -1454,14 +1456,14 @@ merotateactiveitem (boolean flforward) {
 		}
 	
 	(**hm).menuactiveitem = activeitem;
-} /*merotateactiveitem%/ */
+} /%merotateactiveitem%/
+*/
 
 boolean mekeystroke (void) {
 	
 	register hdlmenurecord hm = menudata;
-	register hdloutlinerecord ho = (**hm).menuoutline;
 	byte chkb = keyboardstatus.chkb;
-	tydirection dir = keyboardstatus.keydirection;
+	//tydirection dir = keyboardstatus.keydirection;
 	boolean flcmdkey = keyboardstatus.flcmdkey;
 	
 	#ifdef WIN95VERSION
@@ -1480,7 +1482,7 @@ boolean mekeystroke (void) {
 	
 		merotateactiveitem (!keyboardstatus.flshiftkey);
 		
-		medisplayuseritems (); /*show it in its active/deactive state%/
+		medisplayuseritems (); /%show it in its active/deactive state%/
 		
 		return (true);
 		}
@@ -1490,14 +1492,14 @@ boolean mekeystroke (void) {
 		
 		/*
 		case menucmdkeyitem:
-			if (dir == nodirection) { /*not a motion keystroke%/
+			if (dir == nodirection) { /%not a motion keystroke%/
 				
 				switch (chkb) {
 					
 					case chtab: case chenter: case chescape:
 						meactivateoutline ();
 						
-						medisplaycmdkey (); /*show inactive state%/
+						medisplaycmdkey (); /%show inactive state%/
 						
 						break;
 					
@@ -1508,7 +1510,7 @@ boolean mekeystroke (void) {
 				return (true);
 				}
 			
-			/*fall through, interpret as an op motion key, cmd-key item stays active%/
+			/%fall through, interpret as an op motion key, cmd-key item stays active%/
 		*/
 		
 		default:
@@ -1525,7 +1527,7 @@ boolean mekeystroke (void) {
 	if (dialogevent (&shellevent, menuwindow, &itemnumber)) {
 	
 		if ((**hm).menuactiveitem == menucmdkeyitem) 
-			mesetcmdkey (); /*copy cmd-key from dialog to the outline%/
+			mesetcmdkey (); /%copy cmd-key from dialog to the outline%/
 		}
 	*/
 	
@@ -1540,7 +1542,7 @@ boolean mecmdkeyfilter (char chkb) {
 	*/
 	
 	/*
-	if ((**menudata).menuactiveitem != menuoutlineitem) /*only outline snags cmdkeys%/
+	if ((**menudata).menuactiveitem != menuoutlineitem) /%only outline snags cmdkeys%/
 		return (true);
 	*/
 		
@@ -1657,7 +1659,7 @@ void mesetcallbacks (hdloutlinerecord houtline) {
 	
 	(**ho).fldonterasebackground = true;
 
-	/***(**ho).flusebitmaps = false; /*color bitmaps are slow in menubar windows; don't know why*/
+	//(**ho).flusebitmaps = false; /*color bitmaps are slow in menubar windows; don't know why*/
 	
 	(**ho).setscrollbarsroutine = &mesetscrollbarsroutine;
 		
@@ -1667,10 +1669,8 @@ void mesetcallbacks (hdloutlinerecord houtline) {
 	
 	(**ho).textualizerefconcallback = &metextualizerefconroutine;
 	
-	/*
-	(**ho).printrefconcallback = &meprintrefconroutine;
-	*/
-	
+	//(**ho).printrefconcallback = &meprintrefconroutine;
+		
 	(**ho).releaserefconcallback = &mereleaserefconroutine;
 	
 	(**ho).searchrefconcallback = &mesearchrefconroutine;
@@ -1683,9 +1683,9 @@ void mesetcallbacks (hdloutlinerecord houtline) {
 	
 	(**ho).haslinkedtextcallback = &mehaslinkedtext;
 	
-	(**ho).setscrapcallback = &mesetscraproutine;
+	(**ho).setscrapcallback = (opsetscrapcallback) &mesetscraproutine;
 	
-	(**ho).getscrapcallback = &megetscraproutine;
+	(**ho).getscrapcallback = (opgetscrapcallback) &megetscraproutine;
 
 	(**ho).flhorizscrolldisabled = true; /*7.0b26 PBS: was commented out -- now restored.*/
 	
@@ -1712,7 +1712,7 @@ boolean meeditmenurecord (void) {
 
 	meresize (); /*set the position of all objects in menu window*/
 	
-	/*oppophoist (); /*for old, layered menubars*/
+	//oppophoist (); /*for old, layered menubars*/
 	
 	opsetdisplaydefaults (ho);
 	
@@ -1830,8 +1830,7 @@ boolean medisposevisit (hdlheadrecord hnode) {
 		opdisposeoutline (ho, false);
 	
 	return (true);
-	} /*medisposevisit%/
-
+	} /%medisposevisit%/
 
 boolean medispose (void) {
 	
@@ -1849,7 +1848,7 @@ boolean medispose (void) {
 	disposehandle ((Handle) hm);
 	
 	return (true);
-	} /*medispose%/
+	} /%medispose%/
 */
 
 
@@ -1975,13 +1974,12 @@ void meactivate (boolean flactivate) {
 	
 	register boolean fl = flactivate;
 	register hdlmenurecord hm = menudata;
-	register hdlmenubarstack hs = (**hm).hmenustack;
 	
 	/*
 	if (fl)
 		ccsetmenubar (menudata);
 	else
-		ccsetmenubar (nil); /*use default menubar%/
+		ccsetmenubar (nil); /%use default menubar%/
 	*/
 	
 	if (!(**hm).flinstalled) { /*not an installed menu; appears only when window is active*/
@@ -2048,7 +2046,6 @@ boolean megetcontentsize (long *width, long *height) {
 	6.0a13 dmb: use outlinerect, not menurect, to get pixel diff
 	*/
 
-	register DialogPtr pdialog = menuwindow;
 	Rect rcontent;
 	Rect routline;
 	short pixels;

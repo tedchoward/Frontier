@@ -197,7 +197,7 @@ static boolean langipcunhookerrors (callback savecallback) {
 	
 	shellpoperrorhook ();
 	
-	langcallbacks.errormessagecallback = (errorhookcallback) savecallback;
+	langcallbacks.errormessagecallback = (langerrormessagecallback) savecallback;
 	
 	fllangerror = false; /*make sure error flag is cleared*/
 	
@@ -3375,7 +3375,7 @@ boolean langipctablemessage (hdltreenode hparam1, tyvaluerecord *vreturned) {
 
 static AEDesc *fastreply;
 
-static callback fastsavecallback;
+static langerrormessagecallback fastsavecallback;
 
 
 static boolean langipcfasterror (bigstring bs, ptrvoid refcon) {
@@ -3398,7 +3398,7 @@ static boolean langipcfasterror (bigstring bs, ptrvoid refcon) {
 
 static void langipchookfasterrors (AEDesc *reply) {
 	
-	fastsavecallback = (callback) langcallbacks.errormessagecallback;
+	fastsavecallback = langcallbacks.errormessagecallback;
 	
 	langcallbacks.errormessagecallback = &langipcfasterror;
 	
@@ -3412,7 +3412,7 @@ static boolean langipcunhookfasterrors (void) {
 	
 	shellpoperrorhook ();
 	
-	langcallbacks.errormessagecallback = (errorhookcallback) fastsavecallback;
+	langcallbacks.errormessagecallback = fastsavecallback;
 	
 	oserror (noErr); /*clear it out to avoid conflicts with current thread*/
 	

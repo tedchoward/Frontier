@@ -899,7 +899,7 @@ boolean listaddvalue (tyvaluerecord *v1, tyvaluerecord *v2, tyvaluerecord *vretu
 	
 	hdllistrecord list2;
 	hdllistrecord list3;
-	long i, n, m, min_mn;
+	long i, n, m;
 	Handle hitem, hignore;
 	bigstring key;
 	

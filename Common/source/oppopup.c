@@ -57,10 +57,6 @@ oppopup.c -- handle right-click popup menus in outlines.
 
 static hdlmenurecord oppopupmenubar; /*current popup menu*/
 
-static unsigned long popupstartticks = 0; /*7.0b27 PBS: when menu was started. Used to make sure menu appeared minimum amount of ticks.*/
-
-static popupticksminimum = 20; /*7.0b27 PBS*/
-
 static boolean opbuildpopupmenu (hdlheadrecord hnode, hdlmenu hmenu);
 
 static boolean oppopupinsertmenuitem (hdlmenu hmenu, short itemnumber, hdlheadrecord hnode);
@@ -69,6 +65,13 @@ static boolean oppopupruncallbackscript (tyvaluerecord *val);
 
 short currmenuid;
 
+#ifdef WIN95VERSION
+
+	static unsigned long popupstartticks = 0; /*7.0b27 PBS: when menu was started. Used to make sure menu appeared minimum amount of ticks.*/
+
+	static unsigned long popupticksminimum = 20; /*7.0b27 PBS*/
+
+#endif
 
 #if MACVERSION
 

@@ -96,7 +96,8 @@ static hdllistrecord hcurrentlist = nil;
 	
 	if (cb)
 		return ((*cb) ((**hnode).hrefcon));
-	} /*oplistreleaserefcon*/
+	} /%oplistreleaserefcon%/
+*/
 
 
 boolean opnewlist (hdllistrecord *hlist, boolean isrecord) {
@@ -656,7 +657,7 @@ boolean opunpacklist (Handle hpacked, hdllistrecord *hnewlist) {
 	
 	disktomemlong (info.ctoutlinebytes);
 	
-	if (info.versionnumber == 0x01000000) // handle pre-swapped objects (unswap)
+	if (info.versionnumber == 0x0100) // handle pre-swapped objects (unswap) - 2004-10-31 aradke: was 0x01000000 but that's not a short!
 		info.versionnumber = 0x01;
 	
 	if (info.versionnumber != oplistversionnumber) { /*we only read version 1 format lists*/

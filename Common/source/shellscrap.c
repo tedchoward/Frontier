@@ -277,6 +277,8 @@ boolean shellreadscrap (void) {
 	} /*shellreadscrap*/
 
 
+#ifdef WIN95VERSION
+
 static boolean cr2crlfhandle (Handle htext) {
 	
 	byte bscr[] = "\x01\r";
@@ -299,6 +301,8 @@ static boolean cr2crlfhandle (Handle htext) {
 
 	return (fl);
 	} /*cr2crlfhandle*/
+
+#endif
 
 
 boolean shellexportscrap (tyscraptype scraptype) {

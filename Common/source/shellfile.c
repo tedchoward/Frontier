@@ -81,7 +81,7 @@ typedef struct findvisitinfo {
 	} tyfindvisitinfo, *ptrfindvisitinfo;
 
 
-static boolean findfilevisit (WindowPtr w, ptrfindvisitinfo info) {
+static boolean findfilevisit (WindowPtr w, ptrvoid refcon) {
 	
 	/*
 	if the filespec for the given window is the one we're looking for, 
@@ -90,6 +90,7 @@ static boolean findfilevisit (WindowPtr w, ptrfindvisitinfo info) {
 	5.1b22 dmb: make sure the window is visible by calling shellbringtofront
 	*/
 	
+	ptrfindvisitinfo info = (ptrfindvisitinfo) refcon;
 	tyfilespec fs;
 	hdlwindowinfo hinfo;
 	
@@ -249,8 +250,9 @@ boolean shellopenfile (ptrfilespec fspec, boolean flhidden, WindowPtr *wnew) {
 	} /*shellopenfile*/
 	
 
-static boolean clickersvisit (hdlhashnode hnode, ptrsftypelist psftypes) {
+static boolean clickersvisit (hdlhashnode hnode, ptrvoid refcon) {
 	
+	ptrsftypelist psftypes = (ptrsftypelist) refcon;
 	bigstring bs;
 	byte bstype [8];
 	
@@ -436,7 +438,7 @@ static boolean shelldatabasesaveas (WindowPtr wsave, ptrfilespec fspec) {
 	/*
 	shellbringtofront (hinfo);
 	
-	shellclosechildwindows (hinfo); /*Save As can't maintain these, so close them now%/
+	shellclosechildwindows (hinfo); /%Save As can't maintain these, so close them now%/
 	*/
 	
 	if (!shellsavefile (w, fspec, fnum, rnum, true, false)) {
@@ -584,9 +586,9 @@ boolean shellsaveas (WindowPtr wsave, ptrfilespec fspec, boolean flrunnable) {
 	5.0d8 dmb: pass file type to sfdialog for Win
 	*/
 	
-	#if TARGET_API_MAC_CARBON == 1 /*7.0b50 PBS: set window title icon*/
-		OSStatus err = noErr;
-	#endif
+//	#if TARGET_API_MAC_CARBON == 1 /*7.0b50 PBS: set window title icon*/
+//		OSStatus err = noErr;
+//	#endif
 	
 	register boolean fl;
 	register WindowPtr w;
@@ -1094,7 +1096,7 @@ static boolean shellclosefilewindowvisit (WindowPtr wclose, ptrvoid fldialog) {
 			shellupdatenow ((**hinfo).macwindow);
 			}
 		
-		return (shellclose (wclose, (boolean) fldialog));
+		return (shellclose (wclose, (boolean) ((long) fldialog)));
 		}
 	
 	return (true);
@@ -1163,10 +1165,10 @@ boolean shellcloseall (WindowPtr w, boolean fldialog) {
 			return (false);
 		
 		if ((**hinfo).configresnum != iddefaultconfig)
-			return (shellvisittypedwindows (-1, &shellclosefilewindowvisit, (ptrvoid) fldialog));
+			return (shellvisittypedwindows (-1, &shellclosefilewindowvisit, (ptrvoid) ((long) fldialog)));
 		}
 	
-	if (!shellvisittypedwindows (-1, &shellclosefilewindowvisit, (ptrvoid) fldialog))
+	if (!shellvisittypedwindows (-1, &shellclosefilewindowvisit, (ptrvoid) ((long) fldialog)))
 		return (false);
 	
 	while (true) { /*close all windows*/

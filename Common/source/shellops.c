@@ -45,8 +45,8 @@ void shellsetscrollbarinfo (void) {
 
 	setscrollbarinfo (
 		(**h).horizscrollbar, (**h).horizmin, (**h).horizmax, (**h).horizcurrent);
-	} /*shellsetscrollbarinfo*/
-
+	} /%shellsetscrollbarinfo%/
+*/
 
 void shellsetdefaultstyle (hdlwindowinfo hinfo) {
 	

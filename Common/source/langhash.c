@@ -1309,7 +1309,7 @@ hashmerge (hdlhashtable hsource, hdlhashtable hdest) {
 			hashinsertnode (x, hdest);
 			
 			x = nextx;
-			} /*while%/
+			} /%while%/
 			
 		(**hsource).hashbucket [i] = nil; /%we leave the source table empty%/
 		} /%for%/

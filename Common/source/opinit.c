@@ -235,9 +235,9 @@ void opinitcallbacks (hdloutlinerecord houtline) {
 		
 		(**ho).doubleclickcallback = &truenoop;
 		
-		(**ho).getscrapcallback = &opgetscraproutine;
+		(**ho).getscrapcallback = (opgetscrapcallback) &opgetscraproutine;
 		
-		(**ho).setscrapcallback = &opdefaultsetscraproutine;
+		(**ho).setscrapcallback = (opsetscrapcallback) &opdefaultsetscraproutine;
 		
 		(**ho).texttooutlinecallback = &optextscraptooutline;
 		

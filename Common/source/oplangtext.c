@@ -94,7 +94,7 @@ static boolean poptrailingwhitespacehandle (Handle bs) {
 	} /*poptrailingwhitespacehandle*/
 
 
-static boolean oplangtextvisit (hdlheadrecord hnode, handlestream *langtext) {
+static boolean oplangtextvisit (hdlheadrecord hnode, ptrvoid refcon) {
 	
 	/*
 	push the text of the indicated node onto the langtext output handle.
@@ -130,6 +130,7 @@ static boolean oplangtextvisit (hdlheadrecord hnode, handlestream *langtext) {
 	*/
 	
 	register hdlheadrecord h = hnode;
+	handlestream *langtext = (handlestream *) refcon;
 	register short level;
 	bigstring bs;
 	Handle bshead;

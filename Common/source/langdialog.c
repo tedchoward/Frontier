@@ -322,10 +322,10 @@ static boolean langdialogeventhook (EventRecord *ev, WindowPtr w) {
 	//Changed to Opaque call for Carbon
 	RgnHandle	visRgn;
 	
-	fllangdialog = (w == langmodaldialog);
+	fllangdialog = (w == (WindowPtr) langmodaldialog);
 	
 	for (ix = 0; (!fllangdialog) && (ix < topdialog); ++ix)
-		if (dialogstack [ix].pdialog == w)
+		if ((WindowPtr) dialogstack [ix].pdialog == w)
 			fllangdialog = true;
 	
 	if (!fllangdialog) /*not one of our dialogs -- don't hook*/
@@ -346,14 +346,14 @@ static boolean langdialogeventhook (EventRecord *ev, WindowPtr w) {
 			#if ACCESSOR_CALLS_ARE_FUNCTIONS == 1
 			visRgn = NewRgn();
 			GetWindowRegion(w, kWindowUpdateRgn, visRgn);
-			UpdateDialog (w, visRgn);
+			UpdateDialog ((DialogRef) w, visRgn);
 			DisposeRgn(visRgn);
 			#else
 			#pragma unused(visRgn)
 			//old code
 			UpdateDialog (w, (*w).visRgn);
 			#endif
-			modaldialogcallback (w, ev, &item);
+			modaldialogcallback ((DialogPtr) w, ev, &item);
 			
 			EndUpdate (w);
 			
@@ -429,8 +429,8 @@ static boolean langdialogitemhit (DialogPtr pdialog, short itemnumber) {
 	
 	langdisposetree (hparam);
 	
-	if (pdialog != getfrontwindow ()) /*this can happen under the debugger*/
-		windowbringtofront (pdialog);
+	if ((WindowPtr) pdialog != getfrontwindow ()) /*this can happen under the debugger*/
+		windowbringtofront ((WindowPtr) pdialog);
 	
 	if (!fl)
 		return (false);

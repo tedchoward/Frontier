@@ -54,7 +54,7 @@
 	#define flbitmapsallowed false /*somehow, true value screws display*/
 #endif
 
-static flbuttonbitmap = false; /*if true, don't use bitmaps*/
+static boolean flbuttonbitmap = false; /*if true, don't use bitmaps*/
 
 static short mousebuttonnumber = 0; /*global for button tracking*/
 
@@ -142,6 +142,8 @@ static boolean buttondisplayed (short ix) {
 	} /*buttondisplayed*/
 
 
+#if !TARGET_API_MAC_CARBON
+
 static short getbuttonstyle (short ix) {
 	
 	/*
@@ -158,6 +160,9 @@ static short getbuttonstyle (short ix) {
 
 	return (normal);
 	} /*getbuttonstyle*/
+
+#endif
+
 
 #ifdef flbuttoncolor
 
@@ -366,17 +371,18 @@ static void drawbuttonbackground (Rect r) {
 
 
 	static void MyThemeButtonDrawCallback (const Rect *bounds, ThemeButtonKind kind, const ThemeButtonDrawInfo *info,
-		ptrbuttoninfo userData, SInt16 depth, Boolean isColorDev) {
+		UInt32 userData, SInt16 depth, Boolean isColorDev) {
 		
 		/*
 		7.0b48 PBS: draw the label for a popup menu.
 		*/
+		ptrbuttoninfo buttoninfo = (ptrbuttoninfo) userData;
 		
 		pushstyle (buttonfont, buttonsize, 0);
 
 		//movepento ((*bounds).left, (*bounds).top + 10);
 		
-		centerbuttonstring (bounds, (*userData).bslabel, !((*userData).flenabled));
+		centerbuttonstring (bounds, (*buttoninfo).bslabel, !((*buttoninfo).flenabled));
 
 		popstyle ();
 		} /*MyThemeButtonDrawCallback*/
@@ -620,7 +626,7 @@ void shellbuttonhit (Point pt) {
 			}
 		} /*for*/
 		
-	/*ouch (); /*loop satisfied, click isn't in one of the buttons*/
+	//ouch (); /*loop satisfied, click isn't in one of the buttons*/
 	} /*shellbuttonhit*/
 	
 

@@ -209,6 +209,8 @@ boolean shelldefaultsizeroutine (void) {
 	} /*shelldefaultsizeroutine*/
 
 
+#if 0
+
 static boolean shelldefaultstyleroutine (void) {
 	
 	/*
@@ -228,6 +230,8 @@ static boolean shelldefaultstyleroutine (void) {
 	
 	return (true);
 	} /*shelldefaultstyleroutine*/
+
+#endif
 
 
 boolean shelldefaultselectioninfo (void) {
@@ -584,7 +588,7 @@ static stacktracer (short stacktop) {
 	Rect r;
 	WindowPtr w;
 	
-	if (!frontrootwindow (&hinfo)) /*no windows open%/
+	if (!frontrootwindow (&hinfo)) /%no windows open%/
 		return;
 	
 	shorttostring (stacktop, bs);
@@ -612,8 +616,8 @@ static stacktracer (short stacktop) {
 	popstyle ();
 	
 	popport ();
-	} /*stacktracer*/
-	
+	} /%stacktracer%/
+*/
 	
 boolean shellpushglobals (WindowPtr wpush) {
 	
@@ -637,7 +641,7 @@ boolean shellpushglobals (WindowPtr wpush) {
 	/*stacktracer (globalsstack.top);*/
 	
 	/*
-	if (wpush == nil) /*caller just wants state saved%/ {
+	if (wpush == nil) /%caller just wants state saved%/ {
 		
 		shellwindow = nil;
 		
@@ -710,10 +714,10 @@ boolean shellpushwindowglobals (hdlwindowinfo hpush) {
 /*
 void shellinvalidglobals (WindowPtr winvalid) {
 	
-	/*
+	/%
 	the indicated windowptr is no longer valid -- it was presumably 
 	just disposed.  make sure that we'll never try to push its globals
-	* /
+	%/
 	
 	register WindowPtr w = winvalid;
 	register short ix;
@@ -728,7 +732,8 @@ void shellinvalidglobals (WindowPtr winvalid) {
 		shellwindow = nil;
 	
 	processinvalidglobals (w); //every thread needs to know about the change*
-	} /*shellinvalidglobals*/
+	} /%shellinvalidglobals%/
+*/
 
 
 boolean shellpushconfigglobals (short configresnum) {

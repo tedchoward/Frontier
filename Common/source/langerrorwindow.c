@@ -63,11 +63,9 @@ typedef struct tylangerrorrecord {
 	
 	unsigned short lnum, cnum; /*location of error, passed to callback routine*/
 	
-	/*
-	callback errorcallback; /*routine to call when user hits script button%/
+	//callback errorcallback; /*routine to call when user hits script button*/
 	
-	long errorrefcon; /*the info we pass him%/
-	*/
+	//long errorrefcon; /*the info we pass him*/
 	
 	hdlerrorstack herrorstack;
 	
@@ -118,7 +116,7 @@ static boolean langerrorcopy (void) {
 	if (!newtexthandle (bserror, &htext))
 		return (false);
 	
-	return (shellsetscrap (htext, textscraptype, disposehandle, nil));
+	return (shellsetscrap (htext, textscraptype, (shelldisposescrapcallback) disposehandle, nil));
 	} /*langerrorcopy*/
 
 
@@ -507,7 +505,7 @@ static boolean langerrorpopupselect (hdlmenu hmenu, short itemselected) {
 	if (hs == nil)
 		return (false);
 	
-	ix = ix = (**hs).toperror - itemselected;
+	ix = (**hs).toperror - itemselected;
 	
 	pe = &(**hs).stack [ix];
 	

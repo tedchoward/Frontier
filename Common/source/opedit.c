@@ -112,9 +112,7 @@ boolean opdefaultsetwpedittext (hdlheadrecord hnode) {
 	our job it to set the wp to contain the right text.
 	*/
 	
-	hdlstring htext = (**hnode).headstring;
-	
-	return (wpsettexthandle (htext));
+	return (wpsettexthandle ((**hnode).headstring));
 	} /*opdefaultsetwpedittext*/
 
 
@@ -880,7 +878,7 @@ boolean opeditinsert (bigstring bs) {
 
 boolean opeditclick (Point pt, tyclickflags flags) {
 	
-	/*opclearallmarks (); /*9/11/91*/
+	//opclearallmarks (); /*9/11/91*/
 	
 	opeditsetglobals ();
 	

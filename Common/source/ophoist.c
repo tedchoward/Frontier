@@ -46,7 +46,7 @@ short ctsavedhoists = 0;
 
 
 
-static void ophoistdisplay (void) {
+void ophoistdisplay (void) {
 	
 	/*
 	7/8/92 dmb: call opresetscrollbars after opgetscrollbarinfo to force update

@@ -61,8 +61,10 @@ static shelldisposeprintinfo (void) {
 	disposehandle ((Handle) shellprintinfo.printhandle);
 	
 	clearbytes (&shellprintinfo, longsizeof (shellprintinfo));
-	} /*shelldisposeprintinfo*/
+	} /%shelldisposeprintinfo%/
+*/
 
+#if defined(WIN95VERSION) || (defined(MACVERSION) && !TARGET_API_MAC_CARBON)
 
 static boolean shellcheckprinterror (boolean flopening) {
 	
@@ -117,6 +119,8 @@ static boolean shellcheckprinterror (boolean flopening) {
 	return (false); /*there was an error*/
 	} /*shellcheckprinterror*/
 
+#endif
+
 
 static void shellcopyprintinfo (void) {
 	
@@ -142,9 +146,9 @@ static void shellcopyprintinfo (void) {
 		if(theErr != noErr || !fl)
 			oserror(theErr);
 		
-		PMGetAdjustedPageRect(shellprintinfo.pageformat, &rpage);
+		PMGetAdjustedPageRect(shellprintinfo.pageformat, (PMRect *)&rpage);
 			
-		PMGetAdjustedPaperRect(shellprintinfo.pageformat, &rpaper);
+		PMGetAdjustedPaperRect(shellprintinfo.pageformat, (PMRect *)&rpaper);
 		shellprintinfo.pagerect = rpage;
 		}
 		#else
@@ -262,7 +266,9 @@ boolean shellinitprint (void) {
 
 	return (true);
 	
+#if !defined(MACVERSION) || !TARGET_API_MAC_CARBON
 	error:
+#endif
 	
 	/*
 	shelldisposeprintinfo ();
@@ -301,13 +307,14 @@ boolean shellpagesetup (void) {
 	{
 	OSStatus status;
 	//validate the page format record.
-	status = PMSessionValidatePageFormat(shellprintinfo.printhandle, &(shellprintinfo.pageformat),
+	status = PMSessionValidatePageFormat(shellprintinfo.printhandle,
+				(PMPageFormat) shellprintinfo.pageformat,
 				kPMDontWantBoolean);
 	// Display the Page Setup dialog
 	if (status == noErr)
 	{
 		status = PMSessionPageSetupDialog(shellprintinfo.printhandle, 
-						&(shellprintinfo.pageformat), &fl);
+						(PMPageFormat) shellprintinfo.pageformat, &fl);
 		if (!fl)
 			status = kPMCancel; // user clicked Cancel button
 	}
@@ -358,7 +365,7 @@ boolean shellpagesetup (void) {
 /*
 boolean shellsetprintmargins (Rect newmargins) {
 	
-	/*
+	/%
 	10/21/91 dmb: we may need this some day [never tested]
 	%/
 	
@@ -373,17 +380,17 @@ boolean shellsetprintmargins (Rect newmargins) {
 	
 	shellprintinfo.margins = newmargins;
 	
-	shellcopyprintinfo (); /*copies fields from handle into record%/
+	shellcopyprintinfo (); /%copies fields from handle into record%/
 	
-	shellvisittypedwindows (-1, &shellpagesetupvisit, nil); /*visit all windows%/
+	shellvisittypedwindows (-1, &shellpagesetupvisit, nil); /%visit all windows%/
 	
 	return (true);
-	} /*shellsetprintmargins*/
+	} /%shellsetprintmargins%/
 
-/*
+
 void printresetrects (hdlwindowinfo hinfo, Rect * r) {
 	
-	/*
+	/%
 	(re)initialize all of the rectangles stored in the window's information 
 	record.  start by clearing the buttons rect and setting the content rect 
 	to be the owning window's portrect.  the resetwindowrects callback routine 
@@ -392,7 +399,7 @@ void printresetrects (hdlwindowinfo hinfo, Rect * r) {
 		2.  setting the buttons rect, if used
 		3.  positioning any scrollbars
 		4.  setting up the grow box rect
-	* /
+	%/
 	
 	register hdlwindowinfo h = hinfo;
 	
@@ -405,16 +412,17 @@ void printresetrects (hdlwindowinfo hinfo, Rect * r) {
 	(*shellglobals.resetrectsroutine) (h);
 	
 	(*shellglobals.resizeroutine) ();
-	} /*printresetrects*/
+	} /%printresetrects%/
+*/
 
 
-boolean iscurrentportprintport () {
+boolean iscurrentportprintport (void) {
 	
 	return (isprintingactive () && (currentprintport == getport()));
 	} /*iscurrentportprintport*/
 
 
-boolean isprintingactive () {
+boolean isprintingactive (void) {
 	
 	return (currentprintport != NULL);
 	} /*isprintingactive*/
@@ -449,7 +457,7 @@ boolean shellprint (WindowPtr w, boolean fldialog) {
 			OSStatus 		theErr;
 			PMPrintSession 	hp = 0;			// JES 9.0.1: initialize to 0 -- printing still doesn't work on OS X, but at least Cmd-P won't crash //
 			PMPageFormat	pageformat;
-			PMPrintSettings	printsettings;
+			PMPrintSettings	printsettings = nil;
 			boolean			accepted;
 			//remember that this is a grafport, TPPrPort isn't
 			//but this should work because all the code that
@@ -485,7 +493,7 @@ boolean shellprint (WindowPtr w, boolean fldialog) {
 		#if TARGET_API_MAC_CARBON == 1
 		{
 		//I may need to save back the graf port.
-		theErr = PMCreateSession(hp);
+		theErr = PMCreateSession(&hp); // 2004-10-31 aradke: this was just hp instead of &hp -- not sure what's up!?
 		 //This should cover it, but I may need to add a further check.
 		if(theErr != noErr)
 			return false;
@@ -527,7 +535,7 @@ boolean shellprint (WindowPtr w, boolean fldialog) {
 		//now display the print dialog to get printing parameters from the user.	
 		if(fldialog) {
 			theErr = PMCreatePrintSettings(&printsettings);
-			if(theErr != noErr || (pageformat == kPMNoPrintSettings)){
+			if(theErr != noErr || (printsettings == kPMNoPrintSettings)){
 				PMRelease(hp);
 				PMRelease(pageformat);
 				return false;
@@ -538,7 +546,7 @@ boolean shellprint (WindowPtr w, boolean fldialog) {
 		}
 		else
 		{
-			theErr = PMSessionValidatePrintSettings(hp, &printsettings,
+			theErr = PMSessionValidatePrintSettings(hp, printsettings,
 									kPMDontWantBoolean);
 		}
 		
@@ -549,7 +557,7 @@ boolean shellprint (WindowPtr w, boolean fldialog) {
 		
 		
 		//set the page range
-		theErr = PMSetPageRange(hp, minPage, maxPage);
+		theErr = PMSetPageRange(printsettings, minPage, maxPage);
 		if(theErr != noErr){
 			goto exit;
 		}
@@ -636,7 +644,7 @@ boolean shellprint (WindowPtr w, boolean fldialog) {
 		theErr = PMSessionBeginDocument(hp, printsettings, pageformat);
 		if(theErr != noErr)
 			goto exit;
-		theErr = PMSessionGetGraphicsContext(hp, nil, &printport);//the second parameter is currently ignored.
+		theErr = PMSessionGetGraphicsContext(hp, nil, (void**)&printport);//the second parameter is currently ignored.
 		shellprintinfo.printport = printport;
 		if(theErr != noErr)
 			goto exit;
@@ -657,7 +665,7 @@ boolean shellprint (WindowPtr w, boolean fldialog) {
 		//limit this to the number of pages the user asked for. 
 		#if TARGET_API_MAC_CARBON == 1
 				
-			theErr = PMGetFirstPage(hp, &firstPage);
+			theErr = PMGetFirstPage(printsettings, &firstPage);
 			if (theErr == noErr){
 				theErr = PMGetLastPage(printsettings, &lastPage);
 			}
@@ -674,7 +682,7 @@ boolean shellprint (WindowPtr w, boolean fldialog) {
 		for (i = 1; i <= lastPage; i++) { /*print one page*/
 			
 			#if TARGET_API_MAC_CARBON == 1
-			theErr = PMSessionBeginPage(hp, pageformat, &shellprintinfo.pagerect);
+			theErr = PMSessionBeginPage(hp, pageformat, (PMRect *) &shellprintinfo.pagerect);
 			if (theErr != noErr)
 				break;
 			//now set the graphics context.
@@ -684,7 +692,7 @@ boolean shellprint (WindowPtr w, boolean fldialog) {
 			{
 				GrafPtr thePort, oldPort;
 				GetPort(&oldPort);
-				theErr = PMSessionGetGraphicsContext(hp, nil, &thePort);//the second parameter is currently ignored.
+				theErr = PMSessionGetGraphicsContext(hp, nil, (void **) &thePort);//the second parameter is currently ignored.
 				SetPort(thePort);
 				// Draw the page
 				SetFractEnable (true);

@@ -180,7 +180,7 @@ boolean pushundostep (undocallback pundo, Handle hundo) {
 
 static boolean pushactionstep (short ixaction, long globaldata) {
 	
-	return (pushstep ((undocallback) ixaction, (Handle) globaldata, true));
+	return (pushstep ((undocallback) ((long) ixaction), (Handle) globaldata, true));
 	} /*pushactionstep*/
 
 
@@ -324,7 +324,7 @@ boolean popundoaction (void) {
 	
 		if (step.flactionstep) { /*new action record; finished with this undo*/
 			
-			ixaction = (short) step.undoroutine;
+			ixaction = (short) ((long) step.undoroutine);
 			
 			globaldata = (long) step.hundodata;
 			
@@ -377,7 +377,7 @@ boolean undolastaction (boolean flbuildredo) {
 	
 		if (step.flactionstep) { /*new action record; finished with this undo*/
 			
-			ixaction = (short) step.undoroutine;
+			ixaction = (short) ((long) step.undoroutine);
 			
 			globaldata = (long) step.hundodata;
 			

@@ -204,7 +204,8 @@ static Boolean doinstall (void) {
 	return (true);
 	
 	return (false);
-	} /*doinstall*/
+	} /%doinstall%/
+*/
 	
 
 static boolean getprocessfilespec (ProcessSerialNumber psn, FSSpec *fs) {

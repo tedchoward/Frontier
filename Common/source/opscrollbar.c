@@ -34,6 +34,7 @@
 
 
 
+#if 0
 
 static long xxxgetcurrentscreenlines (void) {
 	
@@ -64,6 +65,8 @@ static long xxxgetcurrentscreenlines (void) {
 		nomad = nextnomad;
 		} /*while*/
 	} /*getcurrentscreenlines*/
+
+#endif
 
 
 boolean oprestorescrollposition (void) {
@@ -180,7 +183,7 @@ boolean opgetscrollbarinfo (boolean flpin) {
 		
 			(**ho).hline1 = hline1;
 			
-			opinvaldisplay (); /*serious updating needed
+			opinvaldisplay (); /%serious updating needed
 			}
 		*/
 		}
