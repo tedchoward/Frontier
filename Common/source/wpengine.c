@@ -27,11 +27,11 @@
 
 #include "frontier.h"
 
-#include "Paige.h"
-#include "pgTraps.h"
-#include "PgExceps.h"
-#include "defprocs.h"
-#include "machine.h"
+#include "PAIGE.H"
+#include "PGTRAPS.H"
+#include "PGEXCEPS.H"
+#include "DEFPROCS.H"
+#include "MACHINE.H"
 #include "pgHLevel.h"
 
 #include "standard.h"
@@ -1847,7 +1847,7 @@ void wpupdate (void) {
 				; // *** 
 		
 		#endif
-				
+
 		#ifdef gray3Dlook
 			pushbackcolor (&whitecolor);
 		
@@ -1867,7 +1867,7 @@ void wpupdate (void) {
 		PG_ENDTRY;
 		
 		#ifdef gray3Dlook
-			popbackcolor (); 
+			popbackcolor ();
 		#endif
 		
 		if (!wpisactive ())
@@ -2038,13 +2038,13 @@ pascal void wptrackclick (hdlwprecord wp, Point pt) {
 
 
 #ifdef MACVERSION
-	#include <wse.h>
+	#include <WSE.h>
 #endif
 
 #ifdef WIN95VERSION
 	typedef void * UniversalProcPtr;
 	#define FixRound(x) (x.whole)
-	#include "wse.h"
+	#include "WSE.h"
 #endif
 
 #define rulerheaderlen (sizeof (rulerRecord) + sizeof (rulerInfo) + 2 * sizeof (Handle))
