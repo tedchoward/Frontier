@@ -296,6 +296,8 @@
 				65152951072C001700411831,
 				65D516AB072CED430097D18E,
 				65BBB664072E5643008E2F34,
+				65B70CE00797CEAD008C2F1A,
+				65B70CEA0797CF78008C2F1A,
 			);
 			isa = PBXHeadersBuildPhase;
 			runOnlyForDeploymentPostprocessing = 0;
@@ -549,6 +551,8 @@
 				6515279E072BFC6900411831,
 				651527A0072BFC6900411831,
 				651527AC072BFC6900411831,
+				65B70CDC0797CE4A008C2F1A,
+				65B70CE60797CF2D008C2F1A,
 			);
 			isa = PBXSourcesBuildPhase;
 			runOnlyForDeploymentPostprocessing = 0;
@@ -611,6 +615,7 @@
 				GCC_ALTIVEC_EXTENSIONS = NO;
 				GCC_CHAR_IS_UNSIGNED_CHAR = NO;
 				GCC_C_LANGUAGE_STANDARD = c99;
+				GCC_ENABLE_ASM_KEYWORD = YES;
 				GCC_ENABLE_CPP_EXCEPTIONS = NO;
 				GCC_ENABLE_CPP_RTTI = NO;
 				GCC_OPTIMIZATION_LEVEL = 0;
@@ -1853,6 +1858,7 @@
 				651525E3072BFC6700411831,
 				651525E4072BFC6700411831,
 				651525E5072BFC6700411831,
+				65B70CE50797CF2D008C2F1A,
 				651525E6072BFC6700411831,
 				651525E7072BFC6700411831,
 				651525E8072BFC6700411831,
@@ -2431,6 +2437,7 @@
 				65152632072BFC6700411831,
 				65152633072BFC6700411831,
 				65152634072BFC6800411831,
+				65B70CDB0797CE4A008C2F1A,
 				65152635072BFC6800411831,
 				65152636072BFC6800411831,
 				65152637072BFC6800411831,
@@ -8356,6 +8363,7 @@
 				6515286A072BFEBE00411831,
 				65152940072BFFF600411831,
 				6515290E072BFF7900411831,
+				65B70CE90797CF78008C2F1A,
 				65152910072BFF7A00411831,
 				6515289A072BFEE700411831,
 				6515289C072BFEE900411831,
@@ -8450,6 +8458,7 @@
 				651528D4072BFF2500411831,
 				651527E8072BFE3F00411831,
 				651528BA072BFF0900411831,
+				65B70CDF0797CEAD008C2F1A,
 				651528E8072BFF3E00411831,
 				651528E2072BFF3300411831,
 				651528A6072BFEF200411831,
@@ -8563,6 +8572,66 @@
 			path = "";
 			refType = 4;
 			sourceTree = "<group>";
+		};
+		65B70CDB0797CE4A008C2F1A = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.c;
+			name = langmath.c;
+			path = ../Common/source/langmath.c;
+			refType = 2;
+			sourceTree = SOURCE_ROOT;
+		};
+		65B70CDC0797CE4A008C2F1A = {
+			fileRef = 65B70CDB0797CE4A008C2F1A;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		65B70CDF0797CEAD008C2F1A = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.h;
+			name = langmath.h;
+			path = ../Common/headers/langmath.h;
+			refType = 2;
+			sourceTree = SOURCE_ROOT;
+		};
+		65B70CE00797CEAD008C2F1A = {
+			fileRef = 65B70CDF0797CEAD008C2F1A;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		65B70CE50797CF2D008C2F1A = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.c;
+			name = FastTimes.c;
+			path = ../Common/source/FastTimes.c;
+			refType = 2;
+			sourceTree = SOURCE_ROOT;
+		};
+		65B70CE60797CF2D008C2F1A = {
+			fileRef = 65B70CE50797CF2D008C2F1A;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		65B70CE90797CF78008C2F1A = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.h;
+			name = FastTimes.h;
+			path = ../Common/headers/FastTimes.h;
+			refType = 2;
+			sourceTree = SOURCE_ROOT;
+		};
+		65B70CEA0797CF78008C2F1A = {
+			fileRef = 65B70CE90797CF78008C2F1A;
+			isa = PBXBuildFile;
+			settings = {
+			};
 		};
 		65BBB661072E563B008E2F34 = {
 			fileEncoding = 30;
