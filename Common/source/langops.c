@@ -67,67 +67,67 @@ typedef struct tytypeinfo {
 
 static tytypeinfo typeinfo [ctvaluetypes] = {
 	
-	'\?\?\?\?', STR_unknown,
+	{'\?\?\?\?', STR_unknown},
 	
-	'char', STR_char,
+	{'char', STR_char},
 	
-	'shor', STR_int,
+	{'shor', STR_int},
 	
-	'long', STR_long,
+	{'long', STR_long},
 	
-	'bad1', STR_unused1, /*8/13*/
+	{'bad1', STR_unused1}, /*8/13*/
 	
-	'data', STR_binary,
+	{'data', STR_binary},
 	
-	'bool', STR_boolean,
+	{'bool', STR_boolean},
 	
-	'tokn', STR_token,
+	{'tokn', STR_token},
 	
-	'date', STR_date,
+	{'date', STR_date},
 	
-	'addr', STR_address,
+	{'addr', STR_address},
 	
-	'code', STR_compiled_code,
+	{'code', STR_compiled_code},
 	
-	'exte', STR_double,
+	{'exte', STR_double},
 	
-	'TEXT', STR_string, /*8/13*/
+	{'TEXT', STR_string}, /*8/13*/
 	
-	'xtrn', STR_external,
+	{'xtrn', STR_external},
 	
-	'dir ', STR_direction,
+	{'dir ', STR_direction},
 	
-	'bad2', STR_unused2, /*9/17/91*/
+	{'bad2', STR_unused2}, /*9/17/91*/
 	
-	'type', STR_string4,
+	{'type', STR_string4},
 	
-	'bad3', STR_unused3,
+	{'bad3', STR_unused3},
 	
-	'QDpt', STR_point,
+	{'QDpt', STR_point},
 	
-	'qdrt', STR_rect,
+	{'qdrt', STR_rect},
 	
-	'tptn', STR_pattern,
+	{'tptn', STR_pattern},
 	
-	'cRGB', STR_rgb, /*12/11/92 dmb*/
+	{'cRGB', STR_rgb}, /*12/11/92 dmb*/
 	
-	'fixd', STR_fixed,
+	{'fixd', STR_fixed},
 	
-	'sing', STR_single,
+	{'sing', STR_single},
 	
-	'doub', STR_double,
+	{'doub', STR_double},
 	
-	'obj ', STR_objspec,
+	{'obj ', STR_objspec},
 	
-	'fss ', STR_filespec,
+	{'fss ', STR_filespec},
 	
-	'alis', STR_alias,
+	{'alis', STR_alias},
 	
-	'enum', STR_enumerator,
+	{'enum', STR_enumerator},
 	
-	'list', STR_list,
+	{'list', STR_list},
 	
-	'reco', STR_record,
+	{'reco', STR_record},
 	
 	/*
 	the following value types, outline - pictvaluetype, are never used directly.
@@ -135,27 +135,27 @@ static tytypeinfo typeinfo [ctvaluetypes] = {
 	external types into a typevaluetype
 	*/
 	
-	'optx', STR_outline,
+	{'optx', STR_outline},
 	
-	'wptx', STR_wptext,
+	{'wptx', STR_wptext},
 	
 	#ifdef fliowa
 	
-	'intf', STR_interface,
+	{'intf', STR_interface},
 	
 	#else
 	
-	'head', STR_headline,
+	{'head', STR_headline},
 	
 	#endif
 	
-	'tabl', STR_table,
+	{'tabl', STR_table},
 	
-	'scpt', STR_script,
+	{'scpt', STR_script},
 	
-	'mbar', STR_menubar,
+	{'mbar', STR_menubar},
 	
-	'pict', STR_picture
+	{'pict', STR_picture}
 	
 	};
 
@@ -444,7 +444,7 @@ boolean langfindsymbol (const bigstring bs, hdlhashtable *htable, hdlhashnode *h
 					}
 				
 				/*12/18/92 dmb
-				if (*htable == nil) /*this is the innermost with value -- return to caller%/
+				if (*htable == nil) /%this is the innermost with value -- return to caller%/
 					*htable = hwith;
 				*/
 				}
@@ -461,9 +461,9 @@ boolean langfindsymbol (const bigstring bs, hdlhashtable *htable, hdlhashnode *h
 /*
 boolean langfindexternalwindow (const bigstring bs, Handle *hdata) {
 	
-	/*
+	/%
 	7.21.97 dmb: see if the string specifies a standalong window that has data
-	* /
+	%/
 	
 	hdlwindowinfo hinfo;
 
@@ -474,7 +474,8 @@ boolean langfindexternalwindow (const bigstring bs, Handle *hdata) {
 		return (shellgetexternaldata (hinfo, hdata));
 	
 	return (false);
-	} /*langfindexternalwindow*/
+	} /%langfindexternalwindow%/
+*/
 
 
 boolean langgetsymbolval (const bigstring bs, tyvaluerecord *vreturned, hdlhashnode *hnode) {

@@ -168,7 +168,6 @@ static boolean xmlstructtofrontiervalue (tyaddress *adrstruct, tyvaluerecord *v)
 static boolean xmlgetaddress (hdlhashtable ht, bigstring name);
 
 
-
 static boolean handlebeginswith (Handle h, bigstring bs) {
 	
 	long ct = gethandlesize (h);
@@ -181,6 +180,8 @@ static boolean handlebeginswith (Handle h, bigstring bs) {
 	} /*handleendswith*/
 
 
+#if 0
+
 static boolean handleendswith (Handle h, bigstring bs) {
 	
 	long ct = gethandlesize (h);
@@ -192,11 +193,13 @@ static boolean handleendswith (Handle h, bigstring bs) {
 	return (strncmp (stringbaseaddress (bs), ((char *) *h) + (ct - ctcompare), ctcompare) == 0);
 	} /*handleendswith*/
 
+#endif
+
 
 static boolean handlecontains (Handle h, bigstring bs) {
 
 	return (textpatternmatch (*h, gethandlesize (h), bs, false) >= 0);
-	} /*handleendswith*/
+	} /*handlecontains*/
 
 
 static boolean replaceallinstring (char chfind, bigstring bsreplace, bigstring bs) {
@@ -304,6 +307,8 @@ static boolean breakatfirstwhitespacechar (bigstring bs) {
 	} /*breakatfirstwhitespacechar*/
 
 
+#if 0
+
 static boolean bettyRPCclient (bigstring server, short port, bigstring procedurename, hdltreenode hparams) {
 
 	/*
@@ -375,6 +380,7 @@ static boolean bettyRPCclient (bigstring server, short port, bigstring procedure
 	return (true);
 	} /*bettyRPCclient*/
 
+#endif
 
 
 static boolean xmladdtaggedvalue (tyvaluerecord *val, short indentlevel, handlestream *sptr) {
@@ -1094,7 +1100,6 @@ boolean langremotefunctioncall (hdltreenode htree, hdltreenode hparam1, tyvaluer
 	bigstring bsserver;
 	bigstring bsfunction;
 	hdlhashtable hremotetable;
-	boolean fl = false;
 	hdltreenode hcode;
 	short port;
 
@@ -1195,8 +1200,8 @@ static boolean lookupstringvalue (hdlhashtable ht, const bigstring bs, bigstring
 	exemptfromtmpstack (&val);
 	
 	return (true);
-	} /*assignstringvalue*/
-
+	} /%assignstringvalue%/
+*/
 
 static boolean assigntokenstringvalue (hdlhashtable ht, const bigstring bs, xmltoken *value) {
 	
@@ -1261,9 +1266,10 @@ static boolean createtokentable (xmladdress *adrtable, xmltoken *token, hdlhasht
 	} /*createtokentable*/
 
 
-/*static boolean skipblanks (Handle s) {
+/*
+static boolean skipblanks (Handle s) {
 	
-	/*
+	/%
 	on skipBlanks () {
 		loop {
 			if sizeof (s) == 0 {
@@ -1271,7 +1277,7 @@ static boolean createtokentable (xmladdress *adrtable, xmltoken *token, hdlhasht
 			if s [1] != ' ' {
 				break};
 			s = string.delete (s, 1, 1)}};
-	* /
+	%/
 	
 	long ix, ct = gethandlesize (s);
 	
@@ -1279,8 +1285,8 @@ static boolean createtokentable (xmladdress *adrtable, xmltoken *token, hdlhasht
 		;
 	
 	pullfromhandle (s, 0, ix, nil);
-	} /*skipblanks*/
-
+	} /%skipblanks%/
+*/
 
 static boolean namenomad (xmladdress *nomad, bigstring name) {
 	
@@ -1534,7 +1540,6 @@ static void setiso8601datetimestring (bigstring bsiso8601, unsigned long *secs) 
 
 static boolean findinhandlestream (handlestream *s, bigstring bsfind, boolean flunicase) {
 	
-	long startpos = (*s).pos;
 	byte *p = *(*s).data;
 	long ix;
 	
@@ -1941,7 +1946,7 @@ boolean xmlcompile (Handle htext, xmladdress *xmladr) {
 	//hdlhashtable newitemtable;
 	hdlhashtable nomadtable;
 	hdlhashnode hnode;
-	long ixsleep = 0;
+	//long ixsleep = 0;
 	long lastsleeptickcount = gettickcount ();
 	long ticksbetweensleeps = 60; /*one second*/
 	long tickcount;
@@ -2141,7 +2146,7 @@ boolean xmlcompile (Handle htext, xmladdress *xmladr) {
 				bigstring bsnomad;
 				long ctitems;				
 				
-				/*if (!inmainthread () && !debuggingcurrentprocess ()) { /*PBS 7.1b14: give up some time to other threads periodically.*/
+				//if (!inmainthread () && !debuggingcurrentprocess ()) { /*PBS 7.1b14: give up some time to other threads periodically.*/
 
 				/*	ixsleep++;
 
@@ -2150,9 +2155,10 @@ boolean xmlcompile (Handle htext, xmladdress *xmladr) {
 						ixsleep = 0;
 					
 						processsleep (getcurrentthread (), 0);
-						} /*if*/
-				/*	} /*if*/
-
+						} /%if%/
+					} /%if%/
+				*/
+				
 				// if nomad == adrtable
 				if (nomad.ht == (*xmladr).ht && equalstrings (nomad.bs, (*xmladr).bs))
 					scriptError (badxmltexterror, STR_toomanytags, nil, token.pos);
@@ -2172,7 +2178,7 @@ boolean xmlcompile (Handle htext, xmladdress *xmladr) {
 				if (hashcountitems (nomadtable, &ctitems) && (ctitems == 1)) {
 					xmladdress adrsubitem;
 					tyvaluerecord val;
-					boolean flspecialname = false;
+					//boolean flspecialname = false;
 					bigstring namesubitem;
 					tyvaluetype specialtype;
 					

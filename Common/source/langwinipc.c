@@ -66,8 +66,6 @@
 #include "timedate.h"
 
 
-
-
 boolean langwinipcerrorroutine (bigstring bs, ptrvoid refcon) {
 	
 	/*
@@ -91,6 +89,8 @@ boolean langwinipcerrorroutine (bigstring bs, ptrvoid refcon) {
 	return (false); /*consume the error*/
 	} /*langwinipcerrorroutine*/
 
+
+#ifdef WIN95VERSION
 
 static void langwinipchookerrors (langerrormessagecallback *savecallback) {
 	
@@ -118,7 +118,6 @@ static boolean langwinipcunhookerrors (langerrormessagecallback savecallback) {
 	} /*langwinipcunhookerrors*/
 
 
-#ifdef WIN95VERSION
 static boolean langwinipccoerceparam (VARIANTARG * var, tyvaluerecord * val);
 
 boolean convertBSTRVariantToValue (VARIANTARG * var, tyvaluerecord * val) {
@@ -1001,7 +1000,6 @@ boolean langipcrunscript (bigstring bsscriptname, tyvaluerecord *vparams, hdlhas
 	hdltreenode hcode;
 	hdlhashtable htable;
 	tyvaluerecord vhandler;
-	Handle hthread = nil;
 	hdlhashnode handlernode;
 	
 	pushhashtable (roottable);

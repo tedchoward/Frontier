@@ -459,7 +459,6 @@ static boolean parsepopnumber (tyvaluerecord *val) {
 				else {
 					long x;
 					bigstring bstest;
-					boolean floverflow = false;
 					
 					if (flhex) {
 						
@@ -1330,7 +1329,9 @@ boolean langaddapplescriptsyntax (Handle hscript) {
 yyoverflow (bsevent, p1, size1, p2, size2, p3, size3, p4) bigstring bsevent; ptrbyte p1, p2, p3; short size1, size2, size3; {
 	
 	DebugStr ("\pyyoverflow");
-	} /*yyoverflow*/
+	} /%yyoverflow%/
+*/
+
 #endif
 
 

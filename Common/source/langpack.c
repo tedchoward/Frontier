@@ -110,7 +110,7 @@ boolean langpackvalue (tyvaluerecord val, Handle *h, hdlhashnode hnode) {
 	Handle hdata;
 	
 	/*
-	copystring (signaturestring, header.sigbytes); /*prevents crashes on bad data%/
+	copystring (signaturestring, header.sigbytes); /%prevents crashes on bad data%/
 	
 	header.valuetype = val.valuetype;
 	*/

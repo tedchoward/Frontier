@@ -584,10 +584,11 @@ static boolean keyboardmodifierverb (tylangtoken token) {
 		
 		case controlkeyfunc:
 			return (kb.flcontrolkey);
-			
+		
+		default:
+			return (false);
 		} /*switch*/
 	
-	return (false);
 	} /*keyboardmodifierverb*/
 	
 /*
@@ -606,10 +607,11 @@ static boolean presskeyverb (char ch) {
 	
 	err = PPostEvent (keyDown, (keycode << 8) + keychar, &ev);
 	
-	/***ev.evtQModifiers = btnState; /*the mouse is up%/
+	//ev.evtQModifiers = btnState; /%the mouse is up%/
 	
 	return (err == noErr);
-	} /*presskeyverb*/
+	} /%presskeyverb%/
+*/
 
 
 #if !flruntime
@@ -661,18 +663,13 @@ static boolean copyexemptvalue (const tyvaluerecord *v, tyvaluerecord *vcopy) {
 	5.0a22 dmb: this was more compilcated before, but it's still shared code
 	*/
 
-	hdlhashtable hcurrent = currenthashtable;
 	boolean fl;
 	
-//	pophashtable ();
-
 	fl = copyvaluerecord (*v, vcopy);
 	
 	if (fl)
 		exemptfromtmpstack (vcopy);
 	
-//	pushhashtable (hcurrent);
-
 	return (fl);
 	} /*copyexemptvalue*/
 
@@ -1373,34 +1370,7 @@ static boolean threewayfunc (hdltreenode hparam1, tyvaluerecord *v) {
 	} /*threewayfunc*/
 
 
-#if MACVERSION
-
-#if TARGET_API_MAC_CARBON
-
-static boolean callxcmdverb (hdltreenode hparam1, tyvaluerecord *vreturned) {
-
-	/*
-	2004-10-21 aradke: XCMDs and XCFNs are not supported on OS X
-	*/
-	
-	bigstring bssourcemessage = "\pCan't call Ò^0Ó because XCMDs and XFCNs are not supported in the Carbon version.";
-	bigstring bserrormessage;
-	bigstring bsxcmd;
-	hdlhashtable htable;
-	tyvaluerecord val;
-	hdlhashnode hnode;
-
-	if (!getvarvalue (hparam1, 1, &htable, bsxcmd, &val, &hnode))
-		return (false);
-
-	parsedialogstring (bssourcemessage, bsxcmd, nil, nil, nil, bserrormessage);
-	
-	langerrormessage (bserrormessage);
-	return (false);
-
-	} /*callxcmdverb*/
-
-#else
+#if MACVERSION && TARGET_API_MAC_OS8
 
 #if !TARGET_RT_MAC_CFM
 		
@@ -1566,7 +1536,6 @@ static boolean callxcmdverb (hdltreenode hparam1, tyvaluerecord *vreturned) {
 	return (fl);
 	} /*callxcmdverb*/
 
-#endif
 #endif
 
 
@@ -3164,16 +3133,11 @@ static boolean langfunctionvalue (short token, hdltreenode hparam1, tyvaluerecor
 		case msgfunc:
 			return ((*langcallbacks.msgverbcallback) (hparam1, v));
 		
-	#if MACVERSION
-	
-		#if !TARGET_API_MAC_CARBON /*7.0b49: not implemented in OS X*/
-	
+	#if MACVERSION && TARGET_API_MAC_OS8 /*7.0b49: not implemented in OS X*/
 			case callxcmdfunc:
 				return (callxcmdverb (hparam1, v));
-				
-		#endif
-	
 	#endif
+
 		case callscriptfunc:
 			return (callscriptverb (hparam1, v));
 

@@ -315,7 +315,9 @@ boolean langvisitcodetree (hdltreenode htree, langtreevisitcallback visit, ptrvo
 	} /*langvisitcodetree*/
 
 
-static boolean counttreenodevisit (hdltreenode hnode, short *ctnodes) {
+static boolean counttreenodevisit (hdltreenode hnode, ptrvoid refcon) {
+	
+	short *ctnodes = (short *) refcon;
 	
 	++*ctnodes;
 	
@@ -668,6 +670,10 @@ boolean pushbinaryoperation (tytreetype op, hdltreenode hp1, hdltreenode hp2, hd
 					}
 				
 				break;
+			
+			default:
+				/* do nothing */
+				break;
 			}
 		}
 
@@ -804,7 +810,7 @@ boolean pushfunctioncall (hdltreenode hp1, hdltreenode hp2, hdltreenode *hreturn
 	assert ((**h).nodeval.valuetype == stringvaluetype);
 	
 	/*
-	if ((**h).nodeval.valuetype != stringvaluetype) /*skip optimization%/
+	if ((**h).nodeval.valuetype != stringvaluetype) /%skip optimization%/
 		goto L1;
 	*/
 	
@@ -1009,7 +1015,7 @@ typedef struct packtreeinfo {
 	} typacktreeinfo, *ptrpacktreeinfo;
 
 
-static boolean langpacktreevisit (hdltreenode htree, ptrpacktreeinfo pi) {
+static boolean langpacktreevisit (hdltreenode htree, ptrvoid refcon) {
 	
 	/*
 	4/8/93 dmb: pack a code tree. be careful not to retain value of a modulop 
@@ -1017,6 +1023,7 @@ static boolean langpacktreevisit (hdltreenode htree, ptrpacktreeinfo pi) {
 	*/
 	
 	register hdltreenode hn = htree;
+	ptrpacktreeinfo pi = (ptrpacktreeinfo) refcon;
 	register ptrdisktreenode pn;
 	tyvaluerecord val = (**hn).nodeval;
 	Handle hpackedval = nil;

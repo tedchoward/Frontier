@@ -223,13 +223,14 @@ static boolean langfindvalue (tyvaluerecord val, hdlhashtable *htable, bigstring
 	} /*langfindvalue*/
 
 
-static boolean getostypevalnamevisit (bigstring bsname, hdlhashnode hnode, tyvaluerecord val, tyvaluerecord *vallookfor) {
+static boolean getostypevalnamevisit (bigstring bsname, hdlhashnode hnode, tyvaluerecord val, ptrvoid refcon) {
 	
 	/*
 	3.0.2b1 dmb: we now look in all loaded app tables for a match when 
 	converting an terminology value (a string4 value) its name
 	*/
 	
+	tyvaluerecord *vallookfor = (tyvaluerecord *) refcon;
 	register hdltablevariable hv;
 	register hdlhashtable ht;
 	register boolean fltempload;
@@ -365,7 +366,7 @@ static boolean getlimitedvaluestring (tyvaluerecord *val, short limit, char chqu
 			chquote = chdoublequote;
 			
 			/*
-			hashgetvaluestring (*v, bsvalue); /*go with hex string%/
+			hashgetvaluestring (*v, bsvalue); /%go with hex string%/
 			
 			goto limit;
 			*/
@@ -1302,8 +1303,6 @@ static pascal OSErr langsystem7accessobject (
 
 static void setupdescriptor (Handle hdata, AEDesc *desc) {
 	
-	register AEDesc *d = desc;
-	
 	#if TARGET_API_MAC_CARBON == 1 /*PBS 03/14/02: AE OS X fix.*/
 	
 		DescType type = typeObjectSpecifier;
@@ -1314,6 +1313,8 @@ static void setupdescriptor (Handle hdata, AEDesc *desc) {
 		newdescwithhandle (desc, type, hdata);
 	
 	#else
+	
+		register AEDesc *d = desc;
 	
 		(*d).dataHandle = hdata;
 		
@@ -3132,7 +3133,7 @@ static boolean evaluateobject (hdltreenode htree, OSType nulltype, AEDesc *objec
 	
 	op = (**h).nodetype; /*copy into register*/
 	
-	/*langseterrorline (h); /*set globals for error reporting*/
+	//langseterrorline (h); /*set globals for error reporting*/
 	
 	switch (op) {
 		

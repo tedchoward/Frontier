@@ -111,7 +111,7 @@ static boolean langaddcstringkeyword (bigstring bs, short tokennumber) {
 	} /*langaddcstringkeyword*/
 	
 
-static boolean langaddkeyword (bigstring bs, short tokennumber) {
+boolean langaddkeyword (bigstring bs, short tokennumber) {
 	
 	tyvaluerecord val;
 	
@@ -136,8 +136,8 @@ boolean langaddkeywordlist (hdlhashtable htable, byte * bskeywords[], short ctke
 	pophashtable ();
 	
 	return (fl);
-	} /*langaddkeywordlist*/
-
+	} /%langaddkeywordlist%/
+*/
 
 boolean loadfunctionprocessor (short id, langvaluecallback valuecallback) {
 	
@@ -415,6 +415,8 @@ static boolean langaddstringconst (bigstring bs, bigstring x) {
 	} /*langaddstringconst*/
 
 
+#if 0
+
 static boolean langaddintconst (bigstring bs, short x) {
 	
 	tyvaluerecord val;
@@ -423,6 +425,8 @@ static boolean langaddintconst (bigstring bs, short x) {
 	
 	return (hashinsertcstring (bs, &val));
 	} /*langaddintconst*/
+
+#endif
 	
 
 static boolean langadddirectionconst (bigstring bs, tydirection x) {
@@ -442,7 +446,7 @@ static boolean langaddbooleanconst (bigstring bs, boolean x) {
 	setbooleanvalue (x, &val);
 	
 	return (hashinsert (bs, val));
-	} /*langaddintconst*/
+	} /*langaddbooleanconst*/
 
 
 static boolean langaddtypeconst (bigstring bs, tyvaluetype x) {

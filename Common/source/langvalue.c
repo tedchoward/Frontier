@@ -436,18 +436,18 @@ boolean getaddressvalue (tyvaluerecord val, hdlhashtable *htable, bigstring bs) 
 	return (true);
 	
 	/*
-	setheapstring (emptystring, hstring); /*avoid recursion%/
+	setheapstring (emptystring, hstring); /%avoid recursion%/
 	
-	disablelangerror (); /*we don't want to generate errors here%/
+	disablelangerror (); /%we don't want to generate errors here%/
 	
-	if (langexpandtodotparams (bs, htable, bs)) { /*valid path%/
+	if (langexpandtodotparams (bs, htable, bs)) { /%valid path%/
 		
-		setheapstring (bs, hstring); /*now we have just the name%/
+		setheapstring (bs, hstring); /%now we have just the name%/
 		
-		enlargehandle ((Handle) hstring, sizeof (hdlhashtable), htable); /*should never fail%/
+		enlargehandle ((Handle) hstring, sizeof (hdlhashtable), htable); /%should never fail%/
 		}
 	else
-		setheapstring (bs, hstring); /*restore original%/
+		setheapstring (bs, hstring); /%restore original%/
 	
 	enablelangerror ();
 	
@@ -492,7 +492,7 @@ boolean setaddressencoding (tyvaluerecord *val, boolean flfullpath) {
 		}
 
 	// set the value with the new encoding
-	h = (*val).data.addressvalue;
+	h = (Handle) (*val).data.addressvalue;
 
 	if (!sethandlecontents (bs, stringsize (bs), h))
 		return (false);
@@ -549,7 +549,8 @@ boolean setpasswordvalue (bigstring bs, tyvaluerecord *val) {
 	initvalue (val, passwordvaluetype);
 	
 	return (true);
-	} /*setpasswordvalue*/
+	} /%setpasswordvalue%/
+*/
 
 
 boolean setheapvalue (Handle x, tyvaluetype type, tyvaluerecord *val) {
@@ -1039,9 +1040,16 @@ void disposevaluerecord (tyvaluerecord val, boolean fldisk)
 			langexternaldisposevalue (val, fldisk);
 			
 			break;
+		
+		default:
+			/* do nothing */
+			break;
+			
 		} /*switch*/
 	} /*disposevaluerecord*/
 
+
+#if 0
 
 static boolean isgarbagetype (tyvaluetype type) {
 	
@@ -1063,6 +1071,8 @@ static boolean isgarbagetype (tyvaluetype type) {
 			return (false);
 		} /*switch*/
 	} /*isgarbagetype*/
+
+#endif
 
 
 static void disposevalues (tyvaluerecord *val1, tyvaluerecord *val2) {
@@ -1359,29 +1369,8 @@ static boolean stringtofixed (tyvaluerecord *val) {
 		return (false);
 	
 	return (setfixedvalue (FixRatio ((*val).data.longvalue, 1), val));
-	} /*stringtofixed*/
-
-
-static boolean stringtosingle (tyvaluerecord *val) {
-	
-	if (!stringtolong (val))
-		return (false);
-	
-	return (setsinglevalue ((float) (*val).data.longvalue, val));
-	} /*stringtosingle*/
-
-
-static boolean stringtodouble (tyvaluerecord *val) {
-	
-	double x;
-	
-	if (!stringtolong (val))
-		return (false);
-	
-	x = (float) (*val).data.longvalue;
-	
-	return (newheapvalue (&x, sizeof (x), doublevaluetype, val));
-	} /*stringtodouble*/
+	} /%stringtofixed%/
+*/
 
 
 static long nthint (bigstring bs, short n) {
@@ -1648,7 +1637,7 @@ boolean langgetspecialtable (bigstring bs, hdlhashtable *htable) {
 		
 		*htable = internaltable;
 		
-		return (true); /*it is a special table%/
+		return (true); /%it is a special table%/
 		}
 	*/
 	
@@ -3046,7 +3035,11 @@ boolean coercetofilespec (tyvaluerecord *v) {
 			pullstringvalue (v, bs);
 				
 			if (equaltextidentifiers (stringbaseaddress(bs), stringbaseaddress(fileurl), stringlength(fileurl) )) {
+				
+				#ifdef WIN95VERSION
 				short ix = 0;
+				#endif
+				
 				/* Convert string to standard file string.*/
 				deletestring (bs, 1, stringlength (fileurl));
 				
@@ -4638,9 +4631,7 @@ boolean getoptionalparamvalue (hdltreenode hfirst, short *ctconsumed, short *ctp
 	*/
 	
 	hdltreenode hparam = nil;
-	short ctskip = *ctpositional;
 	tyvaluetype ptype = (*vreturned).valuetype;
-	boolean fllastparam = flnextparamislast;
 	
 	if (!getoptionalparam (hfirst, ctconsumed, ctpositional, bsparam, &hparam))
 		return (false);
@@ -5241,49 +5232,6 @@ boolean getbinaryvalue (hdltreenode hfirst, short pnum, boolean flreadonly, Hand
 	return (true);
 	} /*getbinaryvalue*/
 
-/*
-static boolean getbinarycopy (hdltreenode hfirst, short pnum, Handle *x) {
-	
-	/*
-	unlike getstringcopy in stringverbs.c, we leave the handle in the temp 
-	stack; the caller should assume that the handle will be diposed on its own accord.
-	%/
-	
-	tyvaluerecord v;
-	
-	if (!getparamvalue (hfirst, pnum, &v))
-		return (false);
-	
-	if (!coercetobinary (&v))
-		return (false);
-	
-	assert (exemptfromtmpstack (v) && pushvalueontmpstack (v)); /*there are no binary literals in the language%/
-	
-	*x = v.data.binaryvalue;
-	
-	return (true);
-	} /*getbinarycopy%/
-
-
-boolean xgetbinaryvalue (hdltreenode hfirst, short pnum, boolean flreadonly, Handle *x) {
-	
-	/*
-	new version of getbinaryvalue; gets it like any other normal data type.
-	%/
-	
-	tyvaluerecord val;
-	
-	if (!flreadonly)
-		return (getbinarycopy (hfirst, pnum, x));
-	
-	if (!getbinaryparam (hfirst, pnum, &val))
-		return (false);
-	
-	*x = val.data.binaryvalue;
-	
-	return (true);
-	} /*xgetbinaryvalue*/
-
 
 boolean langsetbooleanvarparam (hdltreenode hfirst, short pnum, boolean fl) {
 	
@@ -5330,7 +5278,9 @@ boolean setintvarparam (hdltreenode hfirst, short pnum, short n) {
 	} /*setintvarparam*/
 
 
-static int ctlazythis = 0;
+#if lazythis_optimization
+	static int ctlazythis = 0;
+#endif
 
 boolean idvalue (hdltreenode htree, tyvaluerecord *val) {
 	
@@ -5672,8 +5622,7 @@ static boolean parsearrayreference (hdltreenode htree, tyarraystack *pstack, hdl
 	
 	tyvaluerecord varray;
 	tyvaluerecord vindex;
-	register short top;
-	boolean flarrayistable = false;
+	register short top = 0;
 	boolean fltmp;
 	boolean fl;
 	hdlhashnode hnode;
@@ -5864,7 +5813,6 @@ static boolean assignordeletearrayvalue (register hdltreenode h, tyvaluerecord *
 	tyvaluerecord *varray;
 	tyvaluerecord velement;
 	tyarraystack arraystack = {0};
-	register hdltreenode harray = (**h).param1;
 	hdlhashtable htable;
 	bigstring bsname;
 	boolean fljustdirtytable = false;
@@ -7180,17 +7128,11 @@ static boolean stringcomparevalue (tyvaluerecord *v1, tyvaluerecord *v2, tytreet
 	
 	h2 = (*v2).data.stringvalue;
 	
-	switch (op) {
-		
-		case beginswithop:
-			ixlimit = gethandlesize (h2);
-			
-			break;
-		
-		case endswithop:
-			ixstart = gethandlesize (h1) - gethandlesize (h2);
-			
-			break;
+	if (op == beginswithop) {
+		ixlimit = gethandlesize (h2);
+		}
+	else if (op == endswithop) {
+		ixstart = gethandlesize (h1) - gethandlesize (h2);
 		}
 	
 	result = searchhandle (h1, h2, ixstart, ixlimit);
@@ -7363,72 +7305,12 @@ boolean notvalue (tyvaluerecord v1, tyvaluerecord *vreturned) {
 	more eliable.
 	*/
 	
-	register boolean fl = true;
-	
 	if (!coercetoboolean (&v1))
 		return (false);
 	
 	return (setbooleanvalue (!v1.data.flvalue, vreturned));
 	} /*notvalue*/
-	
-/*
-notvalue (tyvaluerecord v1, tyvaluerecord *vreturned) {
-	
-	register boolean fl = true;
-	
-	initvalue (vreturned, v1.valuetype);
-	
-	switch (v1.valuetype) {
-		
-		case booleanvaluetype:
-			(*vreturned).data.flvalue = !v1.data.flvalue;
-			
-			break;
-			
-		case charvaluetype:
-			(*vreturned).data.chvalue = !v1.data.chvalue;
-			
-			break;
-			
-		case intvaluetype:
-			(*vreturned).data.intvalue = !v1.data.intvalue;
-			
-			break;
-			
-		case longvaluetype:
-		case fixedvaluetype:
-			(*vreturned).data.longvalue = !v1.data.longvalue;
-			
-			break;
-		
-		case datevaluetype:
-			(*vreturned).data.datevalue = !v1.data.datevalue;
-					
-			break;
-		
-		case singlevaluetype:
-			(*vreturned).data.singlevalue = !v1.data.singlevalue;
-			
-			break;
-		
-		case doublevaluetype:
-			fl = setdoublevalue (!**v1.data.doublevalue, vreturned);
-			
-			break;
-		
-		default:
-			langerror (unarynotnotpossibleerror);
-			
-			fl = false; /*negation is not defined%/
-			
-			break;
-		} /*switch%/
-	
-	disposevalues (&v1, nil);
-	
-	return (fl);
-	} /*notvalue*/
-	
+
 
 static boolean sizefunc (hdltreenode hparam1, tyvaluerecord *vreturned) {
 	
@@ -8419,22 +8301,25 @@ static hdltreenode langgetentrypoint (hdltreenode hcode, bigstring bsname, hdlha
 #endif // version5orgreater
 
 
-/*
+#if 0
+
 boolean langgetlocalhandlercode (bigstring bs, hdltreenode *hcode) {
 	
 	hdlhashtable htable;
 	tyvaluerecord val;
 	
-	if (!langgetsymbolval (bs, &val)) /*not found in local chain%/
+	if (!langgetsymbolval (bs, &val)) /*not found in local chain*/
 		return (false);
 	
-	if (val.valuetype != codevaluetype) /*not a local handler%/
+	if (val.valuetype != codevaluetype) /*not a local handler*/
 		return (false);
 	
 	*hcode = val.data.codevalue;
 	
 	return (true);
 	} /*langgetlocalhandlercode*/
+
+#endif
 
 
 boolean langgetnodecode (hdlhashtable ht, bigstring bs, hdlhashnode hnode, hdltreenode *hcode) {
@@ -8868,6 +8753,11 @@ static boolean builtinvalue (tyfunctype token, hdltreenode hparam1, tyvaluerecor
 			}
 		
 		#endif
+		
+			default:
+				/* do nothing */
+				break;
+				
 		} /*switch*/
 	
 	#ifdef fldebug
