@@ -1554,7 +1554,7 @@ long getcurrenttimezonebias(void) {
 
 extern long getmilliseconds(void) {
 	LARGE_INTEGER counter, freq;
-	unsigned long long freqLong;
+	LONGLONG freqLong;
 	
 	QueryPerformanceCounter (&counter);  /* counter hits since boot-up */
 	
