@@ -50,7 +50,7 @@
 				GCC_OPTIMIZATION_LEVEL = 0;
 				GCC_WARN_UNKNOWN_PRAGMAS = YES;
 				REZ_PREPROCESSOR_DEFINITIONS = "";
-				ZERO_LINK = YES;
+				ZERO_LINK = NO;
 			};
 			isa = PBXBuildStyle;
 			name = Development;
