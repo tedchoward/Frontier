@@ -23,11 +23,10 @@
 
 ******************************************************************************/
 
-#ifdef TARGET_API_MAC_CARBON
-#include <Carbon/Carbon.r>
-#else
-#include <AEUserTermTypes.r>
-#endif
+
+#include "frontier.r"
+
+
 resource 'aete' (0, "Frontier Suites") {
 	0x1,
 	0x0,

@@ -25,19 +25,9 @@
 
 #define oldTemp
 
-#ifdef TARGET_API_MAC_CARBON
-#include <Carbon/Carbon.r>
-#else
-#include <MacTypes.r>
-#include <AEUserTermTypes.r>
-#include <Controls.r>
-#include <Dialogs.r>
-#include <Icons.r>
-#include <Menus.r>
-#endif
 
-#include "config.r"
-#include "versions.h"
+#include "frontier.r"
+
 
 resource 'MENU' (1, "Apple") {
 	1,

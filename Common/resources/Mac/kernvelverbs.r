@@ -23,7 +23,8 @@
 
 ******************************************************************************/
 
-#include "shell.mcp.r"
+
+#include "frontier.r"
 #include "kernelverbdefs.h"
 
 
@@ -1076,7 +1077,6 @@ resource 'EFP#' (idquicktimeverbs, "quicktime") { /*7.0b4 PBS: QuickTime player 
 		}
 	};
 
-#ifdef flregexpverbs
 
 resource 'EFP#' (idregexpverbs, "re") { /*2003-04-22 AR: regular expression verbs*/
 	
@@ -1097,4 +1097,3 @@ resource 'EFP#' (idregexpverbs, "re") { /*2003-04-22 AR: regular expression verb
 	}
 };
 
-#endif

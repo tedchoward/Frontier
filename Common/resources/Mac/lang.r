@@ -23,12 +23,9 @@
 
 ******************************************************************************/
 
-#ifdef TARGET_API_MAC_CARBON
-#include <Carbon/Carbon.r>
-#else
-#include <MacTypes.r>
-#include <Dialogs.r>
-#endif
+
+#include "frontier.r"
+
 
 resource 'STR#' (135, "Directions", purgeable) {
 	{	/* array StringArray: 13 elements */
