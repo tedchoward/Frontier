@@ -123,7 +123,6 @@ static boolean fltoolkitinitialized = false;
 
 static hdlverbrecord hipcverb = nil; /*the verb currently being handled*/
 
-static boolean flipcthreadwaiting = false;
 //Code change by Timothy Paustian Wednesday, June 14, 2000 8:59:44 PM
 //Changed to Opaque call for Carbon
 //This is never used except to get the zone which is never
@@ -184,7 +183,7 @@ boolean langipcerrorroutine (bigstring bs, ptrvoid refcon) {
 
 static void langipchookerrors (hdlverbrecord hverb, callback *savecallback) {
 	
-	*savecallback = langcallbacks.errormessagecallback;
+	*savecallback = (callback) langcallbacks.errormessagecallback;
 	
 	langcallbacks.errormessagecallback = &langipcerrorroutine;
 	
@@ -198,7 +197,7 @@ static boolean langipcunhookerrors (callback savecallback) {
 	
 	shellpoperrorhook ();
 	
-	langcallbacks.errormessagecallback = savecallback;
+	langcallbacks.errormessagecallback = (errorhookcallback) savecallback;
 	
 	fllangerror = false; /*make sure error flag is cleared*/
 	
@@ -424,7 +423,7 @@ static boolean langipccoerceparam (AEDesc *param, tyvaluerecord *vreturned) {
 	*/
 	
 	register AEDesc *p = param;
-	register desctype = (*p).descriptorType;
+	register DescType desctype = (*p).descriptorType;
 	register tyvaluerecord *v = vreturned;
 	Handle hdata;	
 	bigstring bs;
@@ -847,7 +846,6 @@ static boolean langipchandlerunscript (hdlverbrecord hverb) {
 	callback savecallback;
 	hdltreenode hcode;
 	register boolean fl = false;
-	Handle hthread = nil;
 	
 	if (!langipcfileopen (hverb))
 		return (false);
@@ -1274,7 +1272,8 @@ static setglobaltransactionid (long idtransaction) {
 	
 	if (iachandlertable != nil)
 		hashtableassign (iachandlertable, "\ptrapTransaction", val);
-	} /*setglobaltransactionid*/
+	} /%setglobaltransactionid%/
+*/
 
 #if TARGET_API_MAC_CARBON == 0
 #if GENERATINGCFM
@@ -1343,7 +1342,7 @@ static boolean langipchandletrapverb (hdlverbrecord hverb, boolean *flfoundhandl
 	long refcon;
 	tyvaluerecord vhandler;
 	tyvaluerecord osacode;
-	Handle hthread = nil;
+	//Handle hthread = nil;
 	hdlhashnode handlernode;
 	AppleEvent event, reply;
 	
@@ -1509,6 +1508,8 @@ static boolean langipchandletrapverb (hdlverbrecord hverb, boolean *flfoundhandl
 	} /*langipchandletrapverb*/
 
 
+#if TARGET_API_MAC_OS8
+
 static boolean langipcgetmenuarrayverb (hdlverbrecord hverb) {
 	
 	long id;
@@ -1618,6 +1619,8 @@ static boolean langipckillscriptverb (hdlverbrecord hverb) {
 	return (landreturnboolean (hverb, fl));
 	} /*langipckillscriptverb*/
 
+#endif
+
 
 static pascal boolean langipchandleverb (hdlverbrecord hverb) {
 	
@@ -1702,7 +1705,7 @@ static pascal boolean langipchandleverb (hdlverbrecord hverb) {
 		*/
 		
 #ifndef PIKE
-#if TARGET_API_MAC_CARBON == 0
+	#if TARGET_API_MAC_OS8
 		case getmenuarraytoken:
 			fl = langipcgetmenuarrayverb (hverb);
 			
@@ -1722,7 +1725,7 @@ static pascal boolean langipchandleverb (hdlverbrecord hverb) {
 			fl = langipckillscriptverb (hverb);
 			
 			break;
-#endif
+	#endif
 #endif
 		
 		default:
@@ -2029,9 +2032,6 @@ static boolean getipcaddressvalue (hdltreenode hparam1, short pnum, tyipcaddress
 
 boolean langipcgetaddressvalue (hdltreenode hparam1, tyvaluerecord *vreturned) {
 	
-	register hdltreenode hp1 = hparam1;
-	register tyvaluerecord *v = vreturned;
-	
 	return (setbooleanvalue (false, vreturned));
 	} /*langipcgetaddressvalue*/
 
@@ -2235,7 +2235,7 @@ void binarytodesc (Handle hbinary, AEDesc *desc) {
 	} /*binarytodesc*/
 
 
-static stealbinaryhandle (tyvaluerecord *val, Handle *x) {
+static boolean stealbinaryhandle (tyvaluerecord *val, Handle *x) {
 	
 	if (exemptfromtmpstack (val)) {
 		
@@ -2502,7 +2502,7 @@ boolean langipcgetlistitem (hdltreenode hparam1, tyvaluerecord *vreturned) {
 	
 	valuetype = langgetvaluetype (itemdesc.descriptorType);
 	
-	if (langgoodbinarytype (valuetype)) { /*unpackable%/
+	if (langgoodbinarytype (valuetype)) { /%unpackable%/
 		
 		if (!coercevalue (&itemval, valuetype))
 			return (false);
@@ -2699,11 +2699,12 @@ boolean langipcapprunning (hdltreenode hparam1, tyvaluerecord *vreturned) {
 	setbooleanvalue (landapprunning (appid), vreturned);
 	
 	return (true);
-	} /*langipcapprunning*/
+	} /%langipcapprunning%/
+*/
 
-
-static boolean langipcgetparamvisit (bigstring bs, hdlhashnode hnode, tyvaluerecord val, hdlverbrecord hv) {
+static boolean langipcgetparamvisit (bigstring bs, hdlhashnode hnode, tyvaluerecord val, ptrvoid refcon) {
 	
+	hdlverbrecord hv = (hdlverbrecord) refcon;
 	OSType key;
 	
 	if (!stringtoostype (bs, &key)) {
@@ -2976,13 +2977,14 @@ static boolean appinfovisit (hdlhashtable happtable, bigstring bsname, tyappvisi
 	} /*appinfovisit*/
 
 
-static boolean apptablevisit (bigstring bsname, hdlhashnode hnode, tyvaluerecord val, tyappvisitinfo *appvisitinfo) {
+static boolean apptablevisit (bigstring bsname, hdlhashnode hnode, tyvaluerecord val, ptrvoid refcon) {
 	
 	/*
 	2.1b2 dmb: added this layer of tableinternal-level code to 
 	prevent a bunch of memory from being consumed by an id search
 	*/
 	
+	tyappvisitinfo *appvisitinfo = (tyappvisitinfo*) refcon;
 	register hdltablevariable hv;
 	register hdlhashtable ht;
 	register boolean fltempload;
@@ -3396,7 +3398,7 @@ static boolean langipcfasterror (bigstring bs, ptrvoid refcon) {
 
 static void langipchookfasterrors (AEDesc *reply) {
 	
-	fastsavecallback = langcallbacks.errormessagecallback;
+	fastsavecallback = (callback) langcallbacks.errormessagecallback;
 	
 	langcallbacks.errormessagecallback = &langipcfasterror;
 	
@@ -3410,7 +3412,7 @@ static boolean langipcunhookfasterrors (void) {
 	
 	shellpoperrorhook ();
 	
-	langcallbacks.errormessagecallback = fastsavecallback;
+	langcallbacks.errormessagecallback = (errorhookcallback) fastsavecallback;
 	
 	oserror (noErr); /*clear it out to avoid conflicts with current thread*/
 	
@@ -3672,7 +3674,7 @@ boolean langipchandlercall (hdltreenode htree, bigstring bsverb, hdltreenode hpa
 /*
 static boolean handlekernelfunction (hdlverbrecord hverb) {
 	
-	/*
+	/%
 	2.1b14: this is what langipchandletrapverb boils down to in 
 	its handling of the kernel event. but to avoid all this code 
 	duplication, we'll just add yet another special case to the trap 
@@ -3699,7 +3701,7 @@ static boolean handlekernelfunction (hdlverbrecord hverb) {
 	if (!landgetlongparam (hv, keycurrenttable, (long *) &hcontext))
 		return (false);
 	
-	/*build a code tree and call the handler, with our error hook in place%/
+	/%build a code tree and call the handler, with our error hook in place%/
 	
 	langipchookerrors (hv, &savecallback);
 	
@@ -3709,7 +3711,7 @@ static boolean handlekernelfunction (hdlverbrecord hverb) {
 	if (!pushfunctionreference (val, &hfunctioncall))
 		goto exit;
 	
-	pushhashtable (hcontext); /*need context to evaluate local address params%/
+	pushhashtable (hcontext); /%need context to evaluate local address params%/
 	
 	fl = langipcbuildparamlist (hv, &hparamlist);
 	
@@ -3722,10 +3724,10 @@ static boolean handlekernelfunction (hdlverbrecord hverb) {
 		goto exit;
 		}
 	
-	if (!pushfunctioncall (hfunctioncall, hparamlist, &hcode)) /*consumes input parameters%/
+	if (!pushfunctioncall (hfunctioncall, hparamlist, &hcode)) /%consumes input parameters%/
 		goto exit;
 	
-	if (!pushbinaryoperation (moduleop, hcode, nil, &hcode)) /*needs this level%/
+	if (!pushbinaryoperation (moduleop, hcode, nil, &hcode)) /%needs this level%/
 		goto exit;
 	
 	fl = langipcruncode (hv, hcode, hcontext, false);
@@ -3735,8 +3737,8 @@ static boolean handlekernelfunction (hdlverbrecord hverb) {
 	langipcunhookerrors (savecallback);
 	
 	return (fl);
-	} /*handlekernelfunction*/
-
+	} /%handlekernelfunction%/
+*/
 
 boolean langipckernelfunction (hdlhashtable htable, bigstring bsverb, hdltreenode hparam1, tyvaluerecord *vreturned) {
 	
@@ -4090,7 +4092,7 @@ static pascal boolean langipcbreakembrace (EventRecord *ev) {
 		}
 	
 	/*
-	shellpushblock (highLevelEventMask, true); /*just in case%/
+	shellpushblock (highLevelEventMask, true); /%just in case%/
 	
 	fl = langbackgroundtask ();
 	
@@ -4292,7 +4294,7 @@ static pascal OSErr langipcfastsetobject (AppleEvent *event, AppleEvent *reply, 
 	tyfastverbcontext savecontext;
 	Boolean fl;
 	
-	#if flcomponent
+	#if flcomponent && TARGET_API_MAC_OS8
 		
 		long curA5 = SetUpAppA5 ();
 	
@@ -4348,7 +4350,7 @@ static pascal OSErr langipcfastsetobject (AppleEvent *event, AppleEvent *reply, 
 	
 	landpopfastcontext (&savecontext);
 	
-	#if flcomponent
+	#if flcomponent && TARGET_API_MAC_OS8
 		
 		RestoreA5 (curA5);
 	
@@ -4375,7 +4377,7 @@ static pascal OSErr langipchandlefastscript (AppleEvent *event, AppleEvent *repl
 	boolean fl;
 	OSErr err;
 	
-	#if flcomponent
+	#if flcomponent && TARGET_API_MAC_OS8
 		
 		long curA5 = SetUpThisA5 (refcon);
 	
@@ -4465,7 +4467,7 @@ static pascal OSErr langipchandlefastscript (AppleEvent *event, AppleEvent *repl
 	
 	#endif
 	
-	#if flcomponent
+	#if flcomponent && TARGET_API_MAC_OS8
 		
 		RestoreA5 (curA5);
 	

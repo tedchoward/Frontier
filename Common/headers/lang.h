@@ -1272,6 +1272,8 @@ extern boolean langsetbooleanvarparam (hdltreenode , short, boolean); /* 08/14/2
 
 extern boolean langsetlongvarparam (hdltreenode, short, long);
 
+extern boolean langsetstringvarparam (hdltreenode, short, bigstring);	/* 2004-10-31 aradke */
+
 extern boolean setintvarparam (hdltreenode, short, short);
 
 extern boolean addvalue (tyvaluerecord, tyvaluerecord, tyvaluerecord *);

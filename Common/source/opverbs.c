@@ -465,9 +465,9 @@ boolean opverbgetlinkedcode (hdlexternalvariable hvariable, hdltreenode *hcode) 
 
 static void opverbsetcallbacks (hdloutlinevariable hvariable, hdloutlinerecord houtline) {
 	
+	/*
 	register hdloutlinerecord ho = houtline;
 	
-	/*
 	(**ho).setscrollbarsroutine = &opverbsetscrollbarsroutine;	// 1/31/97 dmb: default is ok now
 	*/
 	
@@ -1455,7 +1455,7 @@ static boolean oprunverb (hdltreenode hparam1, tyvaluerecord *v) {
 	tyvaluerecord val;
 	bigstring bs;
 	
-	setbooleanvalue (false, v); /*assume the worst%/
+	setbooleanvalue (false, v); /%assume the worst%/
 	
 	flnextparamislast = true;
 	
@@ -1466,7 +1466,8 @@ static boolean oprunverb (hdltreenode hparam1, tyvaluerecord *v) {
 		return (false);
 	
 	return (langrun (htext, v));
-	} /*oprunverb*/
+	} /%oprunverb%/
+*/
 
 
 boolean opinserthandle (Handle htext, tydirection dir) {
@@ -1594,9 +1595,10 @@ static boolean opsetbitverb (boolean fl, opvisitcallback visit) {
 	} /*opsetbitverb*/
 
 
-static boolean opcommentvisit (hdlheadrecord hnode, ptrbitinfo bitinfo) {
+static boolean opcommentvisit (hdlheadrecord hnode, ptrvoid refcon) {
 	
 	hdlheadrecord h = hnode;
+	ptrbitinfo bitinfo = (ptrbitinfo) refcon;
 	
 	if ((**h).flcomment != (*bitinfo).flset) { /*changing*/
 		
@@ -1624,8 +1626,9 @@ static boolean opcommentverb (boolean fl) {
 	} /*opcommentverb*/
 
 
-static boolean opbreakpointvisit (hdlheadrecord hnode, ptrbitinfo bitinfo) {
+static boolean opbreakpointvisit (hdlheadrecord hnode, ptrvoid refcon) {
 	
+	ptrbitinfo bitinfo = (ptrbitinfo) refcon;
 	hdlheadrecord h = hnode;
 	
 	if ((**h).flbreakpoint != (*bitinfo).flset) { /*changing*/
@@ -1657,18 +1660,18 @@ static boolean opbreakpointverb (boolean fl) {
 /*
 static boolean opmarkedverb (boolean fl) {
 	
-	/*
+	/%
 	change the marked state of the cursor line.  only update if it 
 	actually changed.  fl == true means set a mark.
 	%/
 	
 	hdlheadrecord hcursor;
 	
-	fl = bitboolean (fl); /*make sure it's a 1 or a 0%/
+	fl = bitboolean (fl); /%make sure it's a 1 or a 0%/
 	
 	hcursor = (**outlinedata).hbarcursor;
 	
-	if ((**hcursor).flmarked == fl) /*not changing%/
+	if ((**hcursor).flmarked == fl) /%not changing%/
 		return (false);
 	
 	(**hcursor).flmarked = fl;
@@ -1680,8 +1683,8 @@ static boolean opmarkedverb (boolean fl) {
 	opupdatenow ();
 	
 	return (true);
-	} /*opmarkedverb*/
-
+	} /%opmarkedverb%/
+*/
 
 static boolean opsetdisplayverb (boolean fldisplay) {
 	
@@ -2174,7 +2177,7 @@ static boolean opgetrefconverb (hdltreenode hparam1, hdlheadrecord hnode, tyvalu
 	/*
 	flnextparamislast = true;
 	
-	if (!getvarparam (hparam1, 1, &htable, bs)) /*returned handle holder%/
+	if (!getvarparam (hparam1, 1, &htable, bs)) /%returned handle holder%/
 		return (false);
 	*/
 	
@@ -2209,7 +2212,7 @@ static boolean opgetrefconverb (hdltreenode hparam1, hdlheadrecord hnode, tyvalu
 	*v = linkedval;
 	
 	/*
-	if (!langsetsymboltableval (htable, bs, linkedval)) /*probably a memory error%/
+	if (!langsetsymboltableval (htable, bs, linkedval)) /%probably a memory error%/
 		return (false);
 	
 	exemptfromtmpstack (linkedval);
@@ -2573,7 +2576,6 @@ boolean opsetscrollstateverb (long line1, tyvaluerecord *v) {
 
 	register hdloutlinerecord ho = outlinedata;
 	register hdlheadrecord nomad;
-	register long ctheadlines = 1;
 
 	assert ((ho != nil) && (*ho != nil));
 
@@ -2598,7 +2600,7 @@ boolean opsetscrollstateverb (long line1, tyvaluerecord *v) {
 	}/*opsetscrollstateverb*/
 
 
-static boolean opgetselvisit (hdlheadrecord hnode, hdllistrecord hlist) {
+static boolean opgetselvisit (hdlheadrecord hnode, ptrvoid refcon) {
 	
 	/*
 	7.0b15 PBS: for each marked item, store the cursor in a list.
@@ -2608,6 +2610,7 @@ static boolean opgetselvisit (hdlheadrecord hnode, hdllistrecord hlist) {
 	Code based on tablegetselvisit.
 	*/
 	
+	hdllistrecord hlist = (hdllistrecord) refcon;
 	tyvaluerecord val;
 	
 	if (!setlongvalue ((long) hnode, &val)) /*cursors are hdlheadrecords, coerced to a long*/
@@ -2882,12 +2885,13 @@ static boolean opvisitallverb (hdltreenode hparam1, tyvaluerecord *v, bigstring 
 	} /*opvisitallverb*/
 
 
-static boolean opgetselectedsuboutlinesvisit (hdlheadrecord hnode, hdloutlinerecord ho) {
+static boolean opgetselectedsuboutlinesvisit (hdlheadrecord hnode, ptrvoid refcon) {
 	
 	/*
 	7.0b18 PBS: callback routine for op.getSelectesSubOutlines.
 	*/
 	
+	hdloutlinerecord ho = (hdloutlinerecord) refcon;
 	hdlheadrecord hcopy;
 	hdlheadrecord hbarcursor = (**ho).hbarcursor;
 
@@ -3004,7 +3008,7 @@ static boolean opxmltooutlineverb (hdltreenode hparam1, tyvaluerecord *v) {
 	bigstring bsname;
 	tyvaluerecord val;
 	hdlhashnode hnode;
-	boolean fl = false, flhadtarget = false;
+	boolean fl = false;
 	Handle htext;
 	boolean flnewoutline;
 	hdlhashtable hcloud = nil;
@@ -4432,7 +4436,7 @@ boolean opstart (void) {
 	
 	(*cb).titleclickroutine = &opverbtitleclick;
 	
-	(*cb).getvariableroutine = &opverbgetvariable;
+	(*cb).getvariableroutine = (shellgetvariablecallback) &opverbgetvariable;
 	
 	(*cb).settextmoderoutine = &opsettextmode;
 	

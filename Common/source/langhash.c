@@ -377,7 +377,7 @@ static void hashinvalidaterefnodes (hdlhashtable ht) {
 		
 		getaddresspath ((**hn).val, bspath);
 		
-		sethandlecontents (bspath, stringsize (bspath), (**hn).val.data.addressvalue);
+		sethandlecontents (bspath, stringsize (bspath), (Handle) (**hn).val.data.addressvalue);
 		
 		#if fldebug
 			++ctrefnodesinvalidated;
@@ -507,6 +507,8 @@ void unchainhashtable (void) {
 	} /*unchainhashtable*/
 
 
+#if 0
+
 static boolean indexhashtable_obsolete (short tablenum, hdlhashtable *htable) {
 	
 	/*
@@ -540,6 +542,8 @@ static boolean indexhashtable_obsolete (short tablenum, hdlhashtable *htable) {
 	
 	return (true);
 	} /*indexhashtable*/
+
+#endif
 	
 
 hdlhashtable sethashtable (hdlhashtable hset) {
@@ -976,11 +980,11 @@ boolean disposehashtable (hdlhashtable htable, boolean fldisk) {
 		
 		nomad = (**ht).hashbucket [i];
 		
-		(**ht).hashbucket [i] = nil; /*disconnect list so table is valid during disposal%/
+		(**ht).hashbucket [i] = nil; /%disconnect list so table is valid during disposal%/
 		
 		while (nomad != nil) {
 			
-			/*
+			/%
 			boolean fldisposevalue;
 			
 			fldisposevalue = (!(**ht).fllocaltable) || ((**nomad).val.valuetype != codevaluetype);
@@ -988,7 +992,7 @@ boolean disposehashtable (hdlhashtable htable, boolean fldisk) {
 			
 			nextnomad = (**nomad).hashlink;
 			
-			disposehashnode (nomad, true /*fldisposevalue%/, fldisk);
+			disposehashnode (nomad, true /%fldisposevalue%/, fldisk);
 			
 			nomad = nextnomad;
 			}
@@ -1283,7 +1287,7 @@ boolean hashinsert (const bigstring bs, tyvaluerecord val) {
 /*
 hashmerge (hdlhashtable hsource, hdlhashtable hdest) {
 	
-	/*
+	/%
 	merge hsource into hdest, leaving hsource empty.  since it consumes 
 	no memory (we just unlink nodes and deposit them) it can't fail.
 	%/
@@ -1296,7 +1300,7 @@ hashmerge (hdlhashtable hsource, hdlhashtable hdest) {
 		
 		x = (**hsource).hashbucket [i];
 		
-		while (x != nil) { /*chain through the hash list%/
+		while (x != nil) { /%chain through the hash list%/
 			
 			register hdlhashnode nextx; 
 			
@@ -1307,10 +1311,10 @@ hashmerge (hdlhashtable hsource, hdlhashtable hdest) {
 			x = nextx;
 			} /*while%/
 			
-		(**hsource).hashbucket [i] = nil; /*we leave the source table empty%/
-		} /*for%/
-	} /*hashmerge*/
-
+		(**hsource).hashbucket [i] = nil; /%we leave the source table empty%/
+		} /%for%/
+	} /%hashmerge%/
+*/
 
 /** 2/7/91 dmb: new implementation of array references resolves them
 	immediately, so we don't have to handlel them here
@@ -1328,14 +1332,14 @@ boolean hashlocatearray (short arrayindex, hdlhashnode *hnode, hdlhashnode *hpre
 		}
 		
 	return (hashlocate (bsvarname, hnode, hprev));
-	} /*hashlocatearray%/
-	
+	} /%hashlocatearray%/
+
 	
 boolean hashstringtoarrayindex (bigstring bs, short *arrayindex) {
 
 	bigstring bscopy;
 		
-	if (stringlength (bs) == 0) /*empty names not allowed, defensive driving%/
+	if (stringlength (bs) == 0) /%empty names not allowed, defensive driving%/
 		return (false);
 	
 	if (bs [1] != '$') 
@@ -1353,10 +1357,10 @@ boolean hashstringtoarrayindex (bigstring bs, short *arrayindex) {
 		}
 	
 	return (true);
-	} /*hashstringtoarrayindex%/
+	} /%hashstringtoarrayindex%/
 */
 
-static boolean hashlocate (const bigstring bs, hdlhashnode *hnode, hdlhashnode *hprev) {
+boolean hashlocate (const bigstring bs, hdlhashnode *hnode, hdlhashnode *hprev) {
 
 	/*
 	7/15/90 DW: add support for table array-style references.  if the string
@@ -1449,7 +1453,8 @@ boolean hashdeletenode (hdlhashnode *hnode) {
 	dirtyhashtable (currenthashtable);
 	
 	return (true);
-	} /*hashdeletenode*/
+	} /%hashdeletenode%/
+*/
 
 
 boolean hashdelete (const bigstring bs, boolean fldisposevalue, boolean fldisk) {
@@ -1530,11 +1535,12 @@ typedef struct localityinfo {
 	} tylocalityinfo, *ptrlocalityinfo;
 
 
-static boolean hashsetlocalityvisit (hdlhashnode hnode, ptrlocalityinfo info) {
+static boolean hashsetlocalityvisit (hdlhashnode hnode, ptrvoid refcon) {
 	
 	hdlhashtable ht;
 	hdlexternalvariable hv;
 	tyvaluerecord val = (**hnode).val;
+	ptrlocalityinfo info = (ptrlocalityinfo) refcon;
 	
 	if (val.valuetype == externalvaluetype) {
 		
@@ -1960,7 +1966,8 @@ static boolean hashinsertaddress (bigstring bsname, bigstring bsval) {
 	pophashtable ();
 	
 	return (true);
-	} /*hashinsertaddress*/
+	} /%hashinsertaddress%/
+*/
 
 
 boolean hashtablevisit (hdlhashtable htable, langtablevisitcallback visit, ptrvoid refcon) {
@@ -2174,9 +2181,9 @@ boolean hashsortedinversesearch (hdlhashtable htable, langsortedinversesearchcal
 	} /*hashsortedinversesearch*/
 
 
-static boolean nodeintablevisit (hdlhashnode hnode, hdlhashnode hnodelookfor) {
+static boolean nodeintablevisit (hdlhashnode hnode, ptrvoid refcon) {
 	
-	return (hnode != hnodelookfor); /*false terminates traversal*/
+	return (hnode != (hdlhashnode) refcon); /*false terminates traversal*/
 	} /*nodeintablevisit*/
 
 
@@ -2501,7 +2508,7 @@ typedef struct typackinforecord {
 	} typackinforecord;
 
 
-static boolean hashpackvisit (bigstring bsname, hdlhashnode hnode, tyvaluerecord val, typackinforecord *pi) {
+static boolean hashpackvisit (bigstring bsname, hdlhashnode hnode, tyvaluerecord val, ptrvoid refcon) {
 	
 	/*
 	return true to terminate the search, false to continue.
@@ -2524,6 +2531,7 @@ static boolean hashpackvisit (bigstring bsname, hdlhashnode hnode, tyvaluerecord
 	6.2a15 AR: added flmustsave parameter
 	*/
 	
+	typackinforecord *pi = (typackinforecord *) refcon;
 	tydisksymbolrecord rec;
 	bigstring bsvalue;
 	long size;

@@ -240,7 +240,7 @@ static byte *nameparams [] = {
 	"\x11" "regularexpression"
 	};
 
-static enum nameindexes {
+enum nameindexes {
 	
 	ixsearchfor,
 	
@@ -259,8 +259,7 @@ static enum nameindexes {
 	ixclosewindows,
 	
 	ixregularexpression
-	} nameindexes;
-
+	};
 
 static void shellverbsetselectioninfo () {
 	
@@ -317,36 +316,6 @@ static boolean shellstyleverb (hdltreenode hparam1, short style, tyvaluerecord *
 	
 	return (setbooleanvalue (fl, v));
 	} /*shellstyleverb*/
-
-
-static boolean langsetbooleanvarparam (hdltreenode hfirst, short pnum, boolean flset) {
-	
-	hdlhashtable htable;
-	bigstring bsname;
-	tyvaluerecord val;
-	
-	if (!getvarparam (hfirst, pnum, &htable, bsname))
-		return (false);
-	
-	setbooleanvalue (flset, &val);
-	
-	return (hashtableassign (htable, bsname, val));
-	} /*langsetbooleanvarparam*/
-
-
-static boolean langsetstringvarparam (hdltreenode hfirst, short pnum, bigstring bsset) {
-	
-	hdlhashtable htable;
-	bigstring bsname;
-	tyvaluerecord val;
-	
-	if (!getvarparam (hfirst, pnum, &htable, bsname))
-		return (false);
-	
-	setstringvalue (bsset, &val);
-	
-	return (hashtableassign (htable, bsname, val));
-	} /*langsetstringvarparam*/
 
 
 static boolean getstringsearchparam (short ixparam, bigstring bsvalue) {
@@ -740,7 +709,7 @@ static boolean searchfunctionvalue (short token, hdltreenode hparam1, tyvaluerec
 				
 				keyboardclearescape (); /*consume it*/
 				
-				/*break; /*we'll return false to halt script execution*/
+				//break; /*we'll return false to halt script execution*/
 				}
 			
 			fl = true;
@@ -781,7 +750,7 @@ static boolean searchfunctionvalue (short token, hdltreenode hparam1, tyvaluerec
 				
 				keyboardclearescape (); /*consume it*/
 				
-				/*break; /*we'll return false to halt script execution*/
+				//break; /*we'll return false to halt script execution*/
 				}
 			
 			fl = setlongvalue (searchparams.ctreplaced, v);
@@ -1120,7 +1089,6 @@ static boolean filemenufunctionvalue (short token, hdltreenode hparam1, tyvaluer
 			tyvaluerecord val;
 			tyfilespec fs;
 			tyexternalid id;
-			boolean flhidden = false;
 			tyvaluerecord vhidden;
 			short ctconsumed = 0;
 			short ctpositional;

@@ -5263,6 +5263,21 @@ boolean langsetlongvarparam (hdltreenode hfirst, short pnum, long n) {
 	} /*langsetlongvarparam*/
 
 
+boolean langsetstringvarparam (hdltreenode hfirst, short pnum, bigstring bsset) {
+	
+	hdlhashtable htable;
+	bigstring bsname;
+	tyvaluerecord val;
+	
+	if (!getvarparam (hfirst, pnum, &htable, bsname))
+		return (false);
+	
+	setstringvalue (bsset, &val);
+	
+	return (hashtableassign (htable, bsname, val));
+	} /*langsetstringvarparam*/
+
+
 boolean setintvarparam (hdltreenode hfirst, short pnum, short n) {
 	
 	hdlhashtable htable;

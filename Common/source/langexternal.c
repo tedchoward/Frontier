@@ -81,7 +81,7 @@ boolean langexternalload (hdlexternalvariable hvariable, Handle *h) {
 		}
 	
 	return (dbrefhandle ((dbaddress) (**hv).variabledata, h));
-	} /*langexternalload%/
+	} /%langexternalload%/
 
 
 boolean langexternalsave (hdlexternalvariable hvariable, Handle h, dbaddress *adr) {
@@ -106,8 +106,8 @@ boolean langexternalsave (hdlexternalvariable hvariable, Handle h, dbaddress *ad
 		}
 	
 	return (dbassignhandle (h, adr));
-	} /*langexternalsave*/
-
+	} /%langexternalsave%/
+*/
 
 tyexternalid langexternalgettype (tyvaluerecord val) {
 	
@@ -222,7 +222,7 @@ void langexternalsetdatabase (hdlexternalvariable hv, hdldatabaserecord hdb) {
 /*
 boolean langexternalarrayreference (bigstring bsarrayname, short ix, tyvaluerecord *valref) {
 	
-	/*
+	/%
 	we want to isolate the interpreter from understanding how arrays are stored.
 	that's why this routine is part of the "external" interface of the language.
 	
@@ -268,9 +268,9 @@ boolean langexternalarrayreference (bigstring bsarrayname, short ix, tyvaluereco
 	if (!newclearhandle (sizeof (tyexternalhandle), (Handle *) &hnew))
 		return (false);
 		
-	h = hnew; /*copy into register%/
+	h = hnew; /%copy into register%/
 	
-	pushtmpstack ((Handle) h); /*we just allocated a temporary value%/
+	pushtmpstack ((Handle) h); /%we just allocated a temporary value%/
 	
 	(**h).id = idheadrecord;
 	
@@ -279,7 +279,7 @@ boolean langexternalarrayreference (bigstring bsarrayname, short ix, tyvaluereco
 	setexternalvalue ((Handle) h, valref);
 	
 	return (true);
-	} /*langexternalarrayreference%/
+	} /%langexternalarrayreference%/
 */
 
 
@@ -595,7 +595,7 @@ boolean langexternalunregisterwindow (hdlwindowinfo hinfo) {
 
 static boolean closeregisteredwindowvisit (hdlhashnode hnode, ptrvoid refcon) {
 	
-	boolean flconfirm = (boolean) refcon;
+	boolean flconfirm = (refcon != nil);
 	hdlwindowinfo hinfo;
 	
 	if (langexternalwindowopen ((**hnode).val, &hinfo))
@@ -612,7 +612,7 @@ boolean langexternalcloseregisteredwindows (boolean flconfirm) {
 	be closed, maybe with confirmation
 	*/
 	
-	return (hashtablevisit (filewindowtable, &closeregisteredwindowvisit, (ptrvoid) flconfirm));
+	return (hashtablevisit (filewindowtable, &closeregisteredwindowvisit, (ptrvoid) ((long) flconfirm)));
 	} /*langexternalcloseregisteredwindows*/
 
 
@@ -1081,7 +1081,7 @@ boolean langexternalcopyvalue (const tyvaluerecord *v1, tyvaluerecord *v2) {
 /*
 boolean langexternalcoercetostring (tyvaluerecord *v) {
 	
-	/*
+	/%
 	assume the valuerecord is of type externalvaluetype.
 	
 	if we return true, the valuerecord is of type string.
@@ -1104,10 +1104,11 @@ boolean langexternalcoercetostring (tyvaluerecord *v) {
 			
 			return (false);
 		
-		} /*switch%/
+		} /%switch%/
 		
 	return (false);
-	} /*langexternalcoercetostring*/
+	} /%langexternalcoercetostring%/
+*/
 
 
 boolean langexternalgetowningwindow (hdlwindowinfo *hparent) {
@@ -1152,10 +1153,9 @@ boolean langexternalgetowningwindow (hdlwindowinfo *hparent) {
 			return (true);
 		
 		nomad = (**nomad).prevhashtable;
-		} /*while%/
+		} /%while%/
 	
-	/*ran out of tables to look at%/
-	
+	/%ran out of tables to look at%/
 	*/
 	
 	if (ccfindrootwindow (hparent))
@@ -1253,7 +1253,7 @@ static boolean fullpathsearch (hdlhashtable intable, hdlhashtable fortable, bigs
 	register hdlhashtable ht = intable;
 	register boolean fltempload;
 	hdlhashnode x;
-	register hdlexternalvariable hv;
+	register hdlexternalvariable hv = nil;
 	bigstring bs;
 	hdlwindowinfo hinfo;
 	extern boolean tablesetdebugglobals (hdlhashtable, hdlhashnode);
@@ -1482,7 +1482,7 @@ boolean fullpathstats (hdlhashtable intable, boolean flfirst) {
 	//register hdlhashtable xtable;
 	register long i;
 	tyvaluerecord val;
-	register hdlexternalvariable hv;
+	register hdlexternalvariable hv = nil;
 	extern boolean tablesetdebugglobals (hdlhashtable, hdlhashnode);
 	long bucketCount;
 	register tyvaluetype valtype;

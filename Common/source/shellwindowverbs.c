@@ -30,6 +30,8 @@
 #include "player.h" /*7.0b4 PBS: QuickTime Player window*/
 #endif
 
+#include "shell.h"
+#include "shellprivate.h"
 #include "about.h"
 #include "file.h"
 #include "resources.h"
@@ -37,8 +39,6 @@
 #include "frontierwindows.h"
 #include "db.h"
 #include "command.h"
-#include "shell.h"
-#include "shellprivate.h"
 #include "lang.h"
 #include "langexternal.h"
 #include "langinternal.h"
@@ -587,7 +587,6 @@ static boolean nextverb (hdltreenode hparam1, tyvaluerecord *vreturned) {
 	by the parameter given
 	*/
 	
-	register boolean fl = false;
 	hdlwindowinfo hinfo;
 	WindowPtr pnext;
 	
@@ -744,10 +743,10 @@ static boolean ismenuscriptverb (hdltreenode hparam1, tyvaluerecord *vreturned) 
 	WindowPtr target;
 	boolean fl;
 	
-	if (!langcheckparamcount (hparam1, 0)) /*shouldn't have any parameters%/
+	if (!langcheckparamcount (hparam1, 0)) /%shouldn't have any parameters%/
 		return (false);
 	
-	fl = false; /*default return is false%/
+	fl = false; /%default return is false%/
 	
 	if (shellfindtargetwindow (-1, &target)) {
 		
@@ -1038,7 +1037,6 @@ static boolean getfileverb (hdltreenode hparam1, tyvaluerecord *vreturned) {
 	
 	hdlwindowinfo hinfo;
 	tyfilespec fs;
-	boolean fl = false;
 	
 	flnextparamislast = true;
 	

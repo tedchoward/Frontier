@@ -1250,7 +1250,6 @@ static boolean opxmlpushindents (Handle htext, short indentlevel) {
 	*/
 	
 	bigstring bs;
-	boolean fl = false;
 	short ix = 1;
 	
 	if (indentlevel < 1)
@@ -1483,9 +1482,8 @@ static boolean opxmlsetwindowpositionandsize (hdlhashtable ht, hdlwindowinfo hin
 	if (!opxmlgetoneshortvalue (ht, STR_windowleft, &windowleft))
 		return (false);
 	
-/*	if (!shellmovewindow (hinfo, windowleft, windowtop)) /*Set window position*/
-/*		return (false); /*shellmovewindow always returns true at this writing, but that could change*/
-
+//	if (!shellmovewindow (hinfo, windowleft, windowtop)) /*Set window position*/
+//		return (false); /*shellmovewindow always returns true at this writing, but that could change*/
 
 	if (!shellmovewindowhidden (hinfo, windowleft, windowtop)) /*Set window position*/
 
@@ -1876,7 +1874,6 @@ static boolean opxmlsetrefcon (hdlhashtable ht) {
 	tyvaluerecord vbinary;
 	hdlheadrecord hbarcursor;
 	boolean fl = false;
-	boolean fldummy = false;
 	
 	/*Get the /atts table.*/
 
