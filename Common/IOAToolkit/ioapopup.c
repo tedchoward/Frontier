@@ -146,10 +146,14 @@ static boolean plotsmallicon (Rect r, short iconlist, short iconnum, boolean fli
 #endif
 
 
-static void disposehandle (Handle h) {
+#ifndef isFrontier
+
+static void disposehandle (Handle h) {	/* already defined in memory.c when compiling Frontier */
 	
 	if (h != nil) DisposeHandle (h);
 	} /*disposehandle*/
+
+#endif
 	
 	
 static boolean pushchar (byte ch, bigstring bs) {
