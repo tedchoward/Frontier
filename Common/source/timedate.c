@@ -121,6 +121,8 @@ typedef struct tyvalidationtoken
 #ifdef WIN95VERSION
 	static tyinternationalinfo globalII;
 	static tyinternationalinfoptr globalIIptr = NULL;
+	
+	static LONGLONG gPerformanceFreq = 0;  /* for getmilliseconds() */
 #endif
 
 typedef struct tydaterec {
@@ -1553,16 +1555,17 @@ long getcurrenttimezonebias(void) {
 
 
 extern long getmilliseconds(void) {
-	LARGE_INTEGER counter, freq;
-	LONGLONG freqLong;
+	LARGE_INTEGER counter;
 	
 	QueryPerformanceCounter (&counter);  /* counter hits since boot-up */
 	
-	QueryPerformanceFrequency (&freq);   /* frequency of coutner hits (per second) */
+	if (gPerformanceFreq == 0) {
+		LARGE_INTEGER freq;
+		QueryPerformanceFrequency (&freq);   /* frequency of coutner hits (per second) */
+		gPerformanceFreq = freq.QuadPart / 1000;
+	}
 	
-	freqLong = ( freq.LowPart | ( freq.HighPart << 32 ) ) / 1000; /* per millisecond */
-	
-	return ((long) ((counter.LowPart | (counter.HighPart << 32)) / freqLong));
+	return ((long) (counter.QuadPart / gPerformanceFreq));
 } /* getmilliseconds */
 
 #endif
