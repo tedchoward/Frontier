@@ -513,6 +513,10 @@ SOURCE=..\Common\source\langlist.c
 # End Source File
 # Begin Source File
 
+SOURCE=..\Common\source\langmath.c
+# End Source File
+# Begin Source File
+
 SOURCE=..\Common\source\langops.c
 # End Source File
 # Begin Source File
@@ -1079,6 +1083,10 @@ SOURCE=..\Common\headers\langinternal.h
 # Begin Source File
 
 SOURCE=..\Common\headers\langipc.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\Common\headers\langmath.h
 # End Source File
 # Begin Source File
 
