@@ -1,0 +1,8 @@
+*.plg
+*.opt
+*.ncb
+Release
+MemTrack
+Debug
+DbTracker
+_build
