@@ -468,11 +468,11 @@ long filetimetoseconds (const FILETIME *filetime) {
 	LARGE_INTEGER basetime;
 	LARGE_INTEGER nowtime;
 
-	basetime.HighPart = 0x0153b281;
-	basetime.LowPart = 0xe0fb4000;
+	basetime.u.HighPart = 0x0153b281;
+	basetime.u.LowPart = 0xe0fb4000;
 
-	nowtime.HighPart = (*filetime).dwHighDateTime;
-	nowtime.LowPart = (*filetime).dwLowDateTime;
+	nowtime.u.HighPart = (*filetime).dwHighDateTime;
+	nowtime.u.LowPart = (*filetime).dwLowDateTime;
 
 	nowtime.QuadPart = nowtime.QuadPart - basetime.QuadPart;
 
@@ -486,21 +486,21 @@ void secondstofiletime (long seconds, FILETIME *filetime) {
 	LARGE_INTEGER nowtime;
 	LARGE_INTEGER mul;
 	
-	basetime.HighPart = 0x0153b281;
-	basetime.LowPart = 0xe0fb4000;
+	basetime.u.HighPart = 0x0153b281;
+	basetime.u.LowPart = 0xe0fb4000;
 
-	mul.LowPart = 10000000;
-	mul.HighPart = 0;
+	mul.u.LowPart = 10000000;
+	mul.u.HighPart = 0;
 
-	nowtime.LowPart = seconds;
-	nowtime.HighPart = 0;
+	nowtime.u.LowPart = seconds;
+	nowtime.u.HighPart = 0;
 
 	nowtime.QuadPart = nowtime.QuadPart * mul.QuadPart;
 	
 	nowtime.QuadPart = nowtime.QuadPart + basetime.QuadPart;
 
-	(*filetime).dwHighDateTime = nowtime.HighPart;
-	(*filetime).dwLowDateTime = nowtime.LowPart;
+	(*filetime).dwHighDateTime = nowtime.u.HighPart;
+	(*filetime).dwLowDateTime = nowtime.u.LowPart;
 	} /*secondstofiletime*/
 
 
@@ -2369,7 +2369,7 @@ ValidDateExit:
 
 		if (errSet != 0 && i <= tokCount)
 		{
-			err->stringPosition = (o + i)->pos - strIn;
+			err->stringPosition = (long)((o + i)->pos - (char *)strIn);	// TRT - 29 Dec 2004
 			err->auxilaryPointer = NULL;
 		}
 	}
@@ -2598,7 +2598,7 @@ boolean ValidTime (
 
 		if (errSet != 0 && i <= tokCount)
 		{
-			err->stringPosition = (o + i)->pos - strIn;
+			err->stringPosition = (long)((o + i)->pos - (char *)strIn);	// TRT - 29 Dec 2004
 			err->auxilaryPointer = NULL;
 		}
 	}

@@ -267,7 +267,11 @@ typedef Rect *ptrrect;
 
 typedef boolean (*callback) (void); /* 2004-10-24 aradke: was ... instead of void on Mac */
 
+#if defined(__RPCNDR_H_VERSION__)
+typedef	unsigned char *ptrbyte;	/* 2004-12-29 trt: byte defined by Win32 rpcndr.h */
+#else
 typedef	unsigned char byte, *ptrbyte;	
+#endif
 
 
 /*macros*/
