@@ -36,8 +36,10 @@ enum {
 };
 
 #ifdef MAC_PLATFORM
+#if !TARGET_API_MAC_CARBON
 #include <FixMath.h>
 #include <ToolUtils.h>
+#endif
 #endif
 
 #ifdef __cplusplus

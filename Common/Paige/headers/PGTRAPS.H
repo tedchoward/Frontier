@@ -27,6 +27,7 @@ for the currently defined platform. */
 
 #ifndef THINK_C
 
+#if !TARGET_API_MAC_CARBON
 #include <Quickdraw.h>
 #include <Memory.h>
 #include <Events.h>
@@ -38,10 +39,13 @@ for the currently defined platform. */
 #include <files.h>
 #include <MacErrors.h>		/* 2004-09-29 AR: renamed from errors.h */
 #include <gestalt.h>
+#endif
 
 #endif
 
+#if !TARGET_API_MAC_CARBON
 #include <script.h>
+#endif
 
 /*********** Memory Definitions (for allocation, resize, etc.) ***********/
 

@@ -18,9 +18,11 @@ platform.  */
 
 #ifdef MAC_PLATFORM
 
+#if !TARGET_API_MAC_CARBON
 #include <MacTypes.h>		/* 2004-09-29 AR: renamed from Types.h */
 #include <Files.h>
 #include <Memory.h>
+#endif
 
 #define MASTER_ENTRY_SIZE	sizeof(memory_ref)
 #define MASTER_ENTRY_NULL	MEM_NULL;
