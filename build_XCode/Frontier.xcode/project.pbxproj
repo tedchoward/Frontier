@@ -4976,9 +4976,9 @@
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.h;
 			name = frontier.h;
-			path = /Volumes/Data/Development/frontierkernel/Frontier/Common/headers/frontier.h;
-			refType = 0;
-			sourceTree = "<absolute>";
+			path = ../Common/headers/frontier.h;
+			refType = 2;
+			sourceTree = SOURCE_ROOT;
 		};
 		651527B2072BFE0100411831 = {
 			fileRef = 651527B1072BFE0100411831;
@@ -4990,9 +4990,9 @@
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.h;
 			name = font.h;
-			path = /Volumes/Data/Development/frontierkernel/Frontier/Common/headers/font.h;
-			refType = 0;
-			sourceTree = "<absolute>";
+			path = ../Common/headers/font.h;
+			refType = 2;
+			sourceTree = SOURCE_ROOT;
 		};
 		651527B4072BFE0300411831 = {
 			fileRef = 651527B3072BFE0300411831;
@@ -5004,9 +5004,9 @@
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.h;
 			name = appletdefs.h;
-			path = /Volumes/Data/Development/frontierkernel/Frontier/FrontierSDK/Toolkits/AppletToolkit/Headers/appletdefs.h;
-			refType = 0;
-			sourceTree = "<absolute>";
+			path = ../FrontierSDK/Toolkits/AppletToolkit/Headers/appletdefs.h;
+			refType = 2;
+			sourceTree = SOURCE_ROOT;
 		};
 		651527B6072BFE0400411831 = {
 			fileRef = 651527B5072BFE0400411831;
@@ -5043,9 +5043,9 @@
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.h;
 			name = standard.h;
-			path = /Volumes/Data/Development/frontierkernel/Frontier/Common/SystemHeaders/standard.h;
-			refType = 0;
-			sourceTree = "<absolute>";
+			path = ../Common/SystemHeaders/standard.h;
+			refType = 2;
+			sourceTree = SOURCE_ROOT;
 		};
 		651527BB072BFE1000411831 = {
 			fileRef = 651527BA072BFE1000411831;
@@ -5057,9 +5057,9 @@
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.h;
 			name = iac.h;
-			path = /Volumes/Data/Development/frontierkernel/Frontier/FrontierSDK/Toolkits/IACTools/Headers/iac.h;
-			refType = 0;
-			sourceTree = "<absolute>";
+			path = ../FrontierSDK/Toolkits/IACTools/Headers/iac.h;
+			refType = 2;
+			sourceTree = SOURCE_ROOT;
 		};
 		651527BD072BFE1B00411831 = {
 			fileRef = 651527BC072BFE1B00411831;
@@ -5071,9 +5071,9 @@
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.h;
 			name = appletmemory.h;
-			path = /Volumes/Data/Development/frontierkernel/Frontier/FrontierSDK/Toolkits/AppletToolkit/Headers/appletmemory.h;
-			refType = 0;
-			sourceTree = "<absolute>";
+			path = ../FrontierSDK/Toolkits/AppletToolkit/Headers/appletmemory.h;
+			refType = 2;
+			sourceTree = SOURCE_ROOT;
 		};
 		651527BF072BFE1D00411831 = {
 			fileRef = 651527BE072BFE1D00411831;
@@ -5085,9 +5085,9 @@
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.h;
 			name = appletstrings.h;
-			path = /Volumes/Data/Development/frontierkernel/Frontier/FrontierSDK/Toolkits/AppletToolkit/Headers/appletstrings.h;
-			refType = 0;
-			sourceTree = "<absolute>";
+			path = ../FrontierSDK/Toolkits/AppletToolkit/Headers/appletstrings.h;
+			refType = 2;
+			sourceTree = SOURCE_ROOT;
 		};
 		651527C1072BFE1E00411831 = {
 			fileRef = 651527C0072BFE1E00411831;
@@ -5099,9 +5099,9 @@
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.h;
 			name = appletfiles.h;
-			path = /Volumes/Data/Development/frontierkernel/Frontier/FrontierSDK/Toolkits/AppletToolkit/Headers/appletfiles.h;
-			refType = 0;
-			sourceTree = "<absolute>";
+			path = ../FrontierSDK/Toolkits/AppletToolkit/Headers/appletfiles.h;
+			refType = 2;
+			sourceTree = SOURCE_ROOT;
 		};
 		651527C3072BFE2000411831 = {
 			fileRef = 651527C2072BFE2000411831;
@@ -5113,9 +5113,9 @@
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.h;
 			name = appletprocess.h;
-			path = /Volumes/Data/Development/frontierkernel/Frontier/FrontierSDK/Toolkits/AppletToolkit/Headers/appletprocess.h;
-			refType = 0;
-			sourceTree = "<absolute>";
+			path = ../FrontierSDK/Toolkits/AppletToolkit/Headers/appletprocess.h;
+			refType = 2;
+			sourceTree = SOURCE_ROOT;
 		};
 		651527C5072BFE2100411831 = {
 			fileRef = 651527C4072BFE2100411831;
@@ -5127,9 +5127,9 @@
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.h;
 			name = appletfrontier.h;
-			path = /Volumes/Data/Development/frontierkernel/Frontier/FrontierSDK/Toolkits/AppletToolkit/Headers/appletfrontier.h;
-			refType = 0;
-			sourceTree = "<absolute>";
+			path = ../FrontierSDK/Toolkits/AppletToolkit/Headers/appletfrontier.h;
+			refType = 2;
+			sourceTree = SOURCE_ROOT;
 		};
 		651527C7072BFE2400411831 = {
 			fileRef = 651527C6072BFE2400411831;
@@ -5141,9 +5141,9 @@
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.h;
 			name = aeutils.h;
-			path = /Volumes/Data/Development/frontierkernel/Frontier/Common/headers/aeutils.h;
-			refType = 0;
-			sourceTree = "<absolute>";
+			path = ../Common/headers/aeutils.h;
+			refType = 2;
+			sourceTree = SOURCE_ROOT;
 		};
 		651527C9072BFE2500411831 = {
 			fileRef = 651527C8072BFE2500411831;
@@ -5155,9 +5155,9 @@
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.h;
 			name = uisinternal.h;
-			path = /Volumes/Data/Development/frontierkernel/Frontier/Common/SystemHeaders/uisinternal.h;
-			refType = 0;
-			sourceTree = "<absolute>";
+			path = ../Common/SystemHeaders/uisinternal.h;
+			refType = 2;
+			sourceTree = SOURCE_ROOT;
 		};
 		651527CB072BFE2700411831 = {
 			fileRef = 651527CA072BFE2700411831;
@@ -5169,9 +5169,9 @@
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.h;
 			name = appletbits.h;
-			path = /Volumes/Data/Development/frontierkernel/Frontier/FrontierSDK/Toolkits/AppletToolkit/Headers/appletbits.h;
-			refType = 0;
-			sourceTree = "<absolute>";
+			path = ../FrontierSDK/Toolkits/AppletToolkit/Headers/appletbits.h;
+			refType = 2;
+			sourceTree = SOURCE_ROOT;
 		};
 		651527CD072BFE2900411831 = {
 			fileRef = 651527CC072BFE2900411831;
@@ -5183,9 +5183,9 @@
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.h;
 			name = quickdraw.h;
-			path = /Volumes/Data/Development/frontierkernel/Frontier/Common/headers/quickdraw.h;
-			refType = 0;
-			sourceTree = "<absolute>";
+			path = ../Common/headers/quickdraw.h;
+			refType = 2;
+			sourceTree = SOURCE_ROOT;
 		};
 		651527CF072BFE2B00411831 = {
 			fileRef = 651527CE072BFE2B00411831;
@@ -5197,9 +5197,9 @@
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.h;
 			name = memory.h;
-			path = /Volumes/Data/Development/frontierkernel/Frontier/Common/headers/memory.h;
-			refType = 0;
-			sourceTree = "<absolute>";
+			path = ../Common/headers/memory.h;
+			refType = 2;
+			sourceTree = SOURCE_ROOT;
 		};
 		651527D1072BFE2C00411831 = {
 			fileRef = 651527D0072BFE2C00411831;
@@ -5211,9 +5211,9 @@
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.h;
 			name = file.h;
-			path = /Volumes/Data/Development/frontierkernel/Frontier/Common/headers/file.h;
-			refType = 0;
-			sourceTree = "<absolute>";
+			path = ../Common/headers/file.h;
+			refType = 2;
+			sourceTree = SOURCE_ROOT;
 		};
 		651527D3072BFE2E00411831 = {
 			fileRef = 651527D2072BFE2E00411831;
@@ -5225,9 +5225,9 @@
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.h;
 			name = launch.h;
-			path = /Volumes/Data/Development/frontierkernel/Frontier/Common/headers/launch.h;
-			refType = 0;
-			sourceTree = "<absolute>";
+			path = ../Common/headers/launch.h;
+			refType = 2;
+			sourceTree = SOURCE_ROOT;
 		};
 		651527D5072BFE3000411831 = {
 			fileRef = 651527D4072BFE3000411831;
@@ -5239,9 +5239,9 @@
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.h;
 			name = shelltypes.h;
-			path = /Volumes/Data/Development/frontierkernel/Frontier/Common/headers/shelltypes.h;
-			refType = 0;
-			sourceTree = "<absolute>";
+			path = ../Common/headers/shelltypes.h;
+			refType = 2;
+			sourceTree = SOURCE_ROOT;
 		};
 		651527D7072BFE3200411831 = {
 			fileRef = 651527D6072BFE3200411831;
@@ -5253,9 +5253,9 @@
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.h;
 			name = appletfont.h;
-			path = /Volumes/Data/Development/frontierkernel/Frontier/FrontierSDK/Toolkits/AppletToolkit/Headers/appletfont.h;
-			refType = 0;
-			sourceTree = "<absolute>";
+			path = ../FrontierSDK/Toolkits/AppletToolkit/Headers/appletfont.h;
+			refType = 2;
+			sourceTree = SOURCE_ROOT;
 		};
 		651527D9072BFE3300411831 = {
 			fileRef = 651527D8072BFE3300411831;
@@ -5267,9 +5267,9 @@
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.h;
 			name = appletquickdraw.h;
-			path = /Volumes/Data/Development/frontierkernel/Frontier/FrontierSDK/Toolkits/AppletToolkit/Headers/appletquickdraw.h;
-			refType = 0;
-			sourceTree = "<absolute>";
+			path = ../FrontierSDK/Toolkits/AppletToolkit/Headers/appletquickdraw.h;
+			refType = 2;
+			sourceTree = SOURCE_ROOT;
 		};
 		651527DB072BFE3500411831 = {
 			fileRef = 651527DA072BFE3400411831;
@@ -5281,9 +5281,9 @@
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.h;
 			name = applettextedit.h;
-			path = /Volumes/Data/Development/frontierkernel/Frontier/FrontierSDK/Toolkits/AppletToolkit/Headers/applettextedit.h;
-			refType = 0;
-			sourceTree = "<absolute>";
+			path = ../FrontierSDK/Toolkits/AppletToolkit/Headers/applettextedit.h;
+			refType = 2;
+			sourceTree = SOURCE_ROOT;
 		};
 		651527DD072BFE3600411831 = {
 			fileRef = 651527DC072BFE3600411831;
@@ -5295,9 +5295,9 @@
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.h;
 			name = error.h;
-			path = /Volumes/Data/Development/frontierkernel/Frontier/Common/headers/error.h;
-			refType = 0;
-			sourceTree = "<absolute>";
+			path = ../Common/headers/error.h;
+			refType = 2;
+			sourceTree = SOURCE_ROOT;
 		};
 		651527DF072BFE3800411831 = {
 			fileRef = 651527DE072BFE3800411831;
@@ -5309,9 +5309,9 @@
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.h;
 			name = strings.h;
-			path = /Volumes/Data/Development/frontierkernel/Frontier/Common/headers/strings.h;
-			refType = 0;
-			sourceTree = "<absolute>";
+			path = ../Common/headers/strings.h;
+			refType = 2;
+			sourceTree = SOURCE_ROOT;
 		};
 		651527E1072BFE3900411831 = {
 			fileRef = 651527E0072BFE3900411831;
@@ -5323,9 +5323,9 @@
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.h;
 			name = shell.rsrc.h;
-			path = /Volumes/Data/Development/frontierkernel/Frontier/Common/headers/shell.rsrc.h;
-			refType = 0;
-			sourceTree = "<absolute>";
+			path = ../Common/headers/shell.rsrc.h;
+			refType = 2;
+			sourceTree = SOURCE_ROOT;
 		};
 		651527E3072BFE3B00411831 = {
 			fileRef = 651527E2072BFE3B00411831;
@@ -5337,9 +5337,9 @@
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.h;
 			name = resources.h;
-			path = /Volumes/Data/Development/frontierkernel/Frontier/Common/headers/resources.h;
-			refType = 0;
-			sourceTree = "<absolute>";
+			path = ../Common/headers/resources.h;
+			refType = 2;
+			sourceTree = SOURCE_ROOT;
 		};
 		651527E5072BFE3C00411831 = {
 			fileRef = 651527E4072BFE3C00411831;
@@ -5351,9 +5351,9 @@
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.h;
 			name = lang.h;
-			path = /Volumes/Data/Development/frontierkernel/Frontier/Common/headers/lang.h;
-			refType = 0;
-			sourceTree = "<absolute>";
+			path = ../Common/headers/lang.h;
+			refType = 2;
+			sourceTree = SOURCE_ROOT;
 		};
 		651527E7072BFE3D00411831 = {
 			fileRef = 651527E6072BFE3D00411831;
@@ -5365,9 +5365,9 @@
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.h;
 			name = langinternal.h;
-			path = /Volumes/Data/Development/frontierkernel/Frontier/Common/headers/langinternal.h;
-			refType = 0;
-			sourceTree = "<absolute>";
+			path = ../Common/headers/langinternal.h;
+			refType = 2;
+			sourceTree = SOURCE_ROOT;
 		};
 		651527E9072BFE3F00411831 = {
 			fileRef = 651527E8072BFE3F00411831;
@@ -5379,9 +5379,9 @@
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.h;
 			name = ops.h;
-			path = /Volumes/Data/Development/frontierkernel/Frontier/Common/headers/ops.h;
-			refType = 0;
-			sourceTree = "<absolute>";
+			path = ../Common/headers/ops.h;
+			refType = 2;
+			sourceTree = SOURCE_ROOT;
 		};
 		651527EB072BFE4100411831 = {
 			fileRef = 651527EA072BFE4100411831;
@@ -5393,9 +5393,9 @@
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.h;
 			name = langexternal.h;
-			path = /Volumes/Data/Development/frontierkernel/Frontier/Common/headers/langexternal.h;
-			refType = 0;
-			sourceTree = "<absolute>";
+			path = ../Common/headers/langexternal.h;
+			refType = 2;
+			sourceTree = SOURCE_ROOT;
 		};
 		651527ED072BFE4200411831 = {
 			fileRef = 651527EC072BFE4200411831;
@@ -5407,9 +5407,9 @@
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.h;
 			name = langsystem7.h;
-			path = /Volumes/Data/Development/frontierkernel/Frontier/Common/headers/langsystem7.h;
-			refType = 0;
-			sourceTree = "<absolute>";
+			path = ../Common/headers/langsystem7.h;
+			refType = 2;
+			sourceTree = SOURCE_ROOT;
 		};
 		651527EF072BFE4400411831 = {
 			fileRef = 651527EE072BFE4400411831;
@@ -5421,9 +5421,9 @@
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.h;
 			name = process.h;
-			path = /Volumes/Data/Development/frontierkernel/Frontier/Common/headers/process.h;
-			refType = 0;
-			sourceTree = "<absolute>";
+			path = ../Common/headers/process.h;
+			refType = 2;
+			sourceTree = SOURCE_ROOT;
 		};
 		651527F1072BFE4600411831 = {
 			fileRef = 651527F0072BFE4600411831;
@@ -5435,9 +5435,9 @@
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.h;
 			name = kernelverbs.h;
-			path = /Volumes/Data/Development/frontierkernel/Frontier/Common/headers/kernelverbs.h;
-			refType = 0;
-			sourceTree = "<absolute>";
+			path = ../Common/headers/kernelverbs.h;
+			refType = 2;
+			sourceTree = SOURCE_ROOT;
 		};
 		651527F3072BFE4700411831 = {
 			fileRef = 651527F2072BFE4700411831;
@@ -5449,9 +5449,9 @@
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.h;
 			name = filesystem7.h;
-			path = /Volumes/Data/Development/frontierkernel/Frontier/Common/headers/filesystem7.h;
-			refType = 0;
-			sourceTree = "<absolute>";
+			path = ../Common/headers/filesystem7.h;
+			refType = 2;
+			sourceTree = SOURCE_ROOT;
 		};
 		651527F5072BFE4900411831 = {
 			fileRef = 651527F4072BFE4900411831;
@@ -5463,9 +5463,9 @@
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.h;
 			name = filealias.h;
-			path = /Volumes/Data/Development/frontierkernel/Frontier/Common/headers/filealias.h;
-			refType = 0;
-			sourceTree = "<absolute>";
+			path = ../Common/headers/filealias.h;
+			refType = 2;
+			sourceTree = SOURCE_ROOT;
 		};
 		651527F7072BFE4A00411831 = {
 			fileRef = 651527F6072BFE4A00411831;
@@ -5477,9 +5477,9 @@
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.h;
 			name = tablestructure.h;
-			path = /Volumes/Data/Development/frontierkernel/Frontier/Common/headers/tablestructure.h;
-			refType = 0;
-			sourceTree = "<absolute>";
+			path = ../Common/headers/tablestructure.h;
+			refType = 2;
+			sourceTree = SOURCE_ROOT;
 		};
 		651527F9072BFE4C00411831 = {
 			fileRef = 651527F8072BFE4C00411831;
@@ -5491,9 +5491,9 @@
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.h;
 			name = kernelverbdefs.h;
-			path = /Volumes/Data/Development/frontierkernel/Frontier/Common/headers/kernelverbdefs.h;
-			refType = 0;
-			sourceTree = "<absolute>";
+			path = ../Common/headers/kernelverbdefs.h;
+			refType = 2;
+			sourceTree = SOURCE_ROOT;
 		};
 		651527FB072BFE4D00411831 = {
 			fileRef = 651527FA072BFE4D00411831;
@@ -5505,9 +5505,9 @@
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.h;
 			name = winregistry.h;
-			path = /Volumes/Data/Development/frontierkernel/Frontier/Common/headers/winregistry.h;
-			refType = 0;
-			sourceTree = "<absolute>";
+			path = ../Common/headers/winregistry.h;
+			refType = 2;
+			sourceTree = SOURCE_ROOT;
 		};
 		651527FD072BFE4F00411831 = {
 			fileRef = 651527FC072BFE4F00411831;
@@ -5519,9 +5519,9 @@
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.h;
 			name = cursor.h;
-			path = /Volumes/Data/Development/frontierkernel/Frontier/Common/headers/cursor.h;
-			refType = 0;
-			sourceTree = "<absolute>";
+			path = ../Common/headers/cursor.h;
+			refType = 2;
+			sourceTree = SOURCE_ROOT;
 		};
 		651527FF072BFE5100411831 = {
 			fileRef = 651527FE072BFE5100411831;
@@ -5533,9 +5533,9 @@
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.h;
 			name = dialogs.h;
-			path = /Volumes/Data/Development/frontierkernel/Frontier/Common/headers/dialogs.h;
-			refType = 0;
-			sourceTree = "<absolute>";
+			path = ../Common/headers/dialogs.h;
+			refType = 2;
+			sourceTree = SOURCE_ROOT;
 		};
 		65152801072BFE5200411831 = {
 			fileRef = 65152800072BFE5200411831;
@@ -5547,9 +5547,9 @@
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.h;
 			name = timedate.h;
-			path = /Volumes/Data/Development/frontierkernel/Frontier/Common/headers/timedate.h;
-			refType = 0;
-			sourceTree = "<absolute>";
+			path = ../Common/headers/timedate.h;
+			refType = 2;
+			sourceTree = SOURCE_ROOT;
 		};
 		65152803072BFE5400411831 = {
 			fileRef = 65152802072BFE5400411831;
@@ -5561,9 +5561,9 @@
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.h;
 			name = frontierwindows.h;
-			path = /Volumes/Data/Development/frontierkernel/Frontier/Common/headers/frontierwindows.h;
-			refType = 0;
-			sourceTree = "<absolute>";
+			path = ../Common/headers/frontierwindows.h;
+			refType = 2;
+			sourceTree = SOURCE_ROOT;
 		};
 		65152805072BFE5500411831 = {
 			fileRef = 65152804072BFE5500411831;
@@ -5575,9 +5575,9 @@
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.h;
 			name = shell.h;
-			path = /Volumes/Data/Development/frontierkernel/Frontier/Common/headers/shell.h;
-			refType = 0;
-			sourceTree = "<absolute>";
+			path = ../Common/headers/shell.h;
+			refType = 2;
+			sourceTree = SOURCE_ROOT;
 		};
 		65152807072BFE5700411831 = {
 			fileRef = 65152806072BFE5700411831;
@@ -5589,9 +5589,9 @@
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.h;
 			name = SetUpA5.h;
-			path = /Volumes/Data/Development/frontierkernel/Frontier/Common/SystemHeaders/SetUpA5.h;
-			refType = 0;
-			sourceTree = "<absolute>";
+			path = ../Common/SystemHeaders/SetUpA5.h;
+			refType = 2;
+			sourceTree = SOURCE_ROOT;
 		};
 		65152809072BFE5900411831 = {
 			fileRef = 65152808072BFE5900411831;
@@ -5603,9 +5603,9 @@
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.h;
 			name = oplist.h;
-			path = /Volumes/Data/Development/frontierkernel/Frontier/Common/headers/oplist.h;
-			refType = 0;
-			sourceTree = "<absolute>";
+			path = ../Common/headers/oplist.h;
+			refType = 2;
+			sourceTree = SOURCE_ROOT;
 		};
 		6515280B072BFE5B00411831 = {
 			fileRef = 6515280A072BFE5B00411831;
@@ -5617,9 +5617,9 @@
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.h;
 			name = fileloop.h;
-			path = /Volumes/Data/Development/frontierkernel/Frontier/Common/headers/fileloop.h;
-			refType = 0;
-			sourceTree = "<absolute>";
+			path = ../Common/headers/fileloop.h;
+			refType = 2;
+			sourceTree = SOURCE_ROOT;
 		};
 		6515280D072BFE5C00411831 = {
 			fileRef = 6515280C072BFE5C00411831;
@@ -5631,9 +5631,9 @@
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.h;
 			name = mac.h;
-			path = /Volumes/Data/Development/frontierkernel/Frontier/Common/headers/mac.h;
-			refType = 0;
-			sourceTree = "<absolute>";
+			path = ../Common/headers/mac.h;
+			refType = 2;
+			sourceTree = SOURCE_ROOT;
 		};
 		6515280F072BFE5E00411831 = {
 			fileRef = 6515280E072BFE5E00411831;
@@ -5645,9 +5645,9 @@
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.h;
 			name = scrap.h;
-			path = /Volumes/Data/Development/frontierkernel/Frontier/Common/headers/scrap.h;
-			refType = 0;
-			sourceTree = "<absolute>";
+			path = ../Common/headers/scrap.h;
+			refType = 2;
+			sourceTree = SOURCE_ROOT;
 		};
 		65152811072BFE6000411831 = {
 			fileRef = 65152810072BFE6000411831;
@@ -5659,9 +5659,9 @@
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.h;
 			name = threads.h;
-			path = /Volumes/Data/Development/frontierkernel/Frontier/Common/headers/threads.h;
-			refType = 0;
-			sourceTree = "<absolute>";
+			path = ../Common/headers/threads.h;
+			refType = 2;
+			sourceTree = SOURCE_ROOT;
 		};
 		65152813072BFE6100411831 = {
 			fileRef = 65152812072BFE6100411831;
@@ -5673,9 +5673,9 @@
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.h;
 			name = MoreFilesExtras.h;
-			path = /Volumes/Data/Development/frontierkernel/Frontier/Common/MoreFiles/MoreFilesExtras.h;
-			refType = 0;
-			sourceTree = "<absolute>";
+			path = ../Common/MoreFiles/MoreFilesExtras.h;
+			refType = 2;
+			sourceTree = SOURCE_ROOT;
 		};
 		65152815072BFE6300411831 = {
 			fileRef = 65152814072BFE6300411831;
@@ -5687,9 +5687,9 @@
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.h;
 			name = iacinternal.h;
-			path = /Volumes/Data/Development/frontierkernel/Frontier/FrontierSDK/Toolkits/IACTools/Headers/iacinternal.h;
-			refType = 0;
-			sourceTree = "<absolute>";
+			path = ../FrontierSDK/Toolkits/IACTools/Headers/iacinternal.h;
+			refType = 2;
+			sourceTree = SOURCE_ROOT;
 		};
 		65152817072BFE6700411831 = {
 			fileRef = 65152816072BFE6700411831;
@@ -5701,9 +5701,9 @@
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.h;
 			name = appleticons.h;
-			path = /Volumes/Data/Development/frontierkernel/Frontier/FrontierSDK/Toolkits/AppletToolkit/Headers/appleticons.h;
-			refType = 0;
-			sourceTree = "<absolute>";
+			path = ../FrontierSDK/Toolkits/AppletToolkit/Headers/appleticons.h;
+			refType = 2;
+			sourceTree = SOURCE_ROOT;
 		};
 		65152819072BFE6A00411831 = {
 			fileRef = 65152818072BFE6A00411831;
@@ -5715,9 +5715,9 @@
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.h;
 			name = appletkb.h;
-			path = /Volumes/Data/Development/frontierkernel/Frontier/FrontierSDK/Toolkits/AppletToolkit/Headers/appletkb.h;
-			refType = 0;
-			sourceTree = "<absolute>";
+			path = ../FrontierSDK/Toolkits/AppletToolkit/Headers/appletkb.h;
+			refType = 2;
+			sourceTree = SOURCE_ROOT;
 		};
 		6515281B072BFE6C00411831 = {
 			fileRef = 6515281A072BFE6C00411831;
@@ -5729,9 +5729,9 @@
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.h;
 			name = appletops.h;
-			path = /Volumes/Data/Development/frontierkernel/Frontier/FrontierSDK/Toolkits/AppletToolkit/Headers/appletops.h;
-			refType = 0;
-			sourceTree = "<absolute>";
+			path = ../FrontierSDK/Toolkits/AppletToolkit/Headers/appletops.h;
+			refType = 2;
+			sourceTree = SOURCE_ROOT;
 		};
 		6515281D072BFE6E00411831 = {
 			fileRef = 6515281C072BFE6E00411831;
@@ -5743,9 +5743,9 @@
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.h;
 			name = appletmenuops.h;
-			path = /Volumes/Data/Development/frontierkernel/Frontier/FrontierSDK/Toolkits/AppletToolkit/Headers/appletmenuops.h;
-			refType = 0;
-			sourceTree = "<absolute>";
+			path = ../FrontierSDK/Toolkits/AppletToolkit/Headers/appletmenuops.h;
+			refType = 2;
+			sourceTree = SOURCE_ROOT;
 		};
 		6515281F072BFE7000411831 = {
 			fileRef = 6515281E072BFE7000411831;
@@ -5757,9 +5757,9 @@
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.h;
 			name = applet.h;
-			path = /Volumes/Data/Development/frontierkernel/Frontier/FrontierSDK/Toolkits/AppletToolkit/Headers/applet.h;
-			refType = 0;
-			sourceTree = "<absolute>";
+			path = ../FrontierSDK/Toolkits/AppletToolkit/Headers/applet.h;
+			refType = 2;
+			sourceTree = SOURCE_ROOT;
 		};
 		65152821072BFE7100411831 = {
 			fileRef = 65152820072BFE7100411831;
@@ -5771,9 +5771,9 @@
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.h;
 			name = iowacore.h;
-			path = /Volumes/Data/Development/frontierkernel/Frontier/Common/IowaRuntime/Headers/iowacore.h;
-			refType = 0;
-			sourceTree = "<absolute>";
+			path = ../Common/IowaRuntime/Headers/iowacore.h;
+			refType = 2;
+			sourceTree = SOURCE_ROOT;
 		};
 		65152823072BFE7300411831 = {
 			fileRef = 65152822072BFE7300411831;
@@ -5785,9 +5785,9 @@
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.h;
 			name = iowascript.h;
-			path = /Volumes/Data/Development/frontierkernel/Frontier/Common/IowaRuntime/Headers/iowascript.h;
-			refType = 0;
-			sourceTree = "<absolute>";
+			path = ../Common/IowaRuntime/Headers/iowascript.h;
+			refType = 2;
+			sourceTree = SOURCE_ROOT;
 		};
 		65152825072BFE7400411831 = {
 			fileRef = 65152824072BFE7400411831;
@@ -5799,9 +5799,9 @@
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.h;
 			name = iowaparser.h;
-			path = /Volumes/Data/Development/frontierkernel/Frontier/Common/IowaRuntime/Headers/iowaparser.h;
-			refType = 0;
-			sourceTree = "<absolute>";
+			path = ../Common/IowaRuntime/Headers/iowaparser.h;
+			refType = 2;
+			sourceTree = SOURCE_ROOT;
 		};
 		65152827072BFE7700411831 = {
 			fileRef = 65152826072BFE7700411831;
@@ -5813,9 +5813,9 @@
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.h;
 			name = iowafrontier.h;
-			path = /Volumes/Data/Development/frontierkernel/Frontier/Common/IowaRuntime/Headers/iowafrontier.h;
-			refType = 0;
-			sourceTree = "<absolute>";
+			path = ../Common/IowaRuntime/Headers/iowafrontier.h;
+			refType = 2;
+			sourceTree = SOURCE_ROOT;
 		};
 		65152829072BFE7900411831 = {
 			fileRef = 65152828072BFE7900411831;
@@ -5827,9 +5827,9 @@
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.h;
 			name = iowaattributes.h;
-			path = /Volumes/Data/Development/frontierkernel/Frontier/Common/IowaRuntime/Headers/iowaattributes.h;
-			refType = 0;
-			sourceTree = "<absolute>";
+			path = ../Common/IowaRuntime/Headers/iowaattributes.h;
+			refType = 2;
+			sourceTree = SOURCE_ROOT;
 		};
 		6515282B072BFE7A00411831 = {
 			fileRef = 6515282A072BFE7A00411831;
@@ -5841,9 +5841,9 @@
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.h;
 			name = iowaruntime.h;
-			path = /Volumes/Data/Development/frontierkernel/Frontier/Common/IowaRuntime/Headers/iowaruntime.h;
-			refType = 0;
-			sourceTree = "<absolute>";
+			path = ../Common/IowaRuntime/Headers/iowaruntime.h;
+			refType = 2;
+			sourceTree = SOURCE_ROOT;
 		};
 		6515282D072BFE7C00411831 = {
 			fileRef = 6515282C072BFE7C00411831;
@@ -5855,9 +5855,9 @@
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.h;
 			name = appletresource.h;
-			path = /Volumes/Data/Development/frontierkernel/Frontier/FrontierSDK/Toolkits/AppletToolkit/Headers/appletresource.h;
-			refType = 0;
-			sourceTree = "<absolute>";
+			path = ../FrontierSDK/Toolkits/AppletToolkit/Headers/appletresource.h;
+			refType = 2;
+			sourceTree = SOURCE_ROOT;
 		};
 		6515282F072BFE7D00411831 = {
 			fileRef = 6515282E072BFE7D00411831;
@@ -5869,9 +5869,9 @@
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.h;
 			name = UserTalk.h;
-			path = /Volumes/Data/Development/frontierkernel/Frontier/Common/SystemHeaders/UserTalk.h;
-			refType = 0;
-			sourceTree = "<absolute>";
+			path = ../Common/SystemHeaders/UserTalk.h;
+			refType = 2;
+			sourceTree = SOURCE_ROOT;
 		};
 		65152831072BFE7F00411831 = {
 			fileRef = 65152830072BFE7F00411831;
@@ -5883,9 +5883,9 @@
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.h;
 			name = appletfiledesktop.h;
-			path = /Volumes/Data/Development/frontierkernel/Frontier/FrontierSDK/Toolkits/AppletToolkit/Headers/appletfiledesktop.h;
-			refType = 0;
-			sourceTree = "<absolute>";
+			path = ../FrontierSDK/Toolkits/AppletToolkit/Headers/appletfiledesktop.h;
+			refType = 2;
+			sourceTree = SOURCE_ROOT;
 		};
 		65152833072BFE8200411831 = {
 			fileRef = 65152832072BFE8200411831;
@@ -5897,9 +5897,9 @@
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.h;
 			name = iowainit.h;
-			path = /Volumes/Data/Development/frontierkernel/Frontier/Common/IowaRuntime/Headers/iowainit.h;
-			refType = 0;
-			sourceTree = "<absolute>";
+			path = ../Common/IowaRuntime/Headers/iowainit.h;
+			refType = 2;
+			sourceTree = SOURCE_ROOT;
 		};
 		65152835072BFE8300411831 = {
 			fileRef = 65152834072BFE8300411831;
@@ -5911,9 +5911,9 @@
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.h;
 			name = appletmouse.h;
-			path = /Volumes/Data/Development/frontierkernel/Frontier/FrontierSDK/Toolkits/AppletToolkit/Headers/appletmouse.h;
-			refType = 0;
-			sourceTree = "<absolute>";
+			path = ../FrontierSDK/Toolkits/AppletToolkit/Headers/appletmouse.h;
+			refType = 2;
+			sourceTree = SOURCE_ROOT;
 		};
 		65152837072BFE8500411831 = {
 			fileRef = 65152836072BFE8500411831;
@@ -5925,9 +5925,9 @@
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.h;
 			name = appletcursor.h;
-			path = /Volumes/Data/Development/frontierkernel/Frontier/FrontierSDK/Toolkits/AppletToolkit/Headers/appletcursor.h;
-			refType = 0;
-			sourceTree = "<absolute>";
+			path = ../FrontierSDK/Toolkits/AppletToolkit/Headers/appletcursor.h;
+			refType = 2;
+			sourceTree = SOURCE_ROOT;
 		};
 		65152839072BFE8700411831 = {
 			fileRef = 65152838072BFE8700411831;
@@ -5939,9 +5939,9 @@
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.h;
 			name = appletcardops.h;
-			path = /Volumes/Data/Development/frontierkernel/Frontier/FrontierSDK/Toolkits/AppletToolkit/Headers/appletcardops.h;
-			refType = 0;
-			sourceTree = "<absolute>";
+			path = ../FrontierSDK/Toolkits/AppletToolkit/Headers/appletcardops.h;
+			refType = 2;
+			sourceTree = SOURCE_ROOT;
 		};
 		6515283B072BFE8900411831 = {
 			fileRef = 6515283A072BFE8900411831;
@@ -5953,9 +5953,9 @@
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.h;
 			name = appletzoom.h;
-			path = /Volumes/Data/Development/frontierkernel/Frontier/FrontierSDK/Toolkits/AppletToolkit/Headers/appletzoom.h;
-			refType = 0;
-			sourceTree = "<absolute>";
+			path = ../FrontierSDK/Toolkits/AppletToolkit/Headers/appletzoom.h;
+			refType = 2;
+			sourceTree = SOURCE_ROOT;
 		};
 		6515283D072BFE8A00411831 = {
 			fileRef = 6515283C072BFE8A00411831;
@@ -5967,9 +5967,9 @@
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.h;
 			name = appletcard.h;
-			path = /Volumes/Data/Development/frontierkernel/Frontier/FrontierSDK/Toolkits/AppletToolkit/Headers/appletcard.h;
-			refType = 0;
-			sourceTree = "<absolute>";
+			path = ../FrontierSDK/Toolkits/AppletToolkit/Headers/appletcard.h;
+			refType = 2;
+			sourceTree = SOURCE_ROOT;
 		};
 		6515283F072BFE8C00411831 = {
 			fileRef = 6515283E072BFE8C00411831;
@@ -5981,9 +5981,9 @@
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.h;
 			name = landinternal.h;
-			path = /Volumes/Data/Development/frontierkernel/Frontier/Common/UserLandIACToolkit/landinternal.h;
-			refType = 0;
-			sourceTree = "<absolute>";
+			path = ../Common/UserLandIACToolkit/landinternal.h;
+			refType = 2;
+			sourceTree = SOURCE_ROOT;
 		};
 		65152841072BFE8D00411831 = {
 			fileRef = 65152840072BFE8D00411831;
@@ -5995,9 +5995,9 @@
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.h;
 			name = search.h;
-			path = /Volumes/Data/Development/frontierkernel/Frontier/Common/headers/search.h;
-			refType = 0;
-			sourceTree = "<absolute>";
+			path = ../Common/headers/search.h;
+			refType = 2;
+			sourceTree = SOURCE_ROOT;
 		};
 		65152843072BFE9000411831 = {
 			fileRef = 65152842072BFE9000411831;
@@ -6009,9 +6009,9 @@
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.h;
 			name = shellprint.h;
-			path = /Volumes/Data/Development/frontierkernel/Frontier/Common/headers/shellprint.h;
-			refType = 0;
-			sourceTree = "<absolute>";
+			path = ../Common/headers/shellprint.h;
+			refType = 2;
+			sourceTree = SOURCE_ROOT;
 		};
 		65152845072BFE9100411831 = {
 			fileRef = 65152844072BFE9100411831;
@@ -6023,9 +6023,9 @@
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.h;
 			name = shellundo.h;
-			path = /Volumes/Data/Development/frontierkernel/Frontier/Common/headers/shellundo.h;
-			refType = 0;
-			sourceTree = "<absolute>";
+			path = ../Common/headers/shellundo.h;
+			refType = 2;
+			sourceTree = SOURCE_ROOT;
 		};
 		65152847072BFE9500411831 = {
 			fileRef = 65152846072BFE9500411831;
@@ -6037,9 +6037,9 @@
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.h;
 			name = cancoon.h;
-			path = /Volumes/Data/Development/frontierkernel/Frontier/Common/headers/cancoon.h;
-			refType = 0;
-			sourceTree = "<absolute>";
+			path = ../Common/headers/cancoon.h;
+			refType = 2;
+			sourceTree = SOURCE_ROOT;
 		};
 		65152849072BFE9700411831 = {
 			fileRef = 65152848072BFE9700411831;
@@ -6051,9 +6051,9 @@
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.h;
 			name = pict.h;
-			path = /Volumes/Data/Development/frontierkernel/Frontier/Common/headers/pict.h;
-			refType = 0;
-			sourceTree = "<absolute>";
+			path = ../Common/headers/pict.h;
+			refType = 2;
+			sourceTree = SOURCE_ROOT;
 		};
 		6515284B072BFE9800411831 = {
 			fileRef = 6515284A072BFE9800411831;
@@ -6065,9 +6065,9 @@
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.h;
 			name = pictverbs.h;
-			path = /Volumes/Data/Development/frontierkernel/Frontier/Common/headers/pictverbs.h;
-			refType = 0;
-			sourceTree = "<absolute>";
+			path = ../Common/headers/pictverbs.h;
+			refType = 2;
+			sourceTree = SOURCE_ROOT;
 		};
 		6515284D072BFE9A00411831 = {
 			fileRef = 6515284C072BFE9A00411831;
@@ -6079,9 +6079,9 @@
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.h;
 			name = bitmaps.h;
-			path = /Volumes/Data/Development/frontierkernel/Frontier/Common/headers/bitmaps.h;
-			refType = 0;
-			sourceTree = "<absolute>";
+			path = ../Common/headers/bitmaps.h;
+			refType = 2;
+			sourceTree = SOURCE_ROOT;
 		};
 		6515284F072BFE9C00411831 = {
 			fileRef = 6515284E072BFE9C00411831;
@@ -6093,9 +6093,9 @@
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.h;
 			name = mouse.h;
-			path = /Volumes/Data/Development/frontierkernel/Frontier/Common/headers/mouse.h;
-			refType = 0;
-			sourceTree = "<absolute>";
+			path = ../Common/headers/mouse.h;
+			refType = 2;
+			sourceTree = SOURCE_ROOT;
 		};
 		65152851072BFE9E00411831 = {
 			fileRef = 65152850072BFE9E00411831;
@@ -6107,9 +6107,9 @@
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.h;
 			name = scrollbar.h;
-			path = /Volumes/Data/Development/frontierkernel/Frontier/Common/headers/scrollbar.h;
-			refType = 0;
-			sourceTree = "<absolute>";
+			path = ../Common/headers/scrollbar.h;
+			refType = 2;
+			sourceTree = SOURCE_ROOT;
 		};
 		65152853072BFE9F00411831 = {
 			fileRef = 65152852072BFE9F00411831;
@@ -6121,9 +6121,9 @@
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.h;
 			name = zoom.h;
-			path = /Volumes/Data/Development/frontierkernel/Frontier/Common/headers/zoom.h;
-			refType = 0;
-			sourceTree = "<absolute>";
+			path = ../Common/headers/zoom.h;
+			refType = 2;
+			sourceTree = SOURCE_ROOT;
 		};
 		65152855072BFEA100411831 = {
 			fileRef = 65152854072BFEA100411831;
@@ -6135,9 +6135,9 @@
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.h;
 			name = shellhooks.h;
-			path = /Volumes/Data/Development/frontierkernel/Frontier/Common/headers/shellhooks.h;
-			refType = 0;
-			sourceTree = "<absolute>";
+			path = ../Common/headers/shellhooks.h;
+			refType = 2;
+			sourceTree = SOURCE_ROOT;
 		};
 		65152857072BFEA200411831 = {
 			fileRef = 65152856072BFEA200411831;
@@ -6149,9 +6149,9 @@
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.h;
 			name = menu.h;
-			path = /Volumes/Data/Development/frontierkernel/Frontier/Common/headers/menu.h;
-			refType = 0;
-			sourceTree = "<absolute>";
+			path = ../Common/headers/menu.h;
+			refType = 2;
+			sourceTree = SOURCE_ROOT;
 		};
 		65152859072BFEA400411831 = {
 			fileRef = 65152858072BFEA400411831;
@@ -6163,9 +6163,9 @@
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.h;
 			name = popup.h;
-			path = /Volumes/Data/Development/frontierkernel/Frontier/Common/headers/popup.h;
-			refType = 0;
-			sourceTree = "<absolute>";
+			path = ../Common/headers/popup.h;
+			refType = 2;
+			sourceTree = SOURCE_ROOT;
 		};
 		6515285B072BFEA500411831 = {
 			fileRef = 6515285A072BFEA500411831;
@@ -6177,9 +6177,9 @@
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.h;
 			name = meprograms.h;
-			path = /Volumes/Data/Development/frontierkernel/Frontier/Common/headers/meprograms.h;
-			refType = 0;
-			sourceTree = "<absolute>";
+			path = ../Common/headers/meprograms.h;
+			refType = 2;
+			sourceTree = SOURCE_ROOT;
 		};
 		6515285D072BFEA700411831 = {
 			fileRef = 6515285C072BFEA700411831;
@@ -6191,9 +6191,9 @@
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.h;
 			name = dockmenu.h;
-			path = /Volumes/Data/Development/frontierkernel/Frontier/Common/headers/dockmenu.h;
-			refType = 0;
-			sourceTree = "<absolute>";
+			path = ../Common/headers/dockmenu.h;
+			refType = 2;
+			sourceTree = SOURCE_ROOT;
 		};
 		6515285F072BFEA900411831 = {
 			fileRef = 6515285E072BFEA900411831;
@@ -6205,9 +6205,9 @@
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.h;
 			name = opinternal.h;
-			path = /Volumes/Data/Development/frontierkernel/Frontier/Common/headers/opinternal.h;
-			refType = 0;
-			sourceTree = "<absolute>";
+			path = ../Common/headers/opinternal.h;
+			refType = 2;
+			sourceTree = SOURCE_ROOT;
 		};
 		65152861072BFEAA00411831 = {
 			fileRef = 65152860072BFEAA00411831;
@@ -6219,9 +6219,9 @@
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.h;
 			name = menuverbs.h;
-			path = /Volumes/Data/Development/frontierkernel/Frontier/Common/headers/menuverbs.h;
-			refType = 0;
-			sourceTree = "<absolute>";
+			path = ../Common/headers/menuverbs.h;
+			refType = 2;
+			sourceTree = SOURCE_ROOT;
 		};
 		65152863072BFEAB00411831 = {
 			fileRef = 65152862072BFEAB00411831;
@@ -6233,9 +6233,9 @@
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.h;
 			name = kb.h;
-			path = /Volumes/Data/Development/frontierkernel/Frontier/Common/headers/kb.h;
-			refType = 0;
-			sourceTree = "<absolute>";
+			path = ../Common/headers/kb.h;
+			refType = 2;
+			sourceTree = SOURCE_ROOT;
 		};
 		65152865072BFEAE00411831 = {
 			fileRef = 65152864072BFEAE00411831;
@@ -6247,9 +6247,9 @@
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.h;
 			name = shellmenu.h;
-			path = /Volumes/Data/Development/frontierkernel/Frontier/Common/headers/shellmenu.h;
-			refType = 0;
-			sourceTree = "<absolute>";
+			path = ../Common/headers/shellmenu.h;
+			refType = 2;
+			sourceTree = SOURCE_ROOT;
 		};
 		65152867072BFEB100411831 = {
 			fileRef = 65152866072BFEB100411831;
@@ -6261,9 +6261,9 @@
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.h;
 			name = land.h;
-			path = /Volumes/Data/Development/frontierkernel/Frontier/Common/SystemHeaders/land.h;
-			refType = 0;
-			sourceTree = "<absolute>";
+			path = ../Common/SystemHeaders/land.h;
+			refType = 2;
+			sourceTree = SOURCE_ROOT;
 		};
 		65152869072BFEB400411831 = {
 			fileRef = 65152868072BFEB400411831;
@@ -6275,9 +6275,9 @@
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.cpp.h;
 			name = BASE64.H;
-			path = /Volumes/Data/Development/frontierkernel/Frontier/Common/headers/BASE64.H;
-			refType = 0;
-			sourceTree = "<absolute>";
+			path = ../Common/headers/BASE64.H;
+			refType = 2;
+			sourceTree = SOURCE_ROOT;
 		};
 		6515286B072BFEBE00411831 = {
 			fileRef = 6515286A072BFEBE00411831;
@@ -6289,9 +6289,9 @@
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.h;
 			name = versions.h;
-			path = /Volumes/Data/Development/frontierkernel/Frontier/Common/headers/versions.h;
-			refType = 0;
-			sourceTree = "<absolute>";
+			path = ../Common/headers/versions.h;
+			refType = 2;
+			sourceTree = SOURCE_ROOT;
 		};
 		6515286D072BFEC000411831 = {
 			fileRef = 6515286C072BFEC000411831;
@@ -6303,9 +6303,9 @@
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.h;
 			name = icon.h;
-			path = /Volumes/Data/Development/frontierkernel/Frontier/Common/headers/icon.h;
-			refType = 0;
-			sourceTree = "<absolute>";
+			path = ../Common/headers/icon.h;
+			refType = 2;
+			sourceTree = SOURCE_ROOT;
 		};
 		6515286F072BFEC100411831 = {
 			fileRef = 6515286E072BFEC100411831;
@@ -6317,9 +6317,9 @@
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.h;
 			name = smallicon.h;
-			path = /Volumes/Data/Development/frontierkernel/Frontier/Common/headers/smallicon.h;
-			refType = 0;
-			sourceTree = "<absolute>";
+			path = ../Common/headers/smallicon.h;
+			refType = 2;
+			sourceTree = SOURCE_ROOT;
 		};
 		65152871072BFEC300411831 = {
 			fileRef = 65152870072BFEC300411831;
@@ -6331,9 +6331,9 @@
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.h;
 			name = textedit.h;
-			path = /Volumes/Data/Development/frontierkernel/Frontier/Common/headers/textedit.h;
-			refType = 0;
-			sourceTree = "<absolute>";
+			path = ../Common/headers/textedit.h;
+			refType = 2;
+			sourceTree = SOURCE_ROOT;
 		};
 		65152873072BFEC500411831 = {
 			fileRef = 65152872072BFEC500411831;
@@ -6345,9 +6345,9 @@
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.h;
 			name = windowlayout.h;
-			path = /Volumes/Data/Development/frontierkernel/Frontier/Common/headers/windowlayout.h;
-			refType = 0;
-			sourceTree = "<absolute>";
+			path = ../Common/headers/windowlayout.h;
+			refType = 2;
+			sourceTree = SOURCE_ROOT;
 		};
 		65152875072BFEC600411831 = {
 			fileRef = 65152874072BFEC600411831;
@@ -6359,9 +6359,9 @@
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.h;
 			name = shellprivate.h;
-			path = /Volumes/Data/Development/frontierkernel/Frontier/Common/headers/shellprivate.h;
-			refType = 0;
-			sourceTree = "<absolute>";
+			path = ../Common/headers/shellprivate.h;
+			refType = 2;
+			sourceTree = SOURCE_ROOT;
 		};
 		65152877072BFEC800411831 = {
 			fileRef = 65152876072BFEC800411831;
@@ -6373,9 +6373,9 @@
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.h;
 			name = about.h;
-			path = /Volumes/Data/Development/frontierkernel/Frontier/Common/headers/about.h;
-			refType = 0;
-			sourceTree = "<absolute>";
+			path = ../Common/headers/about.h;
+			refType = 2;
+			sourceTree = SOURCE_ROOT;
 		};
 		65152879072BFEC900411831 = {
 			fileRef = 65152878072BFEC900411831;
@@ -6387,9 +6387,9 @@
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.h;
 			name = cancooninternal.h;
-			path = /Volumes/Data/Development/frontierkernel/Frontier/Common/headers/cancooninternal.h;
-			refType = 0;
-			sourceTree = "<absolute>";
+			path = ../Common/headers/cancooninternal.h;
+			refType = 2;
+			sourceTree = SOURCE_ROOT;
 		};
 		6515287B072BFECB00411831 = {
 			fileRef = 6515287A072BFECB00411831;
@@ -6401,9 +6401,9 @@
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.h;
 			name = processinternal.h;
-			path = /Volumes/Data/Development/frontierkernel/Frontier/Common/headers/processinternal.h;
-			refType = 0;
-			sourceTree = "<absolute>";
+			path = ../Common/headers/processinternal.h;
+			refType = 2;
+			sourceTree = SOURCE_ROOT;
 		};
 		6515287D072BFECC00411831 = {
 			fileRef = 6515287C072BFECC00411831;
@@ -6415,9 +6415,9 @@
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.h;
 			name = WinLand.h;
-			path = /Volumes/Data/Development/frontierkernel/Frontier/Common/headers/WinLand.h;
-			refType = 0;
-			sourceTree = "<absolute>";
+			path = ../Common/headers/WinLand.h;
+			refType = 2;
+			sourceTree = SOURCE_ROOT;
 		};
 		6515287F072BFECE00411831 = {
 			fileRef = 6515287E072BFECE00411831;
@@ -6429,9 +6429,9 @@
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.h;
 			name = OSXSpecifics.h;
-			path = /Volumes/Data/Development/frontierkernel/Frontier/Common/headers/OSXSpecifics.h;
-			refType = 0;
-			sourceTree = "<absolute>";
+			path = ../Common/headers/OSXSpecifics.h;
+			refType = 2;
+			sourceTree = SOURCE_ROOT;
 		};
 		65152881072BFED000411831 = {
 			fileRef = 65152880072BFED000411831;
@@ -6443,9 +6443,9 @@
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.h;
 			name = player.h;
-			path = /Volumes/Data/Development/frontierkernel/Frontier/Common/headers/player.h;
-			refType = 0;
-			sourceTree = "<absolute>";
+			path = ../Common/headers/player.h;
+			refType = 2;
+			sourceTree = SOURCE_ROOT;
 		};
 		65152883072BFED200411831 = {
 			fileRef = 65152882072BFED200411831;
@@ -6457,9 +6457,9 @@
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.h;
 			name = frontierconfig.h;
-			path = /Volumes/Data/Development/frontierkernel/Frontier/Common/headers/frontierconfig.h;
-			refType = 0;
-			sourceTree = "<absolute>";
+			path = ../Common/headers/frontierconfig.h;
+			refType = 2;
+			sourceTree = SOURCE_ROOT;
 		};
 		65152885072BFED300411831 = {
 			fileRef = 65152884072BFED300411831;
@@ -6471,9 +6471,9 @@
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.h;
 			name = db.h;
-			path = /Volumes/Data/Development/frontierkernel/Frontier/Common/headers/db.h;
-			refType = 0;
-			sourceTree = "<absolute>";
+			path = ../Common/headers/db.h;
+			refType = 2;
+			sourceTree = SOURCE_ROOT;
 		};
 		65152887072BFED500411831 = {
 			fileRef = 65152886072BFED500411831;
@@ -6485,9 +6485,9 @@
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.h;
 			name = tableverbs.h;
-			path = /Volumes/Data/Development/frontierkernel/Frontier/Common/headers/tableverbs.h;
-			refType = 0;
-			sourceTree = "<absolute>";
+			path = ../Common/headers/tableverbs.h;
+			refType = 2;
+			sourceTree = SOURCE_ROOT;
 		};
 		65152889072BFED600411831 = {
 			fileRef = 65152888072BFED600411831;
@@ -6499,9 +6499,9 @@
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.h;
 			name = opverbs.h;
-			path = /Volumes/Data/Development/frontierkernel/Frontier/Common/headers/opverbs.h;
-			refType = 0;
-			sourceTree = "<absolute>";
+			path = ../Common/headers/opverbs.h;
+			refType = 2;
+			sourceTree = SOURCE_ROOT;
 		};
 		6515288B072BFED800411831 = {
 			fileRef = 6515288A072BFED800411831;
@@ -6513,9 +6513,9 @@
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.h;
 			name = scripts.h;
-			path = /Volumes/Data/Development/frontierkernel/Frontier/Common/headers/scripts.h;
-			refType = 0;
-			sourceTree = "<absolute>";
+			path = ../Common/headers/scripts.h;
+			refType = 2;
+			sourceTree = SOURCE_ROOT;
 		};
 		6515288D072BFEDA00411831 = {
 			fileRef = 6515288C072BFEDA00411831;
@@ -6527,9 +6527,9 @@
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.h;
 			name = wpverbs.h;
-			path = /Volumes/Data/Development/frontierkernel/Frontier/Common/headers/wpverbs.h;
-			refType = 0;
-			sourceTree = "<absolute>";
+			path = ../Common/headers/wpverbs.h;
+			refType = 2;
+			sourceTree = SOURCE_ROOT;
 		};
 		6515288F072BFEDC00411831 = {
 			fileRef = 6515288E072BFEDC00411831;
@@ -6541,9 +6541,9 @@
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.h;
 			name = command.h;
-			path = /Volumes/Data/Development/frontierkernel/Frontier/Common/headers/command.h;
-			refType = 0;
-			sourceTree = "<absolute>";
+			path = ../Common/headers/command.h;
+			refType = 2;
+			sourceTree = SOURCE_ROOT;
 		};
 		65152891072BFEDD00411831 = {
 			fileRef = 65152890072BFEDD00411831;
@@ -6555,9 +6555,9 @@
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.h;
 			name = osacomponent.h;
-			path = /Volumes/Data/Development/frontierkernel/Frontier/Common/headers/osacomponent.h;
-			refType = 0;
-			sourceTree = "<absolute>";
+			path = ../Common/headers/osacomponent.h;
+			refType = 2;
+			sourceTree = SOURCE_ROOT;
 		};
 		65152893072BFEDF00411831 = {
 			fileRef = 65152892072BFEDF00411831;
@@ -6569,9 +6569,9 @@
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.h;
 			name = iowaverbs.h;
-			path = /Volumes/Data/Development/frontierkernel/Frontier/Common/headers/iowaverbs.h;
-			refType = 0;
-			sourceTree = "<absolute>";
+			path = ../Common/headers/iowaverbs.h;
+			refType = 2;
+			sourceTree = SOURCE_ROOT;
 		};
 		65152895072BFEE200411831 = {
 			fileRef = 65152894072BFEE200411831;
@@ -6583,9 +6583,9 @@
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.h;
 			name = frontierstart.h;
-			path = /Volumes/Data/Development/frontierkernel/Frontier/Common/headers/frontierstart.h;
-			refType = 0;
-			sourceTree = "<absolute>";
+			path = ../Common/headers/frontierstart.h;
+			refType = 2;
+			sourceTree = SOURCE_ROOT;
 		};
 		65152897072BFEE400411831 = {
 			fileRef = 65152896072BFEE400411831;
@@ -6597,9 +6597,9 @@
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.h;
 			name = frontierdebug.h;
-			path = /Volumes/Data/Development/frontierkernel/Frontier/Common/headers/frontierdebug.h;
-			refType = 0;
-			sourceTree = "<absolute>";
+			path = ../Common/headers/frontierdebug.h;
+			refType = 2;
+			sourceTree = SOURCE_ROOT;
 		};
 		65152899072BFEE500411831 = {
 			fileRef = 65152898072BFEE500411831;
@@ -6611,9 +6611,9 @@
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.cpp.h;
 			name = PAIGE.H;
-			path = /Volumes/Data/Development/frontierkernel/Frontier/Common/Paige/headers/PAIGE.H;
-			refType = 0;
-			sourceTree = "<absolute>";
+			path = ../Common/Paige/headers/PAIGE.H;
+			refType = 2;
+			sourceTree = SOURCE_ROOT;
 		};
 		6515289B072BFEE700411831 = {
 			fileRef = 6515289A072BFEE700411831;
@@ -6625,9 +6625,9 @@
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.cpp.h;
 			name = PGDEFTBL.H;
-			path = /Volumes/Data/Development/frontierkernel/Frontier/Common/Paige/headers/PGDEFTBL.H;
-			refType = 0;
-			sourceTree = "<absolute>";
+			path = ../Common/Paige/headers/PGDEFTBL.H;
+			refType = 2;
+			sourceTree = SOURCE_ROOT;
 		};
 		6515289D072BFEE900411831 = {
 			fileRef = 6515289C072BFEE900411831;
@@ -6639,9 +6639,9 @@
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.h;
 			name = notify.h;
-			path = /Volumes/Data/Development/frontierkernel/Frontier/Common/headers/notify.h;
-			refType = 0;
-			sourceTree = "<absolute>";
+			path = ../Common/headers/notify.h;
+			refType = 2;
+			sourceTree = SOURCE_ROOT;
 		};
 		6515289F072BFEEA00411831 = {
 			fileRef = 6515289E072BFEEA00411831;
@@ -6653,9 +6653,9 @@
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.h;
 			name = md5.h;
-			path = /Volumes/Data/Development/frontierkernel/Frontier/Common/headers/md5.h;
-			refType = 0;
-			sourceTree = "<absolute>";
+			path = ../Common/headers/md5.h;
+			refType = 2;
+			sourceTree = SOURCE_ROOT;
 		};
 		651528A1072BFEED00411831 = {
 			fileRef = 651528A0072BFEED00411831;
@@ -6667,9 +6667,9 @@
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.h;
 			name = services.h;
-			path = /Volumes/Data/Development/frontierkernel/Frontier/Common/headers/services.h;
-			refType = 0;
-			sourceTree = "<absolute>";
+			path = ../Common/headers/services.h;
+			refType = 2;
+			sourceTree = SOURCE_ROOT;
 		};
 		651528A3072BFEEF00411831 = {
 			fileRef = 651528A2072BFEEF00411831;
@@ -6681,9 +6681,9 @@
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.h;
 			name = serialnumber.h;
-			path = /Volumes/Data/Development/frontierkernel/Frontier/Common/headers/serialnumber.h;
-			refType = 0;
-			sourceTree = "<absolute>";
+			path = ../Common/headers/serialnumber.h;
+			refType = 2;
+			sourceTree = SOURCE_ROOT;
 		};
 		651528A5072BFEF100411831 = {
 			fileRef = 651528A4072BFEF100411831;
@@ -6695,9 +6695,9 @@
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.h;
 			name = langregexp.h;
-			path = /Volumes/Data/Development/frontierkernel/Frontier/Common/headers/langregexp.h;
-			refType = 0;
-			sourceTree = "<absolute>";
+			path = ../Common/headers/langregexp.h;
+			refType = 2;
+			sourceTree = SOURCE_ROOT;
 		};
 		651528A7072BFEF200411831 = {
 			fileRef = 651528A6072BFEF200411831;
@@ -6709,9 +6709,9 @@
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.h;
 			name = shellbuttons.h;
-			path = /Volumes/Data/Development/frontierkernel/Frontier/Common/headers/shellbuttons.h;
-			refType = 0;
-			sourceTree = "<absolute>";
+			path = ../Common/headers/shellbuttons.h;
+			refType = 2;
+			sourceTree = SOURCE_ROOT;
 		};
 		651528A9072BFEF500411831 = {
 			fileRef = 651528A8072BFEF500411831;
@@ -6723,9 +6723,9 @@
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.h;
 			name = op.h;
-			path = /Volumes/Data/Development/frontierkernel/Frontier/Common/headers/op.h;
-			refType = 0;
-			sourceTree = "<absolute>";
+			path = ../Common/headers/op.h;
+			refType = 2;
+			sourceTree = SOURCE_ROOT;
 		};
 		651528AB072BFEF600411831 = {
 			fileRef = 651528AA072BFEF600411831;
@@ -6737,9 +6737,9 @@
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.h;
 			name = menueditor.h;
-			path = /Volumes/Data/Development/frontierkernel/Frontier/Common/headers/menueditor.h;
-			refType = 0;
-			sourceTree = "<absolute>";
+			path = ../Common/headers/menueditor.h;
+			refType = 2;
+			sourceTree = SOURCE_ROOT;
 		};
 		651528AD072BFEF800411831 = {
 			fileRef = 651528AC072BFEF800411831;
@@ -6751,9 +6751,9 @@
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.h;
 			name = tableinternal.h;
-			path = /Volumes/Data/Development/frontierkernel/Frontier/Common/headers/tableinternal.h;
-			refType = 0;
-			sourceTree = "<absolute>";
+			path = ../Common/headers/tableinternal.h;
+			refType = 2;
+			sourceTree = SOURCE_ROOT;
 		};
 		651528AF072BFEFA00411831 = {
 			fileRef = 651528AE072BFEFA00411831;
@@ -6765,9 +6765,9 @@
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.h;
 			name = sounds.h;
-			path = /Volumes/Data/Development/frontierkernel/Frontier/Common/headers/sounds.h;
-			refType = 0;
-			sourceTree = "<absolute>";
+			path = ../Common/headers/sounds.h;
+			refType = 2;
+			sourceTree = SOURCE_ROOT;
 		};
 		651528B1072BFEFD00411831 = {
 			fileRef = 651528B0072BFEFD00411831;
@@ -6779,9 +6779,9 @@
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.h;
 			name = uisharing.h;
-			path = /Volumes/Data/Development/frontierkernel/Frontier/Common/SystemHeaders/uisharing.h;
-			refType = 0;
-			sourceTree = "<absolute>";
+			path = ../Common/SystemHeaders/uisharing.h;
+			refType = 2;
+			sourceTree = SOURCE_ROOT;
 		};
 		651528B3072BFEFF00411831 = {
 			fileRef = 651528B2072BFEFF00411831;
@@ -6793,9 +6793,9 @@
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.h;
 			name = miniwindow.h;
-			path = /Volumes/Data/Development/frontierkernel/Frontier/Common/headers/miniwindow.h;
-			refType = 0;
-			sourceTree = "<absolute>";
+			path = ../Common/headers/miniwindow.h;
+			refType = 2;
+			sourceTree = SOURCE_ROOT;
 		};
 		651528B5072BFF0200411831 = {
 			fileRef = 651528B4072BFF0200411831;
@@ -6807,9 +6807,9 @@
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.h;
 			name = wpengine.h;
-			path = /Volumes/Data/Development/frontierkernel/Frontier/Common/headers/wpengine.h;
-			refType = 0;
-			sourceTree = "<absolute>";
+			path = ../Common/headers/wpengine.h;
+			refType = 2;
+			sourceTree = SOURCE_ROOT;
 		};
 		651528B7072BFF0400411831 = {
 			fileRef = 651528B6072BFF0400411831;
@@ -6821,9 +6821,9 @@
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.h;
 			name = tableformats.h;
-			path = /Volumes/Data/Development/frontierkernel/Frontier/Common/headers/tableformats.h;
-			refType = 0;
-			sourceTree = "<absolute>";
+			path = ../Common/headers/tableformats.h;
+			refType = 2;
+			sourceTree = SOURCE_ROOT;
 		};
 		651528B9072BFF0700411831 = {
 			fileRef = 651528B8072BFF0700411831;
@@ -6835,9 +6835,9 @@
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.h;
 			name = langipc.h;
-			path = /Volumes/Data/Development/frontierkernel/Frontier/Common/headers/langipc.h;
-			refType = 0;
-			sourceTree = "<absolute>";
+			path = ../Common/headers/langipc.h;
+			refType = 2;
+			sourceTree = SOURCE_ROOT;
 		};
 		651528BB072BFF0900411831 = {
 			fileRef = 651528BA072BFF0900411831;
@@ -6849,9 +6849,9 @@
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.h;
 			name = dbinternal.h;
-			path = /Volumes/Data/Development/frontierkernel/Frontier/Common/headers/dbinternal.h;
-			refType = 0;
-			sourceTree = "<absolute>";
+			path = ../Common/headers/dbinternal.h;
+			refType = 2;
+			sourceTree = SOURCE_ROOT;
 		};
 		651528BD072BFF0C00411831 = {
 			fileRef = 651528BC072BFF0C00411831;
@@ -6863,9 +6863,9 @@
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.h;
 			name = WinSockNetEvents.h;
-			path = /Volumes/Data/Development/frontierkernel/Frontier/Common/headers/WinSockNetEvents.h;
-			refType = 0;
-			sourceTree = "<absolute>";
+			path = ../Common/headers/WinSockNetEvents.h;
+			refType = 2;
+			sourceTree = SOURCE_ROOT;
 		};
 		651528BF072BFF0F00411831 = {
 			fileRef = 651528BE072BFF0F00411831;
@@ -6877,9 +6877,9 @@
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.h;
 			name = opdisplay.h;
-			path = /Volumes/Data/Development/frontierkernel/Frontier/Common/headers/opdisplay.h;
-			refType = 0;
-			sourceTree = "<absolute>";
+			path = ../Common/headers/opdisplay.h;
+			refType = 2;
+			sourceTree = SOURCE_ROOT;
 		};
 		651528C1072BFF1000411831 = {
 			fileRef = 651528C0072BFF1000411831;
@@ -6891,9 +6891,9 @@
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.h;
 			name = opicons.h;
-			path = /Volumes/Data/Development/frontierkernel/Frontier/Common/headers/opicons.h;
-			refType = 0;
-			sourceTree = "<absolute>";
+			path = ../Common/headers/opicons.h;
+			refType = 2;
+			sourceTree = SOURCE_ROOT;
 		};
 		651528C3072BFF1200411831 = {
 			fileRef = 651528C2072BFF1200411831;
@@ -6905,9 +6905,9 @@
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.h;
 			name = claybrowser.h;
-			path = /Volumes/Data/Development/frontierkernel/Frontier/Common/headers/claybrowser.h;
-			refType = 0;
-			sourceTree = "<absolute>";
+			path = ../Common/headers/claybrowser.h;
+			refType = 2;
+			sourceTree = SOURCE_ROOT;
 		};
 		651528C5072BFF1300411831 = {
 			fileRef = 651528C4072BFF1300411831;
@@ -6919,9 +6919,9 @@
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.h;
 			name = claybrowserstruc.h;
-			path = /Volumes/Data/Development/frontierkernel/Frontier/Common/headers/claybrowserstruc.h;
-			refType = 0;
-			sourceTree = "<absolute>";
+			path = ../Common/headers/claybrowserstruc.h;
+			refType = 2;
+			sourceTree = SOURCE_ROOT;
 		};
 		651528C7072BFF1500411831 = {
 			fileRef = 651528C6072BFF1500411831;
@@ -6933,9 +6933,9 @@
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.h;
 			name = claybrowserexpand.h;
-			path = /Volumes/Data/Development/frontierkernel/Frontier/Common/headers/claybrowserexpand.h;
-			refType = 0;
-			sourceTree = "<absolute>";
+			path = ../Common/headers/claybrowserexpand.h;
+			refType = 2;
+			sourceTree = SOURCE_ROOT;
 		};
 		651528C9072BFF1700411831 = {
 			fileRef = 651528C8072BFF1700411831;
@@ -6947,9 +6947,9 @@
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.h;
 			name = claycallbacks.h;
-			path = /Volumes/Data/Development/frontierkernel/Frontier/Common/headers/claycallbacks.h;
-			refType = 0;
-			sourceTree = "<absolute>";
+			path = ../Common/headers/claycallbacks.h;
+			refType = 2;
+			sourceTree = SOURCE_ROOT;
 		};
 		651528CB072BFF1900411831 = {
 			fileRef = 651528CA072BFF1900411831;
@@ -6961,9 +6961,9 @@
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.h;
 			name = claybrowservalidate.h;
-			path = /Volumes/Data/Development/frontierkernel/Frontier/Common/headers/claybrowservalidate.h;
-			refType = 0;
-			sourceTree = "<absolute>";
+			path = ../Common/headers/claybrowservalidate.h;
+			refType = 2;
+			sourceTree = SOURCE_ROOT;
 		};
 		651528CD072BFF1A00411831 = {
 			fileRef = 651528CC072BFF1A00411831;
@@ -6975,9 +6975,9 @@
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.h;
 			name = oplineheight.h;
-			path = /Volumes/Data/Development/frontierkernel/Frontier/Common/headers/oplineheight.h;
-			refType = 0;
-			sourceTree = "<absolute>";
+			path = ../Common/headers/oplineheight.h;
+			refType = 2;
+			sourceTree = SOURCE_ROOT;
 		};
 		651528CF072BFF1C00411831 = {
 			fileRef = 651528CE072BFF1C00411831;
@@ -6989,9 +6989,9 @@
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.h;
 			name = odbinternal.h;
-			path = /Volumes/Data/Development/frontierkernel/Frontier/Common/headers/odbinternal.h;
-			refType = 0;
-			sourceTree = "<absolute>";
+			path = ../Common/headers/odbinternal.h;
+			refType = 2;
+			sourceTree = SOURCE_ROOT;
 		};
 		651528D1072BFF1F00411831 = {
 			fileRef = 651528D0072BFF1F00411831;
@@ -7003,9 +7003,9 @@
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.h;
 			name = CallMachOFrameWork.h;
-			path = /Volumes/Data/Development/frontierkernel/Frontier/Common/headers/CallMachOFrameWork.h;
-			refType = 0;
-			sourceTree = "<absolute>";
+			path = ../Common/headers/CallMachOFrameWork.h;
+			refType = 2;
+			sourceTree = SOURCE_ROOT;
 		};
 		651528D3072BFF2200411831 = {
 			fileRef = 651528D2072BFF2200411831;
@@ -7017,9 +7017,9 @@
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.h;
 			name = langhtml.h;
-			path = /Volumes/Data/Development/frontierkernel/Frontier/Common/headers/langhtml.h;
-			refType = 0;
-			sourceTree = "<absolute>";
+			path = ../Common/headers/langhtml.h;
+			refType = 2;
+			sourceTree = SOURCE_ROOT;
 		};
 		651528D5072BFF2500411831 = {
 			fileRef = 651528D4072BFF2500411831;
@@ -7031,9 +7031,9 @@
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.h;
 			name = langxml.h;
-			path = /Volumes/Data/Development/frontierkernel/Frontier/Common/headers/langxml.h;
-			refType = 0;
-			sourceTree = "<absolute>";
+			path = ../Common/headers/langxml.h;
+			refType = 2;
+			sourceTree = SOURCE_ROOT;
 		};
 		651528D7072BFF2700411831 = {
 			fileRef = 651528D6072BFF2700411831;
@@ -7045,9 +7045,9 @@
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.h;
 			name = langxcmd.h;
-			path = /Volumes/Data/Development/frontierkernel/Frontier/Common/headers/langxcmd.h;
-			refType = 0;
-			sourceTree = "<absolute>";
+			path = ../Common/headers/langxcmd.h;
+			refType = 2;
+			sourceTree = SOURCE_ROOT;
 		};
 		651528D9072BFF2900411831 = {
 			fileRef = 651528D8072BFF2900411831;
@@ -7059,9 +7059,9 @@
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.h;
 			name = langdll.h;
-			path = /Volumes/Data/Development/frontierkernel/Frontier/Common/headers/langdll.h;
-			refType = 0;
-			sourceTree = "<absolute>";
+			path = ../Common/headers/langdll.h;
+			refType = 2;
+			sourceTree = SOURCE_ROOT;
 		};
 		651528DB072BFF2C00411831 = {
 			fileRef = 651528DA072BFF2C00411831;
@@ -7073,9 +7073,9 @@
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.h;
 			name = langtokens.h;
-			path = /Volumes/Data/Development/frontierkernel/Frontier/Common/headers/langtokens.h;
-			refType = 0;
-			sourceTree = "<absolute>";
+			path = ../Common/headers/langtokens.h;
+			refType = 2;
+			sourceTree = SOURCE_ROOT;
 		};
 		651528DD072BFF2D00411831 = {
 			fileRef = 651528DC072BFF2D00411831;
@@ -7087,9 +7087,9 @@
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.h;
 			name = langwinipc.h;
-			path = /Volumes/Data/Development/frontierkernel/Frontier/Common/headers/langwinipc.h;
-			refType = 0;
-			sourceTree = "<absolute>";
+			path = ../Common/headers/langwinipc.h;
+			refType = 2;
+			sourceTree = SOURCE_ROOT;
 		};
 		651528DF072BFF2F00411831 = {
 			fileRef = 651528DE072BFF2F00411831;
@@ -7101,9 +7101,9 @@
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.h;
 			name = htmlcontrol.h;
-			path = /Volumes/Data/Development/frontierkernel/Frontier/Common/headers/htmlcontrol.h;
-			refType = 0;
-			sourceTree = "<absolute>";
+			path = ../Common/headers/htmlcontrol.h;
+			refType = 2;
+			sourceTree = SOURCE_ROOT;
 		};
 		651528E1072BFF3100411831 = {
 			fileRef = 651528E0072BFF3100411831;
@@ -7115,9 +7115,9 @@
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.h;
 			name = langpython.h;
-			path = /Volumes/Data/Development/frontierkernel/Frontier/Common/headers/langpython.h;
-			refType = 0;
-			sourceTree = "<absolute>";
+			path = ../Common/headers/langpython.h;
+			refType = 2;
+			sourceTree = SOURCE_ROOT;
 		};
 		651528E3072BFF3300411831 = {
 			fileRef = 651528E2072BFF3300411831;
@@ -7129,9 +7129,9 @@
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.h;
 			name = pcre_internal.h;
-			path = /Volumes/Data/Development/frontierkernel/Frontier/Common/PCRE/pcre_internal.h;
-			refType = 0;
-			sourceTree = "<absolute>";
+			path = ../Common/PCRE/pcre_internal.h;
+			refType = 2;
+			sourceTree = SOURCE_ROOT;
 		};
 		651528E5072BFF3600411831 = {
 			fileRef = 651528E4072BFF3600411831;
@@ -7143,9 +7143,9 @@
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.h;
 			name = yytab.h;
-			path = /Volumes/Data/Development/frontierkernel/Frontier/Common/headers/yytab.h;
-			refType = 0;
-			sourceTree = "<absolute>";
+			path = ../Common/headers/yytab.h;
+			refType = 2;
+			sourceTree = SOURCE_ROOT;
 		};
 		651528E7072BFF3D00411831 = {
 			fileRef = 651528E6072BFF3D00411831;
@@ -7157,9 +7157,9 @@
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.h;
 			name = langparser.h;
-			path = /Volumes/Data/Development/frontierkernel/Frontier/Common/headers/langparser.h;
-			refType = 0;
-			sourceTree = "<absolute>";
+			path = ../Common/headers/langparser.h;
+			refType = 2;
+			sourceTree = SOURCE_ROOT;
 		};
 		651528E9072BFF3E00411831 = {
 			fileRef = 651528E8072BFF3E00411831;
@@ -7171,9 +7171,9 @@
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.h;
 			name = menubar.h;
-			path = /Volumes/Data/Development/frontierkernel/Frontier/Common/headers/menubar.h;
-			refType = 0;
-			sourceTree = "<absolute>";
+			path = ../Common/headers/menubar.h;
+			refType = 2;
+			sourceTree = SOURCE_ROOT;
 		};
 		651528EB072BFF4100411831 = {
 			fileRef = 651528EA072BFF4100411831;
@@ -7185,9 +7185,9 @@
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.c;
 			name = iso8859.c;
-			path = /Volumes/Data/Development/frontierkernel/Frontier/Common/source/iso8859.c;
-			refType = 0;
-			sourceTree = "<absolute>";
+			path = ../Common/source/iso8859.c;
+			refType = 2;
+			sourceTree = SOURCE_ROOT;
 		};
 		651528ED072BFF4400411831 = {
 			fileRef = 651528EC072BFF4400411831;
@@ -7199,9 +7199,9 @@
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.h;
 			name = FrontierWinMain.h;
-			path = /Volumes/Data/Development/frontierkernel/Frontier/Common/headers/FrontierWinMain.h;
-			refType = 0;
-			sourceTree = "<absolute>";
+			path = ../Common/headers/FrontierWinMain.h;
+			refType = 2;
+			sourceTree = SOURCE_ROOT;
 		};
 		651528EF072BFF4700411831 = {
 			fileRef = 651528EE072BFF4700411831;
@@ -7213,9 +7213,9 @@
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.yacc;
 			name = langparser.y;
-			path = /Volumes/Data/Development/frontierkernel/Frontier/Common/source/langparser.y;
-			refType = 0;
-			sourceTree = "<absolute>";
+			path = ../Common/source/langparser.y;
+			refType = 2;
+			sourceTree = SOURCE_ROOT;
 		};
 		651528F1072BFF4B00411831 = {
 			fileRef = 651528F0072BFF4B00411831;
@@ -7227,9 +7227,9 @@
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.h;
 			name = menuinternal.h;
-			path = /Volumes/Data/Development/frontierkernel/Frontier/Common/headers/menuinternal.h;
-			refType = 0;
-			sourceTree = "<absolute>";
+			path = ../Common/headers/menuinternal.h;
+			refType = 2;
+			sourceTree = SOURCE_ROOT;
 		};
 		651528F3072BFF4E00411831 = {
 			fileRef = 651528F2072BFF4E00411831;
@@ -7241,9 +7241,9 @@
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.h;
 			name = textdisplay.h;
-			path = /Volumes/Data/Development/frontierkernel/Frontier/Common/headers/textdisplay.h;
-			refType = 0;
-			sourceTree = "<absolute>";
+			path = ../Common/headers/textdisplay.h;
+			refType = 2;
+			sourceTree = SOURCE_ROOT;
 		};
 		651528F5072BFF5100411831 = {
 			fileRef = 651528F4072BFF5100411831;
@@ -7255,9 +7255,9 @@
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.h;
 			name = opxml.h;
-			path = /Volumes/Data/Development/frontierkernel/Frontier/Common/headers/opxml.h;
-			refType = 0;
-			sourceTree = "<absolute>";
+			path = ../Common/headers/opxml.h;
+			refType = 2;
+			sourceTree = SOURCE_ROOT;
 		};
 		651528F7072BFF5300411831 = {
 			fileRef = 651528F6072BFF5300411831;
@@ -7269,9 +7269,9 @@
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.h;
 			name = opbuttons.h;
-			path = /Volumes/Data/Development/frontierkernel/Frontier/Common/headers/opbuttons.h;
-			refType = 0;
-			sourceTree = "<absolute>";
+			path = ../Common/headers/opbuttons.h;
+			refType = 2;
+			sourceTree = SOURCE_ROOT;
 		};
 		651528F9072BFF5600411831 = {
 			fileRef = 651528F8072BFF5600411831;
@@ -7283,9 +7283,9 @@
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.h;
 			name = opdraggingmove.h;
-			path = /Volumes/Data/Development/frontierkernel/Frontier/Common/headers/opdraggingmove.h;
-			refType = 0;
-			sourceTree = "<absolute>";
+			path = ../Common/headers/opdraggingmove.h;
+			refType = 2;
+			sourceTree = SOURCE_ROOT;
 		};
 		651528FB072BFF5900411831 = {
 			fileRef = 651528FA072BFF5900411831;
@@ -7297,9 +7297,9 @@
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.h;
 			name = osadroplet.h;
-			path = /Volumes/Data/Development/frontierkernel/Frontier/Common/headers/osadroplet.h;
-			refType = 0;
-			sourceTree = "<absolute>";
+			path = ../Common/headers/osadroplet.h;
+			refType = 2;
+			sourceTree = SOURCE_ROOT;
 		};
 		651528FD072BFF5C00411831 = {
 			fileRef = 651528FC072BFF5C00411831;
@@ -7311,9 +7311,9 @@
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.h;
 			name = osainternal.h;
-			path = /Volumes/Data/Development/frontierkernel/Frontier/Common/headers/osainternal.h;
-			refType = 0;
-			sourceTree = "<absolute>";
+			path = ../Common/headers/osainternal.h;
+			refType = 2;
+			sourceTree = SOURCE_ROOT;
 		};
 		651528FF072BFF5D00411831 = {
 			fileRef = 651528FE072BFF5D00411831;
@@ -7325,9 +7325,9 @@
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.h;
 			name = osamenus.h;
-			path = /Volumes/Data/Development/frontierkernel/Frontier/Common/headers/osamenus.h;
-			refType = 0;
-			sourceTree = "<absolute>";
+			path = ../Common/headers/osamenus.h;
+			refType = 2;
+			sourceTree = SOURCE_ROOT;
 		};
 		65152901072BFF6000411831 = {
 			fileRef = 65152900072BFF6000411831;
@@ -7339,9 +7339,9 @@
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.h;
 			name = osaparseaete.h;
-			path = /Volumes/Data/Development/frontierkernel/Frontier/Common/headers/osaparseaete.h;
-			refType = 0;
-			sourceTree = "<absolute>";
+			path = ../Common/headers/osaparseaete.h;
+			refType = 2;
+			sourceTree = SOURCE_ROOT;
 		};
 		65152903072BFF6300411831 = {
 			fileRef = 65152902072BFF6300411831;
@@ -7353,9 +7353,9 @@
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.h;
 			name = osawindows.h;
-			path = /Volumes/Data/Development/frontierkernel/Frontier/Common/headers/osawindows.h;
-			refType = 0;
-			sourceTree = "<absolute>";
+			path = ../Common/headers/osawindows.h;
+			refType = 2;
+			sourceTree = SOURCE_ROOT;
 		};
 		65152905072BFF6400411831 = {
 			fileRef = 65152904072BFF6400411831;
@@ -7367,9 +7367,9 @@
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.h;
 			name = tabledisplay.h;
-			path = /Volumes/Data/Development/frontierkernel/Frontier/Common/headers/tabledisplay.h;
-			refType = 0;
-			sourceTree = "<absolute>";
+			path = ../Common/headers/tabledisplay.h;
+			refType = 2;
+			sourceTree = SOURCE_ROOT;
 		};
 		65152907072BFF6800411831 = {
 			fileRef = 65152906072BFF6800411831;
@@ -7381,9 +7381,9 @@
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.h;
 			name = claylinelayout.h;
-			path = /Volumes/Data/Development/frontierkernel/Frontier/Common/headers/claylinelayout.h;
-			refType = 0;
-			sourceTree = "<absolute>";
+			path = ../Common/headers/claylinelayout.h;
+			refType = 2;
+			sourceTree = SOURCE_ROOT;
 		};
 		65152909072BFF6900411831 = {
 			fileRef = 65152908072BFF6900411831;
@@ -7395,9 +7395,9 @@
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.cpp.h;
 			name = PGTRAPS.H;
-			path = /Volumes/Data/Development/frontierkernel/Frontier/Common/Paige/headers/PGTRAPS.H;
-			refType = 0;
-			sourceTree = "<absolute>";
+			path = ../Common/Paige/headers/PGTRAPS.H;
+			refType = 2;
+			sourceTree = SOURCE_ROOT;
 		};
 		6515290B072BFF6C00411831 = {
 			fileRef = 6515290A072BFF6C00411831;
@@ -7409,9 +7409,9 @@
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.cpp.h;
 			name = PGEXCEPS.H;
-			path = /Volumes/Data/Development/frontierkernel/Frontier/Common/Paige/headers/PGEXCEPS.H;
-			refType = 0;
-			sourceTree = "<absolute>";
+			path = ../Common/Paige/headers/PGEXCEPS.H;
+			refType = 2;
+			sourceTree = SOURCE_ROOT;
 		};
 		6515290D072BFF7500411831 = {
 			fileRef = 6515290C072BFF7500411831;
@@ -7423,9 +7423,9 @@
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.cpp.h;
 			name = DEFPROCS.H;
-			path = /Volumes/Data/Development/frontierkernel/Frontier/Common/Paige/headers/DEFPROCS.H;
-			refType = 0;
-			sourceTree = "<absolute>";
+			path = ../Common/Paige/headers/DEFPROCS.H;
+			refType = 2;
+			sourceTree = SOURCE_ROOT;
 		};
 		6515290F072BFF7900411831 = {
 			fileRef = 6515290E072BFF7900411831;
@@ -7437,9 +7437,9 @@
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.cpp.h;
 			name = MACHINE.H;
-			path = /Volumes/Data/Development/frontierkernel/Frontier/Common/Paige/headers/MACHINE.H;
-			refType = 0;
-			sourceTree = "<absolute>";
+			path = ../Common/Paige/headers/MACHINE.H;
+			refType = 2;
+			sourceTree = SOURCE_ROOT;
 		};
 		65152911072BFF7A00411831 = {
 			fileRef = 65152910072BFF7A00411831;
@@ -7451,9 +7451,9 @@
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.h;
 			name = pgHLevel.h;
-			path = /Volumes/Data/Development/frontierkernel/Frontier/Common/Paige/headers/pgHLevel.h;
-			refType = 0;
-			sourceTree = "<absolute>";
+			path = ../Common/Paige/headers/pgHLevel.h;
+			refType = 2;
+			sourceTree = SOURCE_ROOT;
 		};
 		65152913072BFF7D00411831 = {
 			fileRef = 65152912072BFF7D00411831;
@@ -7465,9 +7465,9 @@
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.h;
 			name = wpinternal.h;
-			path = /Volumes/Data/Development/frontierkernel/Frontier/Common/headers/wpinternal.h;
-			refType = 0;
-			sourceTree = "<absolute>";
+			path = ../Common/headers/wpinternal.h;
+			refType = 2;
+			sourceTree = SOURCE_ROOT;
 		};
 		65152915072BFF8400411831 = {
 			fileRef = 65152914072BFF8400411831;
@@ -7479,9 +7479,9 @@
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.h;
 			name = WSE.h;
-			path = /Volumes/Data/Development/frontierkernel/Frontier/Common/SystemHeaders/WSE.h;
-			refType = 0;
-			sourceTree = "<absolute>";
+			path = ../Common/SystemHeaders/WSE.h;
+			refType = 2;
+			sourceTree = SOURCE_ROOT;
 		};
 		65152917072BFF8600411831 = {
 			fileRef = 65152916072BFF8600411831;
@@ -7493,9 +7493,9 @@
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.c;
 			name = chartables.c;
-			path = /Volumes/Data/Development/frontierkernel/Frontier/Common/PCRE/chartables.c;
-			refType = 0;
-			sourceTree = "<absolute>";
+			path = ../Common/PCRE/chartables.c;
+			refType = 2;
+			sourceTree = SOURCE_ROOT;
 		};
 		65152919072BFF8800411831 = {
 			fileRef = 65152918072BFF8800411831;
@@ -7507,9 +7507,9 @@
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.rez;
 			name = config.r;
-			path = /Volumes/Data/Development/frontierkernel/Frontier/Common/headers/config.r;
-			refType = 0;
-			sourceTree = "<absolute>";
+			path = ../Common/headers/config.r;
+			refType = 2;
+			sourceTree = SOURCE_ROOT;
 		};
 		6515291B072BFF8A00411831 = {
 			fileRef = 6515291A072BFF8A00411831;
@@ -7521,9 +7521,9 @@
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.h;
 			name = osincludes.h;
-			path = /Volumes/Data/Development/frontierkernel/Frontier/Common/headers/osincludes.h;
-			refType = 0;
-			sourceTree = "<absolute>";
+			path = ../Common/headers/osincludes.h;
+			refType = 2;
+			sourceTree = SOURCE_ROOT;
 		};
 		6515291F072BFF8D00411831 = {
 			fileRef = 6515291E072BFF8D00411831;
@@ -7535,9 +7535,9 @@
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.h;
 			name = macconv.h;
-			path = /Volumes/Data/Development/frontierkernel/Frontier/Common/headers/macconv.h;
-			refType = 0;
-			sourceTree = "<absolute>";
+			path = ../Common/headers/macconv.h;
+			refType = 2;
+			sourceTree = SOURCE_ROOT;
 		};
 		65152923072BFFCF00411831 = {
 			fileRef = 65152922072BFFCF00411831;
@@ -7549,9 +7549,9 @@
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.h;
 			name = stringdefs.h;
-			path = /Volumes/Data/Development/frontierkernel/Frontier/Common/headers/stringdefs.h;
-			refType = 0;
-			sourceTree = "<absolute>";
+			path = ../Common/headers/stringdefs.h;
+			refType = 2;
+			sourceTree = SOURCE_ROOT;
 		};
 		65152925072BFFD200411831 = {
 			fileRef = 65152924072BFFD200411831;
@@ -7563,9 +7563,9 @@
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.h;
 			name = Optimization.h;
-			path = /Volumes/Data/Development/frontierkernel/Frontier/Common/MoreFiles/Optimization.h;
-			refType = 0;
-			sourceTree = "<absolute>";
+			path = ../Common/MoreFiles/Optimization.h;
+			refType = 2;
+			sourceTree = SOURCE_ROOT;
 		};
 		65152927072BFFD600411831 = {
 			fileRef = 65152926072BFFD600411831;
@@ -7577,9 +7577,9 @@
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.h;
 			name = OptimizationEnd.h;
-			path = /Volumes/Data/Development/frontierkernel/Frontier/Common/MoreFiles/OptimizationEnd.h;
-			refType = 0;
-			sourceTree = "<absolute>";
+			path = ../Common/MoreFiles/OptimizationEnd.h;
+			refType = 2;
+			sourceTree = SOURCE_ROOT;
 		};
 		65152929072BFFDA00411831 = {
 			fileRef = 65152928072BFFDA00411831;
@@ -7591,9 +7591,9 @@
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.h;
 			name = appletundo.h;
-			path = /Volumes/Data/Development/frontierkernel/Frontier/FrontierSDK/Toolkits/AppletToolkit/Headers/appletundo.h;
-			refType = 0;
-			sourceTree = "<absolute>";
+			path = ../FrontierSDK/Toolkits/AppletToolkit/Headers/appletundo.h;
+			refType = 2;
+			sourceTree = SOURCE_ROOT;
 		};
 		6515292B072BFFDD00411831 = {
 			fileRef = 6515292A072BFFDC00411831;
@@ -7605,9 +7605,9 @@
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.h;
 			name = appletpalette.h;
-			path = /Volumes/Data/Development/frontierkernel/Frontier/FrontierSDK/Toolkits/AppletToolkit/Headers/appletpalette.h;
-			refType = 0;
-			sourceTree = "<absolute>";
+			path = ../FrontierSDK/Toolkits/AppletToolkit/Headers/appletpalette.h;
+			refType = 2;
+			sourceTree = SOURCE_ROOT;
 		};
 		6515292D072BFFDF00411831 = {
 			fileRef = 6515292C072BFFDF00411831;
@@ -7619,9 +7619,9 @@
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.h;
 			name = appletwires.h;
-			path = /Volumes/Data/Development/frontierkernel/Frontier/FrontierSDK/Toolkits/AppletToolkit/Headers/appletwires.h;
-			refType = 0;
-			sourceTree = "<absolute>";
+			path = ../FrontierSDK/Toolkits/AppletToolkit/Headers/appletwires.h;
+			refType = 2;
+			sourceTree = SOURCE_ROOT;
 		};
 		6515292F072BFFE100411831 = {
 			fileRef = 6515292E072BFFE100411831;
@@ -7633,9 +7633,9 @@
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.h;
 			name = appletscrollbar.h;
-			path = /Volumes/Data/Development/frontierkernel/Frontier/FrontierSDK/Toolkits/AppletToolkit/Headers/appletscrollbar.h;
-			refType = 0;
-			sourceTree = "<absolute>";
+			path = ../FrontierSDK/Toolkits/AppletToolkit/Headers/appletscrollbar.h;
+			refType = 2;
+			sourceTree = SOURCE_ROOT;
 		};
 		65152931072BFFE200411831 = {
 			fileRef = 65152930072BFFE200411831;
@@ -7647,9 +7647,9 @@
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.h;
 			name = appletpopup.h;
-			path = /Volumes/Data/Development/frontierkernel/Frontier/FrontierSDK/Toolkits/AppletToolkit/Headers/appletpopup.h;
-			refType = 0;
-			sourceTree = "<absolute>";
+			path = ../FrontierSDK/Toolkits/AppletToolkit/Headers/appletpopup.h;
+			refType = 2;
+			sourceTree = SOURCE_ROOT;
 		};
 		65152933072BFFE400411831 = {
 			fileRef = 65152932072BFFE400411831;
@@ -7661,9 +7661,9 @@
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.h;
 			name = iowavalidate.h;
-			path = /Volumes/Data/Development/frontierkernel/Frontier/Common/IowaRuntime/Headers/iowavalidate.h;
-			refType = 0;
-			sourceTree = "<absolute>";
+			path = ../Common/IowaRuntime/Headers/iowavalidate.h;
+			refType = 2;
+			sourceTree = SOURCE_ROOT;
 		};
 		65152935072BFFE600411831 = {
 			fileRef = 65152934072BFFE600411831;
@@ -7675,9 +7675,9 @@
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.h;
 			name = iowa.h;
-			path = /Volumes/Data/Development/frontierkernel/Frontier/Common/IowaRuntime/Headers/iowa.h;
-			refType = 0;
-			sourceTree = "<absolute>";
+			path = ../Common/IowaRuntime/Headers/iowa.h;
+			refType = 2;
+			sourceTree = SOURCE_ROOT;
 		};
 		65152937072BFFE700411831 = {
 			fileRef = 65152936072BFFE700411831;
@@ -7689,9 +7689,9 @@
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.h;
 			name = iowaprefs.h;
-			path = /Volumes/Data/Development/frontierkernel/Frontier/Common/IowaRuntime/Headers/iowaprefs.h;
-			refType = 0;
-			sourceTree = "<absolute>";
+			path = ../Common/IowaRuntime/Headers/iowaprefs.h;
+			refType = 2;
+			sourceTree = SOURCE_ROOT;
 		};
 		65152939072BFFE900411831 = {
 			fileRef = 65152938072BFFE900411831;
@@ -7703,9 +7703,9 @@
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.h;
 			name = opscreenmap.h;
-			path = /Volumes/Data/Development/frontierkernel/Frontier/Common/headers/opscreenmap.h;
-			refType = 0;
-			sourceTree = "<absolute>";
+			path = ../Common/headers/opscreenmap.h;
+			refType = 2;
+			sourceTree = SOURCE_ROOT;
 		};
 		6515293B072BFFEB00411831 = {
 			fileRef = 6515293A072BFFEB00411831;
@@ -7717,9 +7717,9 @@
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.h;
 			name = pgMemMgr.h;
-			path = /Volumes/Data/Development/frontierkernel/Frontier/Common/Paige/headers/pgMemMgr.h;
-			refType = 0;
-			sourceTree = "<absolute>";
+			path = ../Common/Paige/headers/pgMemMgr.h;
+			refType = 2;
+			sourceTree = SOURCE_ROOT;
 		};
 		6515293D072BFFEE00411831 = {
 			fileRef = 6515293C072BFFEE00411831;
@@ -7731,9 +7731,9 @@
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.h;
 			name = Userdefs.h;
-			path = /Volumes/Data/Development/frontierkernel/Frontier/Common/Paige/headers/Userdefs.h;
-			refType = 0;
-			sourceTree = "<absolute>";
+			path = ../Common/Paige/headers/Userdefs.h;
+			refType = 2;
+			sourceTree = SOURCE_ROOT;
 		};
 		6515293F072BFFF400411831 = {
 			fileRef = 6515293E072BFFF400411831;
@@ -7745,9 +7745,9 @@
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.cpp.h;
 			name = CPUDEFS.H;
-			path = /Volumes/Data/Development/frontierkernel/Frontier/Common/Paige/headers/CPUDEFS.H;
-			refType = 0;
-			sourceTree = "<absolute>";
+			path = ../Common/Paige/headers/CPUDEFS.H;
+			refType = 2;
+			sourceTree = SOURCE_ROOT;
 		};
 		65152941072BFFF600411831 = {
 			fileRef = 65152940072BFFF600411831;
@@ -7759,9 +7759,9 @@
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.h;
 			name = pgTxr.h;
-			path = /Volumes/Data/Development/frontierkernel/Frontier/Common/Paige/headers/pgTxr.h;
-			refType = 0;
-			sourceTree = "<absolute>";
+			path = ../Common/Paige/headers/pgTxr.h;
+			refType = 2;
+			sourceTree = SOURCE_ROOT;
 		};
 		65152943072BFFFC00411831 = {
 			fileRef = 65152942072BFFFC00411831;
@@ -7773,9 +7773,9 @@
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.h;
 			name = FDllCall.h;
-			path = /Volumes/Data/Development/frontierkernel/Frontier/Common/headers/FDllCall.h;
-			refType = 0;
-			sourceTree = "<absolute>";
+			path = ../Common/headers/FDllCall.h;
+			refType = 2;
+			sourceTree = SOURCE_ROOT;
 		};
 		65152945072C000000411831 = {
 			fileRef = 65152944072C000000411831;
@@ -7787,9 +7787,9 @@
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.h;
 			name = pcre_config.h;
-			path = /Volumes/Data/Development/frontierkernel/Frontier/Common/PCRE/pcre_config.h;
-			refType = 0;
-			sourceTree = "<absolute>";
+			path = ../Common/PCRE/pcre_config.h;
+			refType = 2;
+			sourceTree = SOURCE_ROOT;
 		};
 		65152947072C000100411831 = {
 			fileRef = 65152946072C000100411831;
@@ -7801,9 +7801,9 @@
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.cpp.h;
 			name = PGSETJMP.H;
-			path = /Volumes/Data/Development/frontierkernel/Frontier/Common/Paige/headers/PGSETJMP.H;
-			refType = 0;
-			sourceTree = "<absolute>";
+			path = ../Common/Paige/headers/PGSETJMP.H;
+			refType = 2;
+			sourceTree = SOURCE_ROOT;
 		};
 		65152949072C000300411831 = {
 			fileRef = 65152948072C000300411831;
@@ -7843,9 +7843,9 @@
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.h;
 			name = pgMTraps.h;
-			path = /Volumes/Data/Development/frontierkernel/Frontier/Common/Paige/headers/pgMTraps.h;
-			refType = 0;
-			sourceTree = "<absolute>";
+			path = ../Common/Paige/headers/pgMTraps.h;
+			refType = 2;
+			sourceTree = SOURCE_ROOT;
 		};
 		6515294F072C000D00411831 = {
 			fileRef = 6515294E072C000D00411831;
@@ -7857,9 +7857,9 @@
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.cpp.h;
 			name = PGERRORS.H;
-			path = /Volumes/Data/Development/frontierkernel/Frontier/Common/Paige/headers/PGERRORS.H;
-			refType = 0;
-			sourceTree = "<absolute>";
+			path = ../Common/Paige/headers/PGERRORS.H;
+			refType = 2;
+			sourceTree = SOURCE_ROOT;
 		};
 		65152951072C001700411831 = {
 			fileRef = 65152950072C001700411831;
@@ -8095,9 +8095,9 @@
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.rez;
 			name = frontier.r;
-			path = /Volumes/Data/Development/frontierkernel/Frontier/Common/headers/frontier.r;
-			refType = 0;
-			sourceTree = "<absolute>";
+			path = ../Common/headers/frontier.r;
+			refType = 2;
+			sourceTree = SOURCE_ROOT;
 		};
 		65BBB662072E563B008E2F34 = {
 			fileRef = 65BBB661072E563B008E2F34;
@@ -8110,9 +8110,9 @@
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.h;
 			name = frontierdefs.h;
-			path = /Volumes/Data/Development/frontierkernel/Frontier/Common/headers/frontierdefs.h;
-			refType = 0;
-			sourceTree = "<absolute>";
+			path = ../Common/headers/frontierdefs.h;
+			refType = 2;
+			sourceTree = SOURCE_ROOT;
 		};
 		65BBB664072E5643008E2F34 = {
 			fileRef = 65BBB663072E5643008E2F34;
