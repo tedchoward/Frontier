@@ -7,6 +7,7 @@
 	objects = {
 		6515255C072BFC6500411831 = {
 			children = (
+				BB3B83610730603C0049D0C1,
 				6515256C072BFC6700411831,
 				65152571072BFC6700411831,
 				6515257E072BFC6700411831,
@@ -557,6 +558,7 @@
 		65152565072BFC6500411831 = {
 			buildActionMask = 2147483647;
 			files = (
+				BB3B83630730604B0049D0C1,
 			);
 			isa = PBXResourcesBuildPhase;
 			runOnlyForDeploymentPostprocessing = 0;
@@ -625,6 +627,7 @@
 				GCC_WARN_UNUSED_PARAMETER = NO;
 				GCC_WARN_UNUSED_VALUE = NO;
 				GCC_WARN_UNUSED_VARIABLE = NO;
+				INFOPLIST_FILE = Info.plist;
 				LIBRARY_SEARCH_PATHS = ../Common/Paige;
 				OTHER_CFLAGS = "-fno-inline -malign-mac68k ";
 				OTHER_LDFLAGS = "-multiply_defined warning";
@@ -8166,6 +8169,39 @@
 		};
 		65D516AB072CED430097D18E = {
 			fileRef = 65D516AA072CED430097D18E;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+//650
+//651
+//652
+//653
+//654
+//BB0
+//BB1
+//BB2
+//BB3
+//BB4
+		BB3B83610730603C0049D0C1 = {
+			children = (
+				BB3B83620730604B0049D0C1,
+			);
+			isa = PBXGroup;
+			name = Resources;
+			refType = 4;
+			sourceTree = "<group>";
+		};
+		BB3B83620730604B0049D0C1 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			lastKnownFileType = text.xml;
+			path = Info.plist;
+			refType = 2;
+			sourceTree = SOURCE_ROOT;
+		};
+		BB3B83630730604B0049D0C1 = {
+			fileRef = BB3B83620730604B0049D0C1;
 			isa = PBXBuildFile;
 			settings = {
 			};
