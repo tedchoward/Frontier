@@ -28,6 +28,8 @@
 
 #define PCRE_STATIC
 
+#undef abs	/* 2004-10-17 AR: might already be defined by standard.h, to be redefined in stdlib.h */
+
 #include "pcre.h"
 
 
