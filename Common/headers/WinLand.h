@@ -64,13 +64,12 @@
 #define ID_SCRIPT_ICON					10
 #define ID_TABLE_ICON					11
 #define ID_WP_ICON						12
+#define ID_NOTE_ICON					13
 #define ID_DESKTOPSCRIPT_ICON			14
 
 #ifdef PIKE /*7.0b24 PBS*/
 #define ID_OPML_ICON					15
 #endif
-
-#define IDNOTE                          13
 
 #define ID_FRONTIERTRAY_ICON			16
 
