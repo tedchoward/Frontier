@@ -276,6 +276,10 @@ extern boolean newfolder (const tyfilespec *);
 
 extern boolean newfile (const tyfilespec *, OSType, OSType);
 
+extern void fileinit (void);
+
+extern void fileshutdown (void);
+
 extern boolean fileopenorcreate (const tyfilespec *, OSType, OSType, hdlfilenum *);
 
 extern boolean opennewfile (const tyfilespec *, OSType, OSType, hdlfilenum *);

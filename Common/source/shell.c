@@ -201,9 +201,9 @@ void shellinternalerrormessage (short iderror) {
 
 #endif
 
+
 extern void shellshutdownscroll ();
 
-extern void fileshutdown ();
 
 boolean shellshutdown (void) {
 	
@@ -1161,8 +1161,6 @@ static boolean showerrorandexit (short iderror) {
 
 
 extern void shellinitscroll ();
-
-extern void fileinit ();
 
 
 boolean shellinit (void) {
