@@ -502,7 +502,6 @@
 				6515276D072BFC6800411831,
 				6515276E072BFC6800411831,
 				6515276F072BFC6800411831,
-				65152770072BFC6800411831,
 				65152771072BFC6800411831,
 				65152772072BFC6800411831,
 				65152773072BFC6800411831,
@@ -2898,7 +2897,6 @@
 			children = (
 				65152667072BFC6800411831,
 				65152668072BFC6800411831,
-				65152669072BFC6800411831,
 				6515266A072BFC6800411831,
 				6515266B072BFC6800411831,
 			);
@@ -2920,14 +2918,6 @@
 			lastKnownFileType = sourcecode.c.c;
 			name = osadroplet.c;
 			path = ../Common/source/osadroplet.c;
-			refType = 2;
-			sourceTree = SOURCE_ROOT;
-		};
-		65152669072BFC6800411831 = {
-			isa = PBXFileReference;
-			lastKnownFileType = sourcecode.c.c;
-			name = osamenus.c;
-			path = ../Common/source/osamenus.c;
 			refType = 2;
 			sourceTree = SOURCE_ROOT;
 		};
@@ -4624,12 +4614,6 @@
 		};
 		6515276F072BFC6800411831 = {
 			fileRef = 65152668072BFC6800411831;
-			isa = PBXBuildFile;
-			settings = {
-			};
-		};
-		65152770072BFC6800411831 = {
-			fileRef = 65152669072BFC6800411831;
 			isa = PBXBuildFile;
 			settings = {
 			};
