@@ -1573,7 +1573,7 @@ static boolean stringfunctionvalue (short token, hdltreenode hparam1, tyvaluerec
 			Handle hstring;
 			Handle x;
 			long ix;
-			long hlen, newlen;
+			long newlen;
 			
 			
 			if (!getpositivelongvalue (hp1, 2, &ix))
@@ -1590,8 +1590,7 @@ static boolean stringfunctionvalue (short token, hdltreenode hparam1, tyvaluerec
 			if (ix > 0)
 				--ix; /*convert to zero-base*/
 			
-			hlen = gethandlesize (hstring);
-			newlen = min (newlen, hlen - ix);
+			newlen = min (newlen, gethandlesize (hstring) - ix);
 			
 			
 			if (newlen > 0) {
