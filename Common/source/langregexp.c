@@ -3218,7 +3218,7 @@ static boolean regexpgrepverb (hdltreenode hp1, tyvaluerecord *v, bigstring bser
 		info.hovec = hovec;
 		info.hresult = hresult;
 		info.flincludematches = flincludematches;
-		info.bserrorptr = (StringPtr) &bserror;
+		info.bserrorptr = (ptrstring) &bserror;
 		
 		flsuccess = langvisitlistvalues (&vsubject, &regexpgreplistitemscallback, (ptrvoid) &info);
 	
