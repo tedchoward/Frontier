@@ -1,6 +1,6 @@
 *** UserLand Frontier(tm)  --  Version 10.0 Open Source Release
 
-Last updated 25 Oct 2004 by Terry Teague
+Last updated 02 Jan 2005 by Terry Teague
 
 Since the original v10.0a1 Open Source release of Frontier, additional work
 has been done to allow the building of Frontier using other development
@@ -9,8 +9,8 @@ environments. The following sections describe these environments.
 
 *** Supported Development Environments
 
-A. Metrowerks CodeWarrior Pro v8.3 for Mac or Windows
-=====================================================
+A. Metrowerks CodeWarrior Pro for Mac or Windows
+================================================
    
 CVS module, build directory : build_CWPro8
 
@@ -26,7 +26,7 @@ open it with CodeWarrior.
 
 2. Select a target from the popup menu at the top of the project window.
 It is a good idea to start with the Debug build for your current
-platform, e.g. Frontier OSX Debug if you are running CodeWarrior on Mac
+platform, e.g. Frontier OSX CFM Debug if you are running CodeWarrior on Mac
 OS X.
 
 3. Select the Make command from the Project menu.
@@ -60,10 +60,13 @@ redeclared identifiers in Microsoft header files, some missing function
 prototypes, and some unused variables. You can ignore these warnings.
 
 
-B. Microsoft Visual Studio C++ v6 for Windows
-=============================================
+B. Microsoft Visual Studio C++ for Windows
+==========================================
    
 CVS module, build directory : build_VC6
+
+Building the Frontier kernel currently requires Microsoft Visual Studio
+C++ v6. Other versions might work, too, but have not been tested.
 
 Getting Started
 ---------------
@@ -78,10 +81,13 @@ Notes
 Needs more accurate build instructions.
 
 
-C. Apple Mac OS X Developer Tools (Xcode v1.5) for Mac OS X
-===========================================================
+C. Apple Xcode Tools for Mac OS X
+=================================
    
 CVS module, build directory : build_XCode
+
+Building the Frontier kernel currently requires Xcode v1.2 or v1.5.
+Other versions might work, too, but have not been tested.
 
 Getting Started
 ---------------
@@ -93,8 +99,51 @@ Getting Started
 Notes
 -----
 
-The support for Xcode is preliminary, and currently the code compiles
-with many warnings, and fails while linking.
+The support for Xcode is preliminary, and currently builds a Debug
+(Development build style) version by default.
+
+When you build, expect Xcode to report a couple of compiler warnings.
+You can ignore these warnings.
+
+
+D. GNU Tools (initially for Mac OS X only)
+==========================================
+   
+CVS module, build directory : build_GNU
+
+Building the Frontier kernel currently requires the Mac OS X Developer
+Tools to be installed on Mac OS X. Older tools using Project Builder, or
+newer tools using Xcode should work, using 'gcc' v3.3. Other versions of
+'gcc' might work, too, but have not been tested (on Mac OS X).
+
+Getting Started
+---------------
+
+In a shell, do the following :
+
+1. Change directory to the "build_GNU" directory of the Frontier project.
+
+e.g.
+
+	cd build_GNU
+
+2. Type :
+
+	make
+
+Notes
+-----
+
+The support for the GNU tools is very preliminary, and currently builds a non-Debug
+version for Mac OS X (only) by default. No GUI based tools such as the Project Builder or
+Xcode IDE are required.
+
+When you build, expect the GNU tools to report some compiler warnings.
+You can ignore these warnings.
+
+Support for building the Windows version using Cygwin/MinGW or other GNU based
+development environments on Windows systems, and support for building the Windows
+version using WINE on non-Windows systems, is being developed.
 
 
 *** Reporting Problems
@@ -109,6 +158,6 @@ Report problems and ask questions on the Frontier Kernel mailing list:
 This source code download does not come with a Frontier installation
 for testing the applications compiled from the code. For this purpose,
 minimal installations for each platform are available for donwload
-from the Frontier Kernel website at:
+from the Frontier Kernel SourceForge project website at:
 
-	http://kernel.scripting.com/
+	http://frontierkernel.sourceforge.net/
