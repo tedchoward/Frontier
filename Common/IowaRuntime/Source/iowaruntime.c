@@ -31,7 +31,7 @@
 #include "shelltypes.h"
 #include <appletdefs.h>
 #include <iac.h>
-#include <SetupA5.h>
+#include <SetUpA5.h>
 #include <appletquickdraw.h>
 #include <appletmouse.h>
 #include <appletfrontier.h>
