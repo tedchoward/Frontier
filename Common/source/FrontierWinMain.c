@@ -1341,7 +1341,7 @@ BOOL InitializeApplication() {
 		return (FALSE);
 
     /* Register the MDI child classes */ /*7.0fc1 PBS: use Frontier icon*/
-	if (!registerChildWindowClass (/*IDNOTE*/ ID_FRONTIER_ICON, szChild1)) /*Class for generic windows (About, QuickScript).*/
+	if (!registerChildWindowClass (/*ID_NOTE_ICON*/ ID_FRONTIER_ICON, szChild1)) /*Class for generic windows (About, QuickScript).*/
 		return (false);
 
 	if (!registerChildWindowClass (ID_OP_ICON, szChildFTop))
