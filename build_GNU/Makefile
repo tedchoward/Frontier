@@ -397,7 +397,9 @@ INCLUDE_FILES = \
 	$(SRCDIR)/Common/Paige/headers/PGSETJMP.h \
 	$(SRCDIR)/Common/Paige/headers/pgMTraps.h \
 	$(SRCDIR)/Common/Paige/headers/PGERRORS.h \
-	$(SRCDIR)/Common/headers/frontierdefs.h
+	$(SRCDIR)/Common/headers/frontierdefs.h \
+	$(SRCDIR)/Common/headers/langmath.h \
+	$(SRCDIR)/Common/headers/FastTimes.h
 
 #================================================================================================
 # Sources and Objects Definitions
@@ -619,6 +621,7 @@ MAC_TOOL_SRC = \
 	$(SRCDIR)/Common/source/aeutils.c \
 	$(SRCDIR)/Common/source/bitmaps.c \
 	$(SRCDIR)/Common/source/dialogs.c \
+	$(SRCDIR)/Common/source/FastTimes.c \
 	$(SRCDIR)/Common/source/mac.c \
 	$(SRCDIR)/Common/source/player.c \
 	$(SRCDIR)/Common/source/services.c \
@@ -629,6 +632,7 @@ MAC_TOOL_OBJS = \
 	$(OBJDIR)/Common/source/aeutils.o \
 	$(OBJDIR)/Common/source/bitmaps.o \
 	$(OBJDIR)/Common/source/dialogs.o \
+	$(OBJDIR)/Common/source/FastTimes.o \
 	$(OBJDIR)/Common/source/mac.o \
 	$(OBJDIR)/Common/source/player.o \
 	$(OBJDIR)/Common/source/services.o \
@@ -801,6 +805,7 @@ LANG_SRC = \
 	$(SRCDIR)/Common/source/langhash.c \
 	$(SRCDIR)/Common/source/langhtml.c \
 	$(SRCDIR)/Common/source/langlist.c \
+	$(SRCDIR)/Common/source/langmath.c \
 	$(SRCDIR)/Common/source/langops.c \
 	$(SRCDIR)/Common/source/langpack.c \
 	$(SRCDIR)/Common/source/langparser.c \
@@ -829,6 +834,7 @@ LANG_OBJS = \
 	$(OBJDIR)/Common/source/langhash.o \
 	$(OBJDIR)/Common/source/langhtml.o \
 	$(OBJDIR)/Common/source/langlist.o \
+	$(OBJDIR)/Common/source/langmath.o \
 	$(OBJDIR)/Common/source/langops.o \
 	$(OBJDIR)/Common/source/langpack.o \
 	$(OBJDIR)/Common/source/langparser.o \
