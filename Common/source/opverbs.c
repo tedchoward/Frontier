@@ -2090,21 +2090,42 @@ static boolean opstartprofileverb (hdltreenode hparam1, tyvaluerecord *v) {
 	} /*opstartprofileverb*/
 
 
+static boolean convertprofiletoticksvisit (hdlhashnode hnode, ptrvoid refcon) {
+	tyvaluerecord * val = &(**hnode).val;
+	
+	(*val).data.longvalue = ( ( (*val).data.longvalue * 3 ) / 50 );
+	
+	return (true);
+}
+
 static boolean opstopprofileverb (hdltreenode hp1, tyvaluerecord *v) {
 	
 	/*
 	5.0.2b15 dmb: turn off profiling. If the user passes an address (not nil),
 	we assign the profiledata table and remove it from the process.
+	
+	2005-01-14 SMD: results are stored in milliseconds, but the return values
+	   have been in ticks for a long time. So, added an optional param,
+	   flUseMilliseconds. Default is false. If true, we convert the milliseconds
+	   to ticks.
 	*/
 	
 	hdlprocessrecord hp = currentprocess;
 	hdlhashtable ht;
 	bigstring bs;
 	tyvaluerecord val;
+	short ctconsumed = 1;
+	short ctpositional = 1;
+	tyvaluerecord vflusemilliseconds; /* for optional flUseMilliseconds param */
+	
+	if (!getvarparam (hp1, 1, &ht, bs))
+		return (false);
+	
+	setbooleanvalue (false, &vflusemilliseconds);
 	
 	flnextparamislast = true;
 	
-	if (!getvarparam (hp1, 1, &ht, bs))
+	if (!getoptionalparamvalue (hp1, &ctconsumed, &ctpositional, "\x11" "flUseMilliseconds", &vflusemilliseconds))
 		return (false);
 	
 	if (!processstopprofiling ())
@@ -2115,15 +2136,23 @@ static boolean opstopprofileverb (hdltreenode hp1, tyvaluerecord *v) {
 		if ((**hp).hprofiledata == nil)
 			setnilvalue (&val);
 		else
+		{
+			if (! vflusemilliseconds.data.flvalue) /* convert values to ticks */
+			{
+				if (!hashtablevisit ((hdlhashtable) (**(**hp).hprofiledata).variabledata, &convertprofiletoticksvisit, (ptrvoid) nil))
+					return (false);
+			}
+			
 			setexternalvalue ((Handle) (**hp).hprofiledata, &val);
+		}
 		
 		hashtableassign (ht, bs, val);
 		
 		(**hp).hprofiledata = nil;
-		}
+	}
 	
 	return (setbooleanvalue (true, v));
-	} /*opstopprofileverb*/
+} /*opstopprofileverb*/
 
 
 static boolean opverbrejectmenubar (bigstring bserror) {
