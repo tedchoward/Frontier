@@ -370,7 +370,7 @@ boolean filewritehandle (hdlfilenum fnum, Handle h) {
 /*
 static boolean filereadhandlebytes (short fnum, long ctbytes, Handle *hreturned) {
 	
-	/*
+	/%
 	6/x/91 mao
 	this one is parallel to filewritehandle
 	%/
@@ -380,7 +380,7 @@ static boolean filereadhandlebytes (short fnum, long ctbytes, Handle *hreturned)
 	if (!newclearhandle (ctbytes, hreturned))
 		return (false);
 		
-	h = *hreturned; /*copy into register%/
+	h = *hreturned; /%copy into register%/
 		
 	if (oserror (fileread (fnum, ctbytes, *h))) {
 		
@@ -390,7 +390,8 @@ static boolean filereadhandlebytes (short fnum, long ctbytes, Handle *hreturned)
 		}
 		
 	return (true);
-	} /*filereadhandlebytes*/	
+	} /%filereadhandlebytes%/
+*/
 
 
 boolean filereadhandle (hdlfilenum fnum, Handle *hreturned) {
@@ -431,21 +432,30 @@ static pascal void iocompletion (ParmBlkPtr pb) {
 	DisposePtr ((Ptr) pb);
 	} /*iocompletion*/
 
-#if TARGET_RT_MAC_CFM
-	#if !TARGET_API_MAC_CARBON
-		static RoutineDescriptor iocompletionDesc = BUILD_ROUTINE_DESCRIPTOR (uppIOCompletionProcInfo, iocompletion);
-		#define iocompletionUPP (&iocompletionDesc)
-	#else
+
+#if TARGET_RT_MAC_CFM || TARGET_RT_MAC_MACHO
+
+	#if TARGET_API_MAC_CARBON
+
 		//looks like we need some kind of file UPP
 		//do we need to create a UPP, yes we do.
 		IOCompletionUPP	iocompletionDesc = nil;
-		#define iocompletionUPP (iocompletionDesc)
-	#endif
-#endif /*TARGET_RT_MAC_CFM*/
 
-#if TARGET_RT_MAC_MACHO
+		#define iocompletionUPP (iocompletionDesc)
+
+	#else
+
+		static RoutineDescriptor iocompletionDesc = BUILD_ROUTINE_DESCRIPTOR (uppIOCompletionProcInfo, iocompletion);
+
+		#define iocompletionUPP (&iocompletionDesc)
+
+	#endif
+
+#else
+
 	static IOCompletionUPP iocompletionUPP = &iocompletion;
-#endif /*TARGET_RT_MAC_MACHO*/
+
+#endif
 
 #endif //MACVERSION
 
@@ -477,24 +487,22 @@ boolean flushvolumechanges (const tyfilespec *fs, hdlfilenum fnum) {
 
 //Code change by Timothy Paustian Wednesday, July 26, 2000 10:52:49 PM
 //new routine to create UPPS for the async file saves.
-
-extern void fileinit ();
-
-void fileinit()
-{
-	#if TARGET_API_MAC_CARBON && TARGET_RT_MAC_CFM
+void fileinit (void) {
+	#if TARGET_API_MAC_CARBON
 	if(iocompletionDesc == nil)
 		iocompletionDesc = NewIOCompletionUPP(iocompletion);
 	#endif
-}
-extern void fileshutdown ();
-void fileshutdown()
-{
-	#if TARGET_API_MAC_CARBON  && TARGET_RT_MAC_CFM
+	} /*fileinit*/
+
+
+void fileshutdown(void) {
+
+	#if TARGET_API_MAC_CARBON
 	if(iocompletionDesc != nil)
 		DisposeIOCompletionUPP(iocompletionDesc);
 	#endif
-}
+	} /*fileshutdown*/
+
 
 static boolean filecreateandopen (const tyfilespec *fs, OSType creator, OSType filetype, hdlfilenum *fnum) {
 #ifdef MACVERSION	
