@@ -144,7 +144,7 @@ boolean claygetfilespec (hdlheadrecord hnode, tybrowserspec *fs) {
 		}
 	
 	/*
-	if (info.flvolume) { /*special case%/
+	if (info.flvolume) { /%special case%/
 		
 		(*fs).vRefNum = info.vnum;
 		
@@ -211,6 +211,7 @@ boolean browserchecklinelength (short newlen, bigstring bs) {
 	return (false);
 	} /*browserchecklinelength*/
 
+#if 0
 
 static boolean browserupdatefileinfo (hdlheadrecord hnode) {
 
@@ -232,6 +233,8 @@ static boolean browserupdatefileinfo (hdlheadrecord hnode) {
 	
 	return (true);
 	} /*browserupdatefileinfo*/
+
+#endif
 
 
 boolean browserfileadded (hdlheadrecord hnodeparent, const tybrowserspec *fsnew, hdlheadrecord *hnew) {	
@@ -282,6 +285,8 @@ boolean browserfileadded (hdlheadrecord hnodeparent, const tybrowserspec *fsnew,
 	} /*browserfileadded*/
 
 
+#if 0
+
 static boolean browsernodeislocked (hdlheadrecord hnode) {
 	
 	tybrowserinfo info;
@@ -310,6 +315,8 @@ static boolean browserpostpaste (hdlheadrecord hfirstpasted) {
 	
 	return (true);
 	} /*browserpostpaste*/
+
+#endif
 
 
 static boolean foldercontainsfile (tybrowserspec *fsfolder, tybrowserspec *fsfile) {
@@ -458,7 +465,7 @@ static boolean browsercreatefile (hdlheadrecord hnode, tybrowserspec *fsfolder) 
 	
 	if (claycreatefile (&fsdest)) {
 	
-	/*update the node's refcon to reflect the new file's position & attributes* /
+	/%update the node's refcon to reflect the new file's position & attributes%/
 		
 		tybrowserinfo browserinfo;
 		
@@ -468,8 +475,8 @@ static boolean browsercreatefile (hdlheadrecord hnode, tybrowserspec *fsfolder) 
 		}
 	
 	return (true);
-	} /*browsercreatefile*/
-
+	} /%browsercreatefile%/
+*/
 
 static boolean browsermoveto (hdlheadrecord hnode, tybrowserspec *fsfolder) {
 	
@@ -1108,6 +1115,8 @@ boolean browsercommitchanges (void) {
 	} /*browsercommitchanges*/
 
 
+#if 0
+
 static boolean xxxbrowserexportscrap (hdloutlinerecord hscrap) {
 	
 	hdlheadrecord nomad = (**hscrap).hsummit;
@@ -1126,6 +1135,8 @@ static boolean xxxbrowserexportscrap (hdloutlinerecord hscrap) {
 			return (true);
 		} /*while*/
 	} /*browserexportscrap*/
+
+#endif
 
 
 static void tabledisposescrap (hdloutlinerecord houtline) {
@@ -1204,7 +1215,9 @@ boolean browsersetscrap (hdloutlinerecord houtline) {
 			break;
 		} /*while*/
 	
-	return (shellsetscrap ((Handle) houtline, hashscraptype, &tabledisposescrap, &tableexportscrap));
+	return (shellsetscrap ((Handle) houtline, hashscraptype,
+				(shelldisposescrapcallback) &tabledisposescrap,
+				(shellexportscrapcallback) &tableexportscrap));
 	} /*browsersetscrap*/
 
 

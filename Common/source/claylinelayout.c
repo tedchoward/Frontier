@@ -97,6 +97,7 @@ typedef struct tydisklinelayout {
 	memtodiskshort (rgb.green); \
 	memtodiskshort (rgb.blue); } while (0)
 
+#if 0
 
 static boolean midcolorof (Rect r, RGBColor *rgb1, RGBColor *rgb2, RGBColor *rgbmid) {
 	
@@ -117,7 +118,19 @@ static boolean midcolorof (Rect r, RGBColor *rgb1, RGBColor *rgb2, RGBColor *rgb
 
 		return (true);
 	#endif
-	} /*darkcolorof*/
+	} /*midcolorof*/
+
+
+static void lightcolorof (RGBColor *rgb) {
+	
+	(*rgb).red += (65535 - (*rgb).red) / 3;
+	
+	(*rgb).green += (65535 - (*rgb).green) / 3;
+	
+	(*rgb).blue += (65535 - (*rgb).blue) / 3;
+	} /*lightcolorof*/
+
+#endif
 
 
 static void darkcolorof (RGBColor *rgb) {
@@ -130,16 +143,6 @@ static void darkcolorof (RGBColor *rgb) {
 	} /*darkcolorof*/
 
 
-static void lightcolorof (RGBColor *rgb) {
-	
-	(*rgb).red += (65535 - (*rgb).red) / 3;
-	
-	(*rgb).green += (65535 - (*rgb).green) / 3;
-	
-	(*rgb).blue += (65535 - (*rgb).blue) / 3;
-	} /*lightcolorof*/
-
-
 /*static boolean claypushtextstyle (diskfontstring fontname, short fontsize) {
 	
 	bigstring bs;
@@ -150,7 +153,8 @@ static void lightcolorof (RGBColor *rgb) {
 	fontgetnumber (bs, &fontnum);
 	
 	return (pushstyle (fontnum, fontsize, 0));
-	} /*claypushtextstyle*/
+	} /%claypushtextstyle%/
+*/
 
 
 void claysmashoutlinefields (hdlwindowinfo appwindow, hdltableformats hf) {
@@ -546,6 +550,8 @@ static void getfattimestring (long modtime, bigstring bs) {
 	} /*getfattimestring*/
 	
 	
+#if 0
+
 static void getfatsizestring (tybrowserinfo *browserinfo, bigstring bs) {
 	
 	setemptystring (bs);
@@ -566,6 +572,8 @@ static void getfatsizestring (tybrowserinfo *browserinfo, bigstring bs) {
 	
 	getsizestring ((*browserinfo).filesize, bs);
 	} /*getfatsizestring*/
+
+#endif
 	
 
 static Rect rfilename, rframe, rdate;
@@ -597,9 +605,9 @@ boolean claypredrawline (hdlheadrecord hnode, const Rect *linerect, boolean flse
 			}
 		
 		/*
-		/*an experiment -- try to give the files "depth" or 3D indentation%/ {
+		/%an experiment -- try to give the files "depth" or 3D indentation%/ {
 			
-			/*top and left edges are framed in dark color%/ {
+			/%top and left edges are framed in dark color%/ {
 				
 				RGBColor rgb = (**hf).linelayout.backcolor;
 				
@@ -628,7 +636,7 @@ boolean claypredrawline (hdlheadrecord hnode, const Rect *linerect, boolean flse
 				popforecolor ();
 				}
 				
-			/*bottom and right edges are framed in light color%/ {
+			/%bottom and right edges are framed in light color%/ {
 				
 				RGBColor rgb = (**hf).linelayout.backcolor;
 				
@@ -786,7 +794,6 @@ boolean claydrawline (hdlheadrecord hnode, const Rect *textrect, boolean flselec
 	
 	hdltableformats hf = tableformatsdata;
 	RGBColor rgb = (**hf).linelayout.filenamecolor;
-	hdloutlinerecord ho = outlinedata;
 	
 	claypushnodestyle (hnode);
 	

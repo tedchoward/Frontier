@@ -372,7 +372,7 @@ static boolean filegetprefsspec (bigstring fname, tybrowserspec *fsprefs) {
 
 #endif
 
-#if odbbrowser
+#if 0 //odbbrowser
 
 static boolean xxxfilegetprefsspec (bigstring fname, tybrowserspec *fsprefs) {
 	
@@ -591,7 +591,7 @@ typedef struct tycallbackinfo {
 	} tycallbackinfo;
 
 
-static boolean clayfolderloopvisit (bigstring bsname, hdlhashnode hnode, tyvaluerecord val, tycallbackinfo *cbinfo) {
+static boolean clayfolderloopvisit (bigstring bsname, hdlhashnode hnode, tyvaluerecord val, ptrvoid refcon) {
 	
 	/*
 	5.0a3 dmb: set flmayaffectdisplay for the parent table
@@ -601,6 +601,7 @@ static boolean clayfolderloopvisit (bigstring bsname, hdlhashnode hnode, tyvalue
 	
 	tybrowserspec fs;
 	tybrowserinfo info;
+	tycallbackinfo *cbinfo = (tycallbackinfo *) refcon;
 	
 	fs.vRefNum = (*cbinfo).hdatabase;
 	
@@ -818,6 +819,8 @@ static boolean expanddiskvisit (bigstring bsitem, tyfileinfo *info, long refcon)
 
 #endif
 
+#if 0
+
 static boolean xxxclayinitializeoutline (void) {
 
 
@@ -860,6 +863,8 @@ static boolean xxxclayinitializeoutline (void) {
 		
 	#endif
 	} /*clayinitializeoutline*/
+
+#endif
 
 
 #if filebrowser

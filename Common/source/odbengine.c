@@ -294,43 +294,44 @@ static boolean loadversion2cancoonfile (dbaddress adr, hdlcancoonrecord hcancoon
 	} /*loadversion2cancoonfile*/
 
 
-static short tablecomparenames (hdlhashtable ht, hdlhashnode hnode1, hdlhashnode hnode2) {
-
-	bigstring bs1, bs2;
-	
-	gethashkey (hnode1, bs1);
-
-	gethashkey (hnode2, bs2);
-	
-	alllower (bs1); /*comparison is unicase*/
-	
-	alllower (bs2);
-	
-	return (comparestrings (bs1, bs2));
-	} /*tablecomparenames*/
-
-
-static boolean odbtabledirty (hdlhashtable htable, const bigstring bsname) {
-	
-//	hdltablediskrecord hf = (hdltablediskrecord) (**htable).hashtableformats;
-	
-//	if (hf != nil)
-	(**htable).timelastsave = timenow (); /*modification time until saved*/
-	
-	return (true);
-	} /*tabledirty*/
-
-static boolean odbsymbolchanged (hdlhashtable htable, const bigstring bsname, hdlhashnode hnode, boolean flvalue) {
-	
-	return (odbtabledirty (htable, bsname));
-	} /*odbsymbolchanged*/
-
-static boolean odbsymbolunlinking (hdlhashtable ht, hdlhashnode hn) {
-
-	return (true);
-	} /*odbsymbolunlinking*/
-
 #ifndef isFrontier
+
+	static short tablecomparenames (hdlhashtable ht, hdlhashnode hnode1, hdlhashnode hnode2) {
+
+		bigstring bs1, bs2;
+		
+		gethashkey (hnode1, bs1);
+
+		gethashkey (hnode2, bs2);
+		
+		alllower (bs1); /*comparison is unicase*/
+		
+		alllower (bs2);
+		
+		return (comparestrings (bs1, bs2));
+		} /*tablecomparenames*/
+
+
+	static boolean odbtabledirty (hdlhashtable htable, const bigstring bsname) {
+		
+	//	hdltablediskrecord hf = (hdltablediskrecord) (**htable).hashtableformats;
+		
+	//	if (hf != nil)
+		(**htable).timelastsave = timenow (); /*modification time until saved*/
+		
+		return (true);
+		} /*tabledirty*/
+
+	static boolean odbsymbolchanged (hdlhashtable htable, const bigstring bsname, hdlhashnode hnode, boolean flvalue) {
+		
+		return (odbtabledirty (htable, bsname));
+		} /*odbsymbolchanged*/
+
+	static boolean odbsymbolunlinking (hdlhashtable ht, hdlhashnode hn) {
+
+		return (true);
+		} /*odbsymbolunlinking*/
+
 
 	static void initlangcallbacks (void) {
 
@@ -461,7 +462,6 @@ pascal boolean odbNewFile (hdlfilenum fnum) {
 	4.1b5 dmb: new routine. minimal db creation. does not leave it open
 	*/
 	
-	hdlcancoonrecord hc = nil;
 	tyversion2cancoonrecord info;
 	dbaddress adr = nildbaddress;
 	boolean fl;

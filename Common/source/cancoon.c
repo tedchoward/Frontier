@@ -379,7 +379,7 @@ static boolean disposecancoonrecord (hdlcancoonrecord hcancoon) {
 	
 	disposeprocesslist ((**hc).hprocesslist); /*checks for nil*/
 	
-	/**setcurrentmenubarlist (nil); /*clear menubar.c global before disposing roottable*/
+	//setcurrentmenubarlist (nil); /*clear menubar.c global before disposing roottable*/
 	
 	disposehandle ((Handle) (**hc).hmenubarlist); /*roottable disposal will do menubars*/
 	
@@ -637,12 +637,12 @@ static boolean loadversion2cancoonfile (dbaddress adr, hdlcancoonrecord hcancoon
 		
 		dbrefheapstring (info.adrscriptstring, &hstring);
 		
-		pullfromhandle (hstring, 0, 1, nil); // pluck out the length byte
+		pullfromhandle ((Handle) hstring, 0, 1, nil); // pluck out the length byte
 		}
 	else
-		dbrefhandle (info.adrscriptstring, &hstring);
+		dbrefhandle (info.adrscriptstring, (Handle *) &hstring);
 	
-	(**hc).hscriptstring = hstring;
+	(**hc).hscriptstring = (Handle) hstring;
 	
 	(**hc).flflagdisabled = (info.flags & flflagdisabled_mask) != 0;
 	
@@ -1016,7 +1016,6 @@ boolean ccnewrecord (void) {
 	*/
 	
 	register hdlcancoonrecord hc;
-	hdlmenurecord hmenurecord = nil;
 	hdlcancoonrecord origglobals = cancoonglobals;
 	hdltablevariable hvariable;
 	hdlhashtable htable;
@@ -1598,6 +1597,8 @@ boolean ccinexpertmode (void) {
 	} /*ccinexpertmode*/
 
 
+#if 0
+
 static boolean cctoggleexpertmode (void) {
 
 	/*
@@ -1626,6 +1627,8 @@ static boolean cctoggleexpertmode (void) {
 	return (true);
 	} /*cctoggleexpertmode*/
 
+#endif
+
 
 static boolean ccmenuroutine (short idmenu, short ixmenu) {
 	
@@ -1649,8 +1652,6 @@ static boolean ccmenuroutine (short idmenu, short ixmenu) {
 	5.0a18 dmb: disabled expert mode code (added in 5.0a?)
 	*/
 	
-	register boolean fl = true;
-	
 	/*
 	if (idmenu == 0 && ixmenu == 0) {
 		
@@ -1670,11 +1671,11 @@ static boolean ccmenuroutine (short idmenu, short ixmenu) {
 	*/
 	
 	/*
-	if (!idmenu) { /*request to update all of our menus%/
+	if (!idmenu) { /%request to update all of our menus%/
 		
-		/*all our menus are enabled, dmb 8/1/90%/
+		/%all our menus are enabled, dmb 8/1/90%/
 		
-		mecheckmenubar (); /*see if menubar needs to be redrawn%/
+		mecheckmenubar (); /%see if menubar needs to be redrawn%/
 		
 		return (true);
 		}

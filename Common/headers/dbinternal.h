@@ -30,9 +30,9 @@
 //#undef SMART_DB_OPENING
 
 
-/***RAB #define dbversionnumber 3 **VERSION used in 4.x**/
+//RAB	#define dbversionnumber 3 /**VERSION used in 4.x**/
 
-/***AR	#define dbversionnumber 5 /**VERSION used up to 6.2a10**/
+//AR	#define dbversionnumber 5 /**VERSION used up to 6.2a10**/
 
 #ifdef SMART_DB_OPENING
 	#define dbversionnumber 6 /* 6.2a9 AR: added caching of shadow avail list in last block of database */

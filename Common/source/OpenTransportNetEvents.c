@@ -3544,7 +3544,7 @@ void fwsNetEventShutdownDependentListeners (long hdatabase) {
 	}/*fwsNetEventShutdownDependentListeners*/
 
 
-boolean fwsNetEventCheckAndAcceptSocket () {
+boolean fwsNetEventCheckAndAcceptSocket (void) {
 	
 	/*
 	This is called from the main event loop.

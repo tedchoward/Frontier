@@ -45,7 +45,7 @@
 
 static long dragmodified;
 
-static char *pastefname;
+//static char *pastefname;
 
 typedef enum tyaction {
 	
@@ -188,13 +188,14 @@ static boolean browsercompareforcollision (hdlheadrecord hnode, long dragmodifie
 	} /*browsercompareforcollision*/
 
 
-static boolean collisionvisit (hdlheadrecord hnode, ptrdraginfo draginfo) {
+static boolean collisionvisit (hdlheadrecord hnode, ptrvoid refcon) {
 	
 	/*
 	5.0b9 dmb: don't conflict with ourself
 	*/
 	
 	bigstring bsnode, bsdrag;
+	ptrdraginfo draginfo = (ptrdraginfo) refcon;
 	
 	if (hnode == (*draginfo).hdrag)
 		return (true);
@@ -278,9 +279,10 @@ static boolean browsercollisiondialog (hdlheadrecord hdest, ptrdraginfo draginfo
 	} /*browsercollisiondialog*/
 
 
-static boolean validatemovevisit (hdlheadrecord hnode, ptrdraginfo draginfo) {
+static boolean validatemovevisit (hdlheadrecord hnode, ptrvoid refcon) {
 	
 	tybrowserinfo info;
+	ptrdraginfo draginfo = (ptrdraginfo) refcon;
 	hdlheadrecord hdest = (*draginfo).hdest;
 	
 	(*draginfo).hdrag = hnode;
@@ -338,9 +340,9 @@ boolean browservalidatepaste (hdlheadrecord hscrap, hdlheadrecord hdest, tydirec
 	assume that paste always happens in the list of the cursor's parent.
 	*/
 	
-	hdlheadrecord hfolder = (**hdest).headlinkleft;
-	
 	#if filebrowser
+	
+	hdlheadrecord hfolder = (**hdest).headlinkleft;
 	
 	if (hfolder == hdest) {
 		
@@ -421,9 +423,10 @@ static boolean browservalidatefolderpaste (hdlheadrecord hfolder, FSSpec *clipfo
 static ptrstring pcommand;
 
 
-static boolean compareforcopyvisit (hdlheadrecord hnode, ptrdraginfo draginfo) {
+static boolean compareforcopyvisit (hdlheadrecord hnode, ptrvoid refcon) {
 	
 	bigstring bs, bsnode;
+	ptrdraginfo draginfo = (ptrdraginfo) refcon;
 	
 	if (hnode == (*draginfo).hcompare)
 		return (true);

@@ -428,7 +428,7 @@ static boolean dbflushheader (void) {
 			
 			pb.ioRefNum = (hdlfilenum)((**databasedata).fnumdatabase);
 			
-			PBFlushFile (&pb, false);
+			PBFlushFile ((ParmBlkPtr) &pb, false);
 			}
 		#endif
 
@@ -1260,6 +1260,8 @@ boolean dbrefhandle (dbaddress adr, Handle *h) {
 	} /*dbrefhandle*/
 	
 
+#if 0
+
 static boolean dbrefbytes (dbaddress adr, long ctwanted, ptrvoid pdata) {
 
 	/*
@@ -1288,7 +1290,9 @@ static boolean dbrefbytes (dbaddress adr, long ctwanted, ptrvoid pdata) {
 	
 	return (dbread (adr + sizeheader, ctwanted, pdata));
 	} /*dbrefbytes*/
-	
+
+#endif	
+
 
 static boolean dballocate (long databytes, ptrvoid pdata, dbaddress *paddress) {
 
@@ -1860,6 +1864,8 @@ static boolean dbrelease (dbaddress adr) {
 	} /*dbrelease*/
 	
 
+#if 0
+
 static boolean dbreadbytes (dbaddress adr, long offset, long ctbytes, char *pdata) {
 
 	/*
@@ -1884,6 +1890,8 @@ static boolean dbwritebytes (dbaddress adr, long offset, long ctbytes, char *pda
 	
 	return (dbwrite (adr + sizeheader + offset, ctbytes, pdata));
 	} /*dbwritebytes*/
+
+#endif
 	
 
 static boolean dbmove (ptrvoid pdata, long ctbytes, dbaddress adr) {
@@ -2189,7 +2197,8 @@ boolean dbnewarray (ctelements, sizeelement, pdata, adr) short ctelements, sizee
 	ctbytes = ((long) ctelements * sizeelement) + sizeof (tydbarrayheader);
 	
 	return (dballocate (ctbytes, pdata, adr));
-	} /*dbnewarray*/
+	} /%dbnewarray%/
+*/
 	
 
 void dbsetview (short viewnumber, dbaddress adrtext) {

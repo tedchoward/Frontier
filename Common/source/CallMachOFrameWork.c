@@ -121,7 +121,7 @@ static boolean unixshellcallinit (void) {
 	} /*unixshellcallinit*/
 	
 
-static OSStatus LoadFrameworkBundle(CFStringRef framework, CFBundleRef *bundlePtr) /*Adapted from Apple sample code*/
+OSStatus LoadFrameworkBundle(CFStringRef framework, CFBundleRef *bundlePtr) /*Adapted from Apple sample code*/
 {
 	OSStatus 	err;
 	FSRef 		frameworksFolderRef;

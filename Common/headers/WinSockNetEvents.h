@@ -111,7 +111,7 @@ extern boolean fwsNetEventAcceptSocket (WPARAM wParam, LPARAM lParam);
 #endif
 
 #ifdef MACVERSION
-extern boolean fwsNetEventCheckAndAcceptSocket ();
+extern boolean fwsNetEventCheckAndAcceptSocket (void);
 #endif
 
 /* Close a listen and delete associated data */
