@@ -1,3 +1,6 @@
+
+/*	$Id$    */
+
 /* File "FastTimes.c" - Original code by Matt Slot <fprefect@ambrosiasw.com>  */
 /* Created 4/24/99    - This file is hereby placed in the public domain       */
 /* Updated 5/21/99    - Calibrate to VIA, add TBR support, renamed functions  */

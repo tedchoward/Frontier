@@ -1,3 +1,6 @@
+
+/*	$Id$    */
+
 /*
  *  langmath.c
  *  Frontier
