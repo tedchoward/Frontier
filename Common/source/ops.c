@@ -38,8 +38,6 @@
 #include "shell.h"
 
 
-
-
 static tydirection directions [ctdirections] = {
 	
 	nodirection,
@@ -864,7 +862,7 @@ void getsystemversionstring (bigstring bs, bigstring bsextrainfo) {
 		
 		gestalt (gestaltSystemVersion, &x);
 		
-		numbertostring (x >> 8, bs); /*high byte is major rev.*/
+		numbertostring (bcdToLong (x >> 8), bs); /* high byte is major rev., 2004-11-16 creedon - convert from bcd for correct display on Mac OS X */
 		
 		pushchar ('.', bs);
 		
@@ -954,5 +952,17 @@ void getsizestring (unsigned long size, bigstring bs) {
 	} /*getsizestring*/		
 
 
+UInt32 bcdToLong (UInt32 bcd) { /* 2004-11-16 creedon */
 
+	UInt32	ret = 0;
+	UInt16	i;
 
+	for (i = 0; i < 8; i++) {
+		if (i > 0)
+			ret += i * 10 * (bcd & 0x0000000f);
+		else
+			ret += bcd & 0x0000000f;
+		bcd >>= 4;
+		}
+	return (ret);
+	} /* bcdToLong */
