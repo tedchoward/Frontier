@@ -59,6 +59,8 @@ static Boolean HaveComponentManager (void) {
 	} /*HaveComponentManager*/
 
 
+#ifndef isFrontier
+
 static Boolean isFrontProcess () {
 	
 	ProcessSerialNumber currentprocess, frontprocess;
@@ -72,6 +74,8 @@ static Boolean isFrontProcess () {
 	
 	return (fl);
 	} /*isFrontProcess*/
+
+#endif
 	
 
 /* 2004-10-22 aradke: Not sure if this is the right thing to do for the Mach-O build,
@@ -112,7 +116,7 @@ glue windoweventGlue (ComponentInstance comp, EventRecord *ev, tyWindowSharingGl
 	pb.comp = comp;
 	
 	#if TARGET_API_MAC_CARBON == 1
-	return CallComponentDispatch(&pb);
+	return CallComponentDispatch((ComponentParameters *)&pb);
 	#else	
 	return CallUniversalProc(CallComponentUPP, uppCallComponentProcInfo, &pb);
 	#endif
@@ -140,7 +144,7 @@ glue windowiscardGlue (ComponentInstance comp, WindowPtr w) {
 	pb.comp = comp;
 	
 	#if TARGET_API_MAC_CARBON == 1
-	return CallComponentDispatch(&pb);
+	return CallComponentDispatch((ComponentParameters *)&pb);
 	#else	
 	return CallUniversalProc(CallComponentUPP, uppCallComponentProcInfo, &pb);
 	#endif
@@ -168,7 +172,7 @@ glue closewindowGlue (ComponentInstance comp, WindowPtr w) {
 	pb.comp = comp;
 	
 	#if TARGET_API_MAC_CARBON == 1
-	return CallComponentDispatch(&pb);
+	return CallComponentDispatch((ComponentParameters *)&pb);
 	#else	
 	return CallUniversalProc(CallComponentUPP, uppCallComponentProcInfo, &pb);
 	#endif
@@ -196,7 +200,7 @@ glue closewindowGlue (ComponentInstance comp, WindowPtr w) {
 		pb.comp = comp;
 		
 		#if TARGET_API_MAC_CARBON == 1
-		return CallComponentDispatch(&pb);
+		return CallComponentDispatch((ComponentParameters *)&pb);
 		#else	
 		return CallUniversalProc(CallComponentUPP, uppCallComponentProcInfo, &pb);
 		#endif
@@ -228,7 +232,7 @@ glue closewindowGlue (ComponentInstance comp, WindowPtr w) {
 		pb.comp = comp;
 		
 		#if TARGET_API_MAC_CARBON == 1
-		return CallComponentDispatch(&pb);
+		return CallComponentDispatch((ComponentParameters *)&pb);
 		#else	
 		return CallUniversalProc(CallComponentUPP, uppCallComponentProcInfo, &pb);
 		#endif
@@ -256,7 +260,7 @@ glue closewindowGlue (ComponentInstance comp, WindowPtr w) {
 		pb.comp = comp;
 		
 		#if TARGET_API_MAC_CARBON == 1
-		return CallComponentDispatch(&pb);
+		return CallComponentDispatch((ComponentParameters *)&pb);
 		#else	
 		return CallUniversalProc(CallComponentUPP, uppCallComponentProcInfo, &pb);
 		#endif
@@ -282,7 +286,7 @@ glue closewindowGlue (ComponentInstance comp, WindowPtr w) {
 		pb.comp = comp;
 		
 		#if TARGET_API_MAC_CARBON == 1
-		return CallComponentDispatch(&pb);
+		return CallComponentDispatch((ComponentParameters *)&pb);
 		#else	
 		return CallUniversalProc(CallComponentUPP, uppCallComponentProcInfo, &pb);
 		#endif
@@ -310,7 +314,7 @@ glue closewindowGlue (ComponentInstance comp, WindowPtr w) {
 		pb.comp = comp;
 		
 		#if TARGET_API_MAC_CARBON == 1
-		return CallComponentDispatch(&pb);
+		return CallComponentDispatch((ComponentParameters *)&pb);
 		#else	
 		return CallUniversalProc(CallComponentUPP, uppCallComponentProcInfo, &pb);
 		#endif
@@ -336,7 +340,7 @@ glue closewindowGlue (ComponentInstance comp, WindowPtr w) {
 		pb.comp = comp;
 		
 		#if TARGET_API_MAC_CARBON == 1
-		return CallComponentDispatch(&pb);
+		return CallComponentDispatch((ComponentParameters *)&pb);
 		#else	
 		return CallUniversalProc(CallComponentUPP, uppCallComponentProcInfo, &pb);
 		#endif
@@ -366,7 +370,7 @@ glue closewindowGlue (ComponentInstance comp, WindowPtr w) {
 		pb.comp = comp;
 		
 		#if TARGET_API_MAC_CARBON == 1
-		return CallComponentDispatch(&pb);
+		return CallComponentDispatch((ComponentParameters *)&pb);
 		#else	
 		return CallUniversalProc(CallComponentUPP, uppCallComponentProcInfo, &pb);
 		#endif
@@ -394,7 +398,7 @@ glue closewindowGlue (ComponentInstance comp, WindowPtr w) {
 		pb.comp = comp;
 		
 		#if TARGET_API_MAC_CARBON == 1
-		return CallComponentDispatch(&pb);
+		return CallComponentDispatch((ComponentParameters *)&pb);
 		#else	
 		return CallUniversalProc(CallComponentUPP, uppCallComponentProcInfo, &pb);
 		#endif
@@ -452,7 +456,7 @@ glue closewindowGlue (ComponentInstance comp, WindowPtr w) {
 		pb.comp = comp;
 		
 		#if TARGET_API_MAC_CARBON == 1
-		return CallComponentDispatch(&pb);
+		return CallComponentDispatch((ComponentParameters *)&pb);
 		#else	
 		return CallUniversalProc(CallComponentUPP, uppCallComponentProcInfo, &pb);
 		#endif
@@ -478,7 +482,7 @@ glue closewindowGlue (ComponentInstance comp, WindowPtr w) {
 		pb.comp = comp;
 		
 		#if TARGET_API_MAC_CARBON == 1
-		return CallComponentDispatch(&pb);
+		return CallComponentDispatch((ComponentParameters *)&pb);
 		#else	
 		return CallUniversalProc(CallComponentUPP, uppCallComponentProcInfo, &pb);
 		#endif
@@ -516,7 +520,7 @@ glue runhandleGlue (ComponentInstance comp, Handle h, short flscriptedcard, Str2
 	pb.comp = comp;
 	
 	#if TARGET_API_MAC_CARBON == 1
-	return CallComponentDispatch(&pb);
+	return CallComponentDispatch((ComponentParameters *)&pb);
 	#else	
 	return CallUniversalProc(CallComponentUPP, uppCallComponentProcInfo, &pb);
 	#endif
@@ -552,12 +556,14 @@ glue runmodalhandleGlue (ComponentInstance comp, Handle h, short flscriptedcard,
 	pb.comp = comp;
 	
 	#if TARGET_API_MAC_CARBON == 1
-	return CallComponentDispatch(&pb);
+	return CallComponentDispatch((ComponentParameters *)&pb);
 	#else	
 	return CallUniversalProc(CallComponentUPP, uppCallComponentProcInfo, &pb);
 	#endif
 	} /*runmodalhandleGlue*/
 
+
+#ifndef isFrontier
 
 glue setobjectvalueGlue (ComponentInstance comp, Handle hcard, Str255 name, Handle value) {
 	
@@ -584,7 +590,7 @@ glue setobjectvalueGlue (ComponentInstance comp, Handle hcard, Str255 name, Hand
 	pb.comp = comp;
 	
 	#if TARGET_API_MAC_CARBON == 1
-	return CallComponentDispatch(&pb);
+	return CallComponentDispatch((ComponentParameters *)&pb);
 	#else	
 	return CallUniversalProc(CallComponentUPP, uppCallComponentProcInfo, &pb);
 	#endif
@@ -616,7 +622,7 @@ glue getobjectvalueGlue (ComponentInstance comp, Handle hcard, Str255 name, Hand
 	pb.comp = comp;
 	
 	#if TARGET_API_MAC_CARBON == 1
-	return CallComponentDispatch(&pb);
+	return CallComponentDispatch((ComponentParameters *)&pb);
 	#else	
 	return CallUniversalProc(CallComponentUPP, uppCallComponentProcInfo, &pb);
 	#endif
@@ -648,7 +654,7 @@ glue getobjecthandleGlue (ComponentInstance comp, Handle hcard, Str255 name, Han
 	pb.comp = comp;
 	
 	#if TARGET_API_MAC_CARBON == 1
-	return CallComponentDispatch(&pb);
+	return CallComponentDispatch((ComponentParameters *)&pb);
 	#else	
 	return CallUniversalProc(CallComponentUPP, uppCallComponentProcInfo, &pb);
 	#endif
@@ -676,11 +682,13 @@ glue recalcGlue (ComponentInstance comp, Handle h) {
 	pb.comp = comp;
 	
 	#if TARGET_API_MAC_CARBON == 1
-	return CallComponentDispatch(&pb);
+	return CallComponentDispatch((ComponentParameters *)&pb);
 	#else	
 	return CallUniversalProc(CallComponentUPP, uppCallComponentProcInfo, &pb);
 	#endif
 	} /*recalcGlue*/
+
+#endif
 
 
 glue editGlue (ComponentInstance comp, short editcommand) {
@@ -704,12 +712,14 @@ glue editGlue (ComponentInstance comp, short editcommand) {
 	pb.comp = comp;
 	
 	#if TARGET_API_MAC_CARBON == 1
-	return CallComponentDispatch(&pb);
+	return CallComponentDispatch((ComponentParameters *)&pb);
 	#else	
 	return CallUniversalProc(CallComponentUPP, uppCallComponentProcInfo, &pb);
 	#endif
 	} /*editGlue*/
 
+
+#ifndef isFrontier
 
 glue updateGlue (ComponentInstance comp, Handle h) {
 	
@@ -732,11 +742,14 @@ glue updateGlue (ComponentInstance comp, Handle h) {
 	pb.comp = comp;
 	
 	#if TARGET_API_MAC_CARBON == 1
-	return CallComponentDispatch(&pb);
+	return CallComponentDispatch((ComponentParameters *) &pb);
 	#else	
 	return CallUniversalProc(CallComponentUPP, uppCallComponentProcInfo, &pb);
 	#endif
 	} /*updateGlue*/
+
+#endif
+
 
 #pragma options align=reset
 
@@ -1497,11 +1510,13 @@ Boolean uisInit (ProcPtr callback, short idinsertafter, OSType idclientapp, unsi
 		
 	return (true);
 	
-	error:
+#ifndef isFrontier
+error:
 	
 	uisClose ();
 	
 	return (false);
+#endif
 	} /*uisInit*/
 	
 	

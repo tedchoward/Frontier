@@ -23,6 +23,7 @@
 
 ******************************************************************************/
 
+#ifndef timedateinclude
 #define timedateinclude
 
 typedef struct tyinternationalinfo {
@@ -81,6 +82,8 @@ extern long filetimetoseconds (const FILETIME *);
 
 extern void secondstofiletime (long seconds, FILETIME *);
 
+extern tyinternationalinfoptr getIntlInfo ();
+
 #endif
 
 extern unsigned long nextmonth(unsigned long date);
@@ -105,8 +108,9 @@ extern void abbrevdatestring (unsigned long date, bigstring bs);
 
 extern void getdaystring (short dayofweek, bigstring bs, boolean flFullname);
 
-extern long getcurrenttimezonebias();
+extern long getcurrenttimezonebias(void);
 
 extern boolean isLeapYear (short year);
 
-extern tyinternationalinfoptr getIntlInfo ();
+
+#endif /*timedateinclude*/

@@ -36,7 +36,7 @@ boolean playerstart (void);
 
 boolean playerisplaying (void);
 
-boolean isplayerevent ();
+boolean isplayerevent (void);
 
 boolean playeropenmovieinwindow (FSSpec *f);
 

@@ -115,8 +115,10 @@ typedef struct tyvalidationtoken
    } tyvalidationtoken, * tyvalidationtokenptr;
 
 
-static tyinternationalinfo globalII;
-static tyinternationalinfoptr globalIIptr = NULL;
+#ifdef WIN95VERSION
+	static tyinternationalinfo globalII;
+	static tyinternationalinfoptr globalIIptr = NULL;
+#endif
 
 typedef struct tydaterec {
 	short year;
@@ -137,6 +139,7 @@ typedef struct tyvalidationerror {
 
 
 #ifdef WIN95VERSION
+
 boolean ValidDate (
    unsigned char * strIn,
    short cnt,
@@ -152,221 +155,204 @@ boolean ValidTime (
    tydaterecptr actualDT,
    unsigned long * validUnits,
    tyvalidationerrorptr err);
-#endif
 
 
 static boolean getNewLocaleString (unsigned long lc, char ** foo, char * defValue) {
-	#ifdef MACVERSION
-		return (false);
-	#endif
 
-	#ifdef WIN95VERSION
-		char buf[300];
-		short len;
+	char buf[300];
+	short len;
 
-		len = GetLocaleInfo (LOCALE_USER_DEFAULT, lc, buf, 300);
+	len = GetLocaleInfo (LOCALE_USER_DEFAULT, lc, buf, 300);
 
-		if (len != 0) {
-			*foo = malloc (len + 2);
-			if (*foo != NULL) {
-				moveleft (buf, stringbaseaddress((*foo)), len);
-				setstringlength ((*foo), len-1);
-				nullterminate ((*foo));
-				return (true);
-				}
+	if (len != 0) {
+		*foo = malloc (len + 2);
+		if (*foo != NULL) {
+			moveleft (buf, stringbaseaddress((*foo)), len);
+			setstringlength ((*foo), len-1);
+			nullterminate ((*foo));
+			return (true);
 			}
-		else {
-			len = strlen (defValue);
-			*foo = malloc (len + 2);
-			if (*foo != NULL) {
-				moveleft (defValue, stringbaseaddress((*foo)), len);
-				setstringlength ((*foo), len);
-				nullterminate ((*foo));
-				return (true);
-				}
+		}
+	else {
+		len = strlen (defValue);
+		*foo = malloc (len + 2);
+		if (*foo != NULL) {
+			moveleft (defValue, stringbaseaddress((*foo)), len);
+			setstringlength ((*foo), len);
+			nullterminate ((*foo));
+			return (true);
 			}
+		}
 
-		return (false);
-	#endif
+	return (false);
 	} /*getNewLocaleString*/
 
 
 static boolean getNewLocalePatternString (unsigned long lc, char ** foo, char * defValue) {
-	#ifdef MACVERSION
-		return (false);
-	#endif
 
-	#ifdef WIN95VERSION
-		char buf[256];
-		char buf2[256];
-		short i, j, cnt, len;
-		char c;
+	char buf[256];
+	char buf2[256];
+	short i, j, cnt, len;
+	char c;
 
-		len = GetLocaleInfo (LOCALE_USER_DEFAULT, lc, buf, 256);
-		--len;
-		if (len != 0) {
-			i = 0;
-			j = 0;
+	len = GetLocaleInfo (LOCALE_USER_DEFAULT, lc, buf, 256);
+	--len;
+	if (len != 0) {
+		i = 0;
+		j = 0;
 
-			while (len > i) {
-				c = buf[i++];
+		while (len > i) {
+			c = buf[i++];
 
-				switch (c) {
-					case 'M':
-					case 'd':
-					case 'y':
-					case 'h':
-					case 'm':
-					case 's':
-					case 't':
-						cnt = 1;
-						while (buf[i] == c) {
-							++cnt;
-							++i;
-							}
+			switch (c) {
+				case 'M':
+				case 'd':
+				case 'y':
+				case 'h':
+				case 'm':
+				case 's':
+				case 't':
+					cnt = 1;
+					while (buf[i] == c) {
+						++cnt;
+						++i;
+						}
 
-						buf2[j++] = '%';
-						buf2[j++] = '%';
+					buf2[j++] = '%';
+					buf2[j++] = '%';
 
-						buf2[j++] = toupper(c);
+					buf2[j++] = toupper(c);
 
-						if (cnt > 2)
-							buf2[j++] = 'N';
-						else
-							buf2[j++] = '#';
-						break;
+					if (cnt > 2)
+						buf2[j++] = 'N';
+					else
+						buf2[j++] = '#';
+					break;
 
-					default:
-						buf2[j++] = c;
-						break;
-					}
-				}
-
-			len = j;
-
-			*foo = malloc (len + 2);
-			if (*foo != NULL) {
-				moveleft (buf2, stringbaseaddress((*foo)), len);
-				setstringlength ((*foo), len);
-				nullterminate ((*foo));
-				return (true);
-				}
-			}
-		else {
-			len = strlen (defValue);
-			*foo = malloc (len + 2);
-			if (*foo != NULL) {
-				moveleft (defValue, stringbaseaddress((*foo)), len);
-				setstringlength ((*foo), len);
-				nullterminate ((*foo));
-				return (true);
+				default:
+					buf2[j++] = c;
+					break;
 				}
 			}
 
-		return (false);
-	#endif
+		len = j;
+
+		*foo = malloc (len + 2);
+		if (*foo != NULL) {
+			moveleft (buf2, stringbaseaddress((*foo)), len);
+			setstringlength ((*foo), len);
+			nullterminate ((*foo));
+			return (true);
+			}
+		}
+	else {
+		len = strlen (defValue);
+		*foo = malloc (len + 2);
+		if (*foo != NULL) {
+			moveleft (defValue, stringbaseaddress((*foo)), len);
+			setstringlength ((*foo), len);
+			nullterminate ((*foo));
+			return (true);
+			}
+		}
+
+	return (false);
 	}
 
 
 static boolean initInternationalInfo() {
 
-	#ifdef MACVERSION
-		boolean res = false;
-	#endif
+	short i;
+	boolean res = true;
 
-	#ifdef WIN95VERSION
-		short i;
-		boolean res = true;
+	res = res && getNewLocaleString (LOCALE_SDAYNAME7, &globalII.longDaysOfWeek[0], "Sunday");
+	res = res && getNewLocaleString (LOCALE_SDAYNAME1, &globalII.longDaysOfWeek[1], "Monday");
+	res = res && getNewLocaleString (LOCALE_SDAYNAME2, &globalII.longDaysOfWeek[2], "Tuesday");
+	res = res && getNewLocaleString (LOCALE_SDAYNAME3, &globalII.longDaysOfWeek[3], "Wednesday");
+	res = res && getNewLocaleString (LOCALE_SDAYNAME4, &globalII.longDaysOfWeek[4], "Thursday");
+	res = res && getNewLocaleString (LOCALE_SDAYNAME5, &globalII.longDaysOfWeek[5], "Friday");
+	res = res && getNewLocaleString (LOCALE_SDAYNAME6, &globalII.longDaysOfWeek[6], "Saturday");
+	res = res && getNewLocaleString (999999, &globalII.longDaysOfWeek[7], "Yesterday");
+	res = res && getNewLocaleString (999999, &globalII.longDaysOfWeek[8], "Today");
+	res = res && getNewLocaleString (999999, &globalII.longDaysOfWeek[9], "Tomorrow");
 
-		res = res && getNewLocaleString (LOCALE_SDAYNAME7, &globalII.longDaysOfWeek[0], "Sunday");
-		res = res && getNewLocaleString (LOCALE_SDAYNAME1, &globalII.longDaysOfWeek[1], "Monday");
-		res = res && getNewLocaleString (LOCALE_SDAYNAME2, &globalII.longDaysOfWeek[2], "Tuesday");
-		res = res && getNewLocaleString (LOCALE_SDAYNAME3, &globalII.longDaysOfWeek[3], "Wednesday");
-		res = res && getNewLocaleString (LOCALE_SDAYNAME4, &globalII.longDaysOfWeek[4], "Thursday");
-		res = res && getNewLocaleString (LOCALE_SDAYNAME5, &globalII.longDaysOfWeek[5], "Friday");
-		res = res && getNewLocaleString (LOCALE_SDAYNAME6, &globalII.longDaysOfWeek[6], "Saturday");
-		res = res && getNewLocaleString (999999, &globalII.longDaysOfWeek[7], "Yesterday");
-		res = res && getNewLocaleString (999999, &globalII.longDaysOfWeek[8], "Today");
-		res = res && getNewLocaleString (999999, &globalII.longDaysOfWeek[9], "Tomorrow");
+	res = res && getNewLocaleString (LOCALE_SABBREVDAYNAME7, &globalII.shortDaysOfWeek[0], "Sun");
+	res = res && getNewLocaleString (LOCALE_SABBREVDAYNAME1, &globalII.shortDaysOfWeek[1], "Mon");
+	res = res && getNewLocaleString (LOCALE_SABBREVDAYNAME2, &globalII.shortDaysOfWeek[2], "Tue");
+	res = res && getNewLocaleString (LOCALE_SABBREVDAYNAME3, &globalII.shortDaysOfWeek[3], "Wed");
+	res = res && getNewLocaleString (LOCALE_SABBREVDAYNAME4, &globalII.shortDaysOfWeek[4], "Thu");
+	res = res && getNewLocaleString (LOCALE_SABBREVDAYNAME5, &globalII.shortDaysOfWeek[5], "Fri");
+	res = res && getNewLocaleString (LOCALE_SABBREVDAYNAME6, &globalII.shortDaysOfWeek[6], "Sat");
+	res = res && getNewLocaleString (999999, &globalII.shortDaysOfWeek[7], "Yest");
+	res = res && getNewLocaleString (999999, &globalII.shortDaysOfWeek[8], "Tod");
+	res = res && getNewLocaleString (999999, &globalII.shortDaysOfWeek[9], "Tom");
 
-		res = res && getNewLocaleString (LOCALE_SABBREVDAYNAME7, &globalII.shortDaysOfWeek[0], "Sun");
-		res = res && getNewLocaleString (LOCALE_SABBREVDAYNAME1, &globalII.shortDaysOfWeek[1], "Mon");
-		res = res && getNewLocaleString (LOCALE_SABBREVDAYNAME2, &globalII.shortDaysOfWeek[2], "Tue");
-		res = res && getNewLocaleString (LOCALE_SABBREVDAYNAME3, &globalII.shortDaysOfWeek[3], "Wed");
-		res = res && getNewLocaleString (LOCALE_SABBREVDAYNAME4, &globalII.shortDaysOfWeek[4], "Thu");
-		res = res && getNewLocaleString (LOCALE_SABBREVDAYNAME5, &globalII.shortDaysOfWeek[5], "Fri");
-		res = res && getNewLocaleString (LOCALE_SABBREVDAYNAME6, &globalII.shortDaysOfWeek[6], "Sat");
-		res = res && getNewLocaleString (999999, &globalII.shortDaysOfWeek[7], "Yest");
-		res = res && getNewLocaleString (999999, &globalII.shortDaysOfWeek[8], "Tod");
-		res = res && getNewLocaleString (999999, &globalII.shortDaysOfWeek[9], "Tom");
+	res = res && getNewLocaleString (LOCALE_SMONTHNAME1, &globalII.longMonths[0], "January");
+	res = res && getNewLocaleString (LOCALE_SMONTHNAME2, &globalII.longMonths[1], "February");
+	res = res && getNewLocaleString (LOCALE_SMONTHNAME3, &globalII.longMonths[2], "March");
+	res = res && getNewLocaleString (LOCALE_SMONTHNAME4, &globalII.longMonths[3], "April");
+	res = res && getNewLocaleString (LOCALE_SMONTHNAME5, &globalII.longMonths[4], "May");
+	res = res && getNewLocaleString (LOCALE_SMONTHNAME6, &globalII.longMonths[5], "June");
+	res = res && getNewLocaleString (LOCALE_SMONTHNAME7, &globalII.longMonths[6], "July");
+	res = res && getNewLocaleString (LOCALE_SMONTHNAME8, &globalII.longMonths[7], "August");
+	res = res && getNewLocaleString (LOCALE_SMONTHNAME9, &globalII.longMonths[8], "September");
+	res = res && getNewLocaleString (LOCALE_SMONTHNAME10, &globalII.longMonths[9], "October");
+	res = res && getNewLocaleString (LOCALE_SMONTHNAME11, &globalII.longMonths[10], "November");
+	res = res && getNewLocaleString (LOCALE_SMONTHNAME12, &globalII.longMonths[11], "December");
+	res = res && getNewLocaleString (LOCALE_SMONTHNAME13, &globalII.longMonths[12], "");
+	
+	res = res && getNewLocaleString (LOCALE_SABBREVMONTHNAME1, &globalII.shortMonths[0], "Jan");
+	res = res && getNewLocaleString (LOCALE_SABBREVMONTHNAME2, &globalII.shortMonths[1], "Feb");
+	res = res && getNewLocaleString (LOCALE_SABBREVMONTHNAME3, &globalII.shortMonths[2], "Mar");
+	res = res && getNewLocaleString (LOCALE_SABBREVMONTHNAME4, &globalII.shortMonths[3], "Apr");
+	res = res && getNewLocaleString (LOCALE_SABBREVMONTHNAME5, &globalII.shortMonths[4], "May");
+	res = res && getNewLocaleString (LOCALE_SABBREVMONTHNAME6, &globalII.shortMonths[5], "Jun");
+	res = res && getNewLocaleString (LOCALE_SABBREVMONTHNAME7, &globalII.shortMonths[6], "Jul");
+	res = res && getNewLocaleString (LOCALE_SABBREVMONTHNAME8, &globalII.shortMonths[7], "Aug");
+	res = res && getNewLocaleString (LOCALE_SABBREVMONTHNAME9, &globalII.shortMonths[8], "Sep");
+	res = res && getNewLocaleString (LOCALE_SABBREVMONTHNAME10, &globalII.shortMonths[9], "Oct");
+	res = res && getNewLocaleString (LOCALE_SABBREVMONTHNAME11, &globalII.shortMonths[10], "Nov");
+	res = res && getNewLocaleString (LOCALE_SABBREVMONTHNAME12, &globalII.shortMonths[11], "Dec");
+	res = res && getNewLocaleString (LOCALE_SABBREVMONTHNAME13, &globalII.shortMonths[12], "");
+	
+	res = res && getNewLocaleString (LOCALE_S1159, &globalII.morning, "AM");
+	res = res && getNewLocaleString (LOCALE_S2359, &globalII.evening, "PM");
+	res = res && getNewLocaleString (999999, &globalII.military, "hours");
+	
+	res = res && getNewLocaleString (LOCALE_SCURRENCY, &globalII.currency, "$");
+	res = res && getNewLocaleString (LOCALE_SINTLSYMBOL, &globalII.intlCurrency, "USD");
+	res = res && getNewLocaleString (LOCALE_SDECIMAL, &globalII.decimal, ".");
+	res = res && getNewLocaleString (LOCALE_STHOUSAND, &globalII.thousands, ",");
+	res = res && getNewLocaleString (LOCALE_SLIST, &globalII.list, ",");
+	res = res && getNewLocaleString (LOCALE_STIME, &globalII.timesep, ":");
+	res = res && getNewLocaleString (LOCALE_SDATE, &globalII.datesep, "/");
 
-		res = res && getNewLocaleString (LOCALE_SMONTHNAME1, &globalII.longMonths[0], "January");
-		res = res && getNewLocaleString (LOCALE_SMONTHNAME2, &globalII.longMonths[1], "February");
-		res = res && getNewLocaleString (LOCALE_SMONTHNAME3, &globalII.longMonths[2], "March");
-		res = res && getNewLocaleString (LOCALE_SMONTHNAME4, &globalII.longMonths[3], "April");
-		res = res && getNewLocaleString (LOCALE_SMONTHNAME5, &globalII.longMonths[4], "May");
-		res = res && getNewLocaleString (LOCALE_SMONTHNAME6, &globalII.longMonths[5], "June");
-		res = res && getNewLocaleString (LOCALE_SMONTHNAME7, &globalII.longMonths[6], "July");
-		res = res && getNewLocaleString (LOCALE_SMONTHNAME8, &globalII.longMonths[7], "August");
-		res = res && getNewLocaleString (LOCALE_SMONTHNAME9, &globalII.longMonths[8], "September");
-		res = res && getNewLocaleString (LOCALE_SMONTHNAME10, &globalII.longMonths[9], "October");
-		res = res && getNewLocaleString (LOCALE_SMONTHNAME11, &globalII.longMonths[10], "November");
-		res = res && getNewLocaleString (LOCALE_SMONTHNAME12, &globalII.longMonths[11], "December");
-		res = res && getNewLocaleString (LOCALE_SMONTHNAME13, &globalII.longMonths[12], "");
-		
-		res = res && getNewLocaleString (LOCALE_SABBREVMONTHNAME1, &globalII.shortMonths[0], "Jan");
-		res = res && getNewLocaleString (LOCALE_SABBREVMONTHNAME2, &globalII.shortMonths[1], "Feb");
-		res = res && getNewLocaleString (LOCALE_SABBREVMONTHNAME3, &globalII.shortMonths[2], "Mar");
-		res = res && getNewLocaleString (LOCALE_SABBREVMONTHNAME4, &globalII.shortMonths[3], "Apr");
-		res = res && getNewLocaleString (LOCALE_SABBREVMONTHNAME5, &globalII.shortMonths[4], "May");
-		res = res && getNewLocaleString (LOCALE_SABBREVMONTHNAME6, &globalII.shortMonths[5], "Jun");
-		res = res && getNewLocaleString (LOCALE_SABBREVMONTHNAME7, &globalII.shortMonths[6], "Jul");
-		res = res && getNewLocaleString (LOCALE_SABBREVMONTHNAME8, &globalII.shortMonths[7], "Aug");
-		res = res && getNewLocaleString (LOCALE_SABBREVMONTHNAME9, &globalII.shortMonths[8], "Sep");
-		res = res && getNewLocaleString (LOCALE_SABBREVMONTHNAME10, &globalII.shortMonths[9], "Oct");
-		res = res && getNewLocaleString (LOCALE_SABBREVMONTHNAME11, &globalII.shortMonths[10], "Nov");
-		res = res && getNewLocaleString (LOCALE_SABBREVMONTHNAME12, &globalII.shortMonths[11], "Dec");
-		res = res && getNewLocaleString (LOCALE_SABBREVMONTHNAME13, &globalII.shortMonths[12], "");
-		
-		res = res && getNewLocaleString (LOCALE_S1159, &globalII.morning, "AM");
-		res = res && getNewLocaleString (LOCALE_S2359, &globalII.evening, "PM");
-		res = res && getNewLocaleString (999999, &globalII.military, "hours");
-		
-		res = res && getNewLocaleString (LOCALE_SCURRENCY, &globalII.currency, "$");
-		res = res && getNewLocaleString (LOCALE_SINTLSYMBOL, &globalII.intlCurrency, "USD");
-		res = res && getNewLocaleString (LOCALE_SDECIMAL, &globalII.decimal, ".");
-		res = res && getNewLocaleString (LOCALE_STHOUSAND, &globalII.thousands, ",");
-		res = res && getNewLocaleString (LOCALE_SLIST, &globalII.list, ",");
-		res = res && getNewLocaleString (LOCALE_STIME, &globalII.timesep, ":");
-		res = res && getNewLocaleString (LOCALE_SDATE, &globalII.datesep, "/");
+	res = res && getNewLocalePatternString (LOCALE_SSHORTDATE, &globalII.shortDateFormatPattern, "M#/D#/Y#");
+	res = res && getNewLocalePatternString (LOCALE_SLONGDATE, &globalII.longDateFormatPattern, "DN, MN D#, YN");
 
-		res = res && getNewLocalePatternString (LOCALE_SSHORTDATE, &globalII.shortDateFormatPattern, "M#/D#/Y#");
-		res = res && getNewLocalePatternString (LOCALE_SLONGDATE, &globalII.longDateFormatPattern, "DN, MN D#, YN");
+	globalII.numberOfDays = 7;		//Make this 10 to use yesterday, today, tommorrow - dave wanted them removed.
+	globalII.numberOfMonths = 12;
+	globalII.numberOfYears = 0;
 
-		globalII.numberOfDays = 7;		//Make this 10 to use yesterday, today, tommorrow - dave wanted them removed.
-		globalII.numberOfMonths = 12;
-		globalII.numberOfYears = 0;
-
-		globalII.defaultTimeFormat = false;
+	globalII.defaultTimeFormat = false;
 
 
-		for (i = 0; i < globalII.numberOfMonths; i++) {
-			globalII.daysInMonth[i] = daysInMonthsArray[i];
-			}
+	for (i = 0; i < globalII.numberOfMonths; i++) {
+		globalII.daysInMonth[i] = daysInMonthsArray[i];
+		}
 
-		for (i = globalII.numberOfMonths; i < 13; i++) {
-			globalII.daysInMonth[i] = 0;
-			}
+	for (i = globalII.numberOfMonths; i < 13; i++) {
+		globalII.daysInMonth[i] = 0;
+		}
 
-		if (res)
-			globalIIptr = &globalII;
-	#endif
+	if (res)
+		globalIIptr = &globalII;
 
 	return (res);
 	} /*initInternationalInfo*/
 
 
-tyinternationalinfoptr getIntlInfo () {
+tyinternationalinfoptr getIntlInfo (void) {
 	if (globalIIptr == NULL) {
 		if (initInternationalInfo()) {
 			return (globalIIptr);
@@ -394,7 +380,6 @@ static long charStringToLong (char * str, short len) {
 	} /*charStringToLong*/
 
 
-#ifdef WIN95VERSION
 static void getDateTime (tydaterecptr dt) {
 	SYSTEMTIME sysdt;
 
@@ -1495,7 +1480,7 @@ void getdaystring (short dayofweek, bigstring bs, boolean flFullname) {
 	#endif
 	} /*getdaystring*/
 
-long getcurrenttimezonebias() {
+long getcurrenttimezonebias(void) {
 	#ifdef MACVERSION
 		MachineLocation ml;
 		long res;

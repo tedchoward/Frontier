@@ -281,6 +281,8 @@ static void detachplayer (void) {
 	} /*detachplayer*/
 
 
+#if 0
+
 static boolean playersave (ptrfilespec fs, hdlfilenum fnum, short rnum, boolean flsaveas, boolean flrunnable) {
 
 	hdlwindowinfo hinfo;
@@ -298,6 +300,8 @@ static boolean playersave (ptrfilespec fs, hdlfilenum fnum, short rnum, boolean 
 	
 	return (true);
 	} /*playersave*/
+
+#endif
 
 
 static boolean playerdisposerecord (void) {
@@ -332,7 +336,9 @@ static boolean playergettargetdata (short id) {
 	
 	return (id == -1); /*true if target type is generic -- a shell verb*/
 	} /*playergettargetdata*/
+
 	
+#if 0
 
 static boolean playersetsuperglobals (void) {
 	
@@ -416,6 +422,8 @@ static boolean playeropenmoviefile (FSSpec *f) {
 	return (true);
 	} /*playeropenmoviefile*/
 
+#endif
+
 
 static void playerdisposecurrentmovie (void) {
 	
@@ -439,7 +447,7 @@ static void playerdisposecurrentmovie (void) {
 	} /*playerdisposecurrentmovie*/
 
 
-boolean isplayerevent () {
+boolean isplayerevent (void) {
 	
 	/*
 	7.0b4 PBS: called from the main event loop.
@@ -633,9 +641,11 @@ static void playerquit (void) {
 	} /*playerquit*/
 
 
-static boolean playeractivate (void) {
+static void playeractivate (boolean fl) {
 
-	return (true);	
+	#pragma unused (fl)
+
+	return;	
 	} /*playeractivate*/
 
 
@@ -644,8 +654,6 @@ static void playeridle (void) {
 	/*
 	7.0b4 PBS: idle routine.
 	*/
-	
-	boolean fl =false;
 	
 	if (currentcontroller != nil) {
 		

@@ -531,7 +531,7 @@ static boolean visitprocessthreads (pascal boolean (*visit) (hdlthreadglobals, l
 	boolean fl = false;
 	
 #ifdef landinclude
-	if (landvisitsleepingthreads (visit, refcon))
+	if (landvisitsleepingthreads ((landqueuepopcallback) visit, refcon))
 		return (true);
 #endif
 	
@@ -753,7 +753,7 @@ boolean processdisposecode (hdltreenode hcode) {
 			processkill (x); /*dispose or mark as killed for later disposal*/
 			
 			/*
-			assert (!(**x).flrunning); /*if this can happen, maybe generate langerror?%/
+			assert (!(**x).flrunning); /%if this can happen, maybe generate langerror?%/
 			
 			deletefromprocesslist (x);
 			
@@ -2043,7 +2043,7 @@ static pascal boolean findlatest1shotvisit (hdlthreadglobals hthread, long refco
 	register hdlthreadglobals hg = getthreadglobals (hthread);
 	register hdlprocessrecord hp = (hdlprocessrecord) (**hg).hprocess;
 	
-	/***if ((hp != nil) && ((**hg).hccglobals != nil)) { /*a living process*/
+	//if ((hp != nil) && ((**hg).hccglobals != nil)) { /*a living process*/
 	
 	if ((hp != nil) && (**hp).floneshot && !(**hg).flthreadkilled) { /*a living 1shot process*/
 		
@@ -2061,16 +2061,8 @@ static pascal boolean findlatest1shotvisit (hdlthreadglobals hthread, long refco
 	} /*findlatest1shotvisit*/
 
 
-#if flruntime
+boolean abort1shotprocess (void) {
 
-boolean abort1shotprocess (void)
-
-#else
-
-static boolean abort1shotprocess (void)
-
-#endif
-	{
 	/*
 	kill the most recently sharted 1-shot process we find.  maybe there's a 
 	better way to  connect cmd-period with a particular process, but this 
@@ -2259,24 +2251,25 @@ void exitprocessthread (void *result) {
 	
 	register short i;
 	ThreadID idthread;
-	boolean flrecycle = false; /*default%/
+	boolean flrecycle = false; /%default%/
 	
 	GetCurrentThread (&idthread);
 	
 	for (i = 0; i < threadpoolsize; ++i) {
 		
-		if (threadpool [i] == idthread) { /*came from the pool...%/
+		if (threadpool [i] == idthread) { /%came from the pool...%/
 			
 			threadpool [i] = kNoThread;
 			
-			flrecycle = true; /*...return to the pool%/
+			flrecycle = true; /%...return to the pool%/
 			
 			break;
 			}
 		}
 	
 	DisposeThread (kCurrentThread, result, flrecycle)
-	} /*exitprocessthread*/
+	} /%exitprocessthread%/
+*/
 
 
 hdlprocessthread getcurrentthread (void) {
@@ -2318,9 +2311,9 @@ boolean processpsuedothread (tythreadmaincallback threadmain, tythreadmainparams
 	} /*processpsuedothread*/
 
 
-static void disposeprocessthread (hdlthreadglobals hglobals) {
+static void disposeprocessthread (hdlthreadglobals htread) {
 	
-	disposethreadglobals (hglobals);
+	disposethreadglobals (htread);
 	
 	--ctprocessthreads;
 	} /*disposeprocessthread*/
@@ -2371,9 +2364,9 @@ boolean newprocessthread (tythreadmaincallback threadmain, tythreadmainparams th
 	/*
 	for (i = 0; i < threadpoolsize; ++i) {
 		
-		if (threadpool [i] == kNoThread) { /*must have come from the pool...%/
+		if (threadpool [i] == kNoThread) { /%must have come from the pool...%/
 			
-			threadpool [i] = idthread; /*...keep track of who owns this slot%/
+			threadpool [i] = idthread; /%...keep track of who owns this slot%/
 			
 			break;
 			}
@@ -2440,7 +2433,7 @@ hdlprocessthread nthprocessthread (long n) {
 	} /*nthprocessthread*/
 
 
-static pascal boolean wakeupvisit (hdlthreadglobals hthread, long refcon) {
+static pascal boolean wakeupvisit (Handle hthread, long refcon) {
 	
 	/*
 	8/31/92 dmb: make sure that the thread we're trying to kill isn't 
@@ -2542,11 +2535,11 @@ static boolean initmainprocessthread (void) {
 		return (false);
 		}
 	
-	threadcallbacks.disposecallback = disposeprocessthread;
+	threadcallbacks.disposecallback = (tythreadglobalscallback) &disposeprocessthread;
 	
-	threadcallbacks.swapincallback = swapinthreadglobals;
+	threadcallbacks.swapincallback = (tythreadglobalscallback) &swapinthreadglobals;
 	
-	threadcallbacks.swapoutcallback = copythreadglobals;
+	threadcallbacks.swapoutcallback = (tythreadglobalscallback) &copythreadglobals;
 	
 	initmainthread (hglobals);
 	
@@ -2775,7 +2768,7 @@ unsigned long processstackspace (void) {
 			unsigned long currentThread;
 			//Changed this to wored in OSX kCurrentThread wasn't working
 			//for some reason.
-			OSErr anErr = GetCurrentThread(&currentThread);
+			GetCurrentThread(&currentThread);
 			if (ThreadCurrentStackSpace (currentThread, &space) == noErr)
 				return (space);
 			}
@@ -3123,11 +3116,9 @@ static void agentscheduler (void) {
 		if ((**hp).flsleepinbackground && !shellisactive ())
 			continue;
 		*/
-		/*
-		/*
-		(**hp).sleepuntil++; //6.1b8 AR: old rescheduling code by dmb -- commented out
-		*/
-
+		
+		//(**hp).sleepuntil++; //6.1b8 AR: old rescheduling code by dmb -- commented out
+		
 		(**hp).sleepuntil = x + 1; /*6.1b8 AR: reschedule for a second later*/
 
 		(**hlist).ctrunning++;
@@ -3240,7 +3231,7 @@ void processscheduler (void) {
 		}
 	
 	/*
-	if (globalsstack.top > 1) { /*can't keep things clean if more than 1 window pushed%/
+	if (globalsstack.top > 1) { /%can't keep things clean if more than 1 window pushed%/
 		
 		return;
 		}

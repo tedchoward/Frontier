@@ -62,7 +62,7 @@ void zoomsetdefaultrect (WindowPtr w, Rect r) {
 /*
 void middlerect (Rect rorig, Rect *rmiddle) {
 	
-	/*
+	/%
 	compute a rectangle which is at or near the center of rorig of 
 	minimum dimensions.
 	%/
@@ -73,8 +73,9 @@ void middlerect (Rect rorig, Rect *rmiddle) {
 	
 	r.top = r.bottom = rorig.top + ((rorig.bottom - rorig.top) / 2);
 	
-	*rmiddle = r; /*return value%/
-	} /*middlerect*/
+	*rmiddle = r; /%return value%/
+	} /%middlerect%/
+*/
 
 
 static short zoomblend (short i1, short i2) {
@@ -214,8 +215,8 @@ void zoomfrommiddle (Rect r) {
 	middlerect (r, &rmiddle);
 	
 	zoomrect (&rmiddle, &r, true);
-	} /*zoomfrommiddle*/
-	
+	} /%zoomfrommiddle%/
+*/	
 
 void zoomport (Rect rsource, WindowPtr w, boolean flzoomup) {
 
@@ -397,7 +398,7 @@ void zoomtoorigin (WindowPtr w) {
 /*
 boolean zoomtempwindow (boolean flzoom, short height, short width, WindowPtr *w) {
 	
-	/*
+	/%
 	a temp window is like the one used in the About... command.
 	
 	10/18/91 DW: color!
@@ -406,7 +407,7 @@ boolean zoomtempwindow (boolean flzoom, short height, short width, WindowPtr *w)
 	register WindowPtr x;
 	Rect r, rsource;
 	
-	/*
+	/%
 	SetRect (&r, 0, 0, width, height);
 	
 	x = NewWindow (nil, &r, zerostring, false, altDBoxProc, (WindowPtr) -1L, false, 0);
@@ -421,12 +422,12 @@ boolean zoomtempwindow (boolean flzoom, short height, short width, WindowPtr *w)
 	
 	if (!newcolorwindow (height, width, w)) {
 	
-		sysbeep (); /*instead of showing window%/
+		sysbeep (); /%instead of showing window%/
 		
 		return (false);
 		}
 	
-	x = *w; /*copy into register%/
+	x = *w; /%copy into register%/
 	
 	pushport (x);
 	
@@ -441,10 +442,10 @@ boolean zoomtempwindow (boolean flzoom, short height, short width, WindowPtr *w)
 	else
 		ShowWindow (x);
 	
-	*w = x; /*return pointer to window record%/
+	*w = x; /%return pointer to window record%/
 	
 	return (true);
-	} /*zoomtempwindow%/
+	} /%zoomtempwindow%/
 	
 	
 void closetempwindow (boolean flzoom, WindowPtr w) {
@@ -465,7 +466,7 @@ void closetempwindow (boolean flzoom, WindowPtr w) {
 		
 		popport ();
 		}
-	} /*closetempwindow%/
+	} /%closetempwindow%/
 
 
 void modaltempwindow (WindowPtr w, void (*updateproc) ()) {
@@ -487,7 +488,7 @@ void modaltempwindow (WindowPtr w, void (*updateproc) ()) {
 			case keyDown: case autoKey: case mouseDown:		
 				return;
 				
-			case updateEvt:	/*handle updates, he might be using Pyro!%/
+			case updateEvt:	/%handle updates, he might be using Pyro!%/
 				if ((WindowPtr) (ev.message) == x) {
 				
 					pushport (x);
@@ -503,9 +504,10 @@ void modaltempwindow (WindowPtr w, void (*updateproc) ()) {
 									
 				break;
 
-			} /*switch%/
-		} /*while%/
-	} /*modaltempwindow*/
+			} /%switch%/
+		} /%while%/
+	} /%modaltempwindow%/
+*/
 	
 
 void zoominit (void) {
