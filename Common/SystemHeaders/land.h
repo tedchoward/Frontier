@@ -434,7 +434,7 @@ typedef struct tylandglobals {
 	
 	landeventrecordcallback breakembraceroutine; /*if non-nil, break a synchronous deadly embrace*/
 	
-		/*landcallback menuscriptcompleteroutine; /*if non-nil, callback when script completes*/
+		/*landcallback menuscriptcompleteroutine; /%if non-nil, callback when script completes*/
 	
 	/*names that begin with "mac" are inherently NOT cross-platform*/
 	
@@ -470,7 +470,7 @@ typedef struct tylandglobals {
 	
 	short maxqueuedepth; /*for stats window -- the longest chain in the system 6 queue*/
 	
-	/*Handle mactypes; /*for system 7, maps our param types to Apple's*/
+	/*Handle mactypes; /%for system 7, maps our param types to Apple's*/
 	
 	long initialfreemem; /*for stats window -- the amount of memory free after landinit*/
 	
