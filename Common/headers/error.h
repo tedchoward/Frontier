@@ -1,0 +1,51 @@
+
+/******************************************************************************
+
+    UserLand Frontier(tm) -- High performance Web content management,
+    object database, system-level and Internet scripting environment,
+    including source code editing and debugging.
+
+    Copyright (C) 1992-2004 UserLand Software, Inc.
+
+    This program is free software; you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation; either version 2 of the License, or
+    (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program; if not, write to the Free Software
+    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+
+******************************************************************************/
+
+#define errorinclude
+
+
+/*prototypes*/
+
+extern setoserrorparam (bigstring);
+
+extern OSErr getoserror (void);
+
+extern boolean getsystemerrorstring (OSErr, bigstring);
+
+extern boolean memoryerror (void);
+
+extern boolean oserror (OSErr);
+
+#ifdef WIN95VERSION
+	extern boolean winerror (void);
+	
+	extern boolean getwinerrormessage (OSErr, bigstring);
+#endif
+
+extern boolean initerror (void);
+
+
+
+

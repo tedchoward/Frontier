@@ -1,0 +1,27 @@
+/*
+ *	shellheaders.pch
+ *
+ *	Script to generate the 'shellheaders<xxx>' precompiled header for Metrowerks C/C++.
+ *  Copyright © 1993 metrowerks inc.  All rights reserved.
+ */
+
+/*
+ *	Support for automatically naming the precompiled header file ...
+ */
+#if __POWERPC__
+#pragma precompile_target "shellheadersPPC"
+#elif __CFM68K__
+#pragma precompile_target "shellheadersCFM68K"
+#else
+#pragma precompile_target "shellheaders68K"
+#endif
+
+/*
+ *	Now just include the "shellheaders.c" source file ...
+ */
+
+#pragma once on
+
+#include "shellheaders.c"
+
+
