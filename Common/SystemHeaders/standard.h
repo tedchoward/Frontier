@@ -377,8 +377,6 @@ void pwsetstringlength(char * bs, short len);
 
 #ifdef MACVERSION
 #define gettickcount() TickCount()
-/* #define getlongermilliseconds() (unsigned long long)FastMilliseconds() */
-#define getmilliseconds() (long)FastMilliseconds()
 
 typedef short hdlfilenum;
 

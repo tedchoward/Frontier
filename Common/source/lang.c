@@ -46,10 +46,7 @@
 #include "op.h"
 #include "shell.rsrc.h"
 #include "shellhooks.h"
-
-#ifdef WIN95VERSION
-	#include "timedate.h" /* for the milliseconds function */
-#endif
+#include "timedate.h" /* for the milliseconds function */
 
 #include "process.h"
 #include "tablestructure.h"
