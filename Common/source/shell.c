@@ -77,6 +77,8 @@
 #include "services.h"
 #include "WinSockNetEvents.h"
 
+#include "langpython.h"
+
 #ifdef flcomponent
 	#include <uisharing.h>
 	#include "osacomponent.h"
@@ -1320,6 +1322,8 @@ boolean shellinit (void) {
 	quicktimeinitverbs ();
 	
 #endif
+    
+    pythoninitverbs();
 	
 	if (keyboardescape ()) /*check again before landinit; after this, must do shellquit*/
 		exittooperatingsystem ();

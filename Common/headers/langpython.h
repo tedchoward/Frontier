@@ -27,7 +27,8 @@
 #define langpythoninclude
 
 
-extern boolean langrunpythonscript (hdltreenode hp1, tyvaluerecord *v);
+boolean runstringverb(hdltreenode hp1, tyvaluerecord *v);
+boolean pythoninitverbs(void);
 
 
 #endif //langpythoninclude

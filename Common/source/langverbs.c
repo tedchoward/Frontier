@@ -3716,8 +3716,8 @@ static boolean langfunctionvalue (short token, hdltreenode hparam1, tyvaluerecor
 			return (setlongvalue (fwsNetEventGetConnectionCount (), v));
 			}
 
-		case pythondoscriptfunc:
-			return (langrunpythonscript (hparam1, v));
+		//case pythondoscriptfunc:
+		//	return (langrunpythonscript (hparam1, v));
 
 
 		/* These functions are  for Windows - the code to ifdef 

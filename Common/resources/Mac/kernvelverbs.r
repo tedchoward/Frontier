@@ -1097,3 +1097,14 @@ resource 'EFP#' (idregexpverbs, "re") { /*2003-04-22 AR: regular expression verb
 	}
 };
 
+resource 'EFP#' (idpythonverbs, "python") { /* 2004-11-3 ddb: python verbs */
+    {
+        "python", false, {
+            "startinterpreter",
+            "stopinterpreter",
+            "runstring"
+        }
+    }
+};
+
+
