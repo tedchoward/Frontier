@@ -59,7 +59,7 @@
 #include "kernelverbdefs.h"
 #include "shell.rsrc.h"
 #include "timedate.h"
-#include "winsocknetevents.h"
+#include "WinSockNetEvents.h"
 #ifdef flcomponent
 #include "osacomponent.h"
 #endif
