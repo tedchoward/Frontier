@@ -26,6 +26,7 @@
 #ifndef langxcmdinclude
 #define langxcmdinclude
 
+#if TARGET_API_MAC_OS8	/* 2004-10-23 aradke: XCMDs are not supported on Carbon */
 
 #ifndef	__HYPERXCMD__
 
@@ -46,4 +47,7 @@ extern void truncatecstringhandle (Handle);
 extern void xcmdcallback (void);
 
 
-#endif
+#endif /*TARGET_API_MAC_OS8*/
+
+
+#endif /*langxcmdinclude*/

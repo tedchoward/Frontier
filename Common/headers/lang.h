@@ -40,10 +40,7 @@
 #endif
 
 #if __powerc
-	
-	#include <fp.h>
 	#define flfindbug 0
-
 #endif
 
 

@@ -23,6 +23,7 @@
 
 ******************************************************************************/
 
+#ifndef shellhooksinclude
 #define shellhooksinclude
 
 
@@ -93,5 +94,5 @@ extern boolean shellpushwakeuphook (wakeuphookcallback);
 extern boolean shellcallwakeuphooks (struct tythreadglobals **);
 
 
-
+#endif /*shellhooksinclude*/
 

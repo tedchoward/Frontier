@@ -30,10 +30,6 @@
 #pragma message( "**Compiling " __FILE__ )
 #endif
 
-#ifdef MACVERSION
-	#include <Processes.h>
-#endif
-
 #define diskfontnamelength 32 /*number of bytes for a font name stored on disk*/
 
 typedef char diskfontstring [diskfontnamelength + 1];

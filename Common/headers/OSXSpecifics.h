@@ -32,17 +32,6 @@
 	
 */
 
-enum {
-	kQDUseDefaultTextRendering 	= 0,			// Sets whatever is specified in system defaults.
-												// Currently sets kQDUseTrueTypeScalerGlyphs if nothing is specified.
-	kQDUseTrueTypeScalerGlyphs  	= (1 << 0),	// bit 0
-	kQDUseCGTextRendering		= (1 << 1),	// bit 1
-	kQDUseCGTextMetrics			= (1 << 2),	// bit 2
-	kQDSupportedFlags			= kQDUseTrueTypeScalerGlyphs | kQDUseCGTextRendering | kQDUseCGTextMetrics,	kQDDontChangeFlags	= 0xFFFFFFFF	// to request the current state, without changing anything
-};
-
-
-
 // BSD function prototypes
 /*
 int	execv( const char *path, char *const argv[] );
