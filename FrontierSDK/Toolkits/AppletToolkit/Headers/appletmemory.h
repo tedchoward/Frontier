@@ -4,10 +4,16 @@
 /*© copyright 1991-96 UserLand Software, Inc. All Rights Reserved.*/
 
 
-//#ifdef isFrontier
-//	#include "memory.h"
-//#else
-#ifndef appletmemoryinclude
+#ifdef isFrontier
+
+	/* TRT - 20 Mar 2005 - 10.1a2 - take advantage of Frontier memory management (debugging) */
+	#include "memory.h"
+
+	boolean pushhandleonhandle (Handle, Handle);
+
+	boolean pushathandlestart (ptrvoid, long, Handle);
+
+#elif !defined(appletmemoryinclude)
 #define appletmemoryinclude
 
 
