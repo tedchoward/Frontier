@@ -40,7 +40,9 @@
 #include "tablestructure.h"
 #include "resources.h"
 #include "WinSockNetEvents.h"
+#if TARGET_API_MAC_CARBON == 1
 #include "CallMachOFrameWork.h" /* 2004-11-19 creedon */
+#endif
 
 
 #define str_isPike				"\x06" "isPike"
@@ -222,6 +224,16 @@ static boolean initenvironment (hdlhashtable ht) {
 		boolean isMacOsClassic, isServer; /* 2004-11-19 creedon */
 		unsigned long x;
 		
+		#if TARGET_API_MAC_CARBON == 1 /*PBS 7.028: system.environment.isCarbon*/
+		
+			/* 2004-11-19 creedon - added hcommand, hreturn, bs, response */
+			Handle hcommand, hreturn;
+			bigstring bs;
+			UInt32 response;
+			OSErr err;
+		
+		#endif
+		
 		gestalt (gestaltSystemVersion, &x);
 		
 		langassignbooleanvalue (ht, str_isMac, true);
@@ -243,11 +255,6 @@ static boolean initenvironment (hdlhashtable ht) {
 		
 		#if TARGET_API_MAC_CARBON == 1 /*PBS 7.028: system.environment.isCarbon*/
 
-			/* 2004-11-19 creedon - added hcommand, hreturn, bs, response */
-			Handle hcommand, hreturn;
-			bigstring bs;
-			UInt32 response;
-			
 			langassignbooleanvalue (ht, str_isCarbon, true);
 			
 			/* 2004-11-19 creedon - get mac os build number, full display name, is server*/
@@ -286,7 +293,7 @@ static boolean initenvironment (hdlhashtable ht) {
 			/* 2004-11-19 creedon - is mac os classic */
 			/* This needs to be checked on Mac OS Classic as well as Mac OS 9 proper. */
 			
-			OSErr err = gestalt (gestaltMacOSCompatibilityBoxAttr, &response);
+			err = gestalt (gestaltMacOSCompatibilityBoxAttr, &response);
 			
 			if ((err == noErr) && ((response & (1 << gestaltMacOSCompatibilityBoxPresent)) != 0))
 				isMacOsClassic = true;
@@ -304,7 +311,7 @@ static boolean initenvironment (hdlhashtable ht) {
 			
 			langassignbooleanvalue (ht, str_isCarbon, false);
 
-			bsos = "\x06" "Mac OS" /* 2004-11-19 creedon - Mac OS, used to be Macintosh*/ 
+			copystring ("\x06" "Mac OS", bsos); /* 2004-11-19 creedon - Mac OS, used to be Macintosh*/ 
 			
 			isMacOsClassic = true; /* 2004-11-19 creedon */
 			
