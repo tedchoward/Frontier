@@ -36,86 +36,17 @@
 #endif
 
 
-#include "osincludes.h"		/* operating system headers */
-
-
 #ifdef WIN95VERSION
-	#define PACKFLIPPED		/* enable little endian / big endian conversion for database file functions */
-	#define FRONTIERCOM 1
-	#define FRONTIERWEB 0
-	#undef winhybrid
-	#define fljustpacking 0
-	#undef flcomponent
-	#define gray3Dlook 1
-	#define noextended 1
-	#define NEWFILESPECTYPE 1	
 	#ifndef __MWERKS__
 		#pragma warning (disable: 4244 4761; error: 4013)
 	#endif
 #endif /* WIN95VERSION */
 
 
-#ifdef MACVERSION
-	#define flcomponent 1
-	#ifdef __powerc
-		#define noextended 1
-	#else
-		#define noextended 0
-	#endif
-#endif /* MACVERSION */
+#include "osincludes.h"		/* operating system headers */
 
 
-#undef MEMTRACKER		/* define as 1 to enable tracking of memory allocations */
-#undef fltrialsize		/* define as 1 to build trial version with expiration logic */
-#undef DATABASE_DEBUG	/* define as 1 to enable database debugging and logging code */
-
-
-#undef fltrialsize
-#undef flruntime
-#define fldebug 1
-#define flnewfeatures 1
-#define version42orgreater 1
-#define version5orgreater 1
-#define isFrontier 1
-#undef dropletcomponent
-#undef fliowa
-#define threadverbs 1
-#define oplanglists 1
-#define flregexpverbs 1
-#undef lazythis_optimization
-#undef langexternalfind_optimization
-#define PASCALSTRINGVERSION 1
-#define SPEED 1
-
-#ifdef MACVERSION
-	#define macBirdRuntime	1
-	#undef appRunsCards			/*for Applet Toolkit, Iowa Runtime is baked in*/
-	#define iowaRuntimeInApp	/*iowa code knows it's in an app*/
-	#define iowaRuntime			/*iowa code knows it's not compiling in Card Editor*/
-	#define cmdPeriodKillsCard
-	#define IOAinsideApp		/*all the IOA's are baked into the app*/
-	#undef coderesource			/*we're not running inside a code resource*/
-#endif
-
-#ifdef WIN95VERSION
-	#undef macBirdRuntime
-	#undef appRunsCards			/*for Applet Toolkit, Iowa Runtime is baked in*/
-	#undef iowaRuntimeInApp		/*iowa code knows it's in an app*/
-	#undef iowaRuntime			/*iowa code knows it's not compiling in Card Editor*/
-	#undef cmdPeriodKillsCard
-	#undef IOAinsideApp			/*all the IOA's are baked into the app*/
-	#undef coderesource			/*we're not running inside a code resource*/
-#endif
-
-
-#define Rez true
-#define DeRez false
-
-
-#define SystemSevenOrLater 1
-
-
-#define fltracklocaladdresses 0		/* enable code for tracking deleted local addresses */
+#include "frontierdefs.h"	/* global pre-processor defines */
 
 
 #endif /*__FRONTIER_H__*/
