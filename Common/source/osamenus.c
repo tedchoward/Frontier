@@ -29,6 +29,11 @@
 /*Forked. Carbon version at the top, "good" version at the bottom. This file should be
 reconciled later.*/
 
+/*
+	2004-10-28 aradke: Menusharing won't work on Carbon.
+	This file is only relevant for the classic Mac OS version.
+*/
+
 #if TARGET_API_MAC_CARBON == 1
 
  
