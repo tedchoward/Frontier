@@ -26,22 +26,6 @@
 #define shellprintinclude /*so other includes can tell if we've been loaded*/
 
 
-#if MACVERSION
-	#if TARGET_API_MAC_CARBON == 1
-	#include <PMApplication.h>
-	#include <PMDefinitions.h>
-	//#include <PMCore.h>
-	#else	
-	#include <Printing.h>
-	#endif
-		
-#endif
-
-#if	WIN95VERSION
-
-#endif
-
-
 typedef struct typrintinfo {
 	
 	Rect margins; /*the margins we're enforcing to calculate paperrect*/
