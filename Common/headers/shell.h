@@ -46,6 +46,12 @@
 
 #endif
 
+#ifndef dbinclude
+
+	#include "db.h"
+
+#endif
+
 #ifdef WIN95VERSION
 extern HWND findreplacewindow;
 #endif
@@ -842,7 +848,7 @@ extern boolean shellsizewindowhidden (hdlwindowinfo, short, short);
 
 extern boolean shellzoomwindow (hdlwindowinfo, boolean);
 
-extern boolean shellgetdatabase (WindowPtr, struct tydatabaserecord ***);
+extern boolean shellgetdatabase (WindowPtr, hdldatabaserecord*);
 
 extern void shellwindowmenudirty (void); /*shellwindowmenu.c*/
 
