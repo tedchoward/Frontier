@@ -573,7 +573,7 @@ resource 'STR#' (129, "Defaults", purgeable) {
 		"Radio UserLandª", /*PBS 7.0b1: name change to Radio UserLand.*/
 #else
 		/* [1] */
-		"UserLand Frontierª",
+		"Frontier", /* 2005-01-04 creedon - removed UserLand and (tm) for open source release */
 #endif
 		/* [2] */
 		"Untitled",
@@ -610,7 +610,7 @@ resource 'STR#' (130, "Interface", locked, preload) {
 		/* [6] */
 		"Command Key:",
 		/* [7] */
-		"Internal error#^0.  Please report to UserLand Technical Support",
+		"Internal error#^0.  Please report to <http://groups.yahoo.com/group/frontierkernel/>",
 		/* [8] */
 		"; ",
 		/* [9] */
@@ -2684,7 +2684,7 @@ data 'hfdr' (-5696, purgeable) {
 };
 
 resource 'STR ' (256) {
-	"UserLand Frontierª\n\nPowerful cross-platform web scripting.\n\nUse Frontier to manage large, dynamic websites with multiple authors."
+	"Frontierª\n\nHigh performance Web content management, object database, system-level and Internet scripting environment, including source code editing and debugging"
 };
 
 
