@@ -1531,7 +1531,7 @@ void osapostclientcallback (hdlcomponentglobals hglobals) {
 	} /*osapostclientcallback*/
 
 
-#if TARGET_API_MAC_CLASSIC
+#if TARGET_API_MAC_OS8
 	
 	static UniversalProcPtr installpatch (short trapnum, GNEUPP patch) {
 		
@@ -1708,7 +1708,7 @@ THz osasetclientzone (hdlcomponentglobals hglobals) {
 	} /*osasetclientzone*/
 
 
-#if TARGET_API_MAC_CLASSIC
+#if TARGET_API_MAC_OS8
 
 static pascal Boolean osagetnextevent (short mask, EventRecord *event) {
 	
@@ -1757,7 +1757,7 @@ static pascal Boolean osagetnextevent (short mask, EventRecord *event) {
 	return (fl);
 	} /*osagetnextevent*/
 
-#endif	/*TARGET_API_MAC_CLASSIC*/
+#endif	/*TARGET_API_MAC_OS8*/
 
 
 static pascal OSErr osacreateevent (AEEventClass class, AEEventID id,

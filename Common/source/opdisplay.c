@@ -1597,6 +1597,11 @@ boolean opscroll (tydirection dir, boolean flpage, long ctscroll) {
 				fl = ophorizscroll (ctscroll);
 					
 			break;
+		
+		default:
+			/* do nothing */
+			break;
+			
 		} /*switch*/
 				
 	opdirtyview ();

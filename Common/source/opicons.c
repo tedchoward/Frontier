@@ -261,6 +261,11 @@ void opdrawarrowicon (hdlheadrecord hnode, long lnum, tydirection arrowdirection
 			
 		case right:
 			iconnum = righticon; break;
+		
+		default:
+			/* do nothing*/
+			break;
+			
 		} /*switch*/
 		
 	opdrawheadicon (iconnum, &iconrect, flselected);

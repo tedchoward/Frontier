@@ -2307,6 +2307,10 @@ static boolean getbinarylistdesc (boolean flrecord, tyvaluerecord val, AEDescLis
 				}
 			
 			break;
+		
+		default:
+			/* do nothing */
+			break;
 		}
 	
 	langerror (badipclistvalerror);

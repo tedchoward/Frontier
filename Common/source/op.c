@@ -1046,6 +1046,10 @@ boolean opmotionkey (tydirection dir, long units, boolean flextendselection) {
 				opeditsetselpoint (selpt); //... maintaining horizontal cursor position
 				
 				break;
+
+			default:
+				/* do nothing */
+				break;
 			} 
 		
 	return (true);
@@ -1516,6 +1520,10 @@ boolean opkeystroke (void) {
 				dir = down;
 				
 				break;
+
+			default:
+				/* do nothing */
+				break;
 			}
 		
 		goto motion;
@@ -1540,6 +1548,10 @@ boolean opkeystroke (void) {
 				units = 1;
 				
 				break;
+
+			default:
+				/* do nothing */
+				break;
 			}
 		
 		goto motion;
@@ -1562,6 +1574,11 @@ boolean opkeystroke (void) {
 					dir = flatdown;
 					
 					break;
+
+				default:
+					/* do nothing */
+					break;
+
 				}
 			}
 		else { /*default arrow keys, structure mode*/

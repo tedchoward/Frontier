@@ -87,13 +87,13 @@ tythreadcallbacks threadcallbacks;
 
 static pascal void copythreadcontext (ThreadID hthread, void * hglobals) {
 	
-#if TARGET_API_MAC_CLASSIC
+#if TARGET_API_MAC_OS8
 	long curA5 = SetUpAppA5 ();
 #endif
 	
 	(*threadcallbacks.swapoutcallback) (hglobals);
 	
-#if TARGET_API_MAC_CLASSIC
+#if TARGET_API_MAC_OS8
 	RestoreA5 (curA5);
 #endif
 	} /*copythreadcontext*/
@@ -101,13 +101,13 @@ static pascal void copythreadcontext (ThreadID hthread, void * hglobals) {
 
 static pascal void swapinthreadcontext (ThreadID hthread, void * hglobals) {
 	
-#if TARGET_API_MAC_CLASSIC
+#if TARGET_API_MAC_OS8
 	long curA5 = SetUpAppA5 ();
 #endif
 	
 	(*threadcallbacks.swapincallback) (hglobals);
 	
-#if TARGET_API_MAC_CLASSIC
+#if TARGET_API_MAC_OS8
 	RestoreA5 (curA5);
 #endif
 	} /*swapinthreadcontext*/
@@ -115,7 +115,7 @@ static pascal void swapinthreadcontext (ThreadID hthread, void * hglobals) {
 
 static pascal void disposethreadcontext (ThreadID hthread, void * hglobals) {
 	
-#if TARGET_API_MAC_CLASSIC
+#if TARGET_API_MAC_OS8
 	long curA5 = SetUpAppA5 ();
 #endif
 	//Code change by Timothy Paustian Thursday, May 11, 2000 4:44:59 PM
@@ -132,7 +132,7 @@ static pascal void disposethreadcontext (ThreadID hthread, void * hglobals) {
 		
 	(*threadcallbacks.disposecallback) (hglobals);
 	
-#if TARGET_API_MAC_CLASSIC
+#if TARGET_API_MAC_OS8
 	RestoreA5 (curA5);
 #endif
 	} /*disposethreadcontext*/

@@ -70,6 +70,9 @@ void gettextdisplayinfo (Rect r, short fontnum, short fontsize, short fontstyle,
 	
 	switch (spacing) {
 		
+		case singlespaced:
+			break;
+		
 		case oneandalittlespaced:
 			r3 += 1; break;
 	

@@ -813,6 +813,10 @@ hdlheadrecord oprepeatedbump (tydirection dir, long ctbumps, hdlheadrecord hstar
 				} /*for*/	
 				
 			break;
+		
+		default:
+			/* do nothing */
+			break;
 			
 		} /*switch*/
 	

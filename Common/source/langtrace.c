@@ -122,12 +122,12 @@ void langsyntaxtrace (boolean fl) {
 	
 	#ifdef fldebug
 	
-	fllangtrace = fl; /*set global that turns the syntax trace on or off%/
+	fllangtrace = fl; /%set global that turns the syntax trace on or off%/
 	
 	if (fl) 
 		langstarttrace ();
 	
 	#endif
-	} /*langsyntaxtrace*/
-	
+	} /%langsyntaxtrace%/
+*/	
 
