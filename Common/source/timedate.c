@@ -1538,7 +1538,21 @@ long getcurrenttimezonebias(void) {
 
 #ifdef WIN95VERSION
 
-static unsigned long long getlongermilliseconds (void) {
+//static unsigned long long getlongermilliseconds (void) {
+//	LARGE_INTEGER counter, freq;
+//	unsigned long long freqLong;
+//	
+//	QueryPerformanceCounter (&counter);  /* counter hits since boot-up */
+//	
+//	QueryPerformanceFrequency (&freq);   /* frequency of coutner hits (per second) */
+//	
+//	freqLong = ( freq.LowPart | ( freq.HighPart << 32 ) ) / 1000;
+//	
+//	return ( counter.LowPart | ( counter.HighPart << 32 ) ) / freqLong;
+//} /* getlongermilliseconds */
+
+
+extern long getmilliseconds(void) {
 	LARGE_INTEGER counter, freq;
 	unsigned long long freqLong;
 	
@@ -1546,14 +1560,9 @@ static unsigned long long getlongermilliseconds (void) {
 	
 	QueryPerformanceFrequency (&freq);   /* frequency of coutner hits (per second) */
 	
-	freqLong = ( freq.LowPart | ( freq.HighPart << 32 ) ) / 1000;
+	freqLong = ( freq.LowPart | ( freq.HighPart << 32 ) ) / 1000; /* per millisecond */
 	
-	return ( counter.LowPart | ( counter.HighPart << 32 ) ) / freqLong;
-} /* getlongermilliseconds */
-
-
-extern long getmilliseconds(void) {
-	return ((long) getlongermilliseconds ());
+	return ((long) ((counter.LowPart | (counter.HighPart << 32)) / freqLong));
 } /* getmilliseconds */
 
 #endif
