@@ -54,10 +54,10 @@
 #define	frontier_subminor_version_bcd	0x00  	/* sub and minor version in BCD notation */
 
 #define frontier_stage_code				0x40	/* dev = 0x20, alpha = 0x40, beta = 0x60, final = 0x80 */
-#define	frontier_revision_level			1		/* for non-final releases only */
-#define	frontier_build_number			1		/* increment by one for every release, final or not */
+#define	frontier_revision_level			2		/* for non-final releases only */
+#define	frontier_build_number			2		/* increment by one for every release, final or not */
 
-#define frontier_version_string			"10.0a1"
+#define frontier_version_string			"10.0a2"
 
 
 #define	copyright_year_string	"2004"
