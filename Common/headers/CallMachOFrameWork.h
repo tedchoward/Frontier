@@ -32,6 +32,8 @@ extern boolean unixshellcall (Handle hcommand, Handle hreturn);
 
 extern OSStatus LoadFrameworkBundle(CFStringRef framework, CFBundleRef *bundlePtr);
 
+extern void *getframeworkfuncptr (CFStringRef framework, CFStringRef functionname);
+
 extern void *convertcfmtomachofuncptr (void *);
 
 extern void disposemachofuncptr (void *);

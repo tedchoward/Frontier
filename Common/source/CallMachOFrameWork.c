@@ -182,6 +182,22 @@ OSStatus LoadFrameworkBundle(CFStringRef framework, CFBundleRef *bundlePtr) /*Ad
 } /*LoadFrameworkBundle*/
 
 
+void *getframeworkfuncptr (CFStringRef framework, CFStringRef functionname) {
+
+	/*
+	2005-01-15 aradke: give us the name of a framework and the name of a function
+	in the framework and we will retrieve a callable pointer to that function.
+	*/
+	
+	CFBundleRef bundlePtr;
+	
+	 if (LoadFrameworkBundle (framework, &bundlePtr) != noErr)
+		return (nil);
+	
+	return (CFBundleGetFunctionPointerForName (bundlePtr, functionname));
+	} /*getframeworkfuncptr*/
+
+
 static UInt32 gluetemplate[6] = {0x3D800000, 0x618C0000, 0x800C0000, 0x804C0004, 0x7C0903A6, 0x4E800420};
 
 void *convertcfmtomachofuncptr (void *cfmfp) {
