@@ -44,7 +44,7 @@
 #include "kernelverbs.h"
 #include "kernelverbdefs.h"
 #include "oplist.h"
-#include "base64.h" //for xmlvaltostring
+#include "BASE64.H" //for xmlvaltostring
 #include "langxml.h" /*7.0b21 PBS*/
 #include "process.h"
 
