@@ -41,21 +41,21 @@
 /*
 static char *iconstrings [] = {
 	
-	"\pZoom",			/*0%/
+	"\pZoom",			/%0%/
 	
-	"\pOutline", 		/*1%/
+	"\pOutline", 		/%1%/
 	
-	"\pWP-Text", 		/*2%/
+	"\pWP-Text", 		/%2%/
 	
 	nil,
 	
-	"\pTable", 			/*4%/
+	"\pTable", 			/%4%/
 	
-	"\pScript", 		/*5%/
+	"\pScript", 		/%5%/
 	
-	"\pMenuBar", 		/*6%/
+	"\pMenuBar", 		/%6%/
 	
-	"\pPicture" 		/*7%/
+	"\pPicture" 		/%7%/
 	};
 */
 
@@ -101,7 +101,7 @@ boolean tablecheckzoombutton (void) {
 	bigstring bs;
 	tyvaluerecord val;
 	
-	ixicontitle = 0; /*default%/
+	ixicontitle = 0; /%default%/
 	
 	if (tablegetcursorinfo (bs, &val)) {
 		
@@ -167,7 +167,6 @@ boolean tablecursorisrunnable (void) {
 	returns true if the value pointed to by the table cursor can be run.
 	*/
 	
-	register boolean flrunnable;
 	hdlhashtable  htable;
 	bigstring bs;
 	tyvaluerecord val;
@@ -176,34 +175,14 @@ boolean tablecursorisrunnable (void) {
 	if (!tablegetcursorinfo (&htable, bs, &val, &hnode)) 
 		return (false);
 		
-	flrunnable = false;
-	
-	switch (val.valuetype) {
-		
-		case stringvaluetype:
-			flrunnable = true;
-			
-			break;
-			
-		case externalvaluetype:
-			switch (langexternalgettype (val)) {
-				
-				case idscriptprocessor:
-					flrunnable = true;
-					
-					break;
-				} /*switch*/
-				
-			break;
-		} /*switch*/
-		
-	return (flrunnable);
+	return (val.valuetype == stringvaluetype
+			|| (val.valuetype == externalvaluetype
+					&& langexternalgettype (val) == idscriptprocessor));
 	} /*tablecursorisrunnable*/
 
 
 boolean tableruncursor (void) {
 	
-	register hdltableformats hf = tableformatsdata;
 	tyvaluerecord val;
 	hdlhashtable htable;
 	bigstring bs;
@@ -231,17 +210,21 @@ boolean tableruncursor (void) {
 			}
 		
 		case externalvaluetype:
-			switch (langexternalgettype (val)) {
+			if (langexternalgettype (val) == idscriptprocessor) {
+			
+				tablegetcursorpath (bsscript);
 				
-				case idscriptprocessor:
-					tablegetcursorpath (bsscript);
-					
-					pushstring ((ptrstring) "\x02()", bsscript);
-					
-					return (langrunstring (bsscript, bsresult));
-				} /*switch*/
+				pushstring ((ptrstring) "\x02()", bsscript);
+				
+				return (langrunstring (bsscript, bsresult));
+				} /*if*/
 				
 			break;
+
+		default:
+			/* do nothing */
+			break;
+
 		} /*switch*/
 	
 	ouch ();

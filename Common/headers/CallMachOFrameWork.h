@@ -28,6 +28,5 @@
 
 extern boolean unixshellcall (Handle hcommand, Handle hreturn);
 extern OSStatus LoadFrameworkBundle(CFStringRef framework, CFBundleRef *bundlePtr);
-static boolean unixshellcallinit (void);
 
 #endif

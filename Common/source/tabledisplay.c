@@ -69,28 +69,6 @@
 #define drawinset 4
 
 
-
-
-static void darkcolorof (RGBColor *rgb) {
-	
-	(*rgb).red -= (*rgb).red / 4;
-	
-	(*rgb).green -= (*rgb).green / 4;
-	
-	(*rgb).blue -= (*rgb).blue / 4;
-	} /*darkcolorof*/
-
-
-static void lightcolorof (RGBColor *rgb) {
-	
-	(*rgb).red += (65535 - (*rgb).red) / 3;
-	
-	(*rgb).green += (65535 - (*rgb).green) / 3;
-	
-	(*rgb).blue += (65535 - (*rgb).blue) / 3;
-	} /*lightcolorof*/
-
-
 static short opnodeindentpix (hdlheadrecord hnode) {
 
 	return ((**outlinedata).lineindent * (**hnode).headlevel);
@@ -129,8 +107,8 @@ boolean tabledrawnodeicon (const Rect *r, boolean flhighlighted, hdlheadrecord h
 	
 	ploticonresource (&r, align, transform, iconresnum);
 #endif
-	} /*tabledrawnodeicon*/
-
+	} /%tabledrawnodeicon%/
+*/
 
 static void tableprepfordraw (Rect *r) {
 	
@@ -203,7 +181,7 @@ static void tabledisplaytitle (short col, boolean flbitmap) {
 	// insetrect (&r, 1, 1);
 	
 	if (flbitmap)
-		flbitmap = openbitmap (r, getport ());
+		flbitmap = openbitmap (r, (WindowPtr) getport ());
 	
 	#if TARGET_API_MAC_CARBON == 1
 	
@@ -226,7 +204,7 @@ static void tabledisplaytitle (short col, boolean flbitmap) {
 	pendrawstring (bs);
 	
 	if (flbitmap)
-		closebitmap (getport ());
+		closebitmap ((WindowPtr) getport ());
 	
 	popstyle ();
 	} /*tabledisplaytitle*/
@@ -273,7 +251,7 @@ boolean tablechecksortorder (void) {
 /*
 static void tableupdateseparator (void) {
 	
-	/*
+	/%
 	we formalized the separator rect so we could easily experiment with different
 	ideas for showing the boundary between the titles of a table display and
 	the content of the table.
@@ -283,14 +261,15 @@ static void tableupdateseparator (void) {
 	
 	seprect = (**tableformatsdata).seprect;
 	
-	if (!shellrectneedsupdate (&seprect)) /*no intersection, nothing to do%/
+	if (!shellrectneedsupdate (&seprect)) /%no intersection, nothing to do%/
 		return;
 	
 	if ((**tableformatsdata).flprinting)
 		return;
 	
 	eraserect (seprect);
-	} /*tableupdateseparator*/
+	} /%tableupdateseparator%/
+*/
 
 
 static void tableupdategridlines (void) {
@@ -417,7 +396,6 @@ static void tablegetcellrect (hdlheadrecord hnode, const Rect *rrow, short col, 
 	return the display rectangle of the indicated column.  
 	*/
 	
-	hdltableformats hc = tableformatsdata;
 	short optextindent = opnodeindentpix (hnode) + opiconindentpix ();
 	
 	/*start with the row rect, which is really the textrect*/
@@ -529,7 +507,6 @@ boolean tableadjustcolwidth (Point ptstart, short col) {
 	
 	register hdltableformats hf = tableformatsdata;
 	register short h;
-	hdlheadrecord hnode = (**outlinedata).hline1;
 	Rect rtable, rcell;
 	Point pt;
 	short linetop, linebottom, lineh;
@@ -661,7 +638,6 @@ boolean tablegetedittextrect (hdlheadrecord hnode, const Rect *linerect, Rect *t
 	
 	hdltableformats hf = tableformatsdata;
 	short col;
-	short indent = opnodeindentpix (hnode) + opiconindentpix ();
 	
 	if (isclaydisplay (hf))
 		return (claygetedittextrect (hnode, linerect, textrect));
@@ -964,8 +940,8 @@ boolean tabledefaultdrawcell (hdlheadrecord hnode, short col, const Rect *rcell)
 static void tabledrawcell (hdlheadrecord hnode, short col, const Rect *rtext, boolean flselected, boolean flinverted) {
 	
 	Rect rcell;
-	hdloutlinerecord ho = outlinedata;
-	boolean fltextmode = (**ho).fltextmode;
+	//hdloutlinerecord ho = outlinedata;
+	//boolean fltextmode = (**ho).fltextmode;
 	
 	/*
 	if (col == namecolumn) {
@@ -1103,7 +1079,7 @@ boolean tabledrawline (hdlheadrecord hnode, const Rect *textrect, boolean flsele
 	} /*tabledrawline*/
 
 
-static void browserdrawnodeicon (const Rect *r, boolean flhighlighted, hdlheadrecord hnode) {
+void browserdrawnodeicon (const Rect *r, boolean flhighlighted, hdlheadrecord hnode) {
 	
 	tybrowserinfo browserinfo;	
 	short transform = 0;
@@ -1285,8 +1261,8 @@ boolean tablereturnkey (tydirection dir) {
 	
 	getparent
 	return (opinsertheadline (emptystring, dir, flcomment));
-	} /*tablereturnkey*/
-
+	} /%tablereturnkey%/
+*/
 
 boolean tableinitdisplay (void) {
 	

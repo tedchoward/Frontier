@@ -58,6 +58,7 @@ typedef struct tytablescrap {
 	} tytablescrap, *ptrtablescrap, **hdltablescrap;
 
 
+#if 0
 
 static boolean tablegetscrapvaluetype (Handle hscrap, tyvaluetype *type) {
 	
@@ -76,6 +77,8 @@ static boolean tablegetscrapvaluetype (Handle hscrap, tyvaluetype *type) {
 	
 	return (true);
 	} /*tablegetscrapvaluetype*/
+
+#endif
 
 
 static boolean tableexpandtodotparams (bigstring bspath, hdlhashtable *htable, bigstring bsname) {
@@ -370,10 +373,14 @@ static boolean tableexportvaluescrap (Handle hscrap, tyscraptype totype, Handle 
 	} /*tableexportvaluescrap*/
 
 
+#ifndef odbbrowser
+
 static void tabledisposescrap (hdltablescrap hscrap) {
 	
 	disposehandle ((Handle) hscrap);
 	} /*tabledisposescrap*/
+
+#endif
 
 
 boolean tablescraphook (Handle hscrap) {
@@ -413,7 +420,9 @@ boolean tablescraphook (Handle hscrap) {
 				
 				if (getscrap (scraptype, hscrap)) {
 					
-					shellsetscrap (hscrap, scraptype, &disposehandle, &tableexportvaluescrap);
+					shellsetscrap (hscrap, scraptype,
+						(shelldisposescrapcallback) &disposehandle,
+						(shellexportscrapcallback) &tableexportvaluescrap);
 					
 					return (false); /*don't call any more hooks*/
 					}
@@ -474,7 +483,7 @@ boolean tablecopyroutine (void) {
 
 #endif
 
-static boolean tableredoclear (hdlhashnode hnode, boolean flundo) {
+boolean tableredoclear (hdlhashnode hnode, boolean flundo) {
 	
 	bigstring bsname;
 	
@@ -504,7 +513,7 @@ static boolean tableredoclear (hdlhashnode hnode, boolean flundo) {
 	} /*tableredoclear*/
 
 
-static boolean tableundoclear (hdlhashnode hnode, boolean flundo) {
+boolean tableundoclear (hdlhashnode hnode, boolean flundo) {
 	
 	hdlhashtable htable = tablegetlinkedhashtable ();
 	

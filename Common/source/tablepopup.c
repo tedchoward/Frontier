@@ -80,7 +80,7 @@
 
 typedef struct tykindmenuinfo {
 	
-	/*byte *bsitem; /*the text of the menu item*/
+	//byte *bsitem; /*the text of the menu item*/
 	
 	tyvaluetype type; /*the associated value type*/
 	} tykindmenuinfo;
@@ -88,55 +88,55 @@ typedef struct tykindmenuinfo {
 
 static tykindmenuinfo kindmenuinfo [] = { /*menu contents, in menu order*/
 
-	/*Boolean*/ booleanvaluetype, 		/*1*/
+	 {/*Boolean*/ booleanvaluetype}, 		/*1*/
 	
-	/*Character*/ charvaluetype, 		/*2*/
+	 {/*Character*/ charvaluetype}, 		/*2*/
 	
-	/*Number*/ longvaluetype, 			/*3*/
+	 {/*Number*/ longvaluetype}, 			/*3*/
 	
-	/*Float*/ doublevaluetype,			/*4*/
+	 {/*Float*/ doublevaluetype},			/*4*/
 	
-	/*Date*/ datevaluetype, 			/*5*/
+	 {/*Date*/ datevaluetype}, 			/*5*/
 	
-	/*Direction*/ directionvaluetype,	/*6*/
+	 {/*Direction*/ directionvaluetype},	/*6*/
 	
-	/*String*/ stringvaluetype, 		/*7*/
+	 {/*String*/ stringvaluetype}, 		/*7*/
 	
-	/*-*/ novaluetype,					/*8*/
+	 {/*-*/ novaluetype},					/*8*/
 	
-	/*String4*/ ostypevaluetype,		/*9*/
+	 {/*String4*/ ostypevaluetype},		/*9*/
 	
-	/*Enumerator*/ enumvaluetype,		/*10*/
+	 {/*Enumerator*/ enumvaluetype},		/*10*/
 	
-	/*File Specifier*/ filespecvaluetype, /*11*/
+	 {/*File Specifier*/ filespecvaluetype}, /*11*/
 	
-	/*Alias*/ aliasvaluetype,			/*12*/
+	 {/*Alias*/ aliasvaluetype},			/*12*/
 	
-	/*Object Specifier*/ objspecvaluetype, /*13*/
+	 {/*Object Specifier*/ objspecvaluetype}, /*13*/
 	
-	/*Address*/ addressvaluetype, 		/*14*/
+	 {/*Address*/ addressvaluetype}, 		/*14*/
 	
-	/*-*/ novaluetype,					/*15*/
+	 {/*-*/ novaluetype},					/*15*/
 	
-	/*Table*/ tablevaluetype, 			/*16*/
+	 {/*Table*/ tablevaluetype}, 			/*16*/
 	
-	/*WP-Text*/ wordvaluetype, 			/*17*/
+	 {/*WP-Text*/ wordvaluetype}, 			/*17*/
 	
-	/*Picture*/ pictvaluetype, 			/*18*/
+	 {/*Picture*/ pictvaluetype}, 			/*18*/
 	
-	/*Outline*/ outlinevaluetype, 		/*19*/
+	 {/*Outline*/ outlinevaluetype}, 		/*19*/
 	
-	/*Script*/ scriptvaluetype, 		/*20*/
+	 {/*Script*/ scriptvaluetype}, 		/*20*/
 	
-	/*MenuBar*/ menuvaluetype, 			/*21*/
+	 {/*MenuBar*/ menuvaluetype}, 			/*21*/
 	
-	/*-*/ novaluetype,
+	 {/*-*/ novaluetype},
 	
-	/*List*/ listvaluetype,				/*23*/
+	 {/*List*/ listvaluetype},				/*23*/
 	
-	/*Record*/ recordvaluetype,			/*24*/
+	 {/*Record*/ recordvaluetype},			/*24*/
 	
-	/*Binary*/ binaryvaluetype			/*25*/
+	 {/*Binary*/ binaryvaluetype}			/*25*/
 	};
 
 #define ctkindmenuitems 25
@@ -215,11 +215,10 @@ static boolean coercionpossible (hdlhashtable ht, tyvaluerecord val1, tyvaluetyp
 		}
 
 	if (vt1 == stringvaluetype) { /*special cases for converting from a string*/
-		switch (vt2) {
-			case wordvaluetype:
-			case outlinevaluetype:
-			case scriptvaluetype:
-				return (true);
+		if (vt2 == wordvaluetype
+				|| vt2 == outlinevaluetype
+				|| vt2 == scriptvaluetype) {
+			return (true);
 			}
 		}
 	
@@ -510,7 +509,7 @@ static boolean tablesortpopupselect (hdlmenu hmenu, short itemselected) {
 	hdlhashtable ht;
 	bigstring bs;
 	
-	register short sortorder;
+	register short sortorder = sortbyname; /*default*/
 	
 	switch (itemselected) {
 		

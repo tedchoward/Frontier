@@ -442,8 +442,6 @@ static void wpdirtyselectioninfo (void) {
 	make sure the ruler & menus get updated to reflect a formatting change.
 	*/
 	
-	register hdlwindowinfo hw = wpwindowinfo;
-	
 	if ((wpwindowinfo != nil) && wpdisplayenabled ())
 		(**wpwindowinfo).selectioninfo.fldirty = true;
 	} /*wpdirtyselectioninfo*/
@@ -643,7 +641,8 @@ static void getlongbounds (register Rect *r, register rectangle *bounds) {
 	(*bounds).left = (*r).left;
 	
 	(*bounds).right = (*r).left + wpavailwidth ();
-	} /*getlongbounds*/
+	} /%getlongbounds%/
+*/
 
 
 boolean wpgetdisplay (void) { /*unused 8/29/91*/
@@ -961,7 +960,8 @@ static short wpgetcurrentscreenlines (short line1) {
 	lastline = pgOffsetToLineNum (wpbuffer, offset, true);
 	
 	return (lastline - line1 + 1);
-	} /*wpgetcurrentscreenlines*/
+	} /%wpgetcurrentscreenlines%/
+*/
 
 
 static boolean wpgetscrollbarinfo (void) {
@@ -1683,6 +1683,10 @@ boolean wpscroll (register tydirection dir, boolean flpage, long ctscroll) {
 				dh = scroll_unit;
 			
 			break;
+		
+		default:
+			/* nothing to do */
+			break;
 		}
 	
 	if ((dv == scroll_none) && (dh == scroll_none))
@@ -1816,8 +1820,9 @@ void wpupdate (void) {
 
 	if (wpsetglobals ()) {
 		
-		register pg_ref pg = wpbuffer;
-		Rect rcontent = (**wpdata).wprect;
+		#ifdef gray3Dlook
+			Rect rcontent = (**wpdata).wprect;
+		#endif
 		graf_device_ptr updateport = NULL;
 		hdlregion updatergn = nil;
 		
@@ -1841,11 +1846,6 @@ void wpupdate (void) {
 		
 		#endif
 		
-		#ifdef gray3Dlook
-			pushbackcolor (&whitecolor);
-			
-			eraserect (rcontent);
-		#endif
 		
 		if (updatergn == nil)
 			pgErasePageArea (wpbuffer, MEM_NULL);
@@ -3066,7 +3066,7 @@ boolean wppreedit (void) {
 	} /*wppreedit*/
 
 
-static void wppostruleredit (boolean flchangedtext, boolean flvisi) {
+void wppostruleredit (boolean flchangedtext, boolean flvisi) {
 	
 	/*
 	high-resolution postedit, after using rulers add-on package calls that 
@@ -3132,7 +3132,8 @@ void wppostedit (boolean flrecalc) {
 static pascal boolean wperrorhandler (long ctbytesneeded) {
 	
 	return (false);
-	} /*wperrorhandler*/
+	} /%wperrorhandler%/
+*/
 
 
 static void setupundo (long undocode, void *insertref) {
@@ -3214,7 +3215,7 @@ static boolean wppushundostep (void) {
 	} /*wppushundostep*/
 
 
-static boolean wppushundo (long undocode, void *insertref) {
+boolean wppushundo (long undocode, void *insertref) {
 	
 	setupundo (undocode, insertref);
 	
@@ -3228,7 +3229,7 @@ static boolean wppushrulerundo (void) {
 	} /*wppushrulerundo*/
 
 
-static boolean wppushformatundo (void) {
+boolean wppushformatundo (void) {
 	
 	return (wppushrulerundo ());
 	} /*wppushformatundo*/
@@ -3380,8 +3381,8 @@ boolean wptrimhiddentext (void) {
 		
 	#endif
 	return (false);	
-	} /*wptrimrighthiddentextfromselection*/
-
+	} /%wptrimrighthiddentextfromselection%/
+*/
 
 boolean wpkeystroke (void) {
 	
@@ -3394,7 +3395,6 @@ boolean wpkeystroke (void) {
 	
 	pg_byte chkey = keyboardstatus.chkb;
 	short modifiers = 0;
-	long extending = 0;
 	boolean flinserting = true;	
 	pg_short_t caretverb = (pg_short_t) -1;
 	long undocode = undo_none;

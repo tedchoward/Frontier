@@ -115,7 +115,7 @@ void tabledirty (void) {
 	*/
 	
 	register hdltableformats hf = tableformatsdata;
-	register hdlhashtable ht = (hdlhashtable) (**hf).htable;
+	//register hdlhashtable ht = (hdlhashtable) (**hf).htable;
 	hdloutlinerecord ho = (**hf).houtline;
 	
 	// (**ht).fldirty = true; // 2/14/97 dmb: langhash takes care of dirtyness itself
@@ -234,7 +234,6 @@ boolean tablerecalccolwidths (boolean flmustrecalc) {
 	*/
 	
 	register hdltableformats hc = tableformatsdata;
-	hdloutlinerecord ho = outlinedata;
 	long curwidth, newwidth;
 	short i;
 	short lastcol = (**hc).ctcols - 1;
@@ -465,9 +464,9 @@ static void setuptableoutlinecallbacks (hdloutlinerecord ho) {
 	
 //	(**ho).returnkeycallback = tablereturnkey;
 	
-	(**ho).setscrapcallback = browsersetscrap;
+	(**ho).setscrapcallback = (opsetscrapcallback) browsersetscrap;
 
-	(**ho).getscrapcallback = browsergetscrap;
+	(**ho).getscrapcallback = (opgetscrapcallback) browsergetscrap;
 	
 	(**ho).beforeprintpagecallback = tablebeforeprintpage;
 
@@ -477,10 +476,11 @@ static void setuptableoutlinecallbacks (hdloutlinerecord ho) {
 
 static boolean duplicateexpansion (hdlheadrecord, hdlheadrecord); // forward
 
-static boolean duplicateexpansionvisit (hdlheadrecord hnode, hdlheadrecord hfirstnew) {
+static boolean duplicateexpansionvisit (hdlheadrecord hnode, ptrvoid refcon) {
 	
 	if (opsubheadsexpanded (hnode)) {
 		
+		hdlheadrecord hfirstnew = (hdlheadrecord) refcon;
 		bigstring bs;
 		hdlheadrecord hmatch;
 		
@@ -725,7 +725,7 @@ boolean tableprepareoutline (hdltableformats hf) {
 
 void tabledisposeoutline (hdltableformats hf) {
 
-	hdlhashtable ht = (**hf).htable;
+	//hdlhashtable ht = (**hf).htable;
 	hdloutlinerecord ho = (**hf).houtline;
 
 	if (ho == nil)
@@ -809,12 +809,10 @@ boolean tablenewformatsrecord (hdlhashtable ht, Rect tablerect, hdltableformats 
 		return (false);
 		}
 	
-	/*
 	tableresetrects (tablerect);
 	
-	x = (tablerect.right - tablerect.left) / ctcols; /*initial column width*/
+	x = (tablerect.right - tablerect.left) / ctcols; /%initial column width%/
 	
-	/*
 	x = (**hf).defaultcolwidth = tablelimitcolwidth (x);
 	
 	for (i = 0; i < ctcols; i++) 

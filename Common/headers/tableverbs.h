@@ -128,7 +128,7 @@ extern boolean tableverbsetglobals (void);
 
 extern boolean tableverbsetupdisplay (hdlhashtable, hdlwindowinfo);
 
-extern boolean tableresetformatsrects ();
+extern boolean tableresetformatsrects (void);
 
 extern boolean tablestart (void);
 

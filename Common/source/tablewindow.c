@@ -376,8 +376,9 @@ static void tableverbidle (void) {
 	} /*tableverbeventloopidle*/
 
 
-static boolean tablegetvariableroutine (hdlexternalvariable *hvariable) {
+static boolean tablegetvariableroutine (ptrvoid refcon) {
 	
+	hdlexternalvariable *hvariable = (hdlexternalvariable *) refcon;
 	hdlhashtable ht;
 	
 	if (tableformatsdata == nil)
@@ -585,10 +586,6 @@ static void tableedittabkey () {
 	else
 		sysbeep ();
 	} /*tableedittabkey*/
-
-
-static void tableeditreturnkey () {
-	} /*tableeditreturnkey*/
 
 
 static boolean tableverbkeystroke (void) {

@@ -426,7 +426,7 @@ boolean findvariablesearch (hdlhashtable intable, hdlexternalvariable forvariabl
 	register hdlhashnode x;
 	register short i;
 	tyvaluerecord val;
-	register hdlexternalvariable hv;
+	register hdlexternalvariable hv = nil;
 	
 	for (i = 0; i < ctbuckets; i++) {
 		
@@ -594,9 +594,10 @@ boolean tablenosubsdirty (hdlhashtable htable) {
 
 static boolean tableupdatesubsdirtyflag (hdlhashtable ht); /*forward declaration*/
 
-static boolean updatesubsdirtyvisit (hdlhashnode hnode, boolean *flsubsdirty) {
+static boolean updatesubsdirtyvisit (hdlhashnode hnode, ptrvoid refcon) {
 
 	tyvaluerecord val = (**hnode).val;
+	boolean *flsubsdirty = (boolean *) refcon;
 	
 	if (val.valuetype == externalvaluetype) {
 	
@@ -656,13 +657,13 @@ typedef struct findtableinfo {
 	} tyfindtableinfo, *ptrfindtableinfo;
 
 
-static boolean findtablevisit (hdlhashnode hnode, ptrfindtableinfo info) {
+static boolean findtablevisit (hdlhashnode hnode, ptrvoid refcon) {
 	
 	/*
 	we're looking for a node that's a table variable -- a specific one, the
 	one pointed to by info.htablelookfor.
 	*/
-	
+	ptrfindtableinfo info = (ptrfindtableinfo) refcon;
 	hdltablevariable hvariable;
 	register hdlhashtable ht;
 	short errcode;
@@ -699,7 +700,7 @@ static boolean parentsearch (hdlhashtable intable, hdlhashtable fortable, boolea
 	register hdlhashnode x;
 	register short i;
 	tyvaluerecord val;
-	register hdlexternalvariable hv;
+	register hdlexternalvariable hv = nil;
 	
 	if (intable == fortable) {	/*special case for root*/
 	
@@ -829,7 +830,8 @@ boolean tablevisicursor (void) {
 	register hdltableformats hf = tableformatsdata;
 	
 	return (tablevisi ((**hf).rowcursor, (**hf).colcursor));
-	} /*tablevisicursor*/
+	} /%tablevisicursor%/
+*/
 
 
 boolean tableexiteditmode (void) {
@@ -847,7 +849,6 @@ boolean tablemovetoname (hdlhashtable htable, bigstring bsname) {
 	Added htable param, but we're not using it now
 	*/
 	
-	register hdltableformats hf = tableformatsdata;
 	hdlheadrecord hfound;
 	boolean fl;
 	
@@ -929,10 +930,9 @@ static boolean tablesavebarcursor (hdlhashnode *hnode) {
 	register hdltableformats hf = tableformatsdata;
 
 	return (hashgetnthnode (tablegetlinkedhashtable (), (**hf).rowcursor, hnode));
-	} /*tablesavebarcursor*/
+	} /%tablesavebarcursor%/
 	
 	
-/*
 static boolean tablerestorebarcursor (hdlhashnode hnode) {
 	
 	short index;
@@ -942,8 +942,8 @@ static boolean tablerestorebarcursor (hdlhashnode hnode) {
 	(**tableformatsdata).rowcursor = index; 
 	
 	return (true);
-	} /*tablerestorebarcursor*/
-
+	} /%tablerestorebarcursor%/
+*/
 
 boolean tableresort (hdlhashtable ht, hdlhashnode hresort) {
 	

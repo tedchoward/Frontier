@@ -174,8 +174,9 @@ static boolean validate (hdlhashtable htable, boolean flalert) {
 		x = (**x).sortedlink;
 		
 		copystring (bs, bslast);
-		} /*while*/
-		
+		} /%while%/
+	*/
+	
 	return (true);
 	} /*validate*/
 

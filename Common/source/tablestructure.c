@@ -243,7 +243,6 @@ boolean linksystemtablestructure (hdlhashtable hroot) {
 	the environment table is created in langstartup, as is the compiler table
 	*/
 	
-	Handle hdata = (Handle) (**internaltable).hashtablerefcon;
 	hdlhashtable hsystem, htemp;
 	
 	// make sure the system table exists
@@ -533,7 +532,7 @@ boolean tablesavesystemtable (Handle hvariable, dbaddress *adr) {
 	} /*tablesavesystemtable*/
 
 
-static boolean checktablestructure (boolean flcreate) {
+boolean checktablestructure (boolean flcreate) {
 
 	/*
 	if these tables don't exist, we create them.  return true only if everything 
@@ -593,7 +592,7 @@ static boolean checktablestructure (boolean flcreate) {
 			fl = false;
 		}
 		
-	/*usertable = roottable; /*does this work?*/
+	//usertable = roottable; /*does this work?*/
 	
 	return (fl);
 	} /*checktablestructure*/

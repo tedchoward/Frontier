@@ -103,7 +103,7 @@ static short tablecomparevalues (hdlhashtable htable, hdlhashnode hnode1, hdlhas
 	register hdlhashnode h1 = hnode1;
 	register hdlhashnode h2 = hnode2;
 	tyvaluerecord val1, val2, vreturned;
-	register boolean fllessthan;
+	register boolean fllessthan = false;
 	register boolean flequal = false;
 	boolean flcomparable;
 	

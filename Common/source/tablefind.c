@@ -418,7 +418,7 @@ boolean tableverbcontinuesearch (hdlexternalvariable hvariable) {
 	hdlwindowinfo origwindowinfo = shellwindowinfo;
 	
 	/*
-	if (searchparams.floneobject) /*user has flat search turned off%/
+	if (searchparams.floneobject) /%user has flat search turned off%/
 		return (false);
 	*/
 	

@@ -342,7 +342,7 @@ boolean tableverbsetdirty (hdlexternalvariable hvariable, boolean fldirty) {
 	} /*tableverbsetdirty*/
 
 
-static boolean tableresetformatsrects () {
+boolean tableresetformatsrects (void) {
 	
 	/*
 	2/14/97 dmb: rewrite for outline editor
@@ -747,7 +747,9 @@ typedef struct tyfinddatabaseinfo {
 	} tyfinddatabaseinfo;
 
 
-static boolean finddatabasevisit (WindowPtr w, tyfinddatabaseinfo *pinfo) {
+static boolean finddatabasevisit (WindowPtr w, ptrvoid refcon) {
+	
+	tyfinddatabaseinfo *pinfo = (tyfinddatabaseinfo *) refcon;
 	
 	if (ccwindowgetdatabase (w) == (*pinfo).hdatabase) { // got it
 	
@@ -823,7 +825,7 @@ static boolean tableupdatewindowtitles (hdlhashnode hnode, hdlhashtable intable)
 	
 	if (langexternalvaltotable (val, &htable, hnode)) {
 		
-		hashtablevisit (htable, &tableupdatewindowtitles, htable); /*daisy chain recursion*/
+		hashtablevisit (htable, (langtablevisitcallback) &tableupdatewindowtitles, htable); /*daisy chain recursion*/
 		}
 	
 	return (true);
@@ -905,12 +907,13 @@ static boolean opinternaldeletenodewithupdate (hdlheadrecord hnode) {
 	} /*opinternaldeletenodewithupdate*/
 	
 
-static boolean tablesymbolzoomvisit (hdlheadrecord hnode, ptrsymbolchangedinfo symbolinfo) {
+static boolean tablesymbolzoomvisit (hdlheadrecord hnode, ptrvoid refcon) {
 	
 	/*
 	5.0d18 dmb: expand tables one level to reveal the item we're looking for
 	*/
 	
+	ptrsymbolchangedinfo symbolinfo = (ptrsymbolchangedinfo) refcon;
 	bigstring bs;
 	tybrowserinfo info;
 	tybrowserspec fs;
@@ -952,8 +955,9 @@ static boolean tablesymbolzoomvisit (hdlheadrecord hnode, ptrsymbolchangedinfo s
 	} /*tablesymbolzoomvisit*/
 
 
-static boolean tablesymbolchangedvisit (hdlheadrecord hnode, ptrsymbolchangedinfo symbolinfo) {
+static boolean tablesymbolchangedvisit (hdlheadrecord hnode, ptrvoid refcon) {
 	
+	ptrsymbolchangedinfo symbolinfo = (ptrsymbolchangedinfo) refcon;
 	bigstring bs;
 	tybrowserinfo info;
 	boolean fl;
@@ -1017,7 +1021,7 @@ static boolean tablesymbolchangedvisit (hdlheadrecord hnode, ptrsymbolchangedinf
 	} /*tablesymbolchangedvisit*/
 
 
-static boolean tablesymbolinsertedvisit (hdlheadrecord hnode, ptrsymbolchangedinfo symbolinfo) {
+static boolean tablesymbolinsertedvisit (hdlheadrecord hnode, ptrvoid refcon) {
 	
 	/*
 	8.8.97 dmb: always check parID of summit, so we'll always catch insertions 
@@ -1030,6 +1034,7 @@ static boolean tablesymbolinsertedvisit (hdlheadrecord hnode, ptrsymbolchangedin
 	window's table.
 	*/
 	
+	ptrsymbolchangedinfo symbolinfo = (ptrsymbolchangedinfo) refcon;
 	tybrowserspec fs;
 	hdlhashtable htable;
 	hdlheadrecord hnew;
@@ -1091,13 +1096,14 @@ static boolean tablesymbolinsertedvisit (hdlheadrecord hnode, ptrsymbolchangedin
 	} /*tablesymbolinsertedvisit*/
 
 
-static boolean tablesymboldeletedvisit (hdlheadrecord hnode, ptrsymbolchangedinfo symbolinfo) {
+static boolean tablesymboldeletedvisit (hdlheadrecord hnode, ptrvoid refcon) {
 	
 	/*
 	5.0a25 dmb: we're called for internal change now, must be more selective
 	about what we do.
 	*/
 
+	ptrsymbolchangedinfo symbolinfo = (ptrsymbolchangedinfo) refcon;
 	bigstring bs;
 	tybrowserinfo info;
 	hdlheadrecord hparent;
@@ -1153,8 +1159,9 @@ static boolean tablesymboldeletedvisit (hdlheadrecord hnode, ptrsymbolchangedinf
 	} /*tablesymboldeletedvisit*/
 
 
-static boolean tablesymbolsresortedvisit (hdlheadrecord hnode, ptrsymbolchangedinfo symbolinfo) {
+static boolean tablesymbolsresortedvisit (hdlheadrecord hnode, ptrvoid refcon) {
 	
+	ptrsymbolchangedinfo symbolinfo = (ptrsymbolchangedinfo) refcon;
 	tybrowserspec fs;
 	hdlhashtable htable;
 	
@@ -1278,8 +1285,8 @@ static boolean tabledrivesymbolchange (hdlhashtable htable, const bigstring bsna
 	
 	saveoutlinedata = outlinedata; // may not be associated with current shellglobals
 	
-	fl = shellvisittypedwindows (idtableconfig, &tablesymbolchangedwindowvisit, &symbolchangedinfo)
-		&& shellvisittypedwindows (idcancoonconfig, &tablesymbolchangedwindowvisit, &symbolchangedinfo)
+	fl = shellvisittypedwindows (idtableconfig, (shellwindowvisitcallback) &tablesymbolchangedwindowvisit, &symbolchangedinfo)
+		&& shellvisittypedwindows (idcancoonconfig, (shellwindowvisitcallback) &tablesymbolchangedwindowvisit, &symbolchangedinfo)
 		&& symbolchangedinfo.flfound;
 	
 	opsetoutline (saveoutlinedata);

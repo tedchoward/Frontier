@@ -44,6 +44,9 @@ static boolean unixshellcallinited = false;
 static CFBundleRef sysBundle = nil;
 
 
+static boolean unixshellcallinit (void);	/* forward declaration */
+
+
 boolean unixshellcall (Handle hcommand, Handle hreturn) {
 
 	/*

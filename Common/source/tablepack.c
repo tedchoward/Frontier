@@ -375,12 +375,13 @@ boolean tableverbunpack (Handle hpacked, long *ixload, hdlexternalvariable *h, b
 	} /*tableverbunpack*/
 
 
-static boolean tablepacktotextvisit (bigstring bsname, hdlhashnode hnode, tyvaluerecord val, Handle htextscrap) {
+static boolean tablepacktotextvisit (bigstring bsname, hdlhashnode hnode, tyvaluerecord val, ptrvoid refcon) {
 	
 	/*
 	4.0.2b1 dmb: handle fldiskvals. see comment in hashsortedinversesearch
 	*/
 	
+	Handle htextscrap = (Handle) refcon;
 	boolean fl;
 	
 	pushchar (chtab, bsname);
@@ -428,9 +429,7 @@ boolean tableverbpacktotext (hdlexternalvariable h, Handle htext) {
 	
 	//htextscrap = htext; /*set for visit routine*/
 	
-	/*
-	fl = !hashinversesearch (ht, &tablepacktotextvisit, bsname); /*false means complete traversal%/
-	*/
+	//fl = !hashinversesearch (ht, &tablepacktotextvisit, bsname); /*false means complete traversal%/
 	
 	fl = !tablesortedinversesearch (ht, &tablepacktotextvisit, htext);
 	
@@ -477,12 +476,13 @@ boolean tableverbsettimes (hdlexternalvariable h, long timecreated, long timemod
 	} /*tableverbsettimes*/
 
 
-static boolean findusedblocksvisit (hdlhashnode hnode, ptrstring bsparent) {
+static boolean findusedblocksvisit (hdlhashnode hnode, ptrvoid refcon) {
 	
 	/*
 	5.1.5b16: check fldontsave flag to avoid diving into guest databases, etc.
 	*/
 	
+	ptrstring bsparent = (ptrstring) refcon;
 	tyvaluerecord val = (**hnode).val;
 	bigstring bspath;
 	

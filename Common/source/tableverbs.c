@@ -386,7 +386,7 @@ static boolean tablemoveandrenameverb (hdltreenode hparam1, tyvaluerecord *v) {
 /*
 static boolean tablefindverb (hdltreenode hparam1, tyvaluerecord *v) {
 	
-	/*
+	/%
 	table.find (adr, bs): boolean; search the (external) value at adr 
 	for the string bs.  if adr is a table, do *not* search subordinate 
 	tables
@@ -424,7 +424,8 @@ static boolean tablefindverb (hdltreenode hparam1, tyvaluerecord *v) {
 	pophashtable ();
 	
 	return (true);
-	} /*tablefindverb*/
+	} /%tablefindverb%/
+*/
 
 
 static boolean tableassignverb (hdltreenode hparam1, tyvaluerecord *v) {
@@ -528,8 +529,9 @@ static boolean tableemptytableverb (hdltreenode hparam1, tyvaluerecord *v) {
 	} /*tableemptytableverb*/
 
 
-static boolean tablegetselvisit (hdlheadrecord hnode, hdllistrecord hlist) {
+static boolean tablegetselvisit (hdlheadrecord hnode, ptrvoid refcon) {
 	
+	hdllistrecord hlist = (hdllistrecord) refcon;
 	hdlhashtable ht;
 	bigstring bs;
 	tyvaluerecord val;
@@ -595,7 +597,6 @@ static boolean tablegetdisplaysettingsverb (hdltreenode hp1, tyvaluerecord *v) {
 
 static boolean tablesetdisplaysettingsverb (hdltreenode hp1, tyvaluerecord *v) {
 	
-	hdltableformats hf = tableformatsdata;
 	hdlhashtable hsettings;
 	tylinelayout layout;
 	
