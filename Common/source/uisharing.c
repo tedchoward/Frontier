@@ -74,7 +74,10 @@ static Boolean isFrontProcess () {
 	} /*isFrontProcess*/
 	
 
-#if __powerc
+/* 2004-10-22 aradke: Not sure if this is the right thing to do for the Mach-O build,
+		but at least it makes the link errors for _editGlue etc. go away
+*/
+#if TARGET_RT_MAC_CFM || TARGET_RT_MAC_MACHO
 
 enum {
 	uppCallComponentProcInfo = kPascalStackBased
@@ -84,13 +87,12 @@ enum {
 
 extern UniversalProcPtr CallComponentUPP;
 
+#pragma options align=mac68k
+
 glue windoweventGlue (ComponentInstance comp, EventRecord *ev, tyWindowSharingGlobals *wsGlobals) {
 	
 	#define windoweventParamSize	 (sizeof (ev) + sizeof (wsGlobals))
 	
-	#ifdef powerc
-		#pragma options align=mac68k
-	#endif
 	struct windoweventGluePB {
 		unsigned char	componentFlags;
 		unsigned char	componentParamSize;
@@ -99,9 +101,6 @@ glue windoweventGlue (ComponentInstance comp, EventRecord *ev, tyWindowSharingGl
 		EventRecord *ev;
 		ComponentInstance	comp;
 	};
-	#ifdef powerc
-		#pragma options align=reset
-	#endif
 	
 	struct windoweventGluePB pb;
 	
@@ -124,9 +123,6 @@ glue windowiscardGlue (ComponentInstance comp, WindowPtr w) {
 	
 	#define windowiscardParamSize	 (sizeof (w))
 	
-	#ifdef powerc
-		#pragma options align=mac68k
-	#endif
 	struct windowiscardGluePB {
 		unsigned char	componentFlags;
 		unsigned char	componentParamSize;
@@ -134,9 +130,6 @@ glue windowiscardGlue (ComponentInstance comp, WindowPtr w) {
 		WindowPtr w;
 		ComponentInstance	comp;
 	};
-	#ifdef powerc
-		#pragma options align=reset
-	#endif
 	
 	struct windowiscardGluePB pb;
 	
@@ -158,9 +151,6 @@ glue closewindowGlue (ComponentInstance comp, WindowPtr w) {
 	
 	#define closewindowParamSize	 (sizeof (w))
 	
-	#ifdef powerc
-		#pragma options align=mac68k
-	#endif
 	struct closewindowGluePB {
 		unsigned char	componentFlags;
 		unsigned char	componentParamSize;
@@ -168,9 +158,6 @@ glue closewindowGlue (ComponentInstance comp, WindowPtr w) {
 		WindowPtr w;
 		ComponentInstance	comp;
 	};
-	#ifdef powerc
-		#pragma options align=reset
-	#endif
 	
 	struct closewindowGluePB pb;
 	
@@ -194,18 +181,12 @@ glue closewindowGlue (ComponentInstance comp, WindowPtr w) {
 	
 		#define initsharedmenusParamSize	 (0L)
 		
-		#ifdef powerc
-			#pragma options align=mac68k
-		#endif
 		struct initsharedmenusGluePB {
 			unsigned char	componentFlags;
 			unsigned char	componentParamSize;
 			short componentWhat;
 			ComponentInstance	comp;
 		};
-		#ifdef powerc
-			#pragma options align=reset
-		#endif
 		
 		struct initsharedmenusGluePB pb;
 		
@@ -226,9 +207,6 @@ glue closewindowGlue (ComponentInstance comp, WindowPtr w) {
 	
 		#define sharedmenuhitParamSize	 (sizeof (idmenu) + sizeof (iditem) + sizeof (flshareditem))
 		
-		#ifdef powerc
-			#pragma options align=mac68k
-		#endif
 		struct sharedmenuhitGluePB {
 			unsigned char	componentFlags;
 			unsigned char	componentParamSize;
@@ -238,9 +216,6 @@ glue closewindowGlue (ComponentInstance comp, WindowPtr w) {
 			short idmenu;
 			ComponentInstance	comp;
 		};
-		#ifdef powerc
-			#pragma options align=reset
-		#endif
 		
 		struct sharedmenuhitGluePB pb;
 		
@@ -264,9 +239,6 @@ glue closewindowGlue (ComponentInstance comp, WindowPtr w) {
 	
 		#define sharedscriptrunningParamSize	 (sizeof (flrunning))
 		
-		#ifdef powerc
-			#pragma options align=mac68k
-		#endif
 		struct sharedscriptrunningGluePB {
 			unsigned char	componentFlags;
 			unsigned char	componentParamSize;
@@ -274,9 +246,6 @@ glue closewindowGlue (ComponentInstance comp, WindowPtr w) {
 			Boolean *flrunning;
 			ComponentInstance	comp;
 		};
-		#ifdef powerc
-			#pragma options align=reset
-		#endif
 		
 		struct sharedscriptrunningGluePB pb;
 		
@@ -298,18 +267,12 @@ glue closewindowGlue (ComponentInstance comp, WindowPtr w) {
 	
 		#define cancelsharedscriptParamSize	 (0L)
 		
-		#ifdef powerc
-			#pragma options align=mac68k
-		#endif
 		struct cancelsharedscriptGluePB {
 			unsigned char	componentFlags;
 			unsigned char	componentParamSize;
 			short componentWhat;
 			ComponentInstance	comp;
 		};
-		#ifdef powerc
-			#pragma options align=reset
-		#endif
 		
 		struct cancelsharedscriptGluePB pb;
 		
@@ -330,9 +293,6 @@ glue closewindowGlue (ComponentInstance comp, WindowPtr w) {
 	
 		#define checksharedmenusParamSize	 (sizeof (idinsertafter))
 		
-		#ifdef powerc
-			#pragma options align=mac68k
-		#endif
 		struct checksharedmenusGluePB {
 			unsigned char	componentFlags;
 			unsigned char	componentParamSize;
@@ -340,9 +300,6 @@ glue closewindowGlue (ComponentInstance comp, WindowPtr w) {
 			short idinsertafter;
 			ComponentInstance	comp;
 		};
-		#ifdef powerc
-			#pragma options align=reset
-		#endif
 		
 		struct checksharedmenusGluePB pb;
 		
@@ -364,18 +321,12 @@ glue closewindowGlue (ComponentInstance comp, WindowPtr w) {
 	
 		#define disposesharedmenusParamSize	 (0L)
 		
-		#ifdef powerc
-			#pragma options align=mac68k
-		#endif
 		struct disposesharedmenusGluePB {
 			unsigned char	componentFlags;
 			unsigned char	componentParamSize;
 			short componentWhat;
 			ComponentInstance	comp;
 		};
-		#ifdef powerc
-			#pragma options align=reset
-		#endif
 		
 		struct disposesharedmenusGluePB pb;
 		
@@ -396,9 +347,6 @@ glue closewindowGlue (ComponentInstance comp, WindowPtr w) {
 	
 		#define issharedmenuParamSize	 (sizeof (idmenu) + sizeof (flsharedmenu))
 		
-		#ifdef powerc
-			#pragma options align=mac68k
-		#endif
 		struct issharedmenuGluePB {
 			unsigned char	componentFlags;
 			unsigned char	componentParamSize;
@@ -407,9 +355,6 @@ glue closewindowGlue (ComponentInstance comp, WindowPtr w) {
 			short idmenu;
 			ComponentInstance	comp;
 		};
-		#ifdef powerc
-			#pragma options align=reset
-		#endif
 		
 		struct issharedmenuGluePB pb;
 		
@@ -432,9 +377,6 @@ glue closewindowGlue (ComponentInstance comp, WindowPtr w) {
 	
 		#define enablesharedmenusParamSize	 (sizeof (flenable))
 		
-		#ifdef powerc
-			#pragma options align=mac68k
-		#endif
 		struct enablesharedmenusGluePB {
 			unsigned char	componentFlags;
 			unsigned char	componentParamSize;
@@ -442,9 +384,6 @@ glue closewindowGlue (ComponentInstance comp, WindowPtr w) {
 			Boolean flenable;
 			ComponentInstance	comp;
 		};
-		#ifdef powerc
-			#pragma options align=reset
-		#endif
 		
 		struct enablesharedmenusGluePB pb;
 		
@@ -466,9 +405,6 @@ glue closewindowGlue (ComponentInstance comp, WindowPtr w) {
 	
 		#define runsharedmenuitemParamSize	 (sizeof (idmenu) + sizeof (iditem))
 		
-		#ifdef powerc
-			#pragma options align=mac68k
-		#endif
 		struct runsharedmenuitemGluePB {
 			unsigned char	componentFlags;
 			unsigned char	componentParamSize;
@@ -477,9 +413,6 @@ glue closewindowGlue (ComponentInstance comp, WindowPtr w) {
 			short idmenu;
 			ComponentInstance	comp;
 		};
-		#ifdef powerc
-			#pragma options align=reset
-		#endif
 		
 		struct runsharedmenuitemGluePB pb;
 		
@@ -502,9 +435,6 @@ glue closewindowGlue (ComponentInstance comp, WindowPtr w) {
 	
 		#define setscripterrorcallbackParamSize	 (sizeof (scripterrorproc))
 		
-		#ifdef powerc
-			#pragma options align=mac68k
-		#endif
 		struct setscripterrorcallbackGluePB {
 			unsigned char	componentFlags;
 			unsigned char	componentParamSize;
@@ -512,9 +442,6 @@ glue closewindowGlue (ComponentInstance comp, WindowPtr w) {
 			ProcPtr scripterrorproc;
 			ComponentInstance	comp;
 		};
-		#ifdef powerc
-			#pragma options align=reset
-		#endif
 		
 		struct setscripterrorcallbackGluePB pb;
 		
@@ -536,18 +463,12 @@ glue closewindowGlue (ComponentInstance comp, WindowPtr w) {
 	
 		#define stubstartParamSize	 (0L)
 		
-		#ifdef powerc
-			#pragma options align=mac68k
-		#endif
 		struct stubstartGluePB {
 			unsigned char	componentFlags;
 			unsigned char	componentParamSize;
 			short componentWhat;
 			ComponentInstance	comp;
 		};
-		#ifdef powerc
-			#pragma options align=reset
-		#endif
 		
 		struct stubstartGluePB pb;
 		
@@ -570,9 +491,6 @@ glue runhandleGlue (ComponentInstance comp, Handle h, short flscriptedcard, Str2
 	
 	#define runhandleParamSize	 (sizeof (h) + sizeof (flscriptedcard) + sizeof (windowname) + sizeof (pt) + sizeof (filter))
 	
-	#ifdef powerc
-		#pragma options align=mac68k
-	#endif
 	struct runhandleGluePB {
 		unsigned char	componentFlags;
 		unsigned char	componentParamSize;
@@ -584,9 +502,6 @@ glue runhandleGlue (ComponentInstance comp, Handle h, short flscriptedcard, Str2
 		Handle h;
 		ComponentInstance	comp;
 	};
-	#ifdef powerc
-		#pragma options align=reset
-	#endif
 	
 	struct runhandleGluePB pb;
 	
@@ -612,9 +527,6 @@ glue runmodalhandleGlue (ComponentInstance comp, Handle h, short flscriptedcard,
 	
 	#define runmodalhandleParamSize	 (sizeof (h) + sizeof (flscriptedcard) + sizeof (windowname) + sizeof (pt) + sizeof (filter))
 	
-	#ifdef powerc
-		#pragma options align=mac68k
-	#endif
 	struct runmodalhandleGluePB {
 		unsigned char	componentFlags;
 		unsigned char	componentParamSize;
@@ -626,9 +538,6 @@ glue runmodalhandleGlue (ComponentInstance comp, Handle h, short flscriptedcard,
 		Handle h;
 		ComponentInstance	comp;
 	};
-	#ifdef powerc
-		#pragma options align=reset
-	#endif
 	
 	struct runmodalhandleGluePB pb;
 	
@@ -654,9 +563,6 @@ glue setobjectvalueGlue (ComponentInstance comp, Handle hcard, Str255 name, Hand
 	
 	#define setobjectvalueParamSize	 (sizeof (hcard) + sizeof (name) + sizeof (value))
 	
-	#ifdef powerc
-		#pragma options align=mac68k
-	#endif
 	struct setobjectvalueGluePB {
 		unsigned char	componentFlags;
 		unsigned char	componentParamSize;
@@ -666,9 +572,6 @@ glue setobjectvalueGlue (ComponentInstance comp, Handle hcard, Str255 name, Hand
 		Handle hcard;
 		ComponentInstance	comp;
 	};
-	#ifdef powerc
-		#pragma options align=reset
-	#endif
 	
 	struct setobjectvalueGluePB pb;
 	
@@ -692,9 +595,6 @@ glue getobjectvalueGlue (ComponentInstance comp, Handle hcard, Str255 name, Hand
 	
 	#define getobjectvalueParamSize	 (sizeof (hcard) + sizeof (name) + sizeof (value))
 	
-	#ifdef powerc
-		#pragma options align=mac68k
-	#endif
 	struct getobjectvalueGluePB {
 		unsigned char	componentFlags;
 		unsigned char	componentParamSize;
@@ -704,9 +604,6 @@ glue getobjectvalueGlue (ComponentInstance comp, Handle hcard, Str255 name, Hand
 		Handle hcard;
 		ComponentInstance	comp;
 	};
-	#ifdef powerc
-		#pragma options align=reset
-	#endif
 	
 	struct getobjectvalueGluePB pb;
 	
@@ -730,9 +627,6 @@ glue getobjecthandleGlue (ComponentInstance comp, Handle hcard, Str255 name, Han
 	
 	#define getobjecthandleParamSize	 (sizeof (hcard) + sizeof (name) + sizeof (h))
 	
-	#ifdef powerc
-		#pragma options align=mac68k
-	#endif
 	struct getobjecthandleGluePB {
 		unsigned char	componentFlags;
 		unsigned char	componentParamSize;
@@ -742,9 +636,6 @@ glue getobjecthandleGlue (ComponentInstance comp, Handle hcard, Str255 name, Han
 		Handle hcard;
 		ComponentInstance	comp;
 	};
-	#ifdef powerc
-		#pragma options align=reset
-	#endif
 	
 	struct getobjecthandleGluePB pb;
 	
@@ -768,9 +659,6 @@ glue recalcGlue (ComponentInstance comp, Handle h) {
 	
 	#define recalcParamSize	 (sizeof (h))
 	
-	#ifdef powerc
-		#pragma options align=mac68k
-	#endif
 	struct recalcGluePB {
 		unsigned char	componentFlags;
 		unsigned char	componentParamSize;
@@ -778,9 +666,6 @@ glue recalcGlue (ComponentInstance comp, Handle h) {
 		Handle h;
 		ComponentInstance	comp;
 	};
-	#ifdef powerc
-		#pragma options align=reset
-	#endif
 	
 	struct recalcGluePB pb;
 	
@@ -802,9 +687,6 @@ glue editGlue (ComponentInstance comp, short editcommand) {
 	
 	#define editParamSize	 (sizeof (editcommand))
 	
-	#ifdef powerc
-		#pragma options align=mac68k
-	#endif
 	struct editGluePB {
 		unsigned char	componentFlags;
 		unsigned char	componentParamSize;
@@ -812,9 +694,6 @@ glue editGlue (ComponentInstance comp, short editcommand) {
 		short editcommand;
 		ComponentInstance	comp;
 	};
-	#ifdef powerc
-		#pragma options align=reset
-	#endif
 	
 	struct editGluePB pb;
 	
@@ -836,9 +715,6 @@ glue updateGlue (ComponentInstance comp, Handle h) {
 	
 	#define updateParamSize	 (sizeof (h))
 	
-	#ifdef powerc
-		#pragma options align=mac68k
-	#endif
 	struct updateGluePB {
 		unsigned char	componentFlags;
 		unsigned char	componentParamSize;
@@ -846,9 +722,6 @@ glue updateGlue (ComponentInstance comp, Handle h) {
 		Handle h;
 		ComponentInstance	comp;
 	};
-	#ifdef powerc
-		#pragma options align=reset
-	#endif
 	
 	struct updateGluePB pb;
 	
@@ -864,6 +737,8 @@ glue updateGlue (ComponentInstance comp, Handle h) {
 	return CallUniversalProc(CallComponentUPP, uppCallComponentProcInfo, &pb);
 	#endif
 	} /*updateGlue*/
+
+#pragma options align=reset
 
 #elif 0 // defined (THINK_C)
 
