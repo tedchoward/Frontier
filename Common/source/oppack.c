@@ -1224,8 +1224,9 @@ boolean optextscraptooutline (hdloutlinerecord houtline, Handle htext, hdlheadre
 			continue; /*finished with this one*/
 			}
 		
-		if (gethandlesize (hlinetext) == 0) // 5.0a4 dmb: empty lines don't dictate structure
-			level = lastlevel;
+		 /* 2005-01-21 creedon, aradke, JES - empty lines DO dictate structure < http://sourceforge.net/tracker/index.php?func=detail&aid=1093595&group_id=120666&atid=687798 > */
+		 /* if (gethandlesize (hlinetext) == 0) // 5.0a4 dmb: empty lines don't dictate structure
+			level = lastlevel; */
 		
 		if (level > lastlevel) {
 			

@@ -1160,6 +1160,9 @@ boolean langstriptextsyntax (Handle htext) {
 				
 				if ((token2 == '}') || (ctscanlines > line2)) { /*we got a return, go ahead & strip it*/
 					
+					if (token2 == '}') /* 2005-01-15 creedon - fix suggested by JES w/caveats < http://sourceforge.net/tracker/index.php?func=detail&aid=1093595&group_id=120666&atid=687798 > */
+						ix1 = ix2 - 1;
+
 					short len = ix2 - ix1;
 					
 					pullfromhandle (htext, ix1, len, nil); /*get rid of the token source*/
