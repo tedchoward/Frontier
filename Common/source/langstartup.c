@@ -23,6 +23,7 @@
 
 ******************************************************************************/
 
+
 #include "frontier.h"
 #include "standard.h"
 
@@ -39,21 +40,25 @@
 #include "tablestructure.h"
 #include "resources.h"
 #include "WinSockNetEvents.h"
+#include "CallMachOFrameWork.h" /* 2004-11-19 creedon */
 
 
-#define str_isPike		"\x06" "isPike"
-#define	str_isRadio		"\x07" "isRadio"
-#define str_isMac		"\x05" "isMac"
-#define str_isWindows	"\x09" "isWindows"
-#define str_osFlavor	"\x08" "osFlavor"
+#define str_isPike				"\x06" "isPike"
+#define str_isRadio				"\x07" "isRadio"
+#define str_isMac				"\x05" "isMac"
+#define str_isMacOsClassic		"\x0e" "isMacOsClassic" /* 2004-11-19 creedon */
+#define str_isServer				"\x08" "isServer" /* 2004-11-19 creedon */
+#define str_isWindows			"\x09" "isWindows"
+#define str_osFlavor				"\x08" "osFlavor"
 #define str_osMajorVersion		"\x0e" "osMajorVersion"
 #define str_osMinorVersion		"\x0e" "osMinorVersion"
+#define str_osPointVersion			"\x0e" "osPointVersion" /* 2004-11-19 creedon */
 #define str_osBuildNumber		"\x0d" "osBuildNumber"
 #define str_osVersionString		"\x0f" "osVersionString"
 #define str_osFullNameForDisplay	"\x14" "osFullNameForDisplay"
 #define str_winServicePackNumber	"\x14" "winServicePackNumber"
-#define str_isCarbon	"\x08" "isCarbon"
-#define str_maxTcpConnections "\x11" "maxTcpConnections"
+#define str_isCarbon				"\x08" "isCarbon"
+#define str_maxTcpConnections		"\x11" "maxTcpConnections"
 
 
 void initsegment (void) {
@@ -213,7 +218,8 @@ static boolean initenvironment (hdlhashtable ht) {
 
 	#ifdef MACVERSION
 	
-		bigstring bsversion;
+		bigstring bsversion, bsos; /* 2004-11-19 creedon - added bsos*/
+		boolean isMacOsClassic, isServer; /* 2004-11-19 creedon */
 		unsigned long x;
 		
 		gestalt (gestaltSystemVersion, &x);
@@ -224,32 +230,100 @@ static boolean initenvironment (hdlhashtable ht) {
 		
 		//langassignstringvalue (ht, str_osFlavor, zerostring);
 		
-		langassignlongvalue (ht, str_osMajorVersion, x >> 8);
+		langassignlongvalue (ht, str_osMajorVersion, bcdtolong (x >> 8)); /* 2004-11-19 creedon - convert from bcd for correct display on Mac OS X */ 
 		
 		langassignlongvalue (ht, str_osMinorVersion, (x & 0x00f0) >> 4);
-		
+
+		langassignlongvalue (ht, str_osPointVersion, x & 0x0f); /* 2004-11-19 creedon */		
 		getsystemversionstring (bsversion, nil);
 		
 		langassignstringvalue (ht, str_osVersionString, bsversion);
-		
-		langassignstringvalue (ht, str_osFullNameForDisplay, "\x09" "Macintosh");
 
+		/* langassignstringvalue (ht, str_osFullNameForDisplay, "\x09" "Macintosh"); 2004-11-19 creedon - moved to later in code*/
 		
 		#if TARGET_API_MAC_CARBON == 1 /*PBS 7.028: system.environment.isCarbon*/
-		
+
+			/* 2004-11-19 creedon - added hcommand, hreturn, bs, response */
+			Handle hcommand, hreturn;
+			bigstring bs;
+			UInt32 response;
+			
 			langassignbooleanvalue (ht, str_isCarbon, true);
 			
+			/* 2004-11-19 creedon - get mac os build number, full display name, is server*/
+
+			/* get mac os build number */
+ 
+			newtexthandle ("\psw_vers -buildVersion", &hcommand);
+			
+			newemptyhandle (&hreturn);
+			
+			unixshellcall (hcommand, hreturn);
+			
+			texthandletostring (hreturn, bs);
+			
+			sethandlesize (hreturn, 0);
+			
+			setstringlength (bs, stringlength (bs) - 1);
+			
+			langassignstringvalue (ht, str_osBuildNumber, bs); /* get mac os build number */
+
+			/* get os full display name */
+
+			copystring ("sw_vers -productName", bs); 
+
+			sethandlecontents (bs, stringsize (bs), hcommand);
+
+			unixshellcall (hcommand, hreturn);
+
+			texthandletostring (hreturn, bsos);
+
+			setstringlength (bsos, stringlength (bsos) - 1); /* get os full display name */
+			
+			disposehandle (hcommand);
+			disposehandle (hreturn); /* get mac os build number and full display name*/
+			
+			/* 2004-11-19 creedon - is mac os classic */
+			/* This needs to be checked on Mac OS Classic as well as Mac OS 9 proper. */
+			
+			OSErr err = gestalt (gestaltMacOSCompatibilityBoxAttr, &response);
+			
+			if ((err == noErr) && ((response & (1 << gestaltMacOSCompatibilityBoxPresent)) != 0))
+				isMacOsClassic = true;
+			else
+				isMacOsClassic = false;
+			
+			/* 2004-11-19 creedon - is server */
+			
+			if (equalstrings (bsos, "\pMac OS X Server"))
+				isServer = true;
+			else
+				isServer = false; /* is server */
+
 		#else
 			
 			langassignbooleanvalue (ht, str_isCarbon, false);
+
+			bsos = "\x06" "Mac OS" /* 2004-11-19 creedon - Mac OS, used to be Macintosh*/ 
+			
+			isMacOsClassic = true; /* 2004-11-19 creedon */
+			
+			isServer = false; /* 2004-11-19 creedon */
 			
 		#endif
+		
+		langassignbooleanvalue (ht, str_isMacOsClassic, isMacOsClassic); /* 2004-11-19 creedon */
+		
+		langassignstringvalue (ht, str_osFullNameForDisplay, bsos); /* 2004-11-19 creedon - changed "\x06" "Mac OS" to bsos. a calculated value */
+		
+		langassignbooleanvalue (ht, str_isServer, isServer); /* 2004-11-19 creedon */
 		
 	#endif
 
 	#ifdef WIN95VERSION
 	
 		bigstring bsversion, bsservicepack, bsos;
+		boolean isServer; /* 2004-11-19 creedon */
 		byte bsflavor [4];
 		OSVERSIONINFO osinfo;
 
@@ -263,14 +337,19 @@ static boolean initenvironment (hdlhashtable ht) {
 		
 		langassignbooleanvalue (ht, str_isWindows, true);
 		
-		if (osinfo.dwPlatformId == VER_PLATFORM_WIN32_NT)
+		if (osinfo.dwPlatformId == VER_PLATFORM_WIN32_NT) {
 			copystring ("\x02" "NT", bsflavor);
+			
+			isServer = true; /* 2004-11-19 creedon */
+			}
 		else {
 			
 			if (osinfo.dwBuildNumber == 0)
 				copystring ("\x02" "95", bsflavor);
 			else
 				copystring ("\x02" "98", bsflavor);
+			
+			isServer = false; /* 2004-11-19 creedon */
 			}
 		
 		pushstring (bsflavor, bsos);
@@ -292,6 +371,8 @@ static boolean initenvironment (hdlhashtable ht) {
 		langassignstringvalue (ht, str_osFullNameForDisplay, bsos);
 		
 		langassignbooleanvalue (ht, str_isCarbon, false); /*7.0b28: isCarbon is false on Windows.*/
+		
+		langassignbooleanvalue (ht, str_isServer, isServer); /* 2004-11-19 creedon */
 
 	#endif
 
