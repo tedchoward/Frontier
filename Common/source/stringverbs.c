@@ -1432,17 +1432,17 @@ static boolean stringfunctionvalue (short token, hdltreenode hparam1, tyvaluerec
 			lenafter = hlen - ixafter;
 			
 			if (!newhandle (lenbefore + lenafter, &x))
-				return false;
+				return (false);
 			
 			ixbefore = 0;
 			if (lenbefore > 0)
 				if (!loadfromhandle (hstring, &ixbefore, lenbefore, *x))
-					return false;
+					return (false);
 			
 			ixbefore += ctdelete;
 			if (lenafter > 0)
 				if (!loadfromhandle (hstring, &ixbefore, lenafter, &((*x) [lenbefore]) ))
-					return false;
+					return (false);
 			
 			return (setheapvalue (x, stringvaluetype, v));
 			}
@@ -1573,7 +1573,7 @@ static boolean stringfunctionvalue (short token, hdltreenode hparam1, tyvaluerec
 			Handle hstring;
 			Handle x;
 			long ix;
-			long len;
+			long hlen, newlen;
 			
 			
 			if (!getpositivelongvalue (hp1, 2, &ix))
@@ -1581,7 +1581,7 @@ static boolean stringfunctionvalue (short token, hdltreenode hparam1, tyvaluerec
 			
 			flnextparamislast = true;
 			
-			if (!getlongvalue (hp1, 3, &len)) 
+			if (!getlongvalue (hp1, 3, &newlen)) 
 				return (false);
 			
 			if (!getreadonlytextvalue (hp1, 1, &hstring)) /*get last to simplify error handling*/
@@ -1590,15 +1590,18 @@ static boolean stringfunctionvalue (short token, hdltreenode hparam1, tyvaluerec
 			if (ix > 0)
 				--ix; /*convert to zero-base*/
 			
-			len = min (len, gethandlesize (hstring) - ix);
+			hlen = gethandlesize (hstring);
+			newlen = min (newlen, hlen - ix);
 			
-			if (len > 0) {
-				if (!loadfromhandletohandle (hstring, &ix, len, false, &x))
-					if (!newemptyhandle (&x))
-						return (false);
+			
+			if (newlen > 0) {
+				if (!newhandle (newlen, &x))
+					return (false);
+				if (!loadfromhandle (hstring, &ix, newlen, *x))
+					return (false);
 				}
 			else if (!newemptyhandle (&x))
-				return false;
+				return (false);
 			
 			return (setheapvalue (x, stringvaluetype, v));
 			}
