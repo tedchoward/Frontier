@@ -62,22 +62,23 @@
 #define frontier_version_string			"10.0a5"
 
 
-#define	copyright_year_string	"2004"
+#define	copyright_year_string	"2005"
 
 
 /* Define app name and related strings */
 #ifdef PIKE
-	#define APPNAME						"Radio UserLand"
+	#define APPNAME						"Radio"
 	#define APPNAME_SHORT				"Radio"
 #else
-	#define APPNAME						"UserLand Frontier"
+	#define APPNAME						"Frontier"
 	#define APPNAME_SHORT				"Frontier"
 #endif
 
 /* app name for display -- ends with the trademark character */
+/* 2005-01-12 aradke: app names no longer include trademark character */
 #ifdef MACVERSION
-	#define APPNAME_TM					APPNAME "\xAA"
+	#define APPNAME_TM					APPNAME
 #endif
 #ifdef WIN95VERSION
-	#define APPNAME_TM					APPNAME "\x99"
+	#define APPNAME_TM					APPNAME
 #endif
