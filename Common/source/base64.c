@@ -30,7 +30,7 @@
 
 #include "memory.h"
 #include "lang.h"
-#include "base64.h"
+#include "BASE64.H"
 
 
 static char encodingTable [64] = {
