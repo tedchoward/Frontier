@@ -64,6 +64,7 @@ static boolean cmdsavestring (short stringnumber, Handle htext) {
 	5.0d14 dmb: hscriptstring is now a text handle, not a hdlstring.
 	*/
 	
+	Handle h; /* 2004-12-03 creedon - temporary handle */ 
 	register hdlcancoonrecord hc;
 	
 	assert (cancoonglobals != nil);
@@ -72,7 +73,12 @@ static boolean cmdsavestring (short stringnumber, Handle htext) {
 	
 	if (!equalhandles (htext, (**hc).hscriptstring)) {
 	
-		copyhandlecontents (htext, (**hc).hscriptstring);
+		if ((**hc).hscriptstring == nil) { /* 2004-12-03 creedon, aradke */
+			copyhandle (htext, &h);
+			(**hc).hscriptstring = h;
+			}
+		else
+			copyhandlecontents (htext, (**hc).hscriptstring);
 		
 		(**hc).fldirty = true;
 		}
