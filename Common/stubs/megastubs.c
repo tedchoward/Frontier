@@ -81,12 +81,25 @@ void convertToMacExtended (double foo, extended80 * tenbytebuffer) {
 
 	tenbuf = tenbytebuffer->x80;
 
+#if defined(__i386__) && defined(__GNUC__)
+	/*
+		10.0a5 - TRT - 29 Dec 2004
+		GNU by default uses the AT&T assembly code syntax;
+		MSC/MWERKS uses the Intel assembly code syntax;
+		some versions of 'gcc' accept -masm=att|intel to
+		specify which syntax to use; but for those that don't...
+	*/
+	__asm__("FLD foo/\nFWAIT/\nFSTP tbyte ptr myext/\nFWAIT/");
+#elif defined(__powerpc__) && defined(__GNUC__)
+	dtox80(&foo, tenbytebuffer);	/* at present - see fp.h in Universal Interfaces */
+#else
 	_asm {
 		FLD foo;
 		FWAIT;
 		FSTP tbyte ptr myext;
 		FWAIT;
 		}
+#endif
 
 	for (i = 9; i >= 0; i--) {
 		*tenbuf = myext[i];
@@ -107,12 +120,25 @@ void convertFromMacExtended (double * foo, extended80 * tenbytebuffer) {
 		++tenbuf;
 		}
 
+#if defined(__i386__) && defined(__GNUC__)
+	/*
+		10.0a5 - TRT - 29 Dec 2004
+		GNU by default uses the AT&T assembly code syntax;
+		MSC/MWERKS uses the Intel assembly code syntax;
+		some versions of 'gcc' accept -masm=att|intel to
+		specify which syntax to use; but for those that don't...
+	*/
+	__asm__("FLD tbyte ptr myext\nFWAIT/\nFSTP getfoo/\nFWAIT/");
+#elif defined(__powerpc__) && defined(__GNUC__)
+	*foo = x80tod(tenbytebuffer);	/* at present - see fp.h in Universal Interfaces */
+#else
 	_asm {
 		FLD tbyte ptr myext
 		FWAIT;
 		FSTP getfoo;
 		FWAIT;
 		}
+#endif
 
 	*foo = getfoo;
 	} /*convertFromMacExtended*/
