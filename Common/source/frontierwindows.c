@@ -95,7 +95,7 @@ WindowPtr getnewwindow (short id, boolean fldialog, Rect *r) {
 	//If needed this can be cast down to a DialogPtr
 	if (fldialog)
 	{
-		DialogPtr	theDial = GetNewDialog (id, nil, (DialogPtr) -1L);
+		DialogPtr	theDial = GetNewDialog (id, nil, (WindowRef) -1L);
 		w = GetDialogWindow(theDial);
 	}
 	else {

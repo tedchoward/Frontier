@@ -398,7 +398,8 @@ boolean getscrap (tyscraptype scraptype, Handle hscrap) {
 					 }
 
 				 --i;
-				 } /*while*/			
+				 } /%while%/
+			*/
 
 			ctbytes = strlen (pdata); /*7.1b23: call strlen to find the first terminator: removes junk from end*/
 			} /*if*/

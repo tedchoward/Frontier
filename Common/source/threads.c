@@ -87,42 +87,54 @@ tythreadcallbacks threadcallbacks;
 
 static pascal void copythreadcontext (ThreadID hthread, void * hglobals) {
 	
+#if TARGET_API_MAC_CLASSIC
 	long curA5 = SetUpAppA5 ();
+#endif
 	
 	(*threadcallbacks.swapoutcallback) (hglobals);
 	
+#if TARGET_API_MAC_CLASSIC
 	RestoreA5 (curA5);
+#endif
 	} /*copythreadcontext*/
 
 
 static pascal void swapinthreadcontext (ThreadID hthread, void * hglobals) {
 	
+#if TARGET_API_MAC_CLASSIC
 	long curA5 = SetUpAppA5 ();
+#endif
 	
 	(*threadcallbacks.swapincallback) (hglobals);
 	
+#if TARGET_API_MAC_CLASSIC
 	RestoreA5 (curA5);
+#endif
 	} /*swapinthreadcontext*/
 
 
 static pascal void disposethreadcontext (ThreadID hthread, void * hglobals) {
 	
+#if TARGET_API_MAC_CLASSIC
 	long curA5 = SetUpAppA5 ();
+#endif
 	//Code change by Timothy Paustian Thursday, May 11, 2000 4:44:59 PM
 	//Get rid of the UPPs for carbon here
 	#if TARGET_API_MAC_CARBON == 1
 	hdlthreadglobals	globals = (hdlthreadglobals)hglobals;
-	HLock(globals);
+	HLock((Handle) globals);
 	DisposeThreadSwitchUPP((**globals).threadInCallbackUPP);
 	DisposeThreadSwitchUPP((**globals).threadOutCallbackUPP);
 	DisposeThreadTerminationUPP((**globals).threadTerminateUPP);
 	DisposeThreadEntryUPP((**globals).threadEntryCallbackUPP);
-	HUnlock(globals);
+	HUnlock((Handle) globals);
 	#endif
 		
 	(*threadcallbacks.disposecallback) (hglobals);
 	
+#if TARGET_API_MAC_CLASSIC
 	RestoreA5 (curA5);
+#endif
 	} /*disposethreadcontext*/
 
 
@@ -135,7 +147,7 @@ static void setthreadprocs (ThreadID idthread, void * hglobals) {
 	//creating the UPPs for use on carbon.
 	#if TARGET_API_MAC_CARBON == 1
 	hdlthreadglobals	globals = (hdlthreadglobals)hglobals;
-	HLock(globals);
+	HLock((Handle) globals);
 	(**globals).threadInCallbackUPP = NewThreadSwitchUPP(&swapinthreadcontext);
 	(**globals).threadOutCallbackUPP = NewThreadSwitchUPP(&copythreadcontext);
 	(**globals).threadTerminateUPP = NewThreadTerminationUPP(&disposethreadcontext);
@@ -146,7 +158,7 @@ static void setthreadprocs (ThreadID idthread, void * hglobals) {
 	
 	SetThreadTerminator (idthread, (**globals).threadTerminateUPP, hglobals);
 	
-	HUnlock(globals);
+	HUnlock((Handle) globals);
 	#else
 		
 	SetThreadSwitcher (idthread, &swapinthreadcontext, hglobals, true);

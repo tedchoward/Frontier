@@ -166,9 +166,9 @@ void ouch (void) {
 #ifdef WIN95VERSIOON
 	Beep(1000, 500);
 #endif
-	/*
-	dosound (1 /*duration%/, 250 /*amplitude%/, 14300 /*frequency%/);
-	*/
+	
+	//dosound (1 /*duration*/, 250 /*amplitude*/, 14300 /*frequency*/);
+	
 	} /*ouch*/
 
 

@@ -39,7 +39,8 @@
 
 
 
-static hdlsmalliconbits hmiscbits, hleaderbits;
+static hdlsmalliconbits hmiscbits;
+//static hdlsmalliconbits hleaderbits;
 
 #ifndef version42orgreater
 	#define trianglepolyheight 9 /*for popup icons*/
