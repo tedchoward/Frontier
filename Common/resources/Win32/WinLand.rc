@@ -150,27 +150,28 @@ ID_LAND_ICON            ICON    DISCARDABLE     land.ico
 ID_MENU_ICON            ICON    DISCARDABLE     FTmb.ico
 
 #ifdef PIKE
-ID_OP_ICON              ICON    DISCARDABLE     radioDoc.ico /*7.0b31 PBS*/
+	ID_OP_ICON              ICON    DISCARDABLE     radioDoc.ico /*7.0b31 PBS*/
 #else
-ID_OP_ICON              ICON    DISCARDABLE     FTop.ico
+	ID_OP_ICON              ICON    DISCARDABLE     FTop.ico
 #endif
 
 ID_PICT_ICON            ICON    DISCARDABLE     FTpc.ico
 ID_SCRIPT_ICON          ICON    DISCARDABLE     FTsc.ico
 ID_TABLE_ICON           ICON    DISCARDABLE     FTtb.ico
 ID_WP_ICON              ICON    DISCARDABLE     FTwp.ico
-ID_DESKTOPSCRIPT_ICON	ICON    DISCARDABLE     FTds.ico
-
-#ifdef PIKE
-ID_OPML_ICON			ICON	DISCARDABLE		radioDoc.ico /*7.0b24 PBS*/
-#endif
 
 /*Appears in title bar for About and Quick Script window -- generic windows.*/
 
 #ifdef PIKE
-	IDNOTE					ICON	DISCARDABLE		radio.ico
+	ID_NOTE_ICON			ICON	DISCARDABLE		radio.ico
 #else
-	IDNOTE                  ICON    DISCARDABLE     note300.ico
+	ID_NOTE_ICON			ICON    DISCARDABLE     note300.ico
+#endif
+
+ID_DESKTOPSCRIPT_ICON	ICON    DISCARDABLE     FTds.ico
+
+#ifdef PIKE
+	ID_OPML_ICON			ICON	DISCARDABLE		radioDoc.ico /*7.0b24 PBS*/
 #endif
 
 /////////////////////////////////////////////////////////////////////////////
