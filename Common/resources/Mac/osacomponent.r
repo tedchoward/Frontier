@@ -44,15 +44,15 @@ type 'ASpr' {
 resource 'ASpr' (128) {
 	
 		{
-		"Through",		'thgh',
-		"Between",		'btwn',
+		"Through",	'thgh',
+		"Between",	'btwn',
 		"Against",		'agst',
 		"OutOf",		'outo',
 		"InsteadOf",	'isto',
 		"AsideFrom",	'asdf',
 		"Around",		'arnd',
 		"Beside",		'bsid',
-		"Beneath",		'bnth',
+		"Beneath",	'bnth',
 		"Under",		'undr',
 		"Above",		'abve',
 		"Below",		'belw',
@@ -64,12 +64,12 @@ resource 'ASpr' (128) {
 	};
 
 resource 'thng' (128, sysHeap) {
-	'osa ', 'LAND', 'LAND',						/* ComponentDescription */
+	'osa ', 'LAND', 'LAND',													/* ComponentDescription */
 	kOSASupportsCompiling + kOSASupportsConvenience + kOSASupportsEventHandling, 0x00,	/*flags & mask*/
-	'STUB', 128,								/* resource where Component code is found */
-	'STR ', 128,								/* name string resource */
-	'STR ', 129,								/* info string resource */
-	'ICON', 129									/* icon resource */
+	'STUB', 128,															/* resource where Component code is found */
+	'STR ', 128,															/* name string resource */
+	'STR ', 129,															/* info string resource */
+	'ICON', 129															/* icon resource */
 };
 
 
@@ -94,15 +94,15 @@ resource 'ICON' (129, purgeable) {
 resource 'STR#' (512, "component", purgeable) {
 	{	/* array StringArray: 5 elements */
 		/* [1] */
-		"UserLand Frontierª",
+		"Frontier",							/* 2005-01-04 creedon - removed UserLand and (tm) for open source release */
 		/* [2] */
 		"UserTalk",
 		/* [2] */
-		"UserLand Frontierª UserTalk scripting component",
+		"Frontier UserTalk scripting component",	/* 2005-01-04 creedon - removed UserLand and (tm) for open source release */
 		/* [4] */
-		"UserLand Frontierª Menu Sharing component",
+		"Frontier Menu Sharing component",		/* 2005-01-04 creedon - removed UserLand and (tm) for open source release */
 		/* [5] */
-		"UserLand Frontierª Window Sharing component"
+		"Frontier Window Sharing component"	/* 2005-01-04 creedon - removed UserLand and (tm) for open source release */
 	}
 };
 
