@@ -28,8 +28,8 @@
 #include "frontier.h"
 #include "standard.h"
 
-#include "Paige.h"
-#include "pgdeftbl.h"
+#include "PAIGE.H"
+#include "PGDEFTBL.H"
 
 #include "strings.h"
 #include "font.h"
