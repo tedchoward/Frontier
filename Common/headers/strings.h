@@ -58,6 +58,8 @@ extern boolean equalidentifiers (const bigstring, const bigstring);
 
 extern short comparestrings (bigstring, bigstring);
 
+extern short compareidentifiers (bigstring, bigstring);
+
 extern boolean stringlessthan (bigstring, bigstring);
 
 extern boolean pushstring (bigstring, bigstring);

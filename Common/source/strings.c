@@ -203,6 +203,30 @@ short comparestrings (bigstring bs1, bigstring bs2) {
 
 #endif
 
+
+short compareidentifiers (bigstring bs1, bigstring bs2) {
+
+	/*
+	2004-11-09 aradke: cross between comparestrings and equalidentifiers,
+	useful for sorting identifiers.
+
+	return zero if the two strings (pascal type, with length-byte) are
+	equal.  return -1 if bs1 is less than bs2, or +1 if bs1 is greater than
+	bs2. the comparison is not case-sensitive.
+	*/
+	
+	register short n = min (stringlength (bs1), stringlength (bs2)) + 1;
+	register ptrbyte p1 = (ptrbyte) stringbaseaddress (bs1);
+	register ptrbyte p2 = (ptrbyte) stringbaseaddress (bs2);
+	
+	while (--n)
+		if (getlower (*p1++) != getlower (*p2++))
+			return ((getlower (*--p1) < getlower (*--p2)) ? -1 : +1); /*rewind*/
+	
+	return (sgn (stringlength (bs1) - stringlength (bs2)));
+	} /*compareidentifiers*/
+
+
 boolean stringlessthan (register bigstring bs1, register bigstring bs2) {
 	
 	return (comparestrings (bs1, bs2) < 0);
