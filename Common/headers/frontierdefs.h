@@ -61,7 +61,6 @@
 #undef DATABASE_DEBUG	/* define as 1 to enable database debugging and logging code */
 
 
-#undef fltrialsize
 #undef flruntime
 #define fldebug 1
 #define flnewfeatures 1
