@@ -303,7 +303,9 @@ extern void copyrezstring (const bigstring, bigstring);
 #endif
 
 #ifdef WIN95VERSION
-extern ULONG wcslen(const unsigned short*);	// JES 12/04/2002: Make strings.c compile in CW8
+	#ifdef __MWERKS__
+		extern ULONG wcslen(const unsigned short*);	// JES 12/04/2002: Make strings.c compile in CW8
+	#endif											// AR 10/17/2004: ...but don't break the MS VC6 build
 #endif
 
 #ifdef MACVERSION
