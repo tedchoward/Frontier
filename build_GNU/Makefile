@@ -33,6 +33,8 @@ PROJECT = Frontier
 
 CC = gcc
 
+RANLIB = ranlib
+
 LD = ld
 
 REZ = /Developer/Tools/Rez
@@ -164,6 +166,9 @@ DEBUGFLAGS = -g -O0
 ifdef DMALLOC
 DEBUGFLAGS += -DDMALLOC
 endif
+
+MAC_PAIGE_LIB_AR = \
+	$(SRCDIR)/Common/Paige/libpaigemacho.a
 
 MAC_PAIGE_LIB = \
 	-L$(SRCDIR)/Common/Paige/ -lpaigemacho
@@ -1208,7 +1213,11 @@ all: dirs
 		;; \
 	esac
 
-MAC_$(PROJECT):	$(MAC_OBJECTS) $(BINDIR)/$(PROJECT).rsrc
+MAC_$(PROJECT):	$(MAC_OBJECTS) $(BINDIR)/$(PROJECT).rsrc $(MAC_PAIGE_LIB_AR)
+	if [ ! -f ".ranlib" ]; then \
+		$(RANLIB) $(MAC_PAIGE_LIB_AR); \
+		touch ".ranlib"; \
+	fi
 	$(CC) $(MAC_LDFLAGS) -o $(BINDIR)/$(PROJECT) $(MAC_OBJECTS) $(MAC_LIBS)
 	
 	#
