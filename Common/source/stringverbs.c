@@ -1820,16 +1820,28 @@ static boolean stringfunctionvalue (short token, hdltreenode hparam1, tyvaluerec
 		case patternmatchfunc: {
 			Handle hsearch, hpattern;
 			long ixmatch;
+			short ctconsumed = 2;
+			short ctpositional = 2;
+			tyvaluerecord vixstart;
 			
 			if (!getreadonlytextvalue (hp1, 1, &hpattern))
 				return (false);
 			
-			flnextparamislast = true;
-			
 			if (!getreadonlytextvalue (hp1, 2, &hsearch))
 				return (false);
 			
-			ixmatch = searchhandle (hsearch, hpattern, 0, longinfinity);
+			flnextparamislast = true;
+			
+			setlongvalue (1, &vixstart);
+			
+			/* 2004-12-27 smd: added optional ix parameter */
+			if (!getoptionalparamvalue (hp1, &ctconsumed, &ctpositional, "\x02""ix", &vixstart))
+				return (false);
+			
+			if (vixstart.data.longvalue > 0) /*switch to 0-index*/
+				--vixstart.data.longvalue;
+			
+			ixmatch = searchhandle (hsearch, hpattern, vixstart.data.longvalue, longinfinity);
 			
 			setlongvalue (ixmatch + 1, v);
 			
