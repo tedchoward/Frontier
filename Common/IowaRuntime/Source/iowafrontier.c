@@ -23,8 +23,11 @@
 
 ******************************************************************************/
 
-#include <OSA.h>
+#include "frontier.h"
+#include "standard.h"
+
 #include <iac.h>
+#include "shelltypes.h"
 #include "iowacore.h"
 #include "iowascript.h"
 #include "iowaruntime.h"

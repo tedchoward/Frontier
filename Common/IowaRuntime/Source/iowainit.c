@@ -23,6 +23,10 @@
 
 ******************************************************************************/
 
+#include "frontier.h"
+#include "standard.h"
+
+#include "shelltypes.h"
 #include "iowacore.h"
 #include "iowaruntime.h"
 #include "iowascript.h"

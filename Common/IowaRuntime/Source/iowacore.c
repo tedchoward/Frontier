@@ -23,6 +23,11 @@
 
 ******************************************************************************/
 
+#include "frontier.h"
+#include "standard.h"
+
+#include "shelltypes.h"
+
 #ifdef iowaRuntime
 
 	#include <appletdefs.h>

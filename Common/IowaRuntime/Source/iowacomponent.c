@@ -23,7 +23,10 @@
 
 ******************************************************************************/
 
-#include <Components.h>
+#include "frontier.h"
+#include "standard.h"
+
+#include "shelltypes.h"
 #include "iowacore.h"
 #ifndef iowaRuntime
 	#include "iowaobject.h"
@@ -98,7 +101,10 @@ static ComponentInstance findcomponent (long objectTypeID) {
 	
 //Code change by Timothy Paustian Thursday, June 29, 2000 9:42:56 PM
 //Update macro
-#if TARGET_RT_MAC_CFM
+/* 2004-10-22 aradke: Not sure if this is the right thing to do for the Mach-O build,
+		but at least it makes the link errors for _drawobjectGlue etc. go away
+*/
+#if TARGET_RT_MAC_CFM || TARGET_RT_MAC_MACHO
 	enum {
 		uppCallComponentProcInfo = kPascalStackBased
 				| RESULT_SIZE(kFourByteCode)

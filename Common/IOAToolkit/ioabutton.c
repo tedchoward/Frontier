@@ -23,6 +23,10 @@
 
 ******************************************************************************/
 
+#include "frontier.h"
+#include "standard.h"
+
+#include "quickdraw.h"
 #include <ioa.h>
 
 #if TARGET_API_MAC_CARBON == 1

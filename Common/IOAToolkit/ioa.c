@@ -27,14 +27,11 @@
 	7/31/96 dmb: fixed debugobjectcommandProcInfo
 */
 
-#include <Components.h>
+#include "frontier.h"
+#include "standard.h"
+
 #include "ioa.h"
   
-
-//#ifdef __MWERKS__
-//	#include <A4Stuff.h>
-//#endif
-
 #ifdef THINK_C
 	
 	#include <SetUpA4.h>
@@ -921,9 +918,10 @@ static pascal ComponentResult debugobjectcommand (hdlobject h, Str255 errorstrin
 	
 	return ((*config.debugObjectCallback) (h, errorstring));
 	} /*debugobjectcommand*/
+
 //Code change by Timothy Paustian Sunday, June 25, 2000 10:29:27 PM
 //watch out, will this work?, I may have to check this.
-#if !TARGET_RT_MAC_CFM
+#if 0
 	
 	// UPPs are just the routine addresses
 	#define IOAopenUPP ((ComponentFunctionUPP) &IOAopen)

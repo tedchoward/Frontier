@@ -23,6 +23,10 @@
 
 ******************************************************************************/
 
+#include "frontier.h"
+#include "standard.h"
+
+#include "shelltypes.h"
 #include <appletdefs.h>
 #include <iac.h>
 #include <SetupA5.h>
@@ -41,6 +45,8 @@
 #include "iowafrontier.h"
 #include "iowaattributes.h"
 #include "iowascript.h"
+
+#include "quickdraw.h"
 
 
 #ifndef cutCmd
@@ -2271,7 +2277,7 @@ void installRuntimeEventHandlers (void) {
 	if (!flinstalled) {
 		//Code change by Timothy Paustian Friday, July 21, 2000 10:36:08 PM
 		//create the UPP for the apple event handler
-		#if TARGET_API_MAC_CARBON
+		#if TARGET_API_MAC_CARBON && TARGET_RT_MAC_CFM
 		if (appleEventHandlerDesc == nil)
 			appleEventHandlerDesc = NewAEEventHandlerUPP(appleEventHandler);
 		#endif

@@ -23,6 +23,10 @@
 
 ******************************************************************************/
 
+#include "frontier.h"
+#include "standard.h"
+
+#include "shelltypes.h"
 #include <iac.h>
 #include <appletquickdraw.h>
 #include "iowacore.h"

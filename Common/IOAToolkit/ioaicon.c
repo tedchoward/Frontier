@@ -23,6 +23,9 @@
 
 ******************************************************************************/
 
+#include "frontier.h"
+#include "standard.h"
+
 #include <iac.h>
 #include <ioa.h>
 #include <appleticons.h>

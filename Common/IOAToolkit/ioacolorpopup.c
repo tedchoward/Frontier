@@ -25,8 +25,9 @@
 
 /*original code by Dave Shaver, Quark, 303-849-3311, adapted by DW 2/9/93. Thanks Dave!*/
 
-//#include <SetUpA4.h>
-#include <Gestalt.h>
+#include "frontier.h"
+#include "standard.h"
+
 #include <iac.h>
 #include <ioa.h>
 #include "ioacolorpopup.h"

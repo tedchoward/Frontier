@@ -23,7 +23,9 @@
 
 ******************************************************************************/
 
-#include <OSA.h>
+#include "frontier.h"
+#include "standard.h"
+
 #include <iac.h>
 #include <UserTalk.h>
 #include <appletdefs.h>

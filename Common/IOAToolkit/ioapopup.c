@@ -23,11 +23,14 @@
 
 ******************************************************************************/
 
+#include "frontier.h"
+#include "standard.h"
+
 #include <iac.h>
 #include <ioa.h>
 #include "ioapopup.h"
 #include "appletmemory.h"
-
+#include "quickdraw.h"
 
 #define idpopupmenu 25000
 
