@@ -47,9 +47,10 @@
 				GCC_ENABLE_FIX_AND_CONTINUE = YES;
 				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
 				GCC_OPTIMIZATION_LEVEL = 0;
-				GCC_PRECOMPILE_PREFIX_HEADER = YES;
-				GCC_PREFIX_HEADER = frontier.xcode.h;
+				GCC_PRECOMPILE_PREFIX_HEADER = NO;
+				GCC_PREFIX_HEADER = "";
 				GCC_WARN_UNKNOWN_PRAGMAS = YES;
+				REZ_PREPROCESSOR_DEFINITIONS = "";
 				ZERO_LINK = YES;
 			};
 			isa = PBXBuildStyle;
@@ -565,7 +566,6 @@
 		65152566072BFC6500411831 = {
 			buildActionMask = 2147483647;
 			files = (
-				651527AE072BFC6900411831,
 				651527AF072BFC6900411831,
 				651527B9072BFE0E00411831,
 				6515294B072C000500411831,
@@ -614,8 +614,8 @@
 				GCC_ENABLE_CPP_EXCEPTIONS = NO;
 				GCC_ENABLE_CPP_RTTI = NO;
 				GCC_OPTIMIZATION_LEVEL = 0;
-				GCC_PRECOMPILE_PREFIX_HEADER = NO;
-				GCC_PREFIX_HEADER = "";
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = frontier.xcode.h;
 				GCC_REUSE_STRINGS = NO;
 				GCC_SHORT_ENUMS = YES;
 				GCC_WARN_ABOUT_MISSING_PROTOTYPES = YES;
@@ -629,7 +629,7 @@
 				LIBRARY_SEARCH_PATHS = "\"/Volumes/Data/Development/Frontier Open Source Release/cvsroot/Frontier/Common/Paige\"";
 				OTHER_CFLAGS = "-fno-inline";
 				OTHER_LDFLAGS = "-multiply_defined warning";
-				OTHER_REZFLAGS = "";
+				OTHER_REZFLAGS = "-d TARGET_API_MAC_CARBON=1 -i ../Common/headers";
 				PRODUCT_NAME = Frontier;
 				REZ_PREPROCESSOR_DEFINITIONS = "";
 				REZ_PREPROCESSOR_UNDEFINITIONS = "";
@@ -1455,8 +1455,8 @@
 			sourceTree = "<group>";
 		};
 		651525C4072BFC6700411831 = {
+			explicitFileType = archive.ar;
 			isa = PBXFileReference;
-			lastKnownFileType = archive.ar;
 			name = libpaigemacho.a;
 			path = ../Common/Paige/libpaigemacho.a;
 			refType = 2;
@@ -1558,7 +1558,6 @@
 				651525DB072BFC6700411831,
 				651525DC072BFC6700411831,
 				651525DD072BFC6700411831,
-				651525E0072BFC6700411831,
 			);
 			isa = PBXGroup;
 			name = rez;
@@ -1702,14 +1701,6 @@
 			path = ../Common/resources/Mac/osxdialogs.r;
 			refType = 2;
 			sourceTree = SOURCE_ROOT;
-		};
-		651525E0072BFC6700411831 = {
-			children = (
-			);
-			isa = PBXGroup;
-			name = windows;
-			refType = 4;
-			sourceTree = "<group>";
 		};
 		651525E1072BFC6700411831 = {
 			children = (
@@ -3366,20 +3357,11 @@
 		};
 		6515269A072BFC6800411831 = {
 			children = (
-				6515269B072BFC6800411831,
 			);
 			isa = PBXGroup;
 			name = "Mach-O Runtime";
 			refType = 4;
 			sourceTree = "<group>";
-		};
-		6515269B072BFC6800411831 = {
-			isa = PBXFileReference;
-			lastKnownFileType = "compiled.mach-o.objfile";
-			name = crt1.o;
-			path = ../../../../../../../usr/lib/crt1.o;
-			refType = 2;
-			sourceTree = SOURCE_ROOT;
 		};
 		6515269C072BFC6800411831 = {
 			children = (
@@ -5012,12 +4994,6 @@
 		};
 		651527AD072BFC6900411831 = {
 			fileRef = 651525C2072BFC6700411831;
-			isa = PBXBuildFile;
-			settings = {
-			};
-		};
-		651527AE072BFC6900411831 = {
-			fileRef = 6515269B072BFC6800411831;
 			isa = PBXBuildFile;
 			settings = {
 			};
