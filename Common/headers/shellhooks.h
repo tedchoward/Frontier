@@ -26,6 +26,10 @@
 #ifndef shellhooksinclude
 #define shellhooksinclude
 
+#ifndef processinclude
+	#include "process.h"
+#endif
+
 
 /*types*/
 
@@ -91,7 +95,7 @@ extern boolean shellcallfilehooks (void);
 
 extern boolean shellpushwakeuphook (wakeuphookcallback);
 
-extern boolean shellcallwakeuphooks (struct tythreadglobals **);
+extern boolean shellcallwakeuphooks (hdlprocessthread);
 
 
 #endif /*shellhooksinclude*/
