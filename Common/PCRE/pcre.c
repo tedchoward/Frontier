@@ -35,6 +35,8 @@ restrictions:
 /* Define DEBUG to get debugging output on stdout. */
 
 /* #define DEBUG */
+#undef DEBUG	/* 2004-10-23 aradke: don't pick these up from system headers */
+#undef DPRINTF
 
 /* Use a macro for debugging printing, 'cause that eliminates the use of #ifdef
 inline, and there are *still* stupid compilers about that don't like indented
