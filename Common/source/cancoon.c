@@ -64,7 +64,7 @@
 #include "cancooninternal.h"
 #include "serialnumber.h"
 
-#include "winsocknetevents.h" /*6.2a14 AR*/
+#include "WinSockNetEvents.h" /*6.2a14 AR*/
 
 
 
