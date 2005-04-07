@@ -313,7 +313,7 @@
 	
 		"date\0", 
 		false,
-			24,
+			30,
 			"get\0",
 			"set\0",
 			"abbrevstring\0",
@@ -338,8 +338,13 @@
 			"monthtostring\0",
 			"dayofweektostring\0",
 			"versionlessthan\0",
-
-
+			"day\0",        // SMD 2005-04-07 day, month, year, hour, minute, second
+			"month\0",
+			"year\0",
+			"hour\0",
+			"minute\0",
+			"seconds\0",
+	
 		"dialog\0", 
 		true,
 			19,			//Count of verbs

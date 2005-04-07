@@ -274,6 +274,18 @@ typedef enum tylangtoken { /*verbs that are processed by langverbs.c*/
 		dayofweektostringfunc, //AR 07/07/1999
 		
 		dateversionlessthanfunc, //AR 07/07/1999
+		
+		datedayfunc,	// SMD 2005-04-07
+		
+		datemonthfunc,	// SMD 2005-04-07
+		
+		dateyearfunc,	// SMD 2005-04-07
+		
+		datehourfunc,	// SMD 2005-04-07
+		
+		dateminutefunc,	// SMD 2005-04-07
+		
+		datesecondsfunc,	// SMD 2005-04-07
 	
 	/*dialog*/
 		
@@ -2105,6 +2117,47 @@ static boolean langfunctionvalue (short token, hdltreenode hparam1, tyvaluerecor
 			(*v).data.flvalue = true;
 			
 			return (true);
+			}
+		
+		case datedayfunc:		/* SMD 2005-04-07 */
+		case datemonthfunc:
+		case dateyearfunc:
+		case datehourfunc:
+		case dateminutefunc:
+		case datesecondsfunc: {
+			tyvaluerecord vsecs;
+			short ctconsumed = 0;
+			short ctpositional = 0;
+			short day, month, year, hour, minute, second;
+			
+			initvalue (&vsecs, datevaluetype);
+
+			flnextparamislast = true;
+			
+			if (!getoptionalparamvalue (hparam1, &ctconsumed, &ctpositional, "\x04" "date", &vsecs)) 
+				return (false);
+			
+			if (!vsecs.data.datevalue) {
+				if (!setdatevalue (timenow(), &vsecs))
+					return (false);
+				}
+			
+			secondstodatetime (vsecs.data.datevalue, &day, &month, &year, &hour, &minute, &second);
+			
+			switch (token) {
+				case datedayfunc:
+					return (setintvalue (day, v));
+				case datemonthfunc:
+					return (setintvalue (month, v));
+				case dateyearfunc:
+					return (setintvalue (year, v));
+				case datehourfunc:
+					return (setintvalue (hour, v));
+				case dateminutefunc:
+					return (setintvalue (minute, v));
+				case datesecondsfunc:
+					return (setintvalue (second, v));
+				}
 			}
 
 		case abbrevstringfunc: {

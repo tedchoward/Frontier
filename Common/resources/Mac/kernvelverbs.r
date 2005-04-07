@@ -367,7 +367,13 @@ resource 'EFP#' (idlangverbs, "lang") {
 		"netstandardstring",
 		"monthtostring",
 		"dayofweektostring",
-		"versionlessthan"
+		"versionlessthan",
+		"day",			/* 2005-04-07 SMD (day, month, year, hour, minute, second) */
+		"month",
+		"year",
+		"hour",
+		"minute",
+		"seconds"
 		},
 	
 	"dialog", true, {
