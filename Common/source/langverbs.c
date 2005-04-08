@@ -2134,7 +2134,7 @@ static boolean langfunctionvalue (short token, hdltreenode hparam1, tyvaluerecor
 
 			flnextparamislast = true;
 			
-			if (!getoptionalparamvalue (hparam1, &ctconsumed, &ctpositional, "\x04" "date", &vsecs)) 
+			if (!getoptionalparamvalue (hparam1, &ctconsumed, &ctpositional, "\x07" "theDate", &vsecs)) 
 				return (false);
 			
 			if (!vsecs.data.datevalue) {
