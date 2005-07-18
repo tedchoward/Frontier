@@ -34,11 +34,16 @@
 #include "ops.h"
 #include "file.h"
 
+
+
 #define flaux false /*if true, we're running under the A/UX operating system*/
+
 
 #ifdef MACVERSION
 
-static FSSpec fsdefault; // = {0}; /*we maintain our own default directory*/
+static FSSpec fsdefault = {0}; /*we maintain our own default directory*/
+
+
 
 boolean directorytopath (long DirID, short vnum, bigstring path) {
 	
@@ -250,14 +255,7 @@ boolean pathtofilespec (bigstring bspath, tyfilespec *fs) {
 	if (isemptystring (bspath))
 		return (true);
 	
-	#ifdef MACVERSION
-	
-		#if TARGET_API_MAC_CARBON
-			/* 2005-07-17 creedon - don't use FSMakeFSSpec to fill in default directory and volume, see < http://developer.apple.com/technotes/tn/tn2015.html >, 
-			not sure if this is best place to do this, seems like it might be better handled at application launch */
-			GetApplicationPackageFSSpecFromBundle (&fsdefault);
-			#endif
-
+	#ifdef MACVERSION		
 		errcode = FSMakeFSSpec (fsdefault.vRefNum, fsdefault.parID, bspath, fs);
 		
 		//for some reason if there is a trailing : you get a dirNFErr and it doesn't work
@@ -412,19 +410,3 @@ boolean getfsvolume (const tyfilespec *fs, long *vnum) {
 		return (PBHGetVInfoSync ((HParmBlkPtr) &pb) == noErr);
 	#endif
 	} /*getfsfile*/
-
-OSErr GetApplicationPackageFSSpecFromBundle(FSSpecPtr theFSSpecPtr) {
-	/* 2005-07-17 creedon - see , < http://developer.apple.com/technotes/tn/tn2015.html > */
-	OSErr err = fnfErr;
-	CFBundleRef myAppsBundle = CFBundleGetMainBundle();
-	if (myAppsBundle == NULL) return err;
-	CFURLRef myBundleURL = CFBundleCopyBundleURL(myAppsBundle);
-	if (myBundleURL == NULL) return err;
-
-	FSRef myBundleRef;
-	Boolean ok = CFURLGetFSRef(myBundleURL, &myBundleRef);
-	CFRelease(myBundleURL);
-	if (!ok) return err;
-
-	return FSGetCatalogInfo(&myBundleRef, kFSCatInfoNone, NULL, NULL, theFSSpecPtr, NULL);
-	}
