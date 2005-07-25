@@ -33,7 +33,7 @@
 #include "strings.h"
 #include "ops.h"
 #include "file.h"
-
+#include "launch.h" /* 2005-07-18 creedon */ 
 
 
 #define flaux false /*if true, we're running under the A/UX operating system*/
@@ -42,8 +42,6 @@
 #ifdef MACVERSION
 
 static FSSpec fsdefault = {0}; /*we maintain our own default directory*/
-
-
 
 boolean directorytopath (long DirID, short vnum, bigstring path) {
 	
@@ -255,7 +253,7 @@ boolean pathtofilespec (bigstring bspath, tyfilespec *fs) {
 	if (isemptystring (bspath))
 		return (true);
 	
-	#ifdef MACVERSION		
+	#ifdef MACVERSION
 		errcode = FSMakeFSSpec (fsdefault.vRefNum, fsdefault.parID, bspath, fs);
 		
 		//for some reason if there is a trailing : you get a dirNFErr and it doesn't work
@@ -410,3 +408,9 @@ boolean getfsvolume (const tyfilespec *fs, long *vnum) {
 		return (PBHGetVInfoSync ((HParmBlkPtr) &pb) == noErr);
 	#endif
 	} /*getfsfile*/
+
+void initfsdefault (void) {
+	/* 2005-07-18 creedon, karstenw */
+	getapplicationfilespec (nil, &fsdefault);
+	} /* initfsdefault */
+	

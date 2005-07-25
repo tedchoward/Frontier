@@ -129,8 +129,6 @@ static boolean flbackgroundtasksdisabled = true; /*will be set to false when ini
 static boolean flshelleventposted = false;
 
 
-
-
 boolean shellgetstring (short id, bigstring bs) {
 	
 	return (getstringlist (interfacelistnumber, id, bs));
@@ -1176,7 +1174,7 @@ boolean shellinit (void) {
 	
 	if (!initmacintosh ())
 		return (showerrorandexit (notenoughmemorystring));
-		
+
 	#ifdef MACVERSION	
 		//Code change by Timothy Paustian Friday, June 9, 2000 2:36:02 PM
 		//Changed because using SysEnvisons and SysEnvRec is like Really old style
@@ -1184,6 +1182,11 @@ boolean shellinit (void) {
 	
 		if (gSystemVersion < 0x0700)
 			return (showerrorandexit (archaicsystemstring));
+		
+		initfsdefault (); /* 2005-07-18 creedon, karstenw - init fsdefault here, don't leave it up to an
+					   FSMakeFSSpec call at some unknown time, see
+					   < http://sourceforge.net/tracker/index.php?func=detail&aid=1239991&group_id=120666&atid=687798 > */
+		
 	#endif
 
 	if (keyboardescape ()) /*check for command-period for accidental launch*/

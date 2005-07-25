@@ -422,7 +422,9 @@ extern boolean fifsetendoffile (const tyfilespec *fs, long eof);
 extern boolean fifgetendoffile (const tyfilespec *fs, long *eof);
 
 
-extern boolean directorytopath (long, short, bigstring); /*filepath.c*/
+ /* filepath.c */
+ 
+ extern boolean directorytopath (long, short, bigstring);
 
 extern boolean volumerefnumtopath (short, bigstring);
 
@@ -442,13 +444,17 @@ extern boolean getfsfile (const tyfilespec *, bigstring);
 
 extern boolean getfsvolume (const tyfilespec *, long *);
 
-//extern filecheckdefaultpath (bigstring); /*fileverbs.c*/
+extern void initfsdefault (void); /* 2005-07-18 creedon */
+
+ 
+ /*fileverbs.c*/
+ 
+ //extern filecheckdefaultpath (bigstring);
 
 extern boolean filegetprogramversion (bigstring);
 
 extern boolean filestart (void); /*6.1b15 AR*/
 
-extern OSErr GetApplicationPackageFSSpecFromBundle (tyfilespec *); /* 2005-07-17 creedon */
 
 // filedialog.c
 
