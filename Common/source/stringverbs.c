@@ -2192,6 +2192,8 @@ static boolean stringfunctionvalue (short token, hdltreenode hparam1, tyvaluerec
 
 			utf16toansi (h, hresult);
 
+			disposehandle(h); // kw 2005-07-23 --- memleak
+
 			return (setheapvalue (hresult, stringvaluetype, v));
 			}
 
@@ -2207,6 +2209,8 @@ static boolean stringfunctionvalue (short token, hdltreenode hparam1, tyvaluerec
 			newemptyhandle (&hresult);
 
 			utf8toansi (h, hresult);
+
+			disposehandle(h); // kw 2005-07-23 --- memleak
 
 			return (setheapvalue (hresult, stringvaluetype, v));
 			}
@@ -2224,6 +2228,8 @@ static boolean stringfunctionvalue (short token, hdltreenode hparam1, tyvaluerec
 
 			ansitoutf8 (h, hresult);
 
+			disposehandle(h); // kw 2005-07-23 --- memleak
+
 			return (setheapvalue (hresult, stringvaluetype, v));
 			}
 
@@ -2239,6 +2245,8 @@ static boolean stringfunctionvalue (short token, hdltreenode hparam1, tyvaluerec
 			newemptyhandle (&hresult);
 
 			ansitoutf16 (h, hresult);
+
+			disposehandle(h); // kw 2005-07-23 --- memleak
 
 			return (setheapvalue (hresult, stringvaluetype, v));
 			}
