@@ -1991,6 +1991,7 @@ static boolean objtostring (AEDesc *objdesc, boolean fldisposeobj, DescType exam
 	byte bsclass [64];
 	bigstring bsitem;
 	boolean fl;
+    AEDesc tempDesc, *tempDescPtr;  // MJL 17/08/05: Temp desc and ptr so we can compile for both 9 & X
 	
 	setemptystring (bsobj);
 	
@@ -2032,7 +2033,15 @@ static boolean objtostring (AEDesc *objdesc, boolean fldisposeobj, DescType exam
 		if (oserror (langsystem7parseobject (objdesc, &class, &container, &keyform, &keydata)))
 			goto exit;
 		
-		if (!setdescriptorvalue (keydata, &vkey)) /*if successful, keydata is on temp stack*/
+#if TARGET_API_MAC_CARBON == 1
+        // MJL 17/08/05: On X we cannot keep a lazy handle in the AEDesc to the keydata datahandle that gets 
+        //  pushed onto the Frontier temp stack in the vkey. As we need it later we must duplicate the AEDesc before pushing it.
+        tempDescPtr = &tempDesc;
+        AEDuplicateDesc (&keydata, tempDescPtr);
+#else
+        tempDescPtr = &keydata;
+#endif
+		if (!setdescriptorvalue (*tempDescPtr, &vkey)) /*if successful, keydata is on temp stack*/
 			goto exit;
 		
 		getostypeidentifier (class, bsclass);
@@ -2110,6 +2119,9 @@ static boolean objtostring (AEDesc *objdesc, boolean fldisposeobj, DescType exam
 		
 		disposevaluerecord (vkey, false);
 		
+#if TARGET_API_MAC_CARBON == 1
+        AEDisposeDesc (&keydata);   // MJL 17/08/05 dispose of our duplicated temp AEDesc. On 9 the dataHandle belongs also to the vkey which is disposed above so we don't need to explicitly dispose the AEDesc
+#endif
 		if (fldisposeobj)
 			AEDisposeDesc (objdesc);
 		
