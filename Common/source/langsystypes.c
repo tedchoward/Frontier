@@ -1628,27 +1628,42 @@ typedef struct tyobjspecitem { /*data within special object specifier structures
 
 
 static boolean getobjspeckeydesc (AEDesc *objdata, OSType desiredkey, AEDesc *keydata) {
+
+    #if TARGET_API_MAC_CARBON == 1
+    // MJL 17/08/05: As of Jaguar the AEDesc datahandle is opaque so use toolbox accessor functions rather
+    //  than trying to parse the data structure.
+	AEKeyword		curKeyWord;
+	OSErr 			err;
+	SInt32			i, numItems;
+    
+	err = AECountItems((AEDescList *)objdata, &numItems);
+	if (err != noErr)
+		goto exit;
+    
+	for (i = 1; i <= numItems; i++) {
+		err = AEGetNthDesc((AEDescList *)objdata, i, typeWildCard, &curKeyWord, keydata);
+        
+		if (err != noErr)
+			goto exit;
+		
+		if (curKeyWord == desiredkey) {
+			goto exit;
+		}
+		AEDisposeDesc(keydata);
+	}
 	
-	#if TARGET_API_MAC_CARBON == 1
+	err = errAEDescNotFound;
 	
-		Handle h;
+    exit:
+    return (!oserror (err));
 	
-	#else
+	#else  // #if TARGET_API_MAC_CARBON == 1
 	
-		register Handle h = (*objdata).dataHandle;
-	
-	#endif
-	
+    register Handle h = (*objdata).dataHandle;
 	register byte *p;
 	long ctitems;
 	tyobjspecitem objspecitem;
 	OSErr err;
-	
-	#if TARGET_API_MAC_CARBON == 1 /*PBS 03/14/02: AE OS X fix.*/
-		
-		copydatahandle (objdata, &h);
-	
-	#endif
 	
 	HLock (h);
 	//Code change by Timothy Paustian Saturday, April 29, 2000 11:00:17 PM
@@ -1690,6 +1705,8 @@ static boolean getobjspeckeydesc (AEDesc *objdata, OSType desiredkey, AEDesc *ke
 	HUnlock (h);
 	
 	return (!oserror (err));
+
+    #endif // #if !TARGET_API_MAC_CARBON == 1
 	} /*getobjspeckeydesc*/
 
 
