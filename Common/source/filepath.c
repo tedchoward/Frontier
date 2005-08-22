@@ -410,7 +410,9 @@ boolean getfsvolume (const tyfilespec *fs, long *vnum) {
 	} /*getfsfile*/
 
 void initfsdefault (void) {
+	#ifdef MACVERSION
 	/* 2005-07-18 creedon, karstenw */
 	getapplicationfilespec (nil, &fsdefault);
+	#endif
 	} /* initfsdefault */
 	
