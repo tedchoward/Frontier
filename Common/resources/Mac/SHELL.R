@@ -1004,8 +1004,8 @@ resource 'DLOG' (255, "new value", purgeable) {
 	centerParentWindowScreen
 };
 
-resource 'DLOG' (256, "Save?", purgeable) {
-	{0, 0, 104, 256},
+resource 'DLOG' (256, "Save?", purgeable) { /* 2005-09-06 creedon - sizes generally match threeway */
+	{0, 0, 105, 347},
 	dBoxProc,
 	invisible,
 	noGoAway,
@@ -1208,28 +1208,28 @@ resource 'DITL' (255, "new value", purgeable) {
 	}
 };
 
-resource 'DITL' (256, "Save?", purgeable) {
+resource 'DITL' (256, "Save?", purgeable) { /* 2005-09-06 creedon - sizes generally match threeway */ 
 	{	/* array DITLarray: 5 elements */
 		/* [1] */
-		{72, 176, 96, 240},
+		{72, 246, 92, 331},
 		Button {
 			enabled,
 			"Yes"
 		},
 		/* [2] */
-		{72, 16, 96, 80},
+		{72, 50, 92, 135},
 		Button {
 			enabled,
 			"Cancel"
 		},
 		/* [3] */
-		{72, 96, 96, 160},
+		{72, 148, 92, 233},
 		Button {
 			enabled,
 			"No"
 		},
 		/* [4] */
-		{8, 56, 56, 240},
+		{15, 56, 63, 330},
 		StaticText {
 			disabled,
 			"Save Ò^0Ó before closing?"
