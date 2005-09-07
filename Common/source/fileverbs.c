@@ -837,13 +837,20 @@ static boolean getstringorintvalue (hdltreenode hfirst, short pnum, boolean flst
 
 
 static boolean getresourceverb (hdltreenode hparam1, boolean flnamed, tyvaluerecord *v) {
+
+	/*
+	2005-09-02 creedon: added support for fork parameter, see resources.c: openresourcefile and pushresourcefile
+	*/ 
 	
 	tyfilespec fs;
 	OSType type;
-	short id;
+	short id, forktype;
+	short ctconsumed = 4;
+	short ctpositional = 4;
 	Handle h;
 	hdlhashtable htable;
 	bigstring bs, bsvarname;
+	tyvaluerecord val;
 	
 	if (!getpathvalue (hparam1, 1, &fs)) 
 		return (false);
@@ -854,12 +861,19 @@ static boolean getresourceverb (hdltreenode hparam1, boolean flnamed, tyvaluerec
 	if (!getstringorintvalue (hparam1, 3, flnamed, &id, bs))
 		return (false);
 	
-	flnextparamislast = true;
-	
 	if (!getvarparam (hparam1, 4, &htable, bsvarname)) /*returned handle holder*/
 		return (false);
 	
-	if (!loadresourcehandle (&fs, type, id, bs, &h)) {
+	flnextparamislast = true;
+	
+	setintvalue (1, &val); /* defaults to 1 */
+
+	if (!getoptionalparamvalue (hparam1, &ctconsumed, &ctpositional, "\x04""fork", &val))
+		return (false);
+	
+	forktype = val.data.intvalue;
+
+	if (!loadresourcehandle (&fs, type, id, bs, &h, forktype)) {
 		
 		(*v).data.flvalue = false;
 		
@@ -884,12 +898,18 @@ static boolean getresourceverb (hdltreenode hparam1, boolean flnamed, tyvaluerec
 
 static boolean putresourceverb (hdltreenode hparam1, boolean flnamed, tyvaluerecord *v) {
 
+	/*
+	2005-09-02 creedon: added support for fork parameter, see resources.c: openresourcefile and pushresourcefile
+	*/ 
+	
 	tyfilespec fs;
-	OSType type;
-	short id;
+	OSType type, bintype;
+	short id, forktype;
+	short ctconsumed = 4;
+	short ctpositional = 4;
 	Handle hbinary;
 	bigstring bs;
-	OSType bintype;
+	tyvaluerecord val;
 	
 	if (!getpathvalue (hparam1, 1, &fs)) 
 		return (false);
@@ -900,14 +920,21 @@ static boolean putresourceverb (hdltreenode hparam1, boolean flnamed, tyvaluerec
 	if (!getstringorintvalue (hparam1, 3, flnamed, &id, bs))
 		return (false);
 	
-	flnextparamislast = true;
-	
 	if (!getbinaryvalue (hparam1, 4, false, &hbinary))
 		return (false);
 	
 	pullfromhandle (hbinary, 0L, sizeof (bintype), &bintype);
 	
-	(*v).data.flvalue = saveresourcehandle (&fs, type, id, bs, hbinary);
+	flnextparamislast = true;
+	
+	setintvalue (1, &val); /* defaults to 1 */
+
+	if (!getoptionalparamvalue (hparam1, &ctconsumed, &ctpositional, "\x04""fork", &val))
+		return (false);
+
+	forktype = val.data.intvalue;
+
+	(*v).data.flvalue = saveresourcehandle (&fs, type, id, bs, hbinary, forktype);
 	
 	return (true);
 	} /*putresourceverb*/
@@ -915,15 +942,29 @@ static boolean putresourceverb (hdltreenode hparam1, boolean flnamed, tyvaluerec
 
 static boolean countrestypesverb (hdltreenode hparam1, tyvaluerecord *v) {
 	
-	tyfilespec fs;
-	short cttypes;
+	/*
+	2005-09-02 creedon: added support for fork parameter, see resources.c: openresourcefile and pushresourcefile
+	*/ 
 	
-	flnextparamislast = true;
+	tyfilespec fs;
+	short cttypes, forktype;
+	short ctconsumed = 1;
+	short ctpositional = 1;
+	tyvaluerecord val;
 	
 	if (!getpathvalue (hparam1, 1, &fs)) 
 		return (false);
 	
-	if (!getnumresourcetypes (&fs, &cttypes))
+	flnextparamislast = true;
+	
+	setintvalue (1, &val); /* defaults to 1 */
+
+	if (!getoptionalparamvalue (hparam1, &ctconsumed, &ctpositional, "\x04""fork", &val))
+		return (false);
+	
+	forktype = val.data.intvalue;
+
+	if (!getnumresourcetypes (&fs, &cttypes, forktype))
 		cttypes = 0;
 	
 	setlongvalue (cttypes, v);
@@ -934,8 +975,14 @@ static boolean countrestypesverb (hdltreenode hparam1, tyvaluerecord *v) {
 
 static boolean getnthrestypeverb (hdltreenode hparam1, tyvaluerecord *v) {
 	
+	/*
+	2005-09-02 creedon: added support for fork parameter, see resources.c: openresourcefile and pushresourcefile
+	*/ 
+	
 	tyfilespec fs;
-	short n;
+	short n, forktype;
+	short ctconsumed = 3;
+	short ctpositional = 3;
 	OSType type;
 	hdlhashtable htable;
 	bigstring bsvarname;
@@ -948,12 +995,19 @@ static boolean getnthrestypeverb (hdltreenode hparam1, tyvaluerecord *v) {
 	if (!getintvalue (hparam1, 2, &n))
 		return (false);
 	
-	flnextparamislast = true;
-	
 	if (!getvarparam (hparam1, 3, &htable, bsvarname)) /*returned handle holder*/
 		return (false);
 	
-	if (!getnthresourcetype (&fs, n, &type)) { /*not a fatal error*/
+	flnextparamislast = true;
+	
+	setintvalue (1, &val); /* defaults to 1 */
+
+	if (!getoptionalparamvalue (hparam1, &ctconsumed, &ctpositional, "\x04""fork", &val))
+		return (false);
+	
+	forktype = val.data.intvalue;
+
+	if (!getnthresourcetype (&fs, n, &type, forktype)) { /*not a fatal error*/
 		
 		(*v).data.flvalue = false;
 		
@@ -972,19 +1026,33 @@ static boolean getnthrestypeverb (hdltreenode hparam1, tyvaluerecord *v) {
 
 static boolean countresourcesverb (hdltreenode hparam1, tyvaluerecord *v) {
 	
+	/*
+	2005-09-02 creedon: added support for fork parameter, see resources.c: openresourcefile and pushresourcefile
+	*/ 
+	
 	tyfilespec fs;
 	OSType type;
-	short ctresources;
+	short ctresources, forktype;
+	short ctconsumed = 2;
+	short ctpositional = 2;
+	tyvaluerecord val;
 	
 	if (!getpathvalue (hparam1, 1, &fs)) 
 		return (false);
 	
-	flnextparamislast = true;
-	
 	if (!getostypevalue (hparam1, 2, &type))
 		return (false);
 	
-	if (!getnumresources (&fs, type, &ctresources))
+	flnextparamislast = true;
+	
+	setintvalue (1, &val); /* defaults to 1 */
+
+	if (!getoptionalparamvalue (hparam1, &ctconsumed, &ctpositional, "\x04""fork", &val))
+		return (false);
+	
+	forktype = val.data.intvalue;
+
+	if (!getnumresources (&fs, type, &ctresources, forktype))
 		ctresources = 0;
 	
 	setlongvalue (ctresources, v);
@@ -994,16 +1062,22 @@ static boolean countresourcesverb (hdltreenode hparam1, tyvaluerecord *v) {
 
 
 static boolean getnthresourceverb (hdltreenode hparam1, tyvaluerecord *v) {
+
+	/*
+	2005-09-02 creedon: added support for fork parameter, see resources.c: openresourcefile and pushresourcefile
+	*/ 
 	
 	tyfilespec fs;
 	OSType type;
-	short n;
-	short id;
+	short n, id, forktype;
+	short ctconsumed = 5;
+	short ctpositional = 5;
 	Handle h;
 	hdlhashtable ht1, ht2;
 	bigstring bs, bs1, bs2;
 	boolean fl;
-	
+	tyvaluerecord val;
+
 	if (!getpathvalue (hparam1, 1, &fs)) 
 		return (false);
 	
@@ -1016,12 +1090,19 @@ static boolean getnthresourceverb (hdltreenode hparam1, tyvaluerecord *v) {
 	if (!getvarparam (hparam1, 4, &ht1, bs1)) /*returned name holder*/
 		return (false);
 	
-	flnextparamislast = true;
-	
 	if (!getvarparam (hparam1, 5, &ht2, bs2)) /*returned handle holder*/
 		return (false);
+		
+	flnextparamislast = true;
 	
-	if (!getnthresourcehandle (&fs, type, n, &id, bs, &h)) {
+	setintvalue (1, &val); /* defaults to 1 */
+
+	if (!getoptionalparamvalue (hparam1, &ctconsumed, &ctpositional, "\x04""fork", &val))
+		return (false);
+	
+	forktype = val.data.intvalue;
+
+	if (!getnthresourcehandle (&fs, type, n, &id, bs, &h, forktype)) {
 		
 		(*v).data.flvalue = false;
 		
@@ -1056,18 +1137,22 @@ static boolean getnthresourceverb (hdltreenode hparam1, tyvaluerecord *v) {
 static boolean getnthresinfoverb (hdltreenode hparam1, tyvaluerecord *v) {
 	
 	/*
+	2005-09-02 creedon: added support for fork parameter, see resources.c: openresourcefile and pushresourcefile
+	
 	6/2/92 dmb: created.
 	*/
 	
 	tyfilespec fs;
 	OSType type;
-	short n;
-	short id;
+	short n, id, forktype;
+	short ctconsumed = 5;
+	short ctpositional = 5;
 	hdlhashtable ht1;
 	bigstring bs, bs1;
 	boolean fl;
+	tyvaluerecord val;
 	
-	if (!langcheckparamcount (hparam1, 5))
+	if (!langcheckparamcount (hparam1, 6))
 		return (false);
 	
 	if (!getpathvalue (hparam1, 1, &fs)) 
@@ -1079,7 +1164,14 @@ static boolean getnthresinfoverb (hdltreenode hparam1, tyvaluerecord *v) {
 	if (!getintvalue (hparam1, 3, &n))
 		return (false);
 	
-	if (!getnthresourcehandle (&fs, type, n, &id, bs, nil)) {
+	setintvalue (1, &val); /* defaults to 1 */
+
+	if (!getoptionalparamvalue (hparam1, &ctconsumed, &ctpositional, "\x04""fork", &val))
+		return (false);
+	
+	forktype = val.data.intvalue;
+
+	if (!getnthresourcehandle (&fs, type, n, &id, bs, nil, forktype)) {
 		
 		(*v).data.flvalue = false;
 		
@@ -1109,10 +1201,17 @@ static boolean getnthresinfoverb (hdltreenode hparam1, tyvaluerecord *v) {
 
 static boolean resourceexistsverb (hdltreenode hparam1, boolean flnamed, tyvaluerecord *v) {
 	
+	/*
+	2005-09-02 creedon: added support for fork parameter, see resources.c: openresourcefile and pushresourcefile
+	*/ 
+	
 	tyfilespec fs;
 	OSType type;
-	short id;
+	short id, forktype;
+	short ctconsumed = 3;
+	short ctpositional = 3;
 	bigstring bs;
+	tyvaluerecord val;
 	
 	if (!getpathvalue (hparam1, 1, &fs)) 
 		return (false);
@@ -1120,12 +1219,19 @@ static boolean resourceexistsverb (hdltreenode hparam1, boolean flnamed, tyvalue
 	if (!getostypevalue (hparam1, 2, &type))
 		return (false);
 	
-	flnextparamislast = true;
-	
 	if (!getstringorintvalue (hparam1, 3, flnamed, &id, bs))
 		return (false);
 	
-	(*v).data.flvalue = loadresourcehandle (&fs, type, id, bs, nil);
+	flnextparamislast = true;
+	
+	setintvalue (1, &val); /* defaults to 1 */
+
+	if (!getoptionalparamvalue (hparam1, &ctconsumed, &ctpositional, "\x04""fork", &val))
+		return (false);
+	
+	forktype = val.data.intvalue;
+
+	(*v).data.flvalue = loadresourcehandle (&fs, type, id, bs, nil, forktype);
 	
 	return (true);
 	} /*resourceexistsverb*/
@@ -1134,27 +1240,37 @@ static boolean resourceexistsverb (hdltreenode hparam1, boolean flnamed, tyvalue
 static boolean getresourceattrsverb (hdltreenode hparam1, boolean flnamed, tyvaluerecord *v) {
 	
 	/*
+	2005-09-02 creedon: added support for fork parameter, see resources.c: openresourcefile and pushresourcefile
 	2.1b4 dmb: new verb
-	(*/
+	*/
 	
 	tyfilespec fs;
 	OSType type;
-	short id;
+	short id, attrs, forktype;
+	short ctconsumed = 3;
+	short ctpositional = 3;
 	bigstring bs;
-	short attrs;
-	
+	tyvaluerecord val;
+
 	if (!getpathvalue (hparam1, 1, &fs)) 
 		return (false);
 	
 	if (!getostypevalue (hparam1, 2, &type))
 		return (false);
 	
-	flnextparamislast = true;
-	
 	if (!getstringorintvalue (hparam1, 3, flnamed, &id, bs))
 		return (false);
 	
-	if (!getresourceattributes (&fs, type, id, bs, &attrs))
+	flnextparamislast = true;
+	
+	setintvalue (1, &val); /* defaults to 1 */
+
+	if (!getoptionalparamvalue (hparam1, &ctconsumed, &ctpositional, "\x04""fork", &val))
+		return (false);
+	
+	forktype = val.data.intvalue;
+
+	if (!getresourceattributes (&fs, type, id, bs, &attrs, forktype))
 		return (false);
 	
 	return (setintvalue (attrs, v));
@@ -1164,14 +1280,17 @@ static boolean getresourceattrsverb (hdltreenode hparam1, boolean flnamed, tyval
 static boolean setresourceattrsverb (hdltreenode hparam1, boolean flnamed, tyvaluerecord *v) {
 	
 	/*
+	2005-09-02 creedon: added support for fork parameter, see resources.c: openresourcefile and pushresourcefile
 	2.1b4 dmb: new verb
-	(*/
+	*/
 	
 	tyfilespec fs;
 	OSType type;
-	short id;
+	short id, attrs, forktype;
+	short ctconsumed = 4;
+	short ctpositional = 4;
 	bigstring bs;
-	short attrs;
+	tyvaluerecord val;
 	
 	if (!getpathvalue (hparam1, 1, &fs)) 
 		return (false);
@@ -1182,12 +1301,19 @@ static boolean setresourceattrsverb (hdltreenode hparam1, boolean flnamed, tyval
 	if (!getstringorintvalue (hparam1, 3, flnamed, &id, bs))
 		return (false);
 	
-	flnextparamislast = true;
-	
 	if (!getintvalue (hparam1, 4, &attrs))
 		return (false);
 	
-	if (!setresourceattributes (&fs, type, id, bs, attrs))
+	flnextparamislast = true;
+	
+	setintvalue (1, &val); /* defaults to 1 */
+
+	if (!getoptionalparamvalue (hparam1, &ctconsumed, &ctpositional, "\x04""fork", &val))
+		return (false);
+	
+	forktype = val.data.intvalue;
+
+	if (!setresourceattributes (&fs, type, id, bs, attrs, forktype))
 		return (false);
 	
 	(*v).data.flvalue = true;
@@ -1198,10 +1324,17 @@ static boolean setresourceattrsverb (hdltreenode hparam1, boolean flnamed, tyval
 
 static boolean deleteresourceverb (hdltreenode hparam1, boolean flnamed, tyvaluerecord *v) {
 	
+	/*
+	2005-09-02 creedon: added support for fork parameter, see resources.c: openresourcefile and pushresourcefile
+	*/ 
+	
 	tyfilespec fs;
 	OSType type;
-	short id;
+	short id, forktype;
+	short ctconsumed = 3;
+	short ctpositional = 3;
 	bigstring bs;
+	tyvaluerecord val;
 	
 	if (!getpathvalue (hparam1, 1, &fs)) 
 		return (false);
@@ -1209,12 +1342,19 @@ static boolean deleteresourceverb (hdltreenode hparam1, boolean flnamed, tyvalue
 	if (!getostypevalue (hparam1, 2, &type))
 		return (false);
 	
-	flnextparamislast = true;
-	
 	if (!getstringorintvalue (hparam1, 3, flnamed, &id, bs))
 		return (false);
 	
-	(*v).data.flvalue = deleteresource (&fs, type, id, bs);
+	flnextparamislast = true;
+	
+	setintvalue (1, &val); /* defaults to 1 */
+
+	if (!getoptionalparamvalue (hparam1, &ctconsumed, &ctpositional, "\x04""fork", &val))
+		return (false);
+	
+	forktype = val.data.intvalue;
+
+	(*v).data.flvalue = deleteresource (&fs, type, id, bs, forktype);
 	
 	return (true);
 	} /*deleteresourceverb*/
@@ -1485,20 +1625,32 @@ boolean filegetprogramversion (bigstring bsversion) {
 static boolean getshortversionverb (hdltreenode hparam1, tyvaluerecord *v) {
 	
 	/*
-	file.getversion (path): string; return the version number as 
-	a string, e.g. "1.0b2".
+	file.getversion (path): string; return the version number as a string, e.g. "1.0b2".
+	
+	2005-09-02 creedon: added support for fork parameter, see resources.c: openresourcefile and pushresourcefile
 	*/
 	
 	tyfilespec fs;
 	lNumVersion versionnumber;
 	bigstring bs;
-	
-	flnextparamislast = true;
+	short forktype;
+	short ctconsumed = 1;
+	short ctpositional = 1;
+	tyvaluerecord val;
 	
 	if (!getpathvalue (hparam1, 1, &fs)) 
 		return (false);
 	
-	if (loadresource (&fs, -1, 'vers', 1, nil, sizeof (versionnumber), &versionnumber))
+	flnextparamislast = true;
+	
+	setintvalue (1, &val); /* defaults to 1 */
+
+	if (!getoptionalparamvalue (hparam1, &ctconsumed, &ctpositional, "\x04""fork", &val))
+		return (false);
+	
+	forktype = val.data.intvalue;
+
+	if (loadresource (&fs, -1, 'vers', 1, nil, sizeof (versionnumber), &versionnumber, forktype))
 		versionnumtostring (versionnumber, bs);
 	else
 		setemptystring (bs);
@@ -1529,24 +1681,36 @@ static boolean mungeversionstring (VersRecHndl hvers, bigstring bsversion, boole
 static boolean setshortversionverb (hdltreenode hparam1, tyvaluerecord *v) {
 	
 	/*
-	file.setversion (path): boolean; set the short version string.  if a valid 
-	version number is specified, set the numeric fields as well
+	file.setversion (path): boolean; set the short version string.  if a valid version number is specified, set the numeric fields as well
+	
+	2005-09-02 creedon: added support for fork parameter, see resources.c: openresourcefile and pushresourcefile
 	*/
 	
 	tyfilespec fs;
 	bigstring bsversion;
 	NumVersion versionnumber;
 	VersRecHndl hvers;
+	short forktype;
+	short ctconsumed = 2;
+	short ctpositional = 2;
+	tyvaluerecord val;
 	
 	if (!getpathvalue (hparam1, 1, &fs)) 
 		return (false);
 	
-	flnextparamislast = true;
-	
 	if (!getstringvalue (hparam1, 2, bsversion)) 
 		return (false);
 	
-	if (!loadresourcehandle (&fs, 'vers', 1, nil, (Handle *) &hvers))
+	flnextparamislast = true;
+	
+	setintvalue (1, &val); /* defaults to 1 */
+
+	if (!getoptionalparamvalue (hparam1, &ctconsumed, &ctpositional, "\x04""fork", &val))
+		return (false);
+	
+	forktype = val.data.intvalue;
+
+	if (!loadresourcehandle (&fs, 'vers', 1, nil, (Handle *) &hvers, forktype))
 		if (!newclearhandle (emptyversionsize, (Handle *) &hvers))
 			return (false);
 	
@@ -1554,7 +1718,7 @@ static boolean setshortversionverb (hdltreenode hparam1, tyvaluerecord *v) {
 		(**hvers).numericVersion = versionnumber;
 	
 	if (mungeversionstring (hvers, bsversion, false))
-		if (saveresourcehandle (&fs, 'vers', 1, nil, (Handle) hvers))
+		if (saveresourcehandle (&fs, 'vers', 1, nil, (Handle) hvers, forktype))
 			(*v).data.flvalue = true;
 	
 	disposehandle ((Handle) hvers);
@@ -1566,23 +1730,35 @@ static boolean setshortversionverb (hdltreenode hparam1, tyvaluerecord *v) {
 static boolean getlongversionverb (hdltreenode hparam1, tyvaluerecord *v) {
 
 	/*
-	file.getfullversion (path): string; return the long version string 
-	"1.0b2 © Copyright 1991 UserLand Software.".  need definitions above, 
+	file.getfullversion (path): string; return the long version string "1.0b2 © Copyright 1991 UserLand Software.".  need definitions above, 
 	which don't appear in the Think C headers anywhere
+	
+	2005-09-02 creedon: added support for fork parameter, see resources.c: openresourcefile and pushresourcefile
 	*/
 	
 	tyfilespec fs;
 	lVersRecHndl hvers;
 	bigstring bs;
-	
-	flnextparamislast = true;
+	short forktype;
+	short ctconsumed = 1;
+	short ctpositional = 1;
+	tyvaluerecord val;
 	
 	if (!getpathvalue (hparam1, 1, &fs)) 
 		return (false);
 	
+	flnextparamislast = true;
+	
+	setintvalue (1, &val); /* defaults to 1 */
+
+	if (!getoptionalparamvalue (hparam1, &ctconsumed, &ctpositional, "\x04""fork", &val))
+		return (false);
+	
+	forktype = val.data.intvalue;
+
 	setemptystring (bs);
 	
-	if (loadresourcehandle (&fs, 'vers', 1, nil, (Handle *) &hvers)) {
+	if (loadresourcehandle (&fs, 'vers', 1, nil, (Handle *) &hvers, forktype)) {
 		
 		register byte *p;
 		
@@ -1603,26 +1779,39 @@ static boolean setlongversionverb (hdltreenode hparam1, tyvaluerecord *v) {
 	
 	/*
 	file.setversion (path): boolean; set the long version string.
+	
+	2005-09-02 creedon: added support for fork parameter, see resources.c: openresourcefile and pushresourcefile
 	*/
 	
 	tyfilespec fs;
 	bigstring bsversion;
 	VersRecHndl hvers;
+	short forktype;
+	short ctconsumed = 2;
+	short ctpositional = 2;
+	tyvaluerecord val;
 	
 	if (!getpathvalue (hparam1, 1, &fs)) 
 		return (false);
 	
-	flnextparamislast = true;
-	
 	if (!getstringvalue (hparam1, 2, bsversion)) 
 		return (false);
 	
-	if (!loadresourcehandle (&fs, 'vers', 1, nil, (Handle *) &hvers))
+	flnextparamislast = true;
+	
+	setintvalue (1, &val); /* defaults to 1 */
+
+	if (!getoptionalparamvalue (hparam1, &ctconsumed, &ctpositional, "\x04""fork", &val))
+		return (false);
+	
+	forktype = val.data.intvalue;
+
+	if (!loadresourcehandle (&fs, 'vers', 1, nil, (Handle *) &hvers, forktype))
 		if (!newclearhandle (emptyversionsize, (Handle *) &hvers))
 			return (false);
 	
 	if (mungeversionstring (hvers, bsversion, true))
-		if (saveresourcehandle (&fs, 'vers', 1, nil, (Handle) hvers))
+		if (saveresourcehandle (&fs, 'vers', 1, nil, (Handle) hvers, forktype))
 			(*v).data.flvalue = true;
 	
 	disposehandle ((Handle) hvers);

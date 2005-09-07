@@ -622,7 +622,7 @@ boolean shellsavedefaultfont (register WindowPtr w) {
 
 boolean loadwindowposition (ptrfilespec fspec, short rnum, tywindowposition *wpos) {
 	
-	return (loadresource (fspec, rnum, 'wpos', 128, nil, sizeof (tywindowposition), wpos));
+	return (loadresource (fspec, rnum, 'wpos', 128, nil, sizeof (tywindowposition), wpos, 1)); /* 2005-09-02 creedon - added support for fork parameter, see resources.c: openresourcefile and pushresourcefile */ 
 	} /*loadwindowposition*/
 
 
@@ -651,7 +651,7 @@ boolean loaddefaultfont (WindowPtr w) {
 	//a short that was not being picked up right when run under spotlight. 
 	//This may be a spotlight bug though.
 	resourceSize = sizeof (savedfont);
-	if (!loadresource (&fspec, (short) (**h).rnum, 'styl', 128, nil, resourceSize, &savedfont)) {
+	if (!loadresource (&fspec, (short) (**h).rnum, 'styl', 128, nil, resourceSize, &savedfont, 1)) { /* 2005-09-02 creedon - added support for fork parameter, see resources.c: openresourcefile and pushresourcefile */
 		
 		(**h).defaultfont = config.defaultfont;
 		

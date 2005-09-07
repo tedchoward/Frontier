@@ -25,7 +25,7 @@
 
 boolean getresourcestring (short, bigstring);
 
-boolean openresourcefile (ptrfilespec, short *);
+boolean openresourcefile (ptrfilespec, short *, short); /* 2005-09-02 creedon - added short for forktype*/
 
 boolean closeresourcefile (short);
 
