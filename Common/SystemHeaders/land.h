@@ -639,7 +639,7 @@ typedef struct tylandglobals {
 
 
 
-/*communicating with UserLand Frontier scripting system*/
+/* communicating with Frontier scripting system */
 
 	pascal boolean landruntext (Handle, boolean, Str255);
 	
