@@ -866,7 +866,7 @@ static boolean getresourceverb (hdltreenode hparam1, boolean flnamed, tyvaluerec
 	
 	flnextparamislast = true;
 	
-	setintvalue (1, &val); /* defaults to 1 */
+	setintvalue (resourcefork, &val); /* defaults to 1 */
 
 	if (!getoptionalparamvalue (hparam1, &ctconsumed, &ctpositional, "\x04""fork", &val))
 		return (false);
@@ -927,7 +927,7 @@ static boolean putresourceverb (hdltreenode hparam1, boolean flnamed, tyvaluerec
 	
 	flnextparamislast = true;
 	
-	setintvalue (1, &val); /* defaults to 1 */
+	setintvalue (resourcefork, &val); /* defaults to 1 */
 
 	if (!getoptionalparamvalue (hparam1, &ctconsumed, &ctpositional, "\x04""fork", &val))
 		return (false);
@@ -957,7 +957,7 @@ static boolean countrestypesverb (hdltreenode hparam1, tyvaluerecord *v) {
 	
 	flnextparamislast = true;
 	
-	setintvalue (1, &val); /* defaults to 1 */
+	setintvalue (resourcefork, &val); /* defaults to 1 */
 
 	if (!getoptionalparamvalue (hparam1, &ctconsumed, &ctpositional, "\x04""fork", &val))
 		return (false);
@@ -1000,7 +1000,7 @@ static boolean getnthrestypeverb (hdltreenode hparam1, tyvaluerecord *v) {
 	
 	flnextparamislast = true;
 	
-	setintvalue (1, &val); /* defaults to 1 */
+	setintvalue (resourcefork, &val); /* defaults to 1 */
 
 	if (!getoptionalparamvalue (hparam1, &ctconsumed, &ctpositional, "\x04""fork", &val))
 		return (false);
@@ -1045,7 +1045,7 @@ static boolean countresourcesverb (hdltreenode hparam1, tyvaluerecord *v) {
 	
 	flnextparamislast = true;
 	
-	setintvalue (1, &val); /* defaults to 1 */
+	setintvalue (resourcefork, &val); /* defaults to 1 */
 
 	if (!getoptionalparamvalue (hparam1, &ctconsumed, &ctpositional, "\x04""fork", &val))
 		return (false);
@@ -1095,7 +1095,7 @@ static boolean getnthresourceverb (hdltreenode hparam1, tyvaluerecord *v) {
 		
 	flnextparamislast = true;
 	
-	setintvalue (1, &val); /* defaults to 1 */
+	setintvalue (resourcefork, &val); /* defaults to 1 */
 
 	if (!getoptionalparamvalue (hparam1, &ctconsumed, &ctpositional, "\x04""fork", &val))
 		return (false);
@@ -1164,7 +1164,7 @@ static boolean getnthresinfoverb (hdltreenode hparam1, tyvaluerecord *v) {
 	if (!getintvalue (hparam1, 3, &n))
 		return (false);
 	
-	setintvalue (1, &val); /* defaults to 1 */
+	setintvalue (resourcefork, &val); /* defaults to 1 */
 
 	if (!getoptionalparamvalue (hparam1, &ctconsumed, &ctpositional, "\x04""fork", &val))
 		return (false);
@@ -1224,7 +1224,7 @@ static boolean resourceexistsverb (hdltreenode hparam1, boolean flnamed, tyvalue
 	
 	flnextparamislast = true;
 	
-	setintvalue (1, &val); /* defaults to 1 */
+	setintvalue (resourcefork, &val); /* defaults to 1 */
 
 	if (!getoptionalparamvalue (hparam1, &ctconsumed, &ctpositional, "\x04""fork", &val))
 		return (false);
@@ -1241,6 +1241,7 @@ static boolean getresourceattrsverb (hdltreenode hparam1, boolean flnamed, tyval
 	
 	/*
 	2005-09-02 creedon: added support for fork parameter, see resources.c: openresourcefile and pushresourcefile
+	
 	2.1b4 dmb: new verb
 	*/
 	
@@ -1263,7 +1264,7 @@ static boolean getresourceattrsverb (hdltreenode hparam1, boolean flnamed, tyval
 	
 	flnextparamislast = true;
 	
-	setintvalue (1, &val); /* defaults to 1 */
+	setintvalue (resourcefork, &val); /* defaults to 1 */
 
 	if (!getoptionalparamvalue (hparam1, &ctconsumed, &ctpositional, "\x04""fork", &val))
 		return (false);
@@ -1281,6 +1282,7 @@ static boolean setresourceattrsverb (hdltreenode hparam1, boolean flnamed, tyval
 	
 	/*
 	2005-09-02 creedon: added support for fork parameter, see resources.c: openresourcefile and pushresourcefile
+	
 	2.1b4 dmb: new verb
 	*/
 	
@@ -1306,7 +1308,7 @@ static boolean setresourceattrsverb (hdltreenode hparam1, boolean flnamed, tyval
 	
 	flnextparamislast = true;
 	
-	setintvalue (1, &val); /* defaults to 1 */
+	setintvalue (resourcefork, &val); /* defaults to 1 */
 
 	if (!getoptionalparamvalue (hparam1, &ctconsumed, &ctpositional, "\x04""fork", &val))
 		return (false);
@@ -1347,7 +1349,7 @@ static boolean deleteresourceverb (hdltreenode hparam1, boolean flnamed, tyvalue
 	
 	flnextparamislast = true;
 	
-	setintvalue (1, &val); /* defaults to 1 */
+	setintvalue (resourcefork, &val); /* defaults to 1 */
 
 	if (!getoptionalparamvalue (hparam1, &ctconsumed, &ctpositional, "\x04""fork", &val))
 		return (false);
@@ -1643,7 +1645,7 @@ static boolean getshortversionverb (hdltreenode hparam1, tyvaluerecord *v) {
 	
 	flnextparamislast = true;
 	
-	setintvalue (1, &val); /* defaults to 1 */
+	setintvalue (resourcefork, &val); /* defaults to 1 */
 
 	if (!getoptionalparamvalue (hparam1, &ctconsumed, &ctpositional, "\x04""fork", &val))
 		return (false);
@@ -1703,7 +1705,7 @@ static boolean setshortversionverb (hdltreenode hparam1, tyvaluerecord *v) {
 	
 	flnextparamislast = true;
 	
-	setintvalue (1, &val); /* defaults to 1 */
+	setintvalue (resourcefork, &val); /* defaults to 1 */
 
 	if (!getoptionalparamvalue (hparam1, &ctconsumed, &ctpositional, "\x04""fork", &val))
 		return (false);
@@ -1749,7 +1751,7 @@ static boolean getlongversionverb (hdltreenode hparam1, tyvaluerecord *v) {
 	
 	flnextparamislast = true;
 	
-	setintvalue (1, &val); /* defaults to 1 */
+	setintvalue (resourcefork, &val); /* defaults to 1 */
 
 	if (!getoptionalparamvalue (hparam1, &ctconsumed, &ctpositional, "\x04""fork", &val))
 		return (false);
@@ -1799,7 +1801,7 @@ static boolean setlongversionverb (hdltreenode hparam1, tyvaluerecord *v) {
 	
 	flnextparamislast = true;
 	
-	setintvalue (1, &val); /* defaults to 1 */
+	setintvalue (resourcefork, &val); /* defaults to 1 */
 
 	if (!getoptionalparamvalue (hparam1, &ctconsumed, &ctpositional, "\x04""fork", &val))
 		return (false);

@@ -204,7 +204,7 @@ boolean shellopenfile (ptrfilespec fspec, boolean flhidden, WindowPtr *wnew) {
 	
 #ifdef MACVERSION
 	if (config.flopenresfile)
-		if (!openresourcefile (fspec, &rnum, 1)) /* 2005-09-02 creedon - added support for fork parameter, see resources.c: openresourcefile and pushresourcefile */ 
+		if (!openresourcefile (fspec, &rnum, resourcefork)) /* 2005-09-02 creedon - added support for fork parameter, see resources.c: openresourcefile and pushresourcefile */ 
 			goto error;
 #endif
 	
@@ -427,7 +427,7 @@ static boolean shelldatabasesaveas (WindowPtr wsave, ptrfilespec fspec) {
 
 #ifdef MACVERSION
 	if (config.flopenresfile)
-		if (!openresourcefile (fspec, &rnum, 1)) { /* 2005-09-02 creedon - added support for fork parameter, see resources.c: openresourcefile and pushresourcefile */ 
+		if (!openresourcefile (fspec, &rnum, resourcefork)) { /* 2005-09-02 creedon - added support for fork parameter, see resources.c: openresourcefile and pushresourcefile */ 
 			
 			closefile (fnum);
 			
@@ -542,7 +542,7 @@ static boolean shellnormalsaveas (WindowPtr wsave, ptrfilespec fspec, boolean fl
 	
 	if (config.flopenresfile) {
 	
-		if (!openresourcefile (fspec, &rnum, 1)) { /* 2005-09-02 creedon - added support for fork parameter, see resources.c: openresourcefile and pushresourcefile */ 
+		if (!openresourcefile (fspec, &rnum, resourcefork)) { /* 2005-09-02 creedon - added support for fork parameter, see resources.c: openresourcefile and pushresourcefile */ 
 			
 			closefile (fnum);
 			
@@ -687,7 +687,7 @@ boolean shellnewfile (ptrfilespec fspec, boolean flhidden, WindowPtr *wnew) {
 
 	#ifdef MACVERSION
 		if (config.flopenresfile)
-			if (!openresourcefile (fspec, &rnum, 1)) /* 2005-09-02 creedon - added support for fork parameter, see resources.c: openresourcefile and pushresourcefile */ 
+			if (!openresourcefile (fspec, &rnum, resourcefork)) /* 2005-09-02 creedon - added support for fork parameter, see resources.c: openresourcefile and pushresourcefile */ 
 				goto error;
 	#endif
 		}
