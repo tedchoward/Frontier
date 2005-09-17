@@ -35,7 +35,6 @@
 				65AF8D17074159A5007C3205,
 				BB3B83610730603C0049D0C1,
 				651527B7072BFE0E00411831,
-				6515256A072BFC6500411831,
 			);
 			isa = PBXGroup;
 			refType = 4;
@@ -74,7 +73,7 @@
 			hasScannedForEncodings = 1;
 			isa = PBXProject;
 			mainGroup = 6515255C072BFC6500411831;
-			productRefGroup = 6515256A072BFC6500411831;
+			productRefGroup = 6515255C072BFC6500411831;
 			projectDirPath = "";
 			targets = (
 				65152568072BFC6500411831,
@@ -582,7 +581,6 @@
 				651526EE072BFC6800411831,
 				651526EF072BFC6800411831,
 				651526F0072BFC6800411831,
-				651526F1072BFC6800411831,
 				651526F2072BFC6800411831,
 				651527A1072BFC6900411831,
 				651527A2072BFC6900411831,
@@ -596,6 +594,7 @@
 				651527AA072BFC6900411831,
 				651527AB072BFC6900411831,
 				65BBB662072E563B008E2F34,
+				65AC81D908DC792700ADD675,
 			);
 			isa = PBXRezBuildPhase;
 			runOnlyForDeploymentPostprocessing = 0;
@@ -665,15 +664,6 @@
 			path = Frontier.app;
 			refType = 3;
 			sourceTree = BUILT_PRODUCTS_DIR;
-		};
-		6515256A072BFC6500411831 = {
-			children = (
-				65152569072BFC6500411831,
-			);
-			isa = PBXGroup;
-			name = Products;
-			refType = 4;
-			sourceTree = "<group>";
 		};
 		6515256C072BFC6700411831 = {
 			children = (
@@ -1637,7 +1627,7 @@
 			children = (
 				651525CF072BFC6700411831,
 				651525D0072BFC6700411831,
-				651525D1072BFC6700411831,
+				65AC81D808DC792700ADD675,
 				651525D2072BFC6700411831,
 				651525D3072BFC6700411831,
 				651525D4072BFC6700411831,
@@ -1671,15 +1661,6 @@
 			lastKnownFileType = sourcecode.rez;
 			name = BNDL.r;
 			path = ../resources/Frontier/BNDL.r;
-			refType = 2;
-			sourceTree = SOURCE_ROOT;
-		};
-		651525D1072BFC6700411831 = {
-			fileEncoding = 30;
-			isa = PBXFileReference;
-			lastKnownFileType = sourcecode.rez;
-			name = kernvelverbs.r;
-			path = ../Common/resources/Mac/kernvelverbs.r;
 			refType = 2;
 			sourceTree = SOURCE_ROOT;
 		};
@@ -4112,12 +4093,6 @@
 		};
 		651526F0072BFC6800411831 = {
 			fileRef = 651525CF072BFC6700411831;
-			isa = PBXBuildFile;
-			settings = {
-			};
-		};
-		651526F1072BFC6800411831 = {
-			fileRef = 651525D1072BFC6700411831;
 			isa = PBXBuildFile;
 			settings = {
 			};
@@ -8344,6 +8319,21 @@
 		};
 		65152951072C001700411831 = {
 			fileRef = 65152950072C001700411831;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		65AC81D808DC792700ADD675 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.rez;
+			name = kernelverbs.r;
+			path = ../Common/resources/Mac/kernelverbs.r;
+			refType = 2;
+			sourceTree = SOURCE_ROOT;
+		};
+		65AC81D908DC792700ADD675 = {
+			fileRef = 65AC81D808DC792700ADD675;
 			isa = PBXBuildFile;
 			settings = {
 			};
