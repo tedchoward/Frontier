@@ -48,6 +48,7 @@
 #include "shell.h"
 #include "shell.rsrc.h"
 #include "langinternal.h" /*for langbackgroundtask*/
+#include "versions.h" /* 2005-09-23 creedon */
 
 
 #ifdef MACVERSION
@@ -556,7 +557,7 @@ static pascal Boolean knowntypesfilter (ParmBlkPtr pb, tysfdata *pdata) {
 		
 		case sfgetfileverb:
 			if(gCanUseNavServ) 
-				anErr = TimsGetFile(bsprompt, filetypes, &sfdata.sfreply);
+				anErr = getafile (bsprompt, filetypes, &sfdata.sfreply); /* 2005-09-21 creedon - changed from TimsGetFile to getafile*/ 
 			#if !TARGET_API_MAC_CARBON
 			else
 				CustomGetFile (knowntypesfilterUPP, cttypes, types, &sfdata.sfreply, sfgetfileid, pt, 
@@ -1052,84 +1053,93 @@ TimsPutFile(bigstring prompt, Str255 fileName, StandardFileReply * 	outReply)
 }
 
 
-OSErr 
-TimsGetFile(bigstring prompt, ptrsftypelist filetypes, StandardFileReply * 	outReply)
-{
-    NavDialogOptions    dialogOptions;
-    NavEventUPP         eventProc = NewNavEventUPP(NavEventProc);
-    OSErr               anErr = noErr;
-    NavTypeListHandle	typeList = nil;
-    NavReplyRecord reply;
-        
-    //  Specify default options for dialog box
-    anErr = NavGetDefaultDialogOptions(&dialogOptions);
-    copystring(prompt, dialogOptions.message);
-    if (anErr == noErr)
-    {
-        //  Clear preview option
-        dialogOptions.dialogOptionFlags ^= kNavAllowPreviews;
-        //no multiple files for now.
-        dialogOptions.dialogOptionFlags ^=kNavAllowMultipleFiles;
-        
-        dialogOptions.dialogOptionFlags += kNavSupportPackages;
-        // Create the typelist dynamically.
-        /*struct tysftypelist {
-	
-		short cttypes;
-	
-		OSType types [maxsftypelist];
-		}*/
-		//I need to translate this into a type list NavServices understands.
-		
-		if (filetypes != nil)
-		{
-			NavTypeListPtr	typesP = nil;
-			SInt32			hSize = (sizeof(NavTypeList) +
-							sizeof(OSType) * (filetypes->cttypes - 1));
-			newhandle(hSize, (Handle*) &typeList);
-			typesP = (NavTypeListPtr) *((Handle) typeList);
-			
-			typesP->componentSignature	= 'LAND';
-			typesP->reserved			= 0;
-			typesP->osTypeCount			= filetypes->cttypes;
-			
-			BlockMoveData(&(filetypes->types), typesP->osType,
-							(Size) (sizeof(OSType) * filetypes->cttypes));
-		}
-        
-        // Call NavGetFile() with specified options and
-        // declare our app-defined functions and type list
-		anErr = NavChooseFile (nil, &reply, &dialogOptions,
-			eventProc, nil, nil, typeList, nil);
+OSErr getafile (bigstring prompt, ptrsftypelist filetypes, StandardFileReply * outReply) {
 
-                            
-        if (anErr == noErr && reply.validRecord)
-        {
-            AEKeyword   theKeyword;
-            DescType    actualType;
-            Size        actualSize;
-            FSSpec      documentFSSpec;
+	/* 2005-09-21 creedon: created, cribbed from TimsGetFile */ 
+
+	NavDialogCreationOptions	dialogOptions;
+	NavDialogRef			dialogRef;
+	NavEventUPP			eventProc = NewNavEventUPP (NavEventProc);
+	NavReplyRecord			reply;
+	NavTypeListHandle		typeList = nil;
+	OSErr				anErr = noErr;
+
+	anErr = NavGetDefaultDialogCreationOptions (&dialogOptions);
+	
+	dialogOptions.clientName = CFStringCreateWithCString (NULL, APPNAME_SHORT, kCFStringEncodingMacRoman);
+	dialogOptions.message = CFStringCreateWithPascalString (NULL, prompt, kCFStringEncodingMacRoman);
+	
+	if (anErr == noErr) {
+	
+		if (filetypes == nil)
+			dialogOptions.optionFlags -= kNavNoTypePopup;
+		else
+			dialogOptions.optionFlags += kNavAllFilesInPopup; // add all documents to show pop-up
+
+		dialogOptions.optionFlags ^=kNavAllowMultipleFiles; //no multiple files for now
+        
+		dialogOptions.optionFlags ^= kNavAllowPreviews; // clear preview option
+        
+		dialogOptions.optionFlags += kNavSupportPackages; // see packages
+		
+		// dialogOptions.dialogOptionFlags += kNavAllowOpenPackages; // can open packages
+
+		if (filetypes != nil) { // translate into a type list NavServices understands
+		
+			NavTypeListPtr	typesP = nil;
+			SInt32		hSize = (sizeof (NavTypeList) + sizeof (OSType) * (filetypes->cttypes - 1));
+			newhandle		(hSize, (Handle*) &typeList);
+			typesP		= (NavTypeListPtr) *((Handle) typeList);
+			OSType		creator = 'LAND';
+			
+			if (filetypes->cttypes <= 1)
+				creator = kNavGenericSignature;
+			
+			typesP->componentSignature = creator;
+			typesP->reserved = 0;
+			typesP->osTypeCount = filetypes->cttypes;
+			
+			BlockMoveData(&(filetypes->types), typesP->osType, (Size) (sizeof(OSType) * filetypes->cttypes));
+			}
+        
+		anErr = NavCreateGetFileDialog (&dialogOptions, typeList, eventProc, NULL, NULL, NULL, &dialogRef);
+
+		anErr = NavDialogRun (dialogRef);
+		
+		anErr = NavDialogGetReply (dialogRef, &reply);
+
+		if (anErr == noErr && reply.validRecord) {
+		
+			AEKeyword theKeyword;
+			DescType actualType;
+			Size actualSize;
+			FSSpec documentFSSpec;
             
-            // Get a pointer to selected file
-            anErr = AEGetNthPtr(&(reply.selection), 1,
-                                typeFSS, &theKeyword,
-                                &actualType, &documentFSSpec,
-                                sizeof(documentFSSpec),
-                                &actualSize);
- 			assert(actualType == typeFSS);       
-            if (anErr == noErr)
-            {
-                FSMakeFSSpec (documentFSSpec.vRefNum, documentFSSpec.parID, documentFSSpec.name, &(outReply->sfFile));
-                outReply->sfGood = true;
-            }
-            //  Dispose of NavReplyRecord, resources, descriptors
-            anErr = NavDisposeReply(&reply);
-        }
-    }
-    DisposeNavEventUPP(eventProc);
+			// Get a pointer to selected file
+			anErr = AEGetNthPtr (&(reply.selection), 1,
+				typeFSS, &theKeyword,
+				&actualType, &documentFSSpec,
+				sizeof (documentFSSpec),
+				&actualSize);
+			
+			assert (actualType == typeFSS);
+		    
+			if (anErr == noErr) {
+				FSMakeFSSpec (documentFSSpec.vRefNum, documentFSSpec.parID, documentFSSpec.name, &(outReply->sfFile));
+			
+				outReply->sfGood = true;
+				}
+
+			anErr = NavDisposeReply (&reply); // dispose of NavReplyRecord, resources, descriptors
+			}
+		}
+		
+	DisposeNavEventUPP (eventProc);
+	
+	NavDialogDispose (dialogRef);
  
-    return anErr;
-}
+	return anErr;
+	} /* getafile */
 
 
 OSErr

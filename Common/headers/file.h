@@ -467,13 +467,15 @@ extern boolean initfiledialog (void);
 	//Nav services code for Frontier.
 	extern OSErr	TimsPutFile(bigstring prompt, Str255 fileName, StandardFileReply * outReply);
 
-	extern OSErr	TimsGetFile(bigstring prompt, ptrsftypelist filetypes, StandardFileReply * 	outReply);
-
-	extern OSErr	TimsGetFolderOrVolume(bigstring prompt, SInt16 dialogType, StandardFileReply * 	outReply);
+	extern OSErr	TimsGetFolderOrVolume(bigstring prompt, SInt16 dialogType, StandardFileReply * outReply);
 
 	extern pascal void		NavEventProc(NavEventCallbackMessage callBackSelector, 
 	                        NavCBRecPtr callBackParms, 
 	                        NavCallBackUserData callBackUD);
+
+
+	extern OSErr getafile (bigstring prompt, ptrsftypelist filetypes, StandardFileReply * outReply); /* 2005-09-23 creedon */ 
+
 #endif
                         
 #endif
