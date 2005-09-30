@@ -34,8 +34,8 @@
 #include "opinternal.h"
 #include "claybrowserstruc.h"
 #include "claybrowservalidate.h"
-
-
+#include "langinternal.h" /* 2005-09-26 creedon */
+#include "tablestructure.h" /* 2005-09-26 creedon */
 
 #define collidewithequal 0x0001
 #define collidewitholder 0x0002
@@ -211,10 +211,15 @@ static boolean collisionvisit (hdlheadrecord hnode, ptrvoid refcon) {
 		
 
 static boolean browsercollisiondialog (hdlheadrecord hdest, ptrdraginfo draginfo) {
+
+	/*
+	2005-09-26 creedon: changed default order of buttons, default is Duplicate which is the safe option, checks user.prefs.flReplaceDialogExpertMode and if true Replace is the default option
+	*/
 	
-	bigstring prompt;
+	bigstring bs, bscollided, prompt;
+	bigstring nobutton, yesbutton;
 	short itemhit;
-	bigstring bscollided;
+	boolean fl, flExpertMode = false;
 	
 	if ((*draginfo).collisiontype == nocollisions) /*no confirmation or deletions needed*/	
 		return (true);
@@ -252,24 +257,53 @@ static boolean browsercollisiondialog (hdlheadrecord hdest, ptrdraginfo draginfo
 		pushstring (dialogstrings [ixalreadyexists], prompt);
 		}
 	
-	#ifdef MACVERSION
-		itemhit = threewaydialog (prompt, "\x07" "Replace", "\x09" "Duplicate", "\x06" "Cancel");
-	#endif
-	#ifdef WIN95VERSION
-		itemhit = threewaydialog (prompt, "\x08" "&Replace", "\x0a" "&Duplicate", "\x07" "&Cancel");
-	#endif
+	getsystemtablescript (idreplacedialogexpertmode, bs); // "user.prefs.flReplaceDialogExpertMode"
 
+	disablelangerror ();
+
+	fl = langrunstring (bs, bs);
+	
+	enablelangerror ();
+	
+	if (fl)
+		stringisboolean (bs, &flExpertMode);
+	
+	if (flExpertMode) {
+		copystring (duplicatebuttontext, nobutton);
+		copystring (replacebuttontext, yesbutton);
+		}
+	else {
+		copystring (duplicatebuttontext, yesbutton);
+		copystring (replacebuttontext, nobutton);
+		}
+
+	itemhit = threewaydialog (prompt, yesbutton, nobutton, cancelbuttontext);
+
+	if (flExpertMode)
+		switch (itemhit) {
+		
+			case 1:
+				itemhit = 2;
+				
+				break;
+			
+			case 2:
+				itemhit = 1;
+				break;
+			
+			}
+	
 	switch (itemhit) {
 	
 		case 1:
-			/*caller should delete all files with their tmpbit set*/
+			opcleartmpbits ();
+			
+			/*caller should rename items where conflicts occur*/
 			
 			return (true);
 		
 		case 2:
-			opcleartmpbits ();
-			
-			/*caller should rename items where conflicts occur*/
+			/*caller should delete all files with their tmpbit set*/
 			
 			return (true);
 		
@@ -277,7 +311,8 @@ static boolean browsercollisiondialog (hdlheadrecord hdest, ptrdraginfo draginfo
 			opcleartmpbits ();
 			
 			return (false);
-		}
+		} /* switch */
+
 	} /*browsercollisiondialog*/
 
 

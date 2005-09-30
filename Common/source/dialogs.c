@@ -46,6 +46,8 @@
 #include "dialogs.h"
 #include "lang.h"
 #include "mac.h"
+#include "langinternal.h" /* 2005-09-26 creedon */
+#include "tablestructure.h" /* 2005-09-26 creedon */
 
 #ifdef flcomponent
 
@@ -1402,11 +1404,13 @@ short savedialog (bigstring bsfname) {
 short replacevariabledialog (bigstring bsitem) {
 	
 	/*
+	2005-09-26 creedon: changed order of buttons, default is Duplicate which is the safe option
+					 replace use of replacedialogid with threewaydialog function, easier to maintain one dialog resource, than several
+	
 	return 1 if the user clicked on Replace, 2 if Duplicate, 3 if Cancel.
 	*/
 
-	register DialogPtr pdialog;
-	register short itemnumber;
+	/* register DialogPtr pdialog;
 	
 	sysbeep ();
 		
@@ -1425,7 +1429,56 @@ short replacevariabledialog (bigstring bsitem) {
 	#endif
 	itemnumber = runmodaldialog ();
 	
-	disposemodaldialog (pdialog);
+	disposemodaldialog (pdialog); */
+	
+	register short itemnumber;
+	bigstring bs, prompt;
+	bigstring nobutton, yesbutton;
+	boolean fl, flExpertMode = false;
+	
+	getstringlist (langerrorlist, replaceitemerror, prompt);
+
+	parsedialogstring (prompt, bsitem, nil, nil, nil, prompt);
+
+	getsystemtablescript (idreplacedialogexpertmode, bs); // "user.prefs.flReplaceDialogExpertMode"
+
+	pushhashtable (roottable);
+
+	disablelangerror ();
+	
+	fl = langrunstring (bs, bs);
+	
+	enablelangerror ();
+	
+	pophashtable ();
+	
+	if (fl)
+		stringisboolean (bs, &flExpertMode);
+	
+	if (flExpertMode) {
+		copystring (duplicatebuttontext, nobutton);
+		copystring (replacebuttontext, yesbutton);
+		}
+	else {
+		copystring (duplicatebuttontext, yesbutton);
+		copystring (replacebuttontext, nobutton);
+		}
+
+	itemnumber = threewaydialog (prompt, yesbutton, nobutton, cancelbuttontext);
+
+	if (!flExpertMode)
+		switch (itemnumber) {
+		
+			case 1:
+				itemnumber = 2;
+				
+				break;
+			
+			case 2:
+				itemnumber = 1;
+				break;
+			
+			}
 	
 	switch (itemnumber) {
 		

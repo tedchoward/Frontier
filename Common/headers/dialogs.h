@@ -40,10 +40,10 @@
 #define savefileprompt 4
 #define savequitprompt 5
 
-#define replacedialogid 257
+// #define replacedialogid 257 /* 2005-09-26 creedon - replaced the single occurrence use of this dialog with call to threewaydialog */
 #define replacereplaceitem 1
-#define replaceduplicateitem 4
-#define replacecancelitem 5
+#define replaceduplicateitem 2
+#define replacecancelitem 3
 
 #define askdialogid 262 /*standard “ask” dialog for UserLand language*/
 #define askokitem 1
@@ -92,6 +92,20 @@
 #define valuenameitem 4
 #define firstkinditem 5
 #define lastkinditem 10
+
+/* dialog button text */
+
+#ifdef MACVERSION
+	#define cancelbuttontext "\x06" "Cancel"
+	#define duplicatebuttontext "\x09" "Duplicate"
+	#define replacebuttontext "\x07" "Replace"
+#endif
+
+#ifdef WIN95VERSION
+	#define cancelbuttontext "\x07" "&Cancel"
+	#define duplicatebuttontext "\x0a" "&Duplicate"
+	#define replacebuttontext "\x08" "&Replace"
+#endif
 
 
 typedef boolean (*dialogcallback) (DialogPtr, short);

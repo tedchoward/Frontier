@@ -200,6 +200,7 @@
 #define frbadgroupnameerror 158
 #define frnonexistantgroupnumbererror 159
 #define frnonexistantgroupnameerror 160
+#define replaceitemerror 161 /* 2005-09-26 creedon */
 
 #define langstacklist 137
 
