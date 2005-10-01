@@ -147,7 +147,7 @@ resource 'MENU' (2, "File") {
 	0x7FFFFE77,
 	enabled,
 	"File",
-	{	/* array: 12 elements */
+	{	/* array: 14 elements */
 #ifdef version42orgreater
 		/* [1] */
 		"New", noIcon, hierarchicalMenu, "\0d135", plain,
@@ -158,30 +158,34 @@ resource 'MENU' (2, "File") {
 		/* [2] */
 		"Open…", noIcon, "O", noMark, plain,
 		/* [3] */
-		"Close", noIcon, "W", noMark, plain,
+		"Open Recent", noIcon, hierarchicalMenu, "\0d137", plain,
 		/* [4] */
 		"-", noIcon, noKey, noMark, plain,
 		/* [5] */
-		"Save", noIcon, "S", noMark, plain,
+		"Close", noIcon, "W", noMark, plain,
 		/* [6] */
-		"Save as Runnable…", noIcon, noKey, noMark, plain,
+		"Save", noIcon, "S", noMark, plain,
 		/* [7] */
-		"Save a Copy…", noIcon, noKey, noMark, plain,
+		"Save as Runnable…", noIcon, noKey, noMark, plain,
 		/* [8] */
-		"Revert", noIcon, noKey, noMark, plain,
+		"Save a Copy…", noIcon, noKey, noMark, plain,
 		/* [9] */
+		"Revert", noIcon, noKey, noMark, plain,
+		/* [10] */
 		"-", noIcon, noKey, noMark, plain,
+
 //		/* [10] */
 //		"Expert Mode", noIcon, noKey, noMark, plain,
 //		/* [9] */
 //		"-", noIcon, noKey, noMark, plain,
-		/* [10] */
-		"Page Setup…", noIcon, noKey, noMark, plain,
+
 		/* [11] */
-		"Print…", noIcon, "P", noMark, plain,
+		"Page Setup…", noIcon, noKey, noMark, plain,
 		/* [12] */
-		"-", noIcon, noKey, noMark, plain,
+		"Print…", noIcon, "P", noMark, plain,
 		/* [13] */
+		"-", noIcon, noKey, noMark, plain,
+		/* [14] */
 		"Quit", noIcon, "Q", noMark, plain
 	}
 };
@@ -195,7 +199,7 @@ resource 'MENU' (412, "File") {
 	0x7FFFFE77,
 	enabled,
 	"File",
-	{	/* array: 11 elements */
+	{	/* array: 12 elements */
 #ifdef version42orgreater
 		/* [1] */
 		"New", noIcon, hierarchicalMenu, "\0d135", plain,
@@ -206,28 +210,30 @@ resource 'MENU' (412, "File") {
 		/* [2] */
 		"Open…", noIcon, "O", noMark, plain,
 		/* [3] */
-		"Close", noIcon, "W", noMark, plain,
+		"Open Recent", noIcon, hierarchicalMenu, "\0d137", plain,
 		/* [4] */
 		"-", noIcon, noKey, noMark, plain,
 		/* [5] */
-		"Save", noIcon, "S", noMark, plain,
+		"Close", noIcon, "W", noMark, plain,
 		/* [6] */
-		"Save as Runnable…", noIcon, noKey, noMark, plain,
+		"Save", noIcon, "S", noMark, plain,
 		/* [7] */
-		"Save a Copy…", noIcon, noKey, noMark, plain,
+		"Save as Runnable…", noIcon, noKey, noMark, plain,
 		/* [8] */
-		"Revert", noIcon, noKey, noMark, plain,
+		"Save a Copy…", noIcon, noKey, noMark, plain,
 		/* [9] */
-		"-", noIcon, noKey, noMark, plain,
+		"Revert", noIcon, noKey, noMark, plain,
 		/* [10] */
-		"Page Setup…", noIcon, noKey, noMark, plain,
+		"-", noIcon, noKey, noMark, plain,
 		/* [11] */
+		"Page Setup…", noIcon, noKey, noMark, plain,
+		/* [12] */
 		"Print…", noIcon, "P", noMark, plain
 	}
 };
 #endif
 
-#ifdef PIKE /*7.0b26 PBS: Radio UserLand has a different Edit menu.*/
+#ifdef PIKE
 
 resource 'MENU' (3, "Edit") {
 	3,
@@ -235,7 +241,7 @@ resource 'MENU' (3, "Edit") {
 	0x7FFFFF5D,
 	enabled,
 	"Edit",
-	{	/* array: 14 elements */
+	{	/* array: 17 elements */
 		/* [1] */
 		"Undo", noIcon, "Z", noMark, plain,
 		/* [2] */
@@ -270,7 +276,6 @@ resource 'MENU' (3, "Edit") {
 		"Open Notepad", noIcon, "Y", noMark, plain,
 		/* [17] */
 		"Insert Date/Time", noIcon, "4", noMark, plain,
-		
 	}
 };
 
@@ -282,7 +287,7 @@ resource 'MENU' (3, "Edit") {
 	0x7FFFFF5D,
 	enabled,
 	"Edit",
-	{	/* array: 14 elements */
+	{	/* array: 19 elements */
 		/* [1] */
 		"Undo", noIcon, "Z", noMark, plain,
 		/* [2] */
@@ -302,15 +307,25 @@ resource 'MENU' (3, "Edit") {
 		/* [9] */
 		"-", noIcon, noKey, noMark, plain,
 		/* [10] */
-		"Font", noIcon, hierarchicalMenu, "\0d128", plain,
+		"Find and Replace", noIcon, hierarchicalMenu, "\0d133", plain,
 		/* [11] */
-		"Size", noIcon, hierarchicalMenu, "\0d130", plain,
+		"-", noIcon, noKey, noMark, plain,
 		/* [12] */
-		"Style", noIcon, hierarchicalMenu, "\0d129", plain,
+		"Font", noIcon, hierarchicalMenu, "\0d128", plain,
 		/* [13] */
-		"Leading", noIcon, hierarchicalMenu, "\0d131", plain,
+		"Size", noIcon, hierarchicalMenu, "\0d130", plain,
 		/* [14] */
-		"Justify", noIcon, hierarchicalMenu, "\0d132", plain
+		"Style", noIcon, hierarchicalMenu, "\0d129", plain,
+		/* [15] */
+		"Leading", noIcon, hierarchicalMenu, "\0d131", plain,
+		/* [16] */
+		"Justify", noIcon, hierarchicalMenu, "\0d132", plain,
+		/* [17] */
+		"Common Styles", noIcon, hierarchicalMenu, "\0d134", plain,
+		/* [18] */
+		"-", noIcon, noKey, noMark, plain,
+		/* [19] */
+		"Insert Date/Time", noIcon, "4", noMark, plain
 	}
 };
 
@@ -484,7 +499,15 @@ resource 'MENU' (133, "Find and Replace") {
 		/* [3] */
 		"Find Next", noIcon, "G", noMark, plain,
 		/* [4] */
+		#ifdef PIKE /* 2005-09-25 creedon */
+		
 		"Replace & Find Next", noIcon, "H", noMark, plain
+		
+		#else
+		
+		"Replace & Find Next", noIcon, "1", noMark, plain
+		
+		#endif
 	}
 };
 
@@ -543,6 +566,20 @@ resource 'MENU' (136) {
 		"Page Up", noIcon, noKey, noMark, plain,
 		/* [5] */
 		"Page Down", noIcon, noKey, noMark, plain
+	}
+};
+
+resource 'MENU' (137, "Open Recent") {
+	137,
+	textMenuProc,
+	allEnabled,
+	enabled,
+	"Open Recent",
+	{	/* array: 2 elements */
+		/* [1] */
+		"-", noIcon, noKey, noMark, plain,
+		/* [2] */
+		"Clear Menu", noIcon, noKey, noMark, plain
 	}
 };
 

@@ -53,6 +53,7 @@
 #include "shellprivate.h"
 #include "cancoon.h"
 #include "tablestructure.h"
+#include "ops.h" /* 2005-09-25 creedon */
 
 
 tymenuinfo menustack [ctmenustack];
@@ -367,7 +368,7 @@ boolean shellinitmenus (void) {
 	setparseparams (bsprogramname, nil, nil, nil);
 	
 	visitmenuitems (&parammenuitem); /*perform ^0, ^1... substitutions*/
-	
+
 #endif
 
 	visitmenuitems (&menudisablevisit); /*disable all menu items*/
@@ -890,157 +891,6 @@ static boolean shellsetmenuitemstring (hdlmenu hmenu, short ixmenu, short ixitem
 
 #ifdef PIKE
 
-static void pikegetfilemenuitemidentifier (short ixmenu, bigstring bsitem) {
-
-	/*
-	6.2a2 AR: Convert an index into Pike's File menu into the name of that item for use
-	in a call to builtins.pike scripts.
-
-	7.0d6 PBS: Pike's File menu has changed -- it's more like a standard File menu, with
-	New and Open commands, no more What Is This? command.
-
-	7.0d10 PBS: Added case for Radio UserLand's Update Radio.root... command.
-	
-	7.0b25 PBS: Added case for Radio UserLand's Work Offline command.
-	
-	7.0b32 PBS: Cases for Save As HTML and Save As Plain Text.
-	*/
-
-	switch (ixmenu) {
-
-		case newitem:
-			copystring ("\x03""new", bsitem);
-			break;
-
-		case openitem:
-			copystring ("\x04""open", bsitem);
-			break;
-		
-		case openurlitem: /*7.0b17 PBS*/
-			copystring ("\x07""openurl", bsitem);
-			break;
-			
-		case openmanilasiteitem: /*7.0b27 PBS*/
-			copystring ("\x0e""openmanilasite", bsitem);
-			break;
-
-		case closeitem:
-			copystring ("\x05""close", bsitem);
-			break;
-
-		case saveitem:
-			copystring ("\x04""save", bsitem);
-			break;
-
-		case saveasitem:
-			copystring ("\x06""saveas", bsitem);
-			break;
-		
-		case saveashtmlitem:
-			copystring ("\x0a""saveashtml", bsitem);
-			break;
-			
-		case saveasplaintextitem:
-			copystring ("\x0f""saveasplaintext", bsitem);
-			break;
-
-		case revertitem:
-			copystring ("\x06""revert", bsitem);
-			break;
-		
-		case viewinbrowseritem:
-			copystring ("\x0d""viewinbrowser", bsitem);
-			break;
-
-		case updateradiorootitem:		/*7.0d10 PBS*/
-			copystring ("\x06""update", bsitem);
-			break;
-		
-		case workofflineitem: /*7.0b25 PBS*/
-			copystring ("\x0b""workoffline", bsitem); 
-			break;
-
-		case quititem:
-			copystring ("\x04""quit", bsitem);
-			break;
-
-		default:
-			assert (false);
-			break;
-
-		}/*switch*/
-
-	}/*pikegetfilemenuitemidentifier*/
-
-static void pikegeteditmenuitemidentifier (short ixmenu, short ixitem, bigstring bsitem) {
-
-	/*
-	7.0b26 PBS: Get the identifier for an Edit menu item in the Find and Replace or Common Styles menu.
-	*/
-	
-	if (ixmenu == editmenu) {
-		
-		switch (ixitem) {
-		
-			case opennotepaditem:
-				copystring ("\x0b""opennotepad", bsitem);
-				break;
-			
-			case insertdatetimeitem:
-				copystring ("\x0e""insertdatetime", bsitem);
-				break;
-			} /*switch*/
-		} /*if*/
-			
-	
-	if (ixmenu == findandreplacemenu) {
-
-		switch (ixitem) {
-
-			case 1:
-				copystring ("\x04""find", bsitem);
-				break;
-
-			case 2:
-				copystring ("\x07""replace", bsitem);
-				break;
-
-			case 3:
-				copystring ("\x08""findnext", bsitem);
-				break;
-
-			case 4:
-				copystring ("\x12""replaceandfindnext", bsitem);
-				break;
-
-			} /*switch*/
-		} /*if*/
-
-	if (ixmenu == commonstylesmenu) {
-
-		switch (ixitem) {
-
-			case 1:
-				copystring ("\x04""tiny", bsitem);
-				break;
-
-			case 2:
-				copystring ("\x06""medium", bsitem);
-				break;
-
-			case 3:
-				copystring ("\x08""readable", bsitem);
-				break;
-
-			case 4:
-				copystring ("\x04""huge", bsitem);
-				break;
-
-			} /*switch*/
-		} /*if*/
-	}/*pikegeteditmenuitemidentifier*/
-
-
 static void pikesetfilemenuitemchecked (short ixmenu) {
 	
 	/*
@@ -1149,7 +999,7 @@ boolean pikequit () {
 
 	pikegetfilemenuitemidentifier (quititem, bsitem);
 
-	getsystemtablescript (idpikerunmenuscript, bsscript); /*7.1b4: get from resource.*/
+	getsystemtablescript (idpikerunfilemenuscript, bsscript); /*7.1b4: get from resource.*/
 
 	/*copystring ("\x1c""pike.runFileMenuScript(\"^0\")", bsscript);*/
 
@@ -1164,123 +1014,15 @@ boolean pikequit () {
 	return (bsresult == bsfalse);
 	} /*pikequit*/
 
-static void pikerunfilemenuscript (short ixmenu) {
-
-	/*
-	6.2a2 AR: Call the pike.runFileMenuScript script to eventually run the
-	script associated with the current menu command.
-
-	7.1b4 PBS: get script string from resource, don't hard-code.
-	*/
-
-	bigstring bsscript, bsitem, bsresult;
-
-	if (roottable == nil)
-		return;
-
-	pikegetfilemenuitemidentifier (ixmenu, bsitem);
-
-	getsystemtablescript (idpikerunmenuscript, bsscript); /*7.1b4: get from resource.*/
-	
-	/*copystring ("\x1c""pike.runFileMenuScript(\"^0\")", bsscript);*/
-
-	parsedialogstring (bsscript, bsitem, nil, nil, nil, bsscript);
-
-	grabthreadglobals ();
-	
-	langrunstringnoerror (bsscript, bsresult);
-
-	releasethreadglobals ();
-	}/*pikerunfilemenuscript*/
-
-
-static void pikeruneditmenuscript (short idmenu, short iditem) {
-		
-	/*
-	7.0b26 PBS: Call pike.runEditMenuScript to run the script associated with
-	the current menu command.
-
-	7.1b4 PBS: get script from resource, don't hard-code.
-	*/
-
-	bigstring bsscript, bsitem, bsresult;
-
-	if (roottable == nil)
-		return;
-
-	pikegeteditmenuitemidentifier (idmenu, iditem, bsitem);
-
-	/*copystring ("\x1c""pike.runEditMenuScript(\"^0\")", bsscript);*/
-
-	getsystemtablescript (idpikeruneditmenuscript, bsscript); 
-
-	parsedialogstring (bsscript, bsitem, nil, nil, nil, bsscript);
-
-	grabthreadglobals ();
-	
-	langrunstringnoerror (bsscript, bsresult);
-
-	releasethreadglobals ();
-	} /*pikeruneditmenuscript*/
-
-
-static void pikegetcommonstylesmenuitemtext (short ixmenu, bigstring bsmenuitem) {
-	
-	/*
-	7.0b26 PBS: Get the text that appears in a Common Styles item.
-	*/
-
-	bigstring bsscript, bsitem;
-
-	setemptystring (bsitem);
-
-	switch (ixmenu) {
-
-		case 1:
-
-			copystring ("\x04""tiny", bsitem);
-
-			break;
-
-		case 2:
-
-			copystring ("\x06""medium", bsitem);
-
-			break;
-
-
-		case 3:
-
-			copystring ("\x08""readable", bsitem);
-
-			break;
-
-
-		case 4:
-
-			copystring ("\x04""huge", bsitem);
-
-			break;		
-		} /*switch*/
-
-	copystring ("\x22""menus.scripts.styleMenuItem (\"^0\")", bsscript);
-
-	parsedialogstring (bsscript, bsitem, nil, nil, nil, bsscript);
-
-	grabthreadglobals ();
-	
-	langrunstringnoerror (bsscript, bsmenuitem);
-
-	releasethreadglobals ();
-	} /*pikegetcommonstylesmenuitemtext*/
-
-
 #endif
 
 
 void shelladjustmenus (void) {
 	
 	/*
+	2005-09-25 creedon: added open recent menu
+					 changed to support calling script for some file/edit menu commands on all targets
+	
 	8/1/90 dmb: call menuhooks with menu & item set to zero to give 
 	hooks a chance to update their menus
 	
@@ -1417,6 +1159,8 @@ void shelladjustmenus (void) {
 	
 	enablemenuitem (hmenu, openitem);
 	
+	enablemenuitem (hmenu, openrecentitem);
+	
 	setmenuitemenable (hmenu, closeitem, flwindow);
 
 	/*3/30/90 DW -- saveitem is not dependent on flchanges.  this allows you to save
@@ -1480,11 +1224,11 @@ void shelladjustmenus (void) {
 	
 	setmenuitemenable (hmenu, selectallitem, flwindow);
 	
+	setmenuitemenable (hmenu, insertdatetimeitem, flwindow);
+
 #ifdef PIKE
 	
 	setmenuitemenable (hmenu, opennotepaditem, true); /*7.0b27 PBS: enable/disable Open Notepad, Insert Date/Time.*/
-	
-	setmenuitemenable (hmenu, insertdatetimeitem, flwindow);
 	
 #endif
 	
@@ -1494,14 +1238,25 @@ void shelladjustmenus (void) {
 	/*
 	setmenuitemenable (hmenu, windowsitem, flanywindow);
 	*/
-	
-	
-#ifdef PIKE /*7.0b26 PBS: slightly different Edit menu for Radio UserLand.*/
 
 	setmenuitemenable (hmenu, findandreplaceitem, flwindow);
 
 	setmenuitemenable (hmenu, commonstylesitem, (x.flcansetfont && x.flcansetsize));
+
+	setmenuitemenable (hmenu, fontitem, x.flcansetfont);
 	
+	setmenuitemenable (hmenu, sizeitem, x.flcansetsize);
+	
+#ifndef PIKE
+
+	setmenuitemenable (hmenu, styleitem, x.flcansetstyle);
+	
+	setmenuitemenable (hmenu, leadingitem, x.flcansetleading);
+	
+	setmenuitemenable (hmenu, justifyitem, x.flcansetjust);
+
+#endif
+
 	hmenu = shellmenuhandle (findandreplacemenu); /*Find and Replace sub-menu*/
 				
 	if (hmenu)
@@ -1523,42 +1278,13 @@ void shelladjustmenus (void) {
 
 			if (flwindow)
 
-				pikegetcommonstylesmenuitemtext (i, bsitem);
+				getcommonstylesmenuitemtext (i, bsitem);
 			
 			setmenuitem (hmenu, i, bsitem); /*Set item text.*/
 			} /*for*/
+
 		} /*if*/
 
-		//} /*if*/
-
-	else {
-
-		setmenuitemenable (hmenu, findandreplaceitem, false);
-
-		setmenuitemenable (hmenu, commonstylesitem, false);
-		} /*else*/
-	
-	hmenu = shellmenuhandle (editmenu);
-
-	setmenuitemenable (hmenu, fontitem, x.flcansetfont);
-	
-	setmenuitemenable (hmenu, sizeitem, x.flcansetsize);
-	
-
-#else
-
-	setmenuitemenable (hmenu, fontitem, x.flcansetfont);
-	
-	setmenuitemenable (hmenu, sizeitem, x.flcansetsize);
-	
-	setmenuitemenable (hmenu, styleitem, x.flcansetstyle);
-	
-	setmenuitemenable (hmenu, leadingitem, x.flcansetleading);
-	
-	setmenuitemenable (hmenu, justifyitem, x.flcansetjust);
-
-#endif
-	
 	L2: /*goto here to skip the adjustment of the edit menu*/
 	
 	if (!x.flcansetsize)
@@ -1689,6 +1415,12 @@ void shelladjustmenus (void) {
 	if (hmenu)
 		enableallmenuitems (hmenu, true);
 
+	/* 2005-09-25 creedon - open recent menu */
+	
+	hmenu = shellmenuhandle (openrecentmenu);
+	
+	if (hmenu)
+		enableallmenuitems (hmenu, true);
 #endif
 
 	#ifdef WIN95VERSION
@@ -1732,18 +1464,18 @@ void shellupdatemenus (void) {
 	
 	
 boolean shellhandlemenu (long menucode) {
-	
-	/*
-	5/19/93 dmb: closefunc uses getfrontwindow, not shellwindow
 
+	/*
+	2005-09-25 creedon: changed so that all targets can call script for some file/edit menu commands
+					 added open recent menu
+	
 	7.0d6 PBS: With Pike's now-standard File menu, it's necessary to use
 	kernel routines for New and Open. Run scripts in Pike for everything else.
+
+	5/19/93 dmb: closefunc uses getfrontwindow, not shellwindow
 	*/
 	
 	register short idmenu, iditem;
-#ifndef PIKE
-	hdlwindowinfo hinfo;
-#endif
 	
 	/*
 	if there's an open window, it should already be pushed.   we don't want 
@@ -1755,7 +1487,7 @@ boolean shellhandlemenu (long menucode) {
 	
 	idmenu = HiWord (menucode); 
 	
-//	grabthreadglobals ();
+	// grabthreadglobals ();
 	
 	#ifdef WIN95VERSION
 		iditem -= idmenu;
@@ -1813,118 +1545,93 @@ boolean shellhandlemenu (long menucode) {
 		#endif
 
 		case filemenu: {
-			
-#ifdef PIKE
-			/*
-			6.2a2 AR: For Pike, we want to call UserTalk scripts from the File menu.
-			*/
-
-			boolean flkernelhandledcommand = false;
-			WindowPtr w;
+		
+			boolean flkernelhandledcommand = false, flfoundrootwindow = false;
+			WindowPtr w = shellwindow;
 			Handle hdata;
 			hdlwindowinfo hinfo;
-			
+
+			if (w == nil) {
+				flfoundrootwindow = ccfindrootwindow (&hinfo);
+				if (flfoundrootwindow)
+					w = (**hinfo).macwindow;
+				}
+
 			switch (iditem) {
 				
-				case closeitem: /*Possibly close an Error Info window.*/
+				case closeitem: /* possibly close an Error Info window */
 
-					if (shellfindwindow (idlangerrorconfig, &w, &hinfo, &hdata)) { /*Is there an Error Info window?*/
+					if (shellfindwindow (idlangerrorconfig, &w, &hinfo, &hdata)) { /* is there an Error Info window? */
 
-						if (w == getfrontwindow ()) { /*is the Error Info window in front?*/
+						if (w == getfrontwindow ()) { /* is the Error Info window in front? */
 						
-							shellclose (w, true); /*close the Error Info window*/
+							shellclose (w, true); /* close the Error Info window */
 
-							flkernelhandledcommand = true; /*the kernel handled the command*/
-							}/*if*/
-						} /*if*/
+							flkernelhandledcommand = true; /* the kernel handled the command */
+							} /* if */
+						} /* if */
 	
 					break;
-				
-				case quititem: /*7.0b23: Handle quitting if Radio.root is closed.*/
-					
-					if (shellwindow == nil) {
-					
-						if (!ccfindrootwindow (&hinfo)) {
-							
-							shellquit ();
-							
-							flkernelhandledcommand = true;
-							} /*if*/
-						} /*if*/
-				
-					break;
-				} /*switch*/
-								
-			if (!flkernelhandledcommand) /*Run the script if special cases weren't handled above.*/
 
-				pikerunfilemenuscript (iditem);
-
-			break;
-#else
-		
-			WindowPtr w = shellwindow;
-
-			if (w == nil)
-				if (ccfindrootwindow (&hinfo))
-					w = (**hinfo).macwindow;
-			
-			switch (iditem) {
-				
-				case newitem:
-					shellnew ();
-					
-					break;
-
-				case openitem:
-					shellopen ();
-					
-					break;
-					
-				case closeitem:
+				/* case closeitem:
 					if (keyboardstatus.floptionkey)
 						shellcloseall (w, true);
 					else
 						shellclose (getfrontwindow (), true);
 					
+					flkernelhandledcommand = true;
+				
+					break; */
+				
+				case quititem:
+					
+					if (!flfoundrootwindow) {
+						shellquit ();
+							
+						flkernelhandledcommand = true;
+						}
+						
 					break;
-         
-				case saveitem:
-					shellsave (w);
 					
-					break;
+				#ifndef PIKE
+
+				case newitem:
+					shellnew ();
 					
-				case saveasitem:
-					shellsaveas (w, nil, false);
-					
-					break;
-					
-				case saverunnableitem:
-					shellsaveas (w, nil, true);
-					
+					flkernelhandledcommand = true;
+				
 					break;
 
-				case revertitem:
-					shellrevert (w, true);
-					
-					break;
-					
 				case pagesetupitem:
 					shellpagesetup ();
 					
+					flkernelhandledcommand = true;
+				
 					break;
 				
 				case printitem:
 					shellprint (w, true);
 					
+					flkernelhandledcommand = true;
+				
+					break;
+
+				case saverunnableitem:
+					shellsaveas (w, nil, true);
+					
+					flkernelhandledcommand = true;
+				
 					break;
 					
-				case quititem: 
-					shellquit ();
-					
-					break;
+				#endif
+
 				} /*switch*/
-#endif            
-			break; /*file menu*/
+								
+			if (!flkernelhandledcommand) /*Run the script if special cases weren't handled above.*/
+
+				runfilemenuscript (iditem);
+
+			break; /* file menu */
 			}
 		
 		case editmenu:
@@ -1952,10 +1659,7 @@ boolean shellhandlemenu (long menucode) {
 				break;
 				}
 			
-			#ifdef PIKE
-				else
-					pikeruneditmenuscript (editmenu, iditem); /*7.0b27 PBS: Open Notepad, Insert Date/Time*/
-			#endif
+			runeditmenuscript (editmenu, iditem); /*7.0b27 PBS */
 			
 			break; /*edit menu*/
 			
@@ -2232,18 +1936,14 @@ boolean shellhandlemenu (long menucode) {
 			break;
 			} /*leading menu*/
 		
-		#ifdef PIKE /*7.0b26 PBS: Edit menu scripts -- Find and Replace, Common Styles*/
-		
 			case findandreplacemenu:
 			case commonstylesmenu:
 
-				pikeruneditmenuscript (idmenu, iditem);
+				runeditmenuscript (idmenu, iditem);
 
 				break;
 
-		#endif
-		
-	#ifdef MACVERSION
+		#ifdef MACVERSION
 		case virtualmenu: { /*special key on the extended keyboard*/
 			
 			switch (iditem) {
@@ -2273,8 +1973,22 @@ boolean shellhandlemenu (long menucode) {
 					
 					break;
 				}
-			}
-	#endif
+				
+			break;
+			} /* virtual menu */
+
+		case openrecentmenu: {
+		
+			boolean flkernelhandledcommand = false;
+		
+			if (!flkernelhandledcommand) /* run the script if special cases weren't handled above */
+
+				runopenrecentmenuscript (iditem);
+				
+			break;
+			} /* openrecentmenu */
+
+		#endif
 
 	#ifdef WIN95VERSION
 	//	case defaultpopupmenuid:
@@ -2292,4 +2006,354 @@ boolean shellhandlemenu (long menucode) {
 	return (idmenu != 0);
 	} /*shellhandlemenu*/
 
+
+void runfilemenuscript (short ixmenu) {
+	
+	/*
+	2005-09-14 creedon: changed name from pikerunfilemenuscript to runfilemenuscript, all targets can now run a script associated with some of the file menu commands
+	
+	6.2a2 AR: Call the pike.runFileMenuScript script to eventually run the
+	script associated with the current menu command.
+
+	7.1b4 PBS: get script string from resource, don't hard-code.
+	*/
+
+	bigstring bsscript, bsitem, bsresult;
+
+	if (roottable == nil)
+		return;
+
+	getfilemenuitemidentifier (ixmenu, bsitem);
+
+	getsystemtablescript (idrunfilemenuscript, bsscript); /*7.1b4: get from resource.*/
+	
+	/*copystring ("\x1c""pike.runFileMenuScript(\"^0\")", bsscript);*/
+
+	parsedialogstring (bsscript, bsitem, nil, nil, nil, bsscript);
+
+	grabthreadglobals ();
+	
+	langrunstringnoerror (bsscript, bsresult);
+
+	releasethreadglobals ();
+	}/* runfilemenuscript */
+
+
+void getfilemenuitemidentifier (short ixmenu, bigstring bsitem) {
+
+	/*
+	2005-09-14 creedon: changed name from pikerunfilemenuscript to runfilemenuscript, all targets can now run a script associated with some of the file menu commands
+	
+	6.2a2 AR: Convert an index into Pike's File menu into the name of that item for use in a call to builtins.pike scripts.
+
+	7.0d6 PBS: Pike's File menu has changed -- it's more like a standard File menu, with
+	New and Open commands, no more What Is This? command.
+
+	7.0d10 PBS: Added case for Radio UserLand's Update Radio.root... command.
+	
+	7.0b25 PBS: Added case for Radio UserLand's Work Offline command.
+	
+	7.0b32 PBS: Cases for Save As HTML and Save As Plain Text.
+	*/
+
+	switch (ixmenu) {
+
+		case openitem:
+			copystring ("\x04""open", bsitem);
+			break;
+		
+		case closeitem:
+			copystring ("\x05""close", bsitem);
+			break;
+
+		case saveitem:
+			copystring ("\x04""save", bsitem);
+			break;
+
+		case saveasitem:
+			copystring ("\x06""saveas", bsitem);
+			break;
+		
+		case revertitem:
+			copystring ("\x06""revert", bsitem);
+			break;
+		
+		case quititem:
+			copystring ("\x04""quit", bsitem);
+			break;
+			
+		#ifdef PIKE
+
+		case newitem:
+			copystring ("\x03""new", bsitem);
+			break;
+
+		case openurlitem: /*7.0b17 PBS*/
+			copystring ("\x07""openurl", bsitem);
+			break;
+			
+		case openmanilasiteitem: /*7.0b27 PBS*/
+			copystring ("\x0e""openmanilasite", bsitem);
+			break;
+			
+		case saveashtmlitem:
+			copystring ("\x0a""saveashtml", bsitem);
+			break;
+			
+		case saveasplaintextitem:
+			copystring ("\x0f""saveasplaintext", bsitem);
+			break;
+			
+		case viewinbrowseritem:
+			copystring ("\x0d""viewinbrowser", bsitem);
+			break;
+
+		case updateradiorootitem:		/*7.0d10 PBS*/
+			copystring ("\x06""update", bsitem);
+			break;
+		
+		case workofflineitem: /*7.0b25 PBS*/
+			copystring ("\x0b""workoffline", bsitem); 
+			break;
+
+		#endif
+
+		default:
+			assert (false);
+			break;
+
+		}/*switch*/
+
+	}/* getfilemenuitemidentifier */
+
+
+void runopenrecentmenuscript (short iditem) {
+	
+	/*
+	2005-09-24 creedon: created
+	*/
+
+	bigstring bsscript, bsitem, bsresult;
+	
+	// getfilemenuitemidentifier (ixmenu, bsitem);
+
+	getsystemtablescript (idrunopenrecentmenuscript, bsscript); /* get from resource */
+	
+	// copystring ("\x39""Frontier.tools.windowTypes.runOpenRecentMenuScript (\"^0\")", bsscript);
+
+	numbertostring (iditem, bsitem);
+	
+	parsedialogstring (bsscript, bsitem, nil, nil, nil, bsscript);
+
+	grabthreadglobals ();
+	
+	langrunstringnoerror (bsscript, bsresult);
+
+	releasethreadglobals ();
+	} /* runopenrecentmenuscript */
+
+
+void getcommonstylesmenuitemtext (short ixmenu, bigstring bsmenuitem) {
+	
+	/*
+	2005-09-25 creedon: changed name from pikegetcommonstylesmenuitemtext to getcommonstylesmenuitemtext, all targets can now run a script associated with some of the edit menu commands
+	
+	7.0b26 PBS: Get the text that appears in a Common Styles item.
+	*/
+
+	bigstring bsscript, bsitem;
+
+	setemptystring (bsitem);
+
+	switch (ixmenu) {
+
+		case 1:
+
+			copystring ("\x04""tiny", bsitem);
+
+			break;
+
+		case 2:
+
+			copystring ("\x06""medium", bsitem);
+
+			break;
+
+
+		case 3:
+
+			copystring ("\x08""readable", bsitem);
+
+			break;
+
+
+		case 4:
+
+			copystring ("\x04""huge", bsitem);
+
+			break;		
+		} /*switch*/
+
+	copystring ("\x22""menus.scripts.styleMenuItem (\"^0\")", bsscript);
+
+	parsedialogstring (bsscript, bsitem, nil, nil, nil, bsscript);
+
+	grabthreadglobals ();
+	
+	langrunstringnoerror (bsscript, bsmenuitem);
+
+	releasethreadglobals ();
+	} /* getcommonstylesmenuitemtext */
+
+
+void runeditmenuscript (short idmenu, short iditem) {
+		
+	/*
+	2005-09-25 creedon: changed name from pikeruneditmenuscript to runeditmenuscript, all targets can now run a script associated with some of the edit menu commands
+
+	7.1b4 PBS: get script from resource, don't hard-code.
+
+	7.0b26 PBS: Call pike.runEditMenuScript to run the script associated with
+	the current menu command.
+	*/
+
+	bigstring bsscript, bsitem, bsresult;
+
+	if (roottable == nil)
+		return;
+
+	geteditmenuitemidentifier (idmenu, iditem, bsitem);
+
+	/*copystring ("\x1c""pike.runEditMenuScript(\"^0\")", bsscript);*/
+
+	getsystemtablescript (idruneditmenuscript, bsscript); 
+
+	parsedialogstring (bsscript, bsitem, nil, nil, nil, bsscript);
+
+	grabthreadglobals ();
+	
+	langrunstringnoerror (bsscript, bsresult);
+
+	releasethreadglobals ();
+	} /* runeditmenuscript */
+
+void geteditmenuitemidentifier (short ixmenu, short ixitem, bigstring bsitem) {
+
+	/*
+	2005-09-25 creedon: changed name from pikegeteditmenuitemidentifier to geteditmenuitemidentifier, all targets can now run a script associated with some of the edit menu commands
+
+	7.0b26 PBS: Get the identifier for an Edit menu item in the Find and Replace or Common Styles menu.
+	*/
+	
+	if (ixmenu == editmenu) {
+		
+		switch (ixitem) {
+
+#ifdef PIKE
+			case opennotepaditem:
+				copystring ("\x0b""opennotepad", bsitem);
+				break;
+#endif
+			case insertdatetimeitem:
+				copystring ("\x0e""insertdatetime", bsitem);
+				break;
+			} /*switch*/
+		} /*if*/
+			
+	
+	if (ixmenu == findandreplacemenu) {
+
+		switch (ixitem) {
+
+			case 1:
+				copystring ("\x04""find", bsitem);
+				break;
+
+			case 2:
+				copystring ("\x07""replace", bsitem);
+				break;
+
+			case 3:
+				copystring ("\x08""findnext", bsitem);
+				break;
+
+			case 4:
+				copystring ("\x12""replaceandfindnext", bsitem);
+				break;
+
+			} /*switch*/
+		} /*if*/
+
+	if (ixmenu == commonstylesmenu) {
+
+		switch (ixitem) {
+
+			case 1:
+				copystring ("\x04""tiny", bsitem);
+				break;
+
+			case 2:
+				copystring ("\x06""medium", bsitem);
+				break;
+
+			case 3:
+				copystring ("\x08""readable", bsitem);
+				break;
+
+			case 4:
+				copystring ("\x04""huge", bsitem);
+				break;
+
+			} /*switch*/
+		} /*if*/
+	}/* geteditmenuitemidentifier */
+
+
+static boolean openrecentmenuitemsvisit (bigstring bs, hdlhashnode hnode, tyvaluerecord val, ptrvoid refcon) {
+
+	/* 2005-09-24 creedon */
+	
+	register hdlmenu hmenu;
+	
+	deletestring (bs, 1, 9);
+	
+	hmenu = shellmenuhandle (openrecentmenu);
+	
+	// InsertMenuItemTextWithCFString (hmenu, CFStringCreateWithPascalString (NULL, bs, kCFStringEncodingMacRoman), 0, 0, 0);
+	
+	Insertmenuitem (hmenu, 1, bs);
+	
+	return (false); // always return false so that hashsortedinversesearch will visit all nodes
+	} /* openrecentmenuitemsvisit */
+
+
+void shellupdateopenrecentmenu (void) {
+
+	/* 2005-09-22 creedon */
+	
+	bigstring bs;
+	boolean fl;
+	hdlhashtable htable;
+	register hdlmenu hmenu;
+
+	hmenu = shellmenuhandle (openrecentmenu);
+
+	DeleteMenuItems (hmenu, 1, CountMenuItems (hmenu) - 2);
+	
+	getsystemtablescript (idopenrecentmenutable, bs); // "user.prefs.openrecentmenu.items"
+
+	pushhashtable (roottable);
+
+	disablelangerror ();
+
+	fl = langexpandtodotparams (bs, &htable, bs);
+
+	enablelangerror ();
+
+	pophashtable ();
+
+	if (fl)
+		hashsortedinversesearch (htable, &openrecentmenuitemsvisit, nil);
+		
+	}
 

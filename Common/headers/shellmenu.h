@@ -54,7 +54,8 @@
 	#define findandreplacemenu (justifymenu + hiermenuincrement)
 	#define commonstylesmenu (findandreplacemenu + hiermenuincrement)
 	#define newobjectmenu (commonstylesmenu + hiermenuincrement)
-	#define virtualmenu (newobjectmenu + hiermenuincrement) /*never appears in user interface -- used for externed keyboard*/
+	#define virtualmenu (newobjectmenu + hiermenuincrement) /* never appears in user interface -- used for externed keyboard */
+	#define openrecentmenu ((virtualmenu + hiermenuincrement))
 #endif
 
 #ifdef WIN95VERSION
@@ -113,56 +114,65 @@
 #else
 
 	// #define filemenu (applemenu + mainmenuincrement)
-	#define newitem 1
-	#define openitem 2
-	#define closeitem 3
-	#define saveitem 5
-	#define saverunnableitem 6
-	#define saveasitem 7
-	#define revertitem 8
+	#define newitem		1
+	#define openitem		2
+	#define openrecentitem	3
+	#define closeitem		5
+	#define saveitem		6
+	#define saverunnableitem	7
+	#define saveasitem		8
+	#define revertitem		9
+
 	//#define expertitem 10
-	#define pagesetupitem 10
-	#define printitem 11
-	#define quititem 13
+
+	#define pagesetupitem	11
+	#define printitem		12
+	#define quititem		14
 
 #endif
 
 // #define editmenu (filemenu + mainmenuincrement)
+
+#define windowsitem				-1
+
 #ifdef PIKE
 
-	#define undoitem 1
-	#define cutitem 3
-	#define copyitem 4
-	#define pasteitem 5
-	#define clearitem 6
-	#define selectallitem 8
-	#define windowsitem -1
-	#define findandreplaceitem 10
-	#define commonstylesitem 11
-	#define fontitem 13
-	#define sizeitem 14
-	#define styleitem -1
-	#define leadingitem -1
-	#define justifyitem -1
-	#define opennotepaditem 16
-	#define insertdatetimeitem 17
+	#define undoitem			1
+	#define cutitem				3
+	#define copyitem			4
+	#define pasteitem			5
+	#define clearitem			6
+	#define selectallitem			8
+	#define findandreplaceitem	10
+	#define commonstylesitem	11
+	#define fontitem			13
+	#define sizeitem			14
+	#define opennotepaditem		16
+	#define insertdatetimeitem	17
+
+	#define styleitem			-1
+	#define leadingitem			-1
+	#define justifyitem			-1
 
 #else
 
-	#define undoitem 1
-	#define cutitem 3
-	#define copyitem 4
-	#define pasteitem 5
-	#define clearitem 6
-	#define selectallitem 8
-	#define windowsitem -1
-	#define fontitem 10
-	#define sizeitem 11
-	#define styleitem 12
-	#define leadingitem 13
-	#define justifyitem 14
+	#define undoitem			1
+	#define cutitem				3
+	#define copyitem			4
+	#define pasteitem			5
+	#define clearitem			6
+	#define selectallitem			8
+	#define findandreplaceitem	10
+	#define fontitem			12
+	#define sizeitem			13
+	#define styleitem			14
+	#define leadingitem			15
+	#define justifyitem			16
+	#define commonstylesitem	17
+	#define insertdatetimeitem	19
 
 #endif
+
 
 // #define windowsmenu (editmenu + mainmenuincrement)
 #define hidewindowitem 1
@@ -226,10 +236,13 @@
 #define moveleftitem 8
 #define moverightitem 9
 
+// #define openrecentmenu (virtualmenu + hiermenuincrement)
+#define clearrecentmenuitem 2
+
 
 #ifdef MACVERSION
 	#define lastmainmenu windowsmenu
-	#define lasthiermenu virtualmenu
+	#define lasthiermenu openrecentmenu
 #endif
 #ifdef WIN95VERSION
 	#define lastmainmenu helpmenu
@@ -279,6 +292,17 @@ extern void shellupdatemenus (void);
 
 extern boolean shellhandlemenu (long);
 
+extern void runfilemenuscript (short); /* 2005-09-15 creedon - all targets can now run a script associated with some of the file menu commands */
+
+extern void runeditmenuscript (short, short); /* 2005-09-25 creedon - all targets can now run a script associated with some of the edit menu commands */
+
+extern void getcommonstylesmenuitemtext (short, bigstring); /* 2005-09-25 creedon - all targets can now run a script associated with some of the edit menu commands */ 
+
+extern void getfilemenuitemidentifier (short, bigstring); /* 2005-09-15 creedon - all targets can now run a script associated with some of the file menu commands */
+
+extern void geteditmenuitemidentifier (short, short, bigstring); /* 2005-09-25 creedon - all targets can now run a script associated with some of the edit menu commands */
+
+extern void runopenrecentmenuscript (short); /* 2005-09-24 creedon */
 
 extern boolean shellupdatewindowmenu (void); /*shellwindowmenu.c*/
 
@@ -287,3 +311,6 @@ extern void shellwindowmenuselect (short);
 extern void shelladjustundo (void); /*7.0fc1 PBS: no longer static*/
 
 extern boolean pikequit (void); /*7.0 PBS: called when the X in the frame window is clicked in Windows.*/
+
+extern void shellupdateopenrecentmenu (void); /* 2005-09-25 creedon */
+

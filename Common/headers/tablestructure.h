@@ -110,7 +110,7 @@ enum  { /*indexes of system table scripts*/
 
 	idpikegetmenuitemstring,
 
-	idpikerunmenuscript,
+	idrunfilemenuscript, /* 2005-09-14 creedon - changed name from idpikerunfilemenuscript to idrunfilemenuscript */
 
 	idopstruct2clickscript,
 
@@ -124,11 +124,17 @@ enum  { /*indexes of system table scripts*/
 
 	idoprightclickscript,
 
-	idpikeruneditmenuscript,
+	idruneditmenuscript, /* 2005-09-25 creedon - changed name from idpikeruneditmenuscript to idruneditmenuscript */ 
 
 	idpikeisfilemenuitemcheckedscript,
 
-	idopinsertscript
+	idopinsertscript,
+	
+	idopenrecentmenutable = 44, /* 2005-09-22 creedon */ 
+	
+	idreplacedialogexpertmode, /* 2005-09-26 creedon */
+	
+	idrunopenrecentmenuscript /* 2005-09-29 creedon */
 	};
 
 

@@ -237,10 +237,11 @@ BEGIN
     BEGIN
         MENUITEM "&New",						 newobjectmenu
         MENUITEM "&Open... \tCtrl+O",            filemenu+openitem
-        MENUITEM "&Close\tCtrl+W",               filemenu+closeitem
+        MENUITEM "Open Recent",                filemenu+openrecentitem /* 2005-09-25 creedon */
         MENUITEM SEPARATOR
+        MENUITEM "&Close\tCtrl+W",               filemenu+closeitem
         MENUITEM "&Save\tCtrl+S",                filemenu+saveitem
-		MENUITEM "Save as Runnable...",			 filemenu+saverunnableitem
+        MENUITEM "Save as Runnable...",			 filemenu+saverunnableitem
         MENUITEM "Save a &Copy...",              filemenu+saveasitem
         MENUITEM "&Revert",                      filemenu+revertitem
         MENUITEM SEPARATOR
@@ -269,38 +270,46 @@ BEGIN
         MENUITEM "Clear",						editmenu+clearitem
         MENUITEM SEPARATOR
         MENUITEM "Select A&ll\tCtrl+A",			editmenu+selectallitem
-		MENUITEM SEPARATOR
-		MENUITEM "Find and Replace",			findandreplacemenu
-		MENUITEM "Common Styles",				commonstylesmenu
+        MENUITEM SEPARATOR
+        MENUITEM "Find and Replace",			findandreplacemenu
+        MENUITEM "Common Styles",				commonstylesmenu
         MENUITEM SEPARATOR
         MENUITEM "&Font",						fontmenu
         MENUITEM "&Size",						sizemenu
-		MENUITEM SEPARATOR
-		MENUITEM "Open Notepad\tCtrl+Y",		opennotepaditem
-		MENUITEM "Insert Date/Time\tCtrl+4",	insertdatetimeitem
+        MENUITEM SEPARATOR
+        MENUITEM "Open Notepad\tCtrl+Y",		opennotepaditem
+        MENUITEM "Insert Date/Time\tCtrl+4",	insertdatetimeitem
     END
 END
 
 #else
 
 editmenu MENU DISCARDABLE
+
+/* 2005-09-25 creedon: changed for edit menu items calling scripts */
+
 BEGIN
     POPUP "&Edit"
     BEGIN
-        MENUITEM "&Undo\tCtrl+Z",				editmenu+undoitem
+        MENUITEM "&Undo\tCtrl+Z",                   editmenu+undoitem
         MENUITEM SEPARATOR
-        MENUITEM "Cu&t\tCtrl+X",				editmenu+cutitem
-        MENUITEM "&Copy\tCtrl+C",				editmenu+copyitem
-        MENUITEM "&Paste\tCtrl+V",				editmenu+pasteitem
-        MENUITEM "Clear",						editmenu+clearitem
+        MENUITEM "Cu&t\tCtrl+X",                     editmenu+cutitem
+        MENUITEM "&Copy\tCtrl+C",                   editmenu+copyitem
+        MENUITEM "&Paste\tCtrl+V",                  editmenu+pasteitem
+        MENUITEM "Clear",                                editmenu+clearitem
         MENUITEM SEPARATOR
-        MENUITEM "Select A&ll\tCtrl+A",			editmenu+selectallitem
+        MENUITEM "Select A&ll\tCtrl+A",             editmenu+selectallitem
         MENUITEM SEPARATOR
-        MENUITEM "&Font",						fontmenu
-        MENUITEM "&Size",						sizemenu
-        MENUITEM "St&yle",						stylemenu
-        MENUITEM "Leading",						leadingmenu
-        MENUITEM "Justify",						justifymenu
+	 MENUITEM "Find and Replace",                findandreplacemenu
+        MENUITEM SEPARATOR
+        MENUITEM "&Font",                               fontmenu
+        MENUITEM "&Size",                               sizemenu
+        MENUITEM "St&yle",                              stylemenu
+        MENUITEM "Leading",                            leadingmenu
+        MENUITEM "Justify",                             justifymenu
+	 MENUITEM "Common Styles",                 commonstylesmenu
+        MENUITEM SEPARATOR
+        MENUITEM "Insert Date/Time\tCtrl+4",    insertdatetimeitem
     END
 END
 
@@ -425,7 +434,7 @@ BEGIN
     END
 END
 
-commonstylesmenu MENU DISCARDABLE
+commonstylesmenu MENU DISCARDABLE /* 2005-09-25 creedon */
 BEGIN
     POPUP "Common Styles"
     BEGIN
@@ -433,6 +442,15 @@ BEGIN
         MENUITEM "Arial 12\tCtrl+2",            commonstylesmenu+2
         MENUITEM "Times New Roman 12\tCtrl+7",  commonstylesmenu+3
         MENUITEM "Arial 18\tCtrl+8",            commonstylesmenu+4
+    END
+END
+
+openrecentmenu MENU DISCARDABLE
+BEGIN
+    POPUP "Open Recent"
+    BEGIN
+        MENUITEM SEPARATOR
+        MENUITEM "Clear Menu",       openrecentmenu+2
     END
 END
 
@@ -1123,6 +1141,9 @@ END
 	41 System_Scripts DISCARDABLE BEGIN "Frontier.tools.windowTypes.isFileMenuItemChecked(“^0”)\0" END
 	42 System_Scripts DISCARDABLE BEGIN "if defined(system.callbacks.opInsert){return(system.callbacks.opInsert())}else{return(false)}\0" END
 	43 System_Scripts DISCARDABLE BEGIN "if defined(system.callbacks.systemTrayIconRightClick){return(system.callbacks.systemTrayIconRightClick())}else{return(false)}\0" END /*7.0b11 PBS*/
+	44 System_Scripts DISCARDABLE BEGIN "user.prefs.openRecentMenu.items.xxx\0" END /* 2005-09-25 creedon */
+	45 System_Scripts DISCARDABLE BEGIN "user.prefs.flReplaceDialogExpertMode\0" END /* 2005-09-25 creedon */
+	46 System_Scripts DISCARDABLE BEGIN "Frontier.tools.windowTypes.runOpenRecentMenuScript (“^0”)\0" END /* 2005-09-29 creedon */
 
 	1 DB_Stats DISCARDABLE BEGIN "Database Stats\0" END
 	2 DB_Stats DISCARDABLE BEGIN "nodes in the release list\0" END
@@ -1434,6 +1455,7 @@ END
 	158 Lang_Errors DISCARDABLE BEGIN "Can't execute command because the replacement string contains a bad group name at character #^0.\0" END
 	159 Lang_Errors DISCARDABLE BEGIN "Can't execute command because the replacement string contains a non-existant group number at character #^0.\0" END
 	160 Lang_Errors DISCARDABLE BEGIN "Can't execute command because the replacement string contains a non-existant group name at character #^0.\0" END
+	161 Lang_Errors DISCARDABLE BEGIN "An item named \042^0\042 already exists.\0" END // Replace it or create a duplicate?" /* 2005-09-26 creedon */
 	
 	1 Mac_Errors DISCARDABLE BEGIN "The \042^0\042 folder is full.\0" END
 	2 Mac_Errors DISCARDABLE BEGIN "The disk is full.\0" END

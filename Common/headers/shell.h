@@ -862,5 +862,3 @@ extern void shellwindowmenudirty (void); /*shellwindowmenu.c*/
 
 #endif
 
-
-
