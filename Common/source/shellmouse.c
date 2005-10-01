@@ -404,6 +404,8 @@ void shellhandlemouse (void) {
 			break;
 		
 		case inMenuBar: 
+			shellupdateopenrecentmenu (); /* 2005-09-25 creedon */
+			
 			shellupdatemenus (); /*be sure the menus are properly checked and highlighted*/
 			
 			setcursortype (cursorisarrow); /*arrow cursor is more appropriate here*/
@@ -524,3 +526,4 @@ void initmouse (void) {
 		
 	#endif
 	} /*initmouse*/
+

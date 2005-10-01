@@ -133,7 +133,7 @@ resource 'STR#' (138, "lang UI") {
 };
 
 resource 'STR#' (139, "System Scripts", locked, preload) {
-	{	/* array StringArray: 22 elements */
+	{	/* array StringArray: 44 elements */
 		/* [1] */
 		"edit (@system.misc.menubar)",
 		/* [2] */
@@ -219,8 +219,15 @@ resource 'STR#' (139, "System Scripts", locked, preload) {
 		/* [42] */
 		"if defined(system.callbacks.opInsert){return(system.callbacks.opInsert())}else{return(false)}",
 		/* [43] */
-		"if defined(system.callbacks.systemTrayIconRightClick){return(system.callbacks.systemTrayIconRightClick())}else{return(false)}"	
-		
+		"if defined(system.callbacks.systemTrayIconRightClick){return(system.callbacks.systemTrayIconRightClick())}else{return(false)}",
+		/* [44] */
+		"user.prefs.openRecentMenu.items.xxx",
+		/* [45] */
+		"user.prefs.flReplaceDialogExpertMode",
+		/* [46] */
+		"Frontier.tools.windowTypes.runOpenRecentMenuScript (\"^0\")"
+
+
 	}
 };
 
@@ -706,7 +713,9 @@ resource 'STR#' (257, "Lang Errors", purgeable) {
 		/* [159] */
 		"Can't execute command because the replacement string contains a non-existant group number at character #^0.",
 		/* [160] */
-		"Can't execute command because the replacement string contains a non-existant group name at character #^0."
+		"Can't execute command because the replacement string contains a non-existant group name at character #^0.",
+		/* [161] */
+		"An item named Ò^0Ó already exists." // Replace it or create a duplicate?" /* 2005-09-26 creedon */
 	}
 };
 
