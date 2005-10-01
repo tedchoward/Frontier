@@ -1159,7 +1159,7 @@ static boolean menusetcommandkeyverb (hdltreenode hparam1, tyvaluerecord *v) {
 	mesetcmdkey (lastchar (bscommandkey), keycommand);
 	
 	return (setbooleanvalue (true, v));
-	} /*menugetscriptverb*/
+	} /* menusetcommandkeyverb */
 
 
 static boolean detachscript (hdlmenurecord hmenu, hdlheadrecord hnode) {
