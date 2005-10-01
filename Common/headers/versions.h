@@ -44,10 +44,10 @@
 #define	radio_subminor_version_bcd		0x10  	/* sub and minor version in BCD notation */
 
 #define	radio_stage_code				0x40		/* dev = 0x20, alpha = 0x40, beta = 0x60, final = 0x80 */
-#define	radio_revision_level				3		/* for non-final releases only */
-#define	radio_build_number				3		/* increment by one for every release, final or not */
+#define	radio_revision_level				4		/* for non-final releases only */
+#define	radio_build_number				4		/* increment by one for every release, final or not */
 
-#define	radio_version_string				"10.1a3"
+#define	radio_version_string				"10.1a4"
 
 
 /* Frontier version information */
@@ -60,10 +60,10 @@
 #define	frontier_subminor_version_bcd		0x10  	/* sub and minor version in BCD notation */
 
 #define	frontier_stage_code				0x40		/* dev = 0x20, alpha = 0x40, beta = 0x60, final = 0x80 */
-#define	frontier_revision_level			3		/* for non-final releases only */
-#define	frontier_build_number			3		/* increment by one for every release, final or not */
+#define	frontier_revision_level			4		/* for non-final releases only */
+#define	frontier_build_number			4		/* increment by one for every release, final or not */
 
-#define	frontier_version_string			"10.1a3"
+#define	frontier_version_string			"10.1a4"
 
 
 /* strings for all apps */
