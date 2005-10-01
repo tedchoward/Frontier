@@ -1170,28 +1170,46 @@ static boolean filemenufunctionvalue (short token, hdltreenode hparam1, tyvaluer
 			return (fl && setwinvalue (w, v));
 			}
 		
-		case closefunc: { /*close the frontmost window*/
+		case closefunc: {
+			/*
+			close the frontmost window
+			
+			2005-09-14 creedon: added fldialog parameter, this might be improved as I only dealt with the situation with one or more parameters are defined
+			*/
+			
 			hdlwindowinfo hinfo;
 			WindowPtr targetwindow = nil;
-			
+			tyvaluerecord val;
+			boolean fldialog;
+
+			setbooleanvalue (false, &val); /* defaults to false */
+
 			if (langgetparamcount (hparam1) == 0) { // old style, use the target
 			
 				if (!langfindtargetwindow (-1, &targetwindow))
 					targetwindow = getfrontwindow ();
 				}
 			else {
-				flnextparamislast = true;
-				
+				short ctconsumed = 1;
+				short ctpositional = 1;
+
 				if (!getwinparam (hparam1, 1, &hinfo))
 					break;
 				
+				flnextparamislast = true;
+				
+				if (!getoptionalparamvalue (hparam1, &ctconsumed, &ctpositional, "\x08""fldialog", &val))
+					return (false);
+	
 				if (hinfo != nil)
 					targetwindow = (**hinfo).macwindow;
 				}
 			
 			//langsaveglobals (); /*see comment at function head*/
 			
-			(*v).data.flvalue = (targetwindow != nil) && shellclose (targetwindow, false);
+			fldialog = val.data.flvalue;
+			
+			(*v).data.flvalue = (targetwindow != nil) && shellclose (targetwindow, fldialog);
 			
 			//return (langrestoreglobals ());
 			

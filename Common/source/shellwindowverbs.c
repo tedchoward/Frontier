@@ -659,6 +659,8 @@ static boolean showhideverb (hdltreenode hparam1, boolean flshow, tyvaluerecord 
 static boolean closeverb (hdltreenode hparam1, tyvaluerecord *vreturned) {
 	
 	/*
+	2005-09-14 creedon: added fldialog parameter
+
 	8/26/92 dmb: don't allow the root window to be closed with this verb.
 	
 	(note: used to crash; need to call shellclose to handle root windows)
@@ -666,22 +668,33 @@ static boolean closeverb (hdltreenode hparam1, tyvaluerecord *vreturned) {
 	
 	register boolean fl = false;
 	hdlwindowinfo hinfo;
-	
-	flnextparamislast = true;
+	boolean fldialog;
+	tyvaluerecord val;
+	short ctconsumed = 1;
+	short ctpositional = 1;
+
+	setbooleanvalue (false, &val); /* defaults to false */
 	
 	if (!getwinparam (hparam1, 1, &hinfo))
 		return (false);
 	
-	if (hinfo != nil) { /*close it if it isn't a root window*/
+	flnextparamislast = true;
+	
+	if (!getoptionalparamvalue (hparam1, &ctconsumed, &ctpositional, "\x08""fldialog", &val))
+		return (false);
+	
+	fldialog = val.data.flvalue;
+
+	if (hinfo != nil) { /* close it if it isn't a root window */
 		
-	//	if ((**hinfo).parentwindow != nil /*|| shellgetexternaldata (hinfo, &hdata)*/)
-			fl = shellclose ((**hinfo).macwindow, false);
+		// if ((**hinfo).parentwindow != nil /*|| shellgetexternaldata (hinfo, &hdata)*/)
+			fl = shellclose ((**hinfo).macwindow, fldialog);
 		}
 	
 	setbooleanvalue (fl, vreturned);
 	
 	return (true); 
-	} /*closeverb*/
+	} /* closeverb */
 	
 
 static boolean updateverb (hdltreenode hparam1, tyvaluerecord *vreturned) {
