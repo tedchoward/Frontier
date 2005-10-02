@@ -128,5 +128,7 @@ extern short getnextmenuitem (hdlmenu);
 
 extern boolean initmenusystem (void);
 
+extern boolean deletemenuitems (hdlmenu, short, short); /* 2005-10-01 creedon */
 
+extern void disableallmenuitems (hdlmenu hmenu); /* 2005-10-01 creedon */
 

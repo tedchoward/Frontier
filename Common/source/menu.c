@@ -1670,5 +1670,55 @@ boolean initmenusystem (void) {
 	} /*initmenusystem*/
 
 
+boolean deletemenuitems (hdlmenu hmenu, short firstitem, short itemcount) {
 
+	/*
+	2005-10-01 creedon: created, delete menu items starting at firstitem for itemcount
+	*/
+
+	boolean fl = true;
+
+	#ifdef MACVERSION
+		fl = DeleteMenuItems (hmenu, firstitem, itemcount) == noErr;
+	#endif
+
+	#ifdef WIN95VERSION
+		register short ctitems = countmenuitems (hmenu);
+		register short i;
+		
+		if (itemcount > ctitems)
+			itemcount = ctitems;
+		
+		for (i = itemcount; i >= firstitem; i--)
+			if (!deletemenuitem (hmenu, i)) {
+				fl = false;
+				break;
+				}			
+	#endif
+	
+	return (fl);
+	
+	} /* deletemenuitems */
+
+
+void disableallmenuitems (hdlmenu hmenu) {
+
+	/*
+	2005-10-01 creedon: created
+	*/
+
+	#ifdef MACVERSION
+		DisableAllMenuItems (hmenu);
+	#endif
+
+	#ifdef WIN95VERSION
+		register short ct = countmenuitems (hmenu);
+		register short i;
+	
+		for (i = ct; i > 0; i--)
+			disablemenuitem (hmenu, i);
+			
+	#endif
+	
+	} /* disableallmenuitems */
 

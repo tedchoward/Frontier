@@ -2311,7 +2311,9 @@ void geteditmenuitemidentifier (short ixmenu, short ixitem, bigstring bsitem) {
 
 static boolean openrecentmenuitemsvisit (bigstring bs, hdlhashnode hnode, tyvaluerecord val, ptrvoid refcon) {
 
-	/* 2005-09-24 creedon */
+	/*
+	2005-09-24 creedon: created
+	*/
 	
 	register hdlmenu hmenu;
 	
@@ -2329,7 +2331,12 @@ static boolean openrecentmenuitemsvisit (bigstring bs, hdlhashnode hnode, tyvalu
 
 void shellupdateopenrecentmenu (void) {
 
-	/* 2005-09-22 creedon */
+	/*
+	2005-10-01 creedon: when no files are listed in the menu, disable al menu items
+			   made more accessible to windows platform
+	
+	2005-09-22 creedon: created
+	*/
 	
 	bigstring bs;
 	boolean fl;
@@ -2338,7 +2345,7 @@ void shellupdateopenrecentmenu (void) {
 
 	hmenu = shellmenuhandle (openrecentmenu);
 
-	DeleteMenuItems (hmenu, 1, CountMenuItems (hmenu) - 2);
+	deletemenuitems (hmenu, 1, countmenuitems (hmenu) - 2);
 	
 	getsystemtablescript (idopenrecentmenutable, bs); // "user.prefs.openrecentmenu.items"
 
@@ -2354,6 +2361,9 @@ void shellupdateopenrecentmenu (void) {
 
 	if (fl)
 		hashsortedinversesearch (htable, &openrecentmenuitemsvisit, nil);
+	
+	if (countmenuitems (hmenu) == 2)
+		disableallmenuitems (hmenu);
 		
 	}
 
