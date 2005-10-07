@@ -450,7 +450,7 @@ static pascal Boolean knowntypesfilter (ParmBlkPtr pb, tysfdata *pdata) {
 #endif /* !TARGET_API_MAC_CARBON */
 
 	
-	boolean sfdialog (tysfverb sfverb, bigstring bsprompt, ptrsftypelist filetypes, tyfilespec *fspec) {
+	boolean sfdialog (tysfverb sfverb, bigstring bsprompt, ptrsftypelist filetypes, tyfilespec *fspec, OSType filecreator) {
 	
 	/*
 	return true if the user selected a file with one of the SF routines,
@@ -458,38 +458,41 @@ static pascal Boolean knowntypesfilter (ParmBlkPtr pb, tysfdata *pdata) {
 	
 	as a bonus, we return the full path for the selected file in the path string.
 	
-	8/1/90 dmb:  if filetype is zero, show all files by passing zero to SFGetFile
+	2005-10-06 creedon: added filecreator parameter, used for get file dialog
 	
-	11/16/90 dmb:  replace flput boolean with sfverb enum.  added code for folder 
-	and disk selection dialogs
+	2005-09-21 creedon: changed from TimsGetFile to getafile
 	
-	4/16/91 dmb: replaced filetype parameter with pointer to type list.  callers 
-	can pass nil when irrelevant, or when all types are to be shown.
-	
-	12/27/91 dmb: if the default fname includes a colon, attempt to set default 
-	directory, and remove folder specification from dialog default
-	
-	2/10/92 dmb: added call to new shellactivate; standard file breaks when brought 
-	up in the background.
-	
-	9/15/92 dmb: when picking a folder, grab path from sfstring instead of reply
-	record.
-	
-	12/18/92 dmb: call shellwritescrap
-	
-	6/11/93 dmb: recoded to System 7 Standard File
-	
-	2.1b1 dmb: set sfdata.sfname to an impossible value to ensure button update
-	
-	2.1b2 dmb: updated interface to be filespec-based. for putfile, the name in the 
-	filespec is the default name. for all verbs, a non-empty filespec seeds the dialog
+	Tuesday, June 20, 2000 8:50:41 PM Timothy Paustian: I am going to hack the heck out of this routine. See what you think
 	
 	4.1b13 dmb: un-commented out the shellwritescrap and shellactive calls.
 	I don't know how they got commented; I must have been experimenting with 
 	something.
 	
-	//Code change by Timothy Paustian Tuesday, June 20, 2000 8:50:41 PM
-	//I am going to hack the heck out of this routine. See what you think
+	2.1b2 dmb: updated interface to be filespec-based. for putfile, the name in the 
+	filespec is the default name. for all verbs, a non-empty filespec seeds the dialog
+	
+	2.1b1 dmb: set sfdata.sfname to an impossible value to ensure button update
+	
+	6/11/93 dmb: recoded to System 7 Standard File
+	
+	12/18/92 dmb: call shellwritescrap
+	
+	9/15/92 dmb: when picking a folder, grab path from sfstring instead of reply
+	record.
+	
+	2/10/92 dmb: added call to new shellactivate; standard file breaks when brought 
+	up in the background.
+	
+	12/27/91 dmb: if the default fname includes a colon, attempt to set default 
+	directory, and remove folder specification from dialog default
+	
+	4/16/91 dmb: replaced filetype parameter with pointer to type list.  callers 
+	can pass nil when irrelevant, or when all types are to be shown.
+	
+	11/16/90 dmb:  replace flput boolean with sfverb enum.  added code for folder 
+	and disk selection dialogs
+
+	8/1/90 dmb:  if filetype is zero, show all files by passing zero to SFGetFile
 	*/
 	
 	Str255 bs;
@@ -557,7 +560,7 @@ static pascal Boolean knowntypesfilter (ParmBlkPtr pb, tysfdata *pdata) {
 		
 		case sfgetfileverb:
 			if(gCanUseNavServ) 
-				anErr = getafile (bsprompt, filetypes, &sfdata.sfreply); /* 2005-09-21 creedon - changed from TimsGetFile to getafile*/ 
+				anErr = getafile (bsprompt, filetypes, &sfdata.sfreply, filecreator);
 			#if !TARGET_API_MAC_CARBON
 			else
 				CustomGetFile (knowntypesfilterUPP, cttypes, types, &sfdata.sfreply, sfgetfileid, pt, 
@@ -649,12 +652,16 @@ static void buildfilter (char * filter, short * len, bigstring bsname, bigstring
 	} /*buildfilter*/
 
 
-boolean sfdialog (tysfverb sfverb, bigstring bsprompt, ptrsftypelist filetypes, tyfilespec *fspec) {
+boolean sfdialog (tysfverb sfverb, bigstring bsprompt, ptrsftypelist filetypes, tyfilespec *fspec, OSType filecreator) {
+
+	#pragma unused (filecreator)
 	
 	/*
-	5.0.1 dmb: make sure default file and directory are valid, or we'll fail (silently)
-
+	2005-10-06 creedon: added filecreator, unused on Windows
+	
 	5.0.2b4 dmb: fixed bug in above change that would generate an error for empty paths
+
+	5.0.1 dmb: make sure default file and directory are valid, or we'll fail (silently)
 	*/
 
 	TCHAR szFile[MAX_PATH];
@@ -1053,9 +1060,13 @@ TimsPutFile(bigstring prompt, Str255 fileName, StandardFileReply * 	outReply)
 }
 
 
-OSErr getafile (bigstring prompt, ptrsftypelist filetypes, StandardFileReply * outReply) {
+OSErr getafile (bigstring prompt, ptrsftypelist filetypes, StandardFileReply * outReply, OSType filecreator) {
 
-	/* 2005-09-21 creedon: created, cribbed from TimsGetFile */ 
+	/*
+	2005-10-06 creedon: added filecreator parameter
+	
+	2005-09-21 creedon: created, cribbed from TimsGetFile
+	*/ 
 
 	NavDialogCreationOptions	dialogOptions;
 	NavDialogRef			dialogRef;
@@ -1090,16 +1101,12 @@ OSErr getafile (bigstring prompt, ptrsftypelist filetypes, StandardFileReply * o
 			SInt32		hSize = (sizeof (NavTypeList) + sizeof (OSType) * (filetypes->cttypes - 1));
 			newhandle		(hSize, (Handle*) &typeList);
 			typesP		= (NavTypeListPtr) *((Handle) typeList);
-			OSType		creator = 'LAND';
 			
-			if (filetypes->cttypes <= 1)
-				creator = kNavGenericSignature;
-			
-			typesP->componentSignature = creator;
+			typesP->componentSignature = filecreator;
 			typesP->reserved = 0;
 			typesP->osTypeCount = filetypes->cttypes;
 			
-			BlockMoveData(&(filetypes->types), typesP->osType, (Size) (sizeof(OSType) * filetypes->cttypes));
+			BlockMoveData (&(filetypes->types), typesP->osType, (Size) (sizeof (OSType) * filetypes->cttypes));
 			}
         
 		anErr = NavCreateGetFileDialog (&dialogOptions, typeList, eventProc, NULL, NULL, NULL, &dialogRef);
@@ -1114,13 +1121,8 @@ OSErr getafile (bigstring prompt, ptrsftypelist filetypes, StandardFileReply * o
 			DescType actualType;
 			Size actualSize;
 			FSSpec documentFSSpec;
-            
-			// Get a pointer to selected file
-			anErr = AEGetNthPtr (&(reply.selection), 1,
-				typeFSS, &theKeyword,
-				&actualType, &documentFSSpec,
-				sizeof (documentFSSpec),
-				&actualSize);
+
+			anErr = AEGetNthPtr (&(reply.selection), 1, typeFSS, &theKeyword, &actualType, &documentFSSpec, sizeof (documentFSSpec), &actualSize); // get a pointer to selected file
 			
 			assert (actualType == typeFSS);
 		    

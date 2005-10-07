@@ -708,17 +708,16 @@ static boolean gettypelistvalue (hdltreenode hparam1, short pnum, tysftypelist *
 static boolean filedialogverb (tysfverb sfverb, hdltreenode hparam1, tyvaluerecord *vreturned) {
 	
 	/*
-	put up one of the "standard file" dialogs.  if sfverb is sfputfileverb we use the
-	"put" dialog, otherwise the "get" dialog.
+	put up one of the "standard file" dialogs.  if sfverb is sfputfileverb we use the "put" dialog, otherwise the "get" dialog.
 	
-	we take at least one parameter -- the name of a variable to receive the full 
-	path specified by the user.
+	we take at least one parameter -- the name of a variable to receive the full path specified by the user.
 	
 	if it's the getfile dialog, we take a second parameter -- it indicates the
 	type of the file.
 	
-	12/27/91 dmb: in all cases, check the current value of the filename variable, 
-	and pass it on to sf dialog so it can potentially set default directory.
+	2005-10-06 creedon: added creator parameter
+	
+	12/27/91 dmb: in all cases, check the current value of the filename variable, and pass it on to sf dialog so it can potentially set default directory.
 	*/
 	
 	bigstring bsprompt;
@@ -729,7 +728,7 @@ static boolean filedialogverb (tysfverb sfverb, hdltreenode hparam1, tyvaluereco
 	ptrsftypelist typelist = nil;
 	hdlhashtable htable;
 	boolean fl;
-	OSType ostype;
+	OSType ostype, oscreator = kNavGenericSignature;
 	bigstring bsext;
 	hdlhashnode hnode;
 	
@@ -742,12 +741,24 @@ static boolean filedialogverb (tysfverb sfverb, hdltreenode hparam1, tyvaluereco
 	if (!getvarparam (hparam1, 2, &htable, bsvarname)) /*returned filename holder*/
 		return (false);
 	
-	if (sfverb == sfgetfileverb) { /*get an extra parameter for getfile dialog, indicating filetype*/
+	if (sfverb == sfgetfileverb) { /* get extra parameters for get file dialog, indicating file type(s) and file creator */
 		
-		flnextparamislast = true;
-		
+		short ctconsumed = 3;
+		short ctpositional = 3;
+		tyvaluerecord val;
+
 		if (!gettypelistvalue (hparam1, 3, &filetypes, &typelist))
 			return (false);
+			
+		flnextparamislast = true;
+		
+		setostypevalue (oscreator, &val);
+
+		if (!getoptionalparamvalue (hparam1, &ctconsumed, &ctpositional, "\x07""creator", &val))
+			return (false);
+	
+		oscreator = val.data.ostypevalue;
+
 		}
 	
 	clearbytes (&fs, sizeof (fs));
@@ -755,7 +766,6 @@ static boolean filedialogverb (tysfverb sfverb, hdltreenode hparam1, tyvaluereco
 	/*
 	if (idstringvalue (htable, bsvarname, bsfname))
 		filecheckdefaultpath (bsfname);
-	
 	*/
 	
 	if (hashtablelookup (htable, bsvarname, &val, &hnode)) {
@@ -784,7 +794,7 @@ static boolean filedialogverb (tysfverb sfverb, hdltreenode hparam1, tyvaluereco
 	
 	setbooleanvalue (false, vreturned); 
 	
-	if (!sfdialog (sfverb, bsprompt, typelist, &fs)) /*user hit cancel*/
+	if (!sfdialog (sfverb, bsprompt, typelist, &fs, oscreator)) /*user hit cancel*/
 		return (true);
 	
 	if (!setfilespecvalue (&fs, &val))

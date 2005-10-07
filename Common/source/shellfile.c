@@ -320,7 +320,7 @@ boolean shellopen (void) {
 	else
 		getstringlist (defaultlistnumber, nonstartupfileprompt, bs);
 	
-	if (!sfdialog (sfgetfileverb, bs, ptypes, &fspec))
+	if (!sfdialog (sfgetfileverb, bs, ptypes, &fspec, 'LAND')) /* 2005-10-06 creedon - added 'LAND' */
 		return (false);
 	
 	return (shellopenfile (&fspec, false, nil));
@@ -634,7 +634,7 @@ boolean shellsaveas (WindowPtr wsave, ptrfilespec fspec, boolean flrunnable) {
 			filetypes.types [0] = type_desktopscript;
 			}
 		
-		fl = sfdialog (sfputfileverb, nil, &filetypes, &fs);
+		fl = sfdialog (sfputfileverb, nil, &filetypes, &fs, 'LAND'); /* 2005-10-06 creedon - added 'LAND' */
 		}
 	
 	if (fl) {
@@ -760,7 +760,7 @@ boolean shellnew (void) {
 
 		filetypes.types [0] = config.filetype;
 		
-		if (!sfdialog (sfputfileverb, nil, &filetypes, &fspec)) /*user canceled*/
+		if (!sfdialog (sfputfileverb, nil, &filetypes, &fspec, 'LAND')) /* 2005-10-06 creedon - added 'LAND' */ /*user canceled*/
 			return (false);
 		}
 	

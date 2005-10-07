@@ -458,7 +458,7 @@ extern boolean filestart (void); /*6.1b15 AR*/
 
 // filedialog.c
 
-extern boolean sfdialog (tysfverb, bigstring, ptrsftypelist, tyfilespec *);
+extern boolean sfdialog (tysfverb, bigstring, ptrsftypelist, tyfilespec *, OSType); /* 2005-10-06 creedon - added OSType */
 
 extern boolean initfiledialog (void);
 
@@ -474,7 +474,7 @@ extern boolean initfiledialog (void);
 	                        NavCallBackUserData callBackUD);
 
 
-	extern OSErr getafile (bigstring prompt, ptrsftypelist filetypes, StandardFileReply * outReply); /* 2005-09-23 creedon */ 
+	extern OSErr getafile (bigstring prompt, ptrsftypelist filetypes, StandardFileReply * outReply, OSType); /* 2005-09-23 creedon */ 
 
 #endif
                         
