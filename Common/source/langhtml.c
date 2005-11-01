@@ -77,7 +77,7 @@ extern boolean sysos (tyvaluerecord *v); //implemted in shellsysverbs.c
 #define str_macroerror "\x20<b>[</b>Macro error: ^0<b>]</b>\r"
 #define str_mailto	"\x1A<a href=\"mailto:^0\">^0</a>"
 #define str_hotlink	"\x13<a href=\"^0\">^1</a>"
-#define str_pagebreak "\x03<p>"
+#define str_pagebreak "\x05<p />" /* 2005-10-29 creedon - changed from <p> to <p /> compatibility with post HTML 4.01 standards */
 #define str_startbold "\x03<b>"
 #define str_endbold	"\x04</b>"
 #define str_default "\x07" "default"
@@ -2220,7 +2220,7 @@ static boolean autoparagraphs (handlestream *s) {
 				
 				break;
 		
-			case '\r': { /*insert a <p> in front of a double-return*/
+			case '\r': { /*insert a <p /> in front of a double-return*/
 				
 				if (!flinsidetag) {
 			
