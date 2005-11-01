@@ -751,10 +751,11 @@
 			"close\0",
 			"closeall\0",
 			"save\0",
-			"savecopy\0",
+			// "savecopy\0", /* 2005-11-01 creedon */
 			"revert\0",
 			"print\0",
-			"quit\0"
+			"quit\0",
+			"saveas\0" /* 2005-10-26 creedon */
 	END
 
 

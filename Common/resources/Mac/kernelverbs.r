@@ -786,10 +786,11 @@ resource 'EFP#' (idfilemenuverbs, "filemenu") {
 		"close",
 		"closeall",
 		"save",
-		"savecopy",
+		// "savecopy", /* 2005-11-01 creedon */
 		"revert",
 		"print",
-		"quit"
+		"quit",
+		"saveas" /* 2005-10-26 creedon */
 		}
 	}
 };

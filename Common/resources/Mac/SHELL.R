@@ -168,7 +168,7 @@ resource 'MENU' (2, "File") {
 		/* [7] */
 		"Save as Runnable…", noIcon, noKey, noMark, plain,
 		/* [8] */
-		"Save a Copy…", noIcon, noKey, noMark, plain,
+		"Save As…", noIcon, noKey, noMark, plain, /* 2005-11-01 creedon */
 		/* [9] */
 		"Revert", noIcon, noKey, noMark, plain,
 		/* [10] */
@@ -220,7 +220,7 @@ resource 'MENU' (412, "File") {
 		/* [7] */
 		"Save as Runnable…", noIcon, noKey, noMark, plain,
 		/* [8] */
-		"Save a Copy…", noIcon, noKey, noMark, plain,
+		"Save As…", noIcon, noKey, noMark, plain, /* 2005-11-01 creedon */
 		/* [9] */
 		"Revert", noIcon, noKey, noMark, plain,
 		/* [10] */

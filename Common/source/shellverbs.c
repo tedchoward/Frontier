@@ -55,6 +55,7 @@
 #include "kernelverbdefs.h"
 #include "cancoon.h"
 #include "resources.h"
+#include "file.h" /* 2005-10-26 creedon */
 
 #ifdef WIN95VERSION 
 #include "WinLand.h"
@@ -94,13 +95,15 @@ typedef enum tyfilemenutoken { /*fileMenu verbs*/
 	
 	savefunc,
 	
-	savecopyfunc,
+	// savecopyfunc, /* 2005-11-01 creedon */
 	
 	revertfunc,
 	
 	printfunc,
 	
 	quitfunc,
+	
+	saveasfunc, /* 2005-10-26 creedon */
 	
 	ctfilemenuverbs
 	} tyfilemenutoken;
@@ -1253,6 +1256,11 @@ static boolean filemenufunctionvalue (short token, hdltreenode hparam1, tyvaluer
 	fl = false; /*default return value for this function*/
 	
 	switch (token) { /*these verbs assume that the frontmost window's globals are pushed*/
+	
+		/*
+		2005-10-26 creedon: disabled savecopyfunc case, saveasfunc can do it all
+						 added saveasfunc case, it wasn't possible to do a save as for a file-object
+		*/ 
 		
 		case savefunc: { /*save the frontmost window*/
 			hdlwindowinfo hinfo;
@@ -1283,7 +1291,7 @@ static boolean filemenufunctionvalue (short token, hdltreenode hparam1, tyvaluer
 			break;
 			}
 		
-		case savecopyfunc: {
+		/* case savecopyfunc: {
 			tyfilespec fs;
 			
 			flnextparamislast = true;
@@ -1296,7 +1304,7 @@ static boolean filemenufunctionvalue (short token, hdltreenode hparam1, tyvaluer
 			fl = true;
 			
 			break;
-			}
+			} */
 		
 		case revertfunc:
 			if (!langcheckparamcount (hparam1, 0))
@@ -1319,6 +1327,34 @@ static boolean filemenufunctionvalue (short token, hdltreenode hparam1, tyvaluer
 			fl = true;
 			
 			break;
+		
+		case saveasfunc: {
+			tyfilespec fs;
+			short ctconsumed = 0;
+			short ctpositional = 0;
+			tyvaluerecord val;
+			
+			initvalue (&val, stringvaluetype);
+
+			flnextparamislast = true;
+			
+			if (!getoptionalparamvalue (hparam1, &ctconsumed, &ctpositional, "\x04""path", &val))
+				return (false);
+			
+			if (val.data.stringvalue) {
+				bigstring bs;
+				
+				texthandletostring (val.data.stringvalue, bs);
+				pathtofilespec (bs, &fs);
+				(*v).data.flvalue = shellsaveas (shellwindow, &fs, false);
+				}
+			else
+				(*v).data.flvalue = shellsaveas (shellwindow, nil, false);
+
+			fl = true;
+			
+			break;
+			}
 		
 		} /*switch -- funcs with front globals pushed*/
 	

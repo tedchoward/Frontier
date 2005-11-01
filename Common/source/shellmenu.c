@@ -1020,6 +1020,8 @@ boolean pikequit () {
 void shelladjustmenus (void) {
 	
 	/*
+	2005-10-26 creedon: the file menu item that provides save as functionality now reads Save As... for database or file-object save for Frontier
+	
 	2005-09-25 creedon: added open recent menu
 					 changed to support calling script for some file/edit menu commands on all targets
 	
@@ -1180,12 +1182,12 @@ void shelladjustmenus (void) {
 		
 		shellsetmenuitemstring (hmenu, saveitem, savedatabaseitemstring); // "Save Database");
 		
-		shellsetmenuitemstring (hmenu, saveasitem, saveacopyitemstring); // "Save a Copy…");
+		// shellsetmenuitemstring (hmenu, saveasitem, saveacopyitemstring); // "Save a Copy…");
 		}
 	else {
 		shellsetmenuitemstring (hmenu, saveitem, saveitemstring); // "\x07" "Save");
 		
-		shellsetmenuitemstring (hmenu, saveasitem, saveasitemstring); // "\x07" "Save As…");
+		// shellsetmenuitemstring (hmenu, saveasitem, saveasitemstring); // "\x07" "Save As…");
 		}
 	
 	setmenuitemenable (hmenu, saveasitem, flwindow || hrootinfo);
@@ -1466,7 +1468,7 @@ void shellupdatemenus (void) {
 boolean shellhandlemenu (long menucode) {
 
 	/*
-	2005-09-25 creedon: changed so that all targets can call script for some file/edit menu commands
+	2005-09-25 creedon: changed so that all targets can call scripts for some file/edit menu commands
 					 added open recent menu
 	
 	7.0d6 PBS: With Pike's now-standard File menu, it's necessary to use
@@ -2332,7 +2334,7 @@ static boolean openrecentmenuitemsvisit (bigstring bs, hdlhashnode hnode, tyvalu
 void shellupdateopenrecentmenu (void) {
 
 	/*
-	2005-10-01 creedon: when no files are listed in the menu, disable al menu items
+	2005-10-01 creedon: when no files are listed in the menu, disable all menu items
 			   made more accessible to windows platform
 	
 	2005-09-22 creedon: created

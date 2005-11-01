@@ -242,7 +242,7 @@ BEGIN
         MENUITEM "&Close\tCtrl+W",               filemenu+closeitem
         MENUITEM "&Save\tCtrl+S",                filemenu+saveitem
         MENUITEM "Save as Runnable...",			 filemenu+saverunnableitem
-        MENUITEM "Save a &Copy...",              filemenu+saveasitem
+        MENUITEM "Save &As...",              filemenu+saveasitem /* 2005-10-26 creedon - changed to Save As*/
         MENUITEM "&Revert",                      filemenu+revertitem
         MENUITEM SEPARATOR
    //   MENUITEM "Expert Mode",                 filemenu+expertitem
