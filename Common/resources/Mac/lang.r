@@ -303,7 +303,7 @@ resource 'STR#' (141, "alerts", purgeable) {
 #endif
 
 resource 'STR#' (142, "special folder", purgeable) {
-	{	/* array StringArray: 11 elements */
+	{	/* array StringArray: 12 elements */
 		/* [1] */
 		"system",
 		/* [2] */
