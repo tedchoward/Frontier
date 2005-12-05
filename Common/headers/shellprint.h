@@ -30,31 +30,39 @@
 
 typedef struct typrintinfo {
 	
-	Rect margins; /*the margins we're enforcing to calculate paperrect*/
+	/*the margins we're enforcing to calculate paperrect*/
+	Rect
+	margins,
+	paperrect;
 	
-	Rect paperrect;
-
-	long scaleMult;
-
-	long scaleDiv;
+	long
+		scaleMult,
+		scaleDiv;
 	
-	short ctpages; /*the number of pages in the document being printed*/
+	/*the number of pages in the document being printed*/
+	short ctpages;
 	
-	#if MACVERSION
-
-		#if TARGET_API_MAC_CARBON == 1
-		GrafPtr	printport;
-		PMPrintSession 	printhandle;
-		PMPageFormat	pageformat;
-		PMPrintSettings	printsettings;
-		Rect			pagerect;
-		#else
-		
-		TPPrPort printport;
-
-		THPrint printhandle; /*a handle to the machine's print record*/
-		#endif
-	#endif
+#if MACVERSION
+	
+#	if TARGET_API_MAC_CARBON == 1
+	
+	GrafPtr			printport;
+	PMPrintSession 	printhandle;
+	PMPrintSession 	printDefaultSession;	/* kw added 2005-06 */
+	PMPageFormat	pageformat;
+	PMPrintSettings	printsettings;
+	PMRect			pagerect;
+	
+#	else
+	Rect			pagerect;
+	
+	TPPrPort		printport;
+	
+	/*a handle to the machine's print record*/
+	THPrint printhandle;
+	
+#	endif
+#endif
 
 	#ifdef WIN95VERSION
 	

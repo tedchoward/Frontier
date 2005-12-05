@@ -1928,7 +1928,8 @@ boolean wpbeginprint (void) {
 		//Changed to Opaque call for Carbon
 		//we have trouble here. Paige expects a GrafPort, I will have to 
 		//decide how to fix this when I get to the engine.
-		pgInitDevice (&ws_globals, shellprintinfo.printport, 0, &wpprintdevice);
+	return(false);
+	//	pgInitDevice (&ws_globals, shellprintinfo.printport, 0, &wpprintdevice);
 	#endif
 
 	#ifdef WIN95VERSION
@@ -1956,6 +1957,10 @@ boolean wpprint (short pagenumber) {
 	4.1b6 dmb: call SetFractEnable(true) so tab columns will line up
 	*/
 	
+	/* kw - 2005-12-05 remove this after print error correction */
+#if TARGET_API_MAC_CARBON == 1
+	return (false);
+#else
 	register hdlwprecord hwp = wpdata;
 	long nextpos = 0;
 	rectangle r;
@@ -1976,6 +1981,7 @@ boolean wpprint (short pagenumber) {
 	(**hwp).printpos = nextpos; /*copy from local, used to avoid locking handle*/
 	
 	return (nextpos > 0);
+#endif
 	} /*wpprint*/
 
 

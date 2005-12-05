@@ -39,23 +39,25 @@
 #include "shell.rsrc.h"
 #include "shellprint.h"
 
-
 #ifdef MACVERSION
-	CGrafPtr currentprintport = NULL;
-	#if TARGET_API_MAC_CARBON
-		#define iPrAbort kPMCancel
-	#endif
+
+CGrafPtr currentprintport = NULL;
+
+#	if TARGET_API_MAC_CARBON
+
+#		define iPrAbort kPMCancel
+
+#	endif
+
 #endif
 
 #ifdef WIN95VERSION
+
 HWND currentprintport = NULL;
+
 #endif
 
-
 typrintinfo shellprintinfo;
-
-
-
 
 /*
 static shelldisposeprintinfo (void) {
@@ -71,42 +73,50 @@ static shelldisposeprintinfo (void) {
 static boolean shellcheckprinterror (boolean flopening) {
 	
 	/*
-	returns false if there was a print error.
-	
-	1/18/93 dmb: take flopening parameter, & special case this error
-	*/
+	 returns false if there was a print error.
+	 
+	 1/18/93 dmb: take flopening parameter, & special case this error
+	 */
 	
 	OSErr x;
 	bigstring bserror;
 	
-#ifdef MACVERSION
+#	ifdef MACVERSION
+	
 	//Code change by Timothy Paustian Friday, June 16, 2000 3:50:52 PM
 	//Changed to Opaque call for Carbon
-	#if TARGET_API_MAC_CARBON == 1
+	// this is pointless --- explicitly excluded
+#		if TARGET_API_MAC_CARBON == 1
+	
 	x = PMSessionError(shellprintinfo.printhandle);
-	#else	
+	
+#		else	
+	
 	x = PrError ();
-	#endif
-		
+	
+#		endif
+	
 	if (x == noErr) /*no error, keep going*/
 		return (true);
 	
 	if (x != iPrAbort) {
 		
 		if (flopening) 
+		{
 			GetIndString (bserror, interfacelistnumber, trychooserstring);
-			
+		}
 		else {
 			
 			getsystemerrorstring (x, bserror);
 			
 			parsedialogstring (bserror, "\x06" ".Print", nil, nil, nil, bserror);
-			}
+		}
 		
 		shellerrormessage (bserror);
-		}
-#endif
-
+	}
+	
+#	endif
+	
 #ifdef WIN95VERSION
 	x = GetLastError();
 
@@ -124,65 +134,241 @@ static boolean shellcheckprinterror (boolean flopening) {
 #endif
 
 
+static boolean
+carbonKillPrintVars(void)
+{
+	
+#if TARGET_API_MAC_CARBON == 1
+	
+	// empty out carbon print vars
+	// setting to nil is important since it is checked for
+	if (nil != shellprintinfo.printsettings)
+	{
+		PMRelease(shellprintinfo.printsettings);
+		shellprintinfo.printsettings = nil;
+	}
+	
+	if (nil != shellprintinfo.pageformat)
+	{
+		PMRelease(shellprintinfo.pageformat);
+		shellprintinfo.pageformat = nil;
+	}
+	
+	if (nil != shellprintinfo.printhandle)
+	{
+		PMRelease(shellprintinfo.printhandle);
+		shellprintinfo.printhandle = nil;
+	}
+	
+#endif
+	
+	return(true);
+}	
+
+
+static boolean
+carbonValidSession(void)
+{
+	return (nil != shellprintinfo.printhandle);
+}
+
+
+static boolean
+carbonSessionPrintSession()
+{
+	OSStatus	theErr;
+	
+	if (nil == shellprintinfo.printhandle)
+	{
+		theErr = PMCreateSession(&shellprintinfo.printhandle);
+		
+		if(theErr != noErr)
+		{
+			shellprintinfo.printhandle = nil;
+			return (false);
+		}
+	}
+	
+	return(true);
+}
+
+
+static boolean
+carbonSessionDefaultPageAndSettingValidate(void)
+{
+	OSStatus	theErr;
+	Boolean		f;
+	
+	theErr = PMSessionDefaultPageFormat(
+										shellprintinfo.printhandle,
+										shellprintinfo.pageformat);
+	if(theErr != noErr)
+		goto error;
+	
+	theErr = PMSessionValidatePageFormat(
+										 shellprintinfo.printhandle,
+										 shellprintinfo.pageformat, &f);
+	if(theErr != noErr)
+		goto error;
+	
+	theErr = PMSessionDefaultPrintSettings(
+										   shellprintinfo.printhandle,
+										   shellprintinfo.printsettings);
+	if(theErr != noErr)
+		goto error;
+	
+	theErr = PMSessionValidatePrintSettings(
+											shellprintinfo.printhandle,
+											shellprintinfo.printsettings, &f);
+	if(theErr != noErr)
+		goto error;
+	
+	return (true);
+	
+error:
+		carbonKillPrintVars();
+	
+	return false;
+	
+}
+
+
+static boolean
+carbonCreateFormatAndSetting(void)
+{
+	OSStatus	theErr;
+	
+	theErr = PMCreatePageFormat(&shellprintinfo.pageformat);
+	if(theErr != noErr || (shellprintinfo.pageformat == kPMNoPageFormat))
+		goto error;
+	
+	theErr = PMCreatePrintSettings(&shellprintinfo.printsettings);
+	if(theErr != noErr)
+		goto error;
+	
+	return (true);
+	
+error:
+		carbonKillPrintVars();
+	
+	return false;
+}
+
+
+static boolean
+carbonStdSetup(void)
+{
+	boolean fl;
+	
+	fl = carbonKillPrintVars();
+	
+	fl &= !carbonCreateFormatAndSetting();
+	
+	fl &= !carbonSessionPrintSession();
+	
+	fl &= !carbonSessionDefaultPageAndSettingValidate();
+	
+	return(fl);
+}
+
+
+#define rect2rect(dstr, srcr) \
+{\
+	srcr.top	= (short)lround(dstr.top); \
+	srcr.bottom	= (short)lround(dstr.bottom); \
+	srcr.left	= (short)lround(dstr.left); \
+	srcr.right	= (short)lround(dstr.right); \
+}
+
+
 static void shellcopyprintinfo (void) {
 	
 	/*
-	set up our printing rect according to the print manager's rects.
+	 set up our printing rect according to the print manager's rects.
+	 
+	 we'll use the smaller of the printable area (rPage) and the physical 
+	 paper (rPaper) with 1/2 inch margins
+	 
+	 5.0.1 dmb: measure in pixels (1/72 inch) for Win
+	 */
 	
-	we'll use the smaller of the printable area (rPage) and the physical 
-	paper (rPaper) with 1/2 inch margins
-
-	5.0.1 dmb: measure in pixels (1/72 inch) for Win
-	*/
+	Rect
+	rpage,
+	rpaper;
 	
-	Rect rpage;
-	Rect rpaper;
+	typrintinfo *dbgprintinfo = &shellprintinfo;
 	
-	#ifdef MACVERSION
-		#if TARGET_API_MAC_CARBON == 1
-		{
-		OSErr 			theErr;
-		PMPageFormat	pageformat = 0;
-		boolean			fl;
-		theErr = PMSessionValidatePageFormat(shellprintinfo.printhandle, pageformat, &fl);
-		if(theErr != noErr || !fl)
-			oserror(theErr);
-		
-		PMGetAdjustedPageRect(shellprintinfo.pageformat, (PMRect *)&rpage);
-			
-		PMGetAdjustedPaperRect(shellprintinfo.pageformat, (PMRect *)&rpaper);
-		shellprintinfo.pagerect = rpage;
-		}
-		#else
-		
-		rpage = (**shellprintinfo.printhandle).prInfo.rPage;
-		
-		rpaper = (**shellprintinfo.printhandle).rPaper;
-		#endif
-	#endif
-
-	#ifdef WIN95VERSION
-		long res = 72L;
-
-		pushport (hwndMDIClient);
-		res = GetDeviceCaps(getcurrentDC (), LOGPIXELSX);
-		popport ();
-
-		rpaper.left = 0;
-		rpaper.top = 0;
-		rpaper.right = shellprintinfo.pagesetupinfo.ptPaperSize.x * res / 1000L;
-		rpaper.bottom = shellprintinfo.pagesetupinfo.ptPaperSize.y * res / 1000L;
-
-		rpage.left = rpaper.left + (shellprintinfo.pagesetupinfo.rtMinMargin.left * res / 1000L);
-		rpage.top = rpaper.top + (shellprintinfo.pagesetupinfo.rtMinMargin.top * res / 1000L);
-		rpage.right = rpaper.right - (shellprintinfo.pagesetupinfo.rtMinMargin.right * res / 1000L);
-		rpage.bottom = rpaper.bottom - (shellprintinfo.pagesetupinfo.rtMinMargin.bottom * res / 1000L);
-
-		shellprintinfo.margins.left = shellprintinfo.pagesetupinfo.rtMargin.left * res / 1000L;
-		shellprintinfo.margins.top = shellprintinfo.pagesetupinfo.rtMargin.top * res / 1000L;
-		shellprintinfo.margins.right = shellprintinfo.pagesetupinfo.rtMargin.right * res / 1000L;
-		shellprintinfo.margins.bottom = shellprintinfo.pagesetupinfo.rtMargin.bottom * res / 1000L;
-	#endif
+#ifdef MACVERSION
+#	if TARGET_API_MAC_CARBON == 1
+	
+	static int firstTime = 1;
+	
+	OSErr 			theErr;
+	boolean			fl;
+	PMRect			dRect;
+	
+	
+	if (1 == firstTime)
+	{
+		carbonSessionPrintSession();
+		carbonCreateFormatAndSetting();
+		carbonSessionDefaultPageAndSettingValidate();
+	}
+	
+	
+	theErr = PMSessionValidatePageFormat(
+										 shellprintinfo.printhandle,
+										 shellprintinfo.pageformat, &fl);
+	
+	if(theErr != noErr) // || !fl) // why should i kill this if nothing has changed???
+		oserror(theErr);
+	
+	theErr = PMGetAdjustedPageRect(shellprintinfo.pageformat, &dRect);
+	
+	shellprintinfo.pagerect = dRect;
+	
+	theErr = PMGetAdjustedPaperRect(shellprintinfo.pageformat, &dRect);
+	
+	rect2rect(dRect, shellprintinfo.paperrect);
+	
+	rect2rect(shellprintinfo.pagerect, rpage);
+	
+	rpaper = shellprintinfo.paperrect;
+	
+#	else
+	
+	rpage = (**shellprintinfo.printhandle).prInfo.rPage;
+	
+	rpaper = (**shellprintinfo.printhandle).rPaper;
+	
+#	endif
+	
+#endif
+	
+#ifdef WIN95VERSION
+	
+	long res = 72L;
+	
+	pushport (hwndMDIClient);
+	res = GetDeviceCaps(getcurrentDC (), LOGPIXELSX);
+	popport ();
+	
+	rpaper.left = 0;
+	rpaper.top = 0;
+	rpaper.right = shellprintinfo.pagesetupinfo.ptPaperSize.x * res / 1000L;
+	rpaper.bottom = shellprintinfo.pagesetupinfo.ptPaperSize.y * res / 1000L;
+	
+	rpage.left = rpaper.left + (shellprintinfo.pagesetupinfo.rtMinMargin.left * res / 1000L);
+	rpage.top = rpaper.top + (shellprintinfo.pagesetupinfo.rtMinMargin.top * res / 1000L);
+	rpage.right = rpaper.right - (shellprintinfo.pagesetupinfo.rtMinMargin.right * res / 1000L);
+	rpage.bottom = rpaper.bottom - (shellprintinfo.pagesetupinfo.rtMinMargin.bottom * res / 1000L);
+	
+	shellprintinfo.margins.left = shellprintinfo.pagesetupinfo.rtMargin.left * res / 1000L;
+	shellprintinfo.margins.top = shellprintinfo.pagesetupinfo.rtMargin.top * res / 1000L;
+	shellprintinfo.margins.right = shellprintinfo.pagesetupinfo.rtMargin.right * res / 1000L;
+	shellprintinfo.margins.bottom = shellprintinfo.pagesetupinfo.rtMargin.bottom * res / 1000L;
+	
+#endif
 	
 	shellprintinfo.paperrect.top = max (rpage.top, rpaper.top + shellprintinfo.margins.top);
 	
@@ -197,91 +383,117 @@ static void shellcopyprintinfo (void) {
 boolean shellinitprint (void) {
 	
 	/*
-	9/5/90 dmb: close print resources after initializing stuff
+	 9/5/90 dmb: close print resources after initializing stuff
+	 
+	 10/21/91 dmb: added margins field to print info; structure is now here to 
+	 have user-settable margins.
+	 
+	 12/31/91 dmb: initialize shellprintinfo.paperrect to standard 72dpi values in 
+	 case no printer is chosen and shellcopyprintinfo never gets called
+	 
+	 1/18/93 dmb: don't call shellcheckprinterror the first time; if PrOpen fails 
+	 here, we don't want to raise an alert.
+	 */
 	
-	10/21/91 dmb: added margins field to print info; structure is now here to 
-	have user-settable margins.
+#if MACVERSION && !TARGET_API_MAC_CARBON
 	
-	12/31/91 dmb: initialize shellprintinfo.paperrect to standard 72dpi values in 
-	case no printer is chosen and shellcopyprintinfo never gets called
+	Handle h;
 	
-	1/18/93 dmb: don't call shellcheckprinterror the first time; if PrOpen fails 
-	here, we don't want to raise an alert.
-	*/
-	
-	#if MACVERSION && !TARGET_API_MAC_CARBON
-		Handle h;
-	#endif
+#endif
 	
 	currentprintport = NULL;
-
+	
 	clearbytes (&shellprintinfo, longsizeof (shellprintinfo));
 	
 	setrect (&shellprintinfo.margins, 36, 36, 36, 36);
 	
 	setrect (&shellprintinfo.paperrect, 5, 6, 725, 546); /*defaults in case PrOpen fails*/
-
+	
 	shellprintinfo.scaleMult = 1;
 	shellprintinfo.scaleDiv = 1;
-
-	#ifdef MACVERSION
-		
-		#if TARGET_API_MAC_CARBON == 1
-		//I realized this is only called once during the startup of the app.
-		//Carbon printing really doesn't need any global structures. Better to 
-		//allocate them as we use them.
-		#else		
-		if (!newclearhandle (longsizeof (TPrint), &h))
-			return (false);
-		
-		shellprintinfo.printhandle = (THPrint) h; /*copy into print record*/
-		
-		PrOpen (); /*initialize the Mac print manager*/
-		
-		
-		if (PrError () != noErr)
-			goto error;
-		
-		PrintDefault (shellprintinfo.printhandle); /*set default print record*/
-		
-		PrClose (); /*shouldn't leave print resources open all the time*/
-		
-		if (!shellcheckprinterror (false)) 
-			goto error;
-		#endif
-	#endif
-
-	#ifdef WIN95VERSION
-		ZeroMemory (&shellprintinfo.pagesetupinfo, sizeof (PAGESETUPDLG));
-		shellprintinfo.pagesetupinfo.lStructSize = sizeof (PAGESETUPDLG);
-		shellprintinfo.pagesetupinfo.hwndOwner = NULL;
-		shellprintinfo.pagesetupinfo.Flags = PSD_RETURNDEFAULT | PSD_NOWARNING;
-		if (! PageSetupDlg (&shellprintinfo.pagesetupinfo)) {
-			if (CommDlgExtendedError() != 0)
-				goto error;
-			}
-	#endif
 	
-	#if !TARGET_API_MAC_CARBON
+#ifdef MACVERSION
+	
+#	if TARGET_API_MAC_CARBON == 1
+	
+	//I realized this is only called once during the startup of the app.
+	//Carbon printing really doesn't need any global structures. Better to 
+	//allocate them as we use them.
+	
+	// Nope.
+	// We need a global var for calling page setup
+	
+	shellprintinfo.printport = nil;
+	shellprintinfo.printhandle = nil;
+	shellprintinfo.pageformat = nil;
+	shellprintinfo.printsettings = nil;
+	// shellprintinfo.pagerect = {0,0,0,0};
+	
+#	else		
+	
+	if (!newclearhandle (longsizeof (TPrint), &h))
+		return (false);
+	
+	shellprintinfo.printhandle = (THPrint) h; /*copy into print record*/
+	
+	PrOpen (); /*initialize the Mac print manager*/
+	
+	if (PrError () != noErr)
+		goto error;
+	
+	PrintDefault (shellprintinfo.printhandle); /*set default print record*/
+	
+	PrClose (); /*shouldn't leave print resources open all the time*/
+	
+	if (!shellcheckprinterror (false)) 
+		goto error;
+#	endif
+	
+#endif
+	
+#ifdef WIN95VERSION
+	
+	ZeroMemory (&shellprintinfo.pagesetupinfo, sizeof (PAGESETUPDLG));
+	
+	shellprintinfo.pagesetupinfo.lStructSize = sizeof (PAGESETUPDLG);
+	
+	shellprintinfo.pagesetupinfo.hwndOwner = NULL;
+	
+	shellprintinfo.pagesetupinfo.Flags = PSD_RETURNDEFAULT | PSD_NOWARNING;
+	
+	if (! PageSetupDlg (&shellprintinfo.pagesetupinfo)) {
+		
+		if (CommDlgExtendedError() != 0)
+			goto error;
+	}
+	
+#endif
+	
+	//#if !TARGET_API_MAC_CARBON
+	
 	shellcopyprintinfo (); /*copies fields from handle into record*/
-	#endif
-
+	
+	//#endif
+	
 	return (true);
 	
 #if !defined(MACVERSION) || !TARGET_API_MAC_CARBON
-	error:
+	
+error:
+		
 #endif
-	
-	/*
-	shelldisposeprintinfo ();
-	*/
-	
-	return (false);
-	} /*shellinitprint*/
+		
+		/*
+		 shelldisposeprintinfo ();
+		 */
+		
+		return (false);
+} /*shellinitprint*/
 
 
 static boolean shellpagesetupvisit (WindowPtr w, ptrvoid refcon) {
-
+#pragma unused (refcon)
+	
 	shellpushglobals (w);
 	
 	(*shellglobals.pagesetuproutine) ();
@@ -289,44 +501,49 @@ static boolean shellpagesetupvisit (WindowPtr w, ptrvoid refcon) {
 	shellpopglobals ();
 	
 	return (true);
-	} /*shellpagesetupvisit*/
+} /*shellpagesetupvisit*/
 
 
 boolean shellpagesetup (void) {
 	
 	/*
-	9/5/90 dmb:  open and close print resources each time we're called
-	
-	9/27/91 dmb: don't do anything when the user cancels the dialog
-	*/
+	 9/5/90 dmb:  open and close print resources each time we're called
+	 
+	 9/27/91 dmb: don't do anything when the user cancels the dialog
+	 */
 	
 	boolean fl;
 	
 #ifdef MACVERSION
+	
 	//Code change by Timothy Paustian Friday, June 16, 2000 10:08:37 PM
 	//new code for the new print manager.
-	#if TARGET_API_MAC_CARBON == 1
+	
+#	if TARGET_API_MAC_CARBON == 1
+	
+	if (!carbonValidSession())
 	{
-	OSStatus status;
-	//validate the page format record.
-	status = PMSessionValidatePageFormat(shellprintinfo.printhandle,
-				(PMPageFormat) shellprintinfo.pageformat,
-				kPMDontWantBoolean);
-	// Display the Page Setup dialog
-	if (status == noErr)
+		carbonStdSetup();
+	}
+	
 	{
-		status = PMSessionPageSetupDialog(shellprintinfo.printhandle, 
-						(PMPageFormat) shellprintinfo.pageformat, &fl);
+		OSStatus status;
+		
+		status = PMSessionPageSetupDialog(
+										  shellprintinfo.printhandle, 
+										  shellprintinfo.pageformat,
+										  &fl);
+		
 		if (!fl)
 			status = kPMCancel; // user clicked Cancel button
-	}
-	
-	if(status != noErr)
-		return false;
-	
-	}
-	#else
 		
+		if(status != noErr)
+			return false;
+		
+	}
+	
+#	else
+	
 	PrOpen ();
 	
 	if (!shellcheckprinterror (true)) 
@@ -340,28 +557,30 @@ boolean shellpagesetup (void) {
 	
 	if (!shellcheckprinterror (false))
 		return (false);
-	#endif
-		
+	
+#	endif
+	
 #endif
 	
 #ifdef WIN95VERSION
+	
 	shellprintinfo.pagesetupinfo.Flags = PSD_MARGINS | PSD_INTHOUSANDTHSOFINCHES;
-
+	
 	shellprintinfo.pagesetupinfo.hwndOwner = hwndMDIClient;
-
+	
 	fl = PageSetupDlg (&shellprintinfo.pagesetupinfo);
+	
 #endif
-
+	
 	if (!fl)
 		return (false);
 	
-	//what does this code do?
 	shellcopyprintinfo (); /*copies fields from handle into record*/
 	
 	shellvisittypedwindows (-1, &shellpagesetupvisit, nil); /*visit all windows*/
 	
 	return (true);
-	} /*shellpagesetup*/
+} /*shellpagesetup*/
 
 
 /*
@@ -431,17 +650,134 @@ boolean isprintingactive (void) {
 
 
 boolean getprintscale (long * scaleMult, long * scaleDiv) {
-
+	
 	*scaleMult = shellprintinfo.scaleMult;
-
+	
 	*scaleDiv = shellprintinfo.scaleDiv;
-
+	
 	return (true);
 	} /*getprintscale*/
 
 
+#ifdef WIN95VERSION
+
+// kw - 2006-06 - splitted for each platform
+#pragma mark shellprint windows
 boolean shellprint (WindowPtr w, boolean fldialog) {
 	
+	/*
+	 9/5/90 dmb:  open and close print resources each time we're called.  also, 
+	 make sure we close each page opened, even when errors occur
+	 
+	 9/28/91 dmb: for exit of edit mode before printing
+	 
+	 4/24/92 dmb: make sure bJDocLoop is bSpoolLoop before calling PrPicFile, as 
+	 per IM II-155.  otherwise, we can get bogus PrErrors
+	 */
+
+	
+	PRINTDLG pd;
+	DOCINFO di;
+	HDC printport;
+	hdlwindowinfo hinfo;
+	
+	short i;
+	boolean fl = false;
+	
+	if (w == nil) /*defensive driving*/
+		return (false);
+	
+	fl = false; /*until sucessfull print, this is return value*/
+
+	ZeroMemory (&pd, sizeof (PRINTDLG));
+	pd.lStructSize = sizeof (PRINTDLG);
+	pd.hwndOwner = hwndMDIClient;
+	pd.Flags = PD_RETURNDC;
+	
+	if (!fldialog)
+		pd.Flags = pd.Flags | PD_RETURNDEFAULT;
+	
+	if (! PrintDlg (&pd)) {
+		goto exit;
+	}
+	
+	setcursortype (cursoriswatch);
+	
+	shellupdateallnow (); /*update all windows that were dirtied by the print dialog*/
+	
+	shellpushglobals (w);
+	
+	(*shellglobals.settextmoderoutine) (false); /*make sure editing changes are accepted*/
+		
+	di.cbSize = sizeof(DOCINFO);
+	di.lpszDocName = "Frontier Document";
+	di.lpszOutput = NULL;
+	di.lpszDatatype = NULL;
+	di.fwType = 0;
+	
+	shellprintinfo.printport = printport = pd.hDC;
+	shellprintinfo.scaleMult = GetDeviceCaps(pd.hDC, LOGPIXELSX);
+	shellprintinfo.scaleDiv = GetDeviceCaps(getcurrentDC (), LOGPIXELSX);
+	
+	StartDoc (printport, &di);
+	winpushport (w, printport);
+	currentprintport = w;
+	
+	getwindowinfo (w, &hinfo);
+	
+	
+	/*prepares for printing*/
+	(*shellglobals.beginprintroutine) ();
+	
+	/*fills in fields of printinfo record*/
+	(*shellglobals.setprintinfoproutine) ();
+	//this only counts the number of pages.
+	
+	
+	for (i = 1; i <= shellprintinfo.ctpages; i++) { /*print one page*/
+		
+		if (StartPage(shellprintinfo.printport) > 0) {
+			fl = (*shellglobals.printroutine) (i);
+		}
+		
+		EndPage (shellprintinfo.printport);
+		
+		if (!fl)
+			break;
+	} /*for*/
+	
+	
+	EndDoc (printport);
+	
+	winpopport();
+	
+	currentprintport = NULL;
+	
+	DeleteDC (printport);
+	
+	
+	(*shellglobals.endprintroutine) ();
+	
+	shellpopglobals ();
+	
+exit:
+		
+		
+		currentprintport = NULL;
+	
+	return (fl);
+	
+} /*shellprint*/
+
+		
+#endif
+
+#ifdef MACVERSION
+#	if TARGET_API_MAC_CARBON == 1
+#		pragma mark shellprint carbon
+
+boolean shellprint (WindowPtr w, boolean fldialog) {
+
 	/*
 	9/5/90 dmb:  open and close print resources each time we're called.  also, 
 	make sure we close each page opened, even when errors occur
@@ -452,356 +788,313 @@ boolean shellprint (WindowPtr w, boolean fldialog) {
 	per IM II-155.  otherwise, we can get bogus PrErrors
 	*/
 
-	#ifdef MACVERSION
-		//Code change by Timothy Paustian Monday, June 19, 2000 11:13:21 AM
-		//Changed to Opaque call for Carbon
-		#if TARGET_API_MAC_CARBON == 1
-			OSStatus 		theErr;
-			PMPrintSession 	hp = 0;			// JES 9.0.1: initialize to 0 -- printing still doesn't work on OS X, but at least Cmd-P won't crash //
-			PMPageFormat	pageformat;
-			PMPrintSettings	printsettings = nil;
-			boolean			accepted;
-			//remember that this is a grafport, TPPrPort isn't
-			//but this should work because all the code that
-			//messes with printing uses a grafport. 
-			CGrafPtr			printport;
-			UInt32 minPage = 1,
-			maxPage = 9999;
-		#else
-			TPPrPort printport;
-			TPrStatus printstatus;
-			register THPrint hp = shellprintinfo.printhandle;
-		#endif
-		SInt32	firstPage = 1;
-		SInt32	lastPage = 9999;
-	#endif
+	OSStatus 		theErr;
+	boolean			accepted;
 
-	#ifdef WIN95VERSION
-		PRINTDLG pd;
-		DOCINFO di;
-		HDC printport;
-		hdlwindowinfo hinfo;
-	#endif
+	//remember that this is a grafport, TPPrPort isn't
+	//but this should work because all the code that
+	//messes with printing uses a grafport. 
+
+	// CGrafPtr			printport;
+	UInt32
+		minPage = 1,
+		maxPage = 9999;
+
+	SInt32	firstPage = 1;
+	SInt32	lastPage = 9999;
 
 	short i;
-	register boolean fl = false;
+	boolean fl = false;
 	
 	if (w == nil) /*defensive driving*/
 		return (false);
 
-	#ifdef MACVERSION	
-		//Code change by Timothy Paustian Friday, June 16, 2000 9:11:56 PM
-		//Changed to Opaque call for Carbon
-		#if TARGET_API_MAC_CARBON == 1
-		{
-		//I may need to save back the graf port.
-		theErr = PMCreateSession(&hp); // 2004-10-31 aradke: this was just hp instead of &hp -- not sure what's up!?
-		 //This should cover it, but I may need to add a further check.
-		if(theErr != noErr)
-			return false;
-		}
-		#else
-		PrOpen ();
-		if (!shellcheckprinterror (true))
-			return (false);
-		#endif
-	#endif
+	if (!carbonValidSession())
+	{
+		carbonStdSetup();
+	}
 	
 	fl = false; /*until sucessfull print, this is return value*/
 	
-	#ifdef MACVERSION
-		//Code change by Timothy Paustian Monday, June 19, 2000 11:21:53 AM
-		//Changed to Opaque call for Carbon
-		//Here we create the data structures for the print job.
-		#if TARGET_API_MAC_CARBON == 1
-		//first get the page set up information, this may have been set up
-		//previously by a call to the page set up dialog, otherwise, defaults are used.
-		theErr = PMCreatePageFormat(&pageformat);
-		// Note that PMPageFormat is not session-specific, but calling
-		// PMSessionDefaultPageFormat assigns  values specific to the printer
-		// associated with the current printing session
-		if(theErr != noErr || (pageformat == kPMNoPageFormat)){
-			PMRelease(hp);
-			return false;
-		}
-		
-		theErr = PMSessionDefaultPageFormat(hp, pageformat);
-		if(theErr != noErr)
-		{
-			PMRelease(hp);
-			PMRelease(pageformat);
-			return false;
-		}
-		
-		
-		//now display the print dialog to get printing parameters from the user.	
-		if(fldialog) {
-			theErr = PMCreatePrintSettings(&printsettings);
-			if(theErr != noErr || (printsettings == kPMNoPrintSettings)){
-				PMRelease(hp);
-				PMRelease(pageformat);
-				return false;
-			}
-			//fill it with default values reguardless of what happens next.
-			theErr = PMSessionDefaultPrintSettings(hp, printsettings);
-		
-		}
-		else
-		{
-			theErr = PMSessionValidatePrintSettings(hp, printsettings,
-									kPMDontWantBoolean);
-		}
-		
-		if(theErr != noErr){
-			//we can start jumping to exit now since all the memory is allocated.
-			goto exit;
-		}
-		
-		
-		//set the page range
-		theErr = PMSetPageRange(printsettings, minPage, maxPage);
-		if(theErr != noErr){
-			goto exit;
-		}
-		
-		//finally display the dialog
-		theErr = PMSessionPrintDialog(hp, printsettings, pageformat,
-												&accepted);
+	/*fills in fields of printinfo record*/
+	(*shellglobals.setprintinfoproutine) ();
+
+	//this only counts the number of pages.
+	maxPage = shellprintinfo.ctpages;
+	
+	//set the page range
+	theErr = PMSetPageRange(shellprintinfo.printsettings, minPage, maxPage);
+	if(theErr != noErr){
+		goto exit;
+	}
+
+	//finally display the dialog
+	if (fldialog)
+	{
+		theErr = PMSessionPrintDialog(
+							 shellprintinfo.printhandle,
+							 shellprintinfo.printsettings,
+							 shellprintinfo.pageformat,
+							&accepted);
+
 		//either the user canceled or their was some other error.
 		//don't print
 		if (!accepted || (theErr != noErr)){
 			goto exit;
 		}
-			
-		//if we are to here then we have pageformat and printsetting and are
-		//ready to print. Save away the important info in the shellprintinfo data structure
-		shellprintinfo.printhandle = hp;
-		shellprintinfo.pageformat = pageformat;
-		shellprintinfo.printsettings = printsettings;
-		#else
-		
-		if (fldialog) {
-			if (!PrJobDialog (hp))
-				goto exit;
-			}
-		else
-			PrValidate (hp);
-		#endif
-		
-	#endif
+	}
 
-	#ifdef WIN95VERSION
-		ZeroMemory (&pd, sizeof (PRINTDLG));
-		pd.lStructSize = sizeof (PRINTDLG);
-		pd.hwndOwner = hwndMDIClient;
-		pd.Flags = PD_RETURNDC;
-
-		if (!fldialog)
-			pd.Flags = pd.Flags | PD_RETURNDEFAULT;
-
-		if (! PrintDlg (&pd)) {
-			goto exit;
-			}
-	#endif
-	
 	setcursortype (cursoriswatch);
-	
+
 	shellupdateallnow (); /*update all windows that were dirtied by the print dialog*/
-	
+
 	shellpushglobals (w);
-	
+
 	(*shellglobals.settextmoderoutine) (false); /*make sure editing changes are accepted*/
-	
-	#ifdef WIN95VERSION
-		di.cbSize = sizeof(DOCINFO);
-		di.lpszDocName = "Frontier Document";
-		di.lpszOutput = NULL;
-		di.lpszDatatype = NULL;
-		di.fwType = 0;
 
-		shellprintinfo.printport = printport = pd.hDC;
-		shellprintinfo.scaleMult = GetDeviceCaps(pd.hDC, LOGPIXELSX);
-		shellprintinfo.scaleDiv = GetDeviceCaps(getcurrentDC (), LOGPIXELSX);
+	pushport (nil); /*save current port on stack*/
 
-		StartDoc (printport, &di);
-		winpushport (w, printport);
-		currentprintport = w;
+	//Code change by Timothy Paustian Friday, June 16, 2000 4:19:04 PM
+	//Changed to Opaque call for Carbon
+	//I will have to watch out for this,
+	//to save the port I need to use..
+	//PMSessionGetGraphicsContext (
+	//This does not return the printport, but TPrPort gPort field
+	//I think I can get away with this because the only function that uses
+	//it is pgInitDevice and that assumes you are passing a port.
+	//It is OK in the old code because the first item in the struct is a port
 
-		getwindowinfo (w, &hinfo);
-	#endif
-	
-	#ifdef MACVERSION
-		pushport (nil); /*save current port on stack*/
-		//Code change by Timothy Paustian Friday, June 16, 2000 4:19:04 PM
-		//Changed to Opaque call for Carbon
-		//I will have to watch out for this,
-		//to save the port I need to use..
-		//PMSessionGetGraphicsContext (
-		//This does not return the printport, but TPrPort gPort field
-		//I think I can get away with this because the only function that uses
-		//it is pgInitDevice and that assumes you are passing a port.
-		//It is OK in the old code because the first item in the struct is a port
-		#if TARGET_API_MAC_CARBON == 1 
-		//we have to call this first before we can get the graphics context
-		theErr = PMSessionBeginDocument(hp, printsettings, pageformat);
-		if(theErr != noErr)
-			goto exit;
-		theErr = PMSessionGetGraphicsContext(hp, nil, (void**)&printport);//the second parameter is currently ignored.
-		shellprintinfo.printport = printport;
-		if(theErr != noErr)
-			goto exit;
-		#else
-		shellprintinfo.printport = printport = PrOpenDoc (hp, nil, nil);
-		currentprintport = w;
-		#endif
-		
-	#endif
+	//we have to call this first before we can get the graphics context
+	theErr = PMSessionBeginDocument(
+							shellprintinfo.printhandle,
+							shellprintinfo.printsettings,
+							shellprintinfo.pageformat);
 
-	(*shellglobals.beginprintroutine) (); /*prepares for printing*/
+	if(theErr != noErr)
+		goto exit;
 
-	(*shellglobals.setprintinfoproutine) (); /*fills in fields of printinfo record*/
+	/*prepares for printing*/
+	(*shellglobals.beginprintroutine) ();
+
+	/*fills in fields of printinfo record*/
+	// (*shellglobals.setprintinfoproutine) ();
 	//this only counts the number of pages.
 	
-	#ifdef MACVERSION
+	//limit this to the number of pages the user asked for. 
 
-		//limit this to the number of pages the user asked for. 
-		#if TARGET_API_MAC_CARBON == 1
-				
-			theErr = PMGetFirstPage(printsettings, &firstPage);
-			if (theErr == noErr){
-				theErr = PMGetLastPage(printsettings, &lastPage);
-			}
-			//sanity checks
-			if(theErr != noErr)
-				goto exit;
-			//we are not setting up a idle proc. Do we need one?
+	theErr = PMGetFirstPage(shellprintinfo.printsettings, &firstPage);
+	if (theErr == noErr)
+	{
+		theErr = PMGetLastPage(shellprintinfo.printsettings, &lastPage);
+	}
+
+	//sanity checks
+	if(theErr != noErr)
+		goto exit;
+
+	if(lastPage > shellprintinfo.ctpages)
+		lastPage = shellprintinfo.ctpages;
+
+	for (i = 1; i <= lastPage; i++) { /*print one page*/
+
+		theErr = PMSessionBeginPage(
+							 shellprintinfo.printhandle,
+							 shellprintinfo.pageformat,
+							&shellprintinfo.pagerect);
+
+		if (theErr != noErr)
+			break;
 		
-		#endif
-		
-		if(lastPage > shellprintinfo.ctpages)
-			lastPage = shellprintinfo.ctpages;
-			
-		for (i = 1; i <= lastPage; i++) { /*print one page*/
-			
-			#if TARGET_API_MAC_CARBON == 1
-			theErr = PMSessionBeginPage(hp, pageformat, (PMRect *) &shellprintinfo.pagerect);
-			if (theErr != noErr)
-				break;
-			//now set the graphics context.
-			//in carbon we have to set up the port each time
-			//to make sure it is in the printer port. Since other things can be going on
-			//during the printing, the port may have changed.
-			{
-				GrafPtr thePort, oldPort;
-				GetPort(&oldPort);
-				theErr = PMSessionGetGraphicsContext(hp, nil, (void **) &thePort);//the second parameter is currently ignored.
-				SetPort(thePort);
-				// Draw the page
-				SetFractEnable (true);
-				fl = (*shellglobals.printroutine) (i);
-					break;
-				//reset back to the old port.
-				SetPort(oldPort);
-			}
-			#else
+		//now set the graphics context.
+		//in carbon we have to set up the port each time
+		//to make sure it is in the printer port. Since other things can be going on
+		//during the printing, the port may have changed.
+		{
+			GrafPtr thePort, oldPort;
 
-			if (PrError () != noErr)
-				break;
-			
-			PrOpenPage (printport, nil);
-			
-			if (PrError () == noErr) {
-				
-				SetFractEnable (true);
-				
-				fl = (*shellglobals.printroutine) (i);
-				
-				SetFractEnable (false);
-				}
-			
-			PrClosePage (printport);
-			#endif
-			
-			if (!fl)
-				break;
-			
-			if (keyboardescape ()) {
-				#if TARGET_API_MAC_CARBON == 1
-				PMSessionSetError(hp, iPrAbort);
-				#else
-				PrSetError (iPrAbort);
-				#endif
-				}
-			} /*for*/
+			GetPort(&oldPort);
 
-	#endif
+			//the second parameter is currently ignored.
+			theErr = PMSessionGetGraphicsContext(
+									shellprintinfo.printhandle,
+									kPMGraphicsContextQuickdraw,
+									(void **) &thePort);
 
-	#ifdef WIN95VERSION
-		
-	for (i = 1; i <= shellprintinfo.ctpages; i++) { /*print one page*/
+			shellprintinfo.printport = thePort;
 
-		if (StartPage(printport) > 0) {
+			SetPort(thePort);
+
+			// Draw the page
+			SetFractEnable (true);
+
 			fl = (*shellglobals.printroutine) (i);
-			}
 
-		EndPage (printport);
-		
+			//reset back to the old port.
+			SetPort(oldPort);
+		}
+
+		theErr = PMSessionEndPage(shellprintinfo.printhandle);
+
 		if (!fl)
 			break;
-		} /*for*/
 
-	#endif
+		if (keyboardescape ())
+		{
+			theErr = PMSessionSetError(shellprintinfo.printhandle, iPrAbort);
+		}
+	} /*for*/
 
-	#ifdef MACVERSION
-		#if TARGET_API_MAC_CARBON == 1
-		theErr = PMSessionEndDocument(hp);
-		if(theErr !=  noErr)
-			goto exit;
-		//everything worked and printing is done. so set fl to true.
-		fl = true;
-		//the PrPicFile is not supported in carbon.
-		
-		#else
-		
-		PrCloseDoc (printport);
-		
-		if (fl) {
-			
-			if ((PrError () == noErr) && ((**hp).prJob.bJDocLoop == bSpoolLoop))
-				PrPicFile (hp, nil, nil, nil, &printstatus);
-			
-			fl = shellcheckprinterror (false);
-			}
-		#endif
-		
-		popport ();
-	#endif
+	theErr = PMSessionEndDocument(shellprintinfo.printhandle);
 
-	#ifdef WIN95VERSION
-		EndDoc (printport);
-		winpopport();
-		currentprintport = NULL;
-		DeleteDC (printport);
-	#endif
-	
+	if(theErr !=  noErr)
+		goto exit;
+
+	//everything worked and printing is done. so set fl to true.
+	fl = true;
+
+	//the PrPicFile is not supported in carbon.
+
+	popport ();
+
 	(*shellglobals.endprintroutine) ();
-	
+
 	shellpopglobals ();
-	
-	exit:
-	
-	#ifdef MACVERSION
-		#if TARGET_API_MAC_CARBON == 1
-		PMRelease(hp);
-		PMRelease(pageformat);
-		PMRelease(printsettings);
-		#else
-		PrClose ();
-		#endif
-	#endif
+
+exit:
+
+	carbonKillPrintVars();
+//	PMRelease(shellprintinfo.printhandle);
+//	PMRelease(pageformat);
+//	PMRelease(printsettings);
 
 	currentprintport = NULL;
 
 	return (fl);
+
 	} /*shellprint*/
+
+#	else
+#		pragma mark shellprint classic
+boolean shellprint (WindowPtr w, boolean fldialog) {
+
+	/*
+	9/5/90 dmb:  open and close print resources each time we're called.  also, 
+	make sure we close each page opened, even when errors occur
+	
+	9/28/91 dmb: for exit of edit mode before printing
+	
+	4/24/92 dmb: make sure bJDocLoop is bSpoolLoop before calling PrPicFile, as 
+	per IM II-155.  otherwise, we can get bogus PrErrors
+	*/
+
+	// classic mac
+	TPPrPort printport;
+	TPrStatus printstatus;
+	THPrint hp = shellprintinfo.printhandle;
+
+	SInt32	firstPage = 1;
+	SInt32	lastPage = 9999;
+
+	short i;
+	boolean fl = false;
+	
+	if (w == nil) /*defensive driving*/
+		return (false);
+
+	PrOpen ();
+	if (!shellcheckprinterror (true))
+		return (false);
+
+	fl = false; /*until sucessfull print, this is return value*/
+
+	if (fldialog) {
+		if (!PrJobDialog (hp))
+			goto exit;
+	}
+	else
+		PrValidate (hp);
+
+	setcursortype (cursoriswatch);
+
+	shellupdateallnow (); /*update all windows that were dirtied by the print dialog*/
+
+	shellpushglobals (w);
+
+	(*shellglobals.settextmoderoutine) (false); /*make sure editing changes are accepted*/
+
+	pushport (nil); /*save current port on stack*/
+
+	shellprintinfo.printport = printport = PrOpenDoc (hp, nil, nil);
+	currentprintport = w;
+
+	/*prepares for printing*/
+	(*shellglobals.beginprintroutine) ();
+
+	/*fills in fields of printinfo record*/
+	(*shellglobals.setprintinfoproutine) ();
+	//this only counts the number of pages.
+
+	// wird in classic lastPage gesetzt?
+	if(lastPage > shellprintinfo.ctpages)
+		lastPage = shellprintinfo.ctpages;
+
+	for (i = 1; i <= lastPage; i++) { /*print one page*/
+
+		if (PrError () != noErr)
+			break;
+
+		PrOpenPage (printport, nil);
+
+		if (PrError () == noErr) {
+
+			SetFractEnable (true);
+
+			fl = (*shellglobals.printroutine) (i);
+
+			SetFractEnable (false);
+		}
+
+		PrClosePage (printport);
+
+		if (!fl)
+			break;
+
+		if (keyboardescape ()) {
+
+			PrSetError (iPrAbort);
+
+		}
+	} /*for*/
+
+	PrCloseDoc (printport);
+
+	if (fl) {
+
+		if (	(PrError () == noErr)
+			&& ((**hp).prJob.bJDocLoop == bSpoolLoop))
+		{
+			PrPicFile (hp, nil, nil, nil, &printstatus);
+		}
+
+		fl = shellcheckprinterror (false);
+	}
+
+	popport ();
+	
+	(*shellglobals.endprintroutine) ();
+
+	shellpopglobals ();
+
+exit:
+
+	PrClose ();
+
+	currentprintport = NULL;
+
+	return (fl);
+
+	} /*shellprint*/
+
+#	endif
+#endif
 
