@@ -2343,9 +2343,9 @@ static void converttextencoding (Handle h, Handle hresult, long inputcharset, lo
 	long pullBytes = 0;
 	long lentext = gethandlesize (h);
 
-	sethandlesize (h, lentext + 1);
+	// sethandlesize (h, lentext + 1);
 
-	(*h) [lentext] = '\0';
+	// (*h) [lentext] = '\0';
 
 	TECCreateConverter (&converter, inputcharset, outputcharset);
 
