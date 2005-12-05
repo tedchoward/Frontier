@@ -369,7 +369,7 @@ void tableupdate (void) {
 		shelldrawwindowmessage (shellwindowinfo);
 	
 	#endif
-	} /*browserupdate*/
+	} /* tableupdate */
 
 
 static short tablewidth2cols (short width) {
