@@ -650,7 +650,7 @@ boolean newtableformats (hdltableformats *hformats) {
 	
 	hf = *hformats; /*copy into register*/
 	
-	(**hf).ctcols = 3;
+	(**hf).ctcols = maxtablecols; /* 2005-10-03 creedon - in case more columns are added, just one place to change*/
 	
 	//(**hf).defaultcolwidth = (r.right - r.left) / fixedctcols; /*arrgh: slight bias to 3-col tables*/
 	
@@ -1109,9 +1109,10 @@ boolean tableunpackformats (Handle hpacked, hdltableformats hformats) {
 	(**hf).ctcols = conditionalshortswap (info.ctcols);
 	
 	#ifdef fldebug
-		if ((**hf).ctcols != 3) {
+		/* 2005-10-03 creedon: in case more columns are added, just one place to change */ 
+		if ((**hf).ctcols != maxtablecols) {
 		//	assert ((**hf).ctcols == 3); // report it
-			(**hf).ctcols = 3;			 // fix it
+			(**hf).ctcols = maxtablecols;			 // fix it
 			}
 	#endif
 	
