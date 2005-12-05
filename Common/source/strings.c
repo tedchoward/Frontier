@@ -2336,41 +2336,68 @@ static HRESULT AnsiToUnicode (Handle h, Handle hresult, unsigned long encoding)
 #ifdef MACVERSION /*Mac character conversion common routine*/
 
 static void converttextencoding (Handle h, Handle hresult, long inputcharset, long outputcharset) {
-	
-		TECObjectRef converter;		
-		ByteCount ctorigbytes, ctoutputbytes, ctflushedbytes;		
-		long sizeoutputbuffer;
-		long lentext = gethandlesize (h);
 
-		sethandlesize (h, lentext + 1);
+	TECObjectRef converter;		
+	ByteCount ctorigbytes, ctoutputbytes, ctflushedbytes;		
+	long sizeoutputbuffer;
+	long pullBytes = 0;
+	long lentext = gethandlesize (h);
 
-		(*h) [lentext] = '\0';
-		
-		TECCreateConverter (&converter, inputcharset, outputcharset);
-		
-		sizeoutputbuffer = lentext * 2;
-		
-		if (sizeoutputbuffer < 32) /*docs say use 32 minimum*/
-			sizeoutputbuffer = 32;
-		
-		sethandlesize (hresult, sizeoutputbuffer);
-		
-		if (((*h) [0] == '\xFF') || ((*h) [0] == '\xEF')) /*pop byte order mark*/
-		
-			pullfromhandle (h, 0, 3, NULL);
-		
-		lentext = gethandlesize (h);
-		
-		TECConvertText (converter, *h, lentext, &ctorigbytes, *hresult, sizeoutputbuffer, &ctoutputbytes);
-		
-		TECFlushText (converter, *hresult, sizeoutputbuffer, &ctflushedbytes);
-			
-		TECDisposeConverter (converter);
-			
-		sethandlesize (hresult, ctoutputbytes + ctflushedbytes);
-		
-		sethandlesize (hresult, gethandlesize (hresult) - 1); /*pop trailing terminator*/
-		} /*converttextencoding*/
+	sethandlesize (h, lentext + 1);
+
+	(*h) [lentext] = '\0';
+
+	TECCreateConverter (&converter, inputcharset, outputcharset);
+
+	sizeoutputbuffer = lentext * 2;
+
+	if (sizeoutputbuffer < 32) /*docs say use 32 minimum*/
+		sizeoutputbuffer = 32;
+
+	sethandlesize (hresult, sizeoutputbuffer);
+
+	// 2005-08-26 --- kw better bytemark detecting
+	// see http://en.wikipedia.org/wiki/Byte_Order_Mark
+	if (inputcharset == 0x08000100) // we handle utf-8 input
+	{
+		if (	(*h) [0] == '\xEF'
+			 && (*h) [1] == '\xBB'
+			 && (*h) [2] == '\xBF')
+				pullBytes = 3;
+	}
+	else
+	{
+		if (inputcharset == kTextEncodingUnicodeDefault) // utf-16
+		{
+			if (	(	(*h) [0] == '\xEF'
+					 && (*h) [1] == '\xFF')
+				||	(	(*h) [0] == '\xFF'
+					 && (*h) [1] == '\xFE'))
+				pullBytes = 2;
+		}
+	}
+
+	//old code
+	// if (((*h) [0] == '\xFF') || ((*h) [0] == '\xEF')) /*pop byte order mark*/
+	//	pullfromhandle (h, 0, 3, NULL);
+
+	if (pullBytes > 0)
+		pullfromhandle (h, 0, pullBytes, NULL);
+
+	lentext = gethandlesize (h);
+
+	TECConvertText (converter, *h, lentext, &ctorigbytes, *hresult, sizeoutputbuffer, &ctoutputbytes);
+
+	TECFlushText (converter, *hresult, sizeoutputbuffer, &ctflushedbytes);
+
+	TECDisposeConverter (converter);
+
+	sethandlesize (hresult, ctoutputbytes + ctflushedbytes);
+
+	// kwchange 2005-05-23 --- commented out to see if this is the missing trailing char bug
+	// kwchange 2005-05-27 --- ran this the last week and have no complains
+	//sethandlesize (hresult, gethandlesize (hresult) - 1); /*pop trailing terminator*/
+	} /*converttextencoding*/
 
 
 #endif /*end Mac character conversion routine(s)*/
@@ -2401,15 +2428,16 @@ boolean utf16toansi (Handle h, Handle hresult) {
 	#endif
 	
 	#ifdef MACVERSION
-	
-		if (((*h) [0] == '\xFF') || ((*h) [0] == '\xEF')) /*pop byte order mark*/
+/*	
+		if (((*h) [0] == '\xFF') || ((*h) [0] == '\xEF')) /#pop byte order mark#/
 		
 			pullfromhandle (h, 0, 2, NULL);
-			
+
+ 		// why do we need a string starting with a 0???
 		if ((*h) [0] != '\0')
 		
 			insertinhandle (h, 0, NULL, 1);
-		
+*/		
 		converttextencoding (h, hresult, kTextEncodingUnicodeDefault, kTextEncodingWindowsLatin1);
 
 /*		OSErr err = noErr;
