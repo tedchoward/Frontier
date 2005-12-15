@@ -46,13 +46,14 @@ static boolean getdescdata (AEDesc *desc, Handle *h) {
 	
 	len = AEGetDescDataSize (desc);
 	
+/* kw - 2005-12-12 - we should return at least a zero sized handle
 	if (len < 1) {
 		
 		*h = nil;
 		
 		return (false);
 		}
-	
+*/
 	if (!newclearhandle (len, h)) {
 		
 		*h = nil;
@@ -154,7 +155,7 @@ boolean newdescwithhandle (AEDesc *desc, DescType typeCode, Handle h) {
 	
 	
 boolean datahandletostring (AEDesc *desc, bigstring bs) {
-	
+
 	/*
 	PBS 03/14/02: get data from AEDesc's data handle as
 	a bigstring.

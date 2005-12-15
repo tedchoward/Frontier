@@ -118,7 +118,7 @@ boolean langsymbolreference (hdlhashtable htable, bigstring bs, tyvaluerecord *v
 
 
 static boolean gettokenvisit (bigstring bsname, hdlhashnode hnode, tyvaluerecord val, ptrvoid refcon) {
-	
+#pragma unused(bsname, hnode, refcon)
 	if (val.valuetype != tokenvaluetype)
 		return (false);
 		
@@ -592,6 +592,11 @@ boolean setbinaryvalue (Handle x, OSType typeid, tyvaluerecord *val) {
 	*/
 	
 	memtodisklong (typeid);
+
+	// kw - 2005-12-12 filemaker empty string fix
+	// we need to be able to handle empty strings that arrive as a binary['utxt']
+	if (x == nil)
+		newhandle(0, &x);
 
 	if (!insertinhandle (x, 0L, &typeid, sizeof (typeid))) {
 		
@@ -7653,7 +7658,7 @@ static boolean tablefindnode (hdlhashtable intable, hdlhashnode fornode, hdlhash
 
 
 static boolean kernelerrorroutine (long scripterrorrefcon, long lnum, short charnum, hdlhashtable *htable, bigstring bsname) {
-	
+#pragma unused(lnum, charnum)
 	/*
 	display an error for a system script -- a handler, agent or startup script.
 	
@@ -8516,7 +8521,7 @@ static struct { /*handler info for visit routine*/
 
 
 static boolean langgethandlervisit (hdlhashtable intable, bigstring bs, hdlhashtable *htable) {
-	
+#pragma unused(bs)
 	return (langgethandlercode (intable, handlercode.htree, &handlercode.hcode, htable, &handlercode.hnode));
 	} /*langgethandlervisit*/
 
