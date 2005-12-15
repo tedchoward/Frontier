@@ -177,7 +177,8 @@ static boolean
 carbonSessionPrintSession()
 {
 	OSStatus	theErr;
-	
+#if TARGET_API_MAC_CARBON == 1
+
 	if (nil == shellprintinfo.printhandle)
 	{
 		theErr = PMCreateSession(&shellprintinfo.printhandle);
@@ -188,7 +189,7 @@ carbonSessionPrintSession()
 			return (false);
 		}
 	}
-	
+#endif	
 	return(true);
 }
 
@@ -198,7 +199,9 @@ carbonSessionDefaultPageAndSettingValidate(void)
 {
 	OSStatus	theErr;
 	Boolean		f;
-	
+
+#if TARGET_API_MAC_CARBON == 1
+
 	theErr = PMSessionDefaultPageFormat(
 										shellprintinfo.printhandle,
 										shellprintinfo.pageformat);
@@ -222,6 +225,8 @@ carbonSessionDefaultPageAndSettingValidate(void)
 											shellprintinfo.printsettings, &f);
 	if(theErr != noErr)
 		goto error;
+
+#endif
 	
 	return (true);
 	
@@ -237,7 +242,8 @@ static boolean
 carbonCreateFormatAndSetting(void)
 {
 	OSStatus	theErr;
-	
+#if TARGET_API_MAC_CARBON == 1
+
 	theErr = PMCreatePageFormat(&shellprintinfo.pageformat);
 	if(theErr != noErr || (shellprintinfo.pageformat == kPMNoPageFormat))
 		goto error;
@@ -245,7 +251,8 @@ carbonCreateFormatAndSetting(void)
 	theErr = PMCreatePrintSettings(&shellprintinfo.printsettings);
 	if(theErr != noErr)
 		goto error;
-	
+
+#endif
 	return (true);
 	
 error:
