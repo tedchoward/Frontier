@@ -73,11 +73,11 @@ extern boolean sysos (tyvaluerecord *v); //implemted in shellsysverbs.c
 
 #define fldebugwebsite false
 
-#define str_separatorline "\x17<hr size=2 width=100%>\r"
+#define str_separatorline "\x17<hr size=2 width=100% />\r"/* 2005-12-18 creedon - end tag with space slash for compatibility with post HTML 4.01 standards */
 #define str_macroerror "\x20<b>[</b>Macro error: ^0<b>]</b>\r"
 #define str_mailto	"\x1A<a href=\"mailto:^0\">^0</a>"
 #define str_hotlink	"\x13<a href=\"^0\">^1</a>"
-#define str_pagebreak "\x05<p />" /* 2005-10-29 creedon - changed from <p> to <p /> compatibility with post HTML 4.01 standards */
+#define str_pagebreak "\x05<p />" /* 2005-10-29 creedon - changed from <p> to <p /> for compatibility with post HTML 4.01 standards */
 #define str_startbold "\x03<b>"
 #define str_endbold	"\x04</b>"
 #define str_default "\x07" "default"
