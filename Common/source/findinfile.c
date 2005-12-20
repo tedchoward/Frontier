@@ -251,7 +251,7 @@ static void filecloser (hdlopenfile hfile, hdlfilenum fnum) {
 	} /*filecloser*/
 
 
-boolean fiffindinfile (const tyfilespec *fs, bigstring pattern, long *index) {
+boolean fiffindinfile (const tyfilespec *fs, bigstring pattern, long *idx) {
 	
 	/*
 	search for the indicated pattern in the file. return the index that the
@@ -273,7 +273,7 @@ boolean fiffindinfile (const tyfilespec *fs, bigstring pattern, long *index) {
 	boolean flreturned = false;
 	hdlopenfile hfile = nil;
 	
-	*index = -1; /*indicate an error*/
+	*idx = -1; /*indicate an error*/
 	
 	lenpattern = stringlength (pattern);
 	
@@ -339,7 +339,7 @@ boolean fiffindinfile (const tyfilespec *fs, bigstring pattern, long *index) {
 					
 					} /*for*/
 				
-				*index = fpos + (pbuffer - *hbuffer - 1);
+				*idx = fpos + (pbuffer - *hbuffer - 1);
 				
 				flreturned = true;
 				

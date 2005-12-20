@@ -644,7 +644,7 @@ static boolean folderfrompathverb (hdltreenode hparam1, tyvaluerecord *vreturned
 
 
 static boolean gettypelistvalue (hdltreenode hparam1, short pnum, tysftypelist *filetypes, ptrsftypelist *x) {
-	
+#pragma unused(pnum)
 	/*
 	2.1b4 dmb: new feature: accept a list of filetype for sfgetfile
 	*/
@@ -2121,7 +2121,7 @@ static boolean findfileverb (hdltreenode hparam1, tyvaluerecord *v) {
 	
 	tyfilespec fs;
 	bigstring pattern;
-	long index;
+	long idx;
 	
 	if (!getpathvalue (hparam1, 1, &fs))
 		return (false);
@@ -2131,13 +2131,13 @@ static boolean findfileverb (hdltreenode hparam1, tyvaluerecord *v) {
 	if (!getstringvalue (hparam1, 2, pattern))
 		return (false);
 		
-	fiffindinfile (&fs, pattern, &index);
+	fiffindinfile (&fs, pattern, &idx);
 	
 	/*
-	setlongvalue (index, v);
+	setlongvalue (idx, v);
 	*/
 	
-	setbooleanvalue ((boolean) (index >= 0), v);
+	setbooleanvalue ((boolean) (idx >= 0), v);
 	
 	return (true);
 	} /*findfileverb*/

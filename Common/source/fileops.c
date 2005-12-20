@@ -416,19 +416,19 @@ boolean filegetvolumeinfo (short vnum, tyfileinfo *info) {
 	
 	/*DW 9/7/93: determine if it's a network volume*/ {
 		
-		HParamBlockRec pb;
+		HParamBlockRec lpb;
 		GetVolParmsInfoBuffer buffer;
 		OSErr ec;
 		
-		clearbytes (&pb, sizeof (pb)); /*init all fields to zero*/
+		clearbytes (&lpb, sizeof (lpb)); /*init all fields to zero*/
 		
-		pb.ioParam.ioVRefNum = (*info).vnum;
+		lpb.ioParam.ioVRefNum = (*info).vnum;
 		
-		pb.ioParam.ioBuffer = (Ptr) &buffer;
+		lpb.ioParam.ioBuffer = (Ptr) &buffer;
 		
-		pb.ioParam.ioReqCount = sizeof (buffer);
+		lpb.ioParam.ioReqCount = sizeof (buffer);
 		
-		ec = PBHGetVolParmsSync (&pb); 
+		ec = PBHGetVolParmsSync (&lpb); 
 	
 		if (ec == noErr) 
 			(*info).flremotevolume = buffer.vMServerAdr != 0; /*see Apple TN-Files docviewer doc*/
@@ -1976,14 +1976,15 @@ boolean getspecialfolderpath (bigstring bsvol, bigstring bsfolder, boolean flcre
 
 #ifdef MACVERSION
 boolean ejectvol (const tyfilespec *fs) {
-
+#if TARGET_API_MAC_CARBON
+#pragma unused (fs)
+	return false;
+#else
+	
 	/*
 	6/x/91 mao
 	*/
 
-	#if TARGET_API_MAC_CARBON
-	return false;
-	#else
 	tyvolinfo volinfo;
 	
 	if (!filegetfsvolumeinfo (fs, &volinfo))
@@ -2241,13 +2242,13 @@ boolean volumecreated (const tyfilespec *fs, unsigned long *createdate) {
 
 
 boolean lockvolume (const tyfilespec *fs, boolean fllock) {
-#ifdef MACVERSION
+#if TARGET_API_MAC_CARBON
+#pragma unused (fs, fllock)
 	//Code change by Timothy Paustian Sunday, June 25, 2000 9:19:49 PM
 	//can't lock volumes in carbon.
-	#if TARGET_API_MAC_CARBON == 1
 	return false;
-	#else
-		
+#endif
+#if (defined(MACVERSION) && TARGET_API_MAC_CARBON != 1)
 	short vnum;
 	QHdrPtr vqtop;
 	QElemPtr vqelem;
@@ -2280,7 +2281,6 @@ boolean lockvolume (const tyfilespec *fs, boolean fllock) {
 		vqelem = (*vqelem).qLink;
 		
 		}
-		#endif//end non-carbon code
 #endif
 #ifdef WIN95VERSION
 	return (false);
