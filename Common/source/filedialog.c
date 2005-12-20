@@ -29,7 +29,7 @@
 #include "standard.h"
 
 #ifdef MACVERSION
-#include "mac.h"
+#	include "mac.h"
 #endif
 
 #include "filealias.h"
@@ -83,17 +83,17 @@ static pascal short sfputfilehook (short item, DialogPtr pdialog, tysfdata *pdat
 	/*
 	6/11/93 dmb: added for System 7 Standard File
 	*/
-	#ifdef flcomponent
+#ifdef flcomponent
 	long curA5;
-	#endif
+#endif
 	if (GetWRefCon (pdialog) != sfMainDialogRefCon)
 		return (item);
 	
-	#ifdef flcomponent
+#ifdef flcomponent
 	
 	curA5 = SetUpAppA5 ();
 	
-	#endif
+#endif
 	
 	if (item == sfHookFirstCall) {
 		
@@ -101,11 +101,11 @@ static pascal short sfputfilehook (short item, DialogPtr pdialog, tysfdata *pdat
 			item = sfHookChangeSelection;
 		}
 	
-	#ifdef flcomponent
+#ifdef flcomponent
 	
 	RestoreA5 (curA5);
 	
-	#endif
+#endif
 	
 	return (item);
 	} /*sfputfilehook*/
@@ -116,17 +116,18 @@ static pascal short sfprompthook (short item, DialogPtr pdialog, tysfdata *pdata
 	/*
 	6/11/93 dmb: recoded to System 7 Standard File
 	*/
-	#ifdef flcomponent
+#ifdef flcomponent
 	long curA5;
-	#endif
+#endif
+
 	if (GetWRefCon (pdialog) != sfMainDialogRefCon)
 		return (item);
 	
-	#ifdef flcomponent
+#ifdef flcomponent
 	
 	curA5 = SetUpAppA5 ();
 	
-	#endif
+#endif
 	
 	if (item == sfHookFirstCall) {
 		Rect ritem, rdialog;
@@ -135,14 +136,14 @@ static pascal short sfprompthook (short item, DialogPtr pdialog, tysfdata *pdata
 		
 		//Code change by Timothy Paustian Sunday, April 30, 2000 9:20:45 PM
 		//Changed to Opaque call for Carbon
-		#if ACCESSOR_CALLS_ARE_FUNCTIONS == 1
+#if ACCESSOR_CALLS_ARE_FUNCTIONS == 1
 		dialogPort = GetDialogPort(pdialog);
 		GetPortBounds(dialogPort, &rdialog);
-		#else
+#else
 		//old code
-		#pragma unused(dialogPort)
+#pragma unused(dialogPort)
 		rdialog = (*pdialog).portRect;
-		#endif
+#endif
 		if (isemptystring ((*pdata).sfprompt)) {
 			
 			rdialog.bottom = ritem.top;
@@ -164,11 +165,11 @@ static pascal short sfprompthook (short item, DialogPtr pdialog, tysfdata *pdata
 			item = sfHookChangeSelection;
 		}
 	
-	#ifdef flcomponent
+#ifdef flcomponent
 	
 	RestoreA5 (curA5);
 	
-	#endif
+#endif
 	
 	return (item);
 	} /*sfprompthook*/
@@ -189,18 +190,18 @@ static pascal short sffolderhook (short item, DialogPtr pdialog, tysfdata *pdata
 	*/
 	
 	bigstring bs;
-	#ifdef flcomponent
+#ifdef flcomponent
 	long curA5;
-	#endif
+#endif
 	
 	if (GetWRefCon (pdialog) != sfMainDialogRefCon)
 		return (item);
 	
-	#ifdef flcomponent
+#ifdef flcomponent
 	
 	curA5 = SetUpAppA5 ();
 	
-	#endif
+#endif
 	
 	item = sfprompthook (item, pdialog, pdata);
 	
@@ -296,17 +297,18 @@ static pascal short sfdiskhook (short item, DialogPtr pdialog, tysfdata *pdata) 
 	6/11/93 dmb: recoded to System 7 Standard File; back to using Drive 
 	button like Frontier 1.0.
 	*/
-	#ifdef flcomponent
+#ifdef flcomponent
 	long curA5;
-	#endif
+#endif
+
 	if (GetWRefCon (pdialog) != sfMainDialogRefCon)
 		return (item);
 	
-	#ifdef flcomponent
+#ifdef flcomponent
 	
 	curA5 = SetUpAppA5 ();
 	
-	#endif
+#endif
 	
 	item = sfprompthook (item, pdialog, pdata);
 	
@@ -355,19 +357,18 @@ static pascal short sfdiskhook (short item, DialogPtr pdialog, tysfdata *pdata) 
 				item = sfHookNullEvent;
 		}
 	
-	#ifdef flcomponent
+#ifdef flcomponent
 	
 	RestoreA5 (curA5);
 	
-	#endif
+#endif
 	
 	return (item);
 	} /*sfdiskhook*/
 
 
 static pascal Boolean onlyfoldersfilter (ParmBlkPtr pb, tysfdata *pdata) {
-	
-	#pragma unused (pdata)
+#pragma unused (pdata)
 	
 	/*
 	if (foldertest (pb))
@@ -499,14 +500,16 @@ static pascal Boolean knowntypesfilter (ParmBlkPtr pb, tysfdata *pdata) {
 	tysfdata sfdata;
 	FSSpec *fs = &sfdata.sfreply.sfFile;
 	OSErr	anErr = noErr;
-	#if !TARGET_API_MAC_CARBON
-	 	Point pt = {-1, -1};
-	 	short cttypes = -1;
-	 	OSType *types = nil;
-	#endif	
-	#ifdef flcomponent
+
+#if !TARGET_API_MAC_CARBON
+ 	Point pt = {-1, -1};
+ 	short cttypes = -1;
+ 	OSType *types = nil;
+#endif	
+
+#ifdef flcomponent
 	long appA5;
-	#endif
+#endif
 
 	//move the switch statement to below because it's smarter to call it there when using 
 	//the new routines for Nav services.
@@ -537,11 +540,11 @@ static pascal Boolean knowntypesfilter (ParmBlkPtr pb, tysfdata *pdata) {
 	
 	shellactivate ();
 	
-	#ifdef flcomponent
+#ifdef flcomponent
 	
 	appA5 = SetUpCurA5 (); /*for system*/
 	
-	#endif
+#endif
 	
 	switch (sfverb) {
 		
@@ -549,43 +552,57 @@ static pascal Boolean knowntypesfilter (ParmBlkPtr pb, tysfdata *pdata) {
 			if(gCanUseNavServ) {
 				anErr = TimsPutFile(bsprompt, (*fs).name, &sfdata.sfreply);
 				}
-			#if TARGET_API_MAC_CARBON != 1
+#if TARGET_API_MAC_CARBON != 1
 			//we can get away with this because nav services is always there in OSX.
 			else
-				CustomPutFile (bsprompt, (*fs).name, &sfdata.sfreply, sfputfileid, pt, 
-						sfputfilehookUPP, nil, nil, nil, &sfdata);
-			#endif
+				CustomPutFile (
+						bsprompt,
+						(*fs).name,
+						&sfdata.sfreply,
+						sfputfileid,
+						pt, 
+						sfputfilehookUPP,
+						nil, nil, nil,
+						&sfdata);
+#endif
 
 			break;
 		
 		case sfgetfileverb:
-			if(gCanUseNavServ) 
-				anErr = getafile (bsprompt, filetypes, &sfdata.sfreply, filecreator);
-			#if !TARGET_API_MAC_CARBON
-			else
-				CustomGetFile (knowntypesfilterUPP, cttypes, types, &sfdata.sfreply, sfgetfileid, pt, 
-						sfprompthookUPP, nil, nil, nil, &sfdata);
-			#endif
+#if TARGET_API_MAC_CARBON == 1
+			anErr = getafile (bsprompt, filetypes, &sfdata.sfreply, filecreator);
+#else
+			CustomGetFile (
+				knowntypesfilterUPP,
+				cttypes,
+				types,
+				&sfdata.sfreply,
+				sfgetfileid,
+				pt,
+				sfprompthookUPP,
+				nil, nil, nil,
+				&sfdata);
+#endif
 			break;
 		
 		case sfgetfolderverb:
 			if(gCanUseNavServ) 
 				anErr = TimsGetFolderOrVolume(bsprompt, sfgetfolderid, &sfdata.sfreply);
-			#if !TARGET_API_MAC_CARBON
+#if !TARGET_API_MAC_CARBON
 			else
 				CustomGetFile (onlyfoldersfilterUPP, cttypes, types, &sfdata.sfreply, sfgetfolderid, pt, 
 						sffolderhookUPP, nil, nil, nil, &sfdata);
-			#endif
+#endif
 			break;
 		
 		case sfgetdiskverb:
 			if(gCanUseNavServ) 
 				anErr = TimsGetFolderOrVolume(bsprompt, sfgetdiskid, &sfdata.sfreply);
-			#if !TARGET_API_MAC_CARBON
+#if !TARGET_API_MAC_CARBON
 			else
 				CustomGetFile (nil, cttypes, types, &sfdata.sfreply, sfgetdiskid, pt, 
 						sfdiskhookUPP, nil, nil, nil, &sfdata);
-			#endif
+#endif
 
 			break;
 		}
@@ -604,11 +621,11 @@ static pascal Boolean knowntypesfilter (ParmBlkPtr pb, tysfdata *pdata) {
 		//CustomGetFile (sffilefilter, cttypes, types, &sfdata.sfreply, id, pt, 
 		//	sfhook, nil, nil, nil, &sfdata);
 	
-	#ifdef flcomponent
+#ifdef flcomponent
 	
 	RestoreA5 (appA5);
 	
-	#endif
+#endif
 	//if the user canceled return false
 	//I know that oserror can handle this, but lets make it
 	//obvious that we are checking.
@@ -653,8 +670,7 @@ static void buildfilter (char * filter, short * len, bigstring bsname, bigstring
 
 
 boolean sfdialog (tysfverb sfverb, bigstring bsprompt, ptrsftypelist filetypes, tyfilespec *fspec, OSType filecreator) {
-
-	#pragma unused (filecreator)
+#pragma unused (filecreator)
 	
 	/*
 	2005-10-06 creedon: added filecreator, unused on Windows
@@ -682,6 +698,7 @@ boolean sfdialog (tysfverb sfverb, bigstring bsprompt, ptrsftypelist filetypes, 
 	boolean flfatpages = false;
 	// Global pointer to the shell's IMalloc interface.  
 	static LPMALLOC pMalloc = NULL;
+
 
 	OpenFileName.lStructSize       = sizeof(OPENFILENAME);
 	OpenFileName.hwndOwner         = shellframewindow;
@@ -1206,19 +1223,18 @@ pascal void NavEventProc(NavEventCallbackMessage callBackSelector,
                         NavCBRecPtr callBackParms,
                         NavCallBackUserData callBackUD)
 {
-   #pragma unused(callBackUD)
-    if (callBackSelector == kNavCBEvent)
-    {
-        if(((callBackParms->eventData)
-                    .eventDataParms).event->what == updateEvt)
-           	{
-            	//I was having a crash due to getting the window ptr outside the switch statement.
-            	// This now works.
-            	//10/30/00 Timothy Paustian
-            	WindowPtr window = (WindowPtr)(((callBackParms->eventData).eventDataParms).event)->message;
-              	shellupdatenow(window);
-            }
-    }
+#pragma unused(callBackUD)
+	if (callBackSelector == kNavCBEvent)
+	{
+		if( ((callBackParms->eventData).eventDataParms).event->what == updateEvt)
+		{
+			//I was having a crash due to getting the window ptr outside the switch statement.
+			// This now works.
+			//10/30/00 Timothy Paustian
+			WindowPtr window = (WindowPtr)(((callBackParms->eventData).eventDataParms).event)->message;
+			shellupdatenow(window);
+		}
+	}
 }
 
 #endif
