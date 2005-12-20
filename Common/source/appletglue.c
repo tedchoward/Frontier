@@ -40,7 +40,9 @@ boolean popmacport (void);
 void centerwindow (WindowPtr w, Rect rscreen);
 boolean rectlessthan (Rect r1, Rect r2);
 boolean unicaseequalstrings (void *pvoid1, void *pvoid2);
-boolean oldclutconverter (short index, RGBColor *rgb);
+
+// kw - 2005-12-15 - compiler warning rename
+boolean oldclutconverter (short idx, RGBColor *rgb);
 boolean emptyrect (Rect r);
 boolean pushhandleonhandle (Handle hsource, Handle hdest);
 void deleteinhandle (Handle h, unsigned long ix, unsigned long ctdelete);
@@ -162,13 +164,13 @@ static boolean getclut (short resid, CTabHandle *hdlctab) {
 	return (true);
 	} /*getclut*/
 
-boolean oldclutconverter (short index, RGBColor *rgb) {
+boolean oldclutconverter (short idx, RGBColor *rgb) {
 
 	CTabHandle hdlctab;
 
 	getclut (128, &hdlctab);
 	
-	*rgb = (**hdlctab).ctTable [index].rgb;
+	*rgb = (**hdlctab).ctTable [idx].rgb;
 
 	return (true);
 	} /*oldclutconverter*/
@@ -229,7 +231,7 @@ boolean pushathandlestart (ptrvoid pdata, long ctbytes, Handle h) {
 	
 	
 boolean findrunningapp (OSType id, void *info) {
-	
+#pragma unused(info)
 	return (findrunningapplication (&id, nil, nil));
 	} /*findrunningapp*/
 
