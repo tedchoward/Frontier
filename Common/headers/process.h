@@ -257,7 +257,7 @@ extern boolean processtimesliceelapsed (void);
 
 extern unsigned long processstackspace (void);
 
-extern boolean scheduleprocess (hdlprocessrecord hprocess, hdlprocessthread *newthread);
+extern boolean scheduleprocess (hdlprocessrecord hprocess, hdlprocessthread *pnewthread);
 
 extern void processscheduler (void);
 
