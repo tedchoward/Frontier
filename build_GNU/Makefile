@@ -1164,7 +1164,7 @@ MAC_REZ = \
 	$(SRCDIR)/Common/resources/Mac/clut.r \
 	$(SRCDIR)/Common/resources/Mac/ioaapp.r \
 	$(SRCDIR)/Common/resources/Mac/iowaruntime.r \
-	$(SRCDIR)/Common/resources/Mac/kernvelverbs.r \
+	$(SRCDIR)/Common/resources/Mac/kernelverbs.r \
 	$(SRCDIR)/Common/resources/Mac/lang.r \
 	$(SRCDIR)/Common/resources/Mac/opicons.r \
 	$(SRCDIR)/Common/resources/Mac/osacomponent.r \
