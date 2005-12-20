@@ -140,17 +140,20 @@ boolean closeresourcefile (short rnum) {
 
 boolean openresourcefile (const tyfilespec *fs, short *rnum, short forktype) {
 #ifdef MACVERSION
-
 	/*
 	2005-09-02 creedon: added support for fork parameter, see resources.c: openresourcefile and pushresourcefile
 	*/ 
 	
 	short resourcerefnum = -1;
+#if TARGET_API_MAC_CARBON == 1
 	HFSUniStr255 fork;
 	FSRef myRef;
-	
+#endif
+
 	SetResLoad (false);
 	
+#if TARGET_API_MAC_CARBON == 1
+
 	FSpMakeFSRef (fs, &myRef);
 		
 	switch (forktype) {
@@ -164,15 +167,25 @@ boolean openresourcefile (const tyfilespec *fs, short *rnum, short forktype) {
 		}
 
 	/*
-	2005-09-01 creedon - in my reading about the FSOpenResourceFile function someone mentioned that it might not deal well with corrupted resources
-	and that dropping back to FSpOpenResFile seemed to do the trick.  i've not done that here but could be tried if the problem is real and manifests. 
+	2005-09-01 creedon - in my reading about the FSOpenResourceFile function someone mentioned
+	that it might not deal well with corrupted resources and that dropping back to FSpOpenResFile
+	seemed to do the trick.  i've not done that here but could be tried if the problem is real
+	and manifests. 
 	*/
 
 	FSOpenResourceFile (&myRef, fork.length, fork.unicode, fsRdWrPerm, &resourcerefnum);
-	
+
+#else
+
+	resourcerefnum = FSpOpenResFile (fs, fsRdWrPerm);
+
+#endif
+
 	SetResLoad (true);
-	
+
 	if (ResError () == -39) { /*eof error, file has no resource fork, create one*/
+
+#if ((TARGET_API_MAC_CARBON == 1) && !defined(__MWERKS__))
 
 		OSErr errcode = FSCreateResourceFork (&myRef, fork.length, fork.unicode, 0);
 	
@@ -180,8 +193,17 @@ boolean openresourcefile (const tyfilespec *fs, short *rnum, short forktype) {
 			goto error;
 		
 		FSOpenResourceFile (&myRef, fork.length, fork.unicode, fsRdWrPerm, &resourcerefnum);
+#else
+		HCreateResFile ((*fs).vRefNum, (*fs).parID, (StringPtr) (*fs).name);
+		
+		if (ResError () != noErr) /*failed to create resource fork*/
+			goto error;
+		
+		resourcerefnum = FSpOpenResFile (fs, fsRdWrPerm);
+
+#endif
 		}
-	
+
 	if (resourcerefnum != -1) /*it's open*/ {
 		
 		UseResFile (resourcerefnum); /*in case it was already open*/
@@ -191,16 +213,17 @@ boolean openresourcefile (const tyfilespec *fs, short *rnum, short forktype) {
 		return (true);
 		}
 	
-	error:
-	
+error:
+
 	setoserrorparam ((ptrstring) (*fs).name); /*in case error message takes a filename parameter*/
-	
+
 	oserror (ResError ());
-	
+
 	closeresourcefile (resourcerefnum); /*checks for -1*/
-	
+
 	*rnum = -1;
-#endif	
+
+#endif // MACVERSION
 	return (false);
 	} /*openresourcefile*/
 
@@ -589,8 +612,12 @@ static boolean pushresourcefile (const tyfilespec *fs, char permission, short fo
 	*/
 	
 	register OSErr errcode;
+#if TARGET_API_MAC_CARBON == 1
 	FSRef	myRef;
-	
+#endif
+
+#if TARGET_API_MAC_CARBON == 1
+
 	errcode = FSpMakeFSRef (fs, &myRef);
 	
 	if (!errcode) {
@@ -606,26 +633,40 @@ static boolean pushresourcefile (const tyfilespec *fs, char permission, short fo
 				FSGetDataForkName (&fork);
 				break;
 			}
-
+#endif
 		oldrnum = CurResFile ();
 	
 		SetResLoad (false);
 	
 		/*
-		2005-08-31 creedon - in my reading about the FSOpenResourceFile function someone mentioned that it might not deal well with corrupted resources
-		and that dropping back to FSpOpenResFile seemed to do the trick.  i've not done that here but could be tried if the problem is real and manifests. 
+		2005-08-31 creedon - in my reading about the FSOpenResourceFile function someone mentioned
+		that it might not deal well with corrupted resources and that dropping back to FSpOpenResFile
+		seemed to do the trick.  i've not done that here but could be tried if the problem is real
+		and manifests. 
 		*/
-		
-		errcode = FSOpenResourceFile (&myRef, fork.length, fork.unicode, permission, &newrnum);
-		
-		SetResLoad (true);
 	
+#if TARGET_API_MAC_CARBON == 1
+
+		errcode = FSOpenResourceFile (&myRef, fork.length, fork.unicode, permission, &newrnum);
+#else
+		// kw 2005-12-17 - OS9 compliance
+		newrnum = FSpOpenResFile (fs, permission);
+
+#endif		
+		SetResLoad (true);
+
+#if TARGET_API_MAC_CARBON == 1
 		if (errcode != -1) /*opened OK*/
 			return (true);
-
+#else
+		if (newrnum != -1) /*opened OK*/
+			return (true);
+#endif
 		errcode = ResError ();
 
+#if TARGET_API_MAC_CARBON == 1
 		}
+#endif
 
 	if (errcode != eofErr) { /*don't want an alert if there isn't a resource fork*/
 		
@@ -975,7 +1016,8 @@ boolean setresourceattributes (const tyfilespec *fs, ResType type, short id, big
 	
 	Handle h;
 	register boolean fl = false;
-	#define validattrs (resSysHeap | resPurgeable | resLocked | resProtected | resPreload)
+	short validattrs = (resSysHeap | resPurgeable | resLocked | resProtected | resPreload);
+//	#define validattrs (resSysHeap | resPurgeable | resLocked | resProtected | resPreload)
  	
 	if (!pushresourcefilereadwrite (fs, forktype))
 		return (false);

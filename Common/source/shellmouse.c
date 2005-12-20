@@ -404,8 +404,12 @@ void shellhandlemouse (void) {
 			break;
 		
 		case inMenuBar: 
+#if TARGET_API_MAC_CARBON == 1
+
 			shellupdateopenrecentmenu (); /* 2005-09-25 creedon */
-			
+
+#endif
+
 			shellupdatemenus (); /*be sure the menus are properly checked and highlighted*/
 			
 			setcursortype (cursorisarrow); /*arrow cursor is more appropriate here*/
