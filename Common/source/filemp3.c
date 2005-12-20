@@ -346,7 +346,8 @@ static long extractfourbytes (Handle h, long ix) {
 
 
 static boolean getxingheader (tympeginfostruct *info, Handle h, long ix, long *ctframes, long *ctbytes) {
-	
+#pragma unused (info)
+
 	long flags;
 	
 	ix += 32; //MPEG 1, Layer 3
