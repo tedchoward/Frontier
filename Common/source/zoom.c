@@ -115,11 +115,14 @@ void zoomrect (Rect *rfrom, Rect *rto, boolean flzoomup) {
 	//can't use GrafPorts, have to use the ptrs
 	//This stuff isn't called in the PPC OT version
 	CGrafPtr deskport;
-	#if ACCESSOR_CALLS_ARE_FUNCTIONS == 1
+
+
+	return;		// kw - 2005-12-20 - killing zoomrects
+#if ACCESSOR_CALLS_ARE_FUNCTIONS == 1
 	deskport = CreateNewPort();
-	#else
+#else
 	deskport = NewPtr(sizeof(CGrafPort));
-	#endif
+#endif
 	
 	
 	if (!shellisactive ()) /*we're not front app*/
