@@ -569,19 +569,20 @@ static pascal Boolean knowntypesfilter (ParmBlkPtr pb, tysfdata *pdata) {
 			break;
 		
 		case sfgetfileverb:
-#if TARGET_API_MAC_CARBON == 1
-			anErr = getafile (bsprompt, filetypes, &sfdata.sfreply, filecreator);
-#else
-			CustomGetFile (
-				knowntypesfilterUPP,
-				cttypes,
-				types,
-				&sfdata.sfreply,
-				sfgetfileid,
-				pt,
-				sfprompthookUPP,
-				nil, nil, nil,
-				&sfdata);
+			if (gCanUseNavServ) 
+				anErr = getafile (bsprompt, filetypes, &sfdata.sfreply, filecreator);
+#if !TARGET_API_MAC_CARBON
+			else
+				CustomGetFile (
+					knowntypesfilterUPP,
+					cttypes,
+					types,
+					&sfdata.sfreply,
+					sfgetfileid,
+					pt,
+					sfprompthookUPP,
+					nil, nil, nil,
+					&sfdata);
 #endif
 			break;
 		
