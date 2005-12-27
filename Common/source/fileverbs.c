@@ -1147,6 +1147,8 @@ static boolean getnthresourceverb (hdltreenode hparam1, tyvaluerecord *v) {
 static boolean getnthresinfoverb (hdltreenode hparam1, tyvaluerecord *v) {
 	
 	/*
+	2005-12-26 creedon: commented out param count check
+	
 	2005-09-02 creedon: added support for fork parameter, see resources.c: openresourcefile and pushresourcefile
 	
 	6/2/92 dmb: created.
@@ -1162,8 +1164,8 @@ static boolean getnthresinfoverb (hdltreenode hparam1, tyvaluerecord *v) {
 	boolean fl;
 	tyvaluerecord val;
 	
-	if (!langcheckparamcount (hparam1, 6))
-		return (false);
+	/* if (!langcheckparamcount (hparam1, 5))
+		return (false); */
 	
 	if (!getpathvalue (hparam1, 1, &fs)) 
 		return (false);
