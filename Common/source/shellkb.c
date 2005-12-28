@@ -316,7 +316,7 @@ void shellhandlekeystroke (void) {
 		
 		shellupdatemenus (); /*be sure the menus are properly checked and highlighted*/
 		
-		if (!shellhandlemenu (MenuEvent (&shellevent))) { /* cmd-key not consumed by menubar */ /* 2005-10-01 creedon - change MenuKey to MenuEvent, allows OS X Keyboard Shortcuts to get through */ // cmd-key not consumed by menubar
+		if (!shellhandlemenu (MenuKey (chkb))) { /*cmd-key not consumed by menubar*/
 			
 			if (fl)
 				(*shellglobals.cmdkeyfilterroutine) (chkb);
