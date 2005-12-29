@@ -48,13 +48,15 @@ static boolean flouchlocked = false;	/*4.0b7 dmb*/
 static boolean shellfilterfontkey (long *codeword) {
 	
 	/*
+	2005-12-28 lawton, creedon : if option key is down bail out, allows command-option-u to find its item in its menubar
+	
 	filter cmd-shift-B,I,U,O,S to a style-menu item.
 	*/
 	
 	register short ixitem;
 	register short ixmenu;
 	
-	if ((!keyboardstatus.flcmdkey) || (!keyboardstatus.flshiftkey)) 
+	if ((!keyboardstatus.flcmdkey) || (!keyboardstatus.flshiftkey) || keyboardstatus.floptionkey) 
 		return (false);
 	
 	if (shellmenuhandle (fontmenu) == nil) /*font menu isn't present*/
