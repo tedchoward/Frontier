@@ -390,15 +390,15 @@ resource 'MENU' (129, "Style") {
 		/* [2] */
 		"-", noIcon, noKey, noMark, plain,
 		/* [3] */
-		"Bold", noIcon, noKey, noMark, 1,
+		"Bold", noIcon, "B", noMark, 1,
 		/* [4] */
-		"Italic", noIcon, noKey, noMark, 2,
+		"Italic", noIcon, "I", noMark, 2,
 		/* [5] */
-		"Underline", noIcon, noKey, noMark, 4,
+		"Underline", noIcon, "U", noMark, 4,
 		/* [6] */
-		"Outline", noIcon, noKey, noMark, 8,
+		"Outline", noIcon, "O", noMark, 8,
 		/* [7] */
-		"Shadow", noIcon, noKey, noMark, 16,
+		"Shadow", noIcon, "S", noMark, 16,
 		/* [8] */
 		"Superscript", noIcon, noKey, noMark, plain,
 		/* [9] */
@@ -602,6 +602,34 @@ resource 'MENU' (258, "normal popup") {
 	{	/* array: 0 elements */
 	}
 };
+
+resource 'xmnu' (129, "Style") {
+	versionZero
+	{
+		{
+			/* array ItemExtensions: 9 elements */
+			/* [1] */
+			skipItem {},
+			/* [2] */
+			skipItem {},
+			/* [3] */
+			dataItem {0, kMenuShiftModifier, currScript, 0, 0, noHierID, sysFont, naturalGlyph},
+			/* [4] */
+			dataItem {0, kMenuShiftModifier, currScript, 0, 0, noHierID, sysFont, naturalGlyph},
+			/* [5] */
+			dataItem {0, kMenuShiftModifier, currScript, 0, 0, noHierID, sysFont, naturalGlyph},
+			/* [6] */
+			dataItem {0, kMenuShiftModifier, currScript, 0, 0, noHierID, sysFont, naturalGlyph},
+			/* [7] */
+			dataItem {0, kMenuShiftModifier, currScript, 0, 0, noHierID, sysFont, naturalGlyph},
+			/* [8] */
+			skipItem {},
+			/* [9] */
+			skipItem {}
+			}
+		}
+	};
+
 
 resource 'STR#' (129, "Defaults", purgeable) {
 	{	/* array StringArray: 6 elements */
