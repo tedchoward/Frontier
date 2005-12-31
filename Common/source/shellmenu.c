@@ -54,6 +54,7 @@
 #include "cancoon.h"
 #include "tablestructure.h"
 #include "ops.h" /* 2005-09-25 creedon */
+#include "langinternal.h" /* 2005-12-27 creedon */
 
 
 tymenuinfo menustack [ctmenustack];
@@ -1468,11 +1469,13 @@ void shellupdatemenus (void) {
 boolean shellhandlemenu (long menucode) {
 
 	/*
+	2005-12-31 creedon: for host databases that don't have a Frontier.tools table, provide some of the basic file commands so that folks can work
+						with databases
+	
 	2005-09-25 creedon: changed so that all targets can call scripts for some file/edit menu commands
 					 added open recent menu
 	
-	7.0d6 PBS: With Pike's now-standard File menu, it's necessary to use
-	kernel routines for New and Open. Run scripts in Pike for everything else.
+	7.0d6 PBS: With Pike's now-standard File menu, it's necessary to use kernel routines for New and Open. Run scripts in Pike for everything else.
 
 	5/19/93 dmb: closefunc uses getfrontwindow, not shellwindow
 	*/
@@ -1549,10 +1552,11 @@ boolean shellhandlemenu (long menucode) {
 		case filemenu: {
 		
 			boolean flkernelhandledcommand = false, flfoundrootwindow = false;
+		
 			WindowPtr w = shellwindow;
 			Handle hdata;
 			hdlwindowinfo hinfo;
-
+			
 			if (w == nil) {
 				flfoundrootwindow = ccfindrootwindow (&hinfo);
 				if (flfoundrootwindow)
@@ -1562,29 +1566,19 @@ boolean shellhandlemenu (long menucode) {
 			switch (iditem) {
 				
 				case closeitem: /* possibly close an Error Info window */
-
+			
 					if (shellfindwindow (idlangerrorconfig, &w, &hinfo, &hdata)) { /* is there an Error Info window? */
-
+			
 						if (w == getfrontwindow ()) { /* is the Error Info window in front? */
 						
 							shellclose (w, true); /* close the Error Info window */
-
+			
 							flkernelhandledcommand = true; /* the kernel handled the command */
 							} /* if */
 						} /* if */
-	
+			
 					break;
-
-				/* case closeitem:
-					if (keyboardstatus.floptionkey)
-						shellcloseall (w, true);
-					else
-						shellclose (getfrontwindow (), true);
-					
-					flkernelhandledcommand = true;
-				
-					break; */
-				
+			
 				case quititem:
 					
 					if (!flfoundrootwindow) {
@@ -1596,14 +1590,14 @@ boolean shellhandlemenu (long menucode) {
 					break;
 					
 				#ifndef PIKE
-
+			
 				case newitem:
 					shellnew ();
 					
 					flkernelhandledcommand = true;
 				
 					break;
-
+			
 				case pagesetupitem:
 					shellpagesetup ();
 					
@@ -1617,22 +1611,73 @@ boolean shellhandlemenu (long menucode) {
 					flkernelhandledcommand = true;
 				
 					break;
-
+			
 				case saverunnableitem:
 					shellsaveas (w, nil, true);
 					
 					flkernelhandledcommand = true;
 				
 					break;
-					
+				
 				#endif
-
+			
 				} /*switch*/
-								
-			if (!flkernelhandledcommand) /*Run the script if special cases weren't handled above.*/
-
-				runfilemenuscript (iditem);
-
+			
+			if (!flkernelhandledcommand) { /*Run the script if special cases weren't handled above. */
+			
+#ifndef PIKE
+			
+				bigstring bs;
+				boolean flrunfilemenuscript = langrunstringnoerror ("\x2C" "Frontier.tools.windowTypes.runFileMenuScript", bs);				
+				
+				if (flrunfilemenuscript)
+			
+#endif
+			
+					runfilemenuscript (iditem);
+				
+#ifndef PIKE
+			
+				else { /* if the script is not defined then we try to do some menu items without the script */
+				
+					switch (iditem) {
+					
+						case openitem:
+							shellopen ();
+											
+							break;
+					
+						case closeitem:
+							if (keyboardstatus.floptionkey)
+								shellcloseall (w, true);
+							else
+								shellclose (getfrontwindow (), true);
+							
+							break;
+						
+						case saveitem:
+							shellsave (w);
+							
+							break;
+					
+						case saveasitem:
+							shellsaveas (w, nil, false);
+							
+							break;
+					
+						case revertitem:
+							shellrevert (w, true);
+							
+							break;
+					
+						} /*switch*/
+					
+					} /* else */
+					
+				}
+						
+#endif
+			
 			break; /* file menu */
 			}
 		
@@ -2012,12 +2057,12 @@ boolean shellhandlemenu (long menucode) {
 void runfilemenuscript (short ixmenu) {
 	
 	/*
-	2005-09-14 creedon: changed name from pikerunfilemenuscript to runfilemenuscript, all targets can now run a script associated with some of the file menu commands
+	2005-09-14 creedon: changed name from pikerunfilemenuscript to runfilemenuscript, all targets can now run a script associated with some of
+						the file menu commands
 	
-	6.2a2 AR: Call the pike.runFileMenuScript script to eventually run the
-	script associated with the current menu command.
-
 	7.1b4 PBS: get script string from resource, don't hard-code.
+
+	6.2a2 AR: Call the pike.runFileMenuScript script to eventually run the script associated with the current menu command.
 	*/
 
 	bigstring bsscript, bsitem, bsresult;
