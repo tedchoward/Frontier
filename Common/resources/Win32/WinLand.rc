@@ -352,11 +352,11 @@ BEGIN
     BEGIN
         MENUITEM "Plain Text",                  stylemenu+plainitem
         MENUITEM SEPARATOR
-        MENUITEM "Bold",                        stylemenu+bolditem
-        MENUITEM "Italic",                      stylemenu+italicitem
-        MENUITEM "Underline",                   stylemenu+underlineitem
-        MENUITEM "Outline",                     stylemenu+outlineitem
-        MENUITEM "Shadow",                      stylemenu+shadowitem
+        MENUITEM "&Bold\tCtrl+Shift+B",                        stylemenu+bolditem
+        MENUITEM "&Italic\tCtrl+Shift+I",                      stylemenu+italicitem
+        MENUITEM "&Underline\tCtrl+Shift+U",                   stylemenu+underlineitem
+        MENUITEM "&Outline\tCtrl+Shift+O",                     stylemenu+outlineitem
+        MENUITEM "&Shadow\tCtrl+Shift+S",                      stylemenu+shadowitem
         MENUITEM "Superscript",                 stylemenu+superscriptitem
         MENUITEM "Subscript",                   stylemenu+subscriptitem
     END
@@ -427,7 +427,7 @@ findandreplacemenu MENU DISCARDABLE
 BEGIN
     POPUP "Find and Replace"
     BEGIN
-        MENUITEM "&Find\tCtrl+F",                findandreplacemenu+1
+        MENUITEM "&Find...\tCtrl+F",                findandreplacemenu+1
         MENUITEM "Replace",                      findandreplacemenu+2
         MENUITEM "Find Next\tCtrl+G",            findandreplacemenu+3
         MENUITEM "Replace && Find Next\tCtrl+H", findandreplacemenu+4

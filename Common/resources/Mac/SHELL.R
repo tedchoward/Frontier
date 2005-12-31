@@ -493,7 +493,7 @@ resource 'MENU' (133, "Find and Replace") {
 	"Find and Replace",
 	{	/* array: 4 elements */
 		/* [1] */
-		"Find", noIcon, "F", noMark, plain,
+		"Find...", noIcon, "F", noMark, plain,
 		/* [2] */
 		"Replace", noIcon, noKey, noMark, plain,
 		/* [3] */
