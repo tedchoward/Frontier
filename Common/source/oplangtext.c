@@ -179,27 +179,22 @@ static boolean oplangtextvisit (hdlheadrecord hnode, ptrvoid refcon) {
 		
 		if (flmakeitpretty) {
 			
-			if (!copyhandle ((**h).headstring, &bshead)) 
+			if (!copyhandle ((**h).headstring, &bscomment)) 
 				goto exit;
 			
 			ch = chcomment;
 			
-			if (!insertinhandle (bshead, 0, &ch, 1L))
+			if (!insertinhandle (bscomment, 0, &ch, 1L))
 				goto exit;
-			
 			}
 		
 		nomad = h;
 		
 		if (opnavigate (left, &nomad) && opnestedincomment (nomad)) {
 			
-			if (!copyhandle (bshead, &bscomment))
-				goto exit;
-			
 			flparentwascomment = true;
 			
 			goto L2;
-			
 			}
 		
 		if (level > langtextlastlevel) {
@@ -348,7 +343,6 @@ static boolean oplangtextvisit (hdlheadrecord hnode, ptrvoid refcon) {
 			
 			}
 		}
-		
 	else {
 		
 		if (!writehandlestreamhandle (langtext, bshead))
