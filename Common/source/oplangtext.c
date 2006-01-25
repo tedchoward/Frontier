@@ -40,8 +40,6 @@
 
 static short langtextlastlevel; /*globals used for visit routines*/
 
-//static Handle hlangtext;
-
 static boolean flfirstlangtextline;
 
 static short ctlinesincontinuation;
@@ -61,7 +59,6 @@ static boolean backslashdelete (Handle bs) {
 	
 	if (len > 0 && (*bs) [len - 1] == '\\') {
 		
-		//setstringlength (bs, len - 1);
 		popfromhandle (bs, 1, nil);
 		
 		return (true);
@@ -94,6 +91,27 @@ static boolean poptrailingwhitespacehandle (Handle bs) {
 	
 	return (true); /*string is all blank*/
 	} /*poptrailingwhitespacehandle*/
+
+static boolean remainingsubheadsarecomments (hdlheadrecord hnode) {
+	
+	/*
+	are all of the remaining subheads (at the current level) comments?
+	*/
+	
+	hdlheadrecord nomad = hnode;
+	
+	if (!(**nomad).flcomment)
+		return false;
+	
+	while (opnavigate (down, &nomad)) {
+		
+		if (!(**nomad).flcomment)
+			return false;
+		
+		}
+	
+	return true;
+	} /*remainingsubheadsarecomments*/
 
 
 static boolean oplangtextvisit (hdlheadrecord hnode, ptrvoid refcon) {
@@ -129,16 +147,22 @@ static boolean oplangtextvisit (hdlheadrecord hnode, ptrvoid refcon) {
 	5.0a16 dmb: don't require else to be on a line by itself
 	
 	6.0a13 dmb: rewrote to use handles, handlestreams
+	
+	2006-01-23 smd: lots of changes when flmakepretty is true,
+	to fix problems with round trip between script outline and text.
+	This function is in desperate need of a rewrite, but it seem to work now
+	for every test case I could come up with.
 	*/
 	
-	register hdlheadrecord h = hnode;
+	hdlheadrecord h = hnode;
 	handlestream *langtext = (handlestream *) refcon;
-	register short level;
+	short level;
 	bigstring bs;
 	Handle bshead;
 	Handle bscomment = nil;
 	boolean fltobecontinued = false;
 	boolean flcomment;
+	boolean flparentwascomment = false;
 	hdlheadrecord nomad;
 	bigstring bsfirst;
 	byte ch;
@@ -151,27 +175,32 @@ static boolean oplangtextvisit (hdlheadrecord hnode, ptrvoid refcon) {
 	
 	if (flcomment) { /*just generate a blank line for a comment line*/
 		
-		bshead = nil; //setemptystring (bshead);
+		bshead = nil;
 		
 		if (flmakeitpretty) {
 			
-			//opgetheadstring (h, bshead);
 			if (!copyhandle ((**h).headstring, &bshead)) 
 				goto exit;
 			
-			//insertchar (chcomment, bshead);
 			ch = chcomment;
 			
 			if (!insertinhandle (bshead, 0, &ch, 1L))
 				goto exit;
 			
-			//setemptystring (bscomment);
 			}
 		
 		nomad = h;
 		
-		if (opnavigate (left, &nomad) && opnestedincomment (nomad))
+		if (opnavigate (left, &nomad) && opnestedincomment (nomad)) {
+			
+			if (!copyhandle (bshead, &bscomment))
+				goto exit;
+			
+			flparentwascomment = true;
+			
 			goto L2;
+			
+			}
 		
 		if (level > langtextlastlevel) {
 			
@@ -191,7 +220,6 @@ static boolean oplangtextvisit (hdlheadrecord hnode, ptrvoid refcon) {
 		}
 	else {
 		
-		//getheadstring (h, bshead);
 		if (!copyhandle ((**h).headstring, &bshead)) 
 			goto exit;
 		
@@ -204,7 +232,7 @@ static boolean oplangtextvisit (hdlheadrecord hnode, ptrvoid refcon) {
 		
 		len2 = langcommentdelete (chcomment, *bshead, len1);
 		
-		if (len2 >= 0) { //comment detected
+		if (len2 >= 0) { /* line is partly a comment */
 		
 			if (flmakeitpretty) { /*for exporting, we want to *add* comment character*/
 				
@@ -242,8 +270,11 @@ static boolean oplangtextvisit (hdlheadrecord hnode, ptrvoid refcon) {
 				else
 					setemptystring (bsfirst);
 
-				if (!equalidentifiers (bsfirst, STR_else)) /*never want a semicolon before else*/
-					pushchar (';', bs);
+				if (!equalidentifiers (bsfirst, STR_else)) { /*never want a semicolon before else*/
+					
+					if (!flmakeitpretty || !flcomment || !remainingsubheadsarecomments (h))  /* no semicolon before the closing braces */
+						pushchar (';', bs);
+					}
 				}
 			}
 		
@@ -257,15 +288,15 @@ static boolean oplangtextvisit (hdlheadrecord hnode, ptrvoid refcon) {
 	
 	L2:
 	
-	if (flmakeitpretty) {
+	if (flmakeitpretty && !flcomment) {
 		
 		if (!writehandlestreamhandle (langtext, *plastcomment))
 			goto exit;
 		
 		disposehandle (*plastcomment);
 		
-		//copystring (bscomment, plastcomment);
 		*plastcomment = bscomment;
+		
 		}
 	
 	if (!flfirstlangtextline && (ctlinesincontinuation == 0)) {
@@ -282,14 +313,47 @@ static boolean oplangtextvisit (hdlheadrecord hnode, ptrvoid refcon) {
 				pushchar (chtab, bs);
 			}
 		
-		if (!writehandlestreamstring (langtext, bs))
-			goto exit;
+		if (flmakeitpretty && flparentwascomment) {
+			
+			if (!pushtexthandle (bs, *plastcomment))
+				goto exit;
+			
+			}
+		else if (flmakeitpretty && flcomment) {
+			
+			if (!inserttextinhandle (bscomment, 0L, bs))
+				goto exit;
+			
+			}
+		else {
+			
+			if (!writehandlestreamstring (langtext, bs))
+				goto exit;
+			
+			}
 		}
 	
 	flfirstlangtextline = false;
 	
-	if (!writehandlestreamhandle (langtext, bshead))
-		goto exit;
+	if (flmakeitpretty && flcomment) {
+		
+		if (! *plastcomment)
+			
+			*plastcomment = bscomment;
+			
+		else {
+			
+			if (!pushhandle (bscomment, *plastcomment))
+				goto exit;
+			
+			}
+		}
+		
+	else {
+		
+		if (!writehandlestreamhandle (langtext, bshead))
+			goto exit;
+		}
 	
 	if (fltobecontinued)
 		++ctlinesincontinuation;
@@ -349,9 +413,6 @@ boolean opgetlangtext (hdloutlinerecord houtline, boolean flpretty, Handle *htex
 	
 	setemptystring (bs);
 	
-//	if (!newgrowinghandle (0, htext))
-//		return (false);
-	
 	*htext = nil;
 	
 	openhandlestream (nil, &s); //handle will be created on first write
@@ -383,7 +444,6 @@ boolean opgetlangtext (hdloutlinerecord houtline, boolean flpretty, Handle *htex
 	
 	fllastwascomment = true;
 	
-	//setemptystring (bslastcomment);
 	bslastcomment = nil;
 	
 	plastcomment = &bslastcomment; /*make available to visit routine*/
