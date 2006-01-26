@@ -169,15 +169,19 @@ carbonKillPrintVars(void)
 static boolean
 carbonValidSession(void)
 {
+#if TARGET_API_MAC_CARBON == 1
 	return (nil != shellprintinfo.printhandle);
+#else
+	return (false);
+#endif
 }
 
 
 static boolean
 carbonSessionPrintSession()
 {
-	OSStatus	theErr;
 #if TARGET_API_MAC_CARBON == 1
+	OSStatus	theErr;
 
 	if (nil == shellprintinfo.printhandle)
 	{
@@ -197,11 +201,11 @@ carbonSessionPrintSession()
 static boolean
 carbonSessionDefaultPageAndSettingValidate(void)
 {
+#if TARGET_API_MAC_CARBON == 1
 	OSStatus	theErr;
 	Boolean		f;
-
-#if TARGET_API_MAC_CARBON == 1
-
+	
+	
 	theErr = PMSessionDefaultPageFormat(
 										shellprintinfo.printhandle,
 										shellprintinfo.pageformat);
@@ -226,12 +230,13 @@ carbonSessionDefaultPageAndSettingValidate(void)
 	if(theErr != noErr)
 		goto error;
 
-#endif
 	
 	return (true);
 	
 error:
 		carbonKillPrintVars();
+
+#endif
 	
 	return false;
 	
@@ -241,8 +246,8 @@ error:
 static boolean
 carbonCreateFormatAndSetting(void)
 {
-	OSStatus	theErr;
 #if TARGET_API_MAC_CARBON == 1
+	OSStatus	theErr;
 
 	theErr = PMCreatePageFormat(&shellprintinfo.pageformat);
 	if(theErr != noErr || (shellprintinfo.pageformat == kPMNoPageFormat))
@@ -252,12 +257,12 @@ carbonCreateFormatAndSetting(void)
 	if(theErr != noErr)
 		goto error;
 
-#endif
 	return (true);
 	
 error:
 		carbonKillPrintVars();
 	
+#endif
 	return false;
 }
 
