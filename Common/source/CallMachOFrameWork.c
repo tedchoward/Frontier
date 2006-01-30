@@ -64,6 +64,8 @@ static boolean unixshellcallbackgroundtask (void);
 boolean unixshellcall (Handle hcommand, Handle hreturn) {
 
 	/*
+	2006-01-29 creedon: change buf from 32 to 1024 to increase performance of function, we can do this now because fread is now in non-blocking mode, kernel remains repsonsive
+	
 	2006-01-10 creedon: laid down the groundwork for a timeoutsecs parameter, what is a good default? longinfinity? several minutes? I know that some commands I've done have taken 15 - 30 minutes
 					 fread now reads in non-blocking mode, no error checking
 	
@@ -76,7 +78,7 @@ boolean unixshellcall (Handle hcommand, Handle hreturn) {
 	*/
 
 	FILE *f;
-	char buf [32];
+	char buf [1024];
 	long ct = 0;
 	// unsigned long timeoutsecs = 60 * 5;
 	// long timeoutticks = gettickcount () + (timeoutsecs * 60);
