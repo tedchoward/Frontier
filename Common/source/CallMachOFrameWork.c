@@ -325,7 +325,7 @@ static boolean unixshellcallbackgroundtask (void) {
 
 	if (inmainthread ()) {
 		EventRecord ev;
-		short mask = osMask|activMask|mDownMask|keyDownMask; //|highLevelEventMask|updateMask
+		short mask = osMask|activMask|mDownMask|keyDownMask; // |highLevelEventMask|updateMask
 		long sleepTime = 6;	// 1/10 of a second by default
 		
 		if (WaitNextEvent (mask, &ev, sleepTime, nil)) /* might return false to indicate a null event, but that's not an error */
