@@ -720,7 +720,7 @@ resource 'STR#' (257, "Lang Errors", purgeable) {
 };
 
 resource 'STR#' (258, "Mac Errors", purgeable) {
-	{	/* array StringArray: 87 elements */
+	{	/* array StringArray: 92 elements */
 		/* [1] */
 		"The Ò^0Ó folder is full.",
 		/* [2] */
