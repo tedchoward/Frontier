@@ -34,6 +34,7 @@
 #include "shell.rsrc.h"
 #include "file.h"
 #include "resources.h"
+#include "langinternal.h" /* 2006-01-30 creedon */
 
 
 #ifdef WIN95VERSION
@@ -141,6 +142,8 @@ boolean closeresourcefile (short rnum) {
 boolean openresourcefile (const tyfilespec *fs, short *rnum, short forktype) {
 #ifdef MACVERSION
 	/*
+	2006-01-30 creedon: added check for non-carbon OS and trying to access the data fork of a file, error message
+	
 	2005-09-02 creedon: added support for fork parameter, see resources.c: openresourcefile and pushresourcefile
 	*/ 
 	
@@ -148,8 +151,13 @@ boolean openresourcefile (const tyfilespec *fs, short *rnum, short forktype) {
 #if TARGET_API_MAC_CARBON == 1
 	HFSUniStr255 fork;
 	FSRef myRef;
+#else
+	if (forktype == datafork) { // if we're not on carbon then trying to use the data fork for resources is an error
+		langerrormessage ("\x4A" "Can't open the data fork for use with resources on this version of the OS.");
+		return (false);
+		}
 #endif
-
+		
 	SetResLoad (false);
 	
 #if TARGET_API_MAC_CARBON == 1
@@ -605,6 +613,8 @@ static for push/popresourcefile
 static boolean pushresourcefile (const tyfilespec *fs, char permission, short forktype) {
 	
 	/*
+	2006-01-30 creedon: added check for non-carbon OS and trying to access the data fork of a file, error message
+	
 	2005-09-02 creedon: added support for fork parameter, allows access to resources in data forks
 
 	2.1b8 dmb: call SetResLoad (false) before opening a resource fork to 
@@ -614,6 +624,11 @@ static boolean pushresourcefile (const tyfilespec *fs, char permission, short fo
 	register OSErr errcode;
 #if TARGET_API_MAC_CARBON == 1
 	FSRef	myRef;
+#else
+	if (forktype == datafork) { // if we're not on carbon then trying to use the data fork for resources is an error
+		langerrormessage ("\x4A" "Can't open the data fork for use with resources on this version of the OS.");
+		return (false);
+		}
 #endif
 
 #if TARGET_API_MAC_CARBON == 1
