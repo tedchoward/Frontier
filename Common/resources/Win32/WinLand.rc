@@ -71,8 +71,11 @@ LANGUAGE LANG_ENGLISH, SUBLANG_ENGLISH_US
 //
 
 #ifdef PIKE /*7.0d8 PBS: new icon for Radio UserLand*/
-//IDB_FRONTIER_BITMAP		BITMAP  DISCARDABLE     appIcon24.bmp
+#ifndef OPMLEDITOR
 IDB_FRONTIER_BITMAP		BITMAP  DISCARDABLE     radiobluedot.bmp
+#else
+IDB_FRONTIER_BITMAP		BITMAP  DISCARDABLE     opmlapp.bmp
+#endif
 #else
 //IDB_FRONTIER_BITMAP		BITMAP  DISCARDABLE     frontier.bmp
 IDB_FRONTIER_BITMAP		BITMAP  DISCARDABLE     FrontierCactus.bmp
@@ -135,9 +138,14 @@ IDB_BITMAP48            BITMAP  DISCARDABLE     bitmap48.bmp
 // remains consistent on all systems.
 
 #ifdef PIKE
+#ifndef OPMLEDITOR
 //	ID_FRONTIER_ICON        ICON    DISCARDABLE     radio.ico
 	ID_FRONTIER_ICON        ICON    DISCARDABLE     radiobluedot.ico
 	ID_FRONTIERTRAY_ICON    ICON    DISCARDABLE     RadioTrayIcon.ico
+#else // OPMLEDITOR
+	ID_FRONTIER_ICON        ICON    DISCARDABLE     OPMLapp.ico /*2006-02-05 aradke*/
+	ID_FRONTIERTRAY_ICON    ICON    DISCARDABLE     OPMLapp.ico /*2006-02-05 aradke*/
+#endif // OPMLEDITOR
 #else
 //	ID_FRONTIER_ICON        ICON    DISCARDABLE     Frontier.ico
 	ID_FRONTIER_ICON        ICON    DISCARDABLE     FrontierCactus.ico
@@ -173,7 +181,11 @@ ID_WP_ICON              ICON    DISCARDABLE     FTwp.ico
 ID_DESKTOPSCRIPT_ICON	ICON    DISCARDABLE     FTds.ico
 
 #ifdef PIKE
+#ifndef OPMLEDITOR
 	ID_OPML_ICON			ICON	DISCARDABLE		radioDoc.ico /*7.0b24 PBS*/
+#else
+	ID_OPML_ICON			ICON	DISCARDABLE		OPMLdoc.ico /*2006-02-05 aradke*/
+#endif
 #endif
 
 /////////////////////////////////////////////////////////////////////////////
@@ -211,18 +223,27 @@ BEGIN
         MENUITEM "&New\tCtrl+N",                 filemenu+newitem
 		MENUITEM "&Open...\tCtrl+O",             filemenu+openitem
 		MENUITEM "Open URL...",                  filemenu+openurlitem /*7.0b17 PBS*/
+#ifndef OPMLEDITOR
 		MENUITEM "Open Manila Site...",          filemenu+openmanilasiteitem /*7.0b27 PBS*/
+#endif // !OPMLEDITOR
         MENUITEM "&Close\tCtrl+W",               filemenu+closeitem
         MENUITEM SEPARATOR
         MENUITEM "&Save\tCtrl+S",                filemenu+saveitem
 		MENUITEM "Save As...",                   filemenu+saveasitem
+#ifndef OPMLEDITOR
 		MENUITEM "Save As HTML...",              filemenu+saveashtmlitem /*7.0b32 PBS*/
 		MENUITEM "Save As Plain Text...",        filemenu+saveasplaintextitem /*7.0b32 PBS*/
+#endif // OPMLEDITOR
         MENUITEM "&Revert",                      filemenu+revertitem
         MENUITEM SEPARATOR
         MENUITEM "&View in Browser\tCtrl+P",     filemenu+viewinbrowseritem
 		MENUITEM SEPARATOR
+#ifndef OPMLEDITOR
 		MENUITEM "Update Radio.root...",         filemenu+updateradiorootitem
+#else
+		MENUITEM "Update Opml.root...",         filemenu+updateradiorootitem
+#endif // OPMLEDITOR
+
 		MENUITEM "Work Offline",                 filemenu+workofflineitem /*7.0b25 PBS*/
         MENUITEM SEPARATOR
         MENUITEM "E&xit\tCtrl+Q",                filemenu+quititem
@@ -279,7 +300,9 @@ BEGIN
         MENUITEM "&Font",						fontmenu
         MENUITEM "&Size",						sizemenu
         MENUITEM SEPARATOR
+#ifndef OPMLEDITOR
         MENUITEM "Open Notepad\tCtrl+Y",		opennotepaditem
+#endif // OPMLEDITOR
         MENUITEM "Insert Date/Time\tCtrl+4",	insertdatetimeitem
     END
 END
@@ -332,7 +355,11 @@ BEGIN
     POPUP "&Help"
     BEGIN
 #ifdef PIKE
+#ifndef OPMLEDITOR
 		MENUITEM "Radio Website",				helpmenu+1 /*7.0d8 PBS: name change*/
+#else
+		MENUITEM "OPML Editor Website",				helpmenu+1 /*7.0d8 PBS: name change*/
+#endif // OPMLEDITOR
 #else
 		MENUITEM "About Frontier",				helpmenu+1
 #endif
@@ -447,16 +474,15 @@ BEGIN
     END
 END
 
-#ifdef MACVERSION
 openrecentmenu MENU DISCARDABLE /* 2005-09-25 creedon */
 BEGIN
     POPUP "Open Recent"
     BEGIN
         MENUITEM SEPARATOR
-        MENUITEM "Clear Menu",       openrecentmenu+2
+        MENUITEM "Clear Menu",       openrecentmenu+clearrecentmenuitem
     END
 END
-#endif
+
 
 /////////////////////////////////////////////////////////////////////////////
 //
@@ -813,8 +839,13 @@ END
 
 VS_VERSION_INFO VERSIONINFO
 #ifdef PIKE
+#ifndef OPMLEDITOR
  FILEVERSION radio_major_version,radio_sub_version,radio_minor_version,radio_build_number
  PRODUCTVERSION radio_major_version,radio_sub_version,radio_minor_version,radio_build_number
+#else
+ FILEVERSION opml_major_version,opml_sub_version,opml_minor_version,opml_build_number
+ PRODUCTVERSION opml_major_version,opml_sub_version,opml_minor_version,opml_build_number
+#endif
 #else
  FILEVERSION frontier_major_version,frontier_sub_version,frontier_minor_version,frontier_build_number
  PRODUCTVERSION frontier_major_version,frontier_sub_version,frontier_minor_version,frontier_build_number
@@ -833,55 +864,93 @@ BEGIN
     BEGIN
         BLOCK "040904e4"
         BEGIN
+#ifndef OPMLEDITOR
             VALUE "CompanyName", "UserLand Software, Inc.\0"
+#else   // OPMLEDITOR
+			VALUE "CompanyName", "Scripting News, Inc.\0"
+#endif  //  OPMLEDITOR
 #ifdef PIKE
+#ifndef OPMLEDITOR
             VALUE "FileDescription", "Radio UserLand\0" /*7.0d8 PBS: name change*/
+#else   // OPMLEDITOR
+			 VALUE "FileDescription", "OPML\0" /*2005-04-06 dluebbert: name change*/
+#endif  // OPMLEDITOR
 #else
             VALUE "FileDescription", "UserLand Frontier\0"
 #endif
 		#ifdef fltrialsize
 			#ifdef PIKE
+				#ifndef OPMLEDITOR
             	VALUE "FileVersion", "Trial " radio_version_string "\0"
+            	#else
+            		VALUE "FileVersion", "Trial " opml_version_string "\0"
+            	#endif
             #else
             	VALUE "FileVersion", "Trial " frontier_version_string "\0"
             #endif
 		#else
 			#ifdef PIKE
+				#ifndef OPMLEDITOR
             	VALUE "FileVersion", radio_version_string "\0"
+            	#else
+            		VALUE "FileVersion", opml_version_string "\0"
+            	#endif
             #else
             	VALUE "FileVersion", frontier_version_string "\0"
             #endif
 		#endif
 #ifdef PIKE
+#ifndef OPMLEDITOR
             VALUE "InternalName", "Radio\0" /*7.0d8 PBS: name change*/
+#else   // OPMLEDITOR
+			VALUE "InternalName", "OPML\0" /*2005-04-06 dluebbert: name change*/
+#endif  // OPMLEDITOR
 #else
             VALUE "InternalName", "Frontier\0"
 #endif
       //    VALUE "Language", "English (United States)\0"
-            VALUE "LegalCopyright", "© 1992-2002 UserLand Software, Inc.\0"
 #ifdef PIKE /*7.0d8 PBS: name change*/
-            VALUE "LegalTrademarks", "\042UserLand\042 and \042Radio\042 are the trademarks of UserLand Software, Inc.\0"
+#ifndef OPMLEDITOR
+            VALUE "LegalCopyright", "© 1992-2002 UserLand Software, Inc.\0"
+            VALUE "LegalTrademarks", "\042Userland\042 and \042Radio\042 is the trademarks of UserLand Software, Inc.\0"
             VALUE "OriginalFilename", "Radio.exe\0"
             VALUE "ProductName", "Radio UserLand\0"
-#else
+            VALUE "Full Copyright", "© Copyright UserLand Software, Inc. All rights reserved. Permission and Use is Granted Subject to the UserLand End-User License Agreement.\0"
+#else  // OPMLEDITOR
+            VALUE "LegalCopyright", "© 1992-2006 Scripting News, Inc.\0"
+			VALUE "LegalTrademarks", "\042OPML\042 is a trademarks of Scripting News, Inc.\0"
+            VALUE "OriginalFilename", "opml.exe\0"
+            VALUE "ProductName", "OPML\0"
+            VALUE "Full Copyright", "© Copyright Scripting News, Inc. All rights reserved. Permission and Use is Granted Subject to the GNU General Public License.\0"
+#endif // OPMLEDITOR
+#else  // !PIKE
+            VALUE "LegalCopyright", "© 1992-2002 UserLand Software, Inc.\0"
             VALUE "LegalTrademarks", "\042UserLand\042 and \042Frontier\042 are the trademarks of UserLand Software, Inc.\0"
             VALUE "OriginalFilename", "Frontier.exe\0"
             VALUE "ProductName", "Frontier\0"
-#endif
             VALUE "Full Copyright", "© Copyright UserLand Software, Inc. All rights reserved. Permission and Use is Granted Subject to the UserLand End-User License Agreement.\0"
-#ifdef PIKE
-		#ifdef fltrialsize
+#endif  // !PIKE
+#ifdef fltrialsize
+	#ifdef PIKE
+		#ifndef OPMLEDITOR
             VALUE "ProductVersion", "Trial " radio_version_string "\0"
 		#else
-            VALUE "ProductVersion", radio_version_string "\0"
-		#endif
-#else
-		#ifdef fltrialsize
+    		VALUE "ProductVersion", "Trial " opml_version_string "\0"
+    	#endif
+    #else
             VALUE "ProductVersion", "Trial " frontier_version_string "\0"
-		#else
+    #endif
+#else
+	#ifdef PIKE
+		#ifndef OPMLEDITOR
+    		VALUE "ProductVersion", radio_version_string "\0"
+    	#else
+    		VALUE "ProductVersion", opml_version_string "\0"
+    	#endif
+	#else
             VALUE "ProductVersion", frontier_version_string "\0"
-		#endif
-#endif //PIKE
+	#endif
+#endif
         END
     END
     BLOCK "VarFileInfo"
@@ -912,7 +981,7 @@ BEGIN
 END
 
 #ifdef PIKE
-
+#ifndef OPMLEDITOR
 STRINGTABLE DISCARDABLE
 BEGIN
     IDS_CLIENTTITLE         "Radio UserLand" //radio_version_string /*7.0d8 PBS: name change*/
@@ -921,8 +990,17 @@ BEGIN
     IDS_PRINTJOB            "Radio UserLand - "
     IDS_PRINTERROR          "Cannot print %s!"
 END
-
-#else
+#else // OPMLEDITOR
+	STRINGTABLE DISCARDABLE
+BEGIN
+    IDS_CLIENTTITLE         "OPML" //radio_version_string /*2005-04-06 dluebbert: name change*/
+    IDS_UNTITLED            "Untitled"
+    IDS_APPNAME             "OPML"
+    IDS_PRINTJOB            "OPML - "
+    IDS_PRINTERROR          "Cannot print %s!"
+END
+#endif // OPMLEDITOR
+#else  // !PIKE
 
 STRINGTABLE DISCARDABLE
 BEGIN
@@ -933,7 +1011,7 @@ BEGIN
     IDS_PRINTERROR          "Cannot print %s!"
 END
 
-#endif
+#endif  //!PIKE
 
 #endif    // English (U.S.) resources
 /////////////////////////////////////////////////////////////////////////////
@@ -995,7 +1073,11 @@ END
 #define configres				cnfg
 
 #ifdef PIKE
+#ifndef OPMLEDITOR
 	1 Defaults DISCARDABLE BEGIN "Radio UserLand®\0" END /*7.0d8 PBS*/
+#else   //OPMLEDITOR
+	1 Defaults DISCARDABLE BEGIN "OPML\0" END /*7.0d8 PBS*/
+#endif  //OPMLEDITOR
 #else
 	1 Defaults DISCARDABLE BEGIN "UserLand Frontier®\0" END
 #endif
@@ -1003,14 +1085,22 @@ END
 	3 Defaults DISCARDABLE BEGIN "Untitled\0" END
 	4 Defaults DISCARDABLE BEGIN "Select a database file:\0" END
 #ifdef PIKE
+#ifndef OPMLEDITOR
 	6 Defaults DISCARDABLE BEGIN "Radio.root\0" END
-#else
+#else  // OPMLEDITOR
+	6 Defaults DISCARDABLE BEGIN "opml.root\0" END
+#endif // OPMLEDITOR 
+#else  // !PIKE
 	6 Defaults DISCARDABLE BEGIN "Frontier.root\0" END
-#endif
+#endif  //!PIKE
 	7 Defaults DISCARDABLE BEGIN "Open a file:\0" END
 
 #ifdef PIKE
+#ifndef OPMLEDITOR
 	8 Defaults DISCARDABLE BEGIN radio_version_string "\0" END
+#else
+	8 Defaults DISCARDABLE BEGIN opml_version_string "\0" END
+#endif
 #else
 	8 Defaults DISCARDABLE BEGIN frontier_version_string "\0" END
 #endif //PIKE
@@ -1021,7 +1111,11 @@ END
 	4 Interface DISCARDABLE BEGIN "Ctrl\0" END
 	5 Interface DISCARDABLE BEGIN "Set Command Key \0" END
 	6 Interface DISCARDABLE BEGIN "Command Key:\0" END
+#ifndef OPMLEDITOR
 	7 Interface DISCARDABLE BEGIN "Internal error#^0.  Please report to UserLand Technical Support\0" END
+#else
+	7 Interface DISCARDABLE BEGIN "Internal error#^0.  Please report to Scripting.com support\0" END
+#endif //OPMLEDITOR
 	8 Interface DISCARDABLE BEGIN "; \0" END
 	9 Interface DISCARDABLE BEGIN "Cancel\0" END
 	10 Interface DISCARDABLE BEGIN "Script for \042^0\042\0" END
@@ -1034,13 +1128,24 @@ END
 	17 Interface DISCARDABLE BEGIN "&Save Database\tCtrl+S\0" END
 	18 Interface DISCARDABLE BEGIN "Save As...\0" END
 	19 Interface DISCARDABLE BEGIN "Save a Copy...\0" END
+#ifndef OPMLEDITOR
 	20 Interface DISCARDABLE BEGIN "This database was created by an older version of Frontier and must be converted. Proceed?\0" END
+#else  //OPMLEDITOR
+	20 Interface DISCARDABLE BEGIN "This database was created by an older version of OPML and must be converted. Proceed?\0" END
+#endif  //OPMLEDITOR
 	21 Interface DISCARDABLE BEGIN "Discard all changes made to \042^0\042?\0" END
 
+#ifndef OPMLEDITOR
 	1 Trial DISCARDABLE BEGIN "This trial version of Frontier limits databases to 7 megabytes in size\0" END
 	2 Trial DISCARDABLE BEGIN "This is a trial version of Frontier and no more than three threads can be created\0" END
 	3 Trial DISCARDABLE BEGIN "The trial version of Frontier expired on ^0.  For more information please visit http://www.userland.com/.\0" END
 	4 Trial DISCARDABLE BEGIN ". To purchase a license for the full version of Frontier, visit http://www.userland.com/.\0" END
+#else // OPMLEDITOR
+	1 Trial DISCARDABLE BEGIN "This trial version of OPML limits databases to 7 megabytes in size\0" END
+	2 Trial DISCARDABLE BEGIN "This is a trial version of OPML and no more than three threads can be created\0" END
+	3 Trial DISCARDABLE BEGIN "The trial version of OPML expired on ^0.  For more information please visit http://opml.scripting.com/.\0" END
+	4 Trial DISCARDABLE BEGIN ". To purchase a license for the full version of OPML, visit http://www.userland.com/.\0" END
+#endif  //OPMLEDITOR
 
 	1 Error_Info DISCARDABLE BEGIN "Go To\0" END
 	2 Error_Info DISCARDABLE BEGIN "Error Info\0" END
@@ -1174,7 +1279,11 @@ END
 	23 DB_Stats DISCARDABLE BEGIN "free list shadow out of synch\0" END
 
 #ifdef PIKE
+#ifndef OPMLEDITOR
 	1 alerts DISCARDABLE BEGIN "The version number of this database file is not recognized by this version of Pike.\0" END
+#else // OPMLEDITOR
+	1 alerts DISCARDABLE BEGIN "The version number of this database file is not recognized by this version of OPML.\0" END /*2005-04-06: dluebbert name change*/ 
+#endif // OPMLEDITOR
 #else
 	1 alerts DISCARDABLE BEGIN "The version number of this database file is not recognized by this version of Frontier.\0" END
 #endif
@@ -1183,8 +1292,13 @@ END
 	4 alerts DISCARDABLE BEGIN "A fresh copy of the file could not be opened.\0" END
 	5 alerts DISCARDABLE BEGIN "Can't paste this Clipboard type here.\0" END
 #ifdef PIKE
+#ifndef OPMLEDITOR
 	6 alerts DISCARDABLE BEGIN "Not enough memory available to run Pike.\0" END
 	7 alerts DISCARDABLE BEGIN "Radio UserLand cannot run on systems older than System 7.0.\0" END /*7.0d8 PBS*/
+#else   // OPMLEDITOR
+	6 alerts DISCARDABLE BEGIN "Not enough memory available to run OPML.\0" END
+	7 alerts DISCARDABLE BEGIN "OPML cannot run on systems older than System 7.0.\0" END /*7.0d8 PBS*/
+#endif  // OPMLEDITOR
 #else
 	6 alerts DISCARDABLE BEGIN "Not enough memory available to run Frontier.\0" END
 	7 alerts DISCARDABLE BEGIN "Frontier cannot run on systems older than System 7.0.\0" END

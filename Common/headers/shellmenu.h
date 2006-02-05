@@ -77,16 +77,17 @@
 	#define leadingmenu 3400
 	#define justifymenu 3500
 	#define findandreplacemenu 3600
-	#define virtualmenu 3900
+	#define virtualmenu 4000
 	#define commonstylesmenu 3700 /*7.0b26 PBS*/
 	#define newobjectmenu 3800
+	#define openrecentmenu 3900		/* 2006-02-05 aradke */
 
 #endif
 
 #define aboutitem 1
 
 #ifdef PIKE
-
+#ifndef OPMLEDITOR
 	// #define filemenu (applemenu + mainmenuincrement)
 
 	/*PBS 07/22/00: Pike's File menu has been revised --
@@ -110,6 +111,23 @@
 	#define updateradiorootitem 15
 	#define workofflineitem 16 /*7.0b25 PBS: Work Offline*/
 	#define quititem 18
+#else //OPMLEDITOR
+	#define newitem 1
+	#define openitem 2
+	#define openurlitem 3 /*7.0b17 PBS: Open URL... command*/
+//	#define openmanilasiteitem 4
+	#define closeitem 4
+	#define saveitem 6
+	#define	saveasitem 7
+//	#define saveashtmlitem 9 /*7.0b32 PBS: Save As HTML... command*/
+//	#define saveasplaintextitem 10 /*7.0b32 PBS: Save As Plain Text... command*/
+	#define revertitem 8
+	#define changetitleitem 5
+	#define viewinbrowseritem 10
+	#define updateradiorootitem 12
+	#define workofflineitem 13 /*7.0b25 PBS: Work Offline*/
+	#define quititem 15
+#endif // OPMLEDITOR
 
 #else
 
@@ -147,8 +165,12 @@
 	#define commonstylesitem	11
 	#define fontitem			13
 	#define sizeitem			14
+#ifndef OPMLEDITOR
 	#define opennotepaditem		16
 	#define insertdatetimeitem	17
+#else // OPMLEDITOR
+	#define insertdatetimeitem	16
+#endif //OPMLEDITOR
 
 	#define styleitem			-1
 	#define leadingitem			-1
@@ -246,7 +268,7 @@
 #endif
 #ifdef WIN95VERSION
 	#define lastmainmenu helpmenu
-	#define lasthiermenu newobjectmenu
+	#define lasthiermenu openrecentmenu
 #endif
 
 

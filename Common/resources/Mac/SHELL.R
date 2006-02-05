@@ -49,7 +49,7 @@ resource 'MENU' (1, "Apple") {
 
 /*PBS 7.0b1: File menu changes for Radio UserLand.
 It's a standard File menu now.*/
-
+#ifndef OPMLEDITOR
 resource 'MENU' (2, "File") {
 	2,
 	textMenuProc,
@@ -139,6 +139,87 @@ resource 'MENU' (412, "File") {
 		"Work Offline", noIcon, noKey, noMark, plain
 	}
 };
+#else // OPMLEDITOR
+
+resource 'MENU' (2, "File") {
+	2,
+	textMenuProc,
+	0x7FFFFE77,
+	enabled,
+	"File",
+	{	/* array: 9 elements */
+		/* [1] */
+		"New", noIcon, "N", noMark, plain,
+		/* [2] */
+		"Open…", noIcon, "O", noMark, plain,
+		/* [3] */
+		"Open URL…", noIcon, noKey, noMark, plain, /*7.0b17 PBS*/
+		
+		/* [4] */
+		"Close", noIcon, "W", noMark, plain,
+		/* [5] */
+		"-", noIcon, noKey, noMark, plain,
+		/* [6] */
+		"Save", noIcon, "S", noMark, plain,
+		/* [7] */
+		"Save As…", noIcon, noKey, noMark, plain,
+		/* [9] */
+		"Revert", noIcon, noKey, noMark, plain,
+		/* [9] */
+		"-", noIcon, noKey, noMark, plain,
+		/* [10] */
+		"View in Browser", noIcon, "P", noMark, plain,
+		/* [11] */
+		"-", noIcon, noKey, noMark, plain,
+		/* [12] */
+		"Update opml.root…", noIcon, noKey, noMark, plain,
+		/* [13] */
+		"Work Offline", noIcon, noKey, noMark, plain,
+		/* [14] */
+		"-", noIcon, noKey, noMark, plain,
+		/* [15] */
+		"Quit", noIcon, "Q", noMark, plain
+	}
+};
+
+/*Carbon File menu*/
+
+resource 'MENU' (412, "File") {
+	2,
+	textMenuProc,
+	0x7FFFFE77,
+	enabled,
+	"File",
+	{	/* array: 9 elements */
+		/* [1] */
+		"New", noIcon, "N", noMark, plain,
+		/* [2] */
+		"Open…", noIcon, "O", noMark, plain,
+		/* [3] */
+		"Open URL…", noIcon, noKey, noMark, plain, /*7.0b17 PBS*/
+		/* [4] */
+		"Close", noIcon, "W", noMark, plain,
+		/* [5] */
+		"-", noIcon, noKey, noMark, plain,
+		/* [6] */
+		"Save", noIcon, "S", noMark, plain,
+		/* [7] */
+		"Save As…", noIcon, noKey, noMark, plain,
+		/* [8] */
+		"Revert", noIcon, noKey, noMark, plain,
+		/* [9] */
+		"-", noIcon, noKey, noMark, plain,
+		/* [10] */
+		"View in Browser", noIcon, "P", noMark, plain,
+		/* [11] */
+		"-", noIcon, noKey, noMark, plain,
+		/* [12] */
+		"Update opml.root…", noIcon, noKey, noMark, plain,
+		/* [13] */
+		"Work Offline", noIcon, noKey, noMark, plain
+	}
+};
+#endif // OPMLEDITOR
 #else
 
 resource 'MENU' (2, "File") {
@@ -233,8 +314,9 @@ resource 'MENU' (412, "File") {
 };
 #endif
 
-#ifdef PIKE
+#ifdef PIKE /*7.0b26 PBS: Radio UserLand has a different Edit menu.*/
 
+#ifndef OPMLEDITOR
 resource 'MENU' (3, "Edit") {
 	3,
 	textMenuProc,
@@ -278,6 +360,51 @@ resource 'MENU' (3, "Edit") {
 		"Insert Date/Time", noIcon, "4", noMark, plain,
 	}
 };
+#else //OPMLEDITOR
+resource 'MENU' (3, "Edit") {
+	3,
+	textMenuProc,
+	0x7FFFFF5D,
+	enabled,
+	"Edit",
+	{	/* array: 14 elements */
+		/* [1] */
+		"Undo", noIcon, "Z", noMark, plain,
+		/* [2] */
+		"-", noIcon, noKey, noMark, plain,
+		/* [3] */
+		"Cut", noIcon, "X", noMark, plain,
+		/* [4] */
+		"Copy", noIcon, "C", noMark, plain,
+		/* [5] */
+		"Paste", noIcon, "V", noMark, plain,
+		/* [6] */
+		"Clear", noIcon, noKey, noMark, plain,
+		/* [7] */
+		"-", noIcon, noKey, noMark, plain,
+		/* [8] */
+		"Select All", noIcon, "A", noMark, plain,
+		/* [9] */
+		"-", noIcon, noKey, noMark, plain,
+		/* [10] */
+		"Find and Replace", noIcon, hierarchicalMenu, "\0d133", plain,
+		/* [11] */
+		"Common Styles", noIcon, hierarchicalMenu, "\0d134", plain,
+		/* [12] */
+		"-", noIcon, noKey, noMark, plain,
+		/* [13] */
+		"Font", noIcon, hierarchicalMenu, "\0d128", plain,
+		/* [14] */
+		"Size", noIcon, hierarchicalMenu, "\0d130", plain,
+		/* [15] */
+		"-", noIcon, noKey, noMark, plain,
+		/* [16] */
+		"Insert Date/Time", noIcon, "4", noMark, plain,
+		
+	}
+};
+
+#endif //OPMLEDITOR
 
 #else
 
@@ -493,7 +620,7 @@ resource 'MENU' (133, "Find and Replace") {
 	"Find and Replace",
 	{	/* array: 4 elements */
 		/* [1] */
-		"Find...", noIcon, "F", noMark, plain,
+		"Find…", noIcon, "F", noMark, plain,
 		/* [2] */
 		"Replace", noIcon, noKey, noMark, plain,
 		/* [3] */
@@ -634,8 +761,12 @@ resource 'xmnu' (129, "Style") {
 resource 'STR#' (129, "Defaults", purgeable) {
 	{	/* array StringArray: 6 elements */
 #ifdef PIKE
+#ifndef OPMLEDITOR
 		/* [1] */
 		"Radio UserLand™", /*PBS 7.0b1: name change to Radio UserLand.*/
+#else  // OPMLEDITOR
+		"OPML",
+#endif  //OPMLEDITOR
 #else
 		/* [1] */
 		"Frontier", /* 2005-01-04 creedon - removed UserLand and (tm) for open source release */
@@ -649,8 +780,12 @@ resource 'STR#' (129, "Defaults", purgeable) {
 		/* [5] */
 		"",
 #ifdef PIKE
+#ifndef OPMLEDITOR
 		/* [6] -- default DB name*/ /*PBS 7.0b1: changed from Pike.root to Radio.root.*/
 		"Radio.root",
+#else  // OPMLEDITOR
+		"opml.root",
+#endif  //OPMLEDITOR
 #else
 		/* [6] */
 		"Frontier.root",
@@ -2526,10 +2661,15 @@ resource 'MCFG' (1) {
 
 
 #ifdef PIKE
-
+#ifndef OPMLEDITOR
 type 'PIKE' as 'STR ';
 
 resource 'PIKE' (0, "Owner resource")
+#else   //OPMLEDITOR
+type 'OPML' as 'STR ';
+
+resource 'OPML' (0, "Owner resource")
+#endif // OPMLEDITOR
 
 #else
 
@@ -2545,12 +2685,21 @@ resource 'LAND' (0, "Owner resource")
 #ifdef version5orgreater
 	resource 'vers' (1) {
 	#ifdef PIKE
+	#ifndef OPMLEDITOR
 		radio_major_version_bcd,
 		radio_subminor_version_bcd,
 		radio_stage_code,
 		radio_revision_level,
 		verUS,
 		radio_version_string,
+	#else
+		opml_major_version_bcd,
+		opml_subminor_version_bcd,
+		opml_stage_code,
+		opml_revision_level,
+		verUS,
+		opml_version_string,
+	#endif
 	#else
 		frontier_major_version_bcd,
 		frontier_subminor_version_bcd,
@@ -2563,7 +2712,11 @@ resource 'LAND' (0, "Owner resource")
 		"Trial "
 	#endif
 	#ifdef PIKE
+	#ifndef OPMLEDITOR
 		radio_version_string "; © 1992-" copyright_year_string ", UserLand Software, Inc."
+	#else  //OPMLEDITOR
+	 	opml_version_string "; © 1992-" copyright_year_string ", Scripting News, Inc."
+	#endif // OPMLEDITOR
 	#else
 		frontier_version_string "; © 1992-" copyright_year_string ", UserLand Software, Inc."
 	#endif
