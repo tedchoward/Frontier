@@ -1,11 +1,34 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE plist PUBLIC "-//Apple Computer//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<!--    $Id$    -->
 <plist version="1.0">
 <dict>
 	<key>CFBundleDevelopmentRegion</key>
 	<string>English</string>
 	<key>CFBundleDocumentTypes</key>
 	<array>
+		<dict>
+			<key>CFBundleTypeExtensions</key>
+			<array>
+				<string>.opml</string>
+			</array>
+			<key>CFBundleTypeIconFile</key>
+			<string>OPMLdoc.icns</string>
+			<key>CFBundleTypeMIMETypes</key>
+			<array>
+				<string>text/opml</string>
+			</array>
+			<key>CFBundleTypeName</key>
+			<string>OPML Outline</string>
+			<key>CFBundleTypeOSTypes</key>
+			<array>
+				<string>OPML</string>
+			</array>
+			<key>CFBundleTypeRole</key>
+			<string>Editor</string>
+			<key>LSIsAppleDefaultForType</key>
+			<true/>
+		</dict>
 		<dict>
 			<key>CFBundleTypeExtensions</key>
 			<array>
@@ -150,17 +173,17 @@
 				<string>FTds</string>
 			</array>
 			<key>CFBundleTypeName</key>
-			<string>Frontier Desktop Script (FTds)</string>
+			<string>Frontier Desktop Script</string>
 		</dict>
 	</array>
 	<key>CFBundleExecutable</key>
 	<string>${PRODUCT_NAME_STR}</string>
 	<key>CFBundleGetInfoString</key>
-	<string>${PRODUCT_VERSION_STR}; © 1992-${COPYRIGHT_YEAR_STR} Userland Software, Inc.</string>
+	<string>${PRODUCT_VERSION_STR}; © 1992-${COPYRIGHT_YEAR_STR} Scripting News, Inc.</string>
 	<key>CFBundleIconFile</key>
-	<string>Frontier.icns</string>
+	<string>OPML.icns</string>
 	<key>CFBundleIdentifier</key>
-	<string>com.scripting.Frontier</string>
+	<string>com.scripting.OPML</string>
 	<key>CFBundleInfoDictionaryVersion</key>
 	<string>6.0</string>
 	<key>CFBundleName</key>
@@ -170,7 +193,7 @@
 	<key>CFBundleShortVersionString</key>
 	<string>${PRODUCT_VERSION_STR}</string>
 	<key>CFBundleSignature</key>
-	<string>LAND</string>
+	<string>OPML</string>
 	<key>CFBundleVersion</key>
 	<string>${PRODUCT_VERSION_STR}</string>
 </dict>
