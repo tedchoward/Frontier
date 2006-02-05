@@ -47,6 +47,8 @@
 
 
 #define str_isPike				"\x06" "isPike"
+#define str_isOpmlEditor        "\x0c" "isOpmlEditor"    /* 2005-04-06 dluebbert */
+#define str_isFrontier           "\x0a" "isFrontier"      /* 2005-04-06 dluebbert */
 #define str_isRadio				"\x07" "isRadio"
 #define str_isMac				"\x05" "isMac"
 #define str_isMacOsClassic		"\x0e" "isMacOsClassic" /* 2004-11-19 creedon */
@@ -387,15 +389,27 @@ static boolean initenvironment (hdlhashtable ht) {
 	langassignlongvalue (ht, str_maxTcpConnections, maxconnections); /*7.0b37 PBS: max TCP connections*/
 	
 	#ifdef PIKE
+	#ifndef OPMLEDITOR
 		langassignbooleanvalue (ht, str_isPike, true);
 
 		langassignbooleanvalue (ht, str_isRadio, true); /*7.0b37 PBS: system.environment.isRadio*/
-		
-	#else
+		langassignbooleanvalue (ht, str_isOpmlEditor, false); /*2005-04-06 dluebbert: system.environment.isOPML*/
+		langassignbooleanvalue (ht, str_isFrontier, false); /*2005-04-06 dluebbert: system.environment.isFrontier*/
+	#else // OPMLEDITOR
 		langassignbooleanvalue (ht, str_isPike, false);
 
 		langassignbooleanvalue (ht, str_isRadio, false); /*7.0b37 PBS: system.environment.isRadio*/
-	#endif
+		langassignbooleanvalue (ht, str_isOpmlEditor, true); /*2005-04-06 dluebbert: system.environment.isOPML*/
+		langassignbooleanvalue (ht, str_isFrontier, false); /*2005-04-06 dluebbert: system.environment.isFrontier*/
+	#endif // OPMLEDITOR
+		
+	#else //!PIKE
+		langassignbooleanvalue (ht, str_isPike, false);
+
+		langassignbooleanvalue (ht, str_isRadio, false); /*7.0b37 PBS: system.environment.isRadio*/
+		langassignbooleanvalue (ht, str_isOpmlEditor, false); /*2005-04-06 dluebbert: system.environment.isOPML*/
+		langassignbooleanvalue (ht, str_isFrontier, true); /*2005-04-06 dluebbert: system.environment.isFrontier*/
+	#endif //!PIKE
 
 		return (true);
 	} /*initenvironment*/
