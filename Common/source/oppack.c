@@ -70,7 +70,7 @@ typedef enum tylinetableitemflags {
 	} tylinetableitemflags;
 
 #define macplatform 'mac '
-#define winplatform 'win'
+#define winplatform 'win '
 
 #ifdef MACVERSION
 	#define thisplatform macplatform
