@@ -95,7 +95,8 @@ typedef enum tyfilemenutoken { /*fileMenu verbs*/
 	
 	savefunc,
 	
-	// savecopyfunc, /* 2005-11-01 creedon */
+	/* 2006-02-04 aradke: reenabled & renamed; don't change order of tokens! */
+	saveasfunc,		//savecopyfunc, /* 2005-11-01 creedon */ 
 	
 	revertfunc,
 	
@@ -103,7 +104,7 @@ typedef enum tyfilemenutoken { /*fileMenu verbs*/
 	
 	quitfunc,
 	
-	saveasfunc, /* 2005-10-26 creedon */
+	//saveasfunc, /* 2005-10-26 creedon */	/* 2006-02-04 aradke: moved upwards */
 	
 	ctfilemenuverbs
 	} tyfilemenutoken;
