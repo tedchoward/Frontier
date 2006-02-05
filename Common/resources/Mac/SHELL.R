@@ -1284,6 +1284,17 @@ resource 'DLOG' (269, "revert?", purgeable) {
 	noAutoCenter
 };
 
+resource 'DLOG' (512, "find", purgeable) {
+	{0, 0, 123, 451},
+	noGrowDocProc,
+	invisible,
+	goAway,
+	0x0,
+	512,
+	"Find & Replace Dialog",
+	noAutoCenter
+};
+
 #if 0
 
 resource 'DLOG' (-3999, "put file", purgeable) {
@@ -1552,6 +1563,84 @@ resource 'DITL' (269, "Revert?", purgeable) {
 		}
 	}
 };
+
+resource 'DITL' (512, "Find Dialog", purgeable, preload) {
+	{	/* array DITLarray: 12 elements */
+		/* [1] */
+		{91, 340, 111, 433},
+		Button {
+			enabled,
+			"Find"
+		},
+		/* [2] */
+		{158, 11, 178, 81},
+		Button {
+			enabled,
+			"Cancel"
+		},
+		/* [3] */
+		{11, 340, 31, 433},
+		Button {
+			enabled,
+			"Replace All"
+		},
+		/* [4] */
+		{40, 340, 60, 433},
+		Button {
+			enabled,
+			"Replace"
+		},
+		/* [5] */
+		{13, 10, 29, 58},
+		StaticText {
+			disabled,
+			"Find:"
+		},
+		/* [6] */
+		{13, 78, 29, 317},
+		EditText {
+			enabled,
+			"Find"
+		},
+		/* [7] */
+		{41, 10, 57, 70},
+		StaticText {
+			disabled,
+			"Replace:"
+		},
+		/* [8] */
+		{41, 78, 57, 317},
+		EditText {
+			enabled,
+			"Replace"
+		},
+		/* [9] */
+		{72, 9, 90, 115},
+		CheckBox {
+			enabled,
+			"Whole words"
+		},
+		/* [10] */
+		{72, 116, 90, 217},
+		CheckBox {
+			enabled,
+			"Ignore case"
+		},
+		/* [11] */
+		{72, 217, 90, 320},
+		CheckBox {
+			enabled,
+			"Wrap around"
+		},
+		/* [12] */
+		{92, 9, 110, 217},
+		CheckBox {
+			enabled,
+			"Use Regular Expressions"
+		}
+	}
+};
+
 
 #if 0
 
