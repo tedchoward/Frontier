@@ -906,7 +906,7 @@ static void pikesetfilemenuitemchecked (short ixmenu) {
 	if (roottable == nil)
 		return;
 	
-	pikegetfilemenuitemidentifier (ixmenu, bsitem);
+	getfilemenuitemidentifier (ixmenu, bsitem);
 	
 	/*copystring ("\x20" "pike.isFileMenuItemChecked(\"^0\")", bsscript);*/
 
@@ -938,7 +938,7 @@ static void pikesetfilemenuitemenable (short ixmenu) {
 	if (roottable == nil)
 		return;
 
-	pikegetfilemenuitemidentifier (ixmenu, bsitem);
+	getfilemenuitemidentifier (ixmenu, bsitem);
 
 	/*copystring ("\x20""pike.isFileMenuItemEnabled(\"^0\")", bsscript);*/
 
@@ -968,7 +968,7 @@ static void pikesetfilemenuitemname (short ixmenu) {
 	if (roottable == nil)
 		return;
 
-	pikegetfilemenuitemidentifier (ixmenu, bsitem);
+	getfilemenuitemidentifier (ixmenu, bsitem);
 
 	copystring ("\x1e""pike.getFileMenuItemName(\"^0\")", bsscript);
 
@@ -998,9 +998,9 @@ boolean pikequit () {
 	if (roottable == nil)
 		return (true);
 
-	pikegetfilemenuitemidentifier (quititem, bsitem);
+	getfilemenuitemidentifier (quititem, bsitem);
 
-	getsystemtablescript (idpikerunfilemenuscript, bsscript); /*7.1b4: get from resource.*/
+	getsystemtablescript (idrunfilemenuscript, bsscript); /*7.1b4: get from resource.*/
 
 	/*copystring ("\x1c""pike.runFileMenuScript(\"^0\")", bsscript);*/
 
@@ -1134,17 +1134,20 @@ void shelladjustmenus (void) {
 	
 	pikesetfilemenuitemenable (openurlitem); /*7.0b17 PBS: enable/disable Open URL... menu item.*/
 	
+#ifndef OPMLEDITOR
 	pikesetfilemenuitemenable (openmanilasiteitem); /*7.0b27 PBS: enable/disable Open Manila Site item.*/
-		
+#endif // OPMLEDITOR		
 	pikesetfilemenuitemenable (closeitem);
 		
 	pikesetfilemenuitemenable (saveitem);
 
 	pikesetfilemenuitemenable (saveasitem);
 	
+#ifndef OPMLEDITOR
 	pikesetfilemenuitemenable (saveashtmlitem); /*7.0b32 PBS: Save As HTML*/
 	
 	pikesetfilemenuitemenable (saveasplaintextitem); /*7.0b32 PBS: Save As Plain Text*/
+#endif // OPMLEDITOR
 		
 	pikesetfilemenuitemenable (revertitem);
 
@@ -1162,7 +1165,9 @@ void shelladjustmenus (void) {
 	
 	enablemenuitem (hmenu, openitem);
 	
+#ifndef OPMLEDITOR
 	enablemenuitem (hmenu, openrecentitem);
+#endif // OPMLEDITOR
 	
 	setmenuitemenable (hmenu, closeitem, flwindow);
 
@@ -1227,12 +1232,10 @@ void shelladjustmenus (void) {
 	
 	setmenuitemenable (hmenu, selectallitem, flwindow);
 	
-	setmenuitemenable (hmenu, insertdatetimeitem, flwindow);
-
 #ifdef PIKE
-	
+#ifndef OPMLEDITOR
 	setmenuitemenable (hmenu, opennotepaditem, true); /*7.0b27 PBS: enable/disable Open Notepad, Insert Date/Time.*/
-	
+#endif // !OPMLEDITOR	
 #endif
 	
 	if (menustate == modaldialogmenus)
@@ -2134,15 +2137,17 @@ void getfilemenuitemidentifier (short ixmenu, bigstring bsitem) {
 		case newitem:
 			copystring ("\x03""new", bsitem);
 			break;
-
+		
 		case openurlitem: /*7.0b17 PBS*/
 			copystring ("\x07""openurl", bsitem);
 			break;
+
+		#ifndef OPMLEDITOR
 			
 		case openmanilasiteitem: /*7.0b27 PBS*/
 			copystring ("\x0e""openmanilasite", bsitem);
 			break;
-			
+		
 		case saveashtmlitem:
 			copystring ("\x0a""saveashtml", bsitem);
 			break;
@@ -2150,6 +2155,8 @@ void getfilemenuitemidentifier (short ixmenu, bigstring bsitem) {
 		case saveasplaintextitem:
 			copystring ("\x0f""saveasplaintext", bsitem);
 			break;
+		
+		#endif //!OPMLEDITOR
 			
 		case viewinbrowseritem:
 			copystring ("\x0d""viewinbrowser", bsitem);
@@ -2163,7 +2170,7 @@ void getfilemenuitemidentifier (short ixmenu, bigstring bsitem) {
 			copystring ("\x0b""workoffline", bsitem); 
 			break;
 
-		#endif
+		#endif //PIKE
 
 		default:
 			assert (false);
@@ -2297,10 +2304,15 @@ void geteditmenuitemidentifier (short ixmenu, short ixitem, bigstring bsitem) {
 		switch (ixitem) {
 
 #ifdef PIKE
+#ifndef OPMLEDITOR	
+
 			case opennotepaditem:
 				copystring ("\x0b""opennotepad", bsitem);
 				break;
-#endif
+
+#endif // !OPMLEDITOR		
+#endif // PIKE
+
 			case insertdatetimeitem:
 				copystring ("\x0e""insertdatetime", bsitem);
 				break;
