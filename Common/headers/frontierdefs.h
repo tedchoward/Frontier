@@ -36,7 +36,11 @@
 #ifdef WIN95VERSION
 	#define PACKFLIPPED		/* enable little endian / big endian conversion for database file functions */
 	#define FRONTIERCOM 1
+#ifndef OPMLEDITOR
 	#define FRONTIERWEB 0
+#else //OPMLEDITOR
+	#define FRONTIERWEB 1	/* 2006-02-05 aradke: enable HTML display in main window background */
+#endif // OPMLEDITOR
 	#undef winhybrid
 	#define fljustpacking 0
 	#undef flcomponent
