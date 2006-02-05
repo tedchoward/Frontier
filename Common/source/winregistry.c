@@ -312,7 +312,11 @@ boolean getRegKeyBinary (Handle regkey, bigstring subkey, bigstring itemname, un
 	} /*getRegKeyBinary*/
 
 #ifdef PIKE
+#ifndef OPMLEDITOR
 #define ProgramKey "\x16" "Software\\UserLand\\Pike"
+#else //OPMLEDITOR
+#define ProgramKey "\x16" "Software\\Scripting.com\\OPML"
+#endif  //OPMLEDITOR
 #else
 #define ProgramKey "\x1a" "Software\\UserLand\\Frontier"
 #endif
