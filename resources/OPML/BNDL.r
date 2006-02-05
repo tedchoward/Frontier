@@ -722,10 +722,6 @@ data 'ics#' (129) {
 	$"3FFE 3FFE 3FFE 3FFE 3FFE 3FFE 3FFE 3FFE"            /* ?þ?þ?þ?þ?þ?þ?þ?þ */
 };
 
-data 'OPML' (0, "Owner resource") {
-	$"00"                                                 /* . */
-};
-
 data 'open' (0) {
 	$"4F50 4D4C 0000 0003 4F50 4D4C 5445 5854"            /* OPML....OPMLTEXT */
 	$"2A2A 2A2A"                                          /* **** */
