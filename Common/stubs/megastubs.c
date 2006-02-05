@@ -690,7 +690,11 @@ void centerdialog (HWND hwndDlg) {
  	} /*centerdialog*/
 
 #ifdef PIKE /*7.0d8 PBS*/
+#ifndef OPMLEDITOR
 	static char frontierstring [] = "Radio UserLand";
+#else //OPMLEDITOR
+    static char frontierstring [] = "OPML";
+#endif // OPMLEDITOR
 #else
 	static char frontierstring [] = "UserLand Frontier";
 #endif
