@@ -705,6 +705,10 @@ enum {
 	typeVersion					= 'vers'
 };
 
+enum {	/* 2006-02-05 aradke: for filedialogverb in fileverbs.c */
+	kNavGenericSignature		= '****'						/*  0x2a2a2a2a */
+};
+
 #define iBeamCursor -100
 #define watchCursor -101
 
