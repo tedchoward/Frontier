@@ -89,6 +89,8 @@ LONG CALLBACK FrontierOPWndProc (HWND hwnd, UINT msg, WPARAM wParam, LPARAM lPar
 LONG CALLBACK FrontierFrameWndProc (HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam);
 
 #ifdef PIKE
+
+#ifndef OPMLEDITOR
 CHAR szFrame[] = "pikeframe";   /* Class name for "frame" window */
 
 CHAR szChild1[] = "pikeopchild";   /* Class name for op MDI window     */
@@ -103,7 +105,25 @@ CHAR szChildHTML[] = "pikeHTMLchild";
 
 CHAR sz_frontierstartreplace [] = "PikeStartReplace";
 CHAR sz_frontierstartsearch [] = "PikeStartSearch";
-#else
+
+#else  // OPMLEDITOR
+CHAR szFrame[] = "opmlframe";   /* Class name for "frame" window */
+
+CHAR szChild1[] = "opmlopchild";   /* Class name for op MDI window     */
+CHAR szChildFTop[] = "opmloutlinechild";
+CHAR szChildFTwp[] = "opmlwpchild";
+CHAR szChildFTtb[] = "opmltablechild";
+CHAR szChildFTmb[] = "opmlmenuchild";
+CHAR szChildFTsc[] = "opmlscriptchild";
+CHAR szChildRoot[] = "opmlerootchild";
+
+CHAR szChildHTML[] = "opmlHTMLchild";
+
+CHAR sz_frontierstartreplace [] = "OpmlStartReplace";
+CHAR sz_frontierstartsearch [] = "OpmlStartSearch";
+#endif // OPMLEDITOR
+
+#else   // !PIKE
 CHAR szFrame[] = "frontierframe";   /* Class name for "frame" window */
 
 CHAR szChild1[] = "frontieropchild";   /* Class name for op MDI window     */
@@ -118,7 +138,7 @@ CHAR szChildHTML[] = "frontierHTMLchild";
 
 CHAR sz_frontierstartreplace [] = "FrontierStartReplace";
 CHAR sz_frontierstartsearch [] = "FrontierStartSearch";
-#endif
+#endif  // !PIKE
 
 UINT wm_startreplace;
 UINT wm_startsearch;
@@ -1304,7 +1324,11 @@ BOOL InitializeApplication() {
 
 #ifdef PIKE /*7.0b24 PBS -- register OPML file type and icon.*/
 	
+#ifndef OPMLEDITOR	
 	registerFileType ("\x05" ".opml", "\x04" "OPML", "\x0b" "text/x-opml", "\x1c" "Radio UserLand OPML Document", fsname(&fs), -1 * ID_OPML_ICON, bsopen);
+#else
+	registerFileType ("\x05" ".opml", "\x04" "OPML", "\x0b" "text/x-opml", "\x0d" "OPML Document", fsname(&fs), -1 * ID_OPML_ICON, bsopen);
+#endif
 
 #else
 	registerFileType ("\x04" ".fat", bsfatfile, "\x09" "text/fatp", bsfrontierdoc, fsname(&fs), -1 * ID_FATPAGE_ICON, bsopen);
@@ -1443,7 +1467,9 @@ BOOL InitializeInstance(LPSTR lpCmdLine, INT nCmdShow)
 		style = 0;
 
 //#ifdef PIKE
+#ifndef OPMLEDITOR           /*2005-04-17 dluebbert*/
 	nCmdShow = SW_HIDE;		/* 9/24/01 RAB */
+#endif // OPMLEDITOR
 //#endif
 
 	style = style | WS_OVERLAPPEDWINDOW | WS_CLIPCHILDREN;
@@ -3066,7 +3092,11 @@ int CALLBACK WinMain (
 	#endif
 
 #ifdef PIKE /*7.0b26 PBS*/
+#ifndef OPMLEDITOR  // 2005-04-06 dluebbert
 	wm_frontieropenfile = RegisterWindowMessage ("PikeOpenFile");
+#else // OPMLEDITOR
+	wm_frontieropenfile = RegisterWindowMessage ("OpmlOpenFile");
+#endif // OPMLEDITOR
 #else
 	wm_frontieropenfile = RegisterWindowMessage ("FrontierOpenFile");
 #endif
@@ -3078,7 +3108,13 @@ int CALLBACK WinMain (
 	wm_startsearch = RegisterWindowMessage (sz_frontierstartsearch);
 
 #ifdef PIKE	
+	
+#ifndef OPMLEDITOR
 	frontiermutex = CreateMutex (NULL, true, "PikeInstance");
+#else //OPMLEDITOR
+	frontiermutex = CreateMutex (NULL, true, "OpmlInstance");
+#endif // OPMLEDITOR
+
 #else
 	frontiermutex = CreateMutex (NULL, true, "FrontierInstance");
 #endif
@@ -3132,7 +3168,11 @@ int CALLBACK WinMain (
 	statusIconData.uCallbackMessage = FWM_SYSTRAYICON;
 
 #ifdef PIKE
+#ifndef OPMLEDITOR
 	strcpy (statusIconData.szTip, "Radio UserLand");
+#else  // OPMLEDITOR
+	strcpy (statusIconData.szTip, "OPML");
+#endif // OPMLEDITOR
 #else
 	strcpy (statusIconData.szTip, "UserLand Frontier");
 #endif
