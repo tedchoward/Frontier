@@ -786,7 +786,7 @@ resource 'EFP#' (idfilemenuverbs, "filemenu") {
 		"close",
 		"closeall",
 		"save",
-		// "savecopy", /* 2005-11-01 creedon */
+		"savecopy", /* 2006-02-05 aradke: re-enabled, don't change order of tokens */
 		"revert",
 		"print",
 		"quit",

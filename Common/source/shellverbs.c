@@ -95,8 +95,7 @@ typedef enum tyfilemenutoken { /*fileMenu verbs*/
 	
 	savefunc,
 	
-	/* 2006-02-04 aradke: reenabled & renamed; don't change order of tokens! */
-	saveasfunc,		//savecopyfunc, /* 2005-11-01 creedon */ 
+	savecopyfunc, /* 2006-02-05 aradke: re-enabled, don't change order of tokens */ 
 	
 	revertfunc,
 	
@@ -104,7 +103,7 @@ typedef enum tyfilemenutoken { /*fileMenu verbs*/
 	
 	quitfunc,
 	
-	//saveasfunc, /* 2005-10-26 creedon */	/* 2006-02-04 aradke: moved upwards */
+	saveasfunc, /* 2005-10-26 creedon */
 	
 	ctfilemenuverbs
 	} tyfilemenutoken;
@@ -1261,6 +1260,11 @@ static boolean filemenufunctionvalue (short token, hdltreenode hparam1, tyvaluer
 		/*
 		2005-10-26 creedon: disabled savecopyfunc case, saveasfunc can do it all
 						 added saveasfunc case, it wasn't possible to do a save as for a file-object
+		
+		2006-02-05 aradke: re-enabled savecopyfunc case to avoid breakage.
+				verb tokens that have previously been referenced from glue scripts
+				should never be disabled again, like fileMenu.saveCopy in this case.
+				also kept kernelverbs.r and kernelverbs.rc in sync.
 		*/ 
 		
 		case savefunc: { /*save the frontmost window*/
@@ -1292,7 +1296,7 @@ static boolean filemenufunctionvalue (short token, hdltreenode hparam1, tyvaluer
 			break;
 			}
 		
-		/* case savecopyfunc: {
+		case savecopyfunc: {	/* 2006-02-05 aradke: re-enabled */
 			tyfilespec fs;
 			
 			flnextparamislast = true;
@@ -1305,7 +1309,7 @@ static boolean filemenufunctionvalue (short token, hdltreenode hparam1, tyvaluer
 			fl = true;
 			
 			break;
-			} */
+			} 
 		
 		case revertfunc:
 			if (!langcheckparamcount (hparam1, 0))
@@ -1328,7 +1332,7 @@ static boolean filemenufunctionvalue (short token, hdltreenode hparam1, tyvaluer
 			fl = true;
 			
 			break;
-		
+
 		case saveasfunc: {
 			tyfilespec fs;
 			short ctconsumed = 0;
