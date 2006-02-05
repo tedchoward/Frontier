@@ -58,7 +58,7 @@ LANGUAGE LANG_ENGLISH, SUBLANG_ENGLISH_US
 #pragma code_page(1252)
 #endif //_WIN32
 
-#include "kernvelverbs.rc"
+#include "kernelverbs.rc"
 
 257                     CURSOR  DISCARDABLE     beachball_1.cur
 258                     CURSOR  DISCARDABLE     beachball_2.cur
