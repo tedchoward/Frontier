@@ -41,7 +41,7 @@ handlers are not supposed to include this file.
 #define tickstoidle 6 /*only call idle callback routine every tenth second*/
 
 
-#define ctglobals 16 /*we can remember globals up to ctglobals levels deep*/
+#define ctglobals 32 /*we can remember globals up to ctglobals levels deep*/
 
 
 typedef struct tyglobalsstack {
