@@ -196,10 +196,14 @@ boolean initmainthread (void * hglobals) {
 #ifdef WIN95VERSION
 
 #ifdef PIKE
+#ifndef OPMLEDITOR
 	hsharedthreadglobals = CreateMutex (NULL, false, "Pike Thread Globals");
-#else
+#else  // OPMLEDITOR
+	hsharedthreadglobals = CreateMutex (NULL, false, "OPML Thread Globals");
+#endif // !OPMLEDITOR
+#else // !PIKE
 	hsharedthreadglobals = CreateMutex (NULL, false, "Frontier Thread Globals");
-#endif
+#endif //!PIKE
 
 	ixlocalthreadglobals = TlsAlloc ();
 	
