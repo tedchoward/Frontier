@@ -142,13 +142,23 @@ extern boolean sysos (tyvaluerecord *v); //implemted in shellsysverbs.c
 
 #ifdef PIKE /*7.0 PBS: server string is Radio UserLand*/
 
+#ifndef OPMLEDITOR
+
 	#if TARGET_API_MAC_CARBON == 1
 		#define STR_P_SERVERSTRING				"\x15" "Radio UserLand/^0-^1X"
 	#else
 		#define STR_P_SERVERSTRING				"\x14" "Radio UserLand/^0-^1"
 	#endif
 
-#else
+#else  // OPMLEDITOR 2005-04-06 dluebbert
+	#if TARGET_API_MAC_CARBON == 1
+		#define STR_P_SERVERSTRING				"\x0b" "OPML/^0-^1X"
+	#else
+		#define STR_P_SERVERSTRING				"\x0a" "OPML/^0-^1"
+	#endif
+#endif // OPMLEDITOR
+
+#else // !PIKE
 
 	#if TARGET_API_MAC_CARBON == 1
 		#define STR_P_SERVERSTRING			"\x0f" "Frontier/^0-^1X" /* 2005-01-04 creedon - removed UserLand for open source release */
@@ -156,7 +166,7 @@ extern boolean sysos (tyvaluerecord *v); //implemted in shellsysverbs.c
 		#define STR_P_SERVERSTRING			"\x0e" "Frontier/^0-^1" /* 2005-01-04 creedon - removed UserLand for open source release */
 	#endif
 
-#endif
+#endif  //!PIKE
 
 #define STR_P_RESPONDERERROR			"\x16" "Responder method error"
 #define STR_P_LOGADD					"\x16" "log.addToGuestDatabase"
