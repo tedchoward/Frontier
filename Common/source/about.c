@@ -165,21 +165,11 @@ static bigstring bsmiscinfo = "";
 
 static byte * aboutstrings [] = {
 
-//#ifdef PIKE
-//	"\x2b" "The power of Web publishing on your desktop", /*7.0b1 PBS*/
-//#else
-//	"\x2e" "Powerful cross-platform web content management", /*6.1 AR*/
-//#endif
-		
-    "\x25" "Powerful cross-platform web scripting", /*2005-01-12 aradke: re-enabled*/
+	app_slogan,		/* 2006-02-04 aradke: see versions.h */
 	
-	"\x23" "© 1992-" copyright_year_string " UserLand Software, Inc.",
-
-#ifdef PIKE
-	"\x26" "http://frontierkernel.sourceforge.net/", /*2005-01-12 aradke*/
-#else
-	"\x26" "http://frontierkernel.sourceforge.net/", /*2005-01-12 aradke*/
-#endif
+	app_copyright,	/* 2006-02-04 aradke: see versions.h */
+	
+	app_url,		/* 2006-02-04 aradke: see versions.h */
 	
 	"\x02" "^0",
 	
@@ -200,15 +190,7 @@ static byte * aboutstrings [] = {
 	
 	"\x0f" "Current Time:  ",
 	
-#ifdef PIKE
-	"\x05" "Radio", /*2005-01-12 aradke*/
-	
-	"\x0b" "About Radio", /*2005-01-12 aradke*/
-#else
-	"\x08" "Frontier", /*2005-01-12 aradke*/
-	
-	"\x0e" "About Frontier",
-#endif
+	app_name,		/* 2006-02-04 aradke: see versions.h */
 	
 	"\x02" "^0",
 	};
@@ -237,8 +219,6 @@ enum { /*main window items*/
 	datetimeitem,
 	
 	frontieritem,
-	
-	titleitem,
 	
 	versionitem
 	};
@@ -1621,7 +1601,10 @@ static boolean newaboutwindow (boolean flbootsplash) {
 	getsystemoriginrect (&rzoom);
 	
 	//	getstringlist (aboutlistnumber, abouttitlestring, bstitle);
-	copystring (aboutstrings [flbootsplash? frontieritem: titleitem], bstitle);
+	copystring (aboutstrings [frontieritem], bstitle);
+	
+	if (!flbootsplash)
+		insertstring ("\x06" "About ", bstitle);	/* 2006-02-04 aradke: eliminated titleitem */
 	
 	if (!newchildwindow (idaboutconfig, nil, &rwindow, &rzoom, bstitle, &w)) {
 		
