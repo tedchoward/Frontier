@@ -67,6 +67,8 @@
 #endif
 #include "error.h"
 
+static boolean scriptdebuggereventloop (void);
+
 #if TARGET_API_MAC_CARBON == 1 /*PBS 03/14/02: AE OS X fix.*/
 	#include "aeutils.h"
 #endif
@@ -1161,7 +1163,7 @@ static boolean scriptdebugerrordebugger (bigstring bsmsg, ptrvoid refcon) {
 	tyvaluerecord val;
 	bigstring bstrap;
 	boolean fl;
-	static boolean scriptdebuggereventloop (void); //forward
+	//static boolean scriptdebuggereventloop (void); /* 2006-02-04 aradke: declare at top of file */
 	hdlhashnode hhashnode;
 	#define str_userdebugprefs ("\x10" "user.prefs.debug")
 	
