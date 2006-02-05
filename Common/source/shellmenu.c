@@ -1633,14 +1633,14 @@ boolean shellhandlemenu (long menucode) {
 				bigstring bs;
 				boolean flrunfilemenuscript = langrunstringnoerror ("\x2C" "Frontier.tools.windowTypes.runFileMenuScript", bs);				
 				
-				if (flrunfilemenuscript)
+				if (flrunfilemenuscript) {
 			
 #endif
 			
 					runfilemenuscript (iditem);
-				
+					
 #ifndef PIKE
-			
+					}
 				else { /* if the script is not defined then we try to do some menu items without the script */
 				
 					switch (iditem) {
@@ -1676,10 +1676,9 @@ boolean shellhandlemenu (long menucode) {
 						} /*switch*/
 					
 					} /* else */
-					
-				}
 						
 #endif
+				} /* if(!flkernelhandledcommand) */
 			
 			break; /* file menu */
 			}
