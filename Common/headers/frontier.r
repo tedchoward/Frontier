@@ -46,6 +46,7 @@
 	#include <Dialogs.r>
 	#include <Icons.r>
 	#include <Menus.r>
+	#include <IntlResources.r>
 #endif
 
 
