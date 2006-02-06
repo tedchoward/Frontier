@@ -3504,17 +3504,17 @@
 			isa = PBXFileReference;
 			lastKnownFileType = image.icns;
 			name = OPML.icns;
-			path = /Volumes/Data/Development/frontierkernel_trunk/Frontier/resources/OPML/OPML.icns;
-			refType = 0;
-			sourceTree = "<absolute>";
+			path = ../resources/OPML/OPML.icns;
+			refType = 2;
+			sourceTree = SOURCE_ROOT;
 		};
 		65059B770996945100410571 = {
 			isa = PBXFileReference;
 			lastKnownFileType = image.icns;
 			name = OPMLdoc.icns;
-			path = /Volumes/Data/Development/frontierkernel_trunk/Frontier/resources/OPML/OPMLdoc.icns;
-			refType = 0;
-			sourceTree = "<absolute>";
+			path = ../resources/OPML/OPMLdoc.icns;
+			refType = 2;
+			sourceTree = SOURCE_ROOT;
 		};
 		65059B780996945100410571 = {
 			fileRef = 65059B760996945100410571;
