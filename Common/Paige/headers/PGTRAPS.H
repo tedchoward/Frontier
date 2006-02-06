@@ -34,20 +34,20 @@ for the currently defined platform. */
 #include <Quickdraw.h>
 #include <Memory.h>
 #include <Events.h>
-#include <fonts.h>
+#include <Fonts.h>
 //#include <Packages.h>		/* 2004-09-29 AR: unused */
 #include <OSUtils.h>
 #include <ToolUtils.h>
 #include <Resources.h>
-#include <files.h>
+#include <Files.h>
 #include <MacErrors.h>		/* 2004-09-29 AR: renamed from errors.h */
-#include <gestalt.h>
+#include <Gestalt.h>
 #endif
 
 #endif
 
 #if !TARGET_API_MAC_CARBON
-#include <script.h>
+#include <Script.h>
 #endif
 
 /*********** Memory Definitions (for allocation, resize, etc.) ***********/

@@ -461,7 +461,7 @@ some each compiler seems to interpret differently.  */
 
 #if !TARGET_API_MAC_CARBON
 #include <MacTypes.h>		/* 2004-09-29 AR: renamed from types.h */
-#include <quickdraw.h>		// for RGBColor
+#include <Quickdraw.h>		// for RGBColor
 #include <OSUtils.h>		// for DateTimeRec
 #endif
 
