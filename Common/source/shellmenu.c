@@ -1232,6 +1232,8 @@ void shelladjustmenus (void) {
 	
 	setmenuitemenable (hmenu, selectallitem, flwindow);
 	
+	setmenuitemenable (hmenu, insertdatetimeitem, flwindow); /* 2006-01-06 creedon: re-establish code, went missing in sf repository revision 1.9 */
+	
 #ifdef PIKE
 #ifndef OPMLEDITOR
 	setmenuitemenable (hmenu, opennotepaditem, true); /*7.0b27 PBS: enable/disable Open Notepad, Insert Date/Time.*/
