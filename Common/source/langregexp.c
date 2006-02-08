@@ -1293,13 +1293,19 @@ static boolean writehandlestreamreplpart (handlestream *s, tyreplacementtoken ty
 
 static int regexpstringnumberfrompattern (const char *cptr, int len, Handle hcp) {
 	
-	int res, top, mid, bot, entrysize, c;
+	/*
+	2006-02-08 aradke: rewrote conditional logic in loop body. the previous version
+			may have yielded incorrect results if one of the two strings that are compared
+			in the loop is the leading substring of the other, e.g. "spam" and "spamalot".
+	*/
+	
+	int res, top, mid, bot, entrysize, elen, c;
 	unsigned char *entry, *nametable;
 	
-	res = pcre_fullinfo (getpatternref (hcp), nil, PCRE_INFO_NAMECOUNT,  (void *) &top);
+	res = pcre_fullinfo (getpatternref (hcp), nil, PCRE_INFO_NAMECOUNT,  (void *) &top);	/* number of entries in table */
 
 	if (res == 0)
-		res = pcre_fullinfo (getpatternref (hcp), nil, PCRE_INFO_NAMEENTRYSIZE, (void *) &entrysize);	
+		res = pcre_fullinfo (getpatternref (hcp), nil, PCRE_INFO_NAMEENTRYSIZE, (void *) &entrysize);	/* length of longest entry in table */
 
 	if (res == 0)
 		res = pcre_fullinfo (getpatternref (hcp), nil, PCRE_INFO_NAMETABLE, (void *) &nametable);	
@@ -1312,21 +1318,24 @@ static int regexpstringnumberfrompattern (const char *cptr, int len, Handle hcp)
 	
 	while (top > bot) {
 	
-	  mid = (top + bot) / 2;
+		mid = (top + bot) / 2;
 	  
-	  entry = nametable + entrysize * mid;
-	  
-	  if (strlen ((char *)(entry + 2)) == len)
-		c = memcmp (cptr, (char *)(entry + 2), len);
-	  
-	  if (c == 0) {
-	  	return (entry[0] << 8) + entry[1];
-	  	}
-	  
-	  if (c > 0)
-	  	bot = mid + 1;
-	  else
-	  	top = mid;
+		entry = nametable + entrysize * mid;
+
+		elen = strlen ((char *)(entry + 2));
+
+		c = memcmp (cptr, (char *)(entry + 2), min(len, elen));
+
+		if (c < 0)	/* 2006-02-08 aradke */
+			top = mid;
+		else if (c > 0)
+			bot = mid + 1;
+		else if (elen > len)	/* implicitely c == 0 from here on... */
+			top = mid;	/* shorter entries are lower in table */
+		else if (elen < len)
+			bot = mid + 1;	/* longer entries are higher in table */
+		else
+			return (entry[0] << 8) + entry[1];	/* implicitly c == 0 and elen == len, i.e. named pattern found */
 	  }
 
 	return (PCRE_ERROR_NOSUBSTRING);
