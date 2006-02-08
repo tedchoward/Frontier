@@ -278,10 +278,10 @@ static void ccdrawfrontiericon (Rect rcicn, boolean flpressed) {
 			ec = PlotIconRef (&r, atVerticalCenter + atHorizontalCenter, flpressed? kTransformSelected : 0, kIconServicesNormalUsageFlag, iconref);			
 			
 			ReleaseIconRef (iconref);
-			} /*if*/
 		
-		if (ec == noErr)
-			return;
+			if (ec == noErr)
+				return;
+			} /*if*/
 	#endif
 	
 	ploticonresource (&rcicn, atVerticalCenter + atHorizontalCenter, flpressed? kTransformSelected : 0, idfrontiericon);

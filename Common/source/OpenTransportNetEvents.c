@@ -3925,7 +3925,7 @@ boolean fwsNetEventReadStream (unsigned long stream, unsigned long * bytesToRead
 
 	/* Read from a stream */
 
-	OTResult result;
+	OTResult result = kOTNoError;
 	OTFlags junkFlags;
 	EndpointRecordRef epref = (EndpointRecordRef) stream;
 	long ix = 0;
@@ -4037,7 +4037,7 @@ boolean fwsNetEventWriteStream (unsigned long stream, unsigned long bytesToWrite
 	*/
 	
 	EndpointRecordRef epref = (EndpointRecordRef) stream;
-	OTResult result;
+	OTResult result = kOTNoError;
 	long ix = 0;
 	boolean doLeave = false;
 

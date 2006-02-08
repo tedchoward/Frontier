@@ -388,7 +388,8 @@ boolean getmp3info (const tyfilespec *fs, long *seconds, long *bitrate, long *fr
 
 	tympeginfostruct mp3;
 	long ix = 0;
-	long oldpos, header, ctbytes, ctframes;
+	long header = 0;
+	long oldpos, ctbytes, ctframes;
 	Handle h = nil;
 	unsigned char c1, c2;
 	const long buffersize = 32767;

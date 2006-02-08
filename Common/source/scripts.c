@@ -2425,7 +2425,7 @@ boolean scriptdebugger (hdltreenode hnode) {
 	boolean flbreakpoint = false;
 	long lastlnum = (**hd).lastlnum;
 	long lnum = (**hn).lnum;
-	short diff;
+	short diff = 0;
 	
 	//shellshorteventloop (); /*suck up and process any waiting events*/
 	
