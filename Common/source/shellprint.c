@@ -308,7 +308,7 @@ static void shellcopyprintinfo (void) {
 	rpage,
 	rpaper;
 	
-	typrintinfo *dbgprintinfo = &shellprintinfo;
+	//typrintinfo *dbgprintinfo = &shellprintinfo;
 	
 #ifdef MACVERSION
 #	if TARGET_API_MAC_CARBON == 1
