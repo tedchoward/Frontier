@@ -917,7 +917,7 @@ long langcommentdelete (byte chdelim, byte *ptext, long ct) {
 	register byte ch;
 	boolean flinstring = false;
 	boolean flinescapesequence = false;
-	byte chendstring;
+	byte chendstring = 0;
 	
 	for (i = 0; i < ct; i++) {
 		
@@ -933,7 +933,7 @@ long langcommentdelete (byte chdelim, byte *ptext, long ct) {
 				if (ch == (byte) '\\')
 					flinescapesequence = true;
 				else
-					flinstring = ch != chendstring;
+					flinstring = (ch != chendstring);
 				}
 			}
 		

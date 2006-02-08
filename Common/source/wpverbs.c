@@ -1731,7 +1731,7 @@ static boolean dosearch (boolean flfromtop, boolean flwrap, boolean *fltempload)
 	
 	register boolean fl;
 	long startsel, endsel;
-	long origendsel, searchstart;
+	long origendsel = 0, searchstart;
 	short diff;
 	boolean flwrapped = false;
 	

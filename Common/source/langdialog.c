@@ -384,7 +384,7 @@ static boolean langdialogitemhit (DialogPtr pdialog, short itemnumber) {
 	hdltreenode hparam;
 	tyvaluerecord val;
 	boolean fl;
-	boolean fldebugging;
+	boolean fldebugging = false;
 	
 	cleartmpstack ();
 	

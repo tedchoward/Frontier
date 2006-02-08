@@ -5070,7 +5070,7 @@ static boolean langcallscriptwithaddress (tyaddress *adrscript, tyaddress *adrpa
 	Also assumes a single address as a parameter instead of a parameter list.
 	*/
 	
-	boolean flchained, fltmpval;
+	boolean flchained = false, fltmpval;
 	boolean fl = false;
 	tyvaluerecord val;
 	hdltreenode hfunctioncall;
@@ -5162,7 +5162,7 @@ static boolean langcallscriptwithaddress (tyaddress *adrscript, tyaddress *adrpa
 static boolean langruntextwithcontext (Handle htext, hdlhashtable hcontext, tyvaluerecord *v) {
 				
 	boolean fl = false;
-	boolean fltmpval, flchained;
+	boolean fltmpval, flchained = false;
 		
 	if (hcontext != nil) {
 		
@@ -9239,7 +9239,7 @@ static boolean htmlcalendardrawverb (hdltreenode hp1, tyvaluerecord *v) {
 
 	/*other variable definitions*/
 	handlestream sreturn;
-	boolean fl;
+	boolean fl = false;
 
 	/*init*/
 
@@ -10051,7 +10051,7 @@ static boolean issafemacro (Handle h, long ixstart, long len, hdlhashtable hmacr
 static boolean neutermacros (Handle h, hdlhashtable hmacrostable) {
 
 	handlestream s;
-	long ixstart;
+	long ixstart = 0;
 	long ixsafeto = -1;
 	long balance = 0;
 

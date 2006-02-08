@@ -1776,6 +1776,11 @@ static void operatortostring (OSType op, bigstring bsop) {
 			p = "\por";
 			
 			break;
+		
+		default:
+			p = "\p";
+			assert(false);	/* 2006-02-08 aradke: this should never happen, but if it does we set p to the empty string */
+			break;
 		}
 	
 	copystring (p, bsop);

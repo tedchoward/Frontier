@@ -2479,7 +2479,7 @@ static pascal OSAError osaLoad (
 	hdltreenode hcode;
 	Handle hdata;
 	DescType subtype;
-	boolean fl;
+	boolean fl = false;
 	OSAError err = noErr;
 	hdlhashnode hnodesource;
 	hdlhashnode hnodecode;
@@ -3606,8 +3606,8 @@ static pascal OSErr handlerecordableevent (const AppleEvent *event, AppleEvent *
 	boolean flisfront;
 	boolean flpushkeys;
 	boolean flignore;
-	short rnum;
-	Handle haete;
+	short rnum = 0;
+	Handle haete = nil;
 	
 	#if !TARGET_API_MAC_CARBON
 		long curA5 = SetUpAppA5 ();
@@ -4484,7 +4484,7 @@ static pascal OSAError osaDebug (
 			DescType			desiredType,
 			AEDesc*				resultingDebugInfoOrDataToSet) {
 	
-	OSAError err;
+	OSAError err = noErr;
 	hdlhashnode hnode;
 	
 	switch (selector) {

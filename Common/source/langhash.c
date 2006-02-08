@@ -844,7 +844,7 @@ boolean disposehashnode (hdlhashtable ht, hdlhashnode hnode, boolean fldisposeva
 	if (fldisposevalue) {
 		
 		boolean flneeddatabase = (fldisk && (**hn).val.fldiskval);
-		hdldatabaserecord hdb;
+		hdldatabaserecord hdb = nil;
 
 		if (flneeddatabase) {
 			
@@ -1695,7 +1695,7 @@ boolean hashassign (const bigstring bs, tyvaluerecord val) {
 	/*carefully nuke existing value*/ {
 		
 		boolean flneeddatabase = (!fllocal && existingval.fldiskval);
-		hdldatabaserecord hdb;
+		hdldatabaserecord hdb = nil;
 
 		if (flneeddatabase) {
 			

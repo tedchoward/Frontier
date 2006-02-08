@@ -1103,7 +1103,7 @@ static boolean threadcallscriptverb (bigstring bsscriptname, tyvaluerecord vpara
 
 	bigstring bsverb;
 	boolean fl = false;
-	boolean flchained;
+	boolean flchained = false;
 	tyvaluerecord val;
 	hdltreenode hfunctioncall;
 	hdltreenode hparamlist;

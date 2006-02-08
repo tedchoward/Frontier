@@ -1133,10 +1133,10 @@ boolean langstriptextsyntax (Handle htext) {
 	
 	boolean fldone = false;
 	hdltreenode hnode;
-	tokentype token, token2;
+	tokentype token, token2 = 0;
 	long ixstart;
-	long ix1, ix2 = 0;
-	unsigned long line2;
+	long ix1 = 0, ix2 = 0;
+	unsigned long line2 =  0;
 	short ctendbraces = 0;
 	
 	parsesetscanstring (htext, true);
@@ -1231,10 +1231,10 @@ boolean langaddapplescriptsyntax (Handle hscript) {
 	
 	boolean fldone = false;
 	hdltreenode hnode;
-	tokentype token, lasttoken;
+	tokentype token, lasttoken = 0;
 	long ixstart;
 	long ix1 = 0;
-	unsigned long line1;
+	unsigned long line1 = 0;
 	bigstring bsid;
 	boolean flgotid = false;
 	boolean flgotdottedid = false;

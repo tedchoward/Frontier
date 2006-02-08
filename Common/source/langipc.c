@@ -232,7 +232,7 @@ boolean langipcpushparam (tyvaluerecord *valparam, typaramkeyword key, hdlverbre
 	OSType type;
 	void *pval = nil;
 	Handle hval = nil;
-	long len;
+	long len = 0;
 	byte flval;
 	bigstring bsval;
 	AEDesc aelist;
@@ -2784,7 +2784,7 @@ static boolean langipcbuildmessage (hdltreenode hparam1, short paramnum, tyipcme
 	register short pnum = paramnum;
 	tyvaluerecord val;
 	tyipcaddress ipcaddress;
-	long savetransid, transactionid;
+	long savetransid = 0, transactionid;
 	boolean fl;
 	
 	clearbytes (&ipcaddress, sizeof (tyipcaddress)); /*unassigned fields must be zero*/

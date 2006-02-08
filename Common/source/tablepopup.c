@@ -321,7 +321,7 @@ static boolean tablekindrecalc (tyvaluetype valuetype) {
 	
 	register tyvaluetype vt = valuetype;
 	tyvaluerecord val;
-	tyexternalid externalid;
+	tyexternalid externalid = 0;
 	hdlhashtable ht;
 	bigstring bs;
 	bigstring bspath;

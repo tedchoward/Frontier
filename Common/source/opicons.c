@@ -227,7 +227,7 @@ void opdrawarrowicon (hdlheadrecord hnode, long lnum, tydirection arrowdirection
 	*/
 	
 	Rect linerect, iconrect;
-	short iconnum;
+	short iconnum = 0;
 	boolean flinverted, flselected;
 	
 	if (lnum < 0) /*defensive driving*/

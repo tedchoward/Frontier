@@ -2572,7 +2572,7 @@ boolean oppaste (void) {
 	hdlheadrecord houtlinescrap;
 	hdlscreenmap hmap;
 	boolean fltempscrap;
-	boolean flmarkcopies;
+	boolean flmarkcopies = false;
 	
 	opclearallmarks ();
 	

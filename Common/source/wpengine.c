@@ -1179,7 +1179,7 @@ static boolean wpapplyhtmlstyles (Handle htext, pg_ref pg, boolean flredraw) {
 	long stackopenleft [256];
 	long stackopenright [256];
 	char stackopentag [256];
-	char tagvalue, lasttagvalue;
+	char tagvalue, lasttagvalue = 0;
 	char ch;
 	long i = 0;
 	long lentext;

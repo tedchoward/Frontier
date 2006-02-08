@@ -119,7 +119,7 @@ static boolean shelldefaultundo (void) {
 static boolean shelldefaultsetundostatus (void) {
 	
 	register hdlstring hstring;
-	short ixbase, ixaction;
+	short ixbase = 0, ixaction;
 	bigstring bsundo, bs;
 
 	hstring = (**shellwindowinfo).hundostring;
