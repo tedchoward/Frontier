@@ -79,7 +79,9 @@
 
 #ifdef NEW_DLL_INTERFACE
 
+	/*
 	#pragma message ("*********************** NEW_DLL_INTERFACE is ON ***********************")
+	*/
 
 	/* type definitions */
 	

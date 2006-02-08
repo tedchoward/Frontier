@@ -50,8 +50,10 @@ static boolean flreentering = false;
 	#pragma message ("*********************** GENERAL LOG: Level 2")
 #elif (LAND_GENERALLOG_LEVEL >= LAND_LOGLEVEL_1)
 	#pragma message ("*********************** GENERAL LOG: Level 1")
+/*
 #else
 	#pragma message ("*********************** GENERAL LOG: --OFF--")
+*/
 #endif
 
 #if (LAND_GENERALLOG_LEVEL > LAND_LOGLEVEL_OFF)
@@ -78,8 +80,10 @@ static boolean flreentering = false;
 	#pragma message ("*********************** TCP LOG: Level 2")
 #elif (LAND_TCPLOG_LEVEL >= LAND_LOGLEVEL_1)
 	#pragma message ("*********************** TCP LOG: Level 1")
+/*
 #else
 	#pragma message ("*********************** TCP LOG: --OFF--")
+*/
 #endif
 
 #if (LAND_TCPLOG_LEVEL > LAND_LOGLEVEL_OFF)
@@ -106,8 +110,10 @@ static boolean flreentering = false;
 	#pragma message ("*********************** DB LOG: Level 2")
 #elif (LAND_DBLOG_LEVEL >= LAND_LOGLEVEL_1)
 	#pragma message ("*********************** DB LOG: Level 1")
+/*
 #else
 	#pragma message ("*********************** DB LOG: --OFF--")
+*/
 #endif
 
 #if (LAND_DBLOG_LEVEL > LAND_LOGLEVEL_OFF)
@@ -134,8 +140,10 @@ static boolean flreentering = false;
 	#pragma message ("*********************** THREADS LOG: Level 2")
 #elif (LAND_THREADSLOG_LEVEL >= LAND_LOGLEVEL_1)
 	#pragma message ("*********************** THREADS LOG: Level 1")
+/*
 #else
 	#pragma message ("*********************** THREADS LOG: --OFF--")
+*/
 #endif
 
 #if (LAND_THREADSLOG_LEVEL > LAND_LOGLEVEL_OFF)

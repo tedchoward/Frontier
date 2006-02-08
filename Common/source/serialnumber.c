@@ -30,9 +30,9 @@
 
 #include "serialnumber.h"
 
-
+/*
 #pragma message ("************************* Serial Number Check is OFF ***********************************")
-
+*/
 
 boolean isvalidserialnumber (bigstring bsserialnumber) {
 
