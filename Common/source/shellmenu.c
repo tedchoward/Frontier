@@ -882,12 +882,16 @@ void shellmodaldialogmenuadjust (void) {
 	} /*shellforcemenuadjust*/
 
 
+#ifndef PIKE
+
 static boolean shellsetmenuitemstring (hdlmenu hmenu, short ixmenu, short ixitemstring) {
 	
 	bigstring bs;
 	
 	return (shellgetstring (ixitemstring, bs) && setmenuitem (hmenu, ixmenu, bs));
 	} /*shellsetmenuitemstring*/
+
+#endif
 
 
 #ifdef PIKE
@@ -956,6 +960,8 @@ static void pikesetfilemenuitemenable (short ixmenu) {
 	}/*ccpikesetfilemenuitemenable*/
 
 
+#if 0
+
 static void pikesetfilemenuitemname (short ixmenu) {
 
 	/*
@@ -983,6 +989,7 @@ static void pikesetfilemenuitemname (short ixmenu) {
 	setmenuitem (shellmenuhandle (filemenu), ixmenu, bsresult);
 	}/*pikesetfilemenuitemname*/
 
+#endif
 
 
 boolean pikequit () {
