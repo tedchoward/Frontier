@@ -31,8 +31,115 @@
 	Defines version numbers for Frontier and Radio UserLand for all platforms.
 	
 	JES 12/04/2002
+	
+	2006-02-07 aradke: major overhaul
+		about.c and shell.r don't contain any target-specific version info anymore.
+		there is some target-specific info in the version resource in winland.rc left,
+		but nothing that needs to be changed on a regular basic.
+		to do: convert pascal to c strings? (see about.c)
 */ 
 
+
+/* common strings for all targets */
+
+#define	APP_COPYRIGHT_FROM	"1992"
+#define	APP_COPYRIGHT_TILL	"2006"
+
+
+/* target-specific strings and version info */
+
+#ifdef PIKE
+#ifndef OPMLEDITOR
+
+	/* version info for RADIO targets (formerly known as PIKE) */
+	
+	#define APPNAME							"Radio"
+	#define APP_COPYRIGHT_HOLDER			"UserLand Software, Inc"
+	
+	#define bs_APP_NAME						"\x05" "Radio"
+	#define bs_APP_SLOGAN					"\x2b" "The power of Web publishing on your desktop"
+	#define bs_APP_COPYRIGHT				"\x23" "© " APP_COPYRIGHT_FROM "-" APP_COPYRIGHT_TILL " UserLand Software, Inc."
+	#define bs_APP_URL						"\x26" "http://frontierkernel.sourceforge.net/"
+
+	#define	APP_MAJOR_VERSION				10
+	#define	APP_MAJOR_VERSION_BCD			0x10 	/* major version in BCD notation */
+
+	#define	APP_SUB_VERSION					1
+	#define	APP_MINOR_VERSION				0
+	#define	APP_SUBMINOR_VERSION_BCD		0x10  	/* sub and minor version in BCD notation */
+
+	#define APP_STAGE_CODE					0x40	/* dev = 0x20, alpha = 0x40, beta = 0x60, final = 0x80 */
+	#define	APP_REVISION_LEVEL				5		/* for non-final releases only */
+	#define	APP_BUILD_NUMBER				5		/* increment by one for every release, final or not */
+
+	#define	APP_VERSION_STRING				"10.1a5"
+
+#else
+
+	/* version info for OPMLEDITOR targets */
+	
+	#define APPNAME							"OPML"
+
+	#define APP_COPYRIGHT_HOLDER			"Scripting News, Inc"
+
+	#define bs_APP_NAME						"\x04" "OPML"
+	#define bs_APP_SLOGAN					"\x25" "Powerful OPML editing on your desktop"
+	#define bs_APP_COPYRIGHT				"\x20" "© " APP_COPYRIGHT_FROM "-" APP_COPYRIGHT_TILL " Scripting News, Inc."
+	#define bs_APP_URL						"\x18" "http://support.opml.org/"
+
+	#define	APP_MAJOR_VERSION				10
+	#define	APP_MAJOR_VERSION_BCD			0x10 	/* major version in BCD notation */
+
+	#define	APP_SUB_VERSION					1
+	#define	APP_MINOR_VERSION				0
+	#define	APP_SUBMINOR_VERSION_BCD		0x10  	/* sub and minor version in BCD notation */
+
+	#define APP_STAGE_CODE					0x40	/* dev = 0x20, alpha = 0x40, beta = 0x60, final = 0x80 */
+	#define	APP_REVISION_LEVEL				5		/* for non-final releases only */
+	#define	APP_BUILD_NUMBER				5		/* increment by one for every release, final or not */
+
+	#define	APP_VERSION_STRING				"10.1a5"
+
+#endif
+#else
+
+	/* version info for FRONTIER targets */
+	
+	#define APPNAME							"Frontier"
+	#define APP_COPYRIGHT_HOLDER			"Frontier Kernel Project"
+
+	#define bs_APP_NAME						"\x08" "Frontier"
+	#define bs_APP_SLOGAN					"\x25" "Powerful cross-platform web scripting"
+	#define bs_APP_COPYRIGHT				"\x23" "© " APP_COPYRIGHT_FROM "-" APP_COPYRIGHT_TILL " Frontier Kernel Project"
+	#define bs_APP_URL						"\x26" "http://frontierkernel.sourceforge.net/"
+
+	#define	APP_MAJOR_VERSION				10
+	#define	APP_MAJOR_VERSION_BCD			0x10 	/* major version in BCD notation */
+
+	#define	APP_SUB_VERSION					1
+	#define	APP_MINOR_VERSION				0
+	#define	APP_SUBMINOR_VERSION_BCD		0x10  	/* sub and minor version in BCD notation */
+
+	#define APP_STAGE_CODE					0x40	/* dev = 0x20, alpha = 0x40, beta = 0x60, final = 0x80 */
+	#define	APP_REVISION_LEVEL				5		/* for non-final releases only */
+	#define	APP_BUILD_NUMBER				5		/* increment by one for every release, final or not */
+
+	#define	APP_VERSION_STRING				"10.1a5"
+
+#endif
+
+#define APP_COPYRIGHT		APP_COPYRIGHT_FROM "-" APP_COPYRIGHT_TILL " " APP_COPYRIGHT_HOLDER
+
+#define APPNAME_SHORT	APPNAME		/* 2006-02-04 aradke */
+#define	APPNAME_TM		APPNAME		/* 2005-01-12 aradke: app names no longer include trademark character */
+
+
+
+
+
+/* 2006-02-07 aradke: old version switched off */
+
+#if 0
 
 /* Radio version information */
 
@@ -81,47 +188,5 @@
 
 #define	opml_version_string			"10.1a5"
 
+#endif	/* 2006-02-06 aradke: switched off, see below */
 
-/* strings for all apps */
-
-#define	copyright_year_string	"2006"
-
-
-/* Define app name and related strings */
-#ifdef PIKE
-	#ifndef OPMLEDITOR
-		#define APPNAME		"Radio"
-	#else
-		#define APPNAME		"OPML"
-	#endif
-#else
-	#define APPNAME			"Frontier"
-#endif
-
-#define APPNAME_SHORT	APPNAME		/* 2006-02-04 aradke */
-
-/* app name for display -- ends with the trademark character */
-/* 2005-01-12 aradke: app names no longer include trademark character */
-#define APPNAME_TM		APPNAME
-
-
-/* 2006-02-04 aradke: Product slogan and url as shown in about window */
-
-#ifdef PIKE
-	#ifndef OPMLEDITOR
-		#define app_name		"\x05" "Radio"
-		#define app_slogan		"\x2b" "The power of Web publishing on your desktop"
-		#define app_copyright	"\x23" "© 1992-" copyright_year_string " UserLand Software, Inc."
-		#define app_url			"\x26" "http://frontierkernel.sourceforge.net/"
-	#else
-		#define app_name		"\x04" "OPML"
-		#define app_slogan		"\x25" "Powerful OPML editing on your desktop"
-		#define app_copyright	"\x20" "© 1992-" copyright_year_string " Scripting News, Inc."
-		#define app_url			"\x18" "http://support.opml.org/"
-	#endif
-#else
-	#define app_name			"\x08" "Frontier"
-	#define app_slogan			"\x25" "Powerful cross-platform web scripting"
-	#define app_copyright		"\x23" "© 2004-" copyright_year_string " Frontier Kernel Project"
-	#define app_url				"\x26" "http://frontierkernel.sourceforge.net/"
-#endif

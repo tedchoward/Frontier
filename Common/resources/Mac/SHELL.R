@@ -4489,48 +4489,22 @@ type 'LAND' as 'STR ';
 resource 'LAND' (0, "Owner resource")
 #endif
 {
-	"Copyright © 1992-" copyright_year_string ", UserLand Software, Inc."
+	"Copyright © " APP_COPYRIGHT
 };
 
 
 #ifdef version5orgreater
 	resource 'vers' (1) {
-	#ifdef PIKE
-	#ifndef OPMLEDITOR
-		radio_major_version_bcd,
-		radio_subminor_version_bcd,
-		radio_stage_code,
-		radio_revision_level,
+		APP_MAJOR_VERSION_BCD,
+		APP_SUBMINOR_VERSION_BCD,
+		APP_STAGE_CODE,
+		APP_REVISION_LEVEL,
 		verUS,
-		radio_version_string,
-	#else
-		opml_major_version_bcd,
-		opml_subminor_version_bcd,
-		opml_stage_code,
-		opml_revision_level,
-		verUS,
-		opml_version_string,
-	#endif
-	#else
-		frontier_major_version_bcd,
-		frontier_subminor_version_bcd,
-		frontier_stage_code,
-		frontier_revision_level,
-		verUS,
-		frontier_version_string,
-	#endif
+		APP_VERSION_STRING,
 	#ifdef fltrialsize
 		"Trial "
 	#endif
-	#ifdef PIKE
-	#ifndef OPMLEDITOR
-		radio_version_string "; © 1992-" copyright_year_string ", UserLand Software, Inc."
-	#else  //OPMLEDITOR
-	 	opml_version_string "; © 1992-" copyright_year_string ", Scripting News, Inc."
-	#endif // OPMLEDITOR
-	#else
-		frontier_version_string "; © 1992-" copyright_year_string ", UserLand Software, Inc."
-	#endif
+		APP_VERSION_STRING "; © " APP_COPYRIGHT "."
 	};
 #else
 	resource 'vers' (1) {

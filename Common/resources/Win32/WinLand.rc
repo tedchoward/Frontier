@@ -838,18 +838,8 @@ END
 //
 
 VS_VERSION_INFO VERSIONINFO
-#ifdef PIKE
-#ifndef OPMLEDITOR
- FILEVERSION radio_major_version,radio_sub_version,radio_minor_version,radio_build_number
- PRODUCTVERSION radio_major_version,radio_sub_version,radio_minor_version,radio_build_number
-#else
- FILEVERSION opml_major_version,opml_sub_version,opml_minor_version,opml_build_number
- PRODUCTVERSION opml_major_version,opml_sub_version,opml_minor_version,opml_build_number
-#endif
-#else
- FILEVERSION frontier_major_version,frontier_sub_version,frontier_minor_version,frontier_build_number
- PRODUCTVERSION frontier_major_version,frontier_sub_version,frontier_minor_version,frontier_build_number
-#endif
+ FILEVERSION		APP_MAJOR_VERSION,APP_SUB_VERSION,APP_MINOR_VERSION,APP_BUILD_NUMBER
+ PRODUCTVERSION		APP_MAJOR_VERSION,APP_SUB_VERSION,APP_MINOR_VERSION,APP_BUILD_NUMBER
  FILEFLAGSMASK 0x3fL
 #ifdef _DEBUG
  FILEFLAGS 0x3L
@@ -864,11 +854,7 @@ BEGIN
     BEGIN
         BLOCK "040904e4"
         BEGIN
-#ifndef OPMLEDITOR
-            VALUE "CompanyName", "UserLand Software, Inc.\0"
-#else   // OPMLEDITOR
-			VALUE "CompanyName", "Scripting News, Inc.\0"
-#endif  //  OPMLEDITOR
+            VALUE "CompanyName", APP_COPYRIGHT_HOLDER "\0"
 #ifdef PIKE
 #ifndef OPMLEDITOR
             VALUE "FileDescription", "Radio UserLand\0" /*7.0d8 PBS: name change*/
@@ -878,78 +864,33 @@ BEGIN
 #else
             VALUE "FileDescription", "UserLand Frontier\0"
 #endif
-		#ifdef fltrialsize
-			#ifdef PIKE
-				#ifndef OPMLEDITOR
-            	VALUE "FileVersion", "Trial " radio_version_string "\0"
-            	#else
-            		VALUE "FileVersion", "Trial " opml_version_string "\0"
-            	#endif
-            #else
-            	VALUE "FileVersion", "Trial " frontier_version_string "\0"
-            #endif
-		#else
-			#ifdef PIKE
-				#ifndef OPMLEDITOR
-            	VALUE "FileVersion", radio_version_string "\0"
-            	#else
-            		VALUE "FileVersion", opml_version_string "\0"
-            	#endif
-            #else
-            	VALUE "FileVersion", frontier_version_string "\0"
-            #endif
-		#endif
-#ifdef PIKE
-#ifndef OPMLEDITOR
-            VALUE "InternalName", "Radio\0" /*7.0d8 PBS: name change*/
-#else   // OPMLEDITOR
-			VALUE "InternalName", "OPML\0" /*2005-04-06 dluebbert: name change*/
-#endif  // OPMLEDITOR
+#ifdef fltrialsize
+          	VALUE "FileVersion", "Trial " APP_VERSION_STRING "\0"
 #else
-            VALUE "InternalName", "Frontier\0"
+          	VALUE "FileVersion", APP_VERSION_STRING "\0"
 #endif
+            VALUE "InternalName", APPNAME "\0"
       //    VALUE "Language", "English (United States)\0"
+            VALUE "LegalCopyright", "© " APP_COPYRIGHT "\0"
 #ifdef PIKE /*7.0d8 PBS: name change*/
 #ifndef OPMLEDITOR
-            VALUE "LegalCopyright", "© 1992-2002 UserLand Software, Inc.\0"
-            VALUE "LegalTrademarks", "\042Userland\042 and \042Radio\042 is the trademarks of UserLand Software, Inc.\0"
             VALUE "OriginalFilename", "Radio.exe\0"
             VALUE "ProductName", "Radio UserLand\0"
-            VALUE "Full Copyright", "© Copyright UserLand Software, Inc. All rights reserved. Permission and Use is Granted Subject to the UserLand End-User License Agreement.\0"
+            VALUE "Full Copyright", "© Copyright " APP_COPYRIGHT_HOLDER ". All rights reserved. Permission and Use is Granted Subject to the UserLand End-User License Agreement.\0"
 #else  // OPMLEDITOR
-            VALUE "LegalCopyright", "© 1992-2006 Scripting News, Inc.\0"
-			VALUE "LegalTrademarks", "\042OPML\042 is a trademarks of Scripting News, Inc.\0"
             VALUE "OriginalFilename", "opml.exe\0"
             VALUE "ProductName", "OPML\0"
-            VALUE "Full Copyright", "© Copyright Scripting News, Inc. All rights reserved. Permission and Use is Granted Subject to the GNU General Public License.\0"
+            VALUE "Full Copyright", "© Copyright " APP_COPYRIGHT_HOLDER ". Released under the GNU General Public License.\0"
 #endif // OPMLEDITOR
 #else  // !PIKE
-            VALUE "LegalCopyright", "© 1992-2002 UserLand Software, Inc.\0"
-            VALUE "LegalTrademarks", "\042UserLand\042 and \042Frontier\042 are the trademarks of UserLand Software, Inc.\0"
             VALUE "OriginalFilename", "Frontier.exe\0"
             VALUE "ProductName", "Frontier\0"
-            VALUE "Full Copyright", "© Copyright UserLand Software, Inc. All rights reserved. Permission and Use is Granted Subject to the UserLand End-User License Agreement.\0"
+            VALUE "Full Copyright", "© Copyright " APP_COPYRIGHT_HOLDER ". Released under the GNU General Public License.\0"
 #endif  // !PIKE
 #ifdef fltrialsize
-	#ifdef PIKE
-		#ifndef OPMLEDITOR
-            VALUE "ProductVersion", "Trial " radio_version_string "\0"
-		#else
-    		VALUE "ProductVersion", "Trial " opml_version_string "\0"
-    	#endif
-    #else
-            VALUE "ProductVersion", "Trial " frontier_version_string "\0"
-    #endif
+            VALUE "ProductVersion", "Trial " APP_VERSION_STRING "\0"
 #else
-	#ifdef PIKE
-		#ifndef OPMLEDITOR
-    		VALUE "ProductVersion", radio_version_string "\0"
-    	#else
-    		VALUE "ProductVersion", opml_version_string "\0"
-    	#endif
-	#else
-            VALUE "ProductVersion", frontier_version_string "\0"
-	#endif
+            VALUE "ProductVersion", APP_VERSION_STRING "\0"
 #endif
         END
     END
@@ -1095,15 +1036,7 @@ END
 #endif  //!PIKE
 	7 Defaults DISCARDABLE BEGIN "Open a file:\0" END
 
-#ifdef PIKE
-#ifndef OPMLEDITOR
-	8 Defaults DISCARDABLE BEGIN radio_version_string "\0" END
-#else
-	8 Defaults DISCARDABLE BEGIN opml_version_string "\0" END
-#endif
-#else
-	8 Defaults DISCARDABLE BEGIN frontier_version_string "\0" END
-#endif //PIKE
+	8 Defaults DISCARDABLE BEGIN APP_VERSION_STRING "\0" END
 
 	1 Interface DISCARDABLE BEGIN "Script\0" END
 	2 Interface DISCARDABLE BEGIN "Zoom\0" END

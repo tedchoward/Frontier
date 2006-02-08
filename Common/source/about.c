@@ -165,11 +165,11 @@ static bigstring bsmiscinfo = "";
 
 static byte * aboutstrings [] = {
 
-	app_slogan,		/* 2006-02-04 aradke: see versions.h */
+	bs_APP_SLOGAN,		/* 2006-02-06 aradke: see versions.h */
 	
-	app_copyright,	/* 2006-02-04 aradke: see versions.h */
+	bs_APP_COPYRIGHT,	/* 2006-02-06 aradke: see versions.h */
 	
-	app_url,		/* 2006-02-04 aradke: see versions.h */
+	bs_APP_URL,		/* 2006-02-06 aradke: see versions.h */
 	
 	"\x02" "^0",
 	
@@ -190,7 +190,7 @@ static byte * aboutstrings [] = {
 	
 	"\x0f" "Current Time:  ",
 	
-	app_name,		/* 2006-02-04 aradke: see versions.h */
+	bs_APP_NAME,		/* 2006-02-06 aradke: see versions.h */
 	
 	"\x02" "^0",
 	};
