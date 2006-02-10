@@ -154,7 +154,7 @@
 	<key>CFBundleExecutable</key>
 	<string>${PRODUCT_NAME_STR}</string>
 	<key>CFBundleGetInfoString</key>
-	<string>${PRODUCT_VERSION_STR}; © 1992-${COPYRIGHT_YEAR_STR} Userland Software, Inc.</string>
+	<string>${PRODUCT_VERSION_STR}; © ${PRODUCT_COPYRIGHT_STR}</string>
 	<key>CFBundleIconFile</key>
 	<string>Frontier.icns</string>
 	<key>CFBundleIdentifier</key>

@@ -1132,6 +1132,7 @@ WIN_OBJECTS = \
 	$(WIN_LANG_OBJS) \
 	$(COMMON_OBJECTS)
 
+
 #================================================================================================
 # Resources Definitions
 #================================================================================================
@@ -1213,7 +1214,7 @@ all: dirs
 		;; \
 	esac
 
-MAC_$(PROJECT):	$(MAC_OBJECTS) $(BINDIR)/$(PROJECT).rsrc $(MAC_PAIGE_LIB_AR)
+MAC_$(PROJECT):	$(MAC_OBJECTS) $(BINDIR)/$(PROJECT).rsrc $(MAC_PAIGE_LIB_AR) $(MAC_INFOPLIST_OBJS)
 	if [ ! -f ".ranlib" ]; then \
 		$(RANLIB) $(MAC_PAIGE_LIB_AR); \
 		touch ".ranlib"; \
@@ -1227,7 +1228,7 @@ MAC_$(PROJECT):	$(MAC_OBJECTS) $(BINDIR)/$(PROJECT).rsrc $(MAC_PAIGE_LIB_AR)
 	mkdir -p $(BUILT_PRODUCTS_DIR)/$(EXECUTABLE_FOLDER_PATH)
 	mkdir -p $(BUILT_PRODUCTS_DIR)/$(UNLOCALIZED_RESOURCES_FOLDER_PATH)
 	
-	# Copy Mach-O bimary
+	# Copy Mach-O binary
 	mv $(PROJECT) $(BUILT_PRODUCTS_DIR)/$(EXECUTABLE_FOLDER_PATH)
 	
 	# Build Frontier.icns file - there is a bug in that this file is not built correctly from the
@@ -1240,23 +1241,23 @@ MAC_$(PROJECT):	$(MAC_OBJECTS) $(BINDIR)/$(PROJECT).rsrc $(MAC_PAIGE_LIB_AR)
 	# Move resources from resource fork to data fork
 	$(RESMERGER) $(BINDIR)/$(PROJECT).rsrc -dstIs DF -o $(BUILT_PRODUCTS_DIR)/$(UNLOCALIZED_RESOURCES_FOLDER_PATH)/$(PROJECT).rsrc
 	
-	# Strip trademark character to prevent problems with shell quoting \
-	#product_str=`echo $(PROJECT) | awk -F '\342' '{print $1};'`; \
-
-	# Parse the "versions.h" file for useful variables \
-
-	# Update the Info.plist \
-	# Could append "(dbg)" to product name for Development build style \
-	#defaults write $(BUILT_PRODUCTS_DIR)/$(CONTENTS_FOLDER_PATH)/Info CFBundleVersion $${version_str}; \
-	# or use sed \
+	#
+	# Extract info from Common/headers/versions.h for Info.plist file
+	#
+	
+	$(CC) $(MAC_CFLAGS) -o $(SRCROOT)/tools/appversion.o $(SRCROOT)/tools/appversion.c
+	$(CC) $(MAC_CFLAGS) -o $(SRCROOT)/tools/appcopyright.o $(SRCROOT)/tools/appcopyright.c
 
 	( \
 		product_str=$(PROJECT); \
 		\
-		version_str=`grep "frontier_version_string" $(SRCDIR)/Common/headers/versions.h | awk -F \" '{print $$2};'`; \
-		copyright_year_str=`grep "copyright_year_string" $(SRCDIR)/Common/headers/versions.h | awk -F \" '{print $$2};'`; \
+		version_str=`$(SRCROOT)/tools/appversion.o`; \
+		copyright_str=`$(SRCROOT)/tools/appcopyright.o`; \
 		\
-		sed -e "s/\$${PRODUCT_NAME_STR}/$${product_str}/g" -e "s/\$${PRODUCT_VERSION_STR}/$${version_str}/g" -e "s/\$${COPYRIGHT_YEAR_STR}/$${copyright_year_str}/g" $(SRCROOT)/Info.plist > $(BUILT_PRODUCTS_DIR)/$(CONTENTS_FOLDER_PATH)/Info.plist; \
+		sed -e "s/\$${PRODUCT_NAME_STR}/$${product_str}/g" \
+			-e "s/\$${PRODUCT_VERSION_STR}/$${version_str}/g" \
+			-e "s/\$${PRODUCT_COPYRIGHT_STR}/$${copyright_str}/g" \
+			$(SRCROOT)/Info.plist > $(BUILT_PRODUCTS_DIR)/$(CONTENTS_FOLDER_PATH)/Info.plist; \
 	)
 	
 .PHONY: WIN_$(PROJECT)
@@ -1285,9 +1286,10 @@ debug:
 # clean: Get rid of executable, dependencies, and all object files
 #
 clean:
-	rm -f $(MAC_OBJECTS) $(WIN_OBJECTS)
+	rm -f $(MAC_OBJECTS) $(WIN_OBJECTS) $(MAC_INFOPLIST_OBJS)
 	rm -f $(BINDIR)/$(PROJECT).rsrc $(BINDIR)/$(PROJECT).res
 	rm -rf $(BINDIR)/$(PROJECT).app $(BINDIR)/$(PROJECT).exe
+	rm -f $(SRCROOT)/tools/appversion.o $(SRCROOT)/tools/appcopyright.o
 
 installexes: $(EXES)
 	if [ ! -d "$(bininst)" ]; then mkdir -p "$(bininst)"; fi
