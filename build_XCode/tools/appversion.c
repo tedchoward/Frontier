@@ -36,7 +36,7 @@
 
 #include "versions.h"
 
-main () {
+int main () {
 	printf(APP_VERSION_STRING);
 	return 0;
 	} /*main*/

@@ -36,7 +36,7 @@
 
 #include "versions.h"
 
-main () {
+int main () {
 	printf(APP_COPYRIGHT);
 	return 0;
 	} /*main*/
