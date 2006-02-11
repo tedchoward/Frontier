@@ -404,11 +404,6 @@ void shellhandlemouse (void) {
 			break;
 		
 		case inMenuBar: 
-#if TARGET_API_MAC_CARBON == 1
-#ifndef OPMLEDITOR
-			shellupdateopenrecentmenu (); /* 2005-09-25 creedon */
-#endif
-#endif
 
 			shellupdatemenus (); /*be sure the menus are properly checked and highlighted*/
 			

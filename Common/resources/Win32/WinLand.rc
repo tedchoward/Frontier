@@ -258,9 +258,7 @@ BEGIN
     BEGIN
         MENUITEM "&New",						 newobjectmenu
         MENUITEM "&Open... \tCtrl+O",            filemenu+openitem
-#ifdef MACVERSION
-        MENUITEM "Open Recent",                filemenu+openrecentitem /* 2005-09-25 creedon */
-#endif
+        MENUITEM "Open Recent",                	 openrecentmenu /* 2006-02-11 aradke */
         MENUITEM SEPARATOR
         MENUITEM "&Close\tCtrl+W",               filemenu+closeitem
         MENUITEM "&Save\tCtrl+S",                filemenu+saveitem

@@ -1172,9 +1172,7 @@ void shelladjustmenus (void) {
 	
 	enablemenuitem (hmenu, openitem);
 	
-#ifndef OPMLEDITOR
 	enablemenuitem (hmenu, openrecentitem);
-#endif // OPMLEDITOR
 	
 	setmenuitemenable (hmenu, closeitem, flwindow);
 
@@ -1475,21 +1473,27 @@ void shellupdatemenus (void) {
 		shellcheckfontsizestyle ();
 	
 	shellupdatewindowmenu ();
+	
+#ifndef PIKE
+	shellupdateopenrecentmenu ();	/* 2006-02-11 aradke */
+#endif
 	} /*shellupdatemenus*/
 	
 	
 boolean shellhandlemenu (long menucode) {
 
 	/*
-	2005-12-31 creedon: for host databases that don't have a Frontier.tools table, provide some of the basic file commands so that folks can work
-						with databases
+	5/19/93 dmb: closefunc uses getfrontwindow, not shellwindow
+
+	7.0d6 PBS: With Pike's now-standard File menu, it's necessary to use kernel routines for New and Open. Run scripts in Pike for everything else.
 	
 	2005-09-25 creedon: changed so that all targets can call scripts for some file/edit menu commands
 					 added open recent menu
 	
-	7.0d6 PBS: With Pike's now-standard File menu, it's necessary to use kernel routines for New and Open. Run scripts in Pike for everything else.
+	2005-12-31 creedon: for host databases that don't have a Frontier.tools table, provide some of the basic file commands so that folks can work
+						with databases
 
-	5/19/93 dmb: closefunc uses getfrontwindow, not shellwindow
+	2006-02-11 aradke: enable open recent menu on win32
 	*/
 	
 	register short idmenu, iditem;
@@ -2035,18 +2039,18 @@ boolean shellhandlemenu (long menucode) {
 			break;
 			} /* virtual menu */
 
+		#endif	//MACVERSION
+
+		#ifndef PIKE
+		
 		case openrecentmenu: {
 		
-			boolean flkernelhandledcommand = false;
-		
-			if (!flkernelhandledcommand) /* run the script if special cases weren't handled above */
-
-				runopenrecentmenuscript (iditem);
+			runopenrecentmenuscript (iditem);	/* 2006-02-11 aradke */
 				
 			break;
 			} /* openrecentmenu */
 
-		#endif
+		#endif	//!PIKE
 
 	#ifdef WIN95VERSION
 	//	case defaultpopupmenuid:
@@ -2431,6 +2435,6 @@ void shellupdateopenrecentmenu (void) {
 	
 	if (countmenuitems (hmenu) == 2)
 		disableallmenuitems (hmenu);
-		
-	}
+
+	} /* shellupdateopenrecentmenu */
 
