@@ -77,7 +77,7 @@
 	#define leadingmenu 3400
 	#define justifymenu 3500
 	#define findandreplacemenu 3600
-	#define virtualmenu 4000
+	#define virtualmenu 4100
 	#define commonstylesmenu 3700 /*7.0b26 PBS*/
 	#define newobjectmenu 3800
 	#define openrecentmenu 3900		/* 2006-02-05 aradke */
