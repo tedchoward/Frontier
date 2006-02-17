@@ -1946,12 +1946,20 @@ boolean getapplicationfilespec (bigstring bsprogram, tyfilespec *fs) {
 	
 	2004-10-26 aradke: New Carbon/Mach-O implementation for obtaining
 	a filespec to our application bundle, i.e. the Frontier.app "folder".
+	
+	2006-02-17 aradke: Clear filespec before doing our thing on Mac too,
+	so the caller won't crash if he ignores a false return value and
+	tries to access the filespec anyway. Our only caller with a non-nil
+	bsprogram currently is sys.getAppPath (shellsysverbs.c) and it does
+	exactly that.
 	*/
 
 #ifdef MACVERSION
 	typrocessvisitinfo info;
 	boolean flsystem7;
 	
+	clearbytes (fs, sizeof (*fs));	/* 2006-02-17 aradke */
+
 	flsystem7 = (gSystemVersion >= 0x0700);
 	
 	if (!flsystem7)
