@@ -1365,6 +1365,12 @@ static boolean replscancompilenumbered (int ix, int len, int ref, bigstring bser
 
 static boolean replscancompilenamed (int ix, int len, const char *cptr, int clen, bigstring bserror, void *refcon) {
 	
+	/*
+	2006-02-18 aradke: actually write the group index ref instead of just nil.
+		fixes bug in re.replace verb where any matched named groups would consistently
+		be replaced with the complete match string instead of just the matched group.
+	*/
+	
 	tyreplscancompileinfo *info = (tyreplscancompileinfo *) refcon;
 	int ref;
 	
@@ -1378,7 +1384,7 @@ static boolean replscancompilenamed (int ix, int len, const char *cptr, int clen
 		return (false);
 		}
 	
-	return (writehandlestreamreplpart (&(info->s), REGEXP_NAMED, ix, len, 0));
+	return (writehandlestreamreplpart (&(info->s), REGEXP_NAMED, ix, len, ref));
 	} /*replscancompilenamed*/
 
 	
