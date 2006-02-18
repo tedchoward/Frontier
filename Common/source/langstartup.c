@@ -382,6 +382,8 @@ static boolean initenvironment (hdlhashtable ht) {
 		
 		langassignbooleanvalue (ht, str_isCarbon, false); /*7.0b28: isCarbon is false on Windows.*/
 		
+		langassignbooleanvalue (ht, str_isMacOsClassic, false); /* 2006-02-18 aradke */
+		
 		langassignbooleanvalue (ht, str_isServer, isServer); /* 2004-11-19 creedon */
 
 	#endif
