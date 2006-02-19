@@ -1674,30 +1674,23 @@ boolean deletemenuitems (hdlmenu hmenu, short firstitem, short itemcount) {
 
 	/*
 	2005-10-01 creedon: created, delete menu items starting at firstitem for itemcount
+	
+	2006-02-19 aradke: switched to platform-agnostic code
 	*/
 
-	boolean fl = true;
-
-#ifdef MACVERSION
-	fl = DeleteMenuItems (hmenu, firstitem, itemcount) == noErr;
-#endif
-
-	#ifdef WIN95VERSION
-		register short ctitems = countmenuitems (hmenu);
-		register short i;
-		
-		if (itemcount > ctitems)
-			itemcount = ctitems;
-		
-		for (i = itemcount; i >= firstitem; i--)
-			if (!deletemenuitem (hmenu, i)) {
-				fl = false;
-				break;
-				}			
-	#endif
+	short ctitems = countmenuitems (hmenu);
+	short i;
 	
-	return (fl);
+	if (itemcount > ctitems)
+		itemcount = ctitems;
 	
+	for (i = itemcount; i >= firstitem; i--) {
+		if (!deletemenuitem (hmenu, i)) {
+			return (false);
+			}			
+		} /*for*/
+		
+	return (true);
 	} /* deletemenuitems */
 
 
@@ -1705,20 +1698,15 @@ void disableallmenuitems (hdlmenu hmenu) {
 
 	/*
 	2005-10-01 creedon: created
+	
+	2006-02-19 aradke: switched to platform-agnostic code
 	*/
 
-#ifdef MACVERSION
-	DisableAllMenuItems (hmenu);
-#endif
-
-#ifdef WIN95VERSION
-	register short ct = countmenuitems (hmenu);
-	register short i;
+	short ct = countmenuitems (hmenu);
+	short i;
 
 	for (i = ct; i > 0; i--)
 		disablemenuitem (hmenu, i);
-
-#endif
 	
 	} /* disableallmenuitems */
 
