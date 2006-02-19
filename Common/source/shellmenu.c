@@ -1451,6 +1451,10 @@ void shelladjustmenus (void) {
 
 void shellupdatemenus (void) {
 	
+	/*
+	2006-02-19 aradke: enable open recent menu on classic Mac OS too
+	*/
+	
 	tymenustate newstate;
 	
 	if (optionkeydown ())
@@ -1475,11 +1479,7 @@ void shellupdatemenus (void) {
 	shellupdatewindowmenu ();
 	
 #ifndef PIKE
-#	if TARGET_API_MAC_OS8 == 0
-	// kw - 2006-02-15 --- due to osx specific implementation, classic isn't
-	// allowed to reference shellupdateopenrecentmenu()
 	shellupdateopenrecentmenu ();	/* 2006-02-11 aradke */
-#	endif
 #endif
 	} /*shellupdatemenus*/
 	
