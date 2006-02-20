@@ -291,18 +291,23 @@ static boolean listtostring (hdllistrecord hlist, tyvaluerecord *val) {
 	12/22/92 dmb: starter version: 255-char limit
 	
 	4/2/93 dmb: next version: 255-char limit for individual items only.
+	
+	2006-02-20 aradke: rewrite using handlestreams for efficiency.
+		also in preparation for revoming the 255-char limit for list items.
 	*/
 	
 	long i, n;
 	bigstring key;
 	tyvaluerecord itemval;
 	bigstring bs;
-	Handle hstring;
+	handlestream s;
 	boolean flisrecord = opgetisrecord (hlist);
 	
 	n = opcountlistitems (hlist);
 	
-	if (!newtexthandle ("\x01{", &hstring))
+	openhandlestream (nil, &s);
+	
+	if (!writehandlestreamchar (&s, '{'))	/* creates handle, need to dispose later */
 		return (false);
 	
 	for (i = 1; i <= n; ++i) {
@@ -311,18 +316,20 @@ static boolean listtostring (hdllistrecord hlist, tyvaluerecord *val) {
 			goto error;
 		
 		if (flisrecord) {
+				
+			if (!writehandlestreamchar (&s, chdoublequote))
+				goto error;
 			
 			langdeparsestring (key, chdoublequote); /*add needed escape sequences*/
 			
-			setstringwithchar (chdoublequote, bs);
-			
-			pushstring (key, bs);
-			
-			pushchar (chdoublequote, bs);
-			
-			pushchar (':', bs);
-			
-			pushtexthandle (bs, hstring);
+			if (!writehandlestreamstring (&s, key))
+				goto error;
+				
+			if (!writehandlestreamchar (&s, chdoublequote))
+				goto error;
+				
+			if (!writehandlestreamchar (&s, ':'))
+				goto error;
 			}
 		
 		if (!getobjectmodeldisplaystring (&itemval, bs)) /*max 253 characters*/
@@ -330,21 +337,22 @@ static boolean listtostring (hdllistrecord hlist, tyvaluerecord *val) {
 		
 		disposevaluerecord (itemval, true); /*don't clog temp stack*/
 		
-		if (i < n)
-			pushstring ("\x02, ", bs);
-		
-		if (!pushtexthandle (bs, hstring))
+		if (!writehandlestreamstring (&s, bs))
 			goto error;
+		
+		if (i < n)
+			if (!writehandlestreamstring (&s, "\x02, "))
+				goto error;
 		}
 	
-	if (!pushtexthandle ("\x01}", hstring))
+	if (!writehandlestreamchar (&s, '}'))
 		goto error;
 	
-	return (setheapvalue (hstring, stringvaluetype, val));
+	return (setheapvalue (closehandlestream (&s), stringvaluetype, val));
 	
 	error:
 	
-	disposehandle (hstring);
+	disposehandlestream (&s);
 	
 	return (false);
 	} /*listtostring*/
