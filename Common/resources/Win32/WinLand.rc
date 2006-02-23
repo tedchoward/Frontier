@@ -657,7 +657,7 @@ BEGIN
     LTEXT           "E-Mail:",IDC_STATIC,7,78,24,8
     CONTROL         IDB_FRONTIER_BITMAP,IDC_STATIC,"Static",SS_BITMAP |
                     SS_SUNKEN,17,5,32,32
-    CTEXT           "Please personalize your copy of UserLand Frontier™.",
+    CTEXT           "Please personalize your copy of Frontier™.",
                     IDC_STATIC,74,7,101,20
 END
 
@@ -860,7 +860,7 @@ BEGIN
 			 VALUE "FileDescription", "OPML\0" /*2005-04-06 dluebbert: name change*/
 #endif  // OPMLEDITOR
 #else
-            VALUE "FileDescription", "UserLand Frontier\0"
+            VALUE "FileDescription", "Frontier\0"
 #endif
 #ifdef fltrialsize
           	VALUE "FileVersion", "Trial " APP_VERSION_STRING "\0"
@@ -1018,7 +1018,7 @@ END
 	1 Defaults DISCARDABLE BEGIN "OPML\0" END /*7.0d8 PBS*/
 #endif  //OPMLEDITOR
 #else
-	1 Defaults DISCARDABLE BEGIN "UserLand Frontier®\0" END
+	1 Defaults DISCARDABLE BEGIN "Frontier\0" END
 #endif
 	2 Defaults DISCARDABLE BEGIN "Untitled\0" END
 	3 Defaults DISCARDABLE BEGIN "Untitled\0" END
@@ -1648,11 +1648,11 @@ END
 	3 Home_Window_Buttons DISCARDABLE BEGIN "Quick Script\0" END
 	4 Home_Window_Buttons DISCARDABLE BEGIN "Tech Support\0" END
 
-	1 component DISCARDABLE BEGIN "UserLand Frontier®\0" END
+	1 component DISCARDABLE BEGIN "Frontier\0" END
 	2 component DISCARDABLE BEGIN "UserTalk\0" END
-	3 component DISCARDABLE BEGIN "UserLand Frontier® UserTalk scripting component\0" END
-	4 component DISCARDABLE BEGIN "UserLand Frontier® Menu Sharing component\0" END
-	5 component DISCARDABLE BEGIN "UserLand Frontier® Window Sharing component\0" END
+	3 component DISCARDABLE BEGIN "Frontier UserTalk scripting component\0" END
+	4 component DISCARDABLE BEGIN "Frontier Menu Sharing component\0" END
+	5 component DISCARDABLE BEGIN "Frontier Window Sharing component\0" END
 
 
 	1 recording DISCARDABLE BEGIN "null\0" END
