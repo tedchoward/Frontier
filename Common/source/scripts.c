@@ -4002,7 +4002,8 @@ static boolean scriptfindsubtypevisit (OSType subtype, bigstring bsname, long re
 boolean scriptgettypename (long signature, bigstring bsname) {
 	
 	/*
-
+	2006-02-22 creedon: if flcomponent is false then fallback to hard coded
+				values, useful on Windows
 
 	visit all OSA servers and find the name of the one who's subtype 
 	matches the given signature
@@ -4018,6 +4019,18 @@ boolean scriptgettypename (long signature, bigstring bsname) {
 	
 #ifdef flcomponent
 	scriptvisitservers (&scriptfindsubtypevisit, (long) &cbd);
+#else
+	switch (signature) {
+		case typeLAND:
+			copystring ("\x08" "UserTalk", bsname);
+			break;
+
+		case 'ascr':
+			copystring ("\x0B" "AppleScript", bsname);
+			break;
+		} /* switch */
+
+	
 #endif
 	
 	return (!isemptystring (bsname));
@@ -4042,7 +4055,10 @@ static boolean scriptfindnamevisit (OSType subtype, bigstring bsname, long refco
 boolean scriptgetnametype (bigstring bsname, long *signature) {
 	
 	/*
-	visit all OSA servers and find the subtype of the one who's name 
+	2006-02-22 creedon: if flcomponent is false then fallback to hard coded
+				values, useful on Windows
+
+	visit all OSA servers and find the subtype of the one who's name
 	matches bsname
 	*/
 	
@@ -4060,7 +4076,16 @@ boolean scriptgetnametype (bigstring bsname, long *signature) {
 	
 	return (cbd.signature != 0);
 #else
-	return (false);
+	if (comparestrings (bsname, "\x08" "UserTalk") == 0) {
+		*signature = typeLAND;
+		return (true);
+	}
+	else if (comparestrings (bsname, "\x0B" "AppleScript") == 0) {
+		*signature = 'ascr';
+		return (true);
+	}
+	else
+		return (false);
 #endif
 	} /*scriptgetnametype*/
 
