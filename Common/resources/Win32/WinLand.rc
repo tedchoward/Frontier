@@ -379,11 +379,19 @@ BEGIN
     BEGIN
         MENUITEM "Plain Text",                  stylemenu+plainitem
         MENUITEM SEPARATOR
+#if 1	// 2006-02-23 aradke: disabled due to conflict with file menu items
+        MENUITEM "&Bold",                       stylemenu+bolditem
+        MENUITEM "&Italic",                     stylemenu+italicitem
+        MENUITEM "&Underline",                  stylemenu+underlineitem
+        MENUITEM "&Outline",                    stylemenu+outlineitem
+        MENUITEM "&Shadow",                     stylemenu+shadowitem
+#else	//MACVERSION
         MENUITEM "&Bold\tCtrl+Shift+B",                        stylemenu+bolditem
         MENUITEM "&Italic\tCtrl+Shift+I",                      stylemenu+italicitem
         MENUITEM "&Underline\tCtrl+Shift+U",                   stylemenu+underlineitem
         MENUITEM "&Outline\tCtrl+Shift+O",                     stylemenu+outlineitem
         MENUITEM "&Shadow\tCtrl+Shift+S",                      stylemenu+shadowitem
+#endif
         MENUITEM "Superscript",                 stylemenu+superscriptitem
         MENUITEM "Subscript",                   stylemenu+subscriptitem
     END
