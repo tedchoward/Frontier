@@ -25,46 +25,55 @@
 
 ******************************************************************************/
 
+#ifndef shellmenuinclude
 #define shellmenuinclude /*so other includes can tell if we've been loaded*/
 
 
-#ifndef shelltypesinclude
-	
-	#include "shelltypes.h"
-
-#endif
-
-
 #ifdef MACVERSION
-	#define firstmainmenu 1
-	#define firsthiermenu 128
-	#define mainmenuincrement 1
-	#define hiermenuincrement 1
 
-	#define applemenu firstmainmenu
-	#define filemenu (applemenu + mainmenuincrement)
-	#define editmenu (filemenu + mainmenuincrement)
-	#define windowsmenu (editmenu + mainmenuincrement)
+	/*
+	2006-02-25 aradke: must keep in sync with SHELL.R
+	*/
 
-	#define fontmenu firsthiermenu
-	#define stylemenu (fontmenu + hiermenuincrement)
-	#define sizemenu (stylemenu + hiermenuincrement)
-	#define leadingmenu (sizemenu + hiermenuincrement)
-	#define justifymenu (leadingmenu + hiermenuincrement)
-	#define findandreplacemenu (justifymenu + hiermenuincrement)
-	#define commonstylesmenu (findandreplacemenu + hiermenuincrement)
-	#define newobjectmenu (commonstylesmenu + hiermenuincrement)
-	#define virtualmenu (newobjectmenu + hiermenuincrement) /* never appears in user interface -- used for externed keyboard */
-	#define openrecentmenu ((virtualmenu + hiermenuincrement))
+	#define mainmenuincrement		1
+	#define hiermenuincrement		1
 
-	#define lastmainmenu windowsmenu
-	#define lasthiermenu openrecentmenu
+	#define applemenu				1
+	#define filemenu				2
+	#define editmenu				3
+	#define windowsmenu				4
+
+	#define firstmainmenu			filemenu
+	#define lastmainmenu			windowsmenu
+
+	#define fontmenu				128
+	#define stylemenu				129
+	#define sizemenu				130
+	#define leadingmenu				131
+	#define justifymenu				132
+	#define findandreplacemenu		133
+	#define commonstylesmenu		134
+	#define newobjectmenu			135
+	#define virtualmenu				136 /* never appears in user interface -- used for extended keyboard */
+	#define openrecentmenu			137
+
+	#define firsthiermenu			fontmenu
+	#define lasthiermenu			openrecentmenu
+	
 #endif //MACVERSION
 
 
-#ifdef WIN95VERSION
-	#define mainmenuincrement 1000
-	#define hiermenuincrement 100
+#ifdef WIN95VERSION	
+
+	/*
+	2006-02-25 aradke: must keep in sync with WinLand.rc
+	
+	2006-02-25 aradke: undefine menus for Pike and OPML Editor that aren't actually used by the app
+		in order to avoid picking up their keyboard shortcuts at runtime
+	*/
+
+	#define mainmenuincrement	1000
+	#define hiermenuincrement 	100
 
 	#define applemenu			1000
 	#define filemenu			2000
@@ -75,36 +84,38 @@
 	#define firstmainmenu		filemenu
 	#define lastmainmenu		helpmenu
 
-#ifdef PIKE
-	#undef stylemenu
-	#undef leadingmenu
-	#undef justifymenu
-	#undef newobjectmenu
-	#undef openrecentmenu
+	#ifdef PIKE
+		#undef stylemenu
+		#undef leadingmenu
+		#undef justifymenu
+		#undef newobjectmenu
+		#undef openrecentmenu
 
-	#define virtualmenu			5100	/* 2006-02-25 aradke: never actually displayed */
-	#define fontmenu			5200
-	#define sizemenu			5300
-	#define findandreplacemenu	5400
-	#define commonstylesmenu	5500	/*7.0b26 PBS*/
+		#define virtualmenu			5100	/* 2006-02-25 aradke: never actually displayed */
+		#define fontmenu			5200
+		#define sizemenu			5300
+		#define findandreplacemenu	5400
+		#define commonstylesmenu	5500	/*7.0b26 PBS*/
 
-	#define firsthiermenu		fontmenu
-	#define lasthiermenu		commonstylesmenu
-#else //!PIKE
-	#define virtualmenu			5100	/* 2006-02-25 aradke: never actually displayed */
-	#define fontmenu			5200
-	#define stylemenu			5300
-	#define sizemenu			5400
-	#define leadingmenu			5500
-	#define justifymenu			5600
-	#define findandreplacemenu	5700
-	#define commonstylesmenu	5800	/*7.0b26 PBS*/
-	#define newobjectmenu		5900
-	#define openrecentmenu		6000	/* 2006-02-05 aradke */
+		#define firsthiermenu		fontmenu
+		#define lasthiermenu		commonstylesmenu
+	#else //!PIKE
+		#define virtualmenu			5100	/* 2006-02-25 aradke: never actually displayed */
+		#define fontmenu			5200
+		#define stylemenu			5300
+		#define sizemenu			5400
+		#define leadingmenu			5500
+		#define justifymenu			5600
+		#define findandreplacemenu	5700
+		#define commonstylesmenu	5800	/*7.0b26 PBS*/
+		#define newobjectmenu		5900
+		#define openrecentmenu		6000	/* 2006-02-05 aradke */
 
-	#define firsthiermenu		fontmenu
-	#define lasthiermenu		openrecentmenu
-#endif //!PIKE
+		#define firsthiermenu		fontmenu
+		#define lasthiermenu		openrecentmenu
+
+	#endif //!PIKE
+
 #endif //WIN95VERSION
 
 
@@ -284,6 +295,10 @@
 #define clearrecentmenuitem 2
 
 
+#if !defined(REZ) && !defined(RC_INVOKED)
+
+#include "shelltypes.h"
+
 //#define ctmenustack (lastmainmenu - firstmainmenu + lasthiermenu - firsthiermenu + 2)
 #define ctmenustack ( (lastmainmenu - firstmainmenu) / mainmenuincrement \
 					+ (lasthiermenu - firsthiermenu) / hiermenuincrement \
@@ -351,3 +366,6 @@ extern boolean pikequit (void); /*7.0 PBS: called when the X in the frame window
 
 extern void shellupdateopenrecentmenu (void); /* 2005-09-25 creedon */
 
+#endif //!defined(REZ) && !defined(RC_INVOKED)
+
+#endif //shellmenuinclude

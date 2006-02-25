@@ -365,6 +365,7 @@ BEGIN
 END
 #endif
 
+#ifdef fontmenu
 fontmenu MENU DISCARDABLE
 BEGIN
     POPUP "Font"
@@ -372,7 +373,9 @@ BEGIN
         MENUITEM "Font",                        32768
     END
 END
+#endif
 
+#ifdef stylemenu
 stylemenu MENU DISCARDABLE
 BEGIN
     POPUP "Style"
@@ -396,7 +399,9 @@ BEGIN
         MENUITEM "Subscript",                   stylemenu+subscriptitem
     END
 END
+#endif
 
+#ifdef sizemenu
 sizemenu MENU DISCARDABLE
 BEGIN
     POPUP "Size"
@@ -414,7 +419,9 @@ BEGIN
         MENUITEM "Custom ",                     sizemenu+pointcustomitem
     END
 END
+#endif
 
+#ifdef leadingmenu
 leadingmenu MENU DISCARDABLE
 BEGIN
     POPUP "Leading"
@@ -430,7 +437,9 @@ BEGIN
         MENUITEM "Custom ",                     leadingmenu+leadingcustomitem
     END
 END
+#endif
 
+#ifdef justifymenu
 justifymenu MENU DISCARDABLE
 BEGIN
     POPUP "Justify"
@@ -441,7 +450,9 @@ BEGIN
         MENUITEM "Full Justify",                justifymenu+fulljustifyitem
     END
 END
+#endif
 
+#ifdef newobjectmenu
 newobjectmenu MENU DISCARDABLE
 BEGIN
     POPUP "New"
@@ -455,9 +466,11 @@ BEGIN
         MENUITEM "Object Database",       newobjectmenu+7
     END
 END
+#endif
 
 /*7.0b26 PBS: Find and Replace menu, Common Styles menu*/
 
+#ifdef findandreplacemenu
 findandreplacemenu MENU DISCARDABLE
 BEGIN
     POPUP "Find and Replace"
@@ -468,7 +481,9 @@ BEGIN
         MENUITEM "Replace && Find Next\tCtrl+H", findandreplacemenu+4
     END
 END
+#endif
 
+#ifdef commonstylesmenu
 commonstylesmenu MENU DISCARDABLE /* 2005-09-25 creedon */
 BEGIN
     POPUP "Common Styles"
@@ -479,7 +494,9 @@ BEGIN
         MENUITEM "Arial 18\tCtrl+8",            commonstylesmenu+4
     END
 END
+#endif
 
+#ifdef openrecentmenu
 openrecentmenu MENU DISCARDABLE /* 2005-09-25 creedon */
 BEGIN
     POPUP "Open Recent"
@@ -488,6 +505,7 @@ BEGIN
         MENUITEM "Clear Menu",       openrecentmenu+clearrecentmenuitem
     END
 END
+#endif
 
 
 /////////////////////////////////////////////////////////////////////////////
@@ -497,13 +515,15 @@ END
 
 IDMULTIPAD ACCELERATORS MOVEABLE PURE
 BEGIN
-#ifndef PIKE
 	"O",			filemenu+openitem,			VIRTKEY, CONTROL, NOINVERT
-#endif
 	"W",			filemenu+closeitem,			VIRTKEY, CONTROL, NOINVERT
 	"S",			filemenu+saveitem,			VIRTKEY, CONTROL, NOINVERT
 #ifdef PIKE
-	"P",			filemenu+viewinbrowseritem,		VIRTKEY, CONTROL, NOINVERT
+	"P",			filemenu+viewinbrowseritem,	VIRTKEY, CONTROL, NOINVERT
+	"N",			filemenu+newitem,			VIRTKEY, CONTROL, NOINVERT
+#else
+	"P",			filemenu+printitem,			VIRTKEY, CONTROL, NOINVERT
+	"N",			newobjectmenu+1,			VIRTKEY, CONTROL, NOINVERT
 #endif
 	"Q",			filemenu+quititem,			VIRTKEY, CONTROL, NOINVERT
 	"Z",			editmenu+undoitem,			VIRTKEY, CONTROL, NOINVERT
@@ -517,7 +537,6 @@ BEGIN
 	"D",			virtualmenu+movedownitem,	VIRTKEY, CONTROL, NOINVERT
 	"L",			virtualmenu+moveleftitem,	VIRTKEY, CONTROL, NOINVERT
 	"R",			virtualmenu+moverightitem,	VIRTKEY, CONTROL, NOINVERT
-	"N",			newobjectmenu+1,			VIRTKEY, CONTROL, NOINVERT
     VK_BACK,        editmenu+undoitem,          VIRTKEY, ALT, NOINVERT
     VK_DELETE,      editmenu+cutitem,           VIRTKEY, SHIFT, NOINVERT
     VK_F3,          IDM_SEARCHNEXT,				VIRTKEY, NOINVERT

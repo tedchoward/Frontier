@@ -1685,13 +1685,15 @@ static boolean ccmenuroutine (short idmenu, short ixmenu) {
 	
 	if ((idmenu == virtualmenu) && (ixmenu == helpitem))
 		return (!cchelpcommand ());
-	
+
+#ifdef newobjectmenu	
 	if (idmenu == newobjectmenu) {
 		
 		ccnewobjectcommand (ixmenu);
 		
 		return (false);
 		}
+#endif
 	
 	#ifdef fldebug
 	

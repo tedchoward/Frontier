@@ -819,20 +819,30 @@ static void shellcheckfontsizestyle (void) {
 	
 	x = (**hw).selectioninfo; /*get updated flags*/
 	
+#ifdef fontmenu
 	if (x.flcansetfont)
 		visitonemenu (fontmenu, &shellfontmenuchecker);
-	
+#endif
+
+#ifdef sizemenu	
 	if (x.flcansetsize)
 		visitonemenu (sizemenu, &shellsizemenuchecker);
-	
+#endif
+
+#ifdef stylemenu	
 	if (x.flcansetstyle)
 		visitonemenu (stylemenu, &shellstylemenuchecker);
-	
+#endif
+
+#ifdef leadingmenu	
 	if (x.flcansetleading)
 		visitonemenu (leadingmenu, &shellleadingmenuchecker);
-	
+#endif
+
+#ifdef justifymenu	
 	if (x.flcansetjust)
 		visitonemenu (justifymenu, &shelljustifymenuchecker);
+#endif
 	} /*shellcheckfontsizestyle*/
 
 
@@ -1755,6 +1765,7 @@ boolean shellhandlemenu (long menucode) {
 			
 			break;
 			
+#ifdef sizemenu
 		case sizemenu: {
 			
 			short size = 0;
@@ -1837,7 +1848,9 @@ boolean shellhandlemenu (long menucode) {
 				
 			break;
 			} /*size menu*/
-			
+#endif
+
+#ifdef stylemenu			
 		case stylemenu: {
 			
 			tyselectioninfo x;
@@ -1906,7 +1919,9 @@ boolean shellhandlemenu (long menucode) {
 			
 			break;
 			} /*style menu*/
-		
+#endif
+
+#ifdef justifymenu		
 		case justifymenu: {
 			
 			register tyjustification justification = unknownjustification;
@@ -1949,7 +1964,9 @@ boolean shellhandlemenu (long menucode) {
 				
 			break;
 			} /*justify menu*/
-			
+#endif
+
+#ifdef leadingmenu			
 		case leadingmenu: {
 			
 			register short leading = -1;
@@ -2026,6 +2043,7 @@ boolean shellhandlemenu (long menucode) {
 				
 			break;
 			} /*leading menu*/
+#endif
 		
 			case findandreplacemenu:
 			case commonstylesmenu:
@@ -2409,6 +2427,8 @@ void geteditmenuitemidentifier (short ixmenu, short ixitem, bigstring bsitem) {
 	}/* geteditmenuitemidentifier */
 
 
+#ifdef openrecentmenu
+
 static boolean openrecentmenuitemsvisit (bigstring bs, hdlhashnode hnode, tyvaluerecord val, ptrvoid refcon) {
 
 	/*
@@ -2428,6 +2448,7 @@ static boolean openrecentmenuitemsvisit (bigstring bs, hdlhashnode hnode, tyvalu
 	return (false); // always return false so that hashsortedinversesearch will visit all nodes
 	} /* openrecentmenuitemsvisit */
 
+#endif
 
 void shellupdateopenrecentmenu (void) {
 
@@ -2438,6 +2459,8 @@ void shellupdateopenrecentmenu (void) {
 	2005-09-22 creedon: created
 	*/
 	
+#ifdef openrecentmenu
+
 	bigstring bs;
 	boolean fl;
 	hdlhashtable htable;
@@ -2464,6 +2487,8 @@ void shellupdateopenrecentmenu (void) {
 	
 	if (countmenuitems (hmenu) == 2)
 		disableallmenuitems (hmenu);
+
+#endif
 
 	} /* shellupdateopenrecentmenu */
 
