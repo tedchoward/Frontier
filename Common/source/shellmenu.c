@@ -1734,6 +1734,11 @@ boolean shellhandlemenu (long menucode) {
 			bigstring bs;
 			short fontnumber;
 			
+			if (shellwindowinfo == nil) {	/* 2006-02-25 aradke: defensive driving, requires front window */
+				ouch ();
+				break;
+				}
+				
 			getmenuitem (shellmenuhandle (fontmenu), iditem, bs);
 			
 			fontgetnumber (bs, &fontnumber);
@@ -1753,6 +1758,11 @@ boolean shellhandlemenu (long menucode) {
 		case sizemenu: {
 			
 			short size = 0;
+			
+			if (shellwindowinfo == nil) {	/* 2006-02-25 aradke: defensive driving, requires front window */
+				ouch ();
+				break;
+				}
 			
 			switch (iditem) {
 				
@@ -1832,6 +1842,11 @@ boolean shellhandlemenu (long menucode) {
 			
 			tyselectioninfo x;
 			
+			if (shellwindowinfo == nil) {	/* 2006-02-25 aradke: defensive driving, requires front window */
+				ouch ();
+				break;
+				}
+			
 			clearbytes (&x, sizeof (x)); /*set all flags to false*/
 			
 			switch (iditem) {
@@ -1896,6 +1911,11 @@ boolean shellhandlemenu (long menucode) {
 			
 			register tyjustification justification = unknownjustification;
 			
+			if (shellwindowinfo == nil) {	/* 2006-02-25 aradke: defensive driving, requires front window */
+				ouch ();
+				break;
+				}
+			
 			switch (iditem) {
 				
 				case leftjustifyitem:
@@ -1933,6 +1953,11 @@ boolean shellhandlemenu (long menucode) {
 		case leadingmenu: {
 			
 			register short leading = -1;
+			
+			if (shellwindowinfo == nil) {	/* 2006-02-25 aradke: defensive driving, requires front window */
+				ouch ();
+				break;
+				}
 			
 			switch (iditem) {
 				
