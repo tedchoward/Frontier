@@ -42,10 +42,10 @@
 	#define hiermenuincrement 1
 
 	#define applemenu firstmainmenu
-
 	#define filemenu (applemenu + mainmenuincrement)
 	#define editmenu (filemenu + mainmenuincrement)
 	#define windowsmenu (editmenu + mainmenuincrement)
+
 	#define fontmenu firsthiermenu
 	#define stylemenu (fontmenu + hiermenuincrement)
 	#define sizemenu (stylemenu + hiermenuincrement)
@@ -56,33 +56,57 @@
 	#define newobjectmenu (commonstylesmenu + hiermenuincrement)
 	#define virtualmenu (newobjectmenu + hiermenuincrement) /* never appears in user interface -- used for externed keyboard */
 	#define openrecentmenu ((virtualmenu + hiermenuincrement))
-#endif
+
+	#define lastmainmenu windowsmenu
+	#define lasthiermenu openrecentmenu
+#endif //MACVERSION
+
 
 #ifdef WIN95VERSION
-	#define firstmainmenu 2000
-	#define firsthiermenu 3100
 	#define mainmenuincrement 1000
 	#define hiermenuincrement 100
 
-	#define applemenu 1000
+	#define applemenu			1000
+	#define filemenu			2000
+	#define editmenu			3000
+	#define windowsmenu			4000
+	#define helpmenu			5000
 
-	// under windows, we can't use expressions for the menu #defines; the .rc compiler chokes
-	#define filemenu 2000
-	#define editmenu 3000
-	#define windowsmenu 4000
-	#define helpmenu 5000
-	#define fontmenu firsthiermenu
-	#define stylemenu 3200
-	#define sizemenu 3300
-	#define leadingmenu 3400
-	#define justifymenu 3500
-	#define findandreplacemenu 3600
-	#define virtualmenu 4100
-	#define commonstylesmenu 3700 /*7.0b26 PBS*/
-	#define newobjectmenu 3800
-	#define openrecentmenu 3900		/* 2006-02-05 aradke */
+	#define firstmainmenu		filemenu
+	#define lastmainmenu		helpmenu
 
-#endif
+#ifdef PIKE
+	#undef stylemenu
+	#undef leadingmenu
+	#undef justifymenu
+	#undef newobjectmenu
+	#undef openrecentmenu
+
+	#define virtualmenu			5100	/* 2006-02-25 aradke: never actually displayed */
+	#define fontmenu			5200
+	#define sizemenu			5300
+	#define findandreplacemenu	5400
+	#define commonstylesmenu	5500	/*7.0b26 PBS*/
+
+	#define firsthiermenu		fontmenu
+	#define lasthiermenu		commonstylesmenu
+#else //!PIKE
+	#define virtualmenu			5100	/* 2006-02-25 aradke: never actually displayed */
+	#define fontmenu			5200
+	#define stylemenu			5300
+	#define sizemenu			5400
+	#define leadingmenu			5500
+	#define justifymenu			5600
+	#define findandreplacemenu	5700
+	#define commonstylesmenu	5800	/*7.0b26 PBS*/
+	#define newobjectmenu		5900
+	#define openrecentmenu		6000	/* 2006-02-05 aradke */
+
+	#define firsthiermenu		fontmenu
+	#define lasthiermenu		openrecentmenu
+#endif //!PIKE
+#endif //WIN95VERSION
+
 
 #define aboutitem 1
 
@@ -206,8 +230,6 @@
 // #define helpmenu (windowsmenu + mainmenuincrement)
 #define aboutitem 1
 
-#define fontmenu firsthiermenu
-
 // #define stylemenu (fontmenu + hiermenuincrement)
 #define plainitem 1
 #define bolditem 3
@@ -262,17 +284,10 @@
 #define clearrecentmenuitem 2
 
 
-#ifdef MACVERSION
-	#define lastmainmenu windowsmenu
-	#define lasthiermenu openrecentmenu
-#endif
-#ifdef WIN95VERSION
-	#define lastmainmenu helpmenu
-	#define lasthiermenu openrecentmenu
-#endif
-
-
-#define ctmenustack (lastmainmenu - firstmainmenu + lasthiermenu - firsthiermenu + 2)
+//#define ctmenustack (lastmainmenu - firstmainmenu + lasthiermenu - firsthiermenu + 2)
+#define ctmenustack ( (lastmainmenu - firstmainmenu) / mainmenuincrement \
+					+ (lasthiermenu - firsthiermenu) / hiermenuincrement \
+					+ 2)
 
 typedef struct tymenuinfo {
 	
