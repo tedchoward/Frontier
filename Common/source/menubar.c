@@ -73,7 +73,11 @@ us 136 - 235. For menu sharing, a different base menu id can be pass in.
 #endif
 
 #ifdef WIN95VERSION
-	#define defaultbasemenuid ((lastmainmenu / hiermenuincrement) + 1)
+	/*
+	2006-02-25 aradke: on windows, the menu with the highest id can be
+		a main menu or a hierarchic (sub)menu. deal with it.
+	*/
+	#define defaultbasemenuid ((max(lastmainmenu, lasthiermenu) / hiermenuincrement) + 1)
 #endif
 
 hdlmenubarlist menubarlist = nil;
