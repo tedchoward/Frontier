@@ -43,7 +43,7 @@
 	#define editmenu				3
 	#define windowsmenu				4
 
-	#define firstmainmenu			filemenu
+	#define firstmainmenu			applemenu
 	#define lastmainmenu			windowsmenu
 
 	#define fontmenu				128
