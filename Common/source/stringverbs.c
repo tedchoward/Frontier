@@ -307,6 +307,10 @@ typedef enum tystringtoken { /*verbs that are processed by string.c*/
 	
 	multiplereplaceallfunc, /*7.1b17 PBS*/
 
+	macromantoutf8func, // 2006-02-25 creedon
+	
+	utf8tomacromanfunc, // 2006-02-25 creedon
+
 	ctstringverbs
 	} tystringtoken;
 
@@ -1368,6 +1372,8 @@ static boolean stringfunctionvalue (short token, hdltreenode hparam1, tyvaluerec
 	12/5/2004 smd: optimization - deletefunc now uses a readonly handle for the input
 	string, creates a new handle sized precisely for the output string, and copies 
 	two parts from the input to the output (substrings before and after the deleted chars)
+	
+	2006-02-25 creedon: added macRomanToUtf8 and utf8ToMacRoman
 	*/
 	
 	hdltreenode hp1 = hparam1;
@@ -2256,6 +2262,42 @@ static boolean stringfunctionvalue (short token, hdltreenode hparam1, tyvaluerec
 			return (stringmultiplereplaceallverb (hp1, v));
 			}
 			
+		case macromantoutf8func: { /* 2006-02-25 creedon: convert mac roman character set to utf-8 */
+
+			Handle h, hresult;
+
+			flnextparamislast = true;
+
+			if (!getexempttextvalue (hp1, 1, &h))
+				return (false);
+
+			newemptyhandle (&hresult);
+
+			macromantoutf8 (h, hresult);
+
+			disposehandle (h);
+
+			return (setheapvalue (hresult, stringvaluetype, v));
+			}
+
+		case utf8tomacromanfunc: { /* 2006-02-25 creedon: convert utf-8 character set to mac roman */
+
+			Handle h, hresult;
+
+			flnextparamislast = true;
+
+			if (!getexempttextvalue (hp1, 1, &h))
+				return (false);
+
+			newemptyhandle (&hresult);
+
+			utf8tomacroman (h, hresult);
+
+			disposehandle(h);
+
+			return (setheapvalue (hresult, stringvaluetype, v));
+			}
+
 		default:
 			errornum = notimplementederror;
 			
@@ -2286,7 +2328,4 @@ boolean stringinitverbs (void) {
 	
 	return (loadfunctionprocessor (idstringverbs, &stringfunctionvalue));
 	} /*stringinitverbs*/
-	
-
-
 

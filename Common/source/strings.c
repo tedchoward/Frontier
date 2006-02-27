@@ -2689,7 +2689,48 @@ void initstrings (void) {
 		newheapstring (bs, &dirstrings [i - 1]);
 		} /*for*/
 	} /*initstrings*/
+
+
+boolean macromantoutf8 (Handle h, Handle hresult) {
+
+	/*
+	2006-02-24 creedon: convert from Mac Roman character set to UTF-8, cribbed from ansitoutf8
+	*/
 	
+	#ifdef WIN95VERSION
+
+		langerrormessage ("\x92" "Direct Mac Roman to UTF-8 string conversion currently only works on Mac OS.  On Windows string.macToLatin and string.ansiToUtf8 verbs can be used.");
+
+	#endif
 	
+	#ifdef MACVERSION
 	
+		converttextencoding (h, hresult, kTextEncodingMacRoman, 0x08000100);
 	
+	#endif
+
+	return (true);
+	} /* macromantoutf8 */
+
+
+boolean utf8tomacroman (Handle h, Handle hresult) {
+
+	/*
+	2006-02-26 creedon: convert from UTF-8 character set to Mac Roman, cribbed from utf8toansi
+	*/
+
+	#ifdef WIN95VERSION
+
+		langerrormessage ("\x92" "Direct UTF-8 to Mac Roman string conversion currently only works on Mac OS.  On Windows string.utf8ToAnsi and string.latinToMac verbs can be used.");
+
+	#endif
+	
+	#ifdef MACVERSION
+		
+		converttextencoding (h, hresult, 0x08000100, kTextEncodingMacRoman);
+	
+	#endif
+
+	return (true);
+	} /* utf8tomacroman */
+

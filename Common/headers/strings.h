@@ -261,6 +261,10 @@ extern void handlepoptrailingchars (Handle htext, byte ch);
 extern void latintomac (Handle h); /*7.0b28 PBS*/
 
 extern void mactolatin (Handle h); /*7.0b41 PBS*/
-#endif
 
+extern boolean macromantoutf8 (Handle, Handle); /* 2006-02-25 creedon */
+
+extern boolean utf8tomacroman (Handle, Handle); /* 2006-02-25 creedon */
+
+#endif
 

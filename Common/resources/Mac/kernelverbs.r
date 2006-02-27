@@ -599,6 +599,8 @@ resource 'EFP#' (idstringverbs, "string") {
 		"ansitoutf8",
 		"ansitoutf16",
 		"multipleReplaceAll",
+		"macromantoutf8", // 2006-02-25 creedon
+		"utf8tomacroman" // 2006-02-25 creedon
 		}
 	}
 };
