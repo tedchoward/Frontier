@@ -36,8 +36,7 @@
 #include "resources.h"
 #include "shell.rsrc.h"
 #include "timedate.h"
-
-
+#include "langinternal.h" /* 2006-02-26 creedon */
 
 
 #define ctparseparams 4
