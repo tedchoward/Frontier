@@ -813,134 +813,69 @@ static boolean opxmlpushattributes (hdlheadrecord hnode, Handle htext, short ind
 
 static boolean opxmlrecursivelyvisit (hdlheadrecord h, short lev, opvisitcallback visit, ptrvoid refcon) {
 
-	
-
 	register hdlheadrecord nomad, nextnomad;
 
-	
-
 	if (h == nil)
-
 		return (true);
-
-	
 
 	nomad = (**h).headlinkright;
 
-	
-
 	if (nomad == h) /*nothing to the right*/
-
 		return (true);
-
-	
 
 	while (true) {
 
-		
-
 		nextnomad = (**nomad).headlinkdown;
 
-		
-
 		if (!(*visit) (nomad, refcon))
-
 			return (false);
-
-			
 
 		if (lev > 1) {
 
-
-
 			if (!(**nomad).fldynamic) {
 
-		
-
 				if (!oprecursivelyvisit (nomad, lev - 1, visit, refcon))
-
 					return (false);
-
 				} /*if*/
-
 			}
 
-			
-
 		if (nextnomad == nomad) /*just processed last subhead*/
-
 			return (true);
 
-			
-
 		nomad = nextnomad;
-
 		} /*while*/
 
 	} /*opxmlrecursivelyvisit*/
 
 
-
-
-
 static boolean opxmlvisitnondynamicnodes (opvisitcallback visit, ptrvoid refcon) {
 
-	
-
 	/*
-
 	visit every node in the outline -- unless it's the child of a dynamic node.
-
 	*/
-
-	
 
 	hdlheadrecord nomad = (**outlinedata).hsummit, nextnomad;
 
-	
-
 	while (true) {
-
-		
 
 		nextnomad = (**nomad).headlinkdown;
 
-		
-
 		if (!(*visit) (nomad, refcon)) /*visit the summit*/
-
 			return (false);
-
-
 
 		if (!(**nomad).fldynamic) {
 
-			
-
 			if (!opxmlrecursivelyvisit (nomad, infinity, visit, refcon)) /*visit its subs*/
-
 				return (false);
-
 			} /*if*/
 
-		
-
 		if (nextnomad == nomad)
-
 			return (true);
 
-			
-
 		nomad = nextnomad;
-
 		} /*while*/
 
-	
-
 	} /*opxmlvisitnondynamicnodes*/
-
-
-
 
 
 static boolean opxmlbodyvisit (hdlheadrecord hnode, ptrvoid htext) {
@@ -951,8 +886,6 @@ static boolean opxmlbodyvisit (hdlheadrecord hnode, ptrvoid htext) {
 	Look ahead to the next flatdown headline, and add a /> if no subs.
 	If next headline is at a higher level, close off <outline> elements,
 	as many as needed.
-
-
 
 	7.0b30 PBS: handle a dynamic node -- it has subs, but pretend it doesn't,
 
@@ -982,29 +915,16 @@ static boolean opxmlbodyvisit (hdlheadrecord hnode, ptrvoid htext) {
 	nextlevel = (**hflatdown).headlevel + 2;
 	
 	if (nextlevel == indentlevel)
-	
 		fl = true;
 
-
-
 	if (nextlevel > indentlevel)
-
-
-
 		flsubs = true;
 
-
-
 	if ((**hnode).fldynamic) /*7.0b30: dynamic nodes may have subs, but we ignore them.*/
-
-
-
 		flsubs = false;
 	
 	if (flsubs) /*Has subs?*/
-		
 		fl = pushtexthandle ("\x02"">\r", htext); /*Add closing > and carriage return.*/
-	
 	else { /*No subs*/
 	
 		if (!pushtexthandle ("\x03""/>\r", htext)) /*Add closing /> and carriage return.*/
@@ -1014,14 +934,12 @@ static boolean opxmlbodyvisit (hdlheadrecord hnode, ptrvoid htext) {
 		} /*if*/
 	
 	if (nextlevel < indentlevel) /*Need to close off outline items?*/
-	
 		fl = opxmlpushclosingoutlinetags (htext, indentlevel, nextlevel); /*Add as many </outline> tags as needed.*/
 	
 	if (hnode == hflatdown) /*At the end of the outline?*/
-		
 		fl = opxmlpushclosingoutlinetags (htext, indentlevel, 2); /*Add as many </outline> tags as needed.*/
 	
-	exit:
+exit:
 	
 	disposehandle (h);
 	
@@ -1183,15 +1101,15 @@ static boolean opxmlbuildhead (Handle htext, hdloutlinerecord ho, Handle hname, 
 	
 	/*Clean up*/
 	
-	exit3:
+exit3:
 	
 	disposevaluerecord (vtimemodified, false);
 	
-	exit2:
+exit2:
 	
 	disposevaluerecord (vtimecreated, false);
 	
-	exit:
+exit:
 	
 	disposehandle (hexpansionstate);
 	
@@ -1337,42 +1255,22 @@ static boolean opxmlfindtableitem (hdlhashtable ht, bigstring bsname, hdlhashtab
 	} /*opxmlfindtableitem*/
 
 
-
 static boolean opxmlheadexists (hdlhashtable ht) {
 
-
-
 	/*
-
 	7.0b33 PBS: return true if there's a required <head> section of the document.
-
 	*/
-
-
 
 	hdlhashnode hn;
 
-	
-
 	for (hn = (**ht).hfirstsort; hn != nil; hn = (**hn).sortedlink) { /*loop through the table*/
 
-		
-
 		if (isxmlmatch (hn, STR_head)) /*is this the name we're looking for?*/
-
-						
-
 			return (true); /*Found; return true.*/
-
 		} /*for*/
 
-
-
 	return (false);
-
 	} /*opxmlheadexists*/
-
-
 
 
 static boolean opxmlgetonevalue (hdlhashtable ht, bigstring bsname, Handle htext) {
@@ -1488,12 +1386,10 @@ static boolean opxmlsetwindowpositionandsize (hdlhashtable ht, hdlwindowinfo hin
 //		return (false); /*shellmovewindow always returns true at this writing, but that could change*/
 
 	if (!shellmovewindowhidden (hinfo, windowleft, windowtop)) /*Set window position*/
-
 		return (false); /*shellmovewindow always returns true at this writing, but that could change*/
-
 	
 	/*Set the window size*/
-	
+
 	if (!opxmlgetoneshortvalue (ht, STR_windowright, &windowright))
 		return (false);
 	
@@ -1580,7 +1476,7 @@ static boolean opxmlsetwindowexpansionstate (hdlhashtable ht, hdlwindowinfo hinf
 	
 	htext = nil;
 	
-	exit1:
+exit1:
 	
 	if (htext != nil)
 		disposehandle (htext);
@@ -1919,11 +1815,11 @@ static boolean opxmlsetrefcon (hdlhashtable ht) {
 	
 	fl = true; /*success*/
 		
-	exit2:
+exit2:
 	
 	disposevaluerecord (vbinary, false);
 	
-	exit1:
+exit1:
 		
 	return (fl);
 	} /*opxmlsetrefcon*/
@@ -1982,7 +1878,7 @@ static boolean opxmlsetcommentandbreakpoint (hdlhashtable ht) {
 	
 	fl = true; /*success*/
 	
-	exit:
+exit:
 	
 	return (fl);
 	} /*opxmlsetcommentandbreakpoint*/
