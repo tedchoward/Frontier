@@ -1098,6 +1098,12 @@ boolean opverbnew (short id, Handle hdata, hdlexternalvariable *hvariable) {
 	5.0.2b13 dmb: write the edit buffer of the source outline
 	
 	5.1.5b9 dmb: preserve barcursor in copied outline
+	
+	2006-03-03 aradke: if the source outline is hoisted, temporarily unhoist it
+		in order to copy all lines. this fixes data loss when making an in-memory
+		copy of an outline and it restores pre-5.0.2b12 behavior. until then,
+		obverbcopyvalue used pack/unpack to make a copy which preserves hoisted lines.
+		http://sourceforge.net/tracker/index.php?func=detail&aid=1259245&group_id=120666&atid=687798
 	*/
 	
 	register hdloutlinevariable hv;
@@ -1123,10 +1129,13 @@ boolean opverbnew (short id, Handle hdata, hdlexternalvariable *hvariable) {
 		
 		register hdloutlinerecord hsource = (hdloutlinerecord) hdata;
 		long lnumcursor;
+		boolean flpoppedhoists;
 		
 		oppushoutline (hsource);
 		
 			opwriteeditbuffer ();
+			
+			flpoppedhoists = oppopallhoists (); /*2006-03-03 aradke: temporarily unhoist before getting cursor position*/
 		
 			opgetnodeline ((**hsource).hbarcursor, &lnumcursor);
 		
@@ -1158,6 +1167,15 @@ boolean opverbnew (short id, Handle hdata, hdlexternalvariable *hvariable) {
 			(**ho).hbarcursor = oprepeatedbump (flatdown, lnumcursor, hsummit, true);
 	
 		oppopoutline ();
+		
+		if (flpoppedhoists) {	/*2006-03-03 aradke*/
+			
+			oppushoutline (hsource);
+			
+			oprestorehoists ();
+			
+			oppopoutline ();
+			}
 		}
 	
 	(**hv).variabledata = (long) ho; /*link the outline rec into the variable rec*/

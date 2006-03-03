@@ -952,11 +952,13 @@ static boolean opxmlbuildbody (hdloutlinerecord ho, Handle htext, short indentle
 	/*
 	7.0b21 PBS: Build the <body> section.
 
-
-
 	7.0b30 PBS: don't save children of dynamic headlines.
+	
+	2006-02-27 aradke: de-hoist outline before collecting body text to capture all nodes, avoids data loss
+		http://sourceforge.net/tracker/index.php?func=detail&aid=1259245&group_id=120666&atid=687798
 	*/
 	
+	boolean flpoppedhoists;
 	boolean fl = false;
 	
 	if (!opxmlpushstringline (htext, STR_openbody, indentlevel)) /*<body>*/
@@ -966,8 +968,13 @@ static boolean opxmlbuildbody (hdloutlinerecord ho, Handle htext, short indentle
 	
 	oppushoutline (ho);
 	
+	flpoppedhoists = oppopallhoists (); /*2006-02-27 aradke: needs outline pushed*/
+	
 	if (!opxmlvisitnondynamicnodes (&opxmlbodyvisit, htext)) /*visit every headline, top to bottom, calling opxmlbodyvisit on each*/
 		goto exit;
+	
+	if (flpoppedhoists) /*2006-02-27 aradke*/
+		oprestorehoists ();
 	
 	oppopoutline ();
 	
