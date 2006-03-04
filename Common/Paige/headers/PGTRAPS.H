@@ -199,7 +199,11 @@ extern PG_PASCAL (void) pgFailMemError( pgm_globals_ptr pgm_globals_p );
 #else
 
 #ifdef WIN32_COMPILE
-#define STRICT
+#ifndef NO_STRICT
+#ifndef STRICT
+#define STRICT 1
+#endif
+#endif
 #endif
 #include <WINDOWS.H>
 #endif

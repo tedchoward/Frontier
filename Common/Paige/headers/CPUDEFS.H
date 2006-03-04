@@ -235,7 +235,11 @@ some each compiler seems to interpret differently.  */
 #ifndef NO_OS_INLINE
 #define NO_OS_INLINE
 #endif
-#define STRICT
+#ifndef NO_STRICT
+#ifndef STRICT
+#define STRICT 1
+#endif
+#endif
 #include <windows.h>
 #ifdef WIN32_COMPILE
 #include <windowsx.h>

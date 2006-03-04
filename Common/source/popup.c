@@ -85,11 +85,14 @@ static short handlepopup (hdlmenu hmenu, Rect r, short item) {
 	*/
 	
 	Point pt;
+
+#ifdef MACVERSION
 	short idmenu;
 	short iditem;
 	long menuresult;
 	long commandid;
 	hdlmenu hchosenmenu;
+#endif
 	
 	setcursortype (cursorisarrow); /*arrow cursor is more appropriate here*/
 	

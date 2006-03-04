@@ -815,7 +815,7 @@ boolean getmenutitleenable (hdlmenu hmenu, short idmenu) {
 
 		GetMenuItemInfo (menubar, idmenu, false, &info);
 
-		return (info.fState | MFS_ENABLED != 0);
+		return ((info.fState | MFS_ENABLED) != 0);
 	#endif
 	} /*getmenuitemenable*/
 	
@@ -844,7 +844,7 @@ boolean getmenuitemenable (hdlmenu hmenu, short item) {
 
 		GetMenuItemInfo (hmenu, item - 1, true, &info);
 
-		return (info.fState | MFS_ENABLED != 0);
+		return ((info.fState | MFS_ENABLED) != 0);
 	#endif
 	} /*getmenuitemenable*/
 	

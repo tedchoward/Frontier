@@ -368,7 +368,7 @@ static boolean getxingheader (tympeginfostruct *info, Handle h, long ix, long *c
 	
 	ix += sizeof(long);
 	
-	if (flags & 0x00000001 == 0) //check for frame count
+	if ((flags & 0x00000001) == 0) //check for frame count
 		return (false);
 		
 	*ctframes = extractfourbytes (h, ix);

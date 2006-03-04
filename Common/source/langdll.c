@@ -1099,9 +1099,8 @@ static boolean loadprocinforesource (tydllinfohandle hdll) {
 	Caller is responsible for setting langerror
 	*/
 
-	tyfilespec fs = (**hdll).fs;
-
 	#ifdef MACVERSION
+		tyfilespec fs = (**hdll).fs;
 		short resfile;
 		Handle hRes;
 
@@ -1452,7 +1451,7 @@ static boolean openlibrary (tydllinfohandle hdll) {
 
 		if (stricmp (stringbaseaddress(fn), "COMDLL.DLL") == 0) {
 		
-			(**hdll).hdllsyshandle = COMStartup(); /*** FIXME: make sure we deal properly with the COM DLL ***/
+			(**hdll).hdllsyshandle = (tydllsyshandle) COMStartup(); /*** FIXME: make sure we deal properly with the COM DLL ***/
 			
 			return ((**hdll).hdllsyshandle != nil);
 			}
@@ -1510,7 +1509,7 @@ static void closelibrary (tydllinfohandle hdll) {
 #ifdef WIN95VERSION
 
 	#if (FRONTIERCOM == 1)
-		if ((**hdll).hdllsyshandle == COMSYSModule()) /*** FIXME: make sure we deal properly with the COM DLL ***/
+		if ((**hdll).hdllsyshandle == (tydllsyshandle) COMSYSModule()) /*** FIXME: make sure we deal properly with the COM DLL ***/
 			COMShutdown();
 		else
 	#endif

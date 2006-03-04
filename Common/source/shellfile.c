@@ -149,8 +149,10 @@ boolean shellopenfile (ptrfilespec fspec, boolean flhidden, WindowPtr *wnew) {
 	boolean fl;
 	OSType filetype;
 	tyfindvisitinfo info;
+#ifdef MACVERSION
 	bigstring bsext;
-	
+#endif
+
 	if (wnew != nil)
 		*wnew = nil;
 	
@@ -169,13 +171,13 @@ boolean shellopenfile (ptrfilespec fspec, boolean flhidden, WindowPtr *wnew) {
 	if (!getfiletype (fspec, &filetype))
 		return (false);
 	
-	#ifdef MACVERSION
-	
-		lastword (fspec->name, '.', bsext);
+#ifdef MACVERSION
 
-		if (equalidentifiers (bsext, "\proot"))
-			filetype = 'TABL';
-	#endif
+	lastword (fspec->name, '.', bsext);
+
+	if (equalidentifiers (bsext, "\proot"))
+		filetype = 'TABL';
+#endif
 	
 	if (!shellpushdefaultglobals ())
 		return (false);
