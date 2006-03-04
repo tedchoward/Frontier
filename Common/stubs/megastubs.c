@@ -28,6 +28,7 @@
 #include "frontier.h"
 #include "standard.h"
 
+#include "versions.h"	/* 2006-03-04 aradke: for APPNAME */
 #include "error.h"
 #include "font.h"
 #include "memory.h"
@@ -689,15 +690,19 @@ void centerdialog (HWND hwndDlg) {
         SWP_NOSIZE); 
  	} /*centerdialog*/
 
-#ifdef PIKE /*7.0d8 PBS*/
-#ifndef OPMLEDITOR
-	static char frontierstring [] = "Radio UserLand";
-#else //OPMLEDITOR
-    static char frontierstring [] = "OPML";
-#endif // OPMLEDITOR
-#else
-	static char frontierstring [] = "UserLand Frontier";
-#endif
+
+//#ifdef PIKE /*7.0d8 PBS*/
+//#ifndef OPMLEDITOR
+//	static char frontierstring [] = "Radio UserLand";
+//#else //OPMLEDITOR
+//  static char frontierstring [] = "OPML";
+//#endif // OPMLEDITOR
+//#else
+//	static char frontierstring [] = "UserLand Frontier";
+//#endif
+
+static char frontierstring [] = APPNAME;	/* 2006-03-04 aradke: from versions.h */
+
 
 static messagebox (LPCTSTR lpText, LPCTSTR lpCaption, UINT uType) {
 	
