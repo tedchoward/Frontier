@@ -1483,7 +1483,7 @@ boolean wpdrawtext (Handle htext, const Rect *rclip, const Rect *rtext, tywpflag
 		}
 	else if (flupdating) {
 
-		#if WIN95VERSION
+		#ifdef WIN95VERSION
 			pgInitDevice (&ws_globals, (generic_var) getcurrentDC (), MEM_NULL, &port);
 			port.machine_ref3 = port.machine_var; // default place to get DC
 			port.machine_var = 0; //can't GetDC from a HDC
@@ -1828,7 +1828,7 @@ void wpupdate (void) {
 		graf_device_ptr updateport = NULL;
 		hdlregion updatergn = nil;
 		
-		#if WIN95VERSION
+		#ifdef WIN95VERSION
 		graf_device	port;
 		
 		updatergn = (**shellwindowinfo).drawrgn;
@@ -1875,7 +1875,7 @@ void wpupdate (void) {
 		
 		wpframedisplay ();
 		
-		#if WIN95VERSION
+		#ifdef WIN95VERSION
 			if (updatergn != nil)
 				pgCloseDevice (&ws_globals, &port);
 		#endif

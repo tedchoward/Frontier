@@ -891,7 +891,7 @@ boolean fileexists (const tyfilespec *fs, boolean *flfolder) {
 
 boolean filegetfilename (const tyfilespec *pfs, bigstring name) {
 
-#if MACVERSION
+#ifdef MACVERSION
 	/*
 	filespecs for volumes have their strings set to the empty string.
 	*/
@@ -904,7 +904,7 @@ boolean filegetfilename (const tyfilespec *pfs, bigstring name) {
 	return (filegetvolumename ((*pfs).vRefNum, name));
 #endif
 
-#if WIN95VERSION
+#ifdef WIN95VERSION
 	lastword ((ptrstring) fsname (pfs), '\\', name);
 
 	return (true);

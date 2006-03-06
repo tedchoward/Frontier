@@ -83,7 +83,7 @@ boolean dosound (short duration, short amplitude, short frequency) {
 
 boolean dosound (short duration, short amplitude, short frequency) {
 	
-#if MACVERSION
+#ifdef MACVERSION
 	//#if TARGET_API_MAC_CARBON
 	//sysbeep();
 	//return true;
@@ -139,7 +139,7 @@ boolean dosound (short duration, short amplitude, short frequency) {
 //#endif
 #endif
 
-#if WIN95VERSION
+#ifdef WIN95VERSION
 	//NOTE:  Beep does not take amplitude.  
 	//       Also the parameters are ignored on Windows 95/98
 	long time;
@@ -176,7 +176,7 @@ void ouch (void) {
 
 boolean playnamedsound (bigstring bsname) {
 
-#if MACVERSION
+#ifdef MACVERSION
 	Handle hsound;
 	
 	hsound = GetNamedResource ('snd ', bsname);
@@ -187,7 +187,7 @@ boolean playnamedsound (bigstring bsname) {
 	return (SndPlay (nil, (SndListHandle) hsound, false) == noErr);
 #endif
 
-#if WIN95VERSION
+#ifdef WIN95VERSION
 	char sndname[256];
 	copyptocstring (bsname, sndname);
 	return (PlaySound (sndname, NULL, SND_FILENAME | SND_NODEFAULT | SND_ASYNC));

@@ -52,7 +52,7 @@ Broken out from FrontierWinMain.c
 #define maxsubmenus 40
 
 
-#if MACVERSION
+#ifdef MACVERSION
 	UInt32 menuid;
 	short idsubmenu;
 	hdlmenurecord hcurrmenurecord;
@@ -60,12 +60,12 @@ Broken out from FrontierWinMain.c
 #endif
 
 
-#if WIN95VERSION
+#ifdef WIN95VERSION
 	short menuid;
 #endif
 
 
-#if MACVERSION
+#ifdef MACVERSION
 
 	typedef struct typopupinfo {
 
@@ -94,7 +94,7 @@ static void dockmenudisposemenusinstack (void);
 
 static void dockmenuresetmenustack (void) {
 	
-	#if MACVERSION
+	#ifdef MACVERSION
 	
 		dockmenudisposemenusinstack ();
 
@@ -114,7 +114,7 @@ static void dockmenudisposemenusinstack (void) {
 	Dispose and delete all menus in popup menu stack.
 	*/
 	
-	#if MACVERSION
+	#ifdef MACVERSION
 	
 		short ix = dockmenustack.currstackitem;
 		short i, id;
@@ -156,7 +156,7 @@ static void dockmenudisposemenusinstack (void) {
 
 static boolean dockmenuaddtomenustack (hdlmenu hmenu, short id) {
 
-	#if MACVERSION
+	#ifdef MACVERSION
 
 		short ix = dockmenustack.currstackitem + 1;
 		
@@ -184,7 +184,7 @@ static void dockmenuinsertsubmenu (hdlmenu hmenu, short itemnumber, hdlheadrecor
 	hdlmenu hsubmenu;
 	short id = defaultpopupmenuid;
 
-	#if MACVERSION
+	#ifdef MACVERSION
 		idsubmenu++;
 		
 		id = idsubmenu;
@@ -192,7 +192,7 @@ static void dockmenuinsertsubmenu (hdlmenu hmenu, short itemnumber, hdlheadrecor
 	
 	hsubmenu = Newmenu (id, "");
 
-	#if MACVERSION	
+	#ifdef MACVERSION	
 		InsertMenu (hsubmenu, -1);
 	#endif
 
@@ -269,7 +269,7 @@ static boolean dockmenuinsertmenuitem (hdlmenu hmenu, short itemnumber, hdlheadr
 	if (!opnosubheads (hnode)) /*has subs?*/
 		dockmenuinsertsubmenu (hmenu, itemnumber, hnode);
 
-	#if MACVERSION
+	#ifdef MACVERSION
 		flstackneedsdisposing = true;
 	#endif
 
@@ -482,7 +482,7 @@ pascal OSStatus dockmenuhandler (EventHandlerCallRef nextHandler, EventRef theEv
 
 #endif
 
-#if WIN95VERSION
+#ifdef WIN95VERSION
 
 void rundockmenu (void) {
 	

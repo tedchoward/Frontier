@@ -53,7 +53,7 @@ static boolean isseparatorstring (bigstring bs) {
 	} /*isseparatorstring*/
 
 
-#if WIN95VERSION
+#ifdef WIN95VERSION
 
 extern HWND shellframewindow;
 extern HINSTANCE shellinstance;
@@ -341,7 +341,7 @@ void drawmenubar (void) {
 		DrawMenuBar ();
 	#endif
 
-	#if WIN95VERSION
+	#ifdef WIN95VERSION
 		releasethreadglobals ();
 		
 		DrawMenuBar (shellframewindow);
@@ -485,7 +485,7 @@ hdlmenu getmenuhandle (short id) {
 		return (GetMenuHandle (id));
 	#endif
 
-	#if WIN95VERSION
+	#ifdef WIN95VERSION
 		MENUITEMINFO info;
 		HMENU menubar = GetMenu (shellframewindow);
 		
@@ -510,7 +510,7 @@ boolean insertmenu (hdlmenu hmenu, long idbefore) {
 		return (true);
 	#endif
 
-	#if WIN95VERSION
+	#ifdef WIN95VERSION
 		MENUITEMINFO info;
 		HMENU menubar = GetMenu (shellframewindow);
 		char menuname[128];
@@ -557,7 +557,7 @@ boolean inserthierarchicmenu (hdlmenu hmenu, short idmenu) {
 		return (true);
 	#endif
 
-	#if WIN95VERSION
+	#ifdef WIN95VERSION
 		HMENU menubar = GetMenu (shellframewindow);
 		MENUITEMINFO info;
 		
@@ -582,7 +582,7 @@ void removemenu (short idmenu) {
 		DeleteMenu (idmenu); // (**hmenu).menuID
 	#endif
 
-	#if WIN95VERSION
+	#ifdef WIN95VERSION
 		HMENU menubar = GetMenu (shellframewindow);
 		
 		removeaccelerators (idmenu, 1);
@@ -594,7 +594,7 @@ void removemenu (short idmenu) {
 	} /*removemenu*/
 
 
-#if MACVERSION && !flruntime
+#if defined(MACVERSION) && !flruntime
 
 long trackmenu (Point mousept) {
 	
@@ -740,7 +740,7 @@ void setmenutitleenable (hdlmenu hmenu, short idmenu, boolean fl) {
 			#endif
 	#endif
 
-	#if WIN95VERSION
+	#ifdef WIN95VERSION
 		HMENU menubar = GetMenu (shellframewindow);
 
 		assert (idmenu >= 0);
@@ -781,7 +781,7 @@ void setmenuitemenable (hdlmenu hmenu, short item, boolean fl) {
 			#endif
 	#endif
 
-	#if WIN95VERSION
+	#ifdef WIN95VERSION
 		if (item < 0) /*this item has been dummied out -- do nothing*/
 			return;
 		
@@ -806,7 +806,7 @@ boolean getmenutitleenable (hdlmenu hmenu, short idmenu) {
 		#endif
 	#endif
 
-	#if WIN95VERSION
+	#ifdef WIN95VERSION
 		MENUITEMINFO info;
 		HMENU menubar = GetMenu (shellframewindow);
 		
@@ -906,7 +906,7 @@ void checkmenuitem (hdlmenu hmenu, short ixmenu, boolean fl) {
 		CheckMenuItem (hmenu, ixmenu, fl);
 	#endif
 
-	#if WIN95VERSION
+	#ifdef WIN95VERSION
 		MENUITEMINFO info;
 		
 		hmenu = GetSubMenu (hmenu, 0); // get actual popup
@@ -936,7 +936,7 @@ boolean menuitemmarked (hdlmenu hmenu, short ixmenu) {
 		return (mark != 0);
 	#endif
 
-	#if WIN95VERSION
+	#ifdef WIN95VERSION
 		MENUITEMINFO info;
 		
 		info.cbSize = sizeof (info);
@@ -963,7 +963,7 @@ void markmenuitem (hdlmenu hmenu, short ixmenu, short mark) {
 		SetItemMark (hmenu, ixmenu, mark);
 	#endif
 
-	#if WIN95VERSION
+	#ifdef WIN95VERSION
 		MENUITEMINFO info;
 		
 		hmenu = GetSubMenu (hmenu, 0); // get actual popup
@@ -991,7 +991,7 @@ void stylemenuitem (hdlmenu hmenu, short ixmenu, short style) {
 		SetItemStyle (hmenu, ixmenu, style);
 	#endif
 
-	#if WIN95VERSION
+	#ifdef WIN95VERSION
 		
 	#endif
 	} /*stylemenuitem*/
@@ -1034,7 +1034,7 @@ boolean setmenutitle (hdlmenu hmenu, bigstring bs) {
 		return (true);
 	#endif
 
-	#if WIN95VERSION
+	#ifdef WIN95VERSION
 		hdlmenu mainmenu, hreturn;
 		MENUITEMINFO mi;
 		short itempos;
@@ -1075,7 +1075,7 @@ static boolean getmenutitle (hdlmenu hmenu, bigstring bs) {
 		return (true);
 	#endif
 
-	#if WIN95VERSION
+	#ifdef WIN95VERSION
 		hdlmenu mainmenu, hreturn;
 		MENUITEMINFO info;
 		char menuname[128];
@@ -1125,7 +1125,7 @@ boolean setmenuitem (hdlmenu hmenu, short ixmenu, bigstring bs) {
 		return (true);
 	#endif
 
-	#if WIN95VERSION
+	#ifdef WIN95VERSION
 		MENUITEMINFO info;
 		char item [256];
 		short ixaccel = -1;
@@ -1170,7 +1170,7 @@ boolean setmenuitem (hdlmenu hmenu, short ixmenu, bigstring bs) {
 
 boolean getmenuitem (hdlmenu hmenu, short ixmenu, bigstring bs) {
 	
-	#if WIN95VERSION
+	#ifdef WIN95VERSION
 		MENUITEMINFO info;
 		char menuname[128];
 	#endif
@@ -1187,7 +1187,7 @@ boolean getmenuitem (hdlmenu hmenu, short ixmenu, bigstring bs) {
 		return (true);
 	#endif
 
-	#if WIN95VERSION
+	#ifdef WIN95VERSION
 		info.cbSize = sizeof (info);
 		info.fMask = MIIM_TYPE;
 		info.dwTypeData = &menuname[0];
@@ -1421,7 +1421,7 @@ boolean deletemenuitem (hdlmenu hmenu, short ixmenu) {
 	return (true);
 #endif
 
-#if WIN95VERSION	
+#ifdef WIN95VERSION	
 	MENUITEMINFO info;
 	boolean fl;
 	
@@ -1501,7 +1501,7 @@ boolean pushmenuitem (hdlmenu hmenu, short idmenu, bigstring bs, short commandid
 	return (true);
 #endif
 
-#if WIN95VERSION
+#ifdef WIN95VERSION
 	boolean fl;
 	
 	hmenu = GetSubMenu (hmenu, 0); // get actual popup
@@ -1538,7 +1538,7 @@ boolean pushresourcemenuitems (hdlmenu hmenu, short idmenu, OSType restype) {
 	return (true);
 #endif
 
-#if WIN95VERSION
+#ifdef WIN95VERSION
 	if (restype == 'FONT') {
 
 		short i;

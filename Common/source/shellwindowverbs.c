@@ -407,7 +407,7 @@ static boolean openverb (hdltreenode hparam1, tyvaluerecord *vreturned, bigstrin
 				(**hinfo).flsyntheticbuttons = false;
 			} /*switch*/
 
-		#if WIN95VERSION || TARGET_API_MAC_CARBON /*8.0.3b2: Windows and OS X only. Fixes missing scrollbar on Classic.*/
+		#if defined(WIN95VERSION) || TARGET_API_MAC_CARBON /*8.0.3b2: Windows and OS X only. Fixes missing scrollbar on Classic.*/
 		
 			shellpushglobals ((**hinfo).macwindow);		
 		

@@ -877,7 +877,7 @@ boolean langgetvalsize (tyvaluerecord v, long *size) {
 			break;
 			}
 		
-		#if __powerc || WIN95VERSION
+		#if defined(__powerc) || defined(WIN95VERSION)
 		
 			case doublevaluetype:
 				x = sizeof (extended80);

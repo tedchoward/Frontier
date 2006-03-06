@@ -246,7 +246,7 @@ void shellupdatecontent (Rect contentrect) {
 	SectRgn (contentrgn, updatergn, contentrgn); /*re-use contentrgn*/
 
 	
-#if WIN95VERSION && fldebug
+#if defined(WIN95VERSION) && fldebug
 
 /****** DEBUG CODE *********/
 	if (false) {

@@ -44,11 +44,11 @@
 #endif
 
 
-#if MACVERSION
+#ifdef MACVERSION
 	#define filespecsize(fs) (sizeof (tyfilespec) - sizeof (Str63) + stringsize ((fs).name))
 #endif
 
-#if WIN95VERSION
+#ifdef WIN95VERSION
 	#define filespecsize(fs) (sizeof (tyfilespec))	// assume all data is contiguous
 #endif
 
