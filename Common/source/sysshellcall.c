@@ -31,6 +31,7 @@
 #include "memory.h"
 #include "strings.h"
 #include "threads.h"
+#include "error.h"
 #include "sysshellcall.h"
 
 
@@ -157,7 +158,7 @@ boolean unixshellcall (Handle hcommand, Handle hreturn) {
 		while waiting for a lot of data to be read
 	
 	7.0b51: Call the UNIX popen command, which evaluates a string as if it were typed
-		ôn the command line. Verb: sys.unixShellCommand.
+		on the command line. Verb: sys.unixShellCommand.
 		Code adapted by Timothy Paustian from Apple sample code.
 		This routine by PBS.
 	*/
@@ -206,6 +207,58 @@ boolean unixshellcall (Handle hcommand, Handle hreturn) {
 
 #ifdef WIN95VERSION
 
+static boolean getenvironmentvariable (char *name, boolean flwinerror, Handle *hresult) {
+	
+	/*
+	2006-03-09 aradke: utility function for getting a Windows environment variable
+		as a handle without terminating nil char.
+	*/
+	
+	Handle h;
+	long res;
+
+	res = GetEnvironmentVariable (name, nil, 0);
+
+	if (res == 0) {
+		if (flwinerror)
+			winerror ();
+		return (false);
+		}
+
+	if (!newclearhandle (res, &h))
+		return (false);
+
+	lockhandle (h);
+
+	res = GetEnvironmentVariable (name, *h, res);
+
+	unlockhandle (h);
+
+	if (!sethandlesize (h, res)) {	/*drop trailing nil char*/
+		disposehandle (h);
+		return (false);
+		}
+
+	*hresult = h;
+		
+	return (true);
+	} /*getenvironmentvariable*/
+
+
+static boolean cmdshellexists (Handle hshell) {
+
+	DWORD attr;
+	
+	lockhandle (hshell);
+
+	attr = GetFileAttributes (*hshell);
+
+	unlockhandle (hshell);
+	
+	return (attr != INVALID_FILE_ATTRIBUTES);
+	} /*cmdshellexists*/
+	
+
 static boolean getcmdshell (Handle *hshell) {
 
 	/*
@@ -215,62 +268,153 @@ static boolean getcmdshell (Handle *hshell) {
 		caller is responsible for disposing the handle if we return true.
 	*/
 	
-	Handle h;
-	long res;
+	OSVERSIONINFO osinfo;
+	bigstring bs;
+	
+	if (getenvironmentvariable ("COMSPEC", false, hshell))
+		return (true);
 
-	res = GetEnvironmentVariable("COMSPEC", nil, 0);
+	osinfo.dwOSVersionInfoSize = sizeof (osinfo);
+		
+	if (GetVersionEx (&osinfo) == nil) {
+		winerror ();
+		return (false);
+		}
 
-	if (res > 0) { /*var exists, allocate buffer and get its value*/
-		
-		if (!newclearhandle (res, &h))
-			return (false);
-		
-		lockhandle (h);
-
-		res = GetEnvironmentVariable("COMSPEC", *h, res);	/*FIXME: check result, dispose h*/
-		
-		unlockhandle (h);
-
-		assert (res == gethandlesize (h) - 1);
-		
-		sethandlesize (h, res);	/*drop trailing nil char*/
+	if (osinfo.dwPlatformId == VER_PLATFORM_WIN32_WINDOWS) {
+		copystring ("\x0b" "command.com", bs); /*Win95/98/ME: actual DOS command interpreter*/
 		}
 	else {
-		OSVERSIONINFO osinfo;
-		bigstring bs;
+		copystring ("\x07" "cmd.exe", bs); /*WinNT and successors: DOS emulation*/
+		}
 
-		osinfo.dwOSVersionInfoSize = sizeof (osinfo);
-		
-		GetVersionEx (&osinfo); /*FIXME: check result, report error*/
-
-		if (osinfo.dwPlatformId == VER_PLATFORM_WIN32_WINDOWS) {
-			copystring ("\x0b" "command.com", bs); /*Win95/98/ME: actual DOS command interpreter*/
-			}
-		else {
-			copystring ("\x07" "cmd.exe", bs); /*WinNT and successors: DOS emulation*/
-			}
-
-		if (!newtexthandle (bs, &h))
-			return (false);
-		}	
-	
-	*hshell = h;
-
-	return (true);
+	return (newtexthandle (bs, hshell));
 	} /*getcmdshell*/
 
 
-boolean runcmdshell (Handle hshell, Handle hcommand, HANDLE *hout) {
+#define CHDOUBLEQUOTE	'"'
+#define CHSEMICOLON		';'
+#define CHBACKSLASH		'\\'
+
+
+static boolean getnextpath (Handle hpath, long *ixstart, Handle *hitem) {
+
+	Handle h;
+	handlestream s;
+	char ch;
+	
+	openhandlestream (hpath, &s);
+	s.pos = *ixstart;
+	
+	/*first pass: locate end of next path item*/
+	
+	skiphandlestreamchars (&s, CHSEMICOLON); /*ignore leading semicolons*/
+	*ixstart = s.pos;
+	
+	while (!athandlestreameof (&s)) {
+		
+		ch = nexthandlestreamcharacter (&s);
+		
+		if (ch == CHSEMICOLON) {
+			break;
+			}
+		else if (ch == CHDOUBLEQUOTE) {
+			s.pos++;
+			seekhandlestreamchar (&s, CHDOUBLEQUOTE); /*skip over contents of doublequotes*/
+			}
+			
+		s.pos++;
+		}/*while*/
+	
+	/*extract item*/
+	
+	if (!loadfromhandletohandle (s.data, ixstart, s.pos - *ixstart, false, &h))
+		return (false);
+	
+	/*second pass: remove included doublequotes*/
+	
+	openhandlestream (h, &s);
+	
+	while (true) {
+		
+		seekhandlestreamchar (&s, CHDOUBLEQUOTE);
+		
+		if (athandlestreameof (&s))
+			break;
+		
+		pullfromhandlestream (&s, 1, nil);
+		}/*while*/
+	
+	if (lasthandlestreamcharacter (&s) != CHBACKSLASH)
+		if (!writehandlestreamchar (&s, CHBACKSLASH)) {
+			disposehandlestream (&s);
+			return (false);
+			}
+	
+	*hitem = closehandlestream (&s);
+	
+	return (true);
+	} /*getnextpath*/
+	
+	
+static boolean searchcmdpath (Handle *hshell) {
+
+	/*
+	2006-03-09 aradke: get the PATH environment variable and parse it.
+		see if the command shell is located in any of the directories.
+		caller is responsible for disposing hshell.
+	
+	TO DO:
+		- check length of hshell < MAX_PATH
+	*/
+	
+	Handle hpath = nil;
+	Handle h = nil;
+	long ix = 0;
+
+	/*obtain path environment variable*/
+
+	if (!getenvironmentvariable ("PATH", true, &hpath))
+		return (false);
+	
+	/*parse path*/
+	
+	while (getnextpath (hpath, &ix, &h)) {
+		
+		if (!pushhandle (*hshell, h))
+			goto exit;
+		
+		if (!enlargehandle (h, 1, "\0"))
+			goto exit;
+		
+		if (cmdshellexists (h)) {
+			disposehandle (*hshell);
+			*hshell = h;
+			return (true);
+			}
+
+		disposehandle (h);
+		}/*while*/
+	
+	/*not found*/
+	
+	oserror (ERROR_FILE_NOT_FOUND);
+	
+exit:
+	disposehandle (hpath);
+	
+	return (false);
+	} /*searchcmdpath*/
+	
+	
+static boolean runcmdshell (Handle hshell, Handle hcommand, HANDLE *hout) {
 
 	/*
 	2006-03-09 aradke: launch the command shell as a child process.
+		we consume hshell, but caller is responsible for closing hout if we return true.
 	
 	TO DO:
 		- check length of hcmdline < MAX_PATH
-		- make sure handles in processinfo struct are closed
-		- before creating process, check whether hshell exists
-		- if we can't access hshell, do a search path lookup
-		- proper error checking and reporting
 	*/
 	
 	Handle hcmdline = nil;
@@ -279,21 +423,20 @@ boolean runcmdshell (Handle hshell, Handle hcommand, HANDLE *hout) {
 	PROCESS_INFORMATION processinfo;
 	HANDLE hpiperead = nil;
 	HANDLE hpipewrite = nil;
-	DWORD attr;
 	boolean fl;
 	
 	/*create pipe for reading from command shell*/
+
 	clearbytes (&securityinfo, sizeof (securityinfo));
 	securityinfo.nLength				= sizeof (securityinfo);
 	securityinfo.lpSecurityDescriptor	= nil;
 	securityinfo.bInheritHandle			= true;
 	
-	fl = CreatePipe (&hpiperead, &hpipewrite, &securityinfo, nil);
+	if (!CreatePipe (&hpiperead, &hpipewrite, &securityinfo, nil))
+		goto error;
 	
-	if (!fl)
-		goto exit;
-	
-	SetHandleInformation (hpiperead, HANDLE_FLAG_INHERIT, 0);
+	if (!SetHandleInformation (hpiperead, HANDLE_FLAG_INHERIT, 0))
+		goto error;
 	
 	/*init structs for creating process*/
 	
@@ -323,15 +466,11 @@ boolean runcmdshell (Handle hshell, Handle hcommand, HANDLE *hout) {
 	
 	/*check whether command shell can be accessed*/
 	
-	lockhandle (hshell);
-
-	attr = GetFileAttributes(*hshell);
-
-	unlockhandle (hshell);
-	
-	if (attr == INVALID_FILE_ATTRIBUTES)
-		goto exit; /*not found, try searching PATH for command shell?*/
-	
+	if (!cmdshellexists (hshell)) {
+		if (!searchcmdpath (&hshell))	/*do a search path lookup*/
+			goto exit;
+		}
+		
 	/*create command shell process*/
 	
 	lockhandle (hshell);
@@ -355,19 +494,24 @@ boolean runcmdshell (Handle hshell, Handle hcommand, HANDLE *hout) {
 	/*handle result*/
 	
 	if (!fl)
-		goto exit;
+		goto error;
 	
-	CloseHandle (hpipewrite);	/*inherited by child process*/
+	CloseHandle (hpipewrite);	/*now inherited by child process*/
+
 	CloseHandle (processinfo.hProcess);
 	CloseHandle (processinfo.hThread);
 	
 	disposehandle (hcmdline);
+	disposehandle (hshell);
 	
 	*hout = hpiperead;
 	
 	return (true);
-	
-exit:
+
+error:
+	winerror (); /*note fall through*/
+		
+exit:	/*error is already set*/
 	if (!hpiperead)
 		CloseHandle (hpiperead);
 	
@@ -375,16 +519,23 @@ exit:
 		CloseHandle (hpipewrite);
 	
 	disposehandle (hcmdline);
+	disposehandle (hshell);
 	
 	return (false);	
 	} /*runcmdshell*/
 
 
-boolean readcmdresult (HANDLE hread, Handle hreturn) {
+static boolean readcmdresult (HANDLE hread, Handle hreturn) {
+
+	/*
+	2006-03-09 aradke: read data from pipe until eof.
+		we close our end of the pipe (hread) whether we succeed or not.
+	*/
 	
-	char buf [1024];
+	char buf[1024];
 	long ct = 0;
 	boolean fl;
+	DWORD err = 0;
 	
 	while (true) {
 		
@@ -392,22 +543,36 @@ boolean readcmdresult (HANDLE hread, Handle hreturn) {
 		
 		fl = ReadFile (hread, buf, sizeof (buf), &ct, nil);
 		
-		grabthreadglobals ();
+		if (!fl)
+			err = GetLastError ();
 		
-		if (!fl) /*an error occurred*/
-			break;
+		grabthreadglobals ();
 
-		if (fl && (ct == 0)) /*end of file*/
+		if (fl && (ct == 0)) /*regular end of file*/
 			break;
+		
+		if (!fl) {
+		
+			if (err == ERROR_BROKEN_PIPE) 
+				fl = true;	/*ignore broken pipe*/
+			else
+				oserror (err);
+			
+			break;
+			}
 
-		if (ct > 0)				
-			if (!enlargehandle (hreturn, ct, buf))
+		if (ct > 0) {
+		
+			fl = enlargehandle (hreturn, ct, buf);
+							
+			if (!fl)
 				break;
+			}
 		} /*while*/
 	
 	CloseHandle (hread);
 	
-	return (true);
+	return (fl);
 	} /*readcmdresult*/
 
 
@@ -424,23 +589,15 @@ boolean winshellcall (Handle hcommand, Handle hreturn) {
 	HANDLE hread;
 
 	if (!getcmdshell (&hshell))
-		goto exit;
+		return (false);
 	
 	if (!runcmdshell (hshell, hcommand, &hread))
-		goto exit;
+		return (false);
 
 	if (!readcmdresult (hread, hreturn))
-		goto exit;
-
-	disposehandle (hshell);
+		return (false);
 
 	return (true);
-
-exit:
-
-	disposehandle (hshell);
-
-	return (false);
 	} /*winshellcall*/
 
 
@@ -459,7 +616,7 @@ boolean winshellcall (Handle hcommand, Handle hreturn) {
 	*/
 
 	FILE *f;
-	char buf [1024];
+	char buf[1024];
 	long ct = 0;
 		
 	if (!enlargehandle (hcommand, 1, "\0"))
