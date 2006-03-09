@@ -29,6 +29,7 @@
 #include "standard.h"
 
 #include "memory.h"
+#include "strings.h"
 #include "threads.h"
 #include "sysshellcall.h"
 
@@ -46,18 +47,6 @@
 	#define	F_SETFL		4		/* set file status flags */
 	#define	O_NONBLOCK	0x0004	/* no delay */
 #endif //__MWERKS__
-#endif //MACVERSION && TARGET_API_MAC_CARBON
-
-
-#ifdef WIN95VERSION
-
-#include <stdio.h>
-#include <stdlib.h>
-
-#endif //WIN95VERSION
-
-
-#if defined(MACVERSION) && (TARGET_API_MAC_CARBON == 1)
 
 /*System.framework functions: popen, pclose, fread, fcntl, feof, and fileno.*/
 
@@ -156,24 +145,26 @@ static boolean unixshellcallbackgroundtask (void) {
 boolean unixshellcall (Handle hcommand, Handle hreturn) {
 
 	/*
-	2006-01-29 creedon: change buf from 32 to 1024 to increase performance of function, we can do this now because fread is now in non-blocking mode, kernel remains repsonsive
+	2006-01-29 creedon: change buf from 32 to 1024 to increase performance of function,
+		we can do this now because fread is now in non-blocking mode, kernel remains repsonsive
 	
-	2006-01-10 creedon: laid down the groundwork for a timeoutsecs parameter, what is a good default? longinfinity? several minutes? I know that some commands I've done have taken 15 - 30 minutes
-					 fread now reads in non-blocking mode, no error checking
+	2006-01-10 creedon: laid down the groundwork for a timeoutsecs parameter, what is a good default?
+		longinfinity? several minutes? I know that some commands I've done have taken 15 - 30 minutes
+		fread now reads in non-blocking mode, no error checking
 	
 	2005-10-02 creedon: changed buf size from 256 to 32, makes envrionment more responsive
-					 added call to new unixshellcallbackgroundtask function so kernel doesn't lock up while waiting for a lot of data to be read
+		added call to new unixshellcallbackgroundtask function so kernel doesn't lock up
+		while waiting for a lot of data to be read
 	
-	7.0b51: Call the UNIX popen command, which evaluates a string as if it were typed on the command line. Verb: sys.unixShellCommand.
-		     Code adapted by Timothy Paustian from Apple sample code.
-		     This routine by PBS.
+	7.0b51: Call the UNIX popen command, which evaluates a string as if it were typed
+		ôn the command line. Verb: sys.unixShellCommand.
+		Code adapted by Timothy Paustian from Apple sample code.
+		This routine by PBS.
 	*/
 
 	FILE *f;
 	char buf [1024];
 	long ct = 0;
-	// unsigned long timeoutsecs = 60 * 5;
-	// long timeoutticks = gettickcount () + (timeoutsecs * 60);
 
 	if (!unixshellcallinit ())
 		return (false);
@@ -193,19 +184,12 @@ boolean unixshellcall (Handle hcommand, Handle hreturn) {
 	
 		ct = freadfunc (buf, 1, sizeof buf, f); /*fread*/
 		
-		if (ct > 0) // {
-				
-			if (!insertinhandle (hreturn, gethandlesize (hreturn), buf, ct))
+		if (ct > 0)
+			if (!enlargehandle (hreturn, ct, buf))
 				break;
-				
-			// timeoutticks = gettickcount () + (timeoutsecs * 60);
-			// }
 		
 		if (feoffunc (f))
 			break;
-			
-		/* if (gettickcount () > timeoutticks)
-			break; */
 		
 		if (!unixshellcallbackgroundtask ())
 			break;
@@ -222,11 +206,256 @@ boolean unixshellcall (Handle hcommand, Handle hreturn) {
 
 #ifdef WIN95VERSION
 
+static boolean getcmdshell (Handle *hshell) {
+
+	/*
+	2006-03-09 aradke: return name or path of command shell in hshell.
+		check the COMSPEC environment variable first. if it does not exist, resort
+		to guessing the name of the shell based on the current OS version.
+		caller is responsible for disposing the handle if we return true.
+	*/
+	
+	Handle h;
+	long res;
+
+	res = GetEnvironmentVariable("COMSPEC", nil, 0);
+
+	if (res > 0) { /*var exists, allocate buffer and get its value*/
+		
+		if (!newclearhandle (res, &h))
+			return (false);
+		
+		lockhandle (h);
+
+		res = GetEnvironmentVariable("COMSPEC", *h, res);	/*FIXME: check result, dispose h*/
+		
+		unlockhandle (h);
+
+		assert (res == gethandlesize (h) - 1);
+		
+		sethandlesize (h, res);	/*drop trailing nil char*/
+		}
+	else {
+		OSVERSIONINFO osinfo;
+		bigstring bs;
+
+		osinfo.dwOSVersionInfoSize = sizeof (osinfo);
+		
+		GetVersionEx (&osinfo); /*FIXME: check result, report error*/
+
+		if (osinfo.dwPlatformId == VER_PLATFORM_WIN32_WINDOWS) {
+			copystring ("\x0b" "command.com", bs); /*Win95/98/ME: actual DOS command interpreter*/
+			}
+		else {
+			copystring ("\x07" "cmd.exe", bs); /*WinNT and successors: DOS emulation*/
+			}
+
+		if (!newtexthandle (bs, &h))
+			return (false);
+		}	
+	
+	*hshell = h;
+
+	return (true);
+	} /*getcmdshell*/
+
+
+boolean runcmdshell (Handle hshell, Handle hcommand, HANDLE *hout) {
+
+	/*
+	2006-03-09 aradke: launch the command shell as a child process.
+	
+	TO DO:
+		- check length of hcmdline < MAX_PATH
+		- make sure handles in processinfo struct are closed
+		- before creating process, check whether hshell exists
+		- if we can't access hshell, do a search path lookup
+		- proper error checking and reporting
+	*/
+	
+	Handle hcmdline = nil;
+	SECURITY_ATTRIBUTES securityinfo;
+	STARTUPINFO startupinfo;
+	PROCESS_INFORMATION processinfo;
+	HANDLE hpiperead = nil;
+	HANDLE hpipewrite = nil;
+	DWORD attr;
+	boolean fl;
+	
+	/*create pipe for reading from command shell*/
+	clearbytes (&securityinfo, sizeof (securityinfo));
+	securityinfo.nLength				= sizeof (securityinfo);
+	securityinfo.lpSecurityDescriptor	= nil;
+	securityinfo.bInheritHandle			= true;
+	
+	fl = CreatePipe (&hpiperead, &hpipewrite, &securityinfo, nil);
+	
+	if (!fl)
+		goto exit;
+	
+	SetHandleInformation (hpiperead, HANDLE_FLAG_INHERIT, 0);
+	
+	/*init structs for creating process*/
+	
+	clearbytes (&startupinfo, sizeof (startupinfo));
+	startupinfo.cb = sizeof (startupinfo);
+	startupinfo.dwFlags		= STARTF_USESHOWWINDOW | STARTF_USESTDHANDLES;
+	startupinfo.hStdInput	= GetStdHandle (STD_INPUT_HANDLE);
+	startupinfo.hStdOutput	= hpipewrite;
+	startupinfo.hStdError	= GetStdHandle (STD_ERROR_HANDLE);
+	startupinfo.wShowWindow	= SW_HIDE;
+	
+	clearbytes (&processinfo, sizeof (processinfo));
+	
+	/*synthesize command string*/
+	
+	if (!inserttextinhandle (hcommand, 0, "\x04" " /c "))
+		goto exit;
+	
+	if (!concathandles (hshell, hcommand, &hcmdline))
+		goto exit;
+		
+	if (!enlargehandle (hshell, 1, "\0"))
+		goto exit;
+
+	if (!enlargehandle (hcmdline, 1, "\0"))
+		goto exit;
+	
+	/*check whether command shell can be accessed*/
+	
+	lockhandle (hshell);
+
+	attr = GetFileAttributes(*hshell);
+
+	unlockhandle (hshell);
+	
+	if (attr == INVALID_FILE_ATTRIBUTES)
+		goto exit; /*not found, try searching PATH for command shell?*/
+	
+	/*create command shell process*/
+	
+	lockhandle (hshell);
+	lockhandle (hcmdline);
+	
+	fl = CreateProcess (
+			*hshell,		/*IN LPCSTR lpApplicationName*/
+			*hcmdline,		/*IN LPSTR lpCommandLine*/
+			nil,			/*IN LPSECURITY_ATTRIBUTES lpProcessAttributes*/
+			nil,			/*IN LPSECURITY_ATTRIBUTES lpThreadAttributes*/
+			true,			/*IN BOOL bInheritHandles*/
+			0,				/*IN DWORD dwCreationFlags*/
+			nil,			/*IN LPVOID lpEnvironment: use parent's*/
+			nil,			/*IN LPCSTR lpCurrentDirectory: use parent's*/
+			&startupinfo,	/*IN LPSTARTUPINFOA lpStartupInfo*/
+			&processinfo);	/*OUT LPPROCESS_INFORMATION lpProcessInformation*/
+	
+	unlockhandle (hshell);
+	unlockhandle (hcmdline);
+	
+	/*handle result*/
+	
+	if (!fl)
+		goto exit;
+	
+	CloseHandle (hpipewrite);	/*inherited by child process*/
+	CloseHandle (processinfo.hProcess);
+	CloseHandle (processinfo.hThread);
+	
+	disposehandle (hcmdline);
+	
+	*hout = hpiperead;
+	
+	return (true);
+	
+exit:
+	if (!hpiperead)
+		CloseHandle (hpiperead);
+	
+	if (!hpipewrite)
+		CloseHandle (hpipewrite);
+	
+	disposehandle (hcmdline);
+	
+	return (false);	
+	} /*runcmdshell*/
+
+
+boolean readcmdresult (HANDLE hread, Handle hreturn) {
+	
+	char buf [1024];
+	long ct = 0;
+	boolean fl;
+	
+	while (true) {
+		
+		releasethreadglobals ();
+		
+		fl = ReadFile (hread, buf, sizeof (buf), &ct, nil);
+		
+		grabthreadglobals ();
+		
+		if (!fl) /*an error occurred*/
+			break;
+
+		if (fl && (ct == 0)) /*end of file*/
+			break;
+
+		if (ct > 0)				
+			if (!enlargehandle (hreturn, ct, buf))
+				break;
+		} /*while*/
+	
+	CloseHandle (hread);
+	
+	return (true);
+	} /*readcmdresult*/
+
+
 boolean winshellcall (Handle hcommand, Handle hreturn) {
 
 	/*
 	2006-03-09 aradke: call the Windows shell and execute the given command.
-		release thread globals before each sys call in order not to block other kernel threads.
+		our caller owns hcommand and hreturn, whether we succeed or not.
+		this implementation relies on the win32 api only and does not
+		require popen etc to be available in the c runtime library.
+	*/
+
+	Handle hshell = nil;
+	HANDLE hread;
+
+	if (!getcmdshell (&hshell))
+		goto exit;
+	
+	if (!runcmdshell (hshell, hcommand, &hread))
+		goto exit;
+
+	if (!readcmdresult (hread, hreturn))
+		goto exit;
+
+	disposehandle (hshell);
+
+	return (true);
+
+exit:
+
+	disposehandle (hshell);
+
+	return (false);
+	} /*winshellcall*/
+
+
+#if 0 //!__MWERKS__
+
+#include <stdio.h>
+#include <stdlib.h>
+
+boolean winshellcall (Handle hcommand, Handle hreturn) {
+
+	/*
+	2006-03-09 aradke: simple version relying on popen to be available
+		from the c runtime library. that is the case with microsoft's
+		runtime library, but not with metrowerks. see our own
+		implementation above using only win32 api calls.
 	*/
 
 	FILE *f;
@@ -241,10 +470,10 @@ boolean winshellcall (Handle hcommand, Handle hreturn) {
 	releasethreadglobals ();
 
 	f = _popen (*hcommand, "r");
-	
-	unlockhandle (hcommand);
 
 	grabthreadglobals ();
+
+	unlockhandle (hcommand);
 
 	while (true) {
 		
@@ -255,7 +484,7 @@ boolean winshellcall (Handle hcommand, Handle hreturn) {
 		grabthreadglobals ();
 
 		if (ct > 0)				
-			if (!insertinhandle (hreturn, gethandlesize (hreturn), buf, ct))
+			if (!enlargehandle (hreturn, ct, buf))
 				break;
 		
 		if (feof (f))
@@ -267,6 +496,8 @@ boolean winshellcall (Handle hcommand, Handle hreturn) {
 	
 	return (true);	
 	} /*winshellcall*/
+
+#endif
 
 #endif //WIN95VERSION
 
