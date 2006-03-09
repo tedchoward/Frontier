@@ -2254,6 +2254,9 @@
 					</FileConfiguration>
 				</File>
 				<File
+					RelativePath="..\Common\source\sysshellcall.c">
+				</File>
+				<File
 					RelativePath="..\Common\source\textedit.c">
 					<FileConfiguration
 						Name="DbTracker|Win32">
@@ -7228,6 +7231,9 @@
 			</File>
 			<File
 				RelativePath="..\Common\headers\strings.h">
+			</File>
+			<File
+				RelativePath="..\Common\headers\sysshellcall.h">
 			</File>
 			<File
 				RelativePath="..\Common\headers\tabledisplay.h">

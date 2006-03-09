@@ -61,6 +61,9 @@
 #if TARGET_API_MAC_CARBON == 1
 	#include "CallMachOFrameWork.h"
 #endif
+#ifdef WIN95VERSION
+	#include "sysshellcall.h"
+#endif
 
 #include "langsystem7.h"  //6.1b7 AR: we need coercetolist
 #include "tableverbs.h"  //6.1b7 AR: we need gettablevalue
@@ -110,6 +113,8 @@ typedef enum tysystoken { /*verbs that are processed by sys*/
 	setenvironmentvariablefunc,
 	
 	unixshellcommandfunc,
+
+	winshellcommandfunc,
 
 	ctsysverbs
 	} tysystoken;
@@ -685,8 +690,35 @@ static boolean sysfunctionvalue (short token, hdltreenode hparam1, tyvaluerecord
 				return (setheapvalue (hreturn, stringvaluetype, v));
 				}
 		
+		#endif 
 		
-		#endif
+		#ifdef WIN95VERSION
+
+			case winshellcommandfunc: {
+				Handle hcommand, hreturn;
+				
+				newemptyhandle (&hreturn);
+				
+				flnextparamislast = true;
+				
+				if (!getexempttextvalue (hparam1, 1, &hcommand))
+					return (false);
+										
+				if (!winshellcall (hcommand, hreturn)) {
+				
+					disposehandle (hreturn);
+					
+					disposehandle (hcommand);
+					
+					return (false);
+					} /*if*/
+				
+				disposehandle (hcommand);
+					
+				return (setheapvalue (hreturn, stringvaluetype, v));
+				}
+
+		#endif //WIN95VERSION
 		
 		default:
 			break;

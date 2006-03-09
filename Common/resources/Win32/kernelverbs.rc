@@ -790,7 +790,7 @@
 	1,					//Number of "blocks" in this resource
 		"sys\0",			//Function Processor Name
 		false,			//Window required
-			14,			//Count of verbs
+			16,			//Count of verbs
 			"osversion\0", /*sys*/
 			"systemtask\0",
 			"browsenetwork\0",
@@ -805,7 +805,8 @@
 			"os\0",
 			"getenvironmentvariable\0",
 			"setenvironmentvariable\0",
-			"unixshellcommand\0"
+			"unixshellcommand\0",
+			"winshellcommand\0"	/* 2006-03-09 aradke */
 	END
 
 1014 /*idlaunchverbs*/	EFP		DISCARDABLE

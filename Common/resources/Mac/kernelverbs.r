@@ -844,7 +844,8 @@ resource 'EFP#' (idsysverbs, "sys") {
 		"os",
 		"getenvironmentvariable",
 		"setenvironmentvariable",
-		"unixshellcommand"
+		"unixshellcommand",
+		"winshellcommand"		/* 2006-03-09 aradke */
 		}
 	}
 };
