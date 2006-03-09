@@ -345,6 +345,7 @@ INCLUDE_FILES = \
 	$(SRCDIR)/Common/headers/oplineheight.h \
 	$(SRCDIR)/Common/headers/odbinternal.h \
 	$(SRCDIR)/Common/headers/CallMachOFrameWork.h \
+	$(SRCDIR)/Common/headers/sysshellcall.h \
 	$(SRCDIR)/Common/headers/langhtml.h \
 	$(SRCDIR)/Common/headers/langxml.h \
 	$(SRCDIR)/Common/headers/langxcmd.h \
@@ -684,6 +685,7 @@ TOOL_SRC = \
 	$(SRCDIR)/Common/source/serialnumber.c \
 	$(SRCDIR)/Common/source/smallicon.c \
 	$(SRCDIR)/Common/source/sounds.c \
+	$(SRCDIR)/Common/source/sysshellcall.c \
 	$(SRCDIR)/Common/source/textedit.c \
 	$(SRCDIR)/Common/source/threads.c \
 	$(SRCDIR)/Common/source/timedate.c
@@ -720,6 +722,7 @@ TOOL_OBJS = \
 	$(OBJDIR)/Common/source/serialnumber.o \
 	$(OBJDIR)/Common/source/smallicon.o \
 	$(OBJDIR)/Common/source/sounds.o \
+	$(OBJDIR)/Common/source/sysshellcall.o \
 	$(OBJDIR)/Common/source/textedit.o \
 	$(OBJDIR)/Common/source/threads.o \
 	$(OBJDIR)/Common/source/timedate.o
