@@ -2574,6 +2574,29 @@ boolean skiphandlestreamwhitespace (handlestream *s) {
 	} /*skiphandlestreamwhitespace*/
 
 
+long seekhandlestreamchar (handlestream *s, byte chseek)  {
+	
+	/*
+	return the number of characters skipped
+	*/
+	
+	byte *p = *(*s).data;
+	long ctskipped = 0;
+	
+	while ((*s).pos < (*s).eof) {
+		
+		if (p [(*s).pos] == chseek)
+			break;
+		
+		++ctskipped;
+		
+		++(*s).pos;
+		}
+	
+	return (ctskipped);
+	} /*skiphandlestreamchars*/
+
+
 boolean readhandlestreamfieldtohandle (handlestream *s, byte chdelimiter, Handle *hreturned) {
 	
 	long startpos = (*s).pos;

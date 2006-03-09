@@ -283,6 +283,8 @@ extern long skiphandlestreamchars (handlestream *s, byte chskip);
 
 extern boolean skiphandlestreamwhitespace (handlestream *);
 
+extern long seekhandlestreamchar (handlestream *s, byte chseek);
+
 extern boolean readhandlestreamfieldtohandle (handlestream *s, byte chdelimiter, Handle *hreturned);
 
 extern boolean readhandlestreamfield (handlestream *s, byte chdelimiter, bigstring bsfield);
