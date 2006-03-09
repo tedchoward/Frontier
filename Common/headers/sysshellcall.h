@@ -25,5 +25,15 @@
 
 ******************************************************************************/
 
-boolean winshellcall (Handle hcommand, Handle hreturn);
+#if defined(MACVERSION) && (TARGET_API_MAC_CARBON == 1)
 
+boolean unixshellcall (Handle, Handle);
+
+#endif
+
+
+#ifdef WIN95VERSION
+
+boolean winshellcall (Handle, Handle);
+
+#endif

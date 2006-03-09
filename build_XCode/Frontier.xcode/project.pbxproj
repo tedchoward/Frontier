@@ -281,6 +281,7 @@
 				65059A3809968C1400410571,
 				65059A3909968C1400410571,
 				65059A3A09968C1400410571,
+				65AA438709C03C6D00A4B237,
 			);
 			isa = PBXHeadersBuildPhase;
 			runOnlyForDeploymentPostprocessing = 0;
@@ -1826,6 +1827,7 @@
 				65059B3109968C1400410571,
 				65059B3209968C1400410571,
 				65059B3309968C1400410571,
+				65AA438C09C03C8900A4B237,
 			);
 			isa = PBXSourcesBuildPhase;
 			runOnlyForDeploymentPostprocessing = 0;
@@ -3854,6 +3856,7 @@
 				65BBB664072E5643008E2F34,
 				65B70CE00797CEAD008C2F1A,
 				65B70CEA0797CF78008C2F1A,
+				65AA438609C03C6D00A4B237,
 			);
 			isa = PBXHeadersBuildPhase;
 			runOnlyForDeploymentPostprocessing = 0;
@@ -4109,6 +4112,7 @@
 				651527AC072BFC6900411831,
 				65B70CDC0797CE4A008C2F1A,
 				65B70CE60797CF2D008C2F1A,
+				65AA438B09C03C8900A4B237,
 			);
 			isa = PBXSourcesBuildPhase;
 			runOnlyForDeploymentPostprocessing = 0;
@@ -5375,6 +5379,7 @@
 				65152607072BFC6700411831,
 				65152608072BFC6700411831,
 				65152609072BFC6700411831,
+				65AA438A09C03C8900A4B237,
 				6515260A072BFC6700411831,
 				6515260B072BFC6700411831,
 				6515260C072BFC6700411831,
@@ -11873,6 +11878,48 @@
 			settings = {
 			};
 		};
+		65AA438509C03C6D00A4B237 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.h;
+			name = sysshellcall.h;
+			path = ../Common/headers/sysshellcall.h;
+			refType = 2;
+			sourceTree = SOURCE_ROOT;
+		};
+		65AA438609C03C6D00A4B237 = {
+			fileRef = 65AA438509C03C6D00A4B237;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		65AA438709C03C6D00A4B237 = {
+			fileRef = 65AA438509C03C6D00A4B237;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		65AA438A09C03C8900A4B237 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.c;
+			name = sysshellcall.c;
+			path = /Volumes/Data/Development/frontierkernel_main/Frontier/Common/source/sysshellcall.c;
+			refType = 0;
+			sourceTree = "<absolute>";
+		};
+		65AA438B09C03C8900A4B237 = {
+			fileRef = 65AA438A09C03C8900A4B237;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		65AA438C09C03C8900A4B237 = {
+			fileRef = 65AA438A09C03C8900A4B237;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
 		65AC81D808DC792700ADD675 = {
 			fileEncoding = 30;
 			isa = PBXFileReference;
@@ -12080,6 +12127,7 @@
 				651527BA072BFE1000411831,
 				65152924072BFFD200411831,
 				651527E0072BFE3900411831,
+				65AA438509C03C6D00A4B237,
 				65152906072BFF6800411831,
 				651528B8072BFF0700411831,
 				651528AE072BFEFA00411831,

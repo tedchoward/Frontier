@@ -58,12 +58,7 @@
 #endif
 #include "process.h"
 #include "processinternal.h"
-#if TARGET_API_MAC_CARBON == 1
-	#include "CallMachOFrameWork.h"
-#endif
-#ifdef WIN95VERSION
-	#include "sysshellcall.h"
-#endif
+#include "sysshellcall.h"
 
 #include "langsystem7.h"  //6.1b7 AR: we need coercetolist
 #include "tableverbs.h"  //6.1b7 AR: we need gettablevalue

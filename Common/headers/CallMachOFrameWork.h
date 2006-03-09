@@ -28,17 +28,6 @@
 #ifndef callmachoframework
 #define callmachoframework
 
-/* 2006-01-29 creedon - define the following for CodeWarrior compilation because it doesn't have these defined in its headers, as Xcode does */
-
-#ifdef __MWERKS__
-	#define	F_GETFL		3		/* get file status flags */
-	#define	F_SETFL		4		/* set file status flags */
-	#define	O_NONBLOCK	0x0004	/* no delay */
-#endif
-
-
-extern boolean unixshellcall (Handle hcommand, Handle hreturn);
-
 extern OSStatus LoadFrameworkBundle(CFStringRef framework, CFBundleRef *bundlePtr);
 
 extern void *getframeworkfuncptr (CFStringRef framework, CFStringRef functionname);

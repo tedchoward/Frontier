@@ -41,9 +41,7 @@
 #include "tablestructure.h"
 #include "resources.h"
 #include "WinSockNetEvents.h"
-#if TARGET_API_MAC_CARBON == 1
-#include "CallMachOFrameWork.h" /* 2004-11-19 creedon */
-#endif
+#include "sysshellcall.h" /* 2006-03-09 aradke: unixshellcall moved from CallMachOFramework.h */
 
 
 #define str_isPike				"\x06" "isPike"
