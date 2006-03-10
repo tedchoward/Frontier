@@ -268,7 +268,7 @@ static boolean cmdshellexists (Handle hshell) {
 
 	unlockhandle (hshell);
 	
-	return (attr != INVALID_FILE_ATTRIBUTES);
+	return (attr != -1); /*!INVALID_FILE_ATTRIBUTES*/
 	} /*cmdshellexists*/
 	
 
