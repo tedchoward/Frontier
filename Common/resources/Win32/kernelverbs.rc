@@ -514,7 +514,7 @@
 	1,					//Number of "blocks" in this resource
 		"string\0",		//Function Processor Name
 		false,			//Window required
-			58,			//Count of verbs
+			60,			//Count of verbs
 			"delete\0",		
 			"insert\0",	
 			"popleading\0",
@@ -570,9 +570,11 @@
 			"utf8toansi\0",
 			"ansitoutf8\0",
 			"ansitoutf16\0",
-			"multiplereplaceall\0"
+			"multiplereplaceall\0",
 			"macromantoutf8\0", // 2006-02-25 creedon
-			"utf8tomacroman\0" // 2006-02-25 creedon
+			"utf8tomacroman\0", // 2006-02-25 creedon
+			"hashWhirlpool\0", // 2006-03-04 creedon
+			"hashhmacmd5\0" // 2006-03-05 creedon
 	END
 
 
@@ -1057,3 +1059,15 @@
 			"max\0",
 			"sqrt\0"
 	END
+
+1025 /* cryptverbs */ EFP DISCARDABLE
+	BEGIN
+	1,						// Number of "blocks" in this resource
+		"crypt\0",				// Function Processor name
+		false,					// Window required
+			3,				// Count of verbs
+			"hashWhirlpool\0",
+			"hmacMD5\0",
+			"hashMD5\0"
+	END
+

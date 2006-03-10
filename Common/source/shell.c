@@ -1334,6 +1334,8 @@ boolean shellinit (void) {
 	
 	dllinitverbs (); /*2004-11-29 aradke: langdll.c*/
 	
+	cryptinitverbs (); /* 2006-03-07 creedon: langcrypt.c */
+	
 	if (keyboardescape ()) /*check again before landinit; after this, must do shellquit*/
 		exittooperatingsystem ();
 	

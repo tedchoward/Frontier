@@ -34,7 +34,6 @@ extern boolean fileinitverbs (void); /*fileverbs.c*/
 
 extern boolean filelaunchanythingverb (hdltreenode, tyvaluerecord *);
 
-
 extern boolean stringinitverbs (void); /*stringverbs.c*/
 
 extern boolean sysinitverbs (void); /*shellsysverbs.c*/
@@ -54,3 +53,6 @@ extern boolean quicktimeinitverbs (void); /*langquicktime.c*/
 extern boolean regexpinitverbs (void); /* langregexp.c */
 
 extern boolean mathinitverbs (void); /* langmath.c */
+
+extern boolean cryptinitverbs (void); /* langcrypt.c */
+

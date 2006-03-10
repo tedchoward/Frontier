@@ -600,7 +600,9 @@ resource 'EFP#' (idstringverbs, "string") {
 		"ansitoutf16",
 		"multipleReplaceAll",
 		"macromantoutf8", // 2006-02-25 creedon
-		"utf8tomacroman" // 2006-02-25 creedon
+		"utf8tomacroman", // 2006-02-25 creedon
+		"hashWhirlpool", // 2006-03-04 creedon
+		"hashhmacmd5" // 2006-03-05 creedon
 		}
 	}
 };
@@ -1121,3 +1123,15 @@ resource 'EFP#' (idmathverbs, "math") { /*2004-12-29 SMD: math verbs*/
 		}
 	}
 };
+
+resource 'EFP#' (idcryptverbs, "crypt") { /* 2006-03-07 creedon: crypt verbs */
+	{
+	"crypt", false, {
+	
+		"hashWhirlpool",
+		"hmacMD5",
+		"hashMD5"
+		}
+	}
+};
+
