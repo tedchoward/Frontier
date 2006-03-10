@@ -32,12 +32,14 @@
 #include "strings.h"
 #include "threads.h"
 #include "error.h"
+#include "langinternal.h" /*for error strings*/
+#include "resources.h" /*for error strings*/
+#include "shell.h"
 #include "sysshellcall.h"
 
 
 #if defined(MACVERSION) && (TARGET_API_MAC_CARBON == 1)
 
-#include "shell.h"
 #include "lang.h"
 #include "CallMachOFramework.h"
 #include <fcntl.h> /* 2006-01-10 creedon */
@@ -207,6 +209,11 @@ boolean unixshellcall (Handle hcommand, Handle hreturn) {
 
 #ifdef WIN95VERSION
 
+#define CHDOUBLEQUOTE	'"'
+#define CHSEMICOLON		';'
+#define CHBACKSLASH		'\\'
+#define CHNULL			'\0'
+
 static boolean getenvironmentvariable (char *name, boolean flwinerror, Handle *hresult) {
 	
 	/*
@@ -217,7 +224,7 @@ static boolean getenvironmentvariable (char *name, boolean flwinerror, Handle *h
 	Handle h;
 	long res;
 
-	res = GetEnvironmentVariable (name, nil, 0);
+	res = GetEnvironmentVariable (name, nil, 0); /*get required space*/
 
 	if (res == 0) {
 		if (flwinerror)
@@ -230,9 +237,11 @@ static boolean getenvironmentvariable (char *name, boolean flwinerror, Handle *h
 
 	lockhandle (h);
 
-	res = GetEnvironmentVariable (name, *h, res);
+	res = GetEnvironmentVariable (name, *h, res); /*get actual value*/
 
 	unlockhandle (h);
+	
+	assert (gethandlesize (h) == res + 1);
 
 	if (!sethandlesize (h, res)) {	/*drop trailing nil char*/
 		disposehandle (h);
@@ -246,6 +255,10 @@ static boolean getenvironmentvariable (char *name, boolean flwinerror, Handle *h
 
 
 static boolean cmdshellexists (Handle hshell) {
+
+	/*
+	2006-03-09 aradke: check whether a file exists at the given path
+	*/
 
 	DWORD attr;
 	
@@ -292,12 +305,11 @@ static boolean getcmdshell (Handle *hshell) {
 	} /*getcmdshell*/
 
 
-#define CHDOUBLEQUOTE	'"'
-#define CHSEMICOLON		';'
-#define CHBACKSLASH		'\\'
-
-
 static boolean getnextpath (Handle hpath, long *ixstart, Handle *hitem) {
+
+	/*
+	2006-03-10 aradke: extract the next item from a string delimited by semicolons
+	*/
 
 	Handle h;
 	handlestream s;
@@ -326,9 +338,11 @@ static boolean getnextpath (Handle hpath, long *ixstart, Handle *hitem) {
 		s.pos++;
 		}/*while*/
 	
+	assert (athandlestreameof (&s) || (nexthandlestreamcharacter (&s) == CHSEMICOLON));
+	
 	/*extract item*/
 	
-	if (!loadfromhandletohandle (s.data, ixstart, s.pos - *ixstart, false, &h))
+	if (!loadfromhandletohandle (s.data, ixstart, min(s.pos, s.eof) - *ixstart, false, &h))
 		return (false);
 	
 	/*second pass: remove included doublequotes*/
@@ -345,17 +359,44 @@ static boolean getnextpath (Handle hpath, long *ixstart, Handle *hitem) {
 		pullfromhandlestream (&s, 1, nil);
 		}/*while*/
 	
+	assert (athandlestreameof (&s));
+	
+	if (s.eof == 0)
+		return (false); /*break out of potential infinite loop at end of path string*/
+	
 	if (lasthandlestreamcharacter (&s) != CHBACKSLASH)
 		if (!writehandlestreamchar (&s, CHBACKSLASH)) {
 			disposehandlestream (&s);
 			return (false);
 			}
 	
+	assert (lasthandlestreamcharacter (&s) == CHBACKSLASH);
+	
 	*hitem = closehandlestream (&s);
 	
 	return (true);
 	} /*getnextpath*/
 	
+
+static void cmdnotfounderror (Handle hshell) {
+
+	/*
+	2006-03-10 aradke: report missing command shell
+	*/
+	
+	bigstring bsshell, bs;
+	
+	texthandletostring (hshell, bsshell);
+	
+	poptrailingchars (bsshell, CHNULL);
+	
+	getstringlist (langerrorlist, cmdshellnotfounderror, bs);
+	
+	parsedialogstring (bs, (ptrstring) bsshell, nil, nil, nil, bs);
+	
+	shellerrormessage (bs);
+	} /*cmdnotfounderror*/
+
 	
 static boolean searchcmdpath (Handle *hshell) {
 
@@ -363,9 +404,6 @@ static boolean searchcmdpath (Handle *hshell) {
 	2006-03-09 aradke: get the PATH environment variable and parse it.
 		see if the command shell is located in any of the directories.
 		caller is responsible for disposing hshell.
-	
-	TO DO:
-		- check length of hshell < MAX_PATH
 	*/
 	
 	Handle hpath = nil;
@@ -383,8 +421,8 @@ static boolean searchcmdpath (Handle *hshell) {
 		
 		if (!pushhandle (*hshell, h))
 			goto exit;
-		
-		if (!enlargehandle (h, 1, "\0"))
+
+		if (!pushcharhandle (CHNULL, h))
 			goto exit;
 		
 		if (cmdshellexists (h)) {
@@ -396,9 +434,7 @@ static boolean searchcmdpath (Handle *hshell) {
 		disposehandle (h);
 		}/*while*/
 	
-	/*not found*/
-	
-	oserror (ERROR_FILE_NOT_FOUND);
+	cmdnotfounderror (*hshell);
 	
 exit:
 	disposehandle (hpath);
@@ -412,9 +448,6 @@ static boolean runcmdshell (Handle hshell, Handle hcommand, HANDLE *hout) {
 	/*
 	2006-03-09 aradke: launch the command shell as a child process.
 		we consume hshell, but caller is responsible for closing hout if we return true.
-	
-	TO DO:
-		- check length of hcmdline < MAX_PATH
 	*/
 	
 	Handle hcmdline = nil;
@@ -457,17 +490,17 @@ static boolean runcmdshell (Handle hshell, Handle hcommand, HANDLE *hout) {
 	
 	if (!concathandles (hshell, hcommand, &hcmdline))
 		goto exit;
-		
-	if (!enlargehandle (hshell, 1, "\0"))
+	
+	if (!pushcharhandle (CHNULL, hshell))
 		goto exit;
 
-	if (!enlargehandle (hcmdline, 1, "\0"))
+	if (!pushcharhandle (CHNULL, hcmdline))
 		goto exit;
 	
 	/*check whether command shell can be accessed*/
 	
 	if (!cmdshellexists (hshell)) {
-		if (!searchcmdpath (&hshell))	/*do a search path lookup*/
+		if (!searchcmdpath (&hshell))	/*do a search path lookup, sets error*/
 			goto exit;
 		}
 		
@@ -591,10 +624,10 @@ boolean winshellcall (Handle hcommand, Handle hreturn) {
 	if (!getcmdshell (&hshell))
 		return (false);
 	
-	if (!runcmdshell (hshell, hcommand, &hread))
+	if (!runcmdshell (hshell, hcommand, &hread)) /*consumes hshell*/
 		return (false);
 
-	if (!readcmdresult (hread, hreturn))
+	if (!readcmdresult (hread, hreturn)) /*consumes hread*/
 		return (false);
 
 	return (true);
