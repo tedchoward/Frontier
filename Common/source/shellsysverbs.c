@@ -690,18 +690,42 @@ static boolean sysfunctionvalue (short token, hdltreenode hparam1, tyvaluerecord
 		#ifdef WIN95VERSION
 
 			case winshellcommandfunc: {
-				Handle hcommand, hreturn;
-				
-				newemptyhandle (&hreturn);
-				
-				flnextparamislast = true;
+				Handle hcommand;
+				Handle houttext = nil;
+				Handle herrtext = nil;
+				long exitcode = 0;
+				tyaddress adrexitcode, adrstderr;
+				short ctconsumed = 1;
+				short ctpositional = 1;
+				boolean flneedexitcode, flneedstderr;
+				tyvaluerecord val;
 				
 				if (!getexempttextvalue (hparam1, 1, &hcommand))
 					return (false);
-										
-				if (!winshellcall (hcommand, hreturn)) {
 				
-					disposehandle (hreturn);
+				if (!getoptionaladdressparam (hparam1, &ctconsumed, &ctpositional, "\x0b" "adrExitCode", &adrexitcode.ht, adrexitcode.bs))
+					return (false);
+				
+				flnextparamislast = true;
+				
+				if (!getoptionaladdressparam (hparam1, &ctconsumed, &ctpositional, "\x0b" "adrStdErr", &adrstderr.ht, adrstderr.bs))
+					return (false);
+				
+				flneedexitcode = (adrexitcode.ht != nil) || !isemptystring (adrexitcode.bs);
+				
+				flneedstderr = (adrstderr.ht != nil) || !isemptystring (adrstderr.bs);
+
+				newemptyhandle (&houttext);
+
+				if (flneedstderr)
+					newemptyhandle (&herrtext);
+										
+				if (!winshellcall (hcommand, houttext, herrtext,
+										(flneedexitcode ? &exitcode : nil))) {
+				
+					disposehandle (houttext);
+					
+					disposehandle (herrtext);
 					
 					disposehandle (hcommand);
 					
@@ -709,8 +733,26 @@ static boolean sysfunctionvalue (short token, hdltreenode hparam1, tyvaluerecord
 					} /*if*/
 				
 				disposehandle (hcommand);
+				
+				if (flneedexitcode) {
+
+					setlongvalue (exitcode, &val);
 					
-				return (setheapvalue (hreturn, stringvaluetype, v));
+					if (!langsetsymboltableval (adrexitcode.ht, adrexitcode.bs, val))
+						return (false);
+					}
+					
+				if (flneedstderr) {
+
+					setheapvalue (herrtext, stringvaluetype, &val);
+					
+					if (!langsetsymboltableval (adrstderr.ht, adrstderr.bs, val))
+						return (false);
+					
+					exemptfromtmpstack (&val);
+					}
+					
+				return (setheapvalue (houttext, stringvaluetype, v));
 				}
 
 		#endif //WIN95VERSION
