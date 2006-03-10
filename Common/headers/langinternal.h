@@ -201,6 +201,7 @@
 #define frnonexistantgroupnumbererror 159
 #define frnonexistantgroupnameerror 160
 #define replaceitemerror 161 /* 2005-09-26 creedon */
+#define cmdshellnotfounderror 162 /* 2006-03-10 aradke */
 
 #define langstacklist 137
 

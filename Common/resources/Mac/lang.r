@@ -715,7 +715,9 @@ resource 'STR#' (257, "Lang Errors", purgeable) {
 		/* [160] */
 		"Can't execute command because the replacement string contains a non-existant group name at character #^0.",
 		/* [161] */
-		"An item named Ò^0Ó already exists." // Replace it or create a duplicate?" /* 2005-09-26 creedon */
+		"An item named Ò^0Ó already exists." // Replace it or create a duplicate?", /* 2005-09-26 creedon */
+		/* [162] */
+		"Can't run shell command because the shell \042^0\042 was not found.", /* 2006-03-10 aradke */
 	}
 };
 
