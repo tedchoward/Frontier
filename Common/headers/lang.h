@@ -1194,6 +1194,10 @@ extern boolean getoptionalparam (hdltreenode, short *, short *, bigstring, hdltr
 
 extern boolean getoptionalparamvalue (hdltreenode, short *, short *, bigstring, tyvaluerecord *);
 
+extern boolean getoptionaladdressparam (hdltreenode , short *, short *, bigstring , hdlhashtable *, bigstring); /*2006-03-10 aradke*/
+
+extern boolean getoptionaltableparam (hdltreenode , short *, short *, bigstring, hdlhashtable *); /*2006-03-10 aradke*/
+
 extern boolean getaddressparam (hdltreenode, short, tyvaluerecord *);
 
 extern boolean getvarparam (hdltreenode, short, hdlhashtable *, bigstring);

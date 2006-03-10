@@ -4654,6 +4654,53 @@ boolean getoptionalparamvalue (hdltreenode hfirst, short *ctconsumed, short *ctp
 	} /*getoptionalparamvalue*/
 
 
+boolean getoptionaladdressparam (hdltreenode hfirst, short *ctconsumed, short *ctpositional, bigstring bsparam, hdlhashtable *ht, bigstring bsname) {
+	
+	/*
+	Get an optional parameter that is expected to be an address value.
+	If the param is not specified or if it is nil, we don't return anything.
+	
+	2006-03-10 aradke: transplanted from langregexp.c
+	*/
+	
+	tyvaluerecord vparam;
+	
+	setaddressvalue (nil, emptystring, &vparam);
+
+	if (!getoptionalparamvalue (hfirst, ctconsumed, ctpositional, bsparam, &vparam))
+		return (false);
+	
+	return (getaddressvalue (vparam, ht, bsname));
+	} /*getoptionaladdressparam*/
+
+
+boolean getoptionaltableparam (hdltreenode hfirst, short *ctconsumed, short *ctpositional, bigstring bsparam, hdlhashtable *htable) {
+	
+	/*
+	Get an optional parameter that is expected to be the address of a table.
+	If the param is not specified or if it is nil, we don't return anything.
+	If the param is a valid address, we make sure a table exists at the
+	indicated location and return a handle to it.
+
+	2006-03-10 aradke: transplanted from langregexp.c
+	*/
+	
+	hdlhashtable ht;
+	bigstring bsname;
+	
+	if (!getoptionaladdressparam (hfirst, ctconsumed, ctpositional, bsparam, &ht, bsname))
+		return (false);
+	
+	if (ht == nil && isemptystring (bsname))
+		return (true);
+	
+	if (!langassignnewtablevalue  (ht, bsname, htable))
+		return (false);
+
+	return (true);
+	} /*getoptionaltableparam*/
+
+
 boolean getaddressparam (hdltreenode hfirst, short pnum, tyvaluerecord *val) {
 	
 	if (!getparamvalue (hfirst, pnum, val))

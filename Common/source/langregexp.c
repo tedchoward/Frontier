@@ -846,49 +846,6 @@ static void initpcreextra (Handle hcp, pcre_extra *extraref) {
 #endif
 
 
-static boolean getoptionaladdressparam (hdltreenode hfirst, short *ctconsumed, short *ctpositional, bigstring bsparam, hdlhashtable *ht, bigstring bsname) {
-	
-	/*
-	Get an optional parameter that is expected to be an address value.
-	If the param is not specified or if it is nil, we don't return anything.
-	*/
-	
-	tyvaluerecord vparam;
-	
-	setaddressvalue (nil, emptystring, &vparam);
-
-	if (!getoptionalparamvalue (hfirst, ctconsumed, ctpositional, bsparam, &vparam))
-		return (false);
-	
-	return (getaddressvalue (vparam, ht, bsname));
-	} /*getoptionaladdressparam*/
-
-
-static boolean getoptionaltableparam (hdltreenode hfirst, short *ctconsumed, short *ctpositional, bigstring bsparam, hdlhashtable *htable) {
-	
-	/*
-	Get an optional parameter that is expected to be the address of a table.
-	If the param is not specified or if it is nil, we don't return anything.
-	If the param is a valid address, we make sure a table exists at the
-	indicated location and return a handle to it.
-	*/
-	
-	hdlhashtable ht;
-	bigstring bsname;
-	
-	if (!getoptionaladdressparam (hfirst, ctconsumed, ctpositional, bsparam, &ht, bsname))
-		return (false);
-	
-	if (ht == nil && isemptystring (bsname))
-		return (true);
-	
-	if (!langassignnewtablevalue  (ht, bsname, htable))
-		return (false);
-
-	return (true);
-	} /*getoptionaltableparam*/
-
-
 static boolean getoptionallistparam (hdltreenode hfirst, short *ctconsumed, short *ctpositional, bigstring bsparam, hdllistrecord *hlist) {
 	
 	/*
