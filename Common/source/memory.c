@@ -1396,6 +1396,25 @@ boolean mungehandle (Handle hmunge, long ixmunge, long ctmunge, ptrvoid pinsert,
 	} /*mungehandle*/
 
 
+boolean pushcharhandle (char ch, Handle htext) {
+
+	/*
+	2006-03-10 aradke: grow handle by one and push char onto end
+	*/
+
+	unsigned long size;
+	
+	size = gethandlesize (htext);
+	
+	if (!sethandlesize (htext, size + 1))
+		return (false);
+	
+	(*htext)[size] = ch;
+
+	return (true);
+	} /*pushcharhandle*/
+
+
 boolean pushstringhandle (const bigstring bs, Handle htext) {
 	
 	/*

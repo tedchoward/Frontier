@@ -229,6 +229,8 @@ extern boolean setheapstring (const bigstring, hdlstring);
 
 extern boolean pushhandle (Handle, Handle);
 
+extern boolean pushcharhandle (char, Handle);	/*2006-03-10 aradke*/
+
 extern boolean pushstringhandle (const bigstring, Handle);
 
 //extern boolean concatheapstrings (hdlstring *, hdlstring *, hdlstring *);
