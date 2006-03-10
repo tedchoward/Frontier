@@ -34,6 +34,6 @@ boolean unixshellcall (Handle, Handle);
 
 #ifdef WIN95VERSION
 
-boolean winshellcall (Handle, Handle);
+boolean winshellcall (Handle, Handle, Handle, long*);
 
 #endif

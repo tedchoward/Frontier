@@ -443,7 +443,7 @@ exit:
 	} /*searchcmdpath*/
 	
 	
-static boolean runcmdshell (Handle hshell, Handle hcommand, HANDLE *hout) {
+static boolean runcmdshell (Handle hshell, Handle hcommand, HANDLE *hprocess, HANDLE *hout, HANDLE *herr) {
 
 	/*
 	2006-03-09 aradke: launch the command shell as a child process.
@@ -454,31 +454,51 @@ static boolean runcmdshell (Handle hshell, Handle hcommand, HANDLE *hout) {
 	SECURITY_ATTRIBUTES securityinfo;
 	STARTUPINFO startupinfo;
 	PROCESS_INFORMATION processinfo;
-	HANDLE hpiperead = nil;
-	HANDLE hpipewrite = nil;
+	HANDLE houtread = nil;
+	HANDLE houtwrite = nil;
+	HANDLE herrread = nil;
+	HANDLE herrwrite = nil;
 	boolean fl;
 	
-	/*create pipe for reading from command shell*/
+	*hprocess = nil;
+	
+	/*create pipes for reading from command shell*/
 
 	clearbytes (&securityinfo, sizeof (securityinfo));
 	securityinfo.nLength				= sizeof (securityinfo);
 	securityinfo.lpSecurityDescriptor	= nil;
 	securityinfo.bInheritHandle			= true;
 	
-	if (!CreatePipe (&hpiperead, &hpipewrite, &securityinfo, nil))
-		goto error;
+	if (hout) { /*caller interested in stdout*/
 	
-	if (!SetHandleInformation (hpiperead, HANDLE_FLAG_INHERIT, 0))
-		goto error;
-	
+		if (!CreatePipe (&houtread, &houtwrite, &securityinfo, nil))
+			goto error;
+		
+		if (!SetHandleInformation (houtread, HANDLE_FLAG_INHERIT, 0))
+			goto error;
+		}
+	else
+		houtwrite = GetStdHandle (STD_OUTPUT_HANDLE);
+
+	if (herr) { /*caller interested in stderr*/
+
+		if (!CreatePipe (&herrread, &herrwrite, &securityinfo, nil))
+			goto error;
+		
+		if (!SetHandleInformation (herrread, HANDLE_FLAG_INHERIT, 0))
+			goto error;
+		}
+	else
+		herrwrite = GetStdHandle (STD_ERROR_HANDLE);
+		
 	/*init structs for creating process*/
 	
 	clearbytes (&startupinfo, sizeof (startupinfo));
 	startupinfo.cb = sizeof (startupinfo);
 	startupinfo.dwFlags		= STARTF_USESHOWWINDOW | STARTF_USESTDHANDLES;
 	startupinfo.hStdInput	= GetStdHandle (STD_INPUT_HANDLE);
-	startupinfo.hStdOutput	= hpipewrite;
-	startupinfo.hStdError	= GetStdHandle (STD_ERROR_HANDLE);
+	startupinfo.hStdOutput	= houtwrite;
+	startupinfo.hStdError	= herrwrite;
 	startupinfo.wShowWindow	= SW_HIDE;
 	
 	clearbytes (&processinfo, sizeof (processinfo));
@@ -529,15 +549,21 @@ static boolean runcmdshell (Handle hshell, Handle hcommand, HANDLE *hout) {
 	if (!fl)
 		goto error;
 	
-	CloseHandle (hpipewrite);	/*now inherited by child process*/
-
-	CloseHandle (processinfo.hProcess);
+	CloseHandle (houtwrite);	/*now inherited by child process*/
+	CloseHandle (herrwrite);
+	
 	CloseHandle (processinfo.hThread);
 	
 	disposehandle (hcmdline);
 	disposehandle (hshell);
 	
-	*hout = hpiperead;
+	*hprocess = processinfo.hProcess;
+	
+	if (hout)
+		*hout = houtread;
+	
+	if (herr)
+		*herr = herrread;
 	
 	return (true);
 
@@ -545,12 +571,18 @@ error:
 	winerror (); /*note fall through*/
 		
 exit:	/*error is already set*/
-	if (!hpiperead)
-		CloseHandle (hpiperead);
+	if (hout && !houtread)
+		CloseHandle (houtread);
 	
-	if (!hpipewrite)
-		CloseHandle (hpipewrite);
+	if (hout && !houtwrite)
+		CloseHandle (houtwrite);
 	
+	if (herr && !herrread)
+		CloseHandle (herrread);
+	
+	if (herr && !herrwrite)
+		CloseHandle (herrwrite);
+
 	disposehandle (hcmdline);
 	disposehandle (hshell);
 	
@@ -558,78 +590,162 @@ exit:	/*error is already set*/
 	} /*runcmdshell*/
 
 
-static boolean readcmdresult (HANDLE hread, Handle hreturn) {
+static boolean readcmdpipe (HANDLE hpipe, Handle hdata, boolean *flreadmore) {
+
+	/*
+	2006-03-10 aradke: read from pipe if data is available
+	*/
+	
+	DWORD ctavail, ctread;
+	DWORD err;
+	
+	if (!PeekNamedPipe (hpipe, nil, nil, nil, &ctavail, nil))
+		goto error;
+	
+	if (ctavail > 0) {
+		
+		long oldsize, newsize;
+		
+		oldsize = gethandlesize (hdata);
+		
+		newsize = oldsize + ctavail;
+		
+		if (!sethandlesize (hdata, newsize)) {	/*memory error*/
+			*flreadmore = false;
+			return (false);
+			}
+	
+		if (!ReadFile (hpipe, &((*hdata)[oldsize]), ctavail, &ctread, nil)) /*should not block*/
+			goto error;
+		}
+	
+	return (true);
+
+error:
+
+	*flreadmore = false;
+
+	err = GetLastError ();
+	
+	if (err == ERROR_BROKEN_PIPE)
+		return (true);
+	
+	oserror (err);
+	
+	return (false);
+	}/*readcmpipe*/
+
+
+static boolean readcmdresult (HANDLE houtread, HANDLE herrread, Handle houttext, Handle herrtext) {
 
 	/*
 	2006-03-09 aradke: read data from pipe until eof.
 		we close our end of the pipe (hread) whether we succeed or not.
 	*/
 	
-	char buf[1024];
-	long ct = 0;
-	boolean fl;
-	DWORD err = 0;
+	boolean flreadout = (houttext != nil);
+	boolean flreaderr = (herrtext != nil);
+	boolean fl = true;
 	
-	while (true) {
+	while (flreadout || flreaderr) {
 		
-		releasethreadglobals ();
-		
-		fl = ReadFile (hread, buf, sizeof (buf), &ct, nil);
-		
-		if (!fl)
-			err = GetLastError ();
-		
-		grabthreadglobals ();
+		if (flreadout) {
 
-		if (fl && (ct == 0)) /*regular end of file*/
-			break;
-		
-		if (!fl) {
-		
-			if (err == ERROR_BROKEN_PIPE) 
-				fl = true;	/*ignore broken pipe*/
-			else
-				oserror (err);
+			fl = readcmdpipe (houtread, houttext, &flreadout);
 			
-			break;
-			}
-
-		if (ct > 0) {
-		
-			fl = enlargehandle (hreturn, ct, buf);
-							
 			if (!fl)
-				break;
+				break; /*error occurred*/
 			}
+		
+		if (flreaderr) {
+
+			fl = readcmdpipe (herrread, herrtext, &flreaderr);
+			
+			if (!fl)
+				break; /*error occurred*/
+			}
+				
+		langbackgroundtask (true); /*resting*/
 		} /*while*/
 	
-	CloseHandle (hread);
+	if (houtread)
+		CloseHandle (houtread);
+	
+	if (herrread)
+		CloseHandle (herrread);
 	
 	return (fl);
 	} /*readcmdresult*/
 
 
-boolean winshellcall (Handle hcommand, Handle hreturn) {
+static boolean getcmdexitcode (Handle hprocess, long *status) {
+	
+	/*
+	2006-03-10 aradke: wait for child process to exit, then get its exit code
+	*/
+	
+	DWORD res;
+	boolean fl = true;
+	
+	*status = 0;
+	
+	releasethreadglobals ();
+	
+	res = WaitForSingleObject (hprocess, INFINITE);
+	
+	grabthreadglobals ();
+	
+	if (res != WAIT_OBJECT_0)
+		goto exit;
+		
+	fl = GetExitCodeProcess (hprocess, status);
+	
+	if (!fl)
+		winerror ();
+
+exit:	
+	CloseHandle (hprocess);
+	
+	return (fl);
+	} /*getcmdexitcode*/
+
+
+boolean winshellcall (Handle hcommand, Handle houttext, Handle herrtext, long *exitcode) {
 
 	/*
 	2006-03-09 aradke: call the Windows shell and execute the given command.
 		our caller owns hcommand and hreturn, whether we succeed or not.
 		this implementation relies on the win32 api only and does not
 		require popen etc to be available in the c runtime library.
+
+	2006-03-10 aradke: also read stderr of child process and get its exit code.
+		caller owns houttext (previously hreturn) and herrtext. if either is nil,
+		don't create and read respective pipe.
 	*/
 
 	Handle hshell = nil;
-	HANDLE hread;
+	HANDLE hprocess = nil;
+	HANDLE hout = nil;
+	HANDLE herr = nil;
 
 	if (!getcmdshell (&hshell))
 		return (false);
 	
-	if (!runcmdshell (hshell, hcommand, &hread)) /*consumes hshell*/
+	if (!runcmdshell (hshell, hcommand, &hprocess,
+						((houttext != nil) ? &hout : nil),
+						((herrtext != nil) ? &herr : nil))) /*consumes hshell*/
 		return (false);
 
-	if (!readcmdresult (hread, hreturn)) /*consumes hread*/
+	if (!readcmdresult (hout, herr, houttext, herrtext)) { /*consumes hout and herr*/
+		CloseHandle (hprocess);
 		return (false);
-
+		}
+	
+	if (exitcode == nil)
+		CloseHandle (hprocess);
+	else if (!getcmdexitcode (hprocess, exitcode)) /*consumes hprocess*/
+		return (false);
+		
 	return (true);
 	} /*winshellcall*/
 
