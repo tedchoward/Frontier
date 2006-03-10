@@ -11904,9 +11904,9 @@
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.c;
 			name = sysshellcall.c;
-			path = /Volumes/Data/Development/frontierkernel_main/Frontier/Common/source/sysshellcall.c;
-			refType = 0;
-			sourceTree = "<absolute>";
+			path = ../Common/source/sysshellcall.c;
+			refType = 2;
+			sourceTree = SOURCE_ROOT;
 		};
 		65AA438B09C03C8900A4B237 = {
 			fileRef = 65AA438A09C03C8900A4B237;
