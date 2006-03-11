@@ -122,7 +122,7 @@ static boolean cryptfunctionvalue (short token, hdltreenode hparam1, tyvaluereco
 			lockhandle (hkey);
 			lockhandle (hdata);
 			
-			hmacmd5 ((unsigned char *)(*hdata), gethandlesize (hdata), (unsigned char *)(*hkey), gethandlesize (hkey), (caddr_t) digest);
+			hmacmd5 ((unsigned char *)(*hdata), gethandlesize (hdata), (unsigned char *)(*hkey), gethandlesize (hkey), (unsigned char *) digest);
 
 			unlockhandle (hkey);
 			unlockhandle (hdata);
@@ -235,7 +235,7 @@ boolean cryptinitverbs (void) {
 	} /* cryptinitverbs */
 
 
-boolean hmacmd5 (unsigned char * text, int text_len, unsigned char * key, int key_len, caddr_t digest) {
+boolean hmacmd5 (unsigned char * text, int text_len, unsigned char * key, int key_len, unsigned char * digest) {
 
 	/*
 	2006-03-05 creedon: created, cribbed from rfc2104, with a few alterations to fit our code and style
