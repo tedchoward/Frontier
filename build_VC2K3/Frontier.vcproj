@@ -2371,6 +2371,9 @@
 					</FileConfiguration>
 				</File>
 				<File
+					RelativePath="..\Common\source\whirlpool.c">
+				</File>
+				<File
 					RelativePath="..\Common\source\winregistry.c">
 					<FileConfiguration
 						Name="DbTracker|Win32">
@@ -3069,6 +3072,9 @@
 							PreprocessorDefinitions=""
 							BrowseInformation="1"/>
 					</FileConfiguration>
+				</File>
+				<File
+					RelativePath="..\Common\source\langcrypt.c">
 				</File>
 				<File
 					RelativePath="..\Common\source\langdate.c">
@@ -7011,6 +7017,9 @@
 				RelativePath="..\Common\headers\lang.h">
 			</File>
 			<File
+				RelativePath="..\Common\headers\langcrypt.h">
+			</File>
+			<File
 				RelativePath="..\Common\headers\langdll.h">
 			</File>
 			<File
@@ -7264,6 +7273,9 @@
 			</File>
 			<File
 				RelativePath="..\Common\headers\versions.h">
+			</File>
+			<File
+				RelativePath="..\Common\headers\whirlpool.h">
 			</File>
 			<File
 				RelativePath="..\Common\headers\windowlayout.h">
