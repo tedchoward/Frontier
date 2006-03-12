@@ -2178,6 +2178,9 @@
 					</FileConfiguration>
 				</File>
 				<File
+					RelativePath="..\Common\source\sha1dgst.c">
+				</File>
+				<File
 					RelativePath="..\Common\source\smallicon.c">
 					<FileConfiguration
 						Name="DbTracker|Win32">
@@ -7192,6 +7195,12 @@
 			</File>
 			<File
 				RelativePath="..\Common\headers\services.h">
+			</File>
+			<File
+				RelativePath="..\Common\headers\sha.h">
+			</File>
+			<File
+				RelativePath="..\Common\headers\sha_locl.h">
 			</File>
 			<File
 				RelativePath="..\Common\headers\shell.h">
