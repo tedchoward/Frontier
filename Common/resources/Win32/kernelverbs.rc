@@ -1065,9 +1065,11 @@
 	1,						// Number of "blocks" in this resource
 		"crypt\0",				// Function Processor name
 		false,					// Window required
-			3,				// Count of verbs
-			"hashWhirlpool\0",
+			5,				// Count of verbs
+			"whirlpool\0",
 			"hmacMD5\0",
-			"hashMD5\0"
+			"MD5\0",
+			"SHA1\0",
+			"hmacSHA1\0"
 	END
 
