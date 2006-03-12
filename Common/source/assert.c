@@ -28,6 +28,8 @@
 #include "frontier.h"
 #include "standard.h"
 
+#if 0	/* 2006-03-12 aradke: completely disabled, rely on C lib to handle assert() */
+
 #ifdef fldebug
 
 #ifdef MACVERSION
@@ -279,3 +281,4 @@
 
 #endif	/*fldebug*/
 
+#endif

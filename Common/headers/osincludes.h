@@ -305,6 +305,6 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
-
+#include <assert.h>
 
 #endif /* __osincludes_h__ */

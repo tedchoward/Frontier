@@ -282,19 +282,12 @@ typedef	unsigned char byte, *ptrbyte;
 
 /*macros*/
 
-#if MACVERSION && TARGET_API_MAC_CARBON
-	#if TARGET_RT_MAC_CFM	/* 2004-10-23 aradke: rely on Debugging.h */
-		#define assert(x) check(x)
-	#endif
+#undef verify
+
+#ifdef NDEBUG
+	#define verify(x)	((void) x)
 #else
-	#ifdef fldebug
-		short __assert(char *, char *, short);
-		#define assert(x)	((void) ((x) ? 0 : __assert(#x, __FILE__, __LINE__)))
-		#define verify(x)	assert(x)
-	#else
-		#define assert(x)	((void) 0)
-		#define verify(x)	((void) x)
-	#endif
+	#define verify(x)	assert(x)
 #endif
 
 #ifdef MACVERSION
