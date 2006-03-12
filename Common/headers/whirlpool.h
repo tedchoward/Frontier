@@ -130,9 +130,9 @@ typedef struct NESSIEstruct {
 
 /* prototypes */ /* 2006-03-06 creedon */
 
-void NESSIEinit (NESSIEstruct *);
-void NESSIEadd (const unsigned char * const, unsigned long, NESSIEstruct *);
-void NESSIEfinalize (NESSIEstruct *, unsigned char *);
+void NESSIEinit (NESSIEstruct * const);
+void NESSIEadd (const unsigned char * const, unsigned long, NESSIEstruct * const);
+void NESSIEfinalize (NESSIEstruct * const, unsigned char * const);
 void makeNESSIETestVectors ();
 void testAPI (void);
 
