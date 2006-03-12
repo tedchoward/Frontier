@@ -176,7 +176,6 @@ static pascal void trackscrollarrow (hdlscrollbar sb, short part) {
 		
 static boolean clickscrollbar (hdlobject listhead, hdlobject h, Point pt, boolean flshiftkey, boolean fl2click) {
 	
-	hdlscrollbardata hdata = (hdlscrollbardata) (**h).objectdata;
 	hdlcard hc = (**h).owningcard;
 	
 	if (!checkcontrolexists (h))
@@ -194,7 +193,7 @@ static boolean clickscrollbar (hdlobject listhead, hdlobject h, Point pt, boolea
 		
 		scrollbarpart = FindControl (pt, (**hc).drawwindow, &sb);
 		
-		assert (sb == (**hdata).hcontrol);
+		assert (sb == (**((hdlscrollbardata) (**h).objectdata)).hcontrol);
 		
 		if (scrollbarpart == kControlIndicatorPart) 
 			TrackControl (sb, pt, nil);

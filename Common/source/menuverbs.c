@@ -2119,10 +2119,9 @@ static boolean menuchildclose (WindowPtr w) {
 	from here, after we've popped the script's globals
 	*/
 	
-	register hdlmenurecord hm = menudata;
 	boolean fl;
 	
-	assert (w == (**hm).scriptwindow);
+	assert (w == (**menudata).scriptwindow);
 	
 	shellpushglobals (w);
 	
