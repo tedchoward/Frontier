@@ -284,6 +284,8 @@
 				65AA438709C03C6D00A4B237,
 				6599181C09C4952A00F6F58C,
 				6599181D09C4952A00F6F58C,
+				65F9C22209C4CD9800DCC29E,
+				65F9C22309C4CD9800DCC29E,
 			);
 			isa = PBXHeadersBuildPhase;
 			runOnlyForDeploymentPostprocessing = 0;
@@ -1832,6 +1834,7 @@
 				65AA438C09C03C8900A4B237,
 				6599180809C494EA00F6F58C,
 				6599181509C4950300F6F58C,
+				65F9C22809C4CDDE00DCC29E,
 			);
 			isa = PBXSourcesBuildPhase;
 			runOnlyForDeploymentPostprocessing = 0;
@@ -3864,6 +3867,8 @@
 				65AA438609C03C6D00A4B237,
 				6599181A09C4952A00F6F58C,
 				6599181B09C4952A00F6F58C,
+				65F9C22009C4CD9800DCC29E,
+				65F9C22109C4CD9800DCC29E,
 			);
 			isa = PBXHeadersBuildPhase;
 			runOnlyForDeploymentPostprocessing = 0;
@@ -4122,6 +4127,7 @@
 				65AA438B09C03C8900A4B237,
 				6599180709C494EA00F6F58C,
 				6599181409C4950300F6F58C,
+				65F9C22709C4CDDE00DCC29E,
 			);
 			isa = PBXSourcesBuildPhase;
 			runOnlyForDeploymentPostprocessing = 0;
@@ -5386,6 +5392,7 @@
 				65152605072BFC6700411831,
 				65152606072BFC6700411831,
 				65152607072BFC6700411831,
+				65F9C22609C4CDDE00DCC29E,
 				65152608072BFC6700411831,
 				65152609072BFC6700411831,
 				65AA438A09C03C8900A4B237,
@@ -12209,6 +12216,8 @@
 				651528A4072BFEF100411831,
 				651528A2072BFEEF00411831,
 				65152808072BFE5900411831,
+				65F9C21F09C4CD9700DCC29E,
+				65F9C21E09C4CD9700DCC29E,
 				65152806072BFE5700411831,
 				651527E2072BFE3B00411831,
 				651528A8072BFEF500411831,
@@ -12366,6 +12375,69 @@
 		};
 		65D516AB072CED430097D18E = {
 			fileRef = 65D516AA072CED430097D18E;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		65F9C21E09C4CD9700DCC29E = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.h;
+			name = sha_locl.h;
+			path = ../Common/headers/sha_locl.h;
+			refType = 2;
+			sourceTree = SOURCE_ROOT;
+		};
+		65F9C21F09C4CD9700DCC29E = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.h;
+			name = sha.h;
+			path = ../Common/headers/sha.h;
+			refType = 2;
+			sourceTree = SOURCE_ROOT;
+		};
+		65F9C22009C4CD9800DCC29E = {
+			fileRef = 65F9C21E09C4CD9700DCC29E;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		65F9C22109C4CD9800DCC29E = {
+			fileRef = 65F9C21F09C4CD9700DCC29E;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		65F9C22209C4CD9800DCC29E = {
+			fileRef = 65F9C21E09C4CD9700DCC29E;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		65F9C22309C4CD9800DCC29E = {
+			fileRef = 65F9C21F09C4CD9700DCC29E;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		65F9C22609C4CDDE00DCC29E = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.c;
+			name = sha1dgst.c;
+			path = ../Common/source/sha1dgst.c;
+			refType = 2;
+			sourceTree = SOURCE_ROOT;
+		};
+		65F9C22709C4CDDE00DCC29E = {
+			fileRef = 65F9C22609C4CDDE00DCC29E;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		65F9C22809C4CDDE00DCC29E = {
+			fileRef = 65F9C22609C4CDDE00DCC29E;
 			isa = PBXBuildFile;
 			settings = {
 			};
