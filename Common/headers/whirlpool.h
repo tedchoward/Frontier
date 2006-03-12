@@ -1,4 +1,6 @@
 
+/*	$Id$    */
+
 #ifndef PORTABLE_C__
 #define PORTABLE_C__
 
