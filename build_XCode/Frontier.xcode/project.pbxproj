@@ -282,6 +282,8 @@
 				65059A3909968C1400410571,
 				65059A3A09968C1400410571,
 				65AA438709C03C6D00A4B237,
+				6599181C09C4952A00F6F58C,
+				6599181D09C4952A00F6F58C,
 			);
 			isa = PBXHeadersBuildPhase;
 			runOnlyForDeploymentPostprocessing = 0;
@@ -1828,6 +1830,8 @@
 				65059B3209968C1400410571,
 				65059B3309968C1400410571,
 				65AA438C09C03C8900A4B237,
+				6599180809C494EA00F6F58C,
+				6599181509C4950300F6F58C,
 			);
 			isa = PBXSourcesBuildPhase;
 			runOnlyForDeploymentPostprocessing = 0;
@@ -3857,6 +3861,8 @@
 				65B70CE00797CEAD008C2F1A,
 				65B70CEA0797CF78008C2F1A,
 				65AA438609C03C6D00A4B237,
+				6599181A09C4952A00F6F58C,
+				6599181B09C4952A00F6F58C,
 			);
 			isa = PBXHeadersBuildPhase;
 			runOnlyForDeploymentPostprocessing = 0;
@@ -4113,6 +4119,8 @@
 				65B70CDC0797CE4A008C2F1A,
 				65B70CE60797CF2D008C2F1A,
 				65AA438B09C03C8900A4B237,
+				6599180709C494EA00F6F58C,
+				6599181409C4950300F6F58C,
 			);
 			isa = PBXSourcesBuildPhase;
 			runOnlyForDeploymentPostprocessing = 0;
@@ -5383,6 +5391,7 @@
 				6515260A072BFC6700411831,
 				6515260B072BFC6700411831,
 				6515260C072BFC6700411831,
+				6599180609C494EA00F6F58C,
 			);
 			isa = PBXGroup;
 			name = tool;
@@ -5964,6 +5973,7 @@
 				65152629072BFC6700411831,
 				6515262A072BFC6700411831,
 				6515262B072BFC6700411831,
+				6599181309C4950200F6F58C,
 				6515262C072BFC6700411831,
 				6515262D072BFC6700411831,
 				6515262E072BFC6700411831,
@@ -11878,6 +11888,90 @@
 			settings = {
 			};
 		};
+		6599180609C494EA00F6F58C = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.c;
+			name = whirlpool.c;
+			path = ../Common/source/whirlpool.c;
+			refType = 2;
+			sourceTree = SOURCE_ROOT;
+		};
+		6599180709C494EA00F6F58C = {
+			fileRef = 6599180609C494EA00F6F58C;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		6599180809C494EA00F6F58C = {
+			fileRef = 6599180609C494EA00F6F58C;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		6599181309C4950200F6F58C = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.c;
+			name = langcrypt.c;
+			path = ../Common/source/langcrypt.c;
+			refType = 2;
+			sourceTree = SOURCE_ROOT;
+		};
+		6599181409C4950300F6F58C = {
+			fileRef = 6599181309C4950200F6F58C;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		6599181509C4950300F6F58C = {
+			fileRef = 6599181309C4950200F6F58C;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		6599181809C4952A00F6F58C = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.h;
+			name = langcrypt.h;
+			path = ../Common/headers/langcrypt.h;
+			refType = 2;
+			sourceTree = SOURCE_ROOT;
+		};
+		6599181909C4952A00F6F58C = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.h;
+			name = whirlpool.h;
+			path = ../Common/headers/whirlpool.h;
+			refType = 2;
+			sourceTree = SOURCE_ROOT;
+		};
+		6599181A09C4952A00F6F58C = {
+			fileRef = 6599181809C4952A00F6F58C;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		6599181B09C4952A00F6F58C = {
+			fileRef = 6599181909C4952A00F6F58C;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		6599181C09C4952A00F6F58C = {
+			fileRef = 6599181809C4952A00F6F58C;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		6599181D09C4952A00F6F58C = {
+			fileRef = 6599181909C4952A00F6F58C;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
 		65AA438509C03C6D00A4B237 = {
 			fileEncoding = 30;
 			isa = PBXFileReference;
@@ -12040,6 +12134,7 @@
 				65152868072BFEB400411831,
 				65152840072BFE8D00411831,
 				651527E6072BFE3D00411831,
+				6599181809C4952A00F6F58C,
 				651528DA072BFF2C00411831,
 				651527EC072BFE4200411831,
 				651528D4072BFF2500411831,
@@ -12142,6 +12237,7 @@
 				6515293E072BFFF400411831,
 				65152830072BFE7F00411831,
 				6515286C072BFEC000411831,
+				6599181909C4952A00F6F58C,
 				65152874072BFEC600411831,
 				6515287E072BFECE00411831,
 				651527FC072BFE4F00411831,
