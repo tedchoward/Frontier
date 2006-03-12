@@ -31,4 +31,6 @@
 
 #pragma precompile_target "radio.ppc.release.mch"
 
+#define NDEBUG
+
 #include "radio.ppc.h"

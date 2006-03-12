@@ -31,4 +31,6 @@
 
 #pragma precompile_target "frontier.ppc.release.mch"
 
+#define NDEBUG
+
 #include "frontier.ppc.h"

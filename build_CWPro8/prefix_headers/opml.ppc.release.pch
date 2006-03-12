@@ -31,4 +31,6 @@
 
 #pragma precompile_target "opml.ppc.release.mch"
 
+#define NDEBUG
+
 #include "opml.ppc.h"
