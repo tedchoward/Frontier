@@ -664,12 +664,12 @@ static boolean sysfunctionvalue (short token, hdltreenode hparam1, tyvaluerecord
 			
 				Handle hcommand, hreturn;
 				
-				newemptyhandle (&hreturn);
-				
 				flnextparamislast = true;
 				
 				if (!getexempttextvalue (hparam1, 1, &hcommand))
 					return (false);
+				
+				newemptyhandle (&hreturn);
 										
 				if (!unixshellcall (hcommand, hreturn)) {
 				
