@@ -7,6 +7,7 @@
 	objects = {
 		6505996209968C1400410571 = {
 			buildPhases = (
+				65ED46B809D85D3F00BEB9D3,
 				6505996309968C1400410571,
 				65059A3B09968C1400410571,
 				65059B3409968C1400410571,
@@ -37,7 +38,7 @@
 				GCC_WARN_UNUSED_VALUE = NO;
 				GCC_WARN_UNUSED_VARIABLE = NO;
 				INFOPLIST_FILE = Info_OPML.plist;
-				LIBRARY_SEARCH_PATHS = ../Common/Paige;
+				LIBRARY_SEARCH_PATHS = "\"/Volumes/Data/Development/frontierkernel_main (svn)/Frontier/build_XCode/tools\" \"/Volumes/Data/Development/frontierkernel_main (svn)/Frontier/Common/Paige\"";
 				OTHER_CFLAGS = "-fno-inline -malign-mac68k";
 				OTHER_LDFLAGS = "-multiply_defined warning";
 				OTHER_REZFLAGS = "-d TARGET_API_MAC_CARBON=1 -d FRONTIER_FRAMEWORK_INCLUDES=1 -i ../Common/headers -d PIKE=1 -d OPMLEDITOR=1";
@@ -3339,19 +3340,13 @@
 		65059B3609968C1400410571 = {
 			buildActionMask = 2147483647;
 			files = (
-				65059B3709968C1400410571,
 				65059B3809968C1400410571,
 				65059B3909968C1400410571,
 				65059B3A09968C1400410571,
+				6591D9F709D853E8008365FA,
 			);
 			isa = PBXFrameworksBuildPhase;
 			runOnlyForDeploymentPostprocessing = 0;
-		};
-		65059B3709968C1400410571 = {
-			fileRef = 651525C4072BFC6700411831;
-			isa = PBXBuildFile;
-			settings = {
-			};
 		};
 		65059B3809968C1400410571 = {
 			fileRef = 651527B8072BFE0E00411831;
@@ -4143,10 +4138,10 @@
 		65152566072BFC6500411831 = {
 			buildActionMask = 2147483647;
 			files = (
-				651527AF072BFC6900411831,
 				651527B9072BFE0E00411831,
 				6515294B072C000500411831,
 				6515294D072C000900411831,
+				6591D9F609D853E8008365FA,
 			);
 			isa = PBXFrameworksBuildPhase;
 			runOnlyForDeploymentPostprocessing = 0;
@@ -4177,6 +4172,7 @@
 		};
 		65152568072BFC6500411831 = {
 			buildPhases = (
+				6591D9EE09D850C9008365FA,
 				65152563072BFC6500411831,
 				65152564072BFC6500411831,
 				65152565072BFC6500411831,
@@ -4206,7 +4202,7 @@
 				GCC_WARN_UNUSED_VALUE = NO;
 				GCC_WARN_UNUSED_VARIABLE = NO;
 				INFOPLIST_FILE = Info_Frontier.plist;
-				LIBRARY_SEARCH_PATHS = ../Common/Paige;
+				LIBRARY_SEARCH_PATHS = "\"/Volumes/Data/Development/frontierkernel_main (svn)/Frontier/build_XCode/tools\" \"/Volumes/Data/Development/frontierkernel_main (svn)/Frontier/Common/Paige\"";
 				OTHER_CFLAGS = "-fno-inline -malign-mac68k ";
 				OTHER_LDFLAGS = "-multiply_defined warning";
 				OTHER_REZFLAGS = "-d TARGET_API_MAC_CARBON=1 -d FRONTIER_FRAMEWORK_INCLUDES=1 -i ../Common/headers";
@@ -5089,20 +5085,12 @@
 		};
 		651525C3072BFC6700411831 = {
 			children = (
-				651525C4072BFC6700411831,
+				6591D9F509D853E8008365FA,
 			);
 			isa = PBXGroup;
 			name = Paige;
 			refType = 4;
 			sourceTree = "<group>";
-		};
-		651525C4072BFC6700411831 = {
-			explicitFileType = archive.ar;
-			isa = PBXFileReference;
-			name = libpaigemacho.a;
-			path = ../Common/Paige/libpaigemacho.a;
-			refType = 2;
-			sourceTree = SOURCE_ROOT;
 		};
 		651525C5072BFC6700411831 = {
 			children = (
@@ -8792,12 +8780,6 @@
 			settings = {
 			};
 		};
-		651527AF072BFC6900411831 = {
-			fileRef = 651525C4072BFC6700411831;
-			isa = PBXBuildFile;
-			settings = {
-			};
-		};
 		651527B1072BFE0100411831 = {
 			fileEncoding = 30;
 			isa = PBXFileReference;
@@ -11896,6 +11878,43 @@
 			settings = {
 			};
 		};
+		6591D9EE09D850C9008365FA = {
+			buildActionMask = 2147483647;
+			comments = "The linker complains if the file modification date of a static library like libpaigemacho.a is newer than the time stamp stored inside the library.\n\nThe Subversion client can be configured to preserve file modification dates, but a more reliable way which does not require a certain client configuration is to make a copy of the library file, run ranlib on the copy to update the filestamp in the file, and then link the copy of the library into the application.\n";
+			files = (
+			);
+			inputPaths = (
+				"${SRCROOT}/../Common/Paige/libpaigemacho.a",
+			);
+			isa = PBXShellScriptBuildPhase;
+			outputPaths = (
+				"${SRCROOT}/tools/libpaigemacho.a",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "#set -x\ncp -f \"${SRCROOT}/../Common/Paige/libpaigemacho.a\" \"${SRCROOT}/tools/libpaigemacho.a\"\nranlib \"${SRCROOT}/tools/libpaigemacho.a\"";
+		};
+		6591D9F509D853E8008365FA = {
+			comments = "A special shell script build phase copies this file from Common/Paige/libpaigemacho.a and runs ranlib on it. The linker then uses the copy instead of the original of the file.";
+			explicitFileType = file;
+			isa = PBXFileReference;
+			name = libpaigemacho.a;
+			path = tools/libpaigemacho.a;
+			refType = 2;
+			sourceTree = SOURCE_ROOT;
+		};
+		6591D9F609D853E8008365FA = {
+			fileRef = 6591D9F509D853E8008365FA;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		6591D9F709D853E8008365FA = {
+			fileRef = 6591D9F509D853E8008365FA;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
 		6599180609C494EA00F6F58C = {
 			fileEncoding = 30;
 			isa = PBXFileReference;
@@ -12378,6 +12397,21 @@
 			isa = PBXBuildFile;
 			settings = {
 			};
+		};
+		65ED46B809D85D3F00BEB9D3 = {
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+				"${SRCROOT}/../Common/Paige/libpaigemacho.a",
+			);
+			isa = PBXShellScriptBuildPhase;
+			outputPaths = (
+				"${SRCROOT}/tools/libpaigemacho.a",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "#set -x\ncp -f \"${SRCROOT}/../Common/Paige/libpaigemacho.a\" \"${SRCROOT}/tools/libpaigemacho.a\"\nranlib \"${SRCROOT}/tools/libpaigemacho.a\"";
 		};
 		65F9C21E09C4CD9700DCC29E = {
 			fileEncoding = 30;
