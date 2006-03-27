@@ -1229,8 +1229,11 @@ void getwindowscreenbounds (const Rect *rwindow, Rect *r) {
 	
 	*r = screenBits.bounds; /*default return value, if no window open, or error*/
 	
+	/* commenting this out because we don't run on systems without color quickdraw anyway */
+	/*
 	if (!havecolorquickdraw ())
 		goto exit;
+	*/
 	
 	hdevice = GetDeviceList (); /*start with the first graphics device*/
 	
@@ -1240,12 +1243,14 @@ void getwindowscreenbounds (const Rect *rwindow, Rect *r) {
 			
 			if (hmost != nil) {
 				
-				*r = (**hmost).gdRect;
-				
-				flmenubar = hmost == GetMainDevice ();
+				/*
+					2006-03-27 SMD - let the OS tell us about the available bounds
+					this handles the menubar, the dock, and anything else the system knows about
+				*/
+				GetAvailableWindowPositioningBounds (hmost, r);
 				}
 			
-			goto exit;
+			break;  /* exit the while loop */
 			}
 		
 		if (((**hdevice).gdFlags | (1 << screenActive)) != 0) { /*screen is active*/
@@ -1266,10 +1271,6 @@ void getwindowscreenbounds (const Rect *rwindow, Rect *r) {
 		hdevice = GetNextDevice (hdevice); /*advance to next device in list*/
 		} /*while*/
 	
-	exit:
-	
-	if (flmenubar)
-		(*r).top += getmenubarheight ();
 #endif
 
 #ifdef WIN95VERSION
