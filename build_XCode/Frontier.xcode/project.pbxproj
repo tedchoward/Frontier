@@ -38,7 +38,7 @@
 				GCC_WARN_UNUSED_VALUE = NO;
 				GCC_WARN_UNUSED_VARIABLE = NO;
 				INFOPLIST_FILE = Info_OPML.plist;
-				LIBRARY_SEARCH_PATHS = "\"/Volumes/Data/Development/frontierkernel_main (svn)/Frontier/build_XCode/tools\" \"/Volumes/Data/Development/frontierkernel_main (svn)/Frontier/Common/Paige\"";
+				LIBRARY_SEARCH_PATHS = "\"tools\"";
 				OTHER_CFLAGS = "-fno-inline -malign-mac68k";
 				OTHER_LDFLAGS = "-multiply_defined warning";
 				OTHER_REZFLAGS = "-d TARGET_API_MAC_CARBON=1 -d FRONTIER_FRAMEWORK_INCLUDES=1 -i ../Common/headers -d PIKE=1 -d OPMLEDITOR=1";
@@ -4202,7 +4202,7 @@
 				GCC_WARN_UNUSED_VALUE = NO;
 				GCC_WARN_UNUSED_VARIABLE = NO;
 				INFOPLIST_FILE = Info_Frontier.plist;
-				LIBRARY_SEARCH_PATHS = "\"/Volumes/Data/Development/frontierkernel_main (svn)/Frontier/build_XCode/tools\" \"/Volumes/Data/Development/frontierkernel_main (svn)/Frontier/Common/Paige\"";
+				LIBRARY_SEARCH_PATHS = "\"tools\"";
 				OTHER_CFLAGS = "-fno-inline -malign-mac68k ";
 				OTHER_LDFLAGS = "-multiply_defined warning";
 				OTHER_REZFLAGS = "-d TARGET_API_MAC_CARBON=1 -d FRONTIER_FRAMEWORK_INCLUDES=1 -i ../Common/headers";
