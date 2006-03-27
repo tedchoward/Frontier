@@ -3494,7 +3494,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = ". ${SRCROOT}/tools/postlinking.sh\n";
+			shellScript = ". \"${SRCROOT}/tools/postlinking.sh\"\n";
 		};
 		65059B4E09968C1400410571 = {
 			explicitFileType = wrapper.application;
@@ -12521,7 +12521,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = ". ${SRCROOT}/tools/postlinking.sh\n";
+			shellScript = ". \"${SRCROOT}/tools/postlinking.sh\"\n";
 		};
 		DEA58AB307435A9500BAB271 = {
 			isa = PBXFileReference;

@@ -25,32 +25,29 @@ echo "Extracting info from Common/headers/versions.h for Info.plist file"
 
 # go to tools directory
 currdir=`pwd`
-cd ${SRCROOT}/tools/
+cd "${SRCROOT}/tools/"
 
 # pick up preprocessor definitions from target settings, e.g. "PIKE=1"
 preprocessor_defs=`echo ${GCC_PREPROCESSOR_DEFINITIONS} | sed -e "s/[A-Z0-9_][A-Z0-9_=]*/-D&/g"`
-
-# collect compiler flags in one string for readability
-cflags="${preprocessor_defs} -I${SRCROOT}/../Common/headers"
 
 # set environment variable to stop cc from complaining
 export MACOSX_DEPLOYMENT_TARGET="10.1"
 
 # extract the APP_VERSION_STRING
-cc ${cflags} -o appversion appversion.c
+cc ${preprocessor_defs} -I"${SRCROOT}/../Common/headers" -o appversion appversion.c
 version_str=`./appversion`
 echo "Using version string: ${version_str}"
 
 # extract the copyright_year_string
-cc ${cflags} -o appcopyright appcopyright.c
+cc ${preprocessor_defs} -I"${SRCROOT}/../Common/headers" -o appcopyright appcopyright.c
 copyright_str=`./appcopyright`
 echo "Using copyright string: ${copyright_str}"
 
 # clean up
-rm appversion appcopyright
+rm -f appversion appcopyright
 
 # revert to previous working directory
-cd ${currdir}
+cd "${currdir}"
 
 ##################################################
 
