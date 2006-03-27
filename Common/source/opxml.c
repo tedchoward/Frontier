@@ -331,15 +331,19 @@ boolean opxmltooutline (Handle htext, hdloutlinerecord ho, boolean flnewoutline,
 	
 	disablelangerror ();
 
-	flheadfound = opxmlfindtableitem (htopmldocument, STR_head, &hthead);
+	flheadfound = opxmlheadexists (htopmldocument);  /* 2006-03-26 SMD - this used to call opxmlfindtableitem, which was a problem when the head element was empty */
 
 	if (flnewoutline && flheadfound) {
+		
+		if (opxmlfindtableitem (htopmldocument, STR_head, &hthead)) {
 			
-		oppushoutline (ho);
+			oppushoutline (ho);
+			
+			opxmlsetwindowatts (hthead, ho, hto, bso, vo); /*set window attributes*/
+			
+			oppopoutline ();
+			}
 		
-		opxmlsetwindowatts (hthead, ho, hto, bso, vo); /*set window attributes*/
-		
-		oppopoutline ();
 		} /*if*/
 
 	enablelangerror ();
