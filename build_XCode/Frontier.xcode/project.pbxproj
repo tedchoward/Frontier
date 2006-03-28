@@ -5057,7 +5057,6 @@
 		};
 		651525C0072BFC6700411831 = {
 			children = (
-				651525C2072BFC6700411831,
 				651525C1072BFC6700411831,
 			);
 			isa = PBXGroup;
@@ -5070,7 +5069,7 @@
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.c;
 			name = MoreFilesX.c;
-			path = ../Common/MoreFiles/MoreFilesX.c;
+			path = ../Common/MoreFilesX/MoreFilesX.c;
 			refType = 2;
 			sourceTree = SOURCE_ROOT;
 		};
@@ -5079,7 +5078,7 @@
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.h;
 			name = MoreFilesX.h;
-			path = ../Common/MoreFiles/MoreFilesX.h;
+			path = ../Common/MoreFilesX/MoreFilesX.h;
 			refType = 2;
 			sourceTree = SOURCE_ROOT;
 		};
@@ -12068,6 +12067,7 @@
 		};
 		65AF8D1A074159FC007C3205 = {
 			children = (
+				651525C2072BFC6700411831,
 				6515286A072BFEBE00411831,
 				65152940072BFFF600411831,
 				6515290E072BFF7900411831,
