@@ -63,7 +63,7 @@ BINDIR = .
 INCLUDE_PATHS = \
 	-I $(SRCDIR)/Common/headers/ \
 	-I $(SRCDIR)/Common/IOAToolkit/ \
-	-I $(SRCDIR)/Common/MoreFiles/ \
+	-I $(SRCDIR)/Common/MoreFilesX/ \
 	-I $(SRCDIR)/Common/PCRE/ \
 	-I $(SRCDIR)/FrontierSDK/Toolkits/AppletToolkit/Headers/ \
 	-I $(SRCDIR)/FrontierSDK/Toolkits/IACTools/Headers/ \
@@ -199,7 +199,7 @@ INCLUDE_FILES = \
 	$(SRCDIR)/Common/IOAToolkit/ioaicon.h \
 	$(SRCDIR)/Common/IOAToolkit/ioapopup.h \
 	$(SRCDIR)/Common/IOAToolkit/ioascrollbar.h \
-	$(SRCDIR)/Common/MoreFiles/MoreFilesX.h \
+	$(SRCDIR)/Common/MoreFilesX/MoreFilesX.h \
 	$(SRCDIR)/Common/PCRE/pcre.h \
 	$(SRCDIR)/Common/headers/frontier.h \
 	$(SRCDIR)/Common/headers/font.h \
@@ -320,6 +320,9 @@ INCLUDE_FILES = \
 	$(SRCDIR)/Common/Paige/headers/PGDEFTBL.h \
 	$(SRCDIR)/Common/headers/notify.h \
 	$(SRCDIR)/Common/headers/md5.h \
+	$(SRCDIR)/Common/headers/sha.h \
+	$(SRCDIR)/Common/headers/sha_locl.h \
+	$(SRCDIR)/Common/headers/whirlpool.h \
 	$(SRCDIR)/Common/headers/services.h \
 	$(SRCDIR)/Common/headers/serialnumber.h \
 	$(SRCDIR)/Common/headers/langregexp.h \
@@ -588,10 +591,10 @@ MAC_MOREFILES_CLASSIC_OBJS = \
 	$(OBJDIR)/Common/MoreFiles/MoreFilesExtras.o
 
 MAC_MOREFILES_SRC = \
-	$(SRCDIR)/Common/MoreFiles/MoreFilesX.c
+	$(SRCDIR)/Common/MoreFilesX/MoreFilesX.c
 
 MAC_MOREFILES_OBJS = \
-	$(OBJDIR)/Common/MoreFiles/MoreFilesX.o
+	$(OBJDIR)/Common/MoreFilesX/MoreFilesX.o
 
 PCRE_SRC = \
 	$(SRCDIR)/Common/PCRE/get.c \
@@ -653,6 +656,16 @@ WIN_TOOL_OBJS = \
 	$(OBJDIR)/Common/source/htmlcontrol.o \
 	$(OBJDIR)/Common/source/winregistry.o
 
+CRYPT_SRC = \
+	$(SRCDIR)/Common/source/md5.c \
+	$(SRCDIR)/Common/source/sha1dgst.c \
+	$(SRCDIR)/Common/source/whirlpool.c
+
+CRYPT_OBJS = \
+	$(SRCDIR)/Common/source/md5.o \
+	$(SRCDIR)/Common/source/sha1dgst.o \
+	$(SRCDIR)/Common/source/whirlpool.o
+	
 TOOL_SRC = \
 	$(SRCDIR)/Common/source/about.c \
 	$(SRCDIR)/Common/source/assert.c \
@@ -669,7 +682,6 @@ TOOL_SRC = \
 	$(SRCDIR)/Common/source/kb.c \
 	$(SRCDIR)/Common/source/launch.c \
 	$(SRCDIR)/Common/source/main.c \
-	$(SRCDIR)/Common/source/md5.c \
 	$(SRCDIR)/Common/source/memory.c \
 	$(SRCDIR)/Common/source/menu.c \
 	$(SRCDIR)/Common/source/mouse.c \
@@ -706,7 +718,6 @@ TOOL_OBJS = \
 	$(OBJDIR)/Common/source/kb.o \
 	$(OBJDIR)/Common/source/launch.o \
 	$(OBJDIR)/Common/source/main.o \
-	$(OBJDIR)/Common/source/md5.o \
 	$(OBJDIR)/Common/source/memory.o \
 	$(OBJDIR)/Common/source/menu.o \
 	$(OBJDIR)/Common/source/mouse.o \
@@ -804,6 +815,7 @@ WIN_LANG_OBJS = \
 LANG_SRC = \
 	$(SRCDIR)/Common/source/lang.c \
 	$(SRCDIR)/Common/source/langcallbacks.c \
+	$(SRCDIR)/Common/source/langcrypt.c \
 	$(SRCDIR)/Common/source/langdate.c \
 	$(SRCDIR)/Common/source/langdll.c \
 	$(SRCDIR)/Common/source/langerror.c \
@@ -833,6 +845,7 @@ LANG_SRC = \
 LANG_OBJS = \
 	$(OBJDIR)/Common/source/lang.o \
 	$(OBJDIR)/Common/source/langcallbacks.o \
+	$(OBJDIR)/Common/source/langcrypt.o \
 	$(OBJDIR)/Common/source/langdate.o \
 	$(OBJDIR)/Common/source/langdll.o \
 	$(OBJDIR)/Common/source/langerror.o \
@@ -1057,6 +1070,7 @@ COMMON_SOURCES = \
 	$(FILE_SRC) \
 	$(PCRE_SRC) \
 	$(PICT_SRC) \
+	$(CRYPT_SRC) \
 	$(TOOL_SRC) \
 	$(CANCOON_SRC) \
 	$(CLAY_SRC) \
@@ -1073,6 +1087,7 @@ COMMON_OBJECTS = \
 	$(FILE_OBJS) \
 	$(PCRE_OBJS) \
 	$(PICT_OBJS) \
+	$(CRYPT_OBJS) \
 	$(TOOL_OBJS) \
 	$(CANCOON_OBJS) \
 	$(CLAY_OBJS) \
@@ -1312,6 +1327,7 @@ DIRS = \
 	$(OBJDIR)/Common/IowaRuntime/Source/ \
 	$(OBJDIR)/Common/UserLandIACToolkit/ \
 	$(OBJDIR)/Common/MoreFiles/ \
+	$(OBJDIR)/Common/MoreFilesX/ \
 	$(OBJDIR)/Common/PCRE/
 
 dirs: $(DIRS)
