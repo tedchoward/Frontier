@@ -3562,9 +3562,80 @@
 			settings = {
 			};
 		};
+		65123A7409D9C04F005AB449 = {
+			children = (
+				651525FA072BFC6700411831,
+				65F9C22609C4CDDE00DCC29E,
+				6599180609C494EA00F6F58C,
+			);
+			isa = PBXGroup;
+			name = crypt;
+			path = "";
+			refType = 4;
+			sourceTree = "<group>";
+		};
+		65123A7709D9C0C5005AB449 = {
+			children = (
+				65123A7A09D9C107005AB449,
+			);
+			isa = PBXGroup;
+			name = "Build Scripts";
+			refType = 4;
+			sourceTree = "<group>";
+		};
+		65123A7A09D9C107005AB449 = {
+			comments = "This script is executed by a custom shell script build phase that runs after the linker is done.";
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			lastKnownFileType = text.script.sh;
+			name = postlinking.sh;
+			path = tools/postlinking.sh;
+			refType = 2;
+			sourceTree = SOURCE_ROOT;
+		};
+		65123A7F09D9C116005AB449 = {
+			children = (
+				65123A8209D9C14C005AB449,
+				65123A8509D9C173005AB449,
+				65123A8609D9C173005AB449,
+			);
+			comments = "These files are only used in the Windows version, so they are not part of any Xcode compilation target. They are just included for reference.";
+			isa = PBXGroup;
+			name = "Win32 Files";
+			refType = 4;
+			sourceTree = "<group>";
+		};
+		65123A8209D9C14C005AB449 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.c;
+			name = megastubs.c;
+			path = ../Common/stubs/megastubs.c;
+			refType = 2;
+			sourceTree = SOURCE_ROOT;
+		};
+		65123A8509D9C173005AB449 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			lastKnownFileType = text;
+			name = kernelverbs.rc;
+			path = ../Common/resources/Win32/kernelverbs.rc;
+			refType = 2;
+			sourceTree = SOURCE_ROOT;
+		};
+		65123A8609D9C173005AB449 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			lastKnownFileType = text;
+			name = WinLand.rc;
+			path = ../Common/resources/Win32/WinLand.rc;
+			refType = 2;
+			sourceTree = SOURCE_ROOT;
+		};
 		6515255C072BFC6500411831 = {
 			children = (
 				6515256C072BFC6700411831,
+				65123A7409D9C04F005AB449,
 				65152571072BFC6700411831,
 				6515257E072BFC6700411831,
 				65152599072BFC6700411831,
@@ -3587,11 +3658,13 @@
 				65152683072BFC6800411831,
 				65152686072BFC6800411831,
 				65152696072BFC6800411831,
-				6515269C072BFC6800411831,
-				65AF8D1A074159FC007C3205,
-				65AF8D17074159A5007C3205,
-				BB3B83610730603C0049D0C1,
+				65123A7709D9C0C5005AB449,
 				651527B7072BFE0E00411831,
+				65AF8D1A074159FC007C3205,
+				6515269C072BFC6800411831,
+				BB3B83610730603C0049D0C1,
+				65123A7F09D9C116005AB449,
+				65AF8D17074159A5007C3205,
 				65CF0C7F099545A4006E3A79,
 				65059B4E09968C1400410571,
 			);
@@ -5365,7 +5438,6 @@
 				651525F7072BFC6700411831,
 				651525F8072BFC6700411831,
 				651525F9072BFC6700411831,
-				651525FA072BFC6700411831,
 				651525FB072BFC6700411831,
 				651525FC072BFC6700411831,
 				651525FD072BFC6700411831,
@@ -5379,14 +5451,12 @@
 				65152605072BFC6700411831,
 				65152606072BFC6700411831,
 				65152607072BFC6700411831,
-				65F9C22609C4CDDE00DCC29E,
 				65152608072BFC6700411831,
 				65152609072BFC6700411831,
 				65AA438A09C03C8900A4B237,
 				6515260A072BFC6700411831,
 				6515260B072BFC6700411831,
 				6515260C072BFC6700411831,
-				6599180609C494EA00F6F58C,
 			);
 			isa = PBXGroup;
 			name = tool;
