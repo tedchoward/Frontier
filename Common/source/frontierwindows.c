@@ -325,7 +325,12 @@ void movewindow (WindowPtr w, short h, short v) {
 	#endif
 
 	#ifdef WIN95VERSION
-		setwindowpos (w, NULL, h - 4, v - 23, 0, 0, SWP_NOZORDER | SWP_NOSIZE);
+		int windowFramingHeight = 23;  /* 2006-03-28 SMD - updated to use system-provided metrics instead of static values */
+		int windowFramingWidth = 4;
+		
+		windowFramingHeight = GetSystemMetrics( SM_CYCAPTION ) + GetSystemMetrics( SM_CYFRAME );
+		windowFramingWidth  = GetSystemMetrics( SM_CXFRAME );
+		setwindowpos (w, NULL, h - windowFramingWidth, v - windowFramingHeight, 0, 0, SWP_NOZORDER | SWP_NOSIZE);
 	#endif
 
 	} /*movewindow*/
@@ -338,7 +343,12 @@ void movewindowhidden (WindowPtr w, short h, short v) {
 	#endif
 
 	#ifdef WIN95VERSION
-		setwindowpos (w, NULL, h - 4, v - 23, 0, 0, SWP_NOZORDER | SWP_NOSIZE | SWP_HIDEWINDOW | SWP_NOACTIVATE);
+		int windowFramingHeight = 23;  /* 2006-03-28 SMD - updated to use system-provided metrics instead of static values */
+		int windowFramingWidth = 4;
+		
+		windowFramingHeight = GetSystemMetrics( SM_CYCAPTION ) + GetSystemMetrics( SM_CYFRAME );
+		windowFramingWidth  = GetSystemMetrics( SM_CXFRAME );
+		setwindowpos (w, NULL, h - windowFramingWidth, v - windowFramingHeight, 0, 0, SWP_NOZORDER | SWP_NOSIZE | SWP_HIDEWINDOW | SWP_NOACTIVATE);
 	#endif
 
 	} /*movewindowhidden*/
