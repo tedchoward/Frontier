@@ -47,6 +47,7 @@ quickdraw.c -- code which builds on top of basic quickdraw operations.
 
 
 #ifdef WIN95VERSION
+	#include "FrontierWinMain.h"  // 2006-03-28 SMD, for getstatusbarheight()
 	HWND getcurrentwindow();
 	HBRUSH getcurrentbrush();
 	extern HINSTANCE hInst;
@@ -2452,11 +2453,13 @@ void getdesktopbounds (Rect *r) {
 	getlocalwindowrect (shellframewindow, r);
 
 	localtoglobalrect (shellframewindow, r);
+	
+	(*r).bottom -= getstatusbarheight();  // 2006-03-28 SMD
 #endif
 	} /*getdesktopbounds*/
 
 
-static boolean constraintorect (Rect *rconstrained, Rect rcontains, boolean flcenter) {
+extern boolean constraintorect (Rect *rconstrained, Rect rcontains, boolean flcenter) {
 	
 	/*
 	9/15/91 dmb: make sure that rconstrained fits within rcontains.

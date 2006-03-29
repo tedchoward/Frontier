@@ -2476,10 +2476,6 @@ boolean shellzoomwindow (hdlwindowinfo hinfo, boolean flzoomin) {
 		
 		insetrect (&rzoom, 3, 3);
 		
-		#ifdef WIN95VERSION
-			rzoom.bottom -= getstatusbarheight();  /* 2005-01-30 SMD (and arp) */
-		#endif
-		
 		if ((rfull.right - rfull.left) <= (rzoom.right - rzoom.left)) /*can fit full horiz*/
 			flscrollleft = true;
 		
@@ -2493,7 +2489,7 @@ boolean shellzoomwindow (hdlwindowinfo hinfo, boolean flzoomin) {
 			//old code
 			//(**hstatedata).stdState = rzoom;
 		#else
-			(**h).zoomedrect = rwindow;
+			(**h).zoomedrect = rzoom;  /* 2006-03-28 SMD fixed, was rwindow */
 		#endif
 		}
 	
