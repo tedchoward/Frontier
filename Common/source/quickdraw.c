@@ -1218,7 +1218,6 @@ void getwindowscreenbounds (const Rect *rwindow, Rect *r) {
 	register long ctpixelsmost = 0;
 	register long ctpixels;
 	Rect rsect;
-	boolean flmenubar = true;
 	//Code change by Timothy Paustian Friday, June 9, 2000 10:05:50 PM
 	//Changed to Opaque call for Carbon
 	BitMap	screenBits;
@@ -2459,7 +2458,7 @@ void getdesktopbounds (Rect *r) {
 	} /*getdesktopbounds*/
 
 
-extern boolean constraintorect (Rect *rconstrained, Rect rcontains, boolean flcenter) {
+static boolean constraintorect (Rect *rconstrained, Rect rcontains, boolean flcenter) {
 	
 	/*
 	9/15/91 dmb: make sure that rconstrained fits within rcontains.
