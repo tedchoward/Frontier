@@ -1,9 +1,0 @@
-*.plg
-*.opt
-*.ncb
-*.suo
-release
-MemTrack
-debug
-DbTracker
-_build
