@@ -40,102 +40,50 @@
 	setting A5 to CurrentA5.
 	
 	get it?  it works!
+	
+	2006-04-01 aradke: removed assembler code for Mac/68k and prepare for Mac/x86
 */
 
 	
-#ifdef THINK_C
+//Code change by Timothy Paustian Wednesday, July 12, 2000 1:59:26 PM
+//A5 worlds have no relvance in Carbon so just define them away.
+#if TARGET_API_MAC_CARBON == 1
 
-	static void __GetA5(void) {
+	#define RememberA5()
+	
+	#define SetUpThisA5(A5) nil
+	
+	#define SetUpAppA5() nil
 		
-		asm {
-			bsr.s	@1
-			dc.l	0			;  store A5 here
-		@1	move.l	(sp)+,a1
-			}
-		}
+	#define SetUpCurA5() nil
+		
+	#define RestoreA5(savedA5)
 	
-	#define RememberA5()	do { __GetA5(); asm { move.l a5,(a1) } } while (0)
+	#define pushA5()
 	
-	#define SetUpAppA5()	do { asm { move.l a5,-(sp) } __GetA5(); asm { move.l (a1),a5 } } while (0)
-	
-	#define SetUpCurA5()	do { asm { move.l a5,-(sp) } asm { movea.l 0x904,a5 } } while (0)
-	
-	#define RestoreA5()		do { asm { move.l (sp)+,a5 } } while (0)
-
-	#define pushA5()		asm { move.l a5,-(a7) }
-	
-	#define popA5()			asm { move.l (a7)+,a5 }
-	
-	#define pushA0_D7()		asm { movem.l a0-a5/d1-d7,-(a7) }
-	
-	#define popA0_D7()		asm { movem.l (a7)+,a0-a5/d1-d7 }
-	
-	#define setA5to8offA6()	asm { movea.l 8(a6),a5 }
+	#define popA5()
 
 #else
-
-	/*
-	dmb 4.0.2b1: statics are referenced through A5, so we must use asm stubs
-	to store our data relative to the PC for 68k code
-	*/
 	
-	#if !defined(__POWERPC__) && !defined(__CFM68K__)
+	// 2006-04-01 aradke: only used for Classic Mac OS on PPC (which we actually don't even support anymore)
 	
-		static asm long *getAppA5 (void):__A0
-		{
-			lea		__storage,a0
-			rts
-		
-		__storage:	dc.l	0	/* this storage is only referenced thru data cache */
-		}
-	
-		#define	__appA5	(*getAppA5())
+	static long __appA5;	/* 2004-10-28 aradke: not used on Carbon */
 
-	#else
-	
-		#if !TARGET_API_MAC_CARBON
-			static long __appA5;	/* 2004-10-28 aradke: not used on Carbon */
-		#endif
-		
-	#endif
-	
-	//Code change by Timothy Paustian Wednesday, July 12, 2000 1:59:26 PM
-	//A5 worlds have no relvance in Carbon so just define them away.
-	#if TARGET_API_MAC_CARBON == 1
+	#define RememberA5()	do {__appA5 = (long) LMGetCurrentA5 ();} while (0)
 
-		#define RememberA5()
-		
-		#define SetUpThisA5(A5) nil
-		
-		#define SetUpAppA5() nil
-			
-		#define SetUpCurA5() nil
-			
-		#define RestoreA5(savedA5)
-		
-		#define pushA5()
-		
-		#define popA5()
+	#define SetUpThisA5(A5)	SetA5 (A5)
 
-	#else
-		
-		#define RememberA5()	do {__appA5 = (long) LMGetCurrentA5 ();} while (0)
+	#define SetUpAppA5()	SetA5 (__appA5);
 
-		#define SetUpThisA5(A5)	SetA5 (A5)
+	//	#define SetUpCurA5()	do { savedA5 = SetA5 ((long) LMGetCurrentA5 ()); } while (0)
 
-		#define SetUpAppA5()	SetA5 (__appA5);
+	#define SetUpCurA5()	SetCurrentA5 ();
 
-		//	#define SetUpCurA5()	do { savedA5 = SetA5 ((long) LMGetCurrentA5 ()); } while (0)
+	#define RestoreA5(savedA5)	SetA5 (savedA5)
 
-		#define SetUpCurA5()	SetCurrentA5 ();
+	#define pushA5()		SetUpCurA5 ()
 
-		#define RestoreA5(savedA5)	SetA5 (savedA5)
+	#define popA5()			RestoreA5 ()
 
-		#define pushA5()		SetUpCurA5 ()
-
-		#define popA5()			RestoreA5 ()
-
-	#endif
-	
 #endif
-	
+
