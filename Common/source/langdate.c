@@ -51,8 +51,8 @@
 #include "kernelverbdefs.h"
 #include "timedate.h"
 
-char dayofweeknames[7][3] = {"Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"};
-char monthnames[12][3] = {"Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"};
+static char * dayofweeknames[7] = {"Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"};
+static char * monthnames[12] = {"Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"};
 
 #define STR_P_MONTHLIST 		"\x7A""{\"January\", \"February\", \"March\", \"April\", \"May\", \"June\", \"July\", \"August\", \"September\", \"October\", \"November\", \"December\"}"
 #define STR_P_DAYOFWEEKLIST 	"\x4E""{\"Sunday\", \"Monday\", \"Tuesday\", \"Wednesday\", \"Thursday\", \"Friday\", \"Saturday\"}"
