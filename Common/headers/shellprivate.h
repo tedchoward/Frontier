@@ -91,11 +91,13 @@ extern tyglobalsstack globalsstack; /*for push/pop globals*/
 
 extern boolean flexitmainloop;
 
-extern tymenustate menustate;
+// 2006-03-31 kw & aradke: menustate is declared static in shellmenu.c
+//extern tymenustate menustate;
 
 extern unsigned long timelastkeystroke;
 
-extern boolean flshellimmediatebackground; /*service the background queue immediately*/
+// 2006-03-31 kw & aradke: flshellimmediatebackground is declared static in shell.c
+//extern boolean flshellimmediatebackground; /*service the background queue immediately*/
 
 
 /*prototypes*/
