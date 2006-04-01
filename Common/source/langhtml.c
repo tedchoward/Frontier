@@ -7182,7 +7182,7 @@ exit:
 	}/*webserverserver*/
 
 
-static bigstring bswhatwerewedoing [] = {
+static unsigned char * bswhatwerewedoing [] = {
 	"\x21" "Checking user.inetd.shutdown flag",
 	"\x13" "Creating paramtable",
 	"\x1e" "Adding client IP to paramtable",
