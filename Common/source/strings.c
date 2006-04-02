@@ -1707,15 +1707,21 @@ long textpatternmatch (byte *ptext, long lentext, bigstring bsfind, boolean flun
 	
 	this uses an algorithm attributed to Boyer-Moore, I believe.  it uses 
 	cryptic macros above to support case-insensitivity with maximum performance.
+	
+	2006-04-02 aradke: The search failed when the pattern was longer than 129 chars
+		because the jump table for the Boyer-Moore algorithm was defined as an array
+		of signed chars, causing an overflow for jump distances larger than 129 chars.
+		The fix is to define the jump table as an array of signed longs instead. [bug #1463056]
+		http://sourceforge.net/tracker/index.php?func=detail&aid=1463056&group_id=120666&atid=687798
 	*/
 	
 	register byte *p = ptext;
 	byte *pend = p + lentext;
 	byte *psave;
-	short i;
-	short dist;
-	short lenpattern;
-	char jump [256];
+	long i;
+	long dist;
+	long lenpattern;
+	long jump [256];
 	boolean flcase = !flunicase;
 	ptrstring bspattern = bsfind;
 	#define checklower(c) (flcase? (c) : getlower (c))
@@ -1724,7 +1730,8 @@ long textpatternmatch (byte *ptext, long lentext, bigstring bsfind, boolean flun
 	
 	/*fill in the jump array according to the characters in the search pattern*/
 	
-	fillchar (jump, (long) 256, (byte) lenpattern);
+	for (i = 0;  i <= 255;  i++)
+		jump [i] = lenpattern;
 	
 	for (i = 1;  i <= lenpattern;  i++)
 		jump [bspattern [i]] = 1 - i;
