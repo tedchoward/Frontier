@@ -3174,7 +3174,7 @@ int CALLBACK WinMain (
 	strcpy (statusIconData.szTip, "OPML");
 #endif // OPMLEDITOR
 #else
-	strcpy (statusIconData.szTip, "UserLand Frontier");
+	strcpy (statusIconData.szTip, "Frontier"); // 2005-04-02 creedon: removed UserLand
 #endif
 
 	Shell_NotifyIcon (NIM_ADD, &statusIconData);
