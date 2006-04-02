@@ -74,7 +74,7 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="PaigeWinMSCRT.lib winmm.lib libcmtd.lib oldnames.lib comctl32.lib wininet.lib wsock32.lib version.lib"
+				AdditionalDependencies="PaigeWinVC8CRT.lib winmm.lib libcmtd.lib oldnames.lib comctl32.lib wininet.lib wsock32.lib version.lib"
 				OutputFile=".\DbTracker/Frontier.exe"
 				LinkIncremental="1"
 				SuppressStartupBanner="true"
@@ -173,7 +173,7 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="PaigeWinMSCRT.lib winmm.lib libcmtd.lib oldnames.lib comctl32.lib wininet.lib wsock32.lib version.lib"
+				AdditionalDependencies="PaigeWinVC8CRT.lib winmm.lib libcmtd.lib oldnames.lib comctl32.lib wininet.lib wsock32.lib version.lib"
 				OutputFile=".\MemTrack/Frontier.exe"
 				LinkIncremental="1"
 				SuppressStartupBanner="true"
@@ -273,7 +273,7 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="odbc32.lib odbccp32.lib winmm.lib libcmt.lib oldnames.lib comctl32.lib wininet.lib PaigeWinMSCRT.lib wsock32.lib version.lib"
+				AdditionalDependencies="PaigeWinVC8CRT.lib winmm.lib libcmt.lib oldnames.lib comctl32.lib wininet.lib wsock32.lib version.lib"
 				OutputFile=".\Release/Frontier.exe"
 				LinkIncremental="1"
 				SuppressStartupBanner="true"
@@ -373,7 +373,7 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="PaigeWinMSCRT.lib winmm.lib libcmtd.lib oldnames.lib comctl32.lib wininet.lib wsock32.lib version.lib"
+				AdditionalDependencies="PaigeWinVC8CRT.lib winmm.lib libcmtd.lib oldnames.lib comctl32.lib wininet.lib wsock32.lib version.lib"
 				OutputFile=".\Debug/Frontier.exe"
 				LinkIncremental="1"
 				SuppressStartupBanner="true"
