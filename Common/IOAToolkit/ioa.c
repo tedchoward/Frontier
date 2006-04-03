@@ -62,28 +62,13 @@ static hdlcard hcard = nil;
 static tyioaconfigrecord config;
 
 
-
-void IOAfillchar (void *pfill, long ctfill, char chfill) {
-	
-	/*
-	do a mass memory fill -- copy ctfill chfills at pfill.
-	*/
-	
-	char *p = pfill;
-	long ct = ctfill;
-	char ch = chfill;
-	
-	while (ct--) *p++ = (char) ch; /*tight loop*/
-	} /*IOAfillchar*/
-	
-
 void IOAclearbytes (void *pclear, long ctclear) {
 	
 	/*
 	fill memory with 0's.
 	*/
 	
-	IOAfillchar (pclear, ctclear, (char) 0);
+	memset(pclear, 0, ctclear);
 	} /*IOAclearbytes*/
 	
 

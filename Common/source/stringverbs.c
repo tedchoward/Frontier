@@ -439,7 +439,7 @@ static boolean ellipsizehandle (Handle h, long maxlen) {
 static void fillstring (ptrvoid pfill, long ctfill, bigstring bsfill) {
 	
 	/*
-	do a mass memory fill, like fillchar, but of a repeated string --
+	do a mass memory fill, like memset, but of a repeated string --
 	copy ctfill bsfills at pfill.
 	*/
 	
@@ -898,7 +898,7 @@ static boolean padwithzerosverb (hdltreenode hp1, tyvaluerecord *v) {
 
 		moveright (*h, *h + delta, currentlength);
 
-		fillchar (*h, delta, '0');
+		memset (*h, '0', delta);
 		}
 
 	return (setheapvalue (h, stringvaluetype, v));

@@ -181,8 +181,6 @@ extern void moveleft (ptrvoid, ptrvoid, long);
 
 extern void moveright (ptrvoid, ptrvoid, long);
 
-extern void fillchar (ptrvoid, long, char);
-
 extern void clearbytes (ptrvoid, long);
 
 extern void clearhandle (Handle);

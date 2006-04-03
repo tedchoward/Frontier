@@ -597,27 +597,6 @@ void moveright (ptrvoid psource, ptrvoid pdest, long length) {
 */
 	} /*moveright*/
 	
-	
-void fillchar (ptrvoid pfill, long ctfill, char chfill) {
-	
-	/*
-	do a mass memory fill -- copy ctfill chfills at pfill.
-	*/
-	
-#ifdef MACVERSION
-	register ptrbyte p = pfill;
-	register long ct = ctfill;
-	register char ch = chfill;
-	
-	while (--ct >= 0)
-		*p++ = (char) ch; /*tight loop*/
-#endif
-
-#ifdef WIN95VERSION
-	FillMemory (pfill, ctfill, chfill);
-#endif
-	} /*fillchar*/
-	
 
 void clearbytes (ptrvoid pclear, long ctclear) {
 	
@@ -625,7 +604,7 @@ void clearbytes (ptrvoid pclear, long ctclear) {
 	fill memory with 0's.
 	*/
 	
-	fillchar (pclear, ctclear, (char) 0);
+	memset (pclear, 0, ctclear);
 	} /*clearbytes*/
 	
 
@@ -644,7 +623,7 @@ void clearhandle (Handle hclear) {
 	lockhandle (h);
 	*/
 	
-	fillchar (*h, size, (char) 0);
+	memset (*h, 0, size);
 	
 	/*
 	unlockhandle (h);

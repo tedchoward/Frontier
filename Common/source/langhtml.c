@@ -1493,7 +1493,7 @@ static boolean processhtmltext (handlestream *s, typrocessmacrosinfo *pmi) {
 		
 		setstringlength (bsdebug, 25); 
 		
-		fillchar (&bsdebug [1], 25, ' ');
+		memset(&bsdebug [1], ' ', 25);
 		}
 	
 	for (i = 0; i < ct; i++) {

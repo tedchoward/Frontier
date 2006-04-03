@@ -38,8 +38,6 @@ void moveleft (void *, void *, long);
 
 void moveright (void *, void *, long);
 
-void fillchar (void *, long, char);
-
 void clearbytes (void *, long);
 
 boolean loadfromhandle (Handle, long *, long, void *);

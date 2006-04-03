@@ -536,8 +536,6 @@ void setupconfig (tyioaconfigrecord *); /*every IOA component must define this r
 
 	
 	
-void IOAfillchar (void *, long, char);
-
 void IOAclearbytes (void *, long);
 
 short IOAmakemultiple (short, short);

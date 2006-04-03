@@ -1165,11 +1165,11 @@ void filledstring (byte ch, short ct, bigstring bs) {
 	
 	setstringlength (bs, ct);
 
-	fillchar (stringbaseaddress (bs), (long) ct, ch);
+	memset (stringbaseaddress (bs), ch, (long) ct);
 	/*
 	bs [0] = ct;
 
-	fillchar (&bs [1], (long) ct, ch);
+	memset (&bs [1], ch, (long) ct);
 	*/
 	} /*filledstring*/
 

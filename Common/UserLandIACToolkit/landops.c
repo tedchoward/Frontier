@@ -81,20 +81,6 @@ landmoveleft (void *psource, void *pdest, long length) {
 		}
 	} /*landmoveleft*/
 	
-	
-static landfillchar (void *pfill, long ctfill, byte chfill) {
-	
-	/*
-	do a mass memory fill -- copy ctfill chfills at pfill.
-	*/
-	
-	register byte *p = pfill;
-	register long ct = ctfill;
-	register byte ch = chfill;
-	
-	while (ct--) *p++ = ch; /*tight loop*/
-	} /*landfillchar*/
-	
 
 landclearbytes (void *pclear, long ctclear) {
 	
@@ -102,7 +88,7 @@ landclearbytes (void *pclear, long ctclear) {
 	fill memory with 0's.
 	*/
 	
-	landfillchar (pclear, ctclear, (byte) 0);
+	memset (pclear, 0, ctclear);
 	} /*landclearbytes*/
 	
 
