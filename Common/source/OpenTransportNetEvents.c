@@ -2458,16 +2458,12 @@ static boolean fwsbackgroundtask (void) {
 	return (fl);
 	}/*fwsbackgroundtask*/
 
-
-static boolean fwsNetEventLaunch (struct hostData *data) {
+static boolean fwsNetEventLaunch (int * dummy) {
 
 	/*
-	Initialize the NetEvents system
-	
-	5.0.2b5 dmb: added hostData parameter and GUSI support to handle threading
+	Initialize the NetEvents system	
 	*/
 	
-	#pragma unused (data)
 	
 	if (!frontierWinSockLoaded) {
 		

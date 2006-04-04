@@ -684,7 +684,7 @@ drawiconsequence (Rect r, short firsticon, short lasticon, bigstring bs) {
 		
 		rarrow.left++; /*it appears to need it*/
 				
-		DrawThemePopupArrow (&rarrow, kThemeArrowRight, kThemeArrow9pt, kThemeStateActive, NULL, NULL);
+		DrawThemePopupArrow (&rarrow, kThemeArrowRight, kThemeArrow9pt, kThemeStateActive, NULL, (UInt32) NULL);
 		} /*MyThemeButtonDrawCallback*/
 
 #endif

@@ -193,8 +193,6 @@ extern boolean processkill (hdlprocessrecord);
 
 extern void processinvalidglobals (WindowPtr);
 
-extern void processinvalidoutline (struct tyoutlinerecord **);
-
 extern boolean abort1shotprocess (void);
 
 extern void killdependentprocesses (long);

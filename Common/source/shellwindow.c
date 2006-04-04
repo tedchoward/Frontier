@@ -2988,7 +2988,7 @@ void closewindowfile (WindowPtr wptr) {
 		if ((**h).flneversaved)
 			deletefile (&fspec);
 		
-		flushvolumechanges (&fspec, NULL);
+		flushvolumechanges (&fspec, (short) NULL);
 		}
 	
 	(**h).fnum = 0; /*indicate no file open*/

@@ -171,7 +171,7 @@ boolean displaypopupicon (Rect r, boolean flenabled) {
 		
 		r.bottom = r.bottom + 4;
 	
-		DrawThemePopupArrow (&r, kThemeArrowDown, kThemeArrow9pt, themestate, NULL, NULL);
+		DrawThemePopupArrow (&r, kThemeArrowDown, kThemeArrow9pt, themestate, NULL, (UInt32) NULL);
 		
 		return (true);
 	
