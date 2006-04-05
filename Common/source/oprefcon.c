@@ -94,9 +94,13 @@ boolean opgetrefcon (hdlheadrecord hnode, ptrvoid pdata, long lendata) {
 	with zeros).  many callers expect this.
 	*/
 	
-	Handle hrefcon = (**hnode).hrefcon;
+	Handle hrefcon;
 	long lenrefcon;
-	
+
+	// kw - 2006-01-19 - after crash - was "Handle hrefcon = (**hnode).hrefcon;"
+	if (hnode != nil)
+		hrefcon = (**hnode).hrefcon;
+
 	lenrefcon = gethandlesize (hrefcon); /*handles nil*/
 	
 	if (lenrefcon < lendata) /*not enough data, make sure it's all zero*/
