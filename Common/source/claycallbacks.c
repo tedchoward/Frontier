@@ -594,7 +594,8 @@ typedef struct tycallbackinfo {
 
 
 static boolean clayfolderloopvisit (bigstring bsname, hdlhashnode hnode, tyvaluerecord val, ptrvoid refcon) {
-	
+#pragma unused(hnode, val)
+
 	/*
 	5.0a3 dmb: set flmayaffectdisplay for the parent table
 
@@ -618,7 +619,8 @@ static boolean clayfolderloopvisit (bigstring bsname, hdlhashnode hnode, tyvalue
 
 
 boolean clayfolderloop (const tybrowserspec *pfs, boolean flreverse, tyclayfileloopcallback filecallback, long refcon) {
-	
+#pragma unused(flreverse)
+
 	/*
 	5.0.2b21 dmb: set hdatafield according to pfs; no more databasedata refs
 	*/

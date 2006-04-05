@@ -524,6 +524,7 @@ static boolean dbclosefile (hdlodbrecord hodb) {
 
 
 boolean dbcloseallfiles (long refcon) {
+#pragma unused (refcon)
 
 	return (true);
 	} /*dbcloseallfiles*/
@@ -930,7 +931,8 @@ static boolean dbgetmoddateverb (hdltreenode hparam1, tyvaluerecord *vreturned) 
 
 
 static boolean dbfunctionvalue (short token, hdltreenode hparam1, tyvaluerecord *vreturned, bigstring bserror) {
-	
+#pragma unused (bserror)
+
 	/*
 	4.1b4 dmb: new verb set based on odbEngine
 	

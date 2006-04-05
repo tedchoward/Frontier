@@ -372,8 +372,16 @@ static void drawbuttonbackground (Rect r) {
 		} tybuttoninfo, *ptrbuttoninfo, **hdlbuttoninfo;
 
 
-	static void MyThemeButtonDrawCallback (const Rect *bounds, ThemeButtonKind kind, const ThemeButtonDrawInfo *info,
-		UInt32 userData, SInt16 depth, Boolean isColorDev) {
+static void
+MyThemeButtonDrawCallback (
+		const Rect					*bounds,
+		ThemeButtonKind				 kind,
+		const ThemeButtonDrawInfo	*info,
+		UInt32						 userData,
+		SInt16						 depth,
+		Boolean						 isColorDev)
+{
+#pragma unused (kind, info, depth, isColorDev)
 		
 		/*
 		7.0b48 PBS: draw the label for a popup menu.
@@ -416,9 +424,9 @@ void shelldrawbutton (short ix, boolean flpressed) {
 		tybuttoninfo buttoninfo;
 		boolean flenabled = buttonenabled (ix);
 		Handle h;
-		
+
 		copystring (bs, buttoninfo.bslabel);
-		
+
 		buttoninfo.flenabled = flenabled;
 		
 		drawupp = NewThemeButtonDrawUPP (MyThemeButtonDrawCallback);
@@ -723,6 +731,7 @@ void shellbuttongetoptimalwidth (short *width) {
 
 
 void shellbuttonadjustcursor (Point pt) {
+#pragma unused (pt)
 
 	setcursortype (cursorisarrow); /*no special button cursor, 4/23/90*/
 	} /*shellbuttonadjustcursor*/

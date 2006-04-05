@@ -504,7 +504,7 @@ static void meactivatemenus (hdlmenubarstack hstack, boolean flactivate) {
 	//		continue;
 
 		if (item.idmenu != -1)
-		
+		{
 			if (flactivate) {
 				
 				if (item.flhierarchic)
@@ -513,7 +513,8 @@ static void meactivatemenus (hdlmenubarstack hstack, boolean flactivate) {
 			else
 				meremovemenu (&item);
 		}
-	
+	}
+
 	(**hs).flactive = flactivate;
 	
 	medirtymenubar ();
@@ -1951,7 +1952,8 @@ boolean memenu (short idmenu, short ixmenu) {
 
 
 static unsigned char menullchar (hdlheadrecord hn) {
-	
+#pragma unused (hn)
+
 	return (chnul);
 	} /*menullchar*/
 
