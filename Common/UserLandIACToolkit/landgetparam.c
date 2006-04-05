@@ -138,29 +138,35 @@ pascal boolean landgetintparam (hdlverbrecord hverb, typaramkeyword key, short *
 pascal boolean landgetlongparam (hdlverbrecord hverb, typaramkeyword key, long *x) {
 	
 	typaramrecord param;
-	
+	Handle			 theData;
+	boolean			 done = false;
+
 	if (!landgetparam (hverb, key, longtype, &param)) 
 		return (false);
 
-	#if TARGET_API_MAC_CARBON == 1 /*PBS 03/14/02: AE OS X fix.*/
-	
-		{		
-		Handle h;
-		
-		copydatahandle (&(param.desc), &h);
-		
-		*x = **(long **) h;
-		}
-	
-	#else
-	
-		*x = **(long **) param.desc.dataHandle;
-	
-	#endif
-	
+	/* kw - 2006-02-19 --- don't dereference the nil handle... */
+#if TARGET_API_MAC_CARBON == 1 /*PBS 03/14/02: AE OS X fix.*/
+
+	if (copydatahandle (&(param.desc), &theData))
+	{
+		lockhandle(theData);
+
+		*x = **(long **) theData;
+
+		unlockhandle(theData);
+
+		disposehandle (theData);
+
+		done = true;
+	}
+#else
+	done = true;
+	*x = **(long **) param.desc.dataHandle;
+#endif
+
 	landdisposeparamrecord (&param);
 	
-	return (true);
+	return (done);
 	} /*landgetlongparam*/
 	
 
