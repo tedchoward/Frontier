@@ -222,7 +222,8 @@ static void wplinkwindowinfo (void) {
 
 
 boolean wpverbgettypestring (hdlexternalvariable hvariable, bigstring bs) {
-	
+#pragma unused (hvariable)
+
 	getstringlist (wpstringlist, wptypestring, bs);
 	
 	return (true);
@@ -243,7 +244,7 @@ static boolean newwpvariable (boolean flinmemory, boolean flpacked, long variabl
 
 
 static boolean wpdisposevariable (hdlexternalvariable hvariable, boolean fldisk) {
-	
+#pragma unused (fldisk)
 	register hdlwpvariable hv = (hdlwpvariable) hvariable;
 	register long vdata = (**hv).variabledata;
 	
@@ -1809,7 +1810,8 @@ static boolean dosearch (boolean flfromtop, boolean flwrap, boolean *fltempload)
 
 
 boolean wpverbfind (hdlexternalvariable hvariable, boolean *flzoom) {
-	
+#pragma unused(flzoom)
+
 	register hdlwpvariable hv = (hdlwpvariable) hvariable;
 	register hdlwprecord hwp;
 	register boolean fl;

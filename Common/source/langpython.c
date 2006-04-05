@@ -125,6 +125,7 @@ boolean langrunpythonscript (hdltreenode hp1, tyvaluerecord *v) {
 #else
 
 boolean langrunpythonscript (hdltreenode hp1, tyvaluerecord *v) {
+#pragma unused(hp1, v)
 
 	langerror (unimplementedverberror);
 

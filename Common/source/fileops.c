@@ -2242,13 +2242,13 @@ boolean volumecreated (const tyfilespec *fs, unsigned long *createdate) {
 
 
 boolean lockvolume (const tyfilespec *fs, boolean fllock) {
-#if TARGET_API_MAC_CARBON
+#ifdef MACVERSION
+#if TARGET_API_MAC_CARBON == 1
 #pragma unused (fs, fllock)
 	//Code change by Timothy Paustian Sunday, June 25, 2000 9:19:49 PM
 	//can't lock volumes in carbon.
 	return false;
-#endif
-#if (defined(MACVERSION) && TARGET_API_MAC_CARBON != 1)
+#else
 	short vnum;
 	QHdrPtr vqtop;
 	QElemPtr vqelem;
@@ -2281,6 +2281,7 @@ boolean lockvolume (const tyfilespec *fs, boolean fllock) {
 		vqelem = (*vqelem).qLink;
 		
 		}
+#endif
 #endif
 #ifdef WIN95VERSION
 	return (false);

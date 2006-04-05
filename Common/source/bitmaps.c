@@ -163,7 +163,8 @@ static boolean openworld (Rect r, WindowPtr w) {
 
 
 static void closeworld (WindowPtr w) {
-	
+#pragma unused(w)
+
 	/*
 	2/8/91 dmb: experiments show that we get better performance tossing 
 	the gworld every time that we do using updategworld on the same one.
@@ -200,7 +201,8 @@ static void initworld (void) {
 
 
 static boolean openmono (Rect r, WindowPtr w) {
-	
+#pragma unused(w)
+
 	register short nrowbytes;
 	register long nboxbytes;
 	register long sizehandle;
@@ -362,6 +364,7 @@ static boolean trapimplemented (short trapnum) {
 	//Code change by Timothy Paustian Sunday, May 7, 2000 10:56:54 PM
 	//Changed to Opaque call for Carbon
 	#if ACCESSOR_CALLS_ARE_FUNCTIONS == 1
+	#pragma unused(trapnum)
 	//always return false for traps since this not allowed in carbon
 	//This really is not needed but what the heck
 	return false;

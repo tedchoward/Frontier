@@ -1972,7 +1972,8 @@ boolean opcopyoutlinerecord (hdloutlinerecord horig, hdloutlinerecord *hcopy) {
 
 
 static boolean opclearmarkvisit (hdlheadrecord hnode, ptrvoid refcon) {
-	
+#pragma unused (refcon)
+
 	register hdlheadrecord h = hnode;
 	
 	if ((**h).flmarked) {
@@ -2068,7 +2069,8 @@ void opsetmark (hdlheadrecord hnode, boolean fl) {
 
 
 static boolean opsetbarcursorvisit (hdlheadrecord hnode, ptrvoid refcon) {
-	
+#pragma unused (refcon)
+
 	(**outlinedata).hbarcursor = hnode; /*move barcursor here*/
 	
 	return (false); /*this is the only marked node*/
@@ -2116,7 +2118,8 @@ static hdlheadrecord hfirstscrap, hlastscrap; /*for copying marked structures*/
 	
 
 static boolean opcopymarkedvisit (hdlheadrecord hnode, ptrvoid refcon) {
-	
+#pragma unused (refcon)
+
 	/*
 	10/3/92 dmb: set levels so that all copies are summits
 	*/
@@ -2153,11 +2156,17 @@ static boolean opcopymarkedvisit (hdlheadrecord hnode, ptrvoid refcon) {
 	} /*opcopymarkedvisit*/
 	
 
-static boolean optrytextcommand (boolean (*editroutine) (void), boolean flneedselection, boolean flchanging) {
+static boolean
+optrytextcommand (
+		boolean (*editroutine) (void),
+		boolean flneedselection,
+		boolean flchanging)
+{
+#pragma unused (flchanging)
 
 	register hdloutlinerecord ho = outlinedata;
 	long startsel, endsel;
-	
+
 	if (!(**ho).fltextmode)
 		return (false);
 	
@@ -2383,7 +2392,8 @@ boolean opdeletenode (hdlheadrecord hnode) {
 
 
 static boolean opdeletenodevisit (hdlheadrecord hnode, ptrvoid refcon) {
-	
+#pragma unused (refcon)
+
 	return (opdeletenode (hnode));
 	} /*opdeletenodevisit*/
 

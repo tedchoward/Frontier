@@ -369,6 +369,9 @@ boolean ismousewheelclick (void) {
 
 
 static short translatemouseeventtype (long eventwhat) {
+#ifdef MACVERSION
+#	pragma unused (eventwhat)
+#endif
 
 #ifdef WIN95VERSION
 	switch (eventwhat) {

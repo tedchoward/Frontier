@@ -2025,7 +2025,8 @@ static boolean opgetcodeverb (hdltreenode hparam1, boolean flosacode, tyvaluerec
 
 
 static boolean opgetsourceverb (hdltreenode hparam1, boolean flosacode, tyvaluerecord *v) {
-	
+#pragma unused(flosacode)
+
 	register hdltreenode hp1 = hparam1;
 	hdlhashtable htable;
 	bigstring bsname;
@@ -2109,6 +2110,8 @@ static boolean opstartprofileverb (hdltreenode hparam1, tyvaluerecord *v) {
 
 
 static boolean convertprofiletoticksvisit (hdlhashnode hnode, ptrvoid refcon) {
+#pragma unused (refcon)
+
 	tyvaluerecord * val = &(**hnode).val;
 	
 	(*val).data.longvalue = ( ( (*val).data.longvalue * 3 ) / 50 );
@@ -2483,6 +2486,7 @@ boolean opgetexpansionstateverb (tyvaluerecord *v) {
 
 
 boolean opsetexpansionstateverb (tyvaluerecord *vlist, tyvaluerecord *v) {
+#pragma unused(v)
 
 	/*
 	6.2a6 AR: Takes the output of op.getExpansionState and sets the outline state accordingly.
@@ -2862,7 +2866,8 @@ static boolean opvisitallvisit (hdlheadrecord hnode, ptrvoid bsscriptname) {
 
 
 static boolean opvisitallverb (hdltreenode hparam1, tyvaluerecord *v, bigstring bserror) {
-	
+#pragma unused (bserror)
+
 	/*
 	7.0b17 PBS: visit every headline, running the specified callback script.
 	*/
@@ -3858,11 +3863,11 @@ static boolean opfunctionvalue (short token, hdltreenode hparam1, tyvaluerecord 
 			//if (!langexternalgetexternalparam (hparam1, 1, &id, (hdlexternalvariable *) &hv) || (id != idoutlineprocessor)) {
 			if (!floutline) {
 					
-				bigstring bserror;
+				bigstring lbserror;
 				
-				getstringlist (operrorlist, namenotoutlineerror, bserror);
+				getstringlist (operrorlist, namenotoutlineerror, lbserror);
 				
-				langerrormessage (bserror);
+				langerrormessage (lbserror);
 				
 				return (false);
 				}
@@ -3906,11 +3911,11 @@ static boolean opfunctionvalue (short token, hdltreenode hparam1, tyvaluerecord 
 						
 			else {
 			
-				register hdloutlinerecord ho = outlinedata;
+				register hdloutlinerecord lho = outlinedata;
 					
-				(**ho).fldirty = false; /*the outline structure is not dirty*/
+				(**lho).fldirty = false; /*the outline structure is not dirty*/
 	
-				(**ho).flrecentlychanged = false; /*in case someone is maintaining a parallel structure*/
+				(**lho).flrecentlychanged = false; /*in case someone is maintaining a parallel structure*/
 				} /*else*/
 						
 			fl = true;
@@ -3939,15 +3944,15 @@ static boolean opfunctionvalue (short token, hdltreenode hparam1, tyvaluerecord 
 		
 		case getselectedsuboutlinesfunc: { /*7.0b18 PBS: get selected headlines as an outline*/
 			
-			hdloutlinerecord ho;
+			hdloutlinerecord lho;
 			
 			flnextparamislast = true;
 			
 			/*Get outline parameter.*/
 	
-			if (getoutlinevalue (hparam1, 1, &ho)) /*First param is an outline to add to*/
+			if (getoutlinevalue (hparam1, 1, &lho)) /*First param is an outline to add to*/
 				
-				fl = opgetselectedsuboutlinesverb (ho);
+				fl = opgetselectedsuboutlinesverb (lho);
 			
 			setbooleanvalue (fl, vreturned);
 
@@ -3956,17 +3961,17 @@ static boolean opfunctionvalue (short token, hdltreenode hparam1, tyvaluerecord 
 		
 		case sethtmlformattingfunc: { /*7.0b28: turn on and off HTML formatting.*/
 
-			boolean fl = false;
+			boolean lfl = false;
 			boolean flchanged = false;
 
 			flnextparamislast = true;
 
-			if (!getbooleanvalue (hparam1, 1, &fl))
+			if (!getbooleanvalue (hparam1, 1, &lfl))
 				break;
 			
 			if ((**outlinedata).outlinetype == outlineisoutline) { /*outlines only*/
 				
-				if ((**outlinedata).flhtml != fl) { /*Don't bother if it's already set as requested.*/
+				if ((**outlinedata).flhtml != lfl) { /*Don't bother if it's already set as requested.*/
 					
 					long startsel, endsel;
 
@@ -3979,7 +3984,7 @@ static boolean opfunctionvalue (short token, hdltreenode hparam1, tyvaluerecord 
 						opunloadeditbuffer ();
 						}
 
-					(**outlinedata).flhtml = fl;
+					(**outlinedata).flhtml = lfl;
 
 					opdirtyview ();
 
@@ -3998,7 +4003,7 @@ static boolean opfunctionvalue (short token, hdltreenode hparam1, tyvaluerecord 
 					} /*if*/
 				} /*if*/
 
-			fl = setbooleanvalue (flchanged, vreturned);
+			lfl = setbooleanvalue (flchanged, vreturned);
 
 			break;
 			}
@@ -4197,7 +4202,8 @@ boolean opverbclose (void) {
 
 
 boolean opverbfind (hdlexternalvariable hvariable, boolean *flzoom) {
-	
+#pragma unused(flzoom)
+
 	register hdloutlinevariable hv = (hdloutlinevariable) hvariable;
 	register hdloutlinerecord ho;
 	register boolean fl;

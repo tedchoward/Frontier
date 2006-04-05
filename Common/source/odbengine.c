@@ -231,7 +231,8 @@ static boolean ccloadsystemtable (hdlcancoonrecord hcancoon, dbaddress adr) {
 
 
 static boolean odberrorroutine (bigstring bs, ptrvoid refcon) {
-	
+#pragma unused (refcon)
+
 	copystring (bs, bserror);
 	
 	return (false); /*consume the error*/

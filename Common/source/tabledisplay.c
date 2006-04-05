@@ -419,7 +419,8 @@ static void tablegetcellrect (hdlheadrecord hnode, const Rect *rrow, short col, 
 static Rect titlerect;
 
 static void tableinverttitle (boolean flinrectnow) {
-	
+#pragma unused (flinrectnow)
+
 	invertrect (titlerect);
 	} /*tableinverttitle*/
 
@@ -458,9 +459,9 @@ boolean tabletitleclick (Point pt) {
 		if (trackicon (titlerect, &tableinverttitle)) {
 			
 			hdlhashtable ht;
-			bigstring bs;
+			bigstring lbs;
 			
-			tablegetcursorinfo (&ht, bs, nil, nil);
+			tablegetcursorinfo (&ht, lbs, nil, nil);
 			
 			tablesetsortorder (ht,  col);
 			}
@@ -844,7 +845,8 @@ static boolean tablegetmaxcolwidthvisit (hdlheadrecord hnode, short col) {
 	
 
 static boolean tablegetmaxwidthvisit (hdlheadrecord hnode, ptrvoid refcon) {
-	
+#pragma unused (refcon)
+
 	short col;
 	
 	if ((**hnode).flexpanded) {

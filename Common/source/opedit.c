@@ -119,7 +119,8 @@ boolean opdefaultsetwpedittext (hdlheadrecord hnode) {
 
 
 boolean opdefaultgetwpedittext (hdlheadrecord hnode, boolean flunload) {
-	
+#pragma unused (flunload)
+
 	/*
 	2/7/97 dmb: we are called with the wp globals set up. 
 	our job it to extract the current text from the wp.
@@ -305,7 +306,8 @@ void oppostedit (void) {
 
 
 static pascal void opedittrackclick (hdlwprecord wp, Point pt) {
-	
+#pragma unused(wp)
+
 	/*
 	5.0a3 dmb: check outlinerect, now windowinfo's contentrect (via shellcheckautoscroll)
 	*/

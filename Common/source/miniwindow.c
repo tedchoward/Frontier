@@ -421,7 +421,8 @@ static boolean minidrawmsg (void) {
 
 
 static boolean minimessage (bigstring bs, boolean flbackgroundmsg) {
-	
+#pragma unused (flbackgroundmsg)
+
 	copystring (bs, (**minidata).bsmsg);
 	
 	return (minidrawmsg ());

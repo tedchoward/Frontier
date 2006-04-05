@@ -1855,13 +1855,16 @@ static boolean releasesemaphorevisit (hdlhashnode hnode, ptrvoid idthread) {
 		}
 	
 	return (true); // continue traversal
-	} /*releasesemaphorevisit*/
+} /*releasesemaphorevisit*/
 
 
-boolean langreleasesemaphores (hdlprocessrecord xxxhp) {
-	
+boolean
+langreleasesemaphores (hdlprocessrecord xxxhp)
+{
+#pragma unused(xxxhp)
+
 	pushhashtable (semaphoretable); // for visit's hashdelete
-	
+
 	hashtablevisit (semaphoretable, &releasesemaphorevisit, (ptrvoid) (**getcurrentthreadglobals()).idthread);
 	
 	pophashtable ();
@@ -1932,49 +1935,50 @@ static boolean langfunctionvalue (short token, hdltreenode hparam1, tyvaluerecor
 			default:
 				return (false);
 			}
-		}
-	
+	}
+
 	setbooleanvalue (false, v); /*by default, lang functions return false*/
-	
-	switch (token) {
-		
-		case killscriptfunc: {
+
+	switch (token)
+	{
+		case killscriptfunc:
+		{
 			tyvaluerecord val;
-			boolean fl;
-			
+			boolean lfl;
+
 			flnextparamislast = true;
-			
+
 			if (!getparamvalue (hparam1, 1, &val))
 				return (false);
-			
-			if (val.valuetype == longvaluetype) {
-				
+
+			if (val.valuetype == longvaluetype)
+			{
 				langgetmiscstring (unknownstring, bs);
-				
+
 				setoserrorparam (bs);
-				
-				fl = oserror (val.data.longvalue);
-				}
-			else {
-				
+
+				lfl = oserror (val.data.longvalue);
+			}
+			else
+			{
 				if (!coercetostring (&val))
 					return (false);
-				
+
 				pullstringvalue (&val, bs);
-				
-				fl = langerrormessage (bs);
-				}
-			
+
+				lfl = langerrormessage (bs);
+			}
+
 			/*
 			if (!getstringvalue (hparam1, 1, bs))
 				return (false);
 			*/
-			
-			(*v).data.flvalue = fl;
-			
+
+			(*v).data.flvalue = lfl;
+
 			return (false);
-			}
-		
+		}
+
 		case newfunc:
 			return (newvaluefunc (hparam1, v));
 		
@@ -3745,7 +3749,7 @@ static boolean langfunctionvalue (short token, hdltreenode hparam1, tyvaluerecor
 		
 			#if defined(MACVERSION) && __POWERPC__
 				long stream = nil;
-				bigstring bs;
+				bigstring lbs;
 				
 				if (langgetparamcount (hparam1) > 0) {
 				
@@ -3755,10 +3759,10 @@ static boolean langfunctionvalue (short token, hdltreenode hparam1, tyvaluerecor
 						return (false);
 					}
 				
-				if (!fwsNetEventGetStats (stream, bs))
+				if (!fwsNetEventGetStats (stream, lbs))
 					return (false);
 					
-				return (setstringvalue (bs, v));
+				return (setstringvalue (lbs, v));
 			#else
 				langerror (unimplementedverberror);
 
