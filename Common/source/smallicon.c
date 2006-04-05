@@ -40,7 +40,6 @@
 
 
 
-
 static hdlsmalliconbits hmiscbits;
 //static hdlsmalliconbits hleaderbits;
 
@@ -171,8 +170,8 @@ boolean displaypopupicon (Rect r, boolean flenabled) {
 		
 		r.bottom = r.bottom + 4;
 	
-		DrawThemePopupArrow (&r, kThemeArrowDown, kThemeArrow9pt, themestate, NULL, (UInt32) NULL);
-		
+		DrawThemePopupArrow (&r, kThemeArrowDown, kThemeArrow9pt, themestate, NULL, 0);
+
 		return (true);
 	
 	#else
@@ -372,5 +371,5 @@ boolean initsmallicons (void) {
 	
 	return (true);
 	} /*initsmallicons*/
-	
-	
+
+

@@ -251,7 +251,8 @@ static boolean shelldefaultgettargetdata (short id) {
 
 
 static boolean shelldefaultmsgroutine (bigstring bs, boolean flbackgroundmsg) {
-	
+#pragma unused (flbackgroundmsg)
+
 	shellsetwindowmessage (shellwindowinfo, bs);
 	
 	drawwindowmessage (shellwindow);
@@ -481,27 +482,27 @@ void shellloadbuttonlists (void) {
 	} /*shellloadbuttonlists*/
 	
 		
-boolean shellgetconfig (short resnum, tyconfigrecord *config) {
+boolean shellgetconfig (short resnum, tyconfigrecord *pconfig) {
 	
 	short ix = 0;
 	
 	if (!shellfindcallbacks (resnum, &ix))
 		return (false);
 		
-	*config = globalsarray [ix].config;
+	*pconfig = globalsarray [ix].config;
 	
 	return (true);
 	} /*shellgetconfig*/
 	
 	
-boolean shellsetconfig (short resnum, tyconfigrecord config) {
+boolean shellsetconfig (short resnum, tyconfigrecord pconfig) {
 	
 	short ix = 0;
 	
 	if (!shellfindcallbacks (resnum, &ix))
 		return (false);
 		
-	globalsarray [ix].config = config;
+	globalsarray [ix].config = pconfig;
 	
 	return (true);
 	} /*shellsetconfig*/

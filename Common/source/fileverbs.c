@@ -745,19 +745,19 @@ static boolean filedialogverb (tysfverb sfverb, hdltreenode hparam1, tyvaluereco
 		
 		short ctconsumed = 3;
 		short ctpositional = 3;
-		tyvaluerecord val;
+		tyvaluerecord lval;
 
 		if (!gettypelistvalue (hparam1, 3, &filetypes, &typelist))
 			return (false);
 			
 		flnextparamislast = true;
 		
-		setostypevalue (oscreator, &val);
+		setostypevalue (oscreator, &lval);
 
-		if (!getoptionalparamvalue (hparam1, &ctconsumed, &ctpositional, "\x07""creator", &val))
+		if (!getoptionalparamvalue (hparam1, &ctconsumed, &ctpositional, "\x07""creator", &lval))
 			return (false);
 	
-		oscreator = val.data.ostypevalue;
+		oscreator = lval.data.ostypevalue;
 
 		}
 	

@@ -1120,7 +1120,8 @@ Handle tryerrorstack = nil;  //This code is left in so process.c, etc do not hav
 #endif
 
 static boolean langtryerror (bigstring bsmsg, ptrvoid refcon) {
-	
+#pragma unused (refcon)
+
 	/*
 	6/25/92 dmb: when an error occurs during a try block, we stash it in 
 	the tryerror handle.  it is later placed in the stack frame of the 

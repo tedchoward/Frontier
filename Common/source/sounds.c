@@ -91,7 +91,7 @@ boolean dosound (short duration, short amplitude, short frequency) {
 
 	SndChannelPtr channel;
 	SndCommand cmd;
-	long time;
+	long ltime;
 	float note;
 	OSErr err;
 	
@@ -107,16 +107,16 @@ boolean dosound (short duration, short amplitude, short frequency) {
 	cmd.param2 = 0;
 	err = SndDoCommand (channel, &cmd, false);
 	
-	time = duration * (2000/60);
+	ltime = duration * (2000/60);
 	
-	time = min (infinity, time);
+	ltime = min (infinity, ltime);
 	
 	note = (frequency / 129.0) / 69;
 	
 	note = 69 + 12.0 * (note - 1);
 	
 	cmd.cmd = freqDurationCmd;
-	cmd.param1 = time;
+	cmd.param1 = ltime;
 	cmd.param2 = note;
 	err = SndDoCommand (channel, &cmd, false);
 	
@@ -142,10 +142,10 @@ boolean dosound (short duration, short amplitude, short frequency) {
 #ifdef WIN95VERSION
 	//NOTE:  Beep does not take amplitude.  
 	//       Also the parameters are ignored on Windows 95/98
-	long time;
+	long ltime;
 
-	time = (duration * 1000L) / 60L;
-	return (Beep (frequency, time));
+	ltime = (duration * 1000L) / 60L;
+	return (Beep (frequency, ltime));
 //	return (false); // *** WIN95 not implemented
 #endif
 	} /*dosound*/

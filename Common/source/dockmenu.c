@@ -403,10 +403,7 @@ static void dockmenuruncommand (hdlmenurecord hm, short itemhit) {
 #if TARGET_API_MAC_CARBON == 1
 
 pascal OSStatus dockcommandhandler (EventHandlerCallRef nextHandler, EventRef theEvent, void* userData) {
-	
-	#pragma unused(nextHandler) /*happy compiler*/
-	#pragma unused(theEvent)
-	#pragma unused(userData)
+#pragma unused(nextHandler, theEvent, userData)	/*happy compiler*/
 
 	HICommand commandstruct;
 	UInt32 commandid;

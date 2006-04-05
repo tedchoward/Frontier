@@ -278,25 +278,30 @@ void DoErrorAlert(OSStatus status, CFStringRef errorFormatString)
 
     if ((status != noErr) && (status != 2))           
     {
-        formatStr =  CFCopyLocalizedString (errorFormatString, NULL);	
-	if (formatStr != NULL)
-        {
-            printErrorMsg = CFStringCreateWithFormat(        
-                       NULL, NULL, 
-                       formatStr, status);
-            if (printErrorMsg != NULL)
-            {
-                if (CFStringGetPascalString (printErrorMsg,    
-                              stringBuf, sizeof(stringBuf), 
-                              GetApplicationTextEncoding())) {
-                              
-                    StandardAlert(kAlertStopAlert, stringBuf, NULL, NULL, &alertItemHit);
-                }
-                CFRelease (printErrorMsg);                     
-            }
-           CFRelease (formatStr);                             
-        }
-    }
+		formatStr =  CFCopyLocalizedString (errorFormatString, NULL);	
+		if (formatStr != NULL)
+		{
+			printErrorMsg = CFStringCreateWithFormat(
+													 NULL,
+													 NULL,
+													 formatStr,
+													 status);
+			if (printErrorMsg != NULL)
+			{
+				if (CFStringGetPascalString (
+											 printErrorMsg,
+											 stringBuf,
+											 sizeof(stringBuf),
+											 GetApplicationTextEncoding()))
+				{
+					StandardAlert(kAlertStopAlert, stringBuf, NULL, NULL, &alertItemHit);
+				}
+				CFRelease (printErrorMsg);                     
+			}
+			CFRelease (formatStr);                             
+		}
+	}
 }
 	
 #endif
+

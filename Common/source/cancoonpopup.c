@@ -56,7 +56,8 @@ typedef struct agentpopupinfo {
 
 
 static boolean ccagentpopupvisit (bigstring bsname, hdlhashnode hnode, tyvaluerecord val, ptrvoid refcon) {
-	
+#pragma unused (hnode)
+
 	hdltreenode hcode;
 	ptragentpopupinfo info = (ptragentpopupinfo) refcon;
 	
@@ -169,7 +170,8 @@ static boolean ccagentpopupselect (hdlmenu hmenu, short itemselected) {
 
 
 boolean ccagentpopuphit (Rect rpopup, Point pt) {
-	
+#pragma unused (pt)
+
 	return (popupmenuhit (rpopup, true, &ccfillagentpopup, &ccagentpopupselect));
 	} /*ccagentpopuphit*/
 

@@ -138,7 +138,8 @@ static short langipcresfile;
 
 
 boolean langipcerrorroutine (bigstring bs, ptrvoid refcon) {
-	
+#pragma unused (refcon)
+
 	/*
 	if an error occurs while processing a runscript verb, we want to 
 	return the text that would normally go into the langerror window as 
@@ -2033,7 +2034,8 @@ static boolean getipcaddressvalue (hdltreenode hparam1, short pnum, tyipcaddress
 
 
 boolean langipcgetaddressvalue (hdltreenode hparam1, tyvaluerecord *vreturned) {
-	
+#pragma unused (hparam1)
+
 	return (setbooleanvalue (false, vreturned));
 	} /*langipcgetaddressvalue*/
 
@@ -2705,7 +2707,8 @@ boolean langipcapprunning (hdltreenode hparam1, tyvaluerecord *vreturned) {
 */
 
 static boolean langipcgetparamvisit (bigstring bs, hdlhashnode hnode, tyvaluerecord val, ptrvoid refcon) {
-	
+#pragma unused (hnode)
+
 	hdlverbrecord hv = (hdlverbrecord) refcon;
 	OSType key;
 	
@@ -2867,15 +2870,15 @@ static boolean langipcbuildmessage (hdltreenode hparam1, short paramnum, tyipcme
 		tyvaluerecord valparam;
 		tyvaluerecord valkey;
 		hdlhashtable htable;
-		boolean fl;
+		boolean lfl;
 		
 		flparamerrorenabled = false; /*no error dialog on getparamvalue call*/
 		
-		fl = getparamvalue (hp1, pnum++, &valkey);
+		lfl = getparamvalue (hp1, pnum++, &valkey);
 		
 		flparamerrorenabled = true; /*restore*/
 		
-		if (!fl) { /*didn't get another key*/
+		if (!lfl) { /*didn't get another key*/
 			
 			if (fllangerror) /*was a bad parameter; didn't run out*/
 				goto error;
@@ -2904,14 +2907,14 @@ static boolean langipcbuildmessage (hdltreenode hparam1, short paramnum, tyipcme
 				
 				flinhibitnilcoercion = true;
 				
-				fl = getparamvalue (hp1, pnum++, &valparam);
+				lfl = getparamvalue (hp1, pnum++, &valparam);
 				
 				flinhibitnilcoercion = false;
 				
 				if (fllangerror) /*wasn't just nil coercion failure*/
 					goto error;
 				
-				if (!fl) /*must be nil coercion error*/
+				if (!lfl) /*must be nil coercion error*/
 					continue;
 				
 				if (!langipcpushparam (&valparam, valkey.data.ostypevalue, hv))
@@ -3327,7 +3330,8 @@ static boolean langipcggettableparam (hdltreenode hparam1, short pnum, boolean f
 
 
 boolean langipccomplexmessage (hdltreenode hparam1, tyvaluerecord *vreturned) {
-	
+#pragma unused(vreturned)
+
 	hdlhashtable htable;
 	tyipcaddress ipcaddress;
 	hdlverbrecord hverb;
@@ -3343,7 +3347,8 @@ boolean langipccomplexmessage (hdltreenode hparam1, tyvaluerecord *vreturned) {
 
 
 boolean langipctablemessage (hdltreenode hparam1, tyvaluerecord *vreturned) {
-	
+#pragma unused(vreturned)
+
 	/*
 	5.1.5 dmb: use tablesortedinversesearch for guest databases
 	*/
@@ -3381,7 +3386,8 @@ static langerrormessagecallback fastsavecallback;
 
 
 static boolean langipcfasterror (bigstring bs, ptrvoid refcon) {
-	
+#pragma unused (refcon)
+
 	long n;
 	OSErr err;
 	
@@ -3985,7 +3991,8 @@ boolean langipckernelfunction (hdlhashtable htable, bigstring bsverb, hdltreenod
 #if !flruntime
 
 static pascal OSErr handleshowmenunode (const AppleEvent *event, AppleEvent *reply, long refcon) {
-	
+#pragma unused (reply, refcon)
+
 	/*
 	4.1b14 dmb: added outline parameter; can't count on outline data not changing
 	*/
@@ -4064,7 +4071,8 @@ boolean langipcnoop (void) {
 
 
 static pascal OSErr handleyield (const AppleEvent *event, AppleEvent *reply, long refcon) {
-	
+#pragma unused (event, reply, refcon)
+
 	processyield ();
 	
 	return (noErr);
@@ -4210,7 +4218,8 @@ static boolean setpackedobject (Handle htext, Handle hpacked) {
 
 
 static pascal OSErr langipcfastgetobject (AppleEvent *event, AppleEvent *reply, long refcon) {
-	
+#pragma unused (refcon)
+
 	/*
 	7/3/92 DW: this one will be hot!
 	*/
@@ -4285,7 +4294,13 @@ static pascal OSErr langipcfastgetobject (AppleEvent *event, AppleEvent *reply, 
 	} /*langipcfastgetobject*/
 
 
-static pascal OSErr langipcfastsetobject (AppleEvent *event, AppleEvent *reply, long refcon) {
+static pascal OSErr
+langipcfastsetobject (
+		AppleEvent	*event,
+		AppleEvent	*reply,
+		long		 refcon)
+{
+#pragma unused(refcon)
 	
 	/*
 	7/3/92 DW: this one will be hot!
@@ -4362,8 +4377,14 @@ static pascal OSErr langipcfastsetobject (AppleEvent *event, AppleEvent *reply, 
 	} /*langipcfastsetobject*/
 
 
-static pascal OSErr langipchandlefastscript (AppleEvent *event, AppleEvent *reply, long refcon) {
-	
+static pascal OSErr
+langipchandlefastscript (
+		AppleEvent	*event,
+		AppleEvent	*reply,
+		long		 refcon)
+{
+#pragma unused(refcon)
+
 	/*
 	3.0.2b1 dmb: reverted to original, 2.0.1 implementation that doesn't rely
 	on the component manager being present.
@@ -4658,7 +4679,8 @@ boolean langipcinit (void) {
 #else
 
 static boolean langipceventhook (EventRecord *ev, WindowPtr w) {
-	
+#pragma unused(w)
+
 	/*
 	7/3/91 dmb: under system 7, we fork off a new thread for every 
 	incoming IAC event we handle.  under system 6, handling IAC events 

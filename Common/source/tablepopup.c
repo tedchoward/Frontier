@@ -425,7 +425,8 @@ static boolean tablekindrecalc (tyvaluetype valuetype) {
 
 
 static boolean tablekindpopupselect (hdlmenu hmenu, short itemselected) {
-	
+#pragma unused (hmenu)
+
 	tyvaluetype valuetype;
 	
 	if (!tablemapmenutovaluetype (itemselected, &valuetype)) 
@@ -436,7 +437,8 @@ static boolean tablekindpopupselect (hdlmenu hmenu, short itemselected) {
 
 	
 boolean tablekindpopuphit (Point pt) {
-	
+#pragma unused (pt)
+
 	/*
 	5/6/93 dmb: added support for new types
 	*/
@@ -506,7 +508,8 @@ static boolean tablefillsortpopup (hdlmenu hmenu, short *checkeditem) {
 
 
 static boolean tablesortpopupselect (hdlmenu hmenu, short itemselected) {
-	
+#pragma unused (hmenu)
+
 	hdlhashtable ht;
 	bigstring bs;
 	
@@ -539,6 +542,7 @@ static boolean tablesortpopupselect (hdlmenu hmenu, short itemselected) {
 
 	
 boolean tablesortpopuphit (Point pt) {
+#pragma unused (pt)
 
 	register hdltableformats hf = tableformatsdata;
 	Rect r;
@@ -902,7 +906,8 @@ static boolean tablefilltitlepopup (hdlmenu hmenu, short *checkeditem) {
 
 
 static boolean tabletitlepopupselect (hdlmenu hmenu, short itemselected) {
-	
+#pragma unused (hmenu)
+
 	/*
 	note: the last item, "root", is really just a dummy which has no matching element 
 	in the array.  the first item in the array will actually go to the parent table, 

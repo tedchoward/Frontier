@@ -550,12 +550,13 @@ boolean insertmenu (hdlmenu hmenu, long idbefore) {
 
 
 boolean inserthierarchicmenu (hdlmenu hmenu, short idmenu) {
-	
-	#ifdef MACVERSION
-		InsertMenu (hmenu, insertsubmenu);
+#ifdef MACVERSION
+#	pragma unused (idmenu)
 
-		return (true);
-	#endif
+	InsertMenu (hmenu, insertsubmenu);
+
+	return (true);
+#endif
 
 	#ifdef WIN95VERSION
 		HMENU menubar = GetMenu (shellframewindow);
@@ -714,7 +715,9 @@ boolean gethierarchicalmenuitem (hdlmenu hmenu, short ixmenu, hdlmenu *hsubmenu)
 
 
 void setmenutitleenable (hdlmenu hmenu, short idmenu, boolean fl) {
-	
+#if MACVERSION
+#	pragma unused (idmenu)
+#endif
 	/*
 	enable or disable a menu or a menu item.  if fl is true we enable the item,
 	if false we disable it.
@@ -725,28 +728,29 @@ void setmenutitleenable (hdlmenu hmenu, short idmenu, boolean fl) {
 	*/
 	//Code change by Timothy Paustian Friday, June 9, 2000 9:44:07 PM
 	//Changed to Modern calls for Enabling and Disabling menu items
-	#ifdef MACVERSION
-		if (fl)
-			#if ACCESSOR_CALLS_ARE_FUNCTIONS == 1
-			EnableMenuItem (hmenu, 0);
-			#else
-			EnableItem (hmenu, 0);
-			#endif
-		else
-			#if ACCESSOR_CALLS_ARE_FUNCTIONS == 1
-			DisableMenuItem (hmenu, 0);
-			#else
-			DisableItem (hmenu, 0);
-			#endif
-	#endif
+#ifdef MACVERSION
+	if (fl) {
+#	if ACCESSOR_CALLS_ARE_FUNCTIONS == 1
+		EnableMenuItem (hmenu, 0);
+#	else
+		EnableItem (hmenu, 0);
+#	endif
+	} else {
+#	if ACCESSOR_CALLS_ARE_FUNCTIONS == 1
+		DisableMenuItem (hmenu, 0);
+#	else
+		DisableItem (hmenu, 0);
+#	endif
+	}
+#endif
 
-	#ifdef WIN95VERSION
-		HMENU menubar = GetMenu (shellframewindow);
+#ifdef WIN95VERSION
+	HMENU menubar = GetMenu (shellframewindow);
 
-		assert (idmenu >= 0);
-		
+	assert (idmenu >= 0);
+
 		EnableMenuItem (menubar, idmenu, MF_BYCOMMAND | (fl? MF_ENABLED : MF_DISABLED));
-	#endif
+#endif
 	} /*setmenutitleenable*/
 	
 	
@@ -797,14 +801,19 @@ boolean getmenutitleenable (hdlmenu hmenu, short idmenu) {
 	/*
 	*/
 	
-	#ifdef MACVERSION
-		#if ACCESSOR_CALLS_ARE_FUNCTIONS == 1
-		return IsMenuItemEnabled(hmenu, 0);
-		#else
-		//old code
-		return (((**hmenu).enableFlags & (0x01)) != 0);
-		#endif
-	#endif
+#ifdef MACVERSION
+#	pragma unused (idmenu)
+#	if ACCESSOR_CALLS_ARE_FUNCTIONS == 1
+
+	return IsMenuItemEnabled(hmenu, 0);
+
+#	else
+
+	//old code
+	return (((**hmenu).enableFlags & (0x01)) != 0);
+
+#	endif
+#endif
 
 	#ifdef WIN95VERSION
 		MENUITEMINFO info;
@@ -1479,6 +1488,7 @@ boolean pushmenuitem (hdlmenu hmenu, short idmenu, bigstring bs, short commandid
 	*/
 	
 #ifdef MACVERSION
+#	pragma unused (idmenu)
 	bigstring bsspace;
 	
 	if (isseparatorstring (bs)) /*take disabled seperator as is*/
@@ -1529,6 +1539,7 @@ boolean pushmenuitem (hdlmenu hmenu, short idmenu, bigstring bs, short commandid
 boolean pushresourcemenuitems (hdlmenu hmenu, short idmenu, OSType restype) {
 
 #ifdef MACVERSION
+#	pragma unused (idmenu)
 	//Code change by Timothy Paustian Wednesday, June 28, 2000 4:27:19 PM
 	//You can't do this in carbon.
 	//#if !TARGET_API_MAC_CARBON	
