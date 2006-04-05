@@ -56,7 +56,8 @@ static hdlwindowinfo hsearch;
 
 
 static boolean pushwindowmenuvisit (WindowPtr w, ptrvoid ptr) {
-	
+#pragma unused (ptr)
+
 	/*
 	3/8/91 dmb: mark the current root item with an asterix, if not checked
 	

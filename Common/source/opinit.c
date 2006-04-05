@@ -104,7 +104,8 @@ boolean opscraphook (Handle hscrap) {
 
 
 boolean opdefaultreleaserefconroutine (hdlheadrecord hnode, boolean fldisk) {
-	
+#pragma unused (hnode, fldisk)
+
 	/*
 	default callback for releasing the refcon, does nothing.  note that the 
 	callback is responsible for releasing the data linked into the refcon
@@ -116,7 +117,8 @@ boolean opdefaultreleaserefconroutine (hdlheadrecord hnode, boolean fldisk) {
 	
 	
 static boolean opdefaultpushstyle (hdlheadrecord hnode) {
-	
+#pragma unused (hnode)
+
 	oppushstyle (outlinedata);
 	
 	return (true);
@@ -153,7 +155,8 @@ static boolean opdefaultmouseinline (hdlheadrecord hnode, Point pt, const Rect *
 
 
 static boolean opdefaulticon2click (hdlheadrecord hnode) {
-	
+#pragma unused (hnode)
+
 	return (false); /*don't consume the double-click*/
 	} /*opdefaulticon2click*/
 

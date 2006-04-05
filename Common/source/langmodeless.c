@@ -130,7 +130,8 @@ static boolean langdialoggettargetdata (short id) {
 
 
 static boolean langdialogmousedown (Point pt, tyclickflags flags){
-	
+#pragma unused (pt, flags)
+
 	register hdldialogrecord hd = langdialogdata;
 	short item;
 	
@@ -262,7 +263,8 @@ static void langdialogactivate (boolean flactivate) {
 
 
 static boolean langdialogadjustcursor (Point pt){
-		
+#pragma unused (pt)
+
 	setcursortype (cursorisarrow);
 	
 	return (true);
@@ -539,7 +541,7 @@ static boolean langdialognewwindow (short dialogid, short defaultitem, hdltreeno
 	register hdldialogrecord hd;
 	Rect rzoom, rwindow;
 	hdlwindowinfo hparent;
-	tyconfigrecord config;
+	tyconfigrecord lconfig;
 	DialogTHndl hdlog;
 	bigstring bstitle;
 	
@@ -572,11 +574,11 @@ static boolean langdialognewwindow (short dialogid, short defaultitem, hdltreeno
 		rwindow = (**hdlog).boundsRect;
 		}
 	
-	shellgetconfig (idlangdialogconfig, &config);
+	shellgetconfig (idlangdialogconfig, &lconfig);
 	
-	config.templateresnum = dialogid;
+	lconfig.templateresnum = dialogid;
 	
-	shellsetconfig (idlangdialogconfig, config);
+	shellsetconfig (idlangdialogconfig, lconfig);
 	
 	if (!newchildwindow (idlangdialogconfig, hparent, &rwindow, &rzoom, bstitle, &langdialogwindow)) {
 		

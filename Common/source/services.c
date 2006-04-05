@@ -86,7 +86,8 @@ static const OSType servicesdatatypes [] = {'TEXT'}; /*support TEXT only*/
 
 
 pascal OSStatus serviceshandlercopy (EventHandlerCallRef nextHandler, EventRef inEvent, void* userData) {
-	
+#pragma unused(userData, nextHandler)
+
 	/*
 	Copy the current selection to the Services-specific scrap.
 	
@@ -138,7 +139,8 @@ pascal OSStatus serviceshandlercopy (EventHandlerCallRef nextHandler, EventRef i
 
 
 pascal OSStatus serviceshandlerpaste (EventHandlerCallRef nextHandler, EventRef inEvent, void* userData) {
-	
+#pragma unused(userData, nextHandler)
+
 	ScrapRef servicesscrap, currentscrap;
 	long bytecount;
 	OSErr err;
@@ -193,16 +195,29 @@ pascal OSStatus serviceshandlerpaste (EventHandlerCallRef nextHandler, EventRef 
 
 
 pascal OSStatus serviceshandlergettypes (EventHandlerCallRef nextHandler, EventRef inEvent, void* userData) {
-	
+#pragma unused(userData, nextHandler)
+
 	CFMutableArrayRef copytypes, pastetypes;
 	short ix, count;
 	
-	GetEventParameter (inEvent, kEventParamServiceCopyTypes, typeCFMutableArrayRef, NULL,
-		sizeof (CFMutableArrayRef), NULL, &copytypes);
+	GetEventParameter (
+			inEvent,
+			kEventParamServiceCopyTypes,
+			typeCFMutableArrayRef,
+			NULL,
+			sizeof (CFMutableArrayRef),
+			NULL,
+			&copytypes);
 
-	GetEventParameter (inEvent, kEventParamServicePasteTypes, typeCFMutableArrayRef, NULL,
-		sizeof (CFMutableArrayRef), NULL, &pastetypes);
-		
+	GetEventParameter (
+			inEvent,
+			kEventParamServicePasteTypes,
+			typeCFMutableArrayRef,
+			NULL,
+			sizeof (CFMutableArrayRef),
+			NULL,
+			&pastetypes);
+
 	count = sizeof (servicesdatatypes) / sizeof (OSType);
 
 	/*Place our data types in the copytypes and pastetypes arrays. This code is generalized

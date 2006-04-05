@@ -1231,7 +1231,8 @@ void opreleasenode (hdlheadrecord hnode, boolean fldisk) {
 
 
 static boolean opreleaserefconvisit (hdlheadrecord hnode, ptrvoid refcon) {
-	
+#pragma unused (refcon)
+
 	Handle hrefcon = (Handle) (**hnode).hrefcon;
 	
 	if (hrefcon != nil) { /*node has a refcon handle attached*/
@@ -1339,7 +1340,7 @@ boolean newoutlinerecord (hdloutlinerecord *houtline) {
 	
 	#if !fljustpacking
 	
-		tyconfigrecord config;
+		tyconfigrecord lconfig;
 	#endif
 	
 	register hdloutlinerecord ho;
@@ -1409,15 +1410,15 @@ boolean newoutlinerecord (hdloutlinerecord *houtline) {
 	
 	#if !fljustpacking
 	
-		shellgetconfig (idoutlineconfig, &config);
+		shellgetconfig (idoutlineconfig, &lconfig);
 	
-		(**ho).windowrect = config.defaultwindowrect; 
+		(**ho).windowrect = lconfig.defaultwindowrect; 
 		
-		(**ho).fontnum = config.defaultfont;
+		(**ho).fontnum = lconfig.defaultfont;
 		
-		(**ho).fontsize = config.defaultsize;
+		(**ho).fontsize = lconfig.defaultsize;
 		
-		(**ho).fontstyle = config.defaultstyle;
+		(**ho).fontstyle = lconfig.defaultstyle;
 	
 	#endif
 	
@@ -1572,7 +1573,8 @@ hdlheadrecord opfirstatlevel (hdlheadrecord hnode) {
 	
 
 static boolean opcountvisit (hdlheadrecord hnode, ptrvoid refcon) {
-	
+#pragma unused (hnode)
+
 	(*(long*)refcon)++; /*the simplest visit routine*/
 	
 	return (true);
@@ -1633,7 +1635,8 @@ boolean opnodeinoutline (hdlheadrecord hnode) {
 
 
 static boolean opresetlevelsvisit (hdlheadrecord hnode, ptrvoid refcon) {
-	
+#pragma unused (refcon)
+
 	register hdlheadrecord h = hnode;
 	
 	(**h).headlevel = (**(**h).headlinkleft).headlevel + 1;

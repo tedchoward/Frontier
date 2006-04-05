@@ -910,7 +910,7 @@ void disposecomponentglobals (hdlcomponentglobals hglobals) {
 
 
 pascal OSErr osadefaultactiveproc (long refcon) {
-	
+#pragma unused (refcon)
 	/*
 	see if user pressed cmd-period.
 	
@@ -934,18 +934,35 @@ pascal OSErr osadefaultactiveproc (long refcon) {
 	} /*osadefaultactiveproc*/
 
 
-static pascal OSErr osadefaultcreate (AEEventClass class, AEEventID id,
-                    const AEAddressDesc *target, short returnID,
-                    long transactionID, AppleEvent *result, long refcon) {
-	
+static pascal OSErr
+osadefaultcreate (
+		AEEventClass		 class,
+		AEEventID			 id,
+		const AEAddressDesc	*target,
+		short				 returnID,
+		long				 transactionID,
+		AppleEvent			*result,
+		long				 refcon)
+{
+#pragma unused (refcon)
+
 	return (AECreateAppleEvent(class, id, target, returnID, transactionID, result));
 	} /*osadefaultcreate*/
 
 
-static pascal OSErr osadefaultsend (const AppleEvent *event, AppleEvent *reply,
-		AESendMode sendmode, AESendPriority priority, long timeout,
-        AEIdleUPP idleproc, AEFilterUPP filterproc, long refcon) {
-	
+static pascal OSErr
+osadefaultsend (
+		const AppleEvent	*event,
+		AppleEvent			*reply,
+		AESendMode			 sendmode,
+		AESendPriority		 priority,
+		long				 timeout,
+		AEIdleUPP			 idleproc,
+		AEFilterUPP			 filterproc,
+		long				 refcon)
+{
+#pragma unused (refcon)
+
 	return (AESend (event, reply, sendmode, priority, timeout, idleproc, filterproc));
 	} /*osadefaultsend*/
 
@@ -1174,8 +1191,12 @@ static boolean inosasource (void) {
 
 
 static boolean osaerrormessage (bigstring bs, ptrvoid refcon) {
-	
-	AEDesc list, rec, desc;
+#pragma unused (refcon)
+
+	AEDesc
+		list,
+		rec,
+		desc;
 	long n;
 	OSErr err;
 	
@@ -1243,14 +1264,15 @@ static boolean osaerrormessage (bigstring bs, ptrvoid refcon) {
 	} /*osaerrormessage*/
 
 
-static pascal OSErr coerceTEXTtoSTXT (
-		DescType fromtype,
-		Ptr pdata,
-		long size,
-		DescType totype,
-		long refcon,
-		AEDesc *result) {
-	
+static pascal OSErr
+coerceTEXTtoSTXT (
+		DescType	 fromtype,
+		Ptr			 pdata,
+		long		 size,
+		DescType	 totype,
+		long		 refcon,
+		AEDesc		*result) {
+#pragma unused(fromtype, refcon)
 	/*
 	2.1b2 dmb: don't use clearbytes so we don't have to set up a5
 	*/
@@ -1260,7 +1282,7 @@ static pascal OSErr coerceTEXTtoSTXT (
 	AEDesc list;
 	register ScrpSTElement *pstyle;
 	
-	#ifdef fldegug
+	#ifdef fldebug	// 2006-04-04 - kw --- this was fldegug
 	
 	if (totype != typeStyledText)
 		DebugStr ("\punexpected coercion");
@@ -1308,12 +1330,14 @@ static pascal OSErr coerceTEXTtoSTXT (
 	} /*coerceTEXTtoSTXT*/
 
 
-static pascal OSErr coerceTypetoObj (
-		AEDesc *desc,
-		DescType totype,
-		long refcon,
-		AEDesc *result) {
-	
+static pascal OSErr
+coerceTypetoObj (
+		AEDesc		*desc,
+		DescType	 totype,
+		long		 refcon,
+		AEDesc		*result) {
+#pragma unused(totype, refcon)
+
 	/*
 	2.1b1 dmb: if Frontier passes a string4 identifier where an object specifier 
 	is required, this coercion handler will take care of it
@@ -1599,6 +1623,7 @@ GNEUPP osainstallpatch (hdlcomponentglobals hglobals) {
 
 
 void osaremovepatch (hdlcomponentglobals hglobals, GNEUPP origproc) {
+#pragma unused (origproc)
 
 	register hdlcomponentglobals hcg = hglobals;
 	
@@ -1617,12 +1642,14 @@ void osaremovepatch (hdlcomponentglobals hglobals, GNEUPP origproc) {
 #else
 
 GNEUPP osainstallpatch (hdlcomponentglobals hglobals) {
-	
+#pragma unused (hglobals)
+
 	return (nil);
 	} /*osainstallpatch*/
 
 
 void osaremovepatch (hdlcomponentglobals hglobals, GNEUPP origproc) {
+#pragma unused (hglobals, origproc)
 
 	} /*osaremovepatch*/
 
@@ -1665,7 +1692,8 @@ static boolean osapartialeventloop (short desiredevents) {
 
 
 THz osasethomezone (hdlcomponentglobals hglobals) {
-	
+#pragma unused (hglobals)
+
 	/*
 	2.1b13 dmb: added this to balance the setclientzone call, and to 
 	allow us to keep the homezone global private.
@@ -1806,9 +1834,17 @@ static pascal OSErr osacreateevent (AEEventClass class, AEEventID id,
 	} /*osacreateevent*/
 
 
-static pascal OSErr osasendevent (const AppleEvent *event, AppleEvent *reply,
-		AESendMode mode, AESendPriority priority, long timeout,
-        AEIdleUPP idleproc, AEFilterUPP filterproc ) {
+static pascal OSErr
+osasendevent (
+		const AppleEvent	*event,
+		AppleEvent			*reply,
+		AESendMode			 mode,
+		AESendPriority		 priority,
+		long				 timeout,
+		AEIdleUPP			 idleproc,
+		AEFilterUPP			 filterproc )
+{
+#pragma unused (idleproc, filterproc)
 	
 	/*
 	2/16/93 dmb: in case the event is to be direct dispatched correctly, we need 
@@ -2300,7 +2336,8 @@ static boolean osabuildsubroutineevent (bigstring bsname, hdltreenode hparam1, A
 
 
 static boolean setstorageval (hdlcomponentglobals hglobals, tyvaluerecord *val, OSAID id) {
-	
+#pragma unused (hglobals)
+
 	/*
 	add val to the id table using the indicated id. on error, dispose of the value
 	*/
@@ -2331,7 +2368,8 @@ static boolean addstorageval (hdlcomponentglobals hglobals, tyvaluerecord *val, 
 
 
 static boolean getstorageval (hdlcomponentglobals hglobals, OSAID id, tyvaluerecord *val, hdlhashnode * hnode) {
-	
+#pragma unused (hglobals)
+
 	bigstring bs;
 	
 	numbertostring (id, bs);
@@ -2348,7 +2386,8 @@ static boolean getstorageval (hdlcomponentglobals hglobals, OSAID id, tyvaluerec
 
 
 static boolean deletestorageval (hdlcomponentglobals hglobals, OSAID id) {
-	
+#pragma unused (hglobals)
+
 	bigstring bs;
 	
 	numbertostring (id, bs);
@@ -2463,11 +2502,14 @@ static boolean osanewvalue (tyexternalid id, Handle hdata, tyvaluerecord *val) {
 	} /*osanewvalue*/
 
 
-static pascal OSAError osaLoad (
-			hdlcomponentglobals	hglobals,
-			const AEDesc*		scriptData,
-			long				modeFlags,
-			OSAID*				resultingCompiledScriptID) {
+static pascal OSAError
+osaLoad (
+		hdlcomponentglobals	 hglobals,
+		const AEDesc		*scriptData,
+		long				 modeFlags,
+		OSAID				*resultingCompiledScriptID)
+{
+#pragma unused (modeFlags)
 	
 	/*
 	2.1b1 dmb: don't insist that the loaded value is a context (i.e. a table)
@@ -2828,10 +2870,13 @@ static pascal OSAError osaSetResumeDispatchProc (
 	} /*osaSetResumeDispatchProc*/
 
 
-static pascal OSAError osaGetResumeDispatchProc (
-				hdlcomponentglobals	hglobals,
-				AEEventHandlerUPP*	resumeDispatchProc,
-				long*				refCon) {
+static pascal OSAError
+osaGetResumeDispatchProc (
+		hdlcomponentglobals	 hglobals,
+		AEEventHandlerUPP	*resumeDispatchProc,
+		long				*refCon)
+{
+#pragma unused (hglobals)
 	/*
 	we're never invoking the resumedispatch proc, so be honest and 
 	return these constants
@@ -3085,11 +3130,14 @@ static pascal OSAError osaGetSource (
 	} /*osaGetSource*/
 
 
-static pascal OSAError osaCoerceFromDesc (
-			hdlcomponentglobals	hglobals,
-			const AEDesc*		scriptData,
-			long				modeFlags,
-			OSAID*				resultingScriptID) {
+static pascal OSAError
+osaCoerceFromDesc (
+		hdlcomponentglobals	 hglobals,
+		const AEDesc		*scriptData,
+		long				 modeFlags,
+		OSAID				*resultingScriptID)
+{
+#pragma unused (modeFlags)
 	
 	/*
 	3.0a dmb: fixed leak when val is an externalvaluetype.
@@ -3141,12 +3189,15 @@ static pascal OSAError osaCoerceFromDesc (
 	} /*osaCoerceFromDesc*/
 
 
-static pascal OSAError osaCoerceToDesc (
-			hdlcomponentglobals	hglobals,
-			OSAID				scriptID,
-			DescType			desiredType,
-			long				modeFlags,
-			AEDesc*				result) {
+static pascal OSAError
+osaCoerceToDesc (
+		hdlcomponentglobals	 hglobals,
+		OSAID				 scriptID,
+		DescType			 desiredType,
+		long				 modeFlags,
+		AEDesc				*result)
+{
+#pragma unused (modeFlags)
 	
 	tyvaluerecord val;
 	hdlhashnode hnode;
@@ -3190,12 +3241,15 @@ static boolean getrecordingstring (short id, bigstring bs) {
 	} /*getrecordingstring*/
 
 
-static pascal OSErr coerceInsltoTEXT (
-		const AEDesc *desc,
-		DescType totype,
-		long refcon,
-		AEDesc *result) {
-	
+static pascal OSErr
+coerceInsltoTEXT (
+		const AEDesc	*desc,
+		DescType		 totype,
+		long			 refcon,
+		AEDesc			*result)
+{
+#pragma unused(totype, refcon)
+
 	/*
 	2.1b2 dmb: this is installed as a typeInsertionLoc -> typeObjectSpecifier 
 	coercer, but it's actually generating source text for the recorder.  it's 
@@ -3222,7 +3276,7 @@ static pascal OSErr coerceInsltoTEXT (
 		long curA5 = SetUpAppA5 ();
 	#endif
 	
-	#ifdef fldegug
+	#ifdef fldebug // 2006-04-04 - kw --- this was fldegug
 	
 	if ((*desc).descriptorType != typeInsertionLoc)
 		DebugStr ("\punexpected coercion");
@@ -3325,7 +3379,12 @@ exit:
 #endif
 
 
-static pascal OSErr sendrecordingevent (hdlcomponentglobals	hglobals, AEEventID id) {
+static pascal OSErr
+sendrecordingevent (
+		hdlcomponentglobals		 hglobals,
+		AEEventID				 id)
+{
+#pragma unused (hglobals)
 	
 	/*
 	2.1b5 dmb: don't use sendproc for these events; they're not part of 
@@ -3553,11 +3612,17 @@ static pascal OSErr pusheventparameter (const AppleEvent *event, AEKeyword key, 
 	pushstring (bsval, bsevent);
 	
 	return (noErr);
-	} /*pusheventparameter*/
+} /*pusheventparameter*/
 
 
-static pascal OSErr handlerecordableevent (const AppleEvent *event, AppleEvent *reply, SInt32 refcon) {
-	
+static pascal OSErr
+handlerecordableevent (
+		const AppleEvent	*event,
+		AppleEvent			*reply,
+		SInt32				 refcon)
+{
+#pragma unused (reply)
+
 	/*
 	map the event to a line of source code, and send the text in a Recorded Text event
 	
@@ -4010,10 +4075,13 @@ static pascal OSAError osaStopRecording (
 	} /*osaStopRecording*/
 
 
-static pascal OSAError osaScriptingComponentName (
-			hdlcomponentglobals	hglobals,
-			AEDesc*				resultingScriptingComponentName) {
-	
+static pascal OSAError
+osaScriptingComponentName (
+		hdlcomponentglobals	 hglobals,
+		AEDesc				*resultingScriptingComponentName)
+{
+#pragma unused (hglobals)
+
 	bigstring bs;
 	
 	getstringlist (componentlistnumber, usertalkstring, bs);
@@ -4061,12 +4129,15 @@ static pascal OSAError osaExecute (
 	} /*osaExecute*/
 
 
-static pascal OSAError osaDisplay (
-			hdlcomponentglobals	hglobals,
-			OSAID				scriptValueID,
-			DescType			desiredType,
-			long				modeFlags,
-			AEDesc*				resultingText) {
+static pascal OSAError
+osaDisplay (
+		hdlcomponentglobals	 hglobals,
+		OSAID				 scriptValueID,
+		DescType			 desiredType,
+		long				 modeFlags,
+		AEDesc				*resultingText)
+{
+#pragma unused (desiredType, modeFlags)
 	
 	/*
 	****should handle desiredType other than typechar
@@ -4223,11 +4294,14 @@ pascal OSAError osaDoScript (
 	} /*osaDoScript*/
 
 
-static pascal OSAError osaMakeContext (
-			hdlcomponentglobals	hglobals,
-			const AEDesc*		contextName,
-			OSAID				parentContext,
-			OSAID*				resultingContextID) {
+static pascal OSAError
+osaMakeContext (
+		hdlcomponentglobals	 hglobals,
+		const AEDesc		*contextName,
+		OSAID				 parentContext,
+		OSAID				*resultingContextID)
+{
+#pragma unused (contextName, parentContext)
 	
 	tyvaluerecord vcontext;
 	
@@ -4479,16 +4553,17 @@ static pascal OSAError osaSetDebugProc (
 
 static pascal OSAError osaDebug (
 			hdlcomponentglobals	hglobals,
-			OSType				selector,
-			const AEDesc*		selectorData,
-			DescType			desiredType,
-			AEDesc*				resultingDebugInfoOrDataToSet) {
-	
+		OSType				 selector,
+		const AEDesc		*selectorData,
+		DescType			 desiredType,
+		AEDesc				*resultingDebugInfoOrDataToSet) {
+#pragma unused (hglobals, desiredType)
+
 	OSAError err = noErr;
 	hdlhashnode hnode;
-	
+
 	switch (selector) {
-		
+
 		case kOSADebugRange: {
 			AEDesc rec;
 			
@@ -4572,7 +4647,8 @@ static pascal OSAError osaDebug (
 
 
 static pascal ComponentResult cmpclose (Handle storage, ComponentInstance self) {
-	
+#pragma unused(self)
+
 	register hdlcomponentglobals hglobals = (hdlcomponentglobals) storage;
 	
 	if (hglobals != nil) { /*defensive driving -- can be necessary during shutdown*/
@@ -5498,7 +5574,8 @@ boolean isosascriptvalue (const tyvaluerecord *val) {
 
 
 static pascal OSErr osaclientactive (long refcon) {
-	
+#pragma unused (refcon)
+
 	/*
 	while executing an osa script, we want to check for cmd-period, 
 	and allow other threads to run. this does part of the job.
@@ -5540,10 +5617,19 @@ static pascal Boolean osaclientidleproc (EventRecord *ev, long *sleep, RgnHandle
 	} /*osaclientidleproc*/
 
 
-static pascal OSErr osaclientsend (const AppleEvent *event, AppleEvent *reply,
-		AESendMode sendmode, AESendPriority priority, long timeout,
-        AEIdleUPP idleproc, AEFilterUPP filterproc, long refcon) {
-			
+static pascal OSErr
+osaclientsend (
+		const AppleEvent	*event,
+		AppleEvent			*reply,
+		AESendMode			 sendmode,
+		AESendPriority		 priority,
+		long				 timeout,
+		AEIdleUPP			 idleproc,
+		AEFilterUPP			 filterproc,
+		long				 refcon)
+{
+#pragma unused (refcon, idleproc)
+
 	/*
 	with AppleScript, at least, the activeproc doesn't get called enough 
 	for decent thread cooperation. ideally, we'd send this event using 
@@ -5926,7 +6012,7 @@ boolean osacomponentverifyshutdown (void) {
 	
 	register hdlcomponentglobals hclient;
 	short ctclients;
-	short idstring;
+	short lidstring;
 	bigstring bs;
 	bigstring bsprompt;
 	typrocessid psn, lastpsn;
@@ -5969,15 +6055,15 @@ boolean osacomponentverifyshutdown (void) {
 	if (ctclients > 0) {
 		
 		if (ctclients == 1)
-			idstring = specificclientstring;
+			lidstring = specificclientstring;
 		
 		else {
 			numbertostring (ctclients, bs);
 			
-			idstring = multipleclientsstring;
+			lidstring = multipleclientsstring;
 			}
 		
-		if (getrecordingstring (idstring, bsprompt)) {
+		if (getrecordingstring (lidstring, bsprompt)) {
 			
 			parsedialogstring (bsprompt, bs, nil, nil, nil, bsprompt);
 			

@@ -2346,7 +2346,8 @@ boolean dbflushreleasestack (void) {
 #else
 	
 boolean dbpushreleasestack (dbaddress adr, long valtype) {
-	
+#pragma unused(valtype)
+
 	/*
 	the chunk of db space pointed to by adr is being logically released, but
 	the caller is saying that he doesn't want to make the effects permanent

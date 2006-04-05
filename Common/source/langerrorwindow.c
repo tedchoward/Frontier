@@ -375,7 +375,8 @@ boolean clearlangerrordialog (void) {
 
 
 static boolean langerrorset (bigstring bserror, bigstring bslocation) {
-	
+#pragma unused (bslocation)
+
 	/*
 	2.1b2 dmb: if the langerror window isn't already there, don't try to 
 	create it now -- the heap or stack may be dangerously low.  instead, 
@@ -499,7 +500,8 @@ static void langerrorbuttonhit (void) {
 #ifdef flnewfeatures	// flstacktrace
 
 static boolean langerrorpopupselect (hdlmenu hmenu, short itemselected) {
-	
+#pragma unused (hmenu)
+
 	register hdlerrorstack hs = (**langerrordata).herrorstack;
 	short ix;
 	tyerrorrecord *pe;
@@ -582,7 +584,8 @@ static boolean langerrorpopupmenu (void) {
 
 
 static boolean langerrormousedown (Point pt, tyclickflags flags) {
-	
+#pragma unused (flags)
+
 	/*
 	7/16/90 DW: wired off the consumption of the error callback, if you want
 	it back on, just switch on the code that's commented out, and the script
@@ -680,7 +683,8 @@ static boolean langerrorkeystroke (void) {
 
 
 boolean langerrordialog (bigstring bsmsg, ptrvoid refcon) {
-	
+#pragma unused (refcon)
+
 	unsigned short savedlines, savedchars; 
 	
 	if (isemptystring (bsmsg)) /*don't post empty messages -- scipterrror ("") relies on this*/

@@ -234,7 +234,7 @@ boolean ccgetwindowrect (short ixwindowinfo, Rect *rwindow) {
 	5.1.5b10 dmb: use ccfindrootwindow to avoid guest databases
 	*/
 	
-	tyconfigrecord config;	
+	tyconfigrecord lconfig;	// 2006-04-03 - kw --- renamed
 	hdlwindowinfo hinfo;
 	
 //	if (shellpushfrontrootglobals ())
@@ -253,9 +253,9 @@ boolean ccgetwindowrect (short ixwindowinfo, Rect *rwindow) {
 		return (true);
 		}
 	
-	if (shellgetconfig (ccwindowconfigs [ixwindowinfo], &config)) {
+	if (shellgetconfig (ccwindowconfigs [ixwindowinfo], &lconfig)) {
 	
-		*rwindow = config.defaultwindowrect;
+		*rwindow = lconfig.defaultwindowrect;
 		
 		return (true);
 		}
@@ -270,20 +270,20 @@ static void ccinitwindowinfo (hdlcancoonrecord hcancoon, short ixwindowinfo) {
 	
 	register hdlcancoonrecord hc = hcancoon;		
 	tycancoonwindowinfo windowinfo;
-	tyconfigrecord config;	
+	tyconfigrecord lconfig;	// 2006-04-03 - kw --- renamed
 	Rect r;
 	
 	clearbytes (&windowinfo, sizeof (windowinfo));
 	
-	if (shellgetconfig (ccwindowconfigs [ixwindowinfo], &config)) {
+	if (shellgetconfig (ccwindowconfigs [ixwindowinfo], &lconfig)) {
 		
-		recttodiskrect (&config.defaultwindowrect, &windowinfo.windowrect);
+		recttodiskrect (&lconfig.defaultwindowrect, &windowinfo.windowrect);
 		
-		diskgetfontname (config.defaultfont, windowinfo.fontname);
+		diskgetfontname (lconfig.defaultfont, windowinfo.fontname);
 		
-		windowinfo.fontnum = config.defaultfont;
+		windowinfo.fontnum = lconfig.defaultfont;
 	
-		windowinfo.fontsize = config.defaultsize;
+		windowinfo.fontsize = lconfig.defaultsize;
 		}
 	else {
 		setrect (&r, -1, -1, -1, -1);
@@ -753,7 +753,8 @@ static boolean cctrialviolation (void) {
 #endif
 
 boolean ccloadfile (hdlfilenum fnum, short rnum) {
-	
+#pragma unused(rnum)
+
 	/*
 	9/15/92 dmb: removed support for version1 format; it never shipped
   
@@ -853,7 +854,8 @@ boolean ccloadfile (hdlfilenum fnum, short rnum) {
 
 
 boolean ccloadspecialfile (ptrfilespec fspec, OSType filetype) {
-	
+#pragma unused (filetype)
+
 	/*
 	7/28/92 dmb: use new finder2frontscript to set the Frontier.findertofront 
 	global, instead of having Frontier.finder2click always set it to true. also, 
@@ -914,7 +916,8 @@ boolean ccloadspecialfile (ptrfilespec fspec, OSType filetype) {
 
 
 boolean ccsavespecialfile (ptrfilespec fs, hdlfilenum fnum, short rnum, boolean flsaveas, boolean flrunnable) {
-	
+#pragma unused(flsaveas, rnum)
+
 	/*
 	6.17.97 dmb: this is called by opverbs, wpverbs, etc. to save a disk file.
 	we leave it to the system.misc.saveWindow script to package the data, 
@@ -1104,7 +1107,8 @@ boolean ccnewfilewindow (tyexternalid id, WindowPtr *w, boolean flhidden) {
 
 
 boolean ccsavefile (ptrfilespec fs, hdlfilenum fnum, short rnum, boolean flsaveas, boolean flrunnable) {
-	
+#pragma unused(fs, rnum, flrunnable)
+
 	/*
 	5.0b18 dmb: last-minute fix. we crash when saving while publishing a table.
 	the problem is that we toss stuff out during a save, and it would be nearly 
@@ -1521,7 +1525,10 @@ boolean ccbackground (void) {
 
 
 boolean ccfnumchanged (hdlfilenum newfnum) {
-	
+#ifdef version5orgreater
+#	pragma unused (newfnum)
+#endif
+
 	/*
 	part of the implementation of Save As
 
