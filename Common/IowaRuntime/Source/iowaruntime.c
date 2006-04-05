@@ -613,10 +613,10 @@ static boolean sameasbuttontype (tyobjecttype type) {
 	
 	
 static void filterevent (EventRecord *ev) {
+	// 2006-04-03 - kw --- renamed callback -> lCallback
+	tycardeventcallback lCallback = (**runtimedata).callback;
 	
-	tycardeventcallback callback = (**runtimedata).callback;
-	
-	if (callback == nil) 
+	if (lCallback == nil) 
 		return;
 		
 	if ((*ev).what == nullEvent) /*DW 8/22/93*/
@@ -632,7 +632,7 @@ static void filterevent (EventRecord *ev) {
 		
 		x.message = (long) iowadata;
 		
-		(*callback) (&x);
+		(*lCallback) (&x);
 		}
 	
 	//Code change by Timothy Paustian Monday, August 21, 2000 9:34:50 PM
@@ -647,7 +647,7 @@ static void filterevent (EventRecord *ev) {
 	pushmacport (thePort);
 	}
 	
-	(*callback) (ev);
+	(*lCallback) (ev);
 	
 	popmacport ();
 	} /*filterevent*/
@@ -655,17 +655,17 @@ static void filterevent (EventRecord *ev) {
 	
 static void sendinitmessage (void) {
 
-	tycardeventcallback callback = (**runtimedata).callback;
+	tycardeventcallback lcallback = (**runtimedata).callback;
 	EventRecord ev;
 	
-	if (callback == nil) 
+	if (lcallback == nil) 
 		return;
 		
 	ev.what = iowaInitEvent;
 	
 	ev.message = (long) iowadata;
 	
-	(*callback) (&ev);
+	(*lcallback) (&ev);
 	} /*sendinitmessage*/
 	
 	
@@ -674,22 +674,23 @@ static boolean sendbuttonhitmessage (hdlobject h) {
 	/*
 	return true if the buttonhit has been fully processed
 	*/
-	
-	tycardeventcallback callback = (**runtimedata).callback;
+
+	// 2006-04-03 - kw --- renamed callback -> lCallback
+	tycardeventcallback lCallback = (**runtimedata).callback;
 	EventRecord ev;
-		
-	if (callback == nil)
+
+	if (lCallback == nil)
 		return (true);
-	
+
 	ev.what = iowaButtonHitEvent;
-	
+
 	ev.message = (long) h;
-	
-	(*callback) (&ev);
-	
+
+	(*lCallback) (&ev);
+
 	if (ev.what == iowaRunScriptEvent) /*pass the buttonhit thru, run the script*/
 		return (false);
-	
+
 	if (ev.what == iowaCloseEvent) /*the client is telling us to close the window*/
 		closeCardWindow ((**runtimedata).macwindow);
 		
@@ -704,22 +705,23 @@ static boolean sendclosemessage (void) {
 	other reason the card is about to close. we call back to the client,
 	giving him a chance to save data from the card.
 	*/
-	
-	tycardeventcallback callback = (**runtimedata).callback;
+
+	// 2006-04-03 - kw --- renamed callback -> lCallback
+	tycardeventcallback lCallback = (**runtimedata).callback;
 	EventRecord ev;
-	
-	if (callback == nil)
+
+	if (lCallback == nil)
 		return (true);
-	
+
 	ev.what = iowaCloseEvent;
-	
+
 	ev.message = (long) iowadata;
-	
-	(*callback) (&ev);
-	
+
+	(*lCallback) (&ev);
+
 	return (ev.what != iowaCancelEvent);
 	} /*sendclosemessage*/
-	
+
 	
 static void objectclick (hdlobject listhead, hdlobject h) {
 	
@@ -1566,11 +1568,10 @@ WindowPtr newCardWindow (Point pt, boolean notscriptedcard, Handle hpackedcard) 
 		}
 	
 	SizeWindow (w, (**hc).rightborder, (**hc).bottomborder, false);
-	
-				
-				ShowWindow (w);
+
+	ShowWindow (w);
 	//Code change by Timothy Paustian Wednesday, August 23, 2000 9:20:56 PM
-		//
+	//
 	{
 	#if TARGET_API_MAC_CARBON
 	CGrafPtr	thePort = GetWindowPort(w);
@@ -2296,8 +2297,8 @@ static boolean passthruevent (short what) {
 	} /*passthruevent*/
 
 
-boolean runModalCard (Handle hpackedcard, boolean flscriptedcard, short top, short left, tycardeventcallback callback) {
-	
+boolean runModalCard (Handle hpackedcard, boolean flscriptedcard, short top, short pLeft, tycardeventcallback pCallback) {
+	// 2006-04-03 - kw --- renamed params left -pLeft, callback -> pCallback
 	/*
 	dmb 1.0b24: changed flcallback logic. we no longer call back on activate
 	and update events that we just handled
@@ -2316,7 +2317,7 @@ boolean runModalCard (Handle hpackedcard, boolean flscriptedcard, short top, sho
 	
 	winpos.v = top;
 	
-	winpos.h = left;
+	winpos.h = pLeft;
 	
 	modalwindow = newCardWindow (winpos, !flscriptedcard, hpackedcard);
 	
@@ -2329,7 +2330,7 @@ boolean runModalCard (Handle hpackedcard, boolean flscriptedcard, short top, sho
 		goto exit;
 		}
 		
-	(**runtimedata).callback = callback;
+	(**runtimedata).callback = pCallback;
 		
 	(**runtimedata).modeless = false;
 	
@@ -2397,16 +2398,16 @@ boolean runModalCard (Handle hpackedcard, boolean flscriptedcard, short top, sho
 			}
 		*/
 			
-		if ((flcallback) && (callback != nil)) {
+		if ((flcallback) && (pCallback != nil)) {
 			
-			hdlcard oldiowadata = iowadata;
-			hdlruntimerecord oldruntimedata = runtimedata;
+			hdlcard loldiowadata = iowadata;
+			hdlruntimerecord loldruntimedata = runtimedata;
 			
-			(*callback) (&ev);
+			(*pCallback) (&ev);
 			
-			iowadata = oldiowadata;
+			iowadata = loldiowadata;
 		
-			runtimedata = oldruntimedata;
+			runtimedata = loldruntimedata;
 			//Code change by Timothy Paustian Wednesday, August 23, 2000 9:21:26 PM
 			//
 			{	
@@ -2488,7 +2489,7 @@ boolean isModelessCardEvent (EventRecord *ev, boolean *flcloseallwindows) {
 	} /*isModelessCardEvent*/
 	
 	
-boolean runModelessCard (Handle hpackedcard, boolean flscriptedcard, short top, short left, tycardeventcallback callback) {
+boolean runModelessCard (Handle hpackedcard, boolean flscriptedcard, short top, short pLeft, tycardeventcallback pCallback) {
 	
 	/*
 	dmb 1.024: call cardcheckinit here, before showing window. 
@@ -2520,7 +2521,7 @@ boolean runModelessCard (Handle hpackedcard, boolean flscriptedcard, short top, 
 	
 	winpos.v = top;
 	
-	winpos.h = left;
+	winpos.h = pLeft;
 	
 	modelesswindow = newCardWindow (winpos, !flscriptedcard, hpackedcard);
 	
@@ -2533,7 +2534,7 @@ boolean runModelessCard (Handle hpackedcard, boolean flscriptedcard, short top, 
 		goto exit;
 		}
 		
-	(**runtimedata).callback = callback;
+	(**runtimedata).callback = pCallback;
 		
 	(**runtimedata).modeless = true;
 	
@@ -2580,14 +2581,14 @@ boolean runModelessCard (Handle hpackedcard, boolean flscriptedcard, short top, 
 	} /*runModelessCard*/
 	 
 
-boolean runCard (Handle hpackedcard, boolean flscriptedcard, short top, short left, tycardeventcallback callback) {
+boolean runCard (Handle hpackedcard, boolean flscriptedcard, short top, short pleft, tycardeventcallback pcallback) {
 	
 	boolean fl;
 	
 	if (cardIsModal (hpackedcard)) 
-		fl = runModalCard (hpackedcard, flscriptedcard, top, left, callback);
+		fl = runModalCard (hpackedcard, flscriptedcard, top, pleft, pcallback);
 	else
-		fl = runModelessCard (hpackedcard, flscriptedcard, top, left, callback);
+		fl = runModelessCard (hpackedcard, flscriptedcard, top, pleft, pcallback);
 		
 	return (fl);
 	} /*runCard*/
@@ -2666,7 +2667,7 @@ static WindowPtr moveIntoCardWindow (WindowPtr hostwindow, boolean notscriptedca
 #pragma global_optimizer reset
 	
 	
-boolean runHostedCard (WindowPtr hostwindow, Handle hpackedcard, boolean flscriptedcard, tycardeventcallback callback) {
+boolean runHostedCard (WindowPtr hostwindow, Handle hpackedcard, boolean flscriptedcard, tycardeventcallback pCallback) {
 	
 	hdlcard oldiowadata = iowadata; 
 	hdlruntimerecord oldruntimedata = runtimedata;
@@ -2682,7 +2683,7 @@ boolean runHostedCard (WindowPtr hostwindow, Handle hpackedcard, boolean flscrip
 	
 	flreturn = true;
 	
-	(**runtimedata).callback = callback;
+	(**runtimedata).callback = pCallback;
 	
 	(**runtimedata).modeless = true;
 	

@@ -388,7 +388,8 @@ void closelangcomponents (void) {
 #endif
 
 static boolean rungraphicalurl (Handle hscript, bigstring errorstring) {
-	
+#pragma unused(hscript)
+
 	setstringlength (errorstring, 0);
 	
 	return (true);

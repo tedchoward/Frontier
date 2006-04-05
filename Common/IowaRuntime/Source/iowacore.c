@@ -908,13 +908,13 @@ void getgrouprect (hdlobject h, Rect *r) {
 	
 	if ((**h).objecthasframe) {
 		
-		Rect robject;
+		Rect tempRect; // 2006-04-03 - kw ---renamed from robject - shadowwarning
 		
-		robject = (**h).objectrect;
+		tempRect = (**h).objectrect;
 		
-		if (!EmptyRect (&robject)) { /*user has changed its rect, it takes precedence*/
+		if (!EmptyRect (&tempRect)) { /*user has changed its rect, it takes precedence*/
 			
-			rgroup = robject;
+			rgroup = tempRect;
 			
 			goto exit;
 			}
