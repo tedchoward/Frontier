@@ -401,15 +401,15 @@ boolean tableverbsetupdisplay (hdlhashtable htable, hdlwindowinfo hinfo) {
 		
 		if ((**ht).fllocaltable || ht == runtimestacktable) { /*use default script font/size for locals tables*/
 			
-			tyconfigrecord config;
+			tyconfigrecord lconfig;
 			
-			shellgetconfig (idscriptconfig, &config);
+			shellgetconfig (idscriptconfig, &lconfig);
 			
-			(**hf).fontnum = config.defaultfont;
+			(**hf).fontnum = lconfig.defaultfont;
 			
-			(**hf).fontsize = config.defaultsize;
+			(**hf).fontsize = lconfig.defaultsize;
 			
-			(**hf).fontstyle = config.defaultstyle;
+			(**hf).fontstyle = lconfig.defaultstyle;
 			}
 		}
 	
@@ -1297,7 +1297,8 @@ static boolean tabledrivesymbolchange (hdlhashtable htable, const bigstring bsna
 
 
 boolean tablesymbolchanged (hdlhashtable htable, const bigstring bsname, hdlhashnode hn, boolean flvalue) {
-	
+#pragma unused (hn)
+
 	/*
 	used as a callback routine.  the value of the indicated variable has changed.
 	if the cell is being displayed, update the display of it.  if the name changed,

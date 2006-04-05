@@ -739,7 +739,8 @@ static boolean opxmlpushoneattribute (Handle htext, bigstring bsname, Handle hva
 
 
 static boolean opxmlpushattributes (hdlheadrecord hnode, Handle htext, short indentlevel) {
-	
+#pragma unused(indentlevel)
+
 	/*
 	7.0b21 PBS: push the attributes onto the current <outline> item.
 	*/
@@ -1369,8 +1370,6 @@ static boolean opxmlgetoneshortvalue (hdlhashtable ht, bigstring bsname, short *
 	} /*opxmlgetoneshortvalue*/
 
 
-
-
 static boolean opxmlsetwindowpositionandsize (hdlhashtable ht, hdlwindowinfo hinfo) {
 	
 	/*
@@ -1898,7 +1897,8 @@ exit:
 extern boolean opsetheadtext (hdlheadrecord hnode, Handle hstring);
 
 static boolean opxmltooutlinevisit (hdlhashtable ht, short ixlevel, bigstring bsname, boolean flfirstline) {
-	
+#pragma unused (bsname)
+
 	/*
 	7.0b21 PBS -- recursive routine for converting an XML outlineDocument structure to an outline structure.
 	*/

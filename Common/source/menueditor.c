@@ -126,7 +126,8 @@ hdldatabaserecord megetdatabase (hdlmenurecord hm) {
 
 	
 static void megetcursornode (hdlmenurecord hm, hdlheadrecord *hcursor) {
-	
+#pragma unused (hm)
+
 	assert (menudata != nil);
 	
 	*hcursor = (**(**menudata).menuoutline).hbarcursor;
@@ -315,7 +316,8 @@ void megetoutlinerect (Rect *r) {
 	
 	
 static boolean meclearhandlevisit (hdlheadrecord hnode, ptrvoid refcon) {
-	
+#pragma unused (refcon)
+
 	tymenuiteminfo item;
 	
 	if (megetmenuiteminfo (hnode, &item)) {
@@ -342,6 +344,7 @@ static void meclearhandles (hdloutlinerecord ho) {
 
 
 static boolean mesomethingdirtyvisit (hdlheadrecord hnode, ptrvoid refcon) {
+#pragma unused (refcon)
 
 	register hdlheadrecord h = hnode;
 	register hdloutlinerecord ho;
@@ -1153,7 +1156,8 @@ static hdlheadrecord *globalcmdkeyarray = nil; /*for building the cmdkey popup m
 
 
 static boolean mebuildcmdkeypopupvisit (hdlheadrecord hnode, ptrvoid refcon) {
-	
+#pragma unused (refcon)
+
 	register hdlheadrecord h = hnode;
 	register unsigned char ch;
 	
@@ -1560,7 +1564,8 @@ boolean mecmdkeyfilter (char chkb) {
 
 
 static boolean metextchangedroutine (hdlheadrecord hnode, bigstring bsorig) {
-	
+#pragma unused (bsorig)
+
 	/*
 	a callback routine, linked into the outlinerecord -- it gets called when
 	the user has changed the text of one of the headlines.
@@ -1742,7 +1747,7 @@ boolean menewmenurecord (hdlmenurecord *hmenurecord) {
 	register hdlmenurecord hm;
 	hdloutlinerecord houtline = nil;
 	register hdloutlinerecord ho = nil;
-	tyconfigrecord config;
+	tyconfigrecord lconfig;
 	
 	if (!newclearhandle (longsizeof (tymenurecord), (Handle *) hmenurecord))
 		return (false);
@@ -1768,20 +1773,20 @@ boolean menewmenurecord (hdlmenurecord *hmenurecord) {
 	
 	bundle { /*set the default font for the menubar outline*/
 		
-		shellgetconfig (idmenueditorconfig, &config);
+		shellgetconfig (idmenueditorconfig, &lconfig);
 		
-		(**ho).fontnum = config.defaultfont;
+		(**ho).fontnum = lconfig.defaultfont;
 		
-		(**ho).fontsize = config.defaultsize;
+		(**ho).fontsize = lconfig.defaultsize;
 		}
 	
 	bundle { /*set the default font for menubar scripts*/
 		
-		langexternalgetconfig (scriptvaluetype, idscriptconfig, &config);
+		langexternalgetconfig (scriptvaluetype, idscriptconfig, &lconfig);
 		
-		(**hm).defaultscriptfontnum = config.defaultfont;
+		(**hm).defaultscriptfontnum = lconfig.defaultfont;
 		
-		(**hm).defaultscriptfontsize = config.defaultsize;
+		(**hm).defaultscriptfontsize = lconfig.defaultsize;
 		}
 	
 	return (true);

@@ -2430,18 +2430,18 @@ static boolean coercetodate (tyvaluerecord *v) {
 		
 		case stringvaluetype: {
 			bigstring bs;
-			unsigned long time;
+			unsigned long ltime;
 			
 			pullstringvalue (v, bs);
 			
-			if (!stringtotime (bs, &time)) {
+			if (!stringtotime (bs, &ltime)) {
 				
 				langerror (datecoerceerror);
 				
 				return (false);
 				}
 			
-			x = time;
+			x = ltime;
 			
 			break;
 			}
@@ -2893,37 +2893,33 @@ static boolean coercetodouble (tyvaluerecord *v) {
 			break;
 		
 		case binaryvaluetype:
-		
-			#if noextended
-				{
-				long double x;
-				extended80 x80;
-				
-				/*first do type & length checking, resulting in x80 value in v*/
-				
+#if noextended
+		{
+			long double lx;
+			extended80 x80;
+
+			/*first do type & length checking, resulting in x80 value in v*/
+
 				if (!coercebinaryval (v, doublevaluetype, sizeof (extended80), novaluetype))
-					return (false);
-				
-				/*now convert to actual double value*/
-				
-	
-				#ifdef WIN95VERSION
-					memmove (&x80, *((*v).data.doublevalue), sizeof (x80));
+				return (false);
 
-					convertFromMacExtended (&x, &x80);
-				#else
-					x80 = (**(extended80 **) (*v).data.doublevalue);
+			/*now convert to actual double value*/
 
-					safex80told (&x80, &x);
-				#endif
-				
-				return (setdoublevalue (x, v));
-				}
-			
-			#else
-			
-				return (coercebinaryval (v, doublevaluetype, sizeof (double), novaluetype));
-			
+#ifdef WIN95VERSION
+			memmove (&x80, *((*v).data.doublevalue), sizeof (x80));
+
+			convertFromMacExtended (&lx, &x80);
+#else
+			x80 = (**(extended80 **) (*v).data.doublevalue);
+
+			safex80told (&x80, &lx);
+#endif
+			return (setdoublevalue (lx, v));
+		}
+#else
+
+			return (coercebinaryval (v, doublevaluetype, sizeof (double), novaluetype));
+
 			#endif
 		
 		case listvaluetype:
@@ -5503,7 +5499,7 @@ boolean dereferencevalue (hdltreenode htree, tyvaluerecord *val) {
 	} /*dereferencevalue*/
 
 
-static boolean getvalidstringindex (tyvaluerecord *vstring, bigstring bsname, tyvaluerecord *vindex, long *index) {
+static boolean getvalidstringindex (tyvaluerecord *vstring, bigstring bsname, tyvaluerecord *vindex, long *idx) {
 	
 	/*
 	2.1b3 dmb: if string is a binary, account for binary subtype
@@ -5532,7 +5528,7 @@ static boolean getvalidstringindex (tyvaluerecord *vstring, bigstring bsname, ty
 	if ((*vstring).valuetype == binaryvaluetype) /*skip binary subtype*/
 		ix += sizeof (OSType);
 	
-	*index = ix;
+	*idx = ix;
 	
 	return (true);
 	} /*getvalidstringindex*/

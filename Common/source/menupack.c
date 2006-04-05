@@ -208,7 +208,8 @@ typedef struct typackinfo {
 
 
 static boolean mesavescriptvisit (hdlheadrecord hnode, ptrvoid refcon) {
-	
+#pragma unused (refcon)
+
 	register hdlheadrecord h = hnode;
 	//ptrpackinfo packinfo = (ptrpackinfo) refcon;
 	register hdloutlinerecord ho;
@@ -251,7 +252,8 @@ static boolean mesavescriptvisit (hdlheadrecord hnode, ptrvoid refcon) {
 	
 
 static boolean mesaveasscriptvisit (hdlheadrecord hnode, ptrvoid refcon) {
-	
+#pragma unused (refcon)
+
 	/*
 	for save as, we need to write a packed version of every script to 
 	the new file.  db.c takes care of redirecting reads & writes as 
@@ -569,7 +571,7 @@ boolean mesetupmenurecord (tysavedmenuinfo *info, hdloutlinerecord houtline, hdl
 	4/22/91 dmb: menu outline now points to menu variable
 	*/
 	
-	register tysavedmenuinfo *pi = info;
+	register tysavedmenuinfo *lpi = info;
 	register hdlmenurecord hm;
 	register hdloutlinerecord ho;
 	short fontnum;
@@ -587,19 +589,19 @@ boolean mesetupmenurecord (tysavedmenuinfo *info, hdloutlinerecord houtline, hdl
 	
 	(**ho).outlinerefcon = (long) hm; /*pointing is mutual*/
 	
-	(**hm).adroutline = conditionallongswap((*pi).adroutline); /*keep address around for save*/
+	(**hm).adroutline = conditionallongswap((*lpi).adroutline); /*keep address around for save*/
 	
-	diskrecttorect (&(*pi).scriptwindowrect, &(**hm).scriptwindowrect);
+	diskrecttorect (&(*lpi).scriptwindowrect, &(**hm).scriptwindowrect);
 	
-	(**hm).flautosmash = ((*pi).flags & flautosmash_mask) != 0;
+	(**hm).flautosmash = ((*lpi).flags & flautosmash_mask) != 0;
 	
-	diskrecttorect (&(*pi).menuwindowrect, &(**hm).menuwindowrect);
+	diskrecttorect (&(*lpi).menuwindowrect, &(**hm).menuwindowrect);
 	
-	diskgetfontnum ((*pi).defaultscriptfontname, &fontnum);
+	diskgetfontnum ((*lpi).defaultscriptfontname, &fontnum);
 	
 	(**hm).defaultscriptfontnum = fontnum;
 	
-	(**hm).defaultscriptfontsize = conditionalshortswap((*pi).defaultscriptfontsize);
+	(**hm).defaultscriptfontsize = conditionalshortswap((*lpi).defaultscriptfontsize);
 	
 	(**hm).menuactiveitem = menuoutlineitem;
 	

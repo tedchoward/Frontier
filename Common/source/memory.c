@@ -849,6 +849,7 @@ boolean newgrowinghandle (long size, Handle *h) {
 
 
 boolean prepareforgrowing (Handle h) {
+#pragma unused (h)
 	
 	/*
 	like newgrowinghandle, but for an already-existing handle. the 

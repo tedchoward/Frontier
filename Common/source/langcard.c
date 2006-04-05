@@ -72,7 +72,7 @@ static boolean langismodalcard (hdltreenode hparam1, tyvaluerecord *vreturned) {
 typedef void (*tycardeventcallback)(EventRecord *);
 typedef long hdlcard;
 
-extern boolean runCard (Handle hpackedcard, boolean flscriptedcard, short top, short left, void * callback);
+extern boolean runCard (Handle hpackedcard, boolean flscriptedcard, short top, short pleft, void * pcallback);
 extern boolean runModalCard (Handle, boolean, short, short, tycardeventcallback);
 extern boolean runModelessCard (Handle, boolean, short, short, tycardeventcallback);
 extern boolean cardIsModal (Handle hpackedcard);
@@ -356,7 +356,8 @@ static boolean getcardparam (hdltreenode hparam1, short pnum, Handle *hcard, big
 
 
 boolean langruncard (hdltreenode hparam1, boolean flmodal, tyvaluerecord *vreturned) {
-	
+#pragma unused(flmodal)
+
 	/*
 	4.0b7 dmb: use new embedded birdruncard
 	*/

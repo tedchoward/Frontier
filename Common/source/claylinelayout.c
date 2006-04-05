@@ -160,6 +160,7 @@ static void darkcolorof (RGBColor *rgb) {
 
 
 void claysmashoutlinefields (hdlwindowinfo appwindow, hdltableformats hf) {
+#pragma unused (appwindow)
 
 	/*
 	bind the outline's font and size to the font/size from the
@@ -489,7 +490,8 @@ boolean claypushnodestyle (hdlheadrecord hnode) {
 
 
 boolean claygetlineheight (hdlheadrecord hnode, short *lh) {
-	
+#pragma unused (hnode)
+
 	*lh = getframeheight ();
 	
 	if (hasframe ())
@@ -582,7 +584,8 @@ static Rect rfilename, rframe, rdate;
 
 
 boolean claypredrawline (hdlheadrecord hnode, const Rect *linerect, boolean flselected, boolean flinverted) {
-	
+#pragma unused(flinverted)
+
 	hdltableformats hf = tableformatsdata;
 	Rect r;
 	
@@ -750,18 +753,18 @@ static boolean claydrawtext (hdlheadrecord hnode, const Rect *rtext, boolean fls
 	
 	/*special tweaked-up code for drawing the selected line*/ {
 	
-		Rect rframe = *rtext;
+		Rect lrframe = *rtext;	// 2006-04-03 - kw --- renamed rframe
 		
-		rframe.right = rframe.left + stringpixels (bshead);
+		lrframe.right = lrframe.left + stringpixels (bshead);
 		
-		if (rframe.right > (*rtext).right) 
-			rframe.right = (*rtext).right;
+		if (lrframe.right > (*rtext).right) 
+			lrframe.right = (*rtext).right;
 		
-		rframe.bottom = rframe.top + globalfontinfo.ascent + globalfontinfo.descent;
+		lrframe.bottom = lrframe.top + globalfontinfo.ascent + globalfontinfo.descent;
 			
 		if (flinverted) {
 			
-			Rect r = rframe;
+			Rect r = lrframe;
 			
 			insetrect (&r, -1, -1);
 			
@@ -782,9 +785,9 @@ static boolean claydrawtext (hdlheadrecord hnode, const Rect *rtext, boolean fls
 			
 		/*frame the cursor*/ {
 		
-			insetrect (&rframe, -texthorizinset, -textvertinset);
+			insetrect (&lrframe, -texthorizinset, -textvertinset);
 	
-			grayframerect (rframe);
+			grayframerect (lrframe);
 			}
 		}
 
@@ -812,7 +815,8 @@ boolean claydrawline (hdlheadrecord hnode, const Rect *textrect, boolean flselec
 	
 	
 boolean claypostdrawline (hdlheadrecord hnode, const Rect *linerect, boolean flselected, boolean flinverted) {
-	
+#pragma unused(flselected, flinverted)
+
 	/*
 	we draw everything but the icon and the filename, if we're in fatview mode.
 	
@@ -915,7 +919,8 @@ boolean claypostdrawline (hdlheadrecord hnode, const Rect *linerect, boolean fls
 	
 
 boolean claydrawnodeicon (hdlheadrecord hnode, const Rect *iconrect, boolean flselected, boolean flinverted) {
-	
+#pragma unused(flinverted)
+
 	short iconnum;
 	short transform = 0;
 	

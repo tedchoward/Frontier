@@ -377,7 +377,8 @@ boolean tableverbunpack (Handle hpacked, long *ixload, hdlexternalvariable *h, b
 
 
 static boolean tablepacktotextvisit (bigstring bsname, hdlhashnode hnode, tyvaluerecord val, ptrvoid refcon) {
-	
+#pragma unused (hnode)
+
 	/*
 	4.0.2b1 dmb: handle fldiskvals. see comment in hashsortedinversesearch
 	*/

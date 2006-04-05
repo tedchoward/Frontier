@@ -52,7 +52,8 @@ static long ctalreadyexpanded;
 
 
 static boolean opcollapsevisit (hdlheadrecord hnode, ptrvoid refcon) {
-	
+#pragma unused (refcon)
+
 	register hdlheadrecord h = hnode;
 	
 	if ((**h).flexpanded) {
@@ -156,7 +157,8 @@ boolean opcollapse (hdlheadrecord hnode) {
 
 
 static boolean opexpandvisit (hdlheadrecord hnode, ptrvoid refcon) {
-	
+#pragma unused (refcon)
+
 	short lh = opgetlineheight (hnode);
 	
 	if ((**hnode).flexpanded) {

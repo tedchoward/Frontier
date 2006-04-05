@@ -407,7 +407,8 @@ boolean getfsvolume (const tyfilespec *fs, long *vnum) {
 		
 		return (PBHGetVInfoSync ((HParmBlkPtr) &pb) == noErr);
 	#endif
-	} /*getfsfile*/
+	} /*getfsvolume*/
+
 
 void initfsdefault (void) {
 	#ifdef MACVERSION
@@ -415,4 +416,4 @@ void initfsdefault (void) {
 	getapplicationfilespec (nil, &fsdefault);
 	#endif
 	} /* initfsdefault */
-	
+

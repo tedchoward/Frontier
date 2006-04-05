@@ -596,7 +596,8 @@ boolean opinvalnode (hdlheadrecord hnode) {
 	
 
 static boolean opinvalnodevisit (hdlheadrecord hnode, ptrvoid refcon) {
-	
+#pragma unused (refcon)
+
 	/*
 	1/6/97 dmb: don't inval if getting line returns false
 	*/
@@ -673,7 +674,8 @@ void operasedisplay (void) {
 
 
 static boolean opdirtymeasurementsvisit (hdlheadrecord hnode, ptrvoid refcon) {
-	
+#pragma unused (refcon)
+
 	(**hnode).hpixels = (**hnode).vpixels = opdirtymeasurevalue;
 	
 	return (true);
@@ -775,7 +777,8 @@ short opmaxlevelwidth (hdlheadrecord hnode) {
 
 
 boolean opdefaultpredrawline (hdlheadrecord hnode, const Rect *rline, boolean flselected, boolean flinverted) {
-	
+#pragma unused(hnode, flselected, flinverted)
+
 	pushbackcolor (&(**outlinedata).backcolor);
 	
 	eraserect (*rline); 
@@ -855,13 +858,20 @@ boolean opdefaultdrawtext (hdlheadrecord hnode, const Rect *rtext, boolean flsel
 
 	return (true);
 	} /*opdefaultdrawtext*/
-	
 
-boolean opdefaultpostdrawline (hdlheadrecord hnode, const Rect * linerect, boolean flselected, boolean flinverted) {
+
+boolean
+opdefaultpostdrawline (
+		hdlheadrecord	 hnode,
+		const Rect		*linerect,
+		boolean			 flselected,
+		boolean			 flinverted)
+{
+#pragma unused(hnode, linerect, flselected, flinverted)
 
 	return (true);
 	} /*opdefaultpostdrawline*/
-	
+
 
 void opgetlineselected (hdlheadrecord hnode, boolean *flinverted, boolean *flselected) {
 

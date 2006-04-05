@@ -2458,13 +2458,14 @@ static boolean fwsbackgroundtask (void) {
 	return (fl);
 	}/*fwsbackgroundtask*/
 
-static boolean fwsNetEventLaunch (int * dummy) {
+
+static boolean fwsNetEventLaunch (struct hostData *data) {
+#pragma unused (data)
 
 	/*
 	Initialize the NetEvents system	
 	*/
-	
-	
+
 	if (!frontierWinSockLoaded) {
 		
 		//Code change by Timothy Paustian Monday, June 26, 2000 3:55:47 PM
@@ -3231,7 +3232,7 @@ static boolean fwslaunchacceptingthread (ListenRecordRef listenref) {
 	}/*fwslaunchacceptingthread*/
 
 
-boolean fwsNetEventListenStream (unsigned long port, long depth, bigstring callback, unsigned long refcon, unsigned long * stream, unsigned long ipaddr, long hdatabase) {
+boolean fwsNetEventListenStream (unsigned long port, long depth, bigstring pCallback, unsigned long refcon, unsigned long * stream, unsigned long ipaddr, long hdatabase) {
 
 	/* Set up a listner on a port */
 
@@ -3245,8 +3246,8 @@ boolean fwsNetEventListenStream (unsigned long port, long depth, bigstring callb
 	TOption opt;
 	long i;
 	
-	nullterminate (callback);
-	TCPprintf(wsprintf(TCPmsg, "Entering fwsNetEventListenStream at line %d. Port = %ld, Depth = %ld, Refcon = %ld, Callback = %s.", __LINE__, port, depth, refcon, stringbaseaddress(callback)));
+	nullterminate (pCallback);
+	TCPprintf(wsprintf(TCPmsg, "Entering fwsNetEventListenStream at line %d. Port = %ld, Depth = %ld, Refcon = %ld, Callback = %s.", __LINE__, port, depth, refcon, stringbaseaddress(pCallback)));
 	TCPWRITEMSG ();
 
 	/* Initialize Open Transport and static data structures */
@@ -3256,7 +3257,7 @@ boolean fwsNetEventListenStream (unsigned long port, long depth, bigstring callb
 	
 	/* Compile and pack a code tree for the address of the daemon script */
 
-	if (!fwsgetcallbackcodetree (callback, &hcallbacktree))
+	if (!fwsgetcallbackcodetree (pCallback, &hcallbacktree))
 		return (false);
 	
 	/* Allocate and clear memory for the listener */
@@ -3271,7 +3272,7 @@ boolean fwsNetEventListenStream (unsigned long port, long depth, bigstring callb
 	OTMemzero (listenref, sizeof (tylistenrecord));
 	
 	/* Initialize further status fields */
-	copystring (callback, listenref->callback);
+	copystring (pCallback, listenref->callback);
 
 	listenref->maxdepth = depth;
 

@@ -88,7 +88,8 @@ tythreadcallbacks threadcallbacks;
 #ifdef MACVERSION
 
 static pascal void copythreadcontext (ThreadID hthread, void * hglobals) {
-	
+#pragma unused (hthread)
+
 #if TARGET_API_MAC_OS8
 	long curA5 = SetUpAppA5 ();
 #endif
@@ -102,7 +103,8 @@ static pascal void copythreadcontext (ThreadID hthread, void * hglobals) {
 
 
 static pascal void swapinthreadcontext (ThreadID hthread, void * hglobals) {
-	
+#pragma unused (hthread)
+
 #if TARGET_API_MAC_OS8
 	long curA5 = SetUpAppA5 ();
 #endif
@@ -116,7 +118,8 @@ static pascal void swapinthreadcontext (ThreadID hthread, void * hglobals) {
 
 
 static pascal void disposethreadcontext (ThreadID hthread, void * hglobals) {
-	
+#pragma unused (hthread)
+
 #if TARGET_API_MAC_OS8
 	long curA5 = SetUpAppA5 ();
 #endif
@@ -255,12 +258,15 @@ boolean inmainthread (void) {
 
 
 boolean attachtomainthread (long idthread) {
+#ifdef MACVERSION
+#	pragma unused (idthread)
+#endif
 
-	#ifdef WIN95VERSION
-		return (AttachThreadInput (idthread, idmainthread, true));
-	#else
-		return (true); /*it's a no-op*/
-	#endif
+#ifdef WIN95VERSION
+	return (AttachThreadInput (idthread, idmainthread, true));
+#else
+	return (true); /*it's a no-op*/
+#endif
 	}/*attachtomainthread*/
 
 
@@ -431,7 +437,8 @@ boolean threadiswaiting (void) {
 
 
 boolean threadyield (boolean flresting) {
-	
+#pragma unused(flresting)
+
 	/*
 	5.0a19 dmb: added flresting parameter
 	*/

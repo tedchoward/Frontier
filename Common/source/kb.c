@@ -99,6 +99,7 @@ static boolean keydown (short keycode, boolean flasync) {
 	*/
 
 	#ifdef MACVERSION
+#		pragma unused (flasync)
 		KeyMap keys;
 		
 		GetKeys (keys);

@@ -212,15 +212,15 @@ static boolean getappmenurecord (long id, hdlmenurecord *hrecord) {
 	get the menurecord for the application with the indicated id.
 	*/
 	
-	hdlhashtable menubartable;
+	hdlhashtable lmenubartable;
 	bigstring bs;
 	
-	if (!getmenubartable (&menubartable))
+	if (!getmenubartable (&lmenubartable))
 		return (false);
 	
 	ostypetostring (id, bs);
 	
-	return (menugetmenubar (menubartable, bs, false, hrecord));
+	return (menugetmenubar (lmenubartable, bs, false, hrecord));
 	} /*getappmenurecord*/
 
 
@@ -692,7 +692,8 @@ static boolean langipcmenubarchanged (hdloutlinerecord houtline) {
 
 
 static boolean notifyappvisit (hdlhashnode hnode, ptrvoid refcon) {
-	
+#pragma unused (refcon)
+
 	/*
 	if hnode is a menubar that may belong to an application, send the 
 	updatemenustoken message to that application.
@@ -731,12 +732,12 @@ boolean langipcmenustartup (void) {
 	to let them know their menus are available
 	*/
 	
-	hdlhashtable menubartable;
+	hdlhashtable lmenubartable;
 	
-	if (!getmenubartable (&menubartable))
+	if (!getmenubartable (&lmenubartable))
 		return (false);
 	
-	hashtablevisit (menubartable, &notifyappvisit, nil);
+	hashtablevisit (lmenubartable, &notifyappvisit, nil);
 	
 	return (true);
 	} /*langipcmenustartup*/
@@ -754,16 +755,16 @@ boolean langipcmenushutdown (void) {
 	new set of menus from being built
 	*/
 	
-	hdlhashtable menubartable;
+	hdlhashtable lmenubartable;
 	
 	disposeallmenulists ();
 	
-	if (!getmenubartable (&menubartable))
+	if (!getmenubartable (&lmenubartable))
 		return (false);
 	
 	flshuttingmenusdown = true;
 	
-	hashtablevisit (menubartable, &notifyappvisit, nil);
+	hashtablevisit (lmenubartable, &notifyappvisit, nil);
 	
 	flshuttingmenusdown = false;
 	
@@ -773,12 +774,12 @@ boolean langipcmenushutdown (void) {
 
 static boolean getmenubarid (hdlhashtable htable, const bigstring bs, tyapplicationid *id) {
 	
-	hdlhashtable menubartable;
+	hdlhashtable lmenubartable;
 	
-	if (!getmenubartable (&menubartable))
+	if (!getmenubartable (&lmenubartable))
 		return (false);
 	
-	if (htable != menubartable)
+	if (htable != lmenubartable)
 		return (false);
 	
 	return (stringtoostype ((ptrstring) bs, id)); /*false if name is longer than 4 characters*/
@@ -786,7 +787,8 @@ static boolean getmenubarid (hdlhashtable htable, const bigstring bs, tyapplicat
 
 
 boolean langipcsymbolchanged (hdlhashtable htable, const bigstring bs, boolean flvalue) {
-	
+#pragma unused(flvalue)
+
 	tyapplicationid id;
 	
 	if (getmenubarid (htable, bs, &id)) {

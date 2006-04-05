@@ -224,6 +224,11 @@ void zoomfrommiddle (Rect r) {
 */	
 
 void zoomport (Rect rsource, WindowPtr w, boolean flzoomup) {
+#if TARGET_API_MAC_CARBON == 1
+#	pragma unused(rsource)
+#	pragma unused(w)
+#	pragma unused(flzoomup)
+#endif
 
 	/*
 	zooms the window from an invisible state to a visible 
@@ -532,7 +537,3 @@ void zoominit (void) {
 		zoomratio.v = 21;
 		}
 	} /*zoominit*/
-	
-	
-	
-	

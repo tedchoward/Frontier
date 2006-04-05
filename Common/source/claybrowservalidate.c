@@ -109,7 +109,8 @@ typedef struct tydraginfo {
 
 
 boolean browservalidatedrag (hdlheadrecord hsource, hdlheadrecord hdest, tydirection dir) {
-	
+#pragma unused (hsource)
+
 	/*
 	5.0a5 dmb: same level, resort check is bogus; headlink lefts can be the same for a 
 	summit and its child, and two summits have different headlinklefts. but we don't 
@@ -150,8 +151,8 @@ boolean browservalidatedrag (hdlheadrecord hsource, hdlheadrecord hdest, tydirec
 	} /*browservalidatedrag*/
 
 
-static boolean browsercompareforcollision (hdlheadrecord hnode, long dragmodified, bigstring bs1, bigstring bs2, ptrdraginfo draginfo) {
-
+static boolean browsercompareforcollision (hdlheadrecord hnode, long pdragmodified, bigstring bs1, bigstring bs2, ptrdraginfo draginfo) {
+// 2006-04-03 - kw --- renamed dragmodified
 	/*
 	5.0.2b18 dmb: set tmpbit of subs too, so we can detect illegal moves
 	*/
@@ -172,7 +173,7 @@ static boolean browsercompareforcollision (hdlheadrecord hnode, long dragmodifie
 			
 			browsergetrefcon (hnode, &info);
 			
-			switch (sgn (dragmodified - info.timemodified)) {
+			switch (sgn (pdragmodified - info.timemodified)) {
 				
 				case +1:
 					(*draginfo).collisiontype |= collidewitholder; break;
@@ -211,6 +212,7 @@ static boolean collisionvisit (hdlheadrecord hnode, ptrvoid refcon) {
 		
 
 static boolean browsercollisiondialog (hdlheadrecord hdest, ptrdraginfo draginfo) {
+#pragma unused (hdest)
 
 	/*
 	2005-09-26 creedon: changed default order of buttons, default is Duplicate which is the safe option, checks user.prefs.flReplaceDialogExpertMode and if true Replace is the default option
@@ -492,7 +494,8 @@ static boolean compareforcopyvisit (hdlheadrecord hnode, ptrvoid refcon) {
 	
 	
 static boolean validatecopyvisit (hdlheadrecord hnode, ptrvoid refcon) {
-	
+#pragma unused (refcon)
+
 	tydraginfo draginfo;
 	
 	draginfo.hcompare = hnode;

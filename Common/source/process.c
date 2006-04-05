@@ -2037,7 +2037,8 @@ static unsigned long latesttime;
 static hdlthreadglobals hlatest1shot;
 
 static pascal boolean findlatest1shotvisit (hdlthreadglobals hthread, long refcon) {
-	
+#pragma unused (refcon)
+
 	/*
 	if this thread contains a 1-shot process, kill it and stop the visit
 	*/
@@ -2129,7 +2130,8 @@ intimately familiar with the globals structure.
 */
 
 static boolean findthreadvisit (bigstring bs, hdlhashnode hnode, tyvaluerecord val, ptrvoid refcon) {
-	
+#pragma unused (bs, hnode, refcon)
+
 	return (val.data.longvalue == (long) (**hthreadglobals).idthread);
 	} /*findvaluevisit*/
 
@@ -3150,7 +3152,8 @@ static void agentscheduler (void) {
 
 
 static pascal void *agentthreadmain (void *ignore) {
-	
+#pragma unused (ignore)
+
 	/*
 	4.0.1b1 dmb: pass name of thread to initprocessthread; call exitprocessthread
 	
