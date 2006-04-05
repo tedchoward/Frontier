@@ -102,7 +102,9 @@ extern boolean fwsNetEventReadStream (unsigned long stream, unsigned long * byte
 extern boolean fwsNetEventWriteStream (unsigned long stream, unsigned long bytesToWrite, char * buffer);
 
 /* Set up a listner on a port */
-extern boolean fwsNetEventListenStream (unsigned long port, long depth, bigstring callback, unsigned long refcon, unsigned long * stream, unsigned long ipaddr, long hdatabase);
+// 2006-04-04 - kw --- removed parameter names
+// extern boolean fwsNetEventListenStream (unsigned long port, long depth, bigstring callback, unsigned long refcon, unsigned long * stream, unsigned long ipaddr, long hdatabase);
+extern boolean fwsNetEventListenStream (unsigned long, long, bigstring, unsigned long, unsigned long *, unsigned long, long);
 
 /* get the status of a stream */
 extern boolean fwsNetEventStatusStream (unsigned long stream, bigstring status, unsigned long * bytesPending);

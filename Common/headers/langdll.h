@@ -62,9 +62,16 @@ odbBool xCALLBACK extDoScriptText (char * script, long len, Handle * text);
 
 odbBool xCALLBACK extOdbNewListValue (odbRef odb, odbValueRecord *valueList, odbBool flRecord);
 odbBool xCALLBACK extOdbGetListCount (odbRef odb, odbValueRecord *valueList, long * cnt);
-odbBool xCALLBACK extOdbDeleteListValue (odbRef odb, odbValueRecord *valueList, long index, char * recordname);
-odbBool xCALLBACK extOdbSetListValue (odbRef odb, odbValueRecord *valueList, long index, char * recordname, odbValueRecord *valueData);
-odbBool xCALLBACK extOdbGetListValue (odbRef odb, odbValueRecord *valueList, long index, char * recordname, odbValueRecord *valueReturn);
+
+// 2006-04-04 - kw --- removed parameter names
+// odbBool xCALLBACK extOdbDeleteListValue (odbRef odb, odbValueRecord *valueList, long index, char * recordname);
+odbBool xCALLBACK extOdbDeleteListValue (odbRef, odbValueRecord *, long, char *);
+
+// odbBool xCALLBACK extOdbSetListValue (odbRef odb, odbValueRecord *valueList, long index, char * recordname, odbValueRecord *valueData);
+odbBool xCALLBACK extOdbSetListValue (odbRef, odbValueRecord *, long, char *, odbValueRecord *);
+// odbBool xCALLBACK extOdbGetListValue (odbRef odb, odbValueRecord *valueList, long index, char * recordname, odbValueRecord *valueReturn);
+odbBool xCALLBACK extOdbGetListValue (odbRef, odbValueRecord *, long, char *, odbValueRecord *);
+
 odbBool xCALLBACK extOdbAddListValue (odbRef odb, odbValueRecord *valueList, char * recordname, odbValueRecord *valueData);
 
 odbBool xCALLBACK extInvoke (bigstring bsscriptname, void * pDispParams, odbValueRecord * retval, boolean *flfoundhandler, unsigned int * errarg);

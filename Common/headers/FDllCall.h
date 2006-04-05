@@ -262,9 +262,15 @@ typedef struct tyXDLLProcTable {
 
 	odbBool (xCALLBACK *xOdbNewListValue) (odbRef odb, odbValueRecord *value, odbBool flRecord);
 	odbBool (xCALLBACK *xOdbGetListCount) (odbRef odb, odbValueRecord *value, long * cnt);
-	odbBool (xCALLBACK *xOdbDeleteListValue) (odbRef odb, odbValueRecord *value, long index, char * recordname);
-	odbBool (xCALLBACK *xOdbSetListValue) (odbRef odb, odbValueRecord *value, long index, char * recordname, odbValueRecord *valueData);
-	odbBool (xCALLBACK *xOdbGetListValue) (odbRef odb, odbValueRecord *value, long index, char * recordname, odbValueRecord *valueReturn);
+
+	// 2006-04-04 - kw --- removed parameter names
+	// odbBool (xCALLBACK *xOdbDeleteListValue) (odbRef odb, odbValueRecord *value, long index, char * recordname);
+	odbBool (xCALLBACK *xOdbDeleteListValue) (odbRef, odbValueRecord *, long, char *);
+	// odbBool (xCALLBACK *xOdbSetListValue) (odbRef odb, odbValueRecord *value, long index, char * recordname, odbValueRecord *valueData);
+	odbBool (xCALLBACK *xOdbSetListValue) (odbRef, odbValueRecord *, long, char *, odbValueRecord *);
+	// odbBool (xCALLBACK *xOdbGetListValue) (odbRef odb, odbValueRecord *value, long index, char * recordname, odbValueRecord *valueReturn);
+	odbBool (xCALLBACK *xOdbGetListValue) (odbRef, odbValueRecord *, long, char *, odbValueRecord *);
+
 	odbBool (xCALLBACK *xOdbAddListValue) (odbRef odb, odbValueRecord *value, char * recordname, odbValueRecord *valueData);
 
 	odbBool (xCALLBACK *xInvoke) (odbString bsscriptname, void * params, odbValueRecord * value, odbBool *flfound, unsigned int * errarg);

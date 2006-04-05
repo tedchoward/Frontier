@@ -76,7 +76,7 @@ typedef struct tyconfigrecord {
 	
 	boolean flvertscroll: 1;
 	
-	boolean flwindowfloats: 1; /*is it a floating palette window?*/
+	boolean flwindowfloats: 1; /*is it a floating palette window?*/		// NOT USED
 	
 	boolean flmessagearea: 1; /*allocate space for a message area?*/
 	
