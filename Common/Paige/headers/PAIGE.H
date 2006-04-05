@@ -1961,7 +1961,9 @@ extern PG_PASCAL (pg_boolean) pgSetWalkStyle (style_walk_ptr walker, long positi
 
 /* Async Lock/Unlock */
 
-extern PG_PASCAL (pg_boolean) pgSetLockID (pg_ref pg, long ID);
+// 2006-04-04 - kw --- removed parameter names
+//extern PG_PASCAL (pg_boolean) pgSetLockID (pg_ref pg, long ID);
+extern PG_PASCAL (pg_boolean) pgSetLockID (pg_ref, long);
 extern PG_PASCAL (long) pgGetLockID (pg_ref pg);
 
 
@@ -2115,7 +2117,11 @@ extern PG_PASCAL (void) pgSetStyleSheet (pg_ref pg, const select_pair_ptr select
 extern PG_PASCAL (pg_boolean) pgGetStyleSheet (pg_ref pg, const select_pair_ptr selection, short PG_FAR *style_id);
 extern PG_PASCAL (short) pgFindStyleSheet (pg_ref pg, const style_info_ptr compare_style,
 		const style_info_ptr mask);
-extern PG_PASCAL (short) pgGetIndStyleSheet (pg_ref pg, short index, style_info_ptr stylesheet);
+
+// 2006-04-04 - kw --- removed parameter names
+// extern PG_PASCAL (short) pgGetIndStyleSheet (pg_ref pg, short index, style_info_ptr stylesheet);
+extern PG_PASCAL (short) pgGetIndStyleSheet (pg_ref, short, style_info_ptr);
+
 extern PG_PASCAL (short) pgNewParStyle (pg_ref pg, const par_info_ptr new_style);
 extern PG_PASCAL (void) pgRemoveParStyle (pg_ref pg, short style_id);
 extern PG_PASCAL (short) pgNumParStyles (pg_ref pg);
@@ -2128,17 +2134,28 @@ extern PG_PASCAL (void) pgSetParStyleSheet (pg_ref pg, const select_pair_ptr sel
 extern PG_PASCAL (pg_boolean) pgGetParStyleSheet (pg_ref pg, const select_pair_ptr selection, short PG_FAR *style_id);
 extern PG_PASCAL (short) pgFindParStyleSheet (pg_ref pg, const par_info_ptr compare_style,
 		const par_info_ptr mask);
-extern PG_PASCAL (short) pgGetIndParStyleSheet (pg_ref pg, short index, par_info_ptr stylesheet);
+
+// 2006-04-04 - kw --- removed parameter names
+// extern PG_PASCAL (short) pgGetIndParStyleSheet (pg_ref pg, short index, par_info_ptr stylesheet);
+extern PG_PASCAL (short) pgGetIndParStyleSheet (pg_ref, short, par_info_ptr);
+
 extern PG_PASCAL (long) pgNewNamedStyle (pg_ref pg, pg_c_string_ptr stylename, const style_info_ptr style,
 		const font_info_ptr font, par_info_ptr par);
 extern PG_PASCAL (long) pgAddNamedStyle (pg_ref pg, pg_c_string_ptr stylename, const short style_id, const short par_id);
 extern PG_PASCAL (void) pgApplyNamedStyle (pg_ref pg, select_pair_ptr selection, pg_c_string_ptr stylename,
 		short draw_mode);
-extern PG_PASCAL (void) pgApplyNamedStyleIndex (pg_ref pg, select_pair_ptr selection, long index, short draw_mode);
+
+// 2006-04-04 - kw --- removed parameter names
+// extern PG_PASCAL (void) pgApplyNamedStyleIndex (pg_ref pg, select_pair_ptr selection, long index, short draw_mode);
+extern PG_PASCAL (void) pgApplyNamedStyleIndex (pg_ref, select_pair_ptr, long, short);
+
 extern PG_PASCAL (long) pgNumNamedStyles (pg_ref pg);
 extern PG_PASCAL (long) pgGetNamedStyleIndex (pg_ref pg, pg_c_string_ptr stylename);
-extern PG_PASCAL (void) pgGetNamedStyleInfo (pg_ref pg, long index, style_info_ptr style,
-		font_info_ptr font, par_info_ptr par);
+
+// 2006-04-04 - kw --- removed parameter names
+// extern PG_PASCAL (void) pgGetNamedStyleInfo (pg_ref pg, long index, style_info_ptr style, font_info_ptr font, par_info_ptr par);
+extern PG_PASCAL (void) pgGetNamedStyleInfo (pg_ref, long, style_info_ptr, font_info_ptr, par_info_ptr);
+
 extern PG_PASCAL (pg_boolean) pgGetNamedStyle (pg_ref pg, long named_style_index, named_stylesheet_ptr named_style);
 extern PG_PASCAL (pg_boolean) pgGetAppliedNamedStyle (pg_ref pg, select_pair_ptr selection, pg_c_string_ptr stylename);
 extern PG_PASCAL (void) pgDeleteNamedStyle (pg_ref pg, long named_style_index);
@@ -2341,7 +2358,11 @@ extern PG_PASCAL (void) pgSwapExclusions (pg_ref pg, pg_short_t exclusion1,
 		pg_short_t exclusion2, short draw_mode);
 extern PG_PASCAL (void) pgInsertExclusionShape (pg_ref pg, pg_short_t position,
 		shape_ref exclude_shape, short draw_mode);
-extern PG_PASCAL (void) pgAttachParExclusion (pg_ref pg, long position, pg_short_t index, short draw_mode);
+
+// 2006-04-04 - kw --- removed parameter names
+// extern PG_PASCAL (void) pgAttachParExclusion (pg_ref pg, long position, pg_short_t index, short draw_mode);
+extern PG_PASCAL (void) pgAttachParExclusion (pg_ref, long, pg_short_t, short);
+
 extern PG_PASCAL (long) pgGetAttachedPar (pg_ref pg, pg_short_t exclusion);
 
 
