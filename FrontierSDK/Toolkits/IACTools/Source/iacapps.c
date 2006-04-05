@@ -266,12 +266,12 @@ Boolean IAChaveappleevents (void) {
 	return true if Apple Events are available.
 	*/
 	
-	long gestaltAppleEventsPresent;
+	long lGestaltAppleEventsPresent;
 	
-	if (Gestalt (gestaltAppleEventsAttr, &gestaltAppleEventsPresent) != noErr)
+	if (Gestalt (gestaltAppleEventsAttr, &lGestaltAppleEventsPresent) != noErr)
 		return (false);
 	
-	return (gestaltAppleEventsPresent != 0);
+	return (lGestaltAppleEventsPresent != 0);
 	} /*IAChaveappleevents*/
 
 

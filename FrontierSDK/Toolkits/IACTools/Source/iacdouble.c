@@ -197,10 +197,13 @@ Boolean IACpushdoubleitem (AEDescList *list, double val, long n) {
 	ec = AECoercePtr (typeFloat, (Ptr)&val, sizeof (val), typeExtended, &valDesc);
 	
 	if (ec == noErr)
+	{
+		// 2006-04-02 kw --- inserted braces for ambiguity warning
 		if ((*list).descriptorType == typeAERecord)
 			ec = AEPutKeyDesc (list, n, &valDesc);
 		else
 			ec = AEPutDesc (list, n, &valDesc);
+	}
 	
 	IACglobals.errorcode = ec;
 	

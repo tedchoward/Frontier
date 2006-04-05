@@ -29,7 +29,7 @@ tyreplyhandler replyhandlers [ctreplyhandlers];
 
 
 
-static Boolean IACaddreplyhandler (tyAsynchCallback callback, long id) {
+static Boolean IACaddreplyhandler (tyAsynchCallback pcallback, long id) {
 	
 	short i;
 	
@@ -39,7 +39,7 @@ static Boolean IACaddreplyhandler (tyAsynchCallback callback, long id) {
 			
 			replyhandlers [i].id = id;
 			
-			replyhandlers [i].callback = callback;
+			replyhandlers [i].callback = pcallback;
 			
 			return (true);
 			}
@@ -50,7 +50,8 @@ static Boolean IACaddreplyhandler (tyAsynchCallback callback, long id) {
 
 
 static pascal OSErr IAChandleanswer (AppleEvent *event, AppleEvent *reply, long refcon) {
-	
+#pragma unused(reply, refcon)
+
 	long replyid;
 	short i;
 	
@@ -88,7 +89,7 @@ static Boolean IACasynchinitcheck (void) {
 	} /*IACasynchinitcheck*/
 	
 
-Boolean IACsendasynch (AppleEvent *event, tyAsynchCallback callback) {
+Boolean IACsendasynch (AppleEvent *event, tyAsynchCallback pcallback) {
 
 	AppleEvent reply;
 	OSErr ec;
@@ -100,9 +101,9 @@ Boolean IACsendasynch (AppleEvent *event, tyAsynchCallback callback) {
 	if (!IACgetlongattr (event, keyReturnIDAttr, typeLongInteger, &replyid))
 		return (false);
 	
-	if (callback != nil) { /*DW 7/30/93*/
+	if (pcallback != nil) { /*DW 7/30/93*/
 	
-		if (!IACaddreplyhandler (callback, replyid))
+		if (!IACaddreplyhandler (pcallback, replyid))
 			return (false);
 		}
 	

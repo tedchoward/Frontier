@@ -212,6 +212,7 @@ static pascal Boolean string2networkaddress (ConstStr255Param bsadr, TargetID *t
 #else
 
 static pascal Boolean string2networkaddress (ConstStr255Param bsadr, TargetID *target) {
+#pragma unused(bsadr, target)
 
 	/*
 	2004-10-21 aradke: Can't do this on Carbon, give up and return bogus error

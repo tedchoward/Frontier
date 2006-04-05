@@ -144,6 +144,7 @@ Boolean IACinstallsystemhandler (AEEventClass eventclass, AEEventID id, ProcPtr 
 	
 	
 Boolean IACremovesystemhandler (AEEventClass eventclass, AEEventID id, ProcPtr handler) {
+#pragma unused(handler)
 
 	hdlsystemhandler h = hfirstsystemhandler;
 	hdlsystemhandler hprev = nil;

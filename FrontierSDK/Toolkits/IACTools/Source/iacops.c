@@ -99,7 +99,8 @@ Boolean IACbreakembrace (void) {
 
 
 pascal short IACwaitroutine (EventRecord *ev, long *sleep, RgnHandle *mousergn) {
-	
+#pragma unused(sleep, mousergn)
+
 	/*
 	called by the AppleEvent manager during AESend to give the user a chance to 
 	break out of a wait loop.
