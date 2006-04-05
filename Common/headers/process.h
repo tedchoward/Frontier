@@ -191,7 +191,10 @@ extern boolean processrunstringnoerrorclear (bigstring);
 
 extern boolean processkill (hdlprocessrecord);
 
-extern void processinvalidglobals (WindowPtr);
+// kw 2005-12-16 - These two are retired
+// extern void processinvalidglobals (WindowPtr);
+
+// extern void processinvalidoutline (struct tyoutlinerecord **);
 
 extern boolean abort1shotprocess (void);
 
@@ -272,7 +275,3 @@ extern boolean initprocess (void);
 extern boolean processgetstats (hdlhashtable); /*6.2b6 AR*/
 
 #endif
-
-
-
-
