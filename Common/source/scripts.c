@@ -525,7 +525,8 @@ static boolean scriptcompiler (hdlhashnode hnode, hdltreenode *hcode) {
 
 
 static boolean installscriptvisit (hdlhashnode hnode, ptrvoid refcon) {
-	
+#pragma unused (refcon)
+
 	hdltreenode hcode;
 	
 	scriptcompiler (hnode, &hcode);
@@ -583,7 +584,8 @@ static boolean specialscriptkilled (void) {
 
 
 static boolean newprocessvisit (hdlhashnode hnode, ptrvoid refcon) {
-	
+#pragma unused (refcon)
+
 	hdltreenode hcode;
 	hdlprocessrecord hprocess;
 	boolean fl;
@@ -702,7 +704,8 @@ boolean loadsystemscripts (void) {
 
 
 static boolean runprocessvisit (hdlhashnode hnode, ptrvoid refcon) {
-	
+#pragma unused (refcon)
+
 	hdltreenode hcode;
 	hdlprocessrecord hprocess;
 	tyvaluerecord val;
@@ -771,7 +774,8 @@ static void scriptgetpopuprect (Rect *rpopup) {
 
 
 static boolean scriptinvalbuttonsvisit (WindowPtr w, ptrvoid refcon) {
-	
+#pragma unused (refcon)
+
 	/*
 	7.0b42 PBS: If Mac OS X, re-draw the script buttons right away, because
 	otherwise the window doesn't get updated until it's activated.
@@ -1446,7 +1450,8 @@ static void scriptkillbutton (void) {
 #ifdef flcomponent
 
 static pascal OSErr handlerecordedtext (const AppleEvent *event, AppleEvent *reply, SInt32 refcon) {
-	
+#pragma unused (reply, refcon)
+
 	/*
 	2.1b3 dmb: ignore extra syntax/lines needed for text-based recording
 	
@@ -1686,7 +1691,8 @@ static void scriptstoprecordbutton (void) {
 
 
 static pascal OSErr handlestoprecording (const AppleEvent *event, AppleEvent *reply, SInt32 refcon) {
-	
+#pragma unused (event, reply, refcon)
+
 	/*
 	2.1b5 dmb: special event handler for QuicKeys recording panel
 	*/
@@ -2081,13 +2087,13 @@ static boolean scriptbuttonenabled (short buttonnum) {
 	
 	register short x = buttonnum;
 	register hdldebuggerrecord hd = debuggerdata;
-	register boolean flscriptrunning = (**hd).flscriptrunning;
+	register boolean lflscriptrunning = (**hd).flscriptrunning;
 	register boolean flscriptsuspended = (**hd).flscriptsuspended;
 	register boolean flrunningthisscript;
 	
-	flrunningthisscript = flscriptrunning && scriptinruntimestack ();
+	flrunningthisscript = lflscriptrunning && scriptinruntimestack ();
 	
-	if (flscriptrunning) {
+	if (lflscriptrunning) {
 		
 		if ((x != installbutton) && (x != killbutton)) /*rule 3*/
 			if (!flrunningthisscript)
@@ -2112,16 +2118,16 @@ static boolean scriptbuttonenabled (short buttonnum) {
 		
 		case recordbutton:
 		#ifdef flcomponent
-			return (!flscriptrunning && scriptrecordable ());
+			return (!lflscriptrunning && scriptrecordable ());
 		#else
 			return (false);
 		#endif
 		
 		case runbutton:
-			return (!flscriptrunning);
+			return (!lflscriptrunning);
 		
 		case debugbutton:
-			return (!flscriptrunning && ((**outlinedata).outlinesignature == typeLAND));
+			return (!lflscriptrunning && ((**outlinedata).outlinesignature == typeLAND));
 		
 		case stopbutton:
 			return (!flscriptsuspended);
@@ -2133,13 +2139,13 @@ static boolean scriptbuttonenabled (short buttonnum) {
 		case stepbutton:
 		case inbutton:
 		case outbutton:
-			return (flscriptrunning && flscriptsuspended && !(**hd).fllangerror);
+			return (lflscriptrunning && flscriptsuspended && !(**hd).fllangerror);
 		
 		case localsbutton:
-			return (flscriptrunning && flscriptsuspended); /*(**hd).flstepping && (!(**hd).flfollowing))*/
+			return (lflscriptrunning && flscriptsuspended); /*(**hd).flstepping && (!(**hd).flfollowing))*/
 		
 		case killbutton:
-			return (flscriptrunning);
+			return (lflscriptrunning);
 		
 		case installbutton:
 			return (!flrunningthisscript && scriptinstallable () && !scripthascleancode ());
@@ -2176,12 +2182,12 @@ static boolean scriptbuttondisplayed (short buttonnum) {
 	
 	register hdldebuggerrecord hd = debuggerdata;
 	register hdlprocessrecord hp = (**hd).scriptprocess;
-	register boolean flscriptrunning = (**hd).flscriptrunning;
+	register boolean lflscriptrunning = (**hd).flscriptrunning;
 	register boolean flrunningthisscript;
 	register boolean fldebuggingthisscript;
 	register short x = buttonnum;
 	
-	flrunningthisscript = flscriptrunning && scriptinruntimestack (); /*1/2/91*/
+	flrunningthisscript = lflscriptrunning && scriptinruntimestack (); /*1/2/91*/
 	
 	fldebuggingthisscript = flrunningthisscript && (**hp).fldebugging;
 	
@@ -2205,7 +2211,7 @@ static boolean scriptbuttondisplayed (short buttonnum) {
 		
 		case runbutton:
 		case debugbutton:
-			return (!flscriptrunning);
+			return (!lflscriptrunning);
 		
 		case installbutton:
 			return (!fldebuggingthisscript && scriptinstallable ());
@@ -2224,7 +2230,7 @@ static boolean scriptbuttondisplayed (short buttonnum) {
 			return (fldebuggingthisscript);
 		
 		case killbutton:
-			return (flscriptrunning);
+			return (lflscriptrunning);
 		} /*switch*/
 	
 	return (true);
@@ -2419,7 +2425,7 @@ boolean scriptdebugger (hdltreenode hnode) {
 	register hdltreenode hn = hnode;
 	register tytreetype op;
 	register boolean flshowline = false;
-	register boolean flcontinue = true;
+	register boolean lflcontinue = true;
 	short topscriptsource;
 	tysourcerecord source;
 	boolean flbreakpoint = false;
@@ -2456,7 +2462,7 @@ boolean scriptdebugger (hdltreenode hnode) {
 		
 		flshowline = true;
 		
-		flcontinue = false;
+		lflcontinue = false;
 		}
 	else {
 		
@@ -2501,27 +2507,27 @@ boolean scriptdebugger (hdltreenode hnode) {
 				break;
 			}
 		
-		flcontinue = !flshowline; /*continue if we aren't going to show this line*/
+		lflcontinue = !flshowline; /*continue if we aren't going to show this line*/
 		
 		if ((**hd).flfollowing)
 			flshowline = true; /*show every line when following*/
 		}
 	
-	if (flcontinue) { /*so far, nothing is suspending the processor*/
+	if (lflcontinue) { /*so far, nothing is suspending the processor*/
 		
-		hdlheadrecord hnode;
+		hdlheadrecord hnoderec;
 		
 		oppushoutline (source.houtline); /*set globals for breakpoint check*/
 		
-		if (opgetnthnode (lnum, &hnode) && (**hnode).flbreakpoint) /*breakpoint*/
+		if (opgetnthnode (lnum, &hnoderec) && (**hnoderec).flbreakpoint) /*breakpoint*/
 			
-			if (!opnestedincomment (hnode)) {
+			if (!opnestedincomment (hnoderec)) {
 				
 				flbreakpoint = true;
 				
 				flshowline = true;
 				
-				flcontinue = false;
+				lflcontinue = false;
 				}
 		
 		oppopoutline ();
@@ -2531,7 +2537,7 @@ boolean scriptdebugger (hdltreenode hnode) {
 		
 		if (source.pwindow == nil) { /*closed, or never opened*/
 			
-			if (flcontinue || fllangerror) { /*show line if window is open; don't bring to front*/
+			if (lflcontinue || fllangerror) { /*show line if window is open; don't bring to front*/
 				
 				hdlwindowinfo hinfo;
 				
@@ -2563,7 +2569,7 @@ boolean scriptdebugger (hdltreenode hnode) {
 			(**hd).scriptsourcestack [topscriptsource - 1].pwindow = source.pwindow;
 			}
 		
-		if (!flcontinue && !fllangerror)
+		if (!lflcontinue && !fllangerror)
 			windowbringtofront (source.pwindow);
 		
 		shellpushglobals (source.pwindow);
@@ -2579,7 +2585,7 @@ boolean scriptdebugger (hdltreenode hnode) {
 	
 	exit:
 	
-	if (flcontinue) /*don't drop into event loop, continue running script*/
+	if (lflcontinue) /*don't drop into event loop, continue running script*/
 		return (scriptbackgroundtask (false));
 	
 	(**hd).flscriptsuspended = true;
@@ -2608,7 +2614,8 @@ boolean scriptdebugger (hdltreenode hnode) {
 
 
 boolean scriptpushsourcecode (hdlhashtable htable, hdlhashnode hnode, bigstring bsname) {
-	
+#pragma unused (bsname)
+
 	/*
 	code execution is about to move into a new script.  hnode should be the 
 	node in htable containing the script (external variable).
@@ -2798,7 +2805,8 @@ boolean scriptpushtable (hdlhashtable *htable) {
 
 
 boolean scriptpoptable (hdlhashtable htable) {
-	
+#pragma unused (htable)
+
 	/*
 	1/9/91 dmb: see comment in scriptgetlevelname...
 	
@@ -2942,10 +2950,10 @@ static boolean optogglebreakpoint (hdlheadrecord hnode) {
 	5.0.2 dmb: don't clear the recently changed bit; restore it.
 	*/
 	
-	boolean flbreak = !(**hnode).flbreakpoint;
+	boolean lflbreak = !(**hnode).flbreakpoint;
 	boolean flrecentlychanged = (**outlinedata).flrecentlychanged;
 	
-	(**hnode).flbreakpoint = flbreak;
+	(**hnode).flbreakpoint = lflbreak;
 	
 	opinvalnode (hnode); /*inval the dirty line*/
 	
@@ -2955,7 +2963,7 @@ static boolean optogglebreakpoint (hdlheadrecord hnode) {
 	
 	opupdatenow ();
 	
-	return (flbreak);
+	return (lflbreak);
 	} /*optogglebreakpoint*/
 
 
@@ -3089,7 +3097,8 @@ static boolean scriptgetscraproutine (hdloutlinerecord *houtline, boolean *fltem
 
 
 static boolean scriptcommentvisit (hdlheadrecord hnode, void *refcon) {
-	
+#pragma unused (refcon)
+
 	register hdlheadrecord h = hnode;
 	bigstring bs;
 	
@@ -3634,7 +3643,7 @@ static boolean scriptfillservervisit (OSType subtype, bigstring bsname, long ref
 	
 	serverarray [(*cbd).ctmenus++] = subtype;
 	
-	if (subtype == (*cbd).signature)
+	if (subtype == (OSType)(*cbd).signature)
 		(*cbd).checkeditem = (*cbd).ctmenus;
 	
 	return (true);
@@ -3642,7 +3651,8 @@ static boolean scriptfillservervisit (OSType subtype, bigstring bsname, long ref
 
 
 static boolean scriptserverpopupselect (hdlmenu hmenu, short itemselected) {
-	
+#pragma unused (hmenu)
+
 	/*
 	2.1b11 dmb: dirty the outline
 	*/

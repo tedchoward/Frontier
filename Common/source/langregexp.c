@@ -1346,7 +1346,8 @@ static boolean replscancompilenamed (int ix, int len, const char *cptr, int clen
 
 	
 static boolean replscanwriteliteral (int ix, int len, bigstring bserror, void *refcon) {
-	
+#pragma unused (bserror)
+
 	tyreplscanexpandinfo *info = (tyreplscanexpandinfo *) refcon;
 	
 	return (writehandlestreamhandlepart (&(info->s), info->hsubject, ix, len));
@@ -1354,7 +1355,8 @@ static boolean replscanwriteliteral (int ix, int len, bigstring bserror, void *r
 
 
 static boolean replscanwritenumbered (int ix, int len, int ref, bigstring bserror, void *refcon) {
-	
+#pragma unused (len)
+
 	tyreplscanexpandinfo *info = (tyreplscanexpandinfo *) refcon;
 	tyvaluerecord val;
 	
@@ -1379,7 +1381,8 @@ static boolean replscanwritenumbered (int ix, int len, int ref, bigstring bserro
 
 
 static boolean replscanwritenamed (int ix, int len, const char *cptr, int clen, bigstring bserror, void *refcon) {
-	
+#pragma unused (ix, len, bserror)
+
 	tyreplscanexpandinfo *info = (tyreplscanexpandinfo *) refcon;
 	hdlhashnode hnode;
 	hdlhashtable ht;
@@ -1414,6 +1417,7 @@ static boolean replscanwritenamed (int ix, int len, const char *cptr, int clen, 
 
 
 static boolean regexpcheckliteral (int ix, int len, bigstring bserror, void *refcon) {
+#pragma unused (ix, len, bserror, refcon)
 
 	/*nothing to check*/
 	
@@ -1422,7 +1426,8 @@ static boolean regexpcheckliteral (int ix, int len, bigstring bserror, void *ref
 
 
 static boolean regexpchecknumbered (int ix, int len, int ref, bigstring bserror, void *refcon) {
-	
+#pragma unused (len)
+
 	Handle hcp = (Handle) refcon;
 						
 	if (ref > getcapturecount (hcp)) {
@@ -1435,7 +1440,8 @@ static boolean regexpchecknumbered (int ix, int len, int ref, bigstring bserror,
 
 
 static boolean regexpchecknamed (int ix, int len, const char *cptr, int clen, bigstring bserror, void *refcon) {
-	
+#pragma unused (len)
+
 	Handle hcp = (Handle) refcon;
 	int ref;
 	
@@ -1454,7 +1460,8 @@ static boolean regexpchecknamed (int ix, int len, const char *cptr, int clen, bi
 	
 
 static boolean regexptextsearchwriteliteral (int ix, int len, bigstring bserror, void *refcon) {
-	
+#pragma unused (bserror)
+
 	tyregexpsearchinfo *info = (tyregexpsearchinfo *) refcon;
 	
 	return (writehandlestream (&(info->s), stringbaseaddress (searchparams.bsreplace) + ix, len));
@@ -1462,7 +1469,8 @@ static boolean regexptextsearchwriteliteral (int ix, int len, bigstring bserror,
 
 
 static boolean regexptextsearchwritenumbered (int ix, int len, int ref, bigstring bserror, void *refcon) {
-	
+#pragma unused (len, ix, bserror)
+
 	tyregexpsearchinfo *info = (tyregexpsearchinfo *) refcon;
 
 	return (writehandlestream (&(info->s), info->p + getgroupoffset (info->hovector, ref), getgrouplength (info->hovector, ref)));
@@ -1470,7 +1478,8 @@ static boolean regexptextsearchwritenumbered (int ix, int len, int ref, bigstrin
 
 
 static boolean regexptextsearchwritenamed (int ix, int len, const char *cptr, int clen, bigstring bserror, void *refcon) {
-	
+#pragma unused (ix, len, bserror)
+
 	tyregexpsearchinfo *info = (tyregexpsearchinfo *) refcon;
 	int ref;
 	
@@ -2953,6 +2962,7 @@ static boolean regexpsplitverb (hdltreenode hp1, tyvaluerecord *v, bigstring bse
 
 
 static boolean regexpjoinverb (hdltreenode hp1, tyvaluerecord *v, bigstring bserror) {
+#pragma unused (bserror)
 
 	/*
 	join (s, strList)

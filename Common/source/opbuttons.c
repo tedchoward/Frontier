@@ -81,6 +81,7 @@ void opbuttonsattach (hdlwindowinfo hinfo, hdlhashtable htable) {
 
 
 boolean opbuttonstatus (short buttonnum, tybuttonstatus *status) {
+#pragma unused (buttonnum)
 
 	/*
 	7.1b18 PBS: buttons are always displayed and enabled.

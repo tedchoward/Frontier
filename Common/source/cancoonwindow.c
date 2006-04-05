@@ -175,7 +175,8 @@ static boolean ccwindowsetglobals (void) {
 
 
 void ccwindowsetup (boolean flbigwindow, boolean floldversion) {
-	
+#pragma unused (flbigwindow)
+
 	/*
 	called when cc is booting, the window hasn't shown up on the screen yet,
 	we get a chance to change the size of the window.  we don't remember whether

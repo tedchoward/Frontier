@@ -67,9 +67,9 @@ static short opgetpagecount (void) {
 	short ctpages = 1;
 	short sum = 0;
 	short lh; 
-	typrintinfo *pi = &shellprintinfo;
+	typrintinfo *lpi = &shellprintinfo;
 	
-	vertpixels = (pi->paperrect.bottom - pi->paperrect.top); //6.0b4, was: * pi->scaleMult / pi->scaleDiv;
+	vertpixels = (lpi->paperrect.bottom - lpi->paperrect.top); //6.0b4, was: * lpi->scaleMult / lpi->scaleDiv;
 	
 	while (true) {
 		

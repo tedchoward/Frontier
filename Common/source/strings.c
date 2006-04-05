@@ -1322,16 +1322,16 @@ boolean pushheapstring (hdlstring hsource, bigstring bsdest) {
 	} /*pushheapstring*/
 
 
-void timedatestring (long time, bigstring bs) {
+void timedatestring (long ptime, bigstring bs) {
 	bigstring bstime;
 
-	timetodatestring (time, bs, false);	
+	timetodatestring (ptime, bs, false);	
 
 	getstringlist (interfacelistnumber, timedateseperatorstring, bstime);
 
 	pushstring (bstime, bs);
 
-	timetotimestring (time, bstime, true);
+	timetotimestring (ptime, bstime, true);
 		
 	pushstring (bstime, bs);
 
@@ -1351,13 +1351,13 @@ void timedatestring (long time, bigstring bs) {
 		}
 	*/
 	
-	IUDateString (time, shortDate, bs);
+	IUDateString (ptime, shortDate, bs);
 	
 	getstringlist (interfacelistnumber, timedateseperatorstring, bstime);
 	
 	pushstring (bstime, bs);
 	
-	IUTimeString (time, true, bstime);
+	IUTimeString (ptime, true, bstime);
 	
 	pushstring (bstime, bs);
 #endif
@@ -1879,8 +1879,9 @@ boolean stringtoostype (bigstring bs, OSType *type) {
 	/*
 	2.1b4 dmb: always copy into type, even when returning false for bad length
 	*/
-	
-	register short len = stringlength (bs);
+
+	// kw 2005-11-28 changed to unsigned for better match with stringlength()
+	register unsigned short len = stringlength (bs);
 	boolean fl = true;
 	
 	*type = '    ';

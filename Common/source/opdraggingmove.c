@@ -158,7 +158,8 @@ static void opdrawhotspot (tyhotspot *hotspot) {
 	
 
 static boolean isundermark (hdlheadrecord htarget, tydirection dir) {
-	
+#pragma unused (dir)
+
 	while (true) {
 		
 		if (opgetmark (htarget))

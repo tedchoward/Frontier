@@ -111,11 +111,12 @@ extern bigstring bstoken; /*text of last token, see langscan.c*/
 
 
 	void langstarttrace (void) { }
-		
+
 	void langendtrace (void) { }
 
-	void langtrace (bigstring bs) { }
-
+	void langtrace (bigstring bs) {
+#pragma unused (bs)
+}
 
 #endif
 

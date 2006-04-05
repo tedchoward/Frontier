@@ -242,7 +242,8 @@ static boolean attachplayer (void) {
 
 
 static boolean playerresetrects (hdlwindowinfo hinfo) {
-	
+#pragma unused (hinfo)
+
 	return (true);
 	} /*playerresetrects*/
 
@@ -481,6 +482,7 @@ boolean isplayerevent (void) {
 
 
 pascal Boolean playermoviecontrollereventfilter (MovieController mc, short action, void *params, long refcon) {
+#pragma unused (mc, refcon, params)
 
 	/*
 	7.0b4 PBS: Handle movie controller events.

@@ -124,7 +124,8 @@ boolean opdrawheadiconcustom (bigstring bsiconname, const Rect *r, boolean flsel
 
 
 boolean opdefaultdrawicon (hdlheadrecord hnode, const Rect *iconrect, boolean flselected, boolean flinverted) {
-	
+#pragma unused(flselected, flinverted)
+
 	/*
 	the default icon drawing routine, for the script editor and menu
 	editor, not for clay basket.

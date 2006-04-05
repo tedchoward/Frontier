@@ -348,6 +348,7 @@ odbBool xCALLBACK extOdbNewListValue (odbRef odb, odbValueRecord *value, odbBool
 
 				
 odbBool xCALLBACK extOdbGetListCount (odbRef odb, odbValueRecord *value, long * cnt) {
+#pragma unused (odb)
 	odbBool res;
 
 	res = false;
@@ -366,7 +367,8 @@ odbBool xCALLBACK extOdbGetListCount (odbRef odb, odbValueRecord *value, long * 
 	} /*extOdbGetListCount*/
 
 
-odbBool xCALLBACK extOdbDeleteListValue (odbRef odb, odbValueRecord *value, long index, char * recordname) {
+odbBool xCALLBACK extOdbDeleteListValue (odbRef odb, odbValueRecord *value, long idx, char * recordname) {
+#pragma unused (odb)
 	odbBool res;
 
 	res = false;
@@ -374,7 +376,7 @@ odbBool xCALLBACK extOdbDeleteListValue (odbRef odb, odbValueRecord *value, long
 	grabthreadglobals ();
 
 	if (((value->valuetype == odb_recordvaluetype) || (value->valuetype == odb_listvaluetype)) && (value->data.listvalue != NULL)) {
-		res = opdeletelistitem ((hdllistrecord) value->data.listvalue, (short) index, recordname);
+		res = opdeletelistitem ((hdllistrecord) value->data.listvalue, (short) idx, recordname);
 		}
 
 	releasethreadglobals ();
@@ -383,7 +385,7 @@ odbBool xCALLBACK extOdbDeleteListValue (odbRef odb, odbValueRecord *value, long
 	} /*extOdbDeleteListValue*/
 
 
-odbBool xCALLBACK extOdbSetListValue (odbRef odb, odbValueRecord *value, long index, char * recordname, odbValueRecord *valueData) {
+odbBool xCALLBACK extOdbSetListValue (odbRef odb, odbValueRecord *value, long idx, char * recordname, odbValueRecord *valueData) {
 	odbBool res;
 	tyvaluerecord val;
 
@@ -395,7 +397,7 @@ odbBool xCALLBACK extOdbSetListValue (odbRef odb, odbValueRecord *value, long in
 
 		convertodbtotyval (valueData, &val);
 
-		res = setnthlistval ((hdllistrecord) value->data.listvalue, index, recordname, &val);
+		res = setnthlistval ((hdllistrecord) value->data.listvalue, idx, recordname, &val);
 		}
 
 	releasethreadglobals ();
@@ -404,7 +406,8 @@ odbBool xCALLBACK extOdbSetListValue (odbRef odb, odbValueRecord *value, long in
 	} /*extOdbSetListValue*/
 
 
-odbBool xCALLBACK extOdbGetListValue (odbRef odb, odbValueRecord *value, long index, char * recordname, odbValueRecord *valueReturn) {
+odbBool xCALLBACK extOdbGetListValue (odbRef odb, odbValueRecord *value, long idx, char * recordname, odbValueRecord *valueReturn) {
+#pragma unused (odb)
 	odbBool res;
 	tyvaluerecord valret;
 
@@ -413,7 +416,7 @@ odbBool xCALLBACK extOdbGetListValue (odbRef odb, odbValueRecord *value, long in
 	grabthreadglobals ();
 
 	if (((value->valuetype == odb_recordvaluetype) || (value->valuetype == odb_listvaluetype)) && (value->data.listvalue != NULL)) {
-		res = getnthlistval ((hdllistrecord) value->data.listvalue, index, recordname, &valret);
+		res = getnthlistval ((hdllistrecord) value->data.listvalue, idx, recordname, &valret);
 
 		if (res)
 			res = converttyvaltoodb (&valret, valueReturn);
@@ -426,6 +429,7 @@ odbBool xCALLBACK extOdbGetListValue (odbRef odb, odbValueRecord *value, long in
 
 
 odbBool xCALLBACK extOdbAddListValue (odbRef odb, odbValueRecord *value, char * recordname, odbValueRecord *valueData) {
+#pragma unused (odb)
 	odbBool res;
 	tyvaluerecord val;
 
@@ -722,6 +726,9 @@ odbBool xCALLBACK extDoScriptText (char * script, long len, Handle * text) {
 
 
 odbBool xCALLBACK extInvoke (bigstring bsscriptname, void * pDispParams, odbValueRecord * retval, boolean *flfoundhandler, unsigned int * errarg) {
+#if MACVERSION
+#	pragma unused (bsscriptname, pDispParams, flfoundhandler, errarg)
+#endif
 	boolean res;
 	tyvaluerecord val;
 
