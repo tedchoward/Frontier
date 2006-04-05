@@ -126,7 +126,8 @@ static short errornum = 0; /*error number exclusively for menu routines*/
 
 
 boolean menuverbgettypestring (hdlexternalvariable hvariable, bigstring bs) {
-	
+#pragma unused (hvariable)
+
 	getstringlist (menustringlist, menutypestring, bs);
 	
 	return (true);

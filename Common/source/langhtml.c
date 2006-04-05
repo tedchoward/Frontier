@@ -821,11 +821,12 @@ static boolean htmlgetstringpref (typrocessmacrosinfo *pmi, bigstring pref, bigs
 	} /*htmlgetstringpref*/
 
 
-static boolean htmlrefglossary (typrocessmacrosinfo *pmi, Handle hreference, bigstring errorstring, Handle *hresult) {
+static boolean htmlrefglossary (typrocessmacrosinfo *pmi, Handle hreference, bigstring perrorstring, Handle *hresult) {
+#pragma unused (pmi)
 
 	/*
 	expand the glossary item, consuming it. return the result in hresult, which 
-	our caller must dispose. on error, return the error text in errorstring.
+	our caller must dispose. on error, return the error text in perrorstring.
 	
 	5.0.2b14 dmb: we used to frontTextScriptCall to call html.data.processmacroscallback, 
 	which called html.refGlossary. now we call html.refGlossary directly. I looked at 
@@ -845,7 +846,7 @@ static boolean htmlrefglossary (typrocessmacrosinfo *pmi, Handle hreference, big
 	
 	langcallbacks.errormessagecallback = &htmlcallbackerror;
 	
-	langcallbacks.errormessagerefcon = errorstring;
+	langcallbacks.errormessagerefcon = perrorstring;
 	
 	fl = langrunscript ("\x10" "html.refglossary", &vparams, nil, &vresult) && strongcoercetostring (&vresult);
 	
@@ -1134,11 +1135,11 @@ static boolean htmlbuildmacrocontext (typrocessmacrosinfo *pmi) {
 	} /*htmlbuildmacrocontext*/
 
 
-static boolean htmlrunmacro (typrocessmacrosinfo *pmi, Handle macro, bigstring errorstring, Handle *hresult) {
+static boolean htmlrunmacro (typrocessmacrosinfo *pmi, Handle macro, bigstring perrorstring, Handle *hresult) {
 	
 	/*
 	run the macro, consuming it. return the result in hresult, which our caller 
-	must dispose. on error, return the error text in errorstring.
+	must dispose. on error, return the error text in perrorstring.
 	
 		local (toolTableAdr, nilTable);
 		if defined (adrpagetable^.tools) {
@@ -1159,7 +1160,7 @@ static boolean htmlrunmacro (typrocessmacrosinfo *pmi, Handle macro, bigstring e
 
 	5.1b21 dmb: plugged leak on error
 	
-	6.2b6 AR: If langruntraperror returns false but didn't set errorstring, our thread has probably been killed.
+	6.2b6 AR: If langruntraperror returns false but didn't set perrorstring, our thread has probably been killed.
 	*/
 	
 	tyvaluerecord val;
@@ -1168,11 +1169,11 @@ static boolean htmlrunmacro (typrocessmacrosinfo *pmi, Handle macro, bigstring e
 	if (!htmlbuildmacrocontext (pmi))
 		return (false);
 		
-	setemptystring (errorstring); //6.2b6 AR
+	setemptystring (perrorstring); //6.2b6 AR
 	
 	chainhashtable ((*pmi).hmacrocontext);
 	
-	fl = langruntraperror (macro, &val, errorstring) && strongcoercetostring (&val) && exemptfromtmpstack (&val);
+	fl = langruntraperror (macro, &val, perrorstring) && strongcoercetostring (&val) && exemptfromtmpstack (&val);
 	
 	unchainhashtable ();
 	
@@ -1193,22 +1194,22 @@ static boolean htmlrunmacro (typrocessmacrosinfo *pmi, Handle macro, bigstring e
 				
 				popfromhandle (h, 1, nil);
 				
-				return (htmlrefglossary (pmi, h, errorstring, hresult));
+				return (htmlrefglossary (pmi, h, perrorstring, hresult));
 				}
 			}
 		
 		*hresult = h;
 		}
 	else
-		if (stringlength (errorstring) > 0 && ingoodthread ()) { //6.2b6 AR
+		if (stringlength (perrorstring) > 0 && ingoodthread ()) { //6.2b6 AR
 			
 			Handle herror;
 
-			if (newtexthandle (errorstring, &herror)) {
+			if (newtexthandle (perrorstring, &herror)) {
 				
 				htmlcleanforexport (herror);
 				
-				texthandletostring (herror, errorstring);
+				texthandletostring (herror, perrorstring);
 
 				disposehandle (herror);
 				}
@@ -1244,8 +1245,9 @@ static boolean htmlrunmacro (typrocessmacrosinfo *pmi, Handle macro, bigstring e
 	} /*htmlrunmacro*/
 
 
-static boolean htmlreportmacroerror (typrocessmacrosinfo *pmi, Handle macro, bigstring errorstring) {
-	
+static boolean htmlreportmacroerror (typrocessmacrosinfo *pmi, Handle macro, bigstring perrorstring) {
+#pragma unused (pmi)
+
 	/*
 	call back to the odb to report the error. consume the macro handle
 	*/
@@ -1257,7 +1259,7 @@ static boolean htmlreportmacroerror (typrocessmacrosinfo *pmi, Handle macro, big
 	if (!coercetolist (&vparams, listvaluetype))
 		return (false);
 	
-	if (!setstringvalue (errorstring, &val))
+	if (!setstringvalue (perrorstring, &val))
 		return (false);
 		
 	if (!langpushlistval (vparams.data.listvalue, nil, &val))
@@ -1703,9 +1705,9 @@ static boolean processhtmltext (handlestream *s, typrocessmacrosinfo *pmi) {
 						
 						for (j = i + 1; j < ct; j++) {
 							
-							char ch = (*h) [j];
+							char lch = (*h) [j];
 							
-							if (ch == endmacrochar) {
+							if (lch == endmacrochar) {
 							
 								if (--ctendsneeded == 0) {
 							
@@ -1722,7 +1724,7 @@ static boolean processhtmltext (handlestream *s, typrocessmacrosinfo *pmi) {
 								}
 							else {
 							
-								if (ch == startmacrochar)
+								if (lch == startmacrochar)
 									++ctendsneeded;
 								}
 							}
@@ -1742,7 +1744,7 @@ static boolean processhtmltext (handlestream *s, typrocessmacrosinfo *pmi) {
 						}
 					else {
 								
-						bigstring errorstring;
+						bigstring lerrorstring;
 						Handle macro;
 						Handle hmacroresult;
 
@@ -1762,7 +1764,7 @@ static boolean processhtmltext (handlestream *s, typrocessmacrosinfo *pmi) {
 								} /*for*/
 							}
 
-						if (!htmlrunmacro (pmi, macro, errorstring, &hmacroresult)) {
+						if (!htmlrunmacro (pmi, macro, lerrorstring, &hmacroresult)) {
 							
 							bigstring bs;
 							boolean fllogerrors;
@@ -1777,10 +1779,10 @@ static boolean processhtmltext (handlestream *s, typrocessmacrosinfo *pmi) {
 								
 								moveleft (&(*h) [startmacro], *macro, lenmacro);
 								
-								htmlreportmacroerror (pmi, macro, errorstring);
+								htmlreportmacroerror (pmi, macro, lerrorstring);
 								}
 							
-							parsedialogstring (str_macroerror, errorstring, nil, nil, nil, bs);
+							parsedialogstring (str_macroerror, lerrorstring, nil, nil, nil, bs);
 							
 							if (!newtexthandle (bs, &hmacroresult))
 								return (false);
@@ -1832,9 +1834,9 @@ static boolean processhtmltext (handlestream *s, typrocessmacrosinfo *pmi) {
 				
 				for (j = i - 1; j >= 0; j--) { /*scan to the left, looking for the start of the mail address*/
 					
-					char ch = (*h) [j];
+					char lch = (*h) [j];
 					
-					if (!isAlphaChar (ch) && !isLegalURLPunctuationChar (ch)) {
+					if (!isAlphaChar (lch) && !isLegalURLPunctuationChar (lch)) {
 
 						startaddress = j + 1;
 						
@@ -1849,9 +1851,9 @@ static boolean processhtmltext (handlestream *s, typrocessmacrosinfo *pmi) {
 				
 				for (j = i + 1; j < ct; j++) { /*scan to the right, looking for the end of the mail address*/
 				
-					char ch = (*h) [j];
+					char lch = (*h) [j];
 					
-					if (!isAlphaChar (ch) && !isLegalURLPunctuationChar (ch)) {
+					if (!isAlphaChar (lch) && !isLegalURLPunctuationChar (lch)) {
 
 						endaddress = j;
 						
@@ -1927,12 +1929,12 @@ static boolean processhtmltext (handlestream *s, typrocessmacrosinfo *pmi) {
 				
 				for (j = i - 1; j >= 0; j--) { /*scan to the left, looking for the start of the URL*/
 					
-					char ch = (*h) [j];
+					char lch = (*h) [j];
 					
-					if (isLegalURLPunctuationChar (ch))
+					if (isLegalURLPunctuationChar (lch))
 						continue;
 				
-					if (!isAlphaChar (ch)) {
+					if (!isAlphaChar (lch)) {
 						
 						startaddress = j + 1;
 						
@@ -1944,12 +1946,12 @@ static boolean processhtmltext (handlestream *s, typrocessmacrosinfo *pmi) {
 				
 				for (j = i + 1; j < ct; j++) { /*scan to the right, looking for the end of the URL*/
 				
-					char ch = (*h) [j];
+					char lch = (*h) [j];
 					
-					if (isLegalURLPunctuationChar (ch))
+					if (isLegalURLPunctuationChar (lch))
 						continue;
 					
-					if (!isAlphaChar (ch)) {
+					if (!isAlphaChar (lch)) {
 						
 						endaddress = j;
 						
@@ -1959,9 +1961,9 @@ static boolean processhtmltext (handlestream *s, typrocessmacrosinfo *pmi) {
 					
 				for (j = endaddress - 1; j > i; j--) { /*move endaddress to the left, past any non-alpha chars, like a comma after the mail address -- common!*/
 					
-					char ch = (*h) [j];
+					char lch = (*h) [j];
 					
-					if (isAlphaChar (ch) || (ch == '/')) {
+					if (isAlphaChar (lch) || (lch == '/')) {
 						
 						endaddress = j;
 						
@@ -2013,21 +2015,21 @@ static boolean processhtmltext (handlestream *s, typrocessmacrosinfo *pmi) {
 
 				for (j = i + 1; j < ct; j++) {
 					
-					char ch = (*h) [j];
+					char lch = (*h) [j];
 					
 					if (flpagemillfile) {
 					
-						if (ch == '\r') { /*special hack for PageMill files*/
+						if (lch == '\r') { /*special hack for PageMill files*/
 							
-							(*h) [j] = ch = ' ';
+							(*h) [j] = lch = ' ';
 							}
 						}
 					else {
-						if (ch == '\r') /*unterminated quote*/
+						if (lch == '\r') /*unterminated quote*/
 							break;
 						}
 					
-					if (ch == '<') { /*7.0b39 PBS: rewind to this character if gloss lookup fails.*/
+					if (lch == '<') { /*7.0b39 PBS: rewind to this character if gloss lookup fails.*/
 
 						if (!flrewind) {
 
@@ -2038,11 +2040,11 @@ static boolean processhtmltext (handlestream *s, typrocessmacrosinfo *pmi) {
 						} /*if*/
 
 
-					if (ch == '"') {
+					if (lch == '"') {
 						
 						unsigned long startterm, endterm, lenterm;
 						Handle hterm;
-						bigstring errorstring;
+						bigstring lerrorstring;
 						Handle hresult;
 						long ixload;
 						
@@ -2068,7 +2070,7 @@ static boolean processhtmltext (handlestream *s, typrocessmacrosinfo *pmi) {
 						if (!loadfromhandletohandle (h, &ixload, lenterm, true, &hterm))
 							return (false);
 
-						if (!htmlrefglossary (pmi, hterm, errorstring, &hresult)) { /*error -- we don't substitute*/ 
+						if (!htmlrefglossary (pmi, hterm, lerrorstring, &hresult)) { /*error -- we don't substitute*/ 
 							
 							i += lenterm + 2 - 1; /**4.1b5: skip over the quoted string, less the last char*/
 
@@ -3488,7 +3490,7 @@ static boolean refglossaryverb (hdltreenode hp1, tyvaluerecord *v) {
 	
 	typrocessmacrosinfo pageinfo;
 	Handle href, hresult;
-	bigstring errorstring;
+	bigstring lerrorstring;
 	handlestream s;
 	
 	// get all of the prefs and tables that we need
@@ -3496,7 +3498,7 @@ static boolean refglossaryverb (hdltreenode hp1, tyvaluerecord *v) {
 	if (!htmlgetpagetable (&pageinfo.hpagetable) || !htmlgetprefstable (&pageinfo.huserprefs))
 		return (false);
 	
-	return (htmlrefglossary (&pageinfo, href, errorstring, &hresult));
+	return (htmlrefglossary (&pageinfo, href, lerrorstring, &hresult));
 	} /*refglossaryverb*/
 
 #endif
@@ -3588,14 +3590,14 @@ static boolean htmlrundirective (typrocessmacrosinfo *pmi, Handle s, bigstring f
 	the only field we look at in pmi is the pagetable
 	*/
 	
-	bigstring errorstring;
+	bigstring lerrorstring;
 	tyvaluerecord val;
 	
 	textfirstword (*s, gethandlesize (s), chspace, fieldname);
 	
 	pullfromhandle (s, 0, stringlength (fieldname) + 1, nil);
 	
-	if (langruntraperror (s, &val, errorstring)) {
+	if (langruntraperror (s, &val, lerrorstring)) {
 		
 		if (!hashtableassign ((*pmi).hpagetable, fieldname, val))
 			return (false);
@@ -3603,7 +3605,7 @@ static boolean htmlrundirective (typrocessmacrosinfo *pmi, Handle s, bigstring f
 		exemptfromtmpstack (&val);
 		}
 	else {
-		lang2paramerror (evaldirectiveerror, fieldname, errorstring);
+		lang2paramerror (evaldirectiveerror, fieldname, lerrorstring);
 		
 		return (false);
 		}
@@ -3769,7 +3771,8 @@ static boolean rundirectivesverb (hdltreenode hp1, tyvaluerecord *v) {
 
 
 static boolean runoutlinedirectivesverb (hdltreenode hp1, tyvaluerecord *v) {
-	
+#pragma unused(v)
+
 	/*
 	on runOutlineDirectives (adroutline, adrpagetable=@websites.["#data"]) { Ç4.2
 		Çthe outline can contain #directives
@@ -4648,7 +4651,8 @@ static boolean deindexpage (hdlhashtable hindex, bigstring bspagekey) {
 
 static boolean indexpage (bigstring bsaddress, bigstring bsurl, bigstring bstitle, handlestream *pagetext, 
 		hdlhashtable hindex, hdlhashtable hstopwords, bigstring bsparent, bigstring bspage) {
-	
+#pragma unused (bsurl)
+
 	/*
 	Prepare text to be indexed.
 		Replace whitespace characters and punctuation with spaces.
@@ -7719,6 +7723,7 @@ on getFirstAddress (adrcalendar) {
 
 
 static boolean findfirstnumericnodevisit (bigstring bsname, hdlhashnode nomad, tyvaluerecord val, ptrvoid refcon) {
+#pragma unused(val)
 
 	if (isallnumeric (bsname)) {
 
@@ -7858,7 +7863,8 @@ on getLastAddress (adrcalendar) {
 */
 
 static boolean findlastnumericnodevisit (bigstring bsname, hdlhashnode nomad, tyvaluerecord val, ptrvoid refcon) {
-	
+#pragma unused(val)
+
 	if (isallnumeric (bsname)) {
 	
 		hdlhashnode *hnode = (hdlhashnode *) refcon;
@@ -8541,9 +8547,20 @@ on addday (daynum) {
 	add ("<td " + bgcolorstring + " height=\"" + rowheight + "\">" + string.replaceAll (string (dayTemplate), "***", link) + "</td>")};
 */
 
-static boolean addday (handlestream *s, long daynum, boolean fltoday,
-				hdlhashtable hmonthtable, Handle hurlprefix, Handle hbgcolorattrib,
-				Handle hcolwidth, Handle hrowheight, Handle hday, Handle hcssprefix, boolean flfirstcolumn) {
+static boolean
+addday (
+		handlestream *s,
+		long daynum,
+		boolean fltoday,
+		hdlhashtable hmonthtable,
+		Handle hurlprefix,
+		Handle hbgcolorattrib,
+		Handle hcolwidth,
+		Handle hrowheight,
+		Handle hday,
+		Handle hcssprefix,
+		boolean flfirstcolumn) {
+#pragma unused (hcolwidth)
 
 	Handle hlink= nil;
 	bigstring daystring;

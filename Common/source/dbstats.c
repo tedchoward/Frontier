@@ -294,7 +294,8 @@ static boolean statscountreleasestack (long *ctreleasenodes, long *ctreleasebyte
 
 
 boolean statsblockinuse (dbaddress adr, bigstring bsitem) {
-	
+#pragma unused (bsitem)
+
 	/*
 	called from the EFPs directly as we're doing our content-based 
 	database scan.
@@ -559,7 +560,8 @@ static boolean statsdispose (void) {
 
 
 static boolean statsmousedown (Point pt, tyclickflags flags) {
-	
+#pragma unused (pt, flags)
+
 	/*
 	smashrect ((**statswindowinfo).contentrect);
 	
