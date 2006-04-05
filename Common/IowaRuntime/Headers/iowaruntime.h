@@ -112,7 +112,8 @@ boolean runModelessCard (Handle, boolean, short, short, tycardeventcallback);
 
 boolean runCard (Handle, boolean, short, short, tycardeventcallback);
 
-boolean runHostedCard (WindowPtr hostwindow, Handle hpackedcard, boolean flscriptedcard, tycardeventcallback callback);
+// 2006-04-03 - kw --- renamed parameter
+boolean runHostedCard (WindowPtr hostwindow, Handle hpackedcard, boolean flscriptedcard, tycardeventcallback pcallback);
 
 boolean setObjectValue (hdlcard, bigstring, Handle);
 
