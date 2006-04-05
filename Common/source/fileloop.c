@@ -54,7 +54,8 @@ typedef struct tyfilelooprecord {
 
 
 static boolean fileloopreleaseitem (Handle h) {
-	
+#pragma unused(h)
+
 	/*
 	callback routine that disposes of one of our items.  since there are no
 	handles linked into our handle, there's nothing to release.
@@ -68,7 +69,8 @@ static boolean fileloopreleaseitem (Handle h) {
 	
 
 boolean diskinitloop (tyfileloopcallback diskfilter, Handle *hdiskloop) {
-	
+#pragma unused(diskfilter)
+
 	/*
 	same as fileinitloop, but for volumes on line
 	
@@ -178,7 +180,8 @@ boolean diskinitloop (tyfileloopcallback diskfilter, Handle *hdiskloop) {
 	
 
 boolean fileinitloop (const tyfilespec *fs, tyfileloopcallback filefilter, Handle *hfileloop) {
-	
+#pragma unused(filefilter)
+
 	/*
 	a conglomeration of filemanager incantations which sets up a UserLand
 	fileloop construct.  we create a new handle (allows fileloops to be

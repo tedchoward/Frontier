@@ -870,7 +870,8 @@ extern long fullpathloopcount;
 extern boolean hashstatsverb (tyvaluerecord *v);
 
 static boolean frontierfunctionvalue (short token, hdltreenode hparam1, tyvaluerecord *vreturned, bigstring bserror) {
-	
+#pragma unused (bserror)
+
 	/*
 	6/5/92 dmb: added isruntime func
 	

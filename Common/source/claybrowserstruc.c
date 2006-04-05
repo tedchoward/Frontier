@@ -431,7 +431,8 @@ boolean browserclearundo (void) {
 
 
 static boolean deletetmpbitvisit (hdlheadrecord hnode, ptrvoid refcon) {
-	
+#pragma unused (refcon)
+
 	if ((**hnode).tmpbit) {
 		
 		(**hnode).tmpbit = false;
@@ -922,9 +923,10 @@ static boolean browsergetnodevalue (hdlheadrecord hnode, tyvaluerecord *val) {
 
 
 boolean browsertextualizerefcon (hdlheadrecord hnode, Handle htext) {
-	
+#pragma unused (htext)
+
 	tyvaluerecord val;
-	
+
 	if (!browsergetnodevalue (hnode, &val))
 		return (false);
 	
@@ -960,7 +962,8 @@ boolean browserreleaserefcon (hdlheadrecord hnode, boolean fldisk) {
 	
 	
 static boolean lineinsertvisit (hdlheadrecord hnode, ptrvoid refcon) {
-	
+#pragma unused (refcon)
+
 	/*
 	set the node's refcon info to reflect its current position in
 	the outline hierarchy.
@@ -1035,7 +1038,8 @@ boolean browserlinedeleted (hdlheadrecord hnode) {
 
 
 static boolean notownrefconvisit (hdlheadrecord hnode, ptrvoid refcon) {
-	
+#pragma unused (refcon)
+
 	(**hnode).flnodeonscrap = true;
 	
 	return (true);
@@ -1043,7 +1047,8 @@ static boolean notownrefconvisit (hdlheadrecord hnode, ptrvoid refcon) {
 
 
 static boolean closeownedwindowsvisit (hdlhashnode hn, ptrvoid refcon) {
-	
+#pragma unused (refcon)
+
 	tyvaluerecord val = (**hn).val;
 	hdlexternalvariable hv;
 	hdlwindowinfo hinfo;

@@ -543,7 +543,8 @@ boolean tableundoclear (hdlhashnode hnode, boolean flundo) {
 
 
 static boolean tableclosewindows (hdlhashnode hnode, ptrvoid refcon) {
-	
+#pragma unused (refcon)
+
 	/*
 	the indicated external value is being deleted.  close any windows 
 	that contain descendants of the table

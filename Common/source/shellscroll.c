@@ -356,7 +356,7 @@ SInt32 CalcValueFromPoint (ControlHandle hControl, Point thePoint) {
 
 	SInt32 theValue = 0, theRange, theDistance, thePin;
 	Rect rectControl, indicatorbounds;
-	WindowPtr pWindow;
+	WindowPtr lpWindow;
 	long thumbheight = 16;
 	long thumbwidth = 16;
 	RgnHandle indicatorregion = NewRgn ();
@@ -376,7 +376,7 @@ SInt32 CalcValueFromPoint (ControlHandle hControl, Point thePoint) {
 	
 	gTotalWidthAdjust = ((kScrollArrowWidth * 2) + thumbwidth);
 
-	pWindow = shellwindow; // (*hControl)->contrlOwner;
+	lpWindow = shellwindow; // (*hControl)->contrlOwner;
 	
 	zerorect (&rectControl);
 	

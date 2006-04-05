@@ -281,22 +281,22 @@ boolean shellopen (void) {
 	5.0d3 dmb: look in clickers table for types we can actually open
 	*/
 	
-	tyconfigrecord config;
-	tyfilespec fspec;
-	tysftypelist filetypes;
-	ptrsftypelist ptypes = nil;
-	hdlhashtable htable;
+	tyconfigrecord	lconfig;
+	tyfilespec		fspec;
+	tysftypelist	filetypes;
+	ptrsftypelist	ptypes = nil;
+	hdlhashtable	htable;
 	bigstring bs;
 	boolean fl;
 	hdlwindowinfo hdummy;
 	
 	if (!keyboardstatus.floptionkey) { /*2.1b4*/
 		
-		shellgetconfig (iddefaultconfig, &config);
+		shellgetconfig (iddefaultconfig, &lconfig);
 		
 		filetypes.cttypes = 1;
 		
-		filetypes.types [0] = config.filetype;
+		filetypes.types [0] = lconfig.filetype;
 		
 	//	filetypes.types [1] = '2CLK'; // application glue files
 		
@@ -330,7 +330,10 @@ boolean shellopen (void) {
 
 
 static void prepuserforwait (WindowPtr w) {
-	
+#if TARGET_API_MAC_CARBON
+#	pragma unused(w)
+#endif
+
 	/*
 	4.1.1b1 dmb: call langpartialeventloop when appropriate
 
@@ -362,7 +365,8 @@ static void prepuserforwait (WindowPtr w) {
 
 
 static boolean killundovisit (WindowPtr w, ptrvoid refcon) {
-	
+#pragma unused (refcon)
+
 	if (shellpushglobals (w)) {
 		
 		killundo ();
@@ -745,22 +749,22 @@ boolean shellnew (void) {
 	5.0d8 dmb: pass file type to sfdialog for Win
 	*/
 	
-	tyconfigrecord config;
+	tyconfigrecord lconfig;
 	tyfilespec fspec;
 	tysftypelist filetypes;
 	WindowPtr w;
 	
-	shellgetconfig (iddefaultconfig, &config);
+	shellgetconfig (iddefaultconfig, &lconfig);
 	
 	clearbytes (&fspec, sizeof (fspec));
 	
 	getuntitledfilename (fsname (&fspec));
 	
-	if (config.flcreateonnew) {
+	if (lconfig.flcreateonnew) {
 		
 		filetypes.cttypes = 1;
 
-		filetypes.types [0] = config.filetype;
+		filetypes.types [0] = lconfig.filetype;
 		
 		if (!sfdialog (sfputfileverb, nil, &filetypes, &fspec, 'LAND')) /* 2005-10-06 creedon - added 'LAND' */ /*user canceled*/
 			return (false);

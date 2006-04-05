@@ -236,7 +236,8 @@ boolean findnamedtable (hdlhashtable htable, bigstring bs, hdlhashtable *hnamedt
 
 
 boolean newtablevariable (boolean flinmemory, long variabledata, hdltablevariable *h, boolean flxml) {
-	
+#pragma unused (flxml)
+
 	/*
 	tytablevariable item;
 	
@@ -546,7 +547,8 @@ boolean tablefindvariable (hdlexternalvariable hvariable, hdlhashtable *htable, 
 
 
 static boolean nosubsdirtyvisit (hdlhashnode hnode, ptrvoid refcon) {
-	
+#pragma unused (refcon)
+
 	/*
 	return true if hnode and its substructure is all clean
 	*/
@@ -842,7 +844,8 @@ boolean tableexiteditmode (void) {
 
 
 boolean tablemovetoname (hdlhashtable htable, bigstring bsname) {
-	
+#pragma unused (htable)
+
 	/*
 	2/4/91 dmb: must visi if already on cell
 

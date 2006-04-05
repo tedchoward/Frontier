@@ -1454,9 +1454,12 @@ static boolean system7activate (bigstring bsprogram) {
 
 #ifdef MACVERSION
 static boolean system6activate (bigstring bsprogram) {
-	
-	#ifdef flsystem6
-	
+#	if TARGET_API_MAC_CARBON == 1
+#		pragma unused (bsprogram)
+#	endif
+
+#	ifdef flsystem6
+
 	bigstring bs;
 	
 	if (bsprogram == nil)

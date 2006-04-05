@@ -76,7 +76,8 @@ void ophoistdisplay (void) {
 	
 
 static boolean oppushhoistvisit (hdlheadrecord hnode, ptrvoid refcon) {
-	
+#pragma unused (refcon)
+
 	/*
 	assume we are only being called for the 1st level subheads of the guy
 	being hoisted.  we reset his left pointer to indicate that he's a summit,

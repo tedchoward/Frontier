@@ -333,14 +333,16 @@ boolean shellupdatenow (WindowPtr wupdate) {
 
 
 static boolean updatenowvisit (WindowPtr wupdate, ptrvoid refcon) {
-	
+#pragma unused (refcon)
+
 	shellupdatenow (wupdate);
 	
 	return (true);
 	} /*updatenowvisit*/
 
 
-void shellupdateallnow (void) { /*updates all windows immediately*/
+/*updates all windows immediately*/
+void shellupdateallnow (void) {
 	
 	shellvisittypedwindows (-1, &updatenowvisit, nil); /*visit all windows*/
 	} /*shellupdateallnow*/

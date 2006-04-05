@@ -1177,7 +1177,8 @@ boolean opunpackoutline (Handle hpackedoutline, hdloutlinerecord *houtline) {
 
 
 boolean optextscraptooutline (hdloutlinerecord houtline, Handle htext, hdlheadrecord *hnode) {
-	
+#pragma unused (houtline)
+
 	/*
 	there seems to be an opportunity to factor code here.
 	

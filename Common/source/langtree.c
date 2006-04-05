@@ -318,7 +318,8 @@ boolean langvisitcodetree (hdltreenode htree, langtreevisitcallback visit, ptrvo
 
 
 static boolean counttreenodevisit (hdltreenode hnode, ptrvoid refcon) {
-	
+#pragma unused (hnode)
+
 	short *ctnodes = (short *) refcon;
 	
 	++*ctnodes;
@@ -1025,7 +1026,7 @@ static boolean langpacktreevisit (hdltreenode htree, ptrvoid refcon) {
 	*/
 	
 	register hdltreenode hn = htree;
-	ptrpacktreeinfo pi = (ptrpacktreeinfo) refcon;
+	ptrpacktreeinfo lpi = (ptrpacktreeinfo) refcon;
 	register ptrdisktreenode pn;
 	tyvaluerecord val = (**hn).nodeval;
 	Handle hpackedval = nil;
@@ -1039,7 +1040,7 @@ static boolean langpacktreevisit (hdltreenode htree, ptrvoid refcon) {
 		if (!langpackvalue ((**hn).nodeval, &hpackedval, HNoNode))
 			return (false);
 		
-		if (!pushhandle (hpackedval, (*pi).htreenodevalues)) {
+		if (!pushhandle (hpackedval, (*lpi).htreenodevalues)) {
 			
 			disposehandle (hpackedval);
 			
@@ -1047,7 +1048,7 @@ static boolean langpacktreevisit (hdltreenode htree, ptrvoid refcon) {
 			}
 		}
 	
-	pn = &(**(*pi).hdisktree).nodes [(*pi).ctvisited++];
+	pn = &(**(*lpi).hdisktree).nodes [(*lpi).ctvisited++];
 	
 	(*pn).nodetype = (**hn).nodetype;
 	
@@ -1123,15 +1124,19 @@ boolean langpacktree (hdltreenode htree, Handle *hpacked) {
 	memtodisklong ((**info.hdisktree).flags);
 	
 	return (mergehandles ((Handle) info.hdisktree, info.htreenodevalues, hpacked));
-	} /*langpacktree*/
+} /*langpacktree*/
 
 
-static boolean langunpacktreenode (tydisktreenode *rec, hdltreenode *hnode, ptrpacktreeinfo pi) {
-	
+static boolean
+langunpacktreenode (
+		tydisktreenode	*rec,
+		hdltreenode		*hnode,
+		ptrpacktreeinfo	 ppi)
+{
 	/*
 	unpack a single tree node.
 	*/
-	
+
 	register ptrdisktreenode pn = rec;
 	register hdltreenode hn;
 	Handle hpackedval = nil;
@@ -1150,7 +1155,7 @@ static boolean langunpacktreenode (tydisktreenode *rec, hdltreenode *hnode, ptrp
 		if (!newhandle ((*pn).nodevalsize, &hpackedval))
 			goto error;
 		
-		if (!pullfromhandle ((*pi).htreenodevalues, 0, (*pn).nodevalsize, *hpackedval)) /*does _not_ move memory*/
+		if (!pullfromhandle ((*ppi).htreenodevalues, 0, (*pn).nodevalsize, *hpackedval)) /*does _not_ move memory*/
 			goto error;
 		
 		if (!langunpackvalue (hpackedval, &val))
@@ -1166,26 +1171,28 @@ static boolean langunpacktreenode (tydisktreenode *rec, hdltreenode *hnode, ptrp
 	(**hn).lnum = (*pn).lnum;
 	
 	(**hn).charnum = (*pn).charnum;
-	
+
 	return (true);
-	
-	error: {
-		
-		#ifndef treenodeallocator
-			disposehandle ((Handle) *hnode);
-		#else
-			freetreenode (*hnode);
-		#endif
-		
+
+error:
+	{
+#ifndef treenodeallocator
+		disposehandle ((Handle) *hnode);
+#else
+		freetreenode (*hnode);
+#endif
 		disposehandle (hpackedval);
 		
 		return (false);
-		}
-	} /*langunpacktreenode*/
+	}
+} /*langunpacktreenode*/
 
 
-static boolean langunpacktreevisit (hdltreenode *htree, ptrpacktreeinfo pi) {
-	
+static boolean
+langunpacktreevisit (
+		hdltreenode		*htree,
+		ptrpacktreeinfo	 ppi)
+{
 	/*
 	unpack a code tree recursively
 	*/
@@ -1195,18 +1202,18 @@ static boolean langunpacktreevisit (hdltreenode *htree, ptrpacktreeinfo pi) {
 	tydisktreenode rec;
 	hdltreenode hnode;
 	
-	while (true) {
-		
-		rec = (**(*pi).hdisktree).nodes [(*pi).ctvisited++];
+	while (true)
+	{
+		rec = (**(*ppi).hdisktree).nodes [(*ppi).ctvisited++];
 		
 		disktomemlong (rec.nodevalsize);
 		disktomemshort (rec.lnum);
 		disktomemshort (rec.charnum);
 		/* remaining fields are byte values */
 
-		assert ((*pi).ctvisited <= (**(*pi).hdisktree).ctnodes);
+		assert ((*ppi).ctvisited <= (**(*ppi).hdisktree).ctnodes);
 		
-		if (!langunpacktreenode (&rec, &hnode, pi))
+		if (!langunpacktreenode (&rec, &hnode, ppi))
 			goto error;
 		
 		if (hn == nil) /*first node created*/
@@ -1216,37 +1223,37 @@ static boolean langunpacktreevisit (hdltreenode *htree, ptrpacktreeinfo pi) {
 		
 		hn = hnode;
 		
-		if (rec.paraminfo & hasparam1_mask) {
-			
-			if (!langunpacktreevisit (&hnode, pi))
+		if (rec.paraminfo & hasparam1_mask)
+		{
+			if (!langunpacktreevisit (&hnode, ppi))
 				goto error;
-			
+
 			(**hn).param1 = hnode;
-			}
-		
-		if (rec.paraminfo & hasparam2_mask) {
-			
-			if (!langunpacktreevisit (&hnode, pi))
+		}
+
+		if (rec.paraminfo & hasparam2_mask)
+		{
+			if (!langunpacktreevisit (&hnode, ppi))
 				goto error;
-			
+
 			(**hn).param2 = hnode;
-			}
-		
-		if (rec.paraminfo & hasparam3_mask) {
-			
-			if (!langunpacktreevisit (&hnode, pi))
+		}
+
+		if (rec.paraminfo & hasparam3_mask)
+		{
+			if (!langunpacktreevisit (&hnode, ppi))
 				goto error;
-			
+
 			(**hn).param3 = hnode;
-			}
-		
-		if (rec.paraminfo & hasparam4_mask) {
-			
-			if (!langunpacktreevisit (&hnode, pi))
+		}
+
+		if (rec.paraminfo & hasparam4_mask)
+		{
+			if (!langunpacktreevisit (&hnode, ppi))
 				goto error;
-			
+
 			(**hn).param4 = hnode;
-			}
+		}
 		
 		if ((rec.paraminfo & haslink_mask) == 0)
 			break;
