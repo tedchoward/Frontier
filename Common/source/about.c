@@ -1276,7 +1276,8 @@ static boolean aboutsetstyle (void) {
 
 
 static boolean aboutmousedown (Point pt, tyclickflags flags) {
-	
+#pragma unused (flags)
+
 	/*
 	1/24/91 dmb: to allow the home window to be dragged with a single click, 
 	even when it's not already the front window, the dontconsumefrontclicks 
@@ -1756,7 +1757,8 @@ boolean aboutstart (void) {
 
 
 boolean openabout (boolean flzoom, long ctreservebytes) {
-	
+#pragma unused(flzoom)
+
 	/*
 	2.1b5 dmb: added ctreservebytes parameter. of non-zero, caller wants us to 
 	reserve space in the heap below the dialog record (during initialization)
@@ -1800,7 +1802,8 @@ boolean openabout (boolean flzoom, long ctreservebytes) {
 
 
 void closeabout (boolean flzoom, short minticks) {
-	
+#pragma unused(flzoom)
+
 	hdlwindowinfo hinfo;
 	
 	if (findaboutwindow (&hinfo)) {

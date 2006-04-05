@@ -212,7 +212,8 @@ static boolean tablesearchcellvalue (hdlhashnode hnode, bigstring bscell, tyvalu
 
 
 static boolean tablefindvisit (bigstring bsname, hdlhashnode hnode, tyvaluerecord val, ptrvoid refcon) {
-	
+#pragma unused (refcon)
+
 	/*
 	7/4/91 dmb: langexternalzoom now takes table/name pair instead 
 	of full path.

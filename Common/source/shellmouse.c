@@ -433,11 +433,14 @@ void shellhandlemouse (void) {
 				break;
 			*/
 			
-			if (TrackGoAway (w, mousept)) 
+			if (TrackGoAway (w, mousept))
+			{
+				// 2006-04-03 - kw --- brace for ambiguity warning
 				if (keyboardstatus.floptionkey)
 					shellcloseall (w, true);
 				else
 					shellclose (w, true);
+			}
 					
 			break;
 		

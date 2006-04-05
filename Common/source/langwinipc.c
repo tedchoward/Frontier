@@ -69,7 +69,8 @@
 
 
 boolean langwinipcerrorroutine (bigstring bs, ptrvoid refcon) {
-	
+#pragma unused (refcon)
+
 	/*
 	if an error occurs while processing a runscript verb, we want to 
 	return the text that would normally go into the langerror window as 
@@ -881,7 +882,14 @@ boolean langwinipchandleCOM (bigstring bsscriptname, void* pDispParams, tyvaluer
 #endif
 
 
-static boolean langkernelbuildparamlist (hdltreenode hcode, tyvaluerecord * listval, hdltreenode *hparams, unsigned int * errarg) {
+static boolean
+langkernelbuildparamlist (
+		hdltreenode		 hcode,
+		tyvaluerecord	*listval,
+		hdltreenode		*hparams,
+		unsigned int	*errarg)
+{
+#pragma unused (hcode)
 	
 	/*
 	take all of the parameters in the incoming verb hverb and build a code 

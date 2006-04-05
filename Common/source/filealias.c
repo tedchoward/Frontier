@@ -262,17 +262,20 @@ static Boolean CopyDriverIcon(const FSSpec* volSpec, short destRefnum, short des
 	ParamBlockRec	cpb;
 	OSErr			err;
 	Handle			h;
-	
-	if (!FSpIsVolume(volSpec)) return false;
-	
+
+	if (!FSpIsVolume(volSpec))
+		return false;
+
 	pb.volumeParam.ioNamePtr = NULL;
 	pb.volumeParam.ioVRefNum = volSpec->vRefNum;
 	pb.volumeParam.ioVolIndex = 0;
-	
+
 	err = PBHGetVInfoSync(&pb);
-	if (err != noErr) return false;
-	
-		// set up for Control call
+
+	if (err != noErr)
+		return false;
+
+	// set up for Control call
 	cpb.cntrlParam.ioCRefNum = pb.volumeParam.ioVDRefNum;
 	cpb.cntrlParam.ioVRefNum = pb.volumeParam.ioVDrvInfo;
 	

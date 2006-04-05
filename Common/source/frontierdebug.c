@@ -216,6 +216,7 @@ static void logtoaboutwindow (char *str) {
 
 
 static void logtodialog (char *str) {
+#pragma unused(str)
 
 	}/*logtodialog*/
 

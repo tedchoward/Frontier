@@ -53,7 +53,8 @@ static hdlprocessrecord quickscriptprocess = nil;
 
 
 static boolean cmdsavestring (short stringnumber, Handle htext) {
-	
+#pragma unused(stringnumber)
+
 	/*
 	the cmd dialog only has one string, so we ignore the stringnumber param.
 	
@@ -90,7 +91,8 @@ static boolean cmdsavestring (short stringnumber, Handle htext) {
 	
 	
 static boolean cmdloadstring (short stringnumber, Handle *h) {
-	
+#pragma unused(stringnumber)
+
 	/*
 	1/21/93 dmb: don't set superglobals manually anymore
 	
@@ -104,7 +106,8 @@ static boolean cmdloadstring (short stringnumber, Handle *h) {
 
 
 static boolean cmderrorroutine (long refcon, long lnum, short charnum, hdlhashtable *htable, bigstring bsname) {
-	
+#pragma unused (refcon, htable)
+
 	/*
 	a lang error occurred; select the offending text in the quickscript window
 	*/
@@ -137,7 +140,8 @@ static boolean cmderrorroutine (long refcon, long lnum, short charnum, hdlhashta
 
 
 static boolean cmdtexthit (Point pt) {
-	
+#pragma unused (pt)
+
 	/*
 	2.1b6 dmb: use debugging context for zooming, if available
 	*/
@@ -149,7 +153,7 @@ static boolean cmdtexthit (Point pt) {
 		
 		minigetselstring (0, bs);
 		
-		if (scriptgetdebuggingcontext (&hcontext)) /*gauranteed to be non-nil*/
+		if (scriptgetdebuggingcontext (&hcontext)) /*guaranteed to be non-nil*/
 			pushhashtable (hcontext);
 		
 		langzoomobject (bs);

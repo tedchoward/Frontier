@@ -354,7 +354,8 @@ static struct {
 
 
 static boolean opfindoffsetvisit (hdlheadrecord hnode, ptrvoid refcon) {
-	
+#pragma unused (refcon)
+
 	bigstring bs;
 	short len;
 	
@@ -1130,7 +1131,8 @@ static boolean openterkey (void) {
 
 
 static boolean opmovetovisit (hdlheadrecord hnode, ptrvoid refcon) {
-	
+#pragma unused (refcon)
+
 	(**outlinedata).hbarcursor = hnode; /*move cursor to first headline encountered*/
 	
 	return (false); /*stop visiting*/
@@ -1704,7 +1706,8 @@ void opgetcursorinfo (long *row, short *col) {
 	
 	
 void opsetcursorinfo (long row, short col) {
-	
+#pragma unused (col)
+
 	/*
 	translate a row and column position into the outline's internal data
 	structure.

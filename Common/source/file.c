@@ -207,22 +207,22 @@ long filegetsize (hdlfilenum fnum) {
 	*/
 	
 	#ifdef MACVERSION
-		long filesize;
+		long lfilesize;
 		
-		if (GetEOF (fnum, &filesize) != noErr)
-			filesize = 0;
+		if (GetEOF (fnum, &lfilesize) != noErr)
+			lfilesize = 0;
 		
-		return (filesize);
+		return (lfilesize);
 	#endif
 
 	#ifdef WIN95VERSION
-		long filesize;
+		long lfilesize;
 
-		filesize = GetFileSize (fnum, NULL);
-		if (filesize == -1L)
-			filesize = 0L;
+		lfilesize = GetFileSize (fnum, NULL);
+		if (lfilesize == -1L)
+			lfilesize = 0L;
 
-		return (filesize);
+		return (lfilesize);
 	#endif
 	} /*filegetsize*/
 
@@ -403,17 +403,17 @@ boolean filereadhandle (hdlfilenum fnum, Handle *hreturned) {
 	indicated handle and return true if it worked.
 	*/
 	
-	register long filesize;
+	register long lfilesize;
 	register Handle h;
 	
-	filesize = filegetsize (fnum);
+	lfilesize = filegetsize (fnum);
 	
-	if (!newclearhandle (filesize, hreturned))
+	if (!newclearhandle (lfilesize, hreturned))
 		return (false);
 		
 	h = *hreturned; /*copy into register*/
 		
-	if (!fileread (fnum, filesize, *h)) {
+	if (!fileread (fnum, lfilesize, *h)) {
 		
 		disposehandle (h);
 		
@@ -462,7 +462,9 @@ static pascal void iocompletion (ParmBlkPtr pb) {
 #endif //MACVERSION
 
 boolean flushvolumechanges (const tyfilespec *fs, hdlfilenum fnum) {
-#ifdef MACVERSION	
+#ifdef MACVERSION
+#	pragma unused(fnum)
+
 	/*
 	4.1b7 dmb: was -- FlushVol (nil, (*fs).vRefNum);
 	
@@ -639,10 +641,11 @@ boolean openfile (const tyfilespec *fs, hdlfilenum *fnum, boolean flreadonly) {
 	
 	setfserrorparam (fs); /*in case error message takes a filename parameter*/
 	
-	if (flreadonly) perm = fsRdPerm;
-	else perm = fsRdWrPerm;
-	
-	
+	if (flreadonly)
+		perm = fsRdPerm;
+	else
+		perm = fsRdWrPerm;
+
 	errcode = FSpOpenDF (fs, perm, fnum);
 	
 	if (oserror (errcode)) {

@@ -296,109 +296,118 @@ boolean popupmenuhit (Rect r, boolean flgeneva9, fillpopupcallback fillpopuprout
 
 #if TARGET_API_MAC_CARBON == 1
 
-	static void MyThemeButtonDrawCallback (const Rect *bounds, ThemeButtonKind kind, const ThemeButtonDrawInfo *info,
-		UInt32 userData, SInt16 depth, Boolean isColorDev) {
-		
-		/*
-		7.0b48 PBS: draw the label for a popup menu.
-		*/
-		
-		bigstring bs;
-		
-		pushstyle (popupfont, popupfontsize, 0);
+static void
+MyThemeButtonDrawCallback (
+		const Rect					*bounds,
+		ThemeButtonKind				 kind,
+		const ThemeButtonDrawInfo	*info,
+		UInt32						 userData,
+		SInt16						 depth,
+		Boolean						 isColorDev)
+{
+#pragma unused (kind, info, depth, isColorDev)
 
-		texthandletostring ((Handle) userData, bs);
-		
-		movepento ((*bounds).left, (*bounds).top + 10);
-		
-		pendrawstring (bs);
-		
-		popstyle ();
-		} /*MyThemeButtonDrawCallback*/
+	/*
+	 7.0b48 PBS: draw the label for a popup menu.
+	 */
+
+	bigstring bs;
+
+	pushstyle (popupfont, popupfontsize, 0);
+
+	texthandletostring ((Handle) userData, bs);
+
+	movepento ((*bounds).left, (*bounds).top + 10);
+
+	pendrawstring (bs);
+
+	popstyle ();
+	} /*MyThemeButtonDrawCallback*/
 
 #endif
 
 
 boolean drawpopup (Rect rpopup, bigstring bs, boolean flbitmap) {
-	
-	#if TARGET_API_MAC_CARBON == 1
-	
-		Rect r;
-		Handle h;
-		ThemeButtonDrawUPP drawupp;
-		ThemeButtonDrawInfo drawinfo;
-		
-		drawupp = NewThemeButtonDrawUPP (MyThemeButtonDrawCallback);
-				
-		drawinfo.state = kThemeButtonOn;
-		
-		drawinfo.value = kThemeStateActive;
-		
-		drawinfo.adornment = 0;
-		
-		setrect (&r, rpopup.top, rpopup.left, rpopup.bottom + 1, rpopup.right + 1);
-		
-		eraserect (r);
-		
-		newtexthandle (bs, &h); 
-		
-		DrawThemeButton (&r, kThemePopupButton, &drawinfo, nil, nil, drawupp, (unsigned long) h);
-		
-		//DisposeThemeButtonDrawUPP (MyThemeButtonDrawCallback);
-		DisposeThemeButtonDrawUPP (drawupp);
-		
-		return (true);
+#if TARGET_API_MAC_CARBON == 1
+#	pragma unused (flbitmap)
 
-	#else
-	
-		Rect r;
-		
-		initpopupfont ();
+	Rect r;
+	Handle h;
+	ThemeButtonDrawUPP drawupp;
+	ThemeButtonDrawInfo drawinfo;
 
-		setrect (&r, rpopup.top, rpopup.left, rpopup.bottom + 1, rpopup.right + 1);
-		
-		if (flbitmap)
-			flbitmap = openbitmap (r, getport ());
-		
-		eraserect (r);
-		
-		r = rpopup;
-		
-		framerect (r);
-		
-		movepento (r.left + 1, r.bottom);
-		
-		pendrawline (r.right, r.bottom);
-		
-		pendrawline (r.right, r.top + 1);
-		
-		r.right -= popuparrowwidth;
-		
-		insetrect (&r, 4, 2);
-		
-		pushstyle (popupfont, popupfontsize, 0);
-		
-		movepento (r.left, r.bottom - globalfontinfo.descent - 1);
-		
-		ellipsize (bs, r.right - r.left);
-		
-		pendrawstring (bs);
-		
-		popstyle ();
-		
-		r = rpopup;
-		
-		insetrect (&r, 1, 1);
-		
-		r.left = r.right - popuparrowwidth;
-		
-		displaypopupicon (r, true);
-		
-		if (flbitmap)
-			closebitmap (getport ());
-		
-		return (true);
-	#endif
+	
+	drawupp = NewThemeButtonDrawUPP (MyThemeButtonDrawCallback);
+
+	drawinfo.state = kThemeButtonOn;
+
+	drawinfo.value = kThemeStateActive;
+
+	drawinfo.adornment = 0;
+
+	setrect (&r, rpopup.top, rpopup.left, rpopup.bottom + 1, rpopup.right + 1);
+
+	eraserect (r);
+
+	newtexthandle (bs, &h); 
+
+	DrawThemeButton (&r, kThemePopupButton, &drawinfo, nil, nil, drawupp, (unsigned long) h);
+
+	//DisposeThemeButtonDrawUPP (MyThemeButtonDrawCallback);
+	DisposeThemeButtonDrawUPP (drawupp);
+
+	return (true);
+
+#else
+
+	Rect r;
+
+	initpopupfont ();
+
+	setrect (&r, rpopup.top, rpopup.left, rpopup.bottom + 1, rpopup.right + 1);
+
+	if (flbitmap)
+		flbitmap = openbitmap (r, getport ());
+
+	eraserect (r);
+
+	r = rpopup;
+
+	framerect (r);
+
+	movepento (r.left + 1, r.bottom);
+
+	pendrawline (r.right, r.bottom);
+
+	pendrawline (r.right, r.top + 1);
+
+	r.right -= popuparrowwidth;
+
+	insetrect (&r, 4, 2);
+
+	pushstyle (popupfont, popupfontsize, 0);
+
+	movepento (r.left, r.bottom - globalfontinfo.descent - 1);
+
+	ellipsize (bs, r.right - r.left);
+
+	pendrawstring (bs);
+
+	popstyle ();
+
+	r = rpopup;
+
+	insetrect (&r, 1, 1);
+
+	r.left = r.right - popuparrowwidth;
+
+	displaypopupicon (r, true);
+
+	if (flbitmap)
+		closebitmap (getport ());
+
+	return (true);
+#endif
 	} /*drawpopup*/
 
 

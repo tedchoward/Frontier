@@ -305,8 +305,8 @@ static void shellcopyprintinfo (void) {
 	 */
 	
 	Rect
-	rpage,
-	rpaper;
+		rpage,
+		rpaper;
 	
 	//typrintinfo *dbgprintinfo = &shellprintinfo;
 	
@@ -773,12 +773,10 @@ boolean shellprint (WindowPtr w, boolean fldialog) {
 	shellpopglobals ();
 	
 exit:
-		
-		
-		currentprintport = NULL;
-	
+	currentprintport = NULL;
+
 	return (fl);
-	
+
 } /*shellprint*/
 
 		

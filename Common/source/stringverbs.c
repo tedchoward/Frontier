@@ -2127,19 +2127,19 @@ static boolean stringfunctionvalue (short token, hdltreenode hparam1, tyvaluerec
 			unlockhandle (x);
 
 			if (vtranslate.data.flvalue) { /*return a hex string*/
-				bigstring bs;
+				bigstring lbs;
 				unsigned char enc[] = "0123456789abcdef";
 				long ix;
 				Handle h;
 
 				for(ix = 0; ix < 16; ix++) {
-					setstringcharacter (bs, 2*ix, enc[(int)((checksum[ix])/16)]);
-					setstringcharacter (bs, 2*ix+1, enc[(int)((checksum[ix])%16)]);
+					setstringcharacter (lbs, 2*ix, enc[(int)((checksum[ix])/16)]);
+					setstringcharacter (lbs, 2*ix+1, enc[(int)((checksum[ix])%16)]);
 					}/*for*/
 
-				setstringlength (bs, 32);
+				setstringlength (lbs, 32);
 
-				if (!newtexthandle (bs, &h))
+				if (!newtexthandle (lbs, &h))
 					return (false);
 
 				return (setheapvalue (h, stringvaluetype, v));

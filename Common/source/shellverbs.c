@@ -1370,7 +1370,8 @@ static boolean filemenufunctionvalue (short token, hdltreenode hparam1, tyvaluer
 
 
 static boolean editmenufunctionvalue (short token, hdltreenode hparam1, tyvaluerecord *vreturned, bigstring bserror) {
-	
+#pragma unused (bserror)
+
 	/*
 	10/3/91 dmb: split off editMenu verbs from shell verbs
 	

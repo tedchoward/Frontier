@@ -97,8 +97,14 @@ static WindowPtr osageteventwindow (EventRecord *ev) {
 static boolean removewindowsharinghandlers (void);
 
 
-static pascal ComponentResult handlewindoweventcommand (Handle hglobals, EventRecord *ev, tyWindowSharingGlobals *wsGlobals) {
-	
+static pascal ComponentResult
+handlewindoweventcommand (
+		Handle					 hglobals,
+		EventRecord				*ev,
+		tyWindowSharingGlobals	*pwsGlobals)
+{
+#pragma unused (hglobals)
+
 	boolean flcloseallwindows = false;
 	WindowPtr w;
 	boolean fl = false;
@@ -161,7 +167,7 @@ static pascal ComponentResult handlewindoweventcommand (Handle hglobals, EventRe
 	
 	shellpopglobals ();
 	
-	(*wsGlobals).flcloseallwindows = flcloseallwindows; /****/
+	(*pwsGlobals).flcloseallwindows = flcloseallwindows; /****/
 	
 	/*
 	processyield ();
@@ -172,19 +178,22 @@ static pascal ComponentResult handlewindoweventcommand (Handle hglobals, EventRe
 
 
 static pascal ComponentResult windowiscardcommand (Handle hglobals, WindowPtr w) {
-	
+#pragma unused (hglobals)
+
 	return (isshellwindow (w));
 	} /*windowiscardcommand*/
 
 
 static pascal ComponentResult closewindowcommand (Handle hglobals, WindowPtr w) {
-	
+#pragma unused (hglobals)
+
 	return (shellclosewindow (w));
 	} /*closewindowcommand*/
 
 
 static pascal ComponentResult windoweditcommand (Handle hglobals, short editcmd) {
-	
+#pragma unused (hglobals)
+
 	register WindowPtr w;
 	register boolean fl;
 	
@@ -204,10 +213,16 @@ static pascal ComponentResult windoweditcommand (Handle hglobals, short editcmd)
 	} /*windoweditcommand*/
 
 
-static pascal ComponentResult windowopencommand (Handle hglobals, Handle h, short flscripted, Str255 windowname, Point pt, uisEventCallback filter) {
-	
-	#pragma unused (flscripted, windowname, pt, filter)
-	
+static pascal ComponentResult
+windowopencommand (
+		Handle				 hglobals,
+		Handle				 h,
+		short				 flscripted,
+		Str255				 windowname,
+		Point				 pt,
+		uisEventCallback	 filter) {
+#pragma unused (hglobals, flscripted, windowname, pt, filter)
+
 	/*
 	2.1b8 dmb: new routine so client can open window at will
 	*/
@@ -262,7 +277,8 @@ static pascal ComponentResult windowcandofunction (short selector) {
 
 
 static pascal OSErr handleselectwindow (const AppleEvent *event, AppleEvent *reply, SInt32 refcon) {
-	
+#pragma unused (reply, refcon)
+
 	/*
 	handle the window select event in the current application context.
 	

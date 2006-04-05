@@ -958,7 +958,8 @@ static boolean callprotocolhandler (hdlhashtable hremotetable, bigstring bsproto
 
 
 static boolean parseremotefunction (bigstring bs, ptrstring bsprotocol, ptrstring bsserver, short *port) {
-	
+#pragma unused (port)
+
 	/*
 	5.0.2 dmb: given a string like "rpc2://betty.userland.com:81", set bsprotocol to "rpc2", 
 	server to "betty.userland.com"
@@ -2329,7 +2330,8 @@ boolean xmlgetname (bigstring bsname) {
 
 
 static boolean xmlvaltostring (tyvaluerecord xmlval, short indentlevel, boolean fltranslatestrings, Handle *string) {
-	
+#pragma unused(indentlevel)
+
 	/*
 	on valToString (val, indentlevel=0) { //http://www.microsoft.com/standards/xml/xmldata.htm#ComplexTypes
 		ÇReturn an XML-Data representation of a Frontier value

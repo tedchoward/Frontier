@@ -2362,7 +2362,7 @@ static boolean updateconfigsettings (tyvaluetype type, short configid) {
 	} /*updateconfigsettings*/
 
 
-boolean langexternalgetconfig (tyvaluetype type, short configid, tyconfigrecord *config) {
+boolean langexternalgetconfig (tyvaluetype type, short configid, tyconfigrecord *pconfig) {
 	
 	/*
 	5.0b9 dmb: expose functionality so user prefs hold in all contexts,
@@ -2380,7 +2380,7 @@ boolean langexternalgetconfig (tyvaluetype type, short configid, tyconfigrecord 
 		fltryingtoupdate = false;
 		}
 
-	return (shellgetconfig (configid, config));
+	return (shellgetconfig (configid, pconfig));
 	} /*langexternalgetconfig*/
 
 
@@ -2911,15 +2911,21 @@ boolean langexternalrefdata (hdlexternalvariable hv, Handle *hdata) {
 
 
 boolean langexternalsymbolchanged (hdlhashtable htable, const bigstring bsname, hdlhashnode hnode, boolean flvalue) {
+#pragma unused(flvalue)
 
 	return langexternalsymbolinserted (htable, bsname, hnode);
 	} /*langexternalsymbolchanged*/
 
 
 boolean langexternalsymbolinserted (hdlhashtable htable, const bigstring bsname, hdlhashnode hnode) {
+#if !langexternalfind_optimization
+#	pragma unused (htable, bsname, hnode)
+#endif
 
-	#if langexternalfind_optimization
-		if (hnode != nil && hnode != HNoNode && (**hnode).val.valuetype == externalvaluetype) {
+#if langexternalfind_optimization
+	if (	hnode != nil
+		 && hnode != HNoNode
+		 && (**hnode).val.valuetype == externalvaluetype) {
 		
 			hdlexternalvariable	hv = (hdlexternalvariable) (**hnode).val.data.externalvalue;
 

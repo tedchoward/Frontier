@@ -367,7 +367,7 @@ static boolean makeintegerlist (tyvaluerecord *v, tyvaluetype listtype, void *pi
 	an array of keys for each type.
 	*/
 	
-	register short *pi = (short *) pints;
+	register short *lpi = (short *) pints;
 	boolean flrecord = listtype == recordvaluetype;
 	tyvaluerecord itemval;
 	
@@ -383,7 +383,7 @@ static boolean makeintegerlist (tyvaluerecord *v, tyvaluetype listtype, void *pi
 	
 	while (--ctints >= 0) { /*process each int in the array*/
 		
-		setintvalue (*pi++, &itemval);
+		setintvalue (*lpi++, &itemval);
 
 		if (!langpushlistval (*intlist, nil, &itemval))
 			goto error;
@@ -405,7 +405,7 @@ static boolean pullintegerlist (hdllistrecord intlist, short ctints, void *pints
 	2.1b2 dmb: pull out the array of short integers from the list
 	*/
 	
-	register short *pi = (short *) pints;
+	register short *lpi = (short *) pints;
 	tyvaluerecord val;
 	long ctitems;
 	long n;
@@ -427,7 +427,7 @@ static boolean pullintegerlist (hdllistrecord intlist, short ctints, void *pints
 		if (!coercevalue (&val, intvaluetype))
 			return (false);
 
-		*pi++ = val.data.intvalue;
+		*lpi++ = val.data.intvalue;
 		}
 	
 	return (true);
@@ -447,7 +447,8 @@ static Point swappoint (Point pt) {
 
 
 static boolean nofunctioncallsvisit (hdltreenode hnode, void *refcon) {
-	
+#pragma unused (refcon)
+
 	return ((**hnode).nodetype != functionop);
 	} /*nofunctioncallsvisit*/
 
@@ -692,7 +693,8 @@ boolean coercetolist (tyvaluerecord *val, tyvaluetype type) {
 
 
 static boolean coercelistcontents (tyvaluerecord *val, tyvaluetype totype, hdllistrecord hlist, long ctitems) {
-	
+#pragma unused(val)
+
 	/*
 	4.0b7 dmb:  when list->totype coercion otherwise fails, we try to coerce each item 
 	in the list to totype. if we success, we'll return true even though the value we 
@@ -1254,7 +1256,8 @@ typedef struct tylangvisitlistinfo {
 
 
 static boolean langvisitlistvaluesvisit (Handle hdata, ptrstring bskey, ptrvoid refcon) {
-	
+#pragma unused (bskey)
+
 	/*
 	2004-11-04 aradke: helper for langvisitlistvalues, called from opvisitlist.
 	*/

@@ -107,7 +107,7 @@ static boolean newpictvariable (boolean flinmemory, long variabledata, hdlpictva
 	
 
 boolean pictverbgettypestring (hdlexternalvariable hvariable, bigstring bs) {
-	
+#pragma unused (hvariable)
 	getstringlist (pictstringlist, picttypestring, bs);
 	
 	return (true);
@@ -115,7 +115,8 @@ boolean pictverbgettypestring (hdlexternalvariable hvariable, bigstring bs) {
 
 
 static boolean pictdisposevariable (hdlexternalvariable hvariable, boolean fldisk) {
-	
+#pragma unused (fldisk)
+
 	return (pictdisposerecord ((hdlpictrecord) (**hvariable).variabledata));
 	} /*pictdisposevariable*/
 
@@ -434,7 +435,8 @@ boolean pictverbunpack (Handle hpacked, long *ixload, hdlexternalvariable *hvari
 
 
 boolean pictverbpacktotext (hdlexternalvariable h, Handle htext) {
-	
+#pragma unused(h)
+
 	bigstring bs;
 	
 	getstringlist (pictstringlist, picttextstring, bs);
@@ -464,7 +466,8 @@ boolean pictverbgetsize (hdlexternalvariable hvariable, long *size) {
 
 
 boolean pictverbgetdisplaystring (hdlexternalvariable h, bigstring bs) {
-	
+#pragma unused(h)
+
 	/*
 	get string for table display.  variable is in memory
 	*/
@@ -1021,7 +1024,8 @@ static boolean pictpaste (void) {
 
 
 boolean pictverbfind (hdlexternalvariable hvariable, boolean *flzoom) {
-	
+#pragma unused(flzoom, hvariable)
+
 	return (false);
 	} /*pictverbfind*/
 
@@ -1067,7 +1071,8 @@ static boolean pictsetprintinfo (void) {
 
 
 static boolean pictprint (short pagenumber) {
-	
+#pragma unused (pagenumber)
+
 	register hdlpictrecord hp = pictdata;
 	register PicHandle macpicture = (**hp).macpicture;
 	register boolean fleval;

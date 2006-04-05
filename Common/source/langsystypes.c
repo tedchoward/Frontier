@@ -154,7 +154,8 @@ boolean langcanusealiases (void) {
 
 
 static boolean findvaluevisit (bigstring bs, hdlhashnode hnode, tyvaluerecord val, ptrvoid valfind) {
-	
+#pragma unused (bs, hnode)
+
 	return (val.data.longvalue == (long) valfind);	//.data.longvalue
 	} /*findvaluevisit*/
 
@@ -226,7 +227,8 @@ static boolean langfindvalue (tyvaluerecord val, hdlhashtable *htable, bigstring
 
 
 static boolean getostypevalnamevisit (bigstring bsname, hdlhashnode hnode, tyvaluerecord val, ptrvoid refcon) {
-	
+#pragma unused (hnode)
+
 	/*
 	3.0.2b1 dmb: we now look in all loaded app tables for a match when 
 	converting an terminology value (a string4 value) its name

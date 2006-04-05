@@ -282,6 +282,9 @@ void wpshutdown (void) {
 
 
 static void setdefaultstyles (boolean flprinting) {
+#ifdef MACVERSION
+#	pragma unused (flprinting)
+#endif
 
 	short font, size, style;
 	bigstring bsfont;
@@ -1992,7 +1995,8 @@ boolean wpprint (short pagenumber) {
 
 static 
 pascal void wptrackclick (hdlwprecord wp, Point pt) {
-	
+#pragma unused(wp)
+
 	/*
 	12/16/91 dmb: update scrollbars every time.  (don't need to check dirtyness, 
 	because no drawing occurs if unchanged.)
@@ -2980,25 +2984,26 @@ hdlwprecord wpnewbuffer (Handle hpacked, const Rect *rclip, const Rect *rbounds,
 
 
 boolean wpnewrecord (Rect r, hdlwprecord *hwprecord) {
-	
+#pragma unused (r)
+
 	/*
 		3.0.4b8 dmb: set the scratchport
 	*/
 	
 	bigstring bs;
-	tyconfigrecord config;
+	tyconfigrecord lconfig;
 	register hdlwprecord hwp;
 	Rect rclip;
 	
 	setemptystring (bs);
 	
-	shellgetconfig (idwpconfig, &config);
+	shellgetconfig (idwpconfig, &lconfig);
 	
 	pushscratchport ();
 	
-	pushstyle (config.defaultfont, config.defaultsize, config.defaultstyle);
+	pushstyle (lconfig.defaultfont, lconfig.defaultsize, lconfig.defaultstyle);
 	
-	rclip = config.defaultwindowrect;
+	rclip = lconfig.defaultwindowrect;
 
 	offsetrect (&rclip, -rclip.left, -rclip.top);
 
@@ -3011,7 +3016,7 @@ boolean wpnewrecord (Rect r, hdlwprecord *hwprecord) {
 	if (hwp == nil)
 		return (false);
 	
-	(**hwp).windowrect = config.defaultwindowrect;
+	(**hwp).windowrect = lconfig.defaultwindowrect;
 	
 	(**hwp).fldirty = true;
 	
@@ -3261,11 +3266,13 @@ static boolean wpsetcaretpos (pg_short_t caretverb) {
 	long newstartsel, newendsel;
 
 	if (flextend)
+	{
 		if (flwordwise)
 			caretverb |= EXTEND_CARET_FLAG;
 		else
 			pgGetSelection (wpbuffer, &oldstartsel, &oldendsel);
-	
+	}
+
 	pgSetCaretPosition (wpbuffer, caretverb, true);
 	
 	if (flextend && !flwordwise) {
@@ -3545,11 +3552,11 @@ boolean wpkeystroke (void) {
 		
 		case chbackspace: {
 
-			long newstartsel;
+			long lnewstartsel;
 
 			undocode = undo_backspace;
 
-			wptraversehiddentext (left, &newstartsel);
+			wptraversehiddentext (left, &lnewstartsel);
 
 			break;
 			}
@@ -3739,10 +3746,11 @@ boolean wpgo (tydirection dir, long dist) {
 
 
 static boolean wprulerclick (Point pt) {
-	
+#pragma unused (pt)
+
 	boolean flrecalc = false;
 	
-	#if flrulers
+#if flrulers
 	
 	#endif
 	
@@ -3925,7 +3933,8 @@ boolean wpinsert (bigstring bs) {
 
 
 boolean wpdelete (boolean flinserting) {
-	
+#pragma unused (flinserting)
+
 	/*
 	12/31/91 dmb: added flinserting parameter -- needed to deterinate whether 
 	the undo of the deletion needs to redisplay or not
@@ -4387,7 +4396,8 @@ boolean wpundo (void) {
 
 
 boolean wpsearch (boolean flfromtop, boolean flcase, boolean flwords, boolean flwrap) {
-	
+#pragma unused (flcase, flwords)
+
 	/*
 	9/12/91 dmb: supported flwrap parameter
 	

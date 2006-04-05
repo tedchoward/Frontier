@@ -83,7 +83,8 @@ static boolean quicktimeisplayingverb (hdltreenode hp1, tyvaluerecord *v) {
 
 
 static boolean quicktimeopenverb (hdltreenode hp1, tyvaluerecord *v) {
-	
+#pragma unused(v)
+
 	/*
 	7.0b4 PBS: Open a movie in the QuickTime player window.
 	*/
