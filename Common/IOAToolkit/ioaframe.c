@@ -174,7 +174,8 @@ static boolean getframevalue (hdlobject h, Handle *hvalue) {
 	
 
 static boolean debugframe (hdlobject h, bigstring errorstring) {
-	
+#pragma unused(h)
+
 	setstringlength (errorstring, 0);
 	
 	return (true);
@@ -268,7 +269,8 @@ static boolean initframe (tyobject *obj) {
 	
 	
 static boolean recalcframe (hdlobject h, boolean flmajorrecalc) {
-	
+#pragma unused(flmajorrecalc)
+
 	return (IOArecalcobjectvalue (h));
 	} /*recalcframe*/
 	

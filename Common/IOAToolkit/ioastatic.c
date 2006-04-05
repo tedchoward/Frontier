@@ -105,7 +105,8 @@ static boolean getstaticvalue (hdlobject h, Handle *hvalue) {
 	
 
 static boolean debugstatic (hdlobject h, bigstring errorstring) {
-	
+#pragma unused(h)
+
 	setstringlength (errorstring, 0);
 	
 	return (true);
@@ -133,13 +134,15 @@ static boolean drawstatic (hdlobject h) {
 	
 
 static boolean initstatic (tyobject *obj) {
-	
+#pragma unused(obj)
+
 	return (true); /*we do want to edit it*/
 	} /*initstatic*/
 	
 	
 static boolean recalcstatic (hdlobject h, boolean flmajorrecalc) {
-	
+#pragma unused(flmajorrecalc)
+
 	return (IOArecalcobjectvalue (h));
 	} /*recalcstatic*/
 	

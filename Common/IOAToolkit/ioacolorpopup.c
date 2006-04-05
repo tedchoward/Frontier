@@ -436,7 +436,8 @@ static boolean getcoloreditrect (hdlobject h, Rect *r) {
 	
 
 static boolean clickcolorpopup (hdlobject listhead, hdlobject h, Point pt, boolean flshiftkey, boolean fl2click) {
-	
+#pragma unused(listhead, flshiftkey, fl2click)
+
 	hdlcolordata hdata = (hdlcolordata) (**h).objectdata;
 	RGBColor rgb;
 	
@@ -474,7 +475,7 @@ static boolean cleancolorpopup (hdlobject h, short height, short width, Rect *r)
 	
 
 static boolean canreplicatecolorpopup (hdlobject h) {
-	
+#pragma unused(h)
 	return (true); 
 	} /*canreplicatecolorpopup*/
 	
@@ -592,7 +593,7 @@ static boolean setcolorpopupvalue (hdlobject h, Handle hvalue) {
 
 
 static boolean debugcolorpopup (hdlobject h, bigstring errorstring) {
-	
+#pragma unused(h)
 	setstringlength (errorstring, 0);
 	
 	return (true);
@@ -726,7 +727,8 @@ static boolean setcolorattributes (hdlobject h, AppleEvent *event) {
 	
 	
 static boolean recalccolorpopup (hdlobject h, boolean flmajorrecalc) {
-	
+#pragma unused(flmajorrecalc)
+
 	bigstring errorstring;
 	Handle hrgbvalue;
 	

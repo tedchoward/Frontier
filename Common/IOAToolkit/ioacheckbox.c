@@ -79,7 +79,8 @@ static boolean cleancheckbox (hdlobject h, short height, short width, Rect *r) {
 	
 
 static boolean canreplicatecheckbox (hdlobject h) {
-	
+#pragma unused(h)
+
 	return (true); /*it can be replicated*/
 	} /*canreplicatecheckbox*/
 	
@@ -107,7 +108,8 @@ static boolean setcheckboxvalue (hdlobject h, Handle hvalue) {
 	
 	
 static boolean debugcheckbox (hdlobject h, bigstring errorstring) {
-	
+#pragma unused(h)
+
 	setstringlength (errorstring, 0);
 	
 	return (true);
@@ -166,13 +168,15 @@ static boolean drawcheckbox (hdlobject h) {
 	
 	
 static boolean initcheckbox (tyobject *obj) {
-	
+#pragma unused(obj)
+
 	return (true); /*nothing special, we do want to edit it*/
 	} /*initcheckbox*/
 	
 	
 static boolean recalccheckbox (hdlobject h, boolean flmajorrecalc) {
-	
+#pragma unused(flmajorrecalc)
+
 	bigstring errorstring;
 	Handle hboolvalue;
 	
@@ -186,7 +190,8 @@ static boolean recalccheckbox (hdlobject h, boolean flmajorrecalc) {
 	
 
 static boolean clickcheckbox (hdlobject listhead, hdlobject h, Point pt, boolean flshiftkey, boolean fl2click) {
-	
+#pragma unused(listhead, pt, flshiftkey, fl2click)
+
 	(**h).objectflag = !(**h).objectflag;
 	
 	(**(**h).owningcard).runtimevaluechanged = true; /*DW 9/19/95*/

@@ -82,13 +82,15 @@ static boolean cleanrect (hdlobject h, short height, short width, Rect *r) {
 	
 
 static boolean canreplicaterect (hdlobject h) {
-	
+#pragma unused(h)
+
 	return (false); /*it can't be replicated*/
 	} /*canreplicaterect*/
 	
 
 static boolean getrecteditrect (hdlobject h, Rect *r) {
-	
+#pragma unused(h, r)
+
 	return (false); /*can't be edited*/
 	} /*getrecteditrect*/
 	
@@ -100,7 +102,8 @@ static boolean getrectvalue (hdlobject h, Handle *hvalue) {
 	
 
 static boolean debugrectobject (hdlobject h, bigstring errorstring) {
-	
+#pragma unused(h)
+
 	setstringlength (errorstring, 0);
 	
 	return (true);
@@ -181,7 +184,8 @@ static boolean unpackrectdata (hdlobject h) {
 
 
 static boolean clickrect (hdlobject listhead, hdlobject h, Point pt, boolean flshiftkey, boolean fl2click) {
-	
+#pragma unused(listhead, pt, flshiftkey, fl2click)
+
 	IOArunbuttonscript (h);
 	
 	return (true); /*do a minor recalc*/

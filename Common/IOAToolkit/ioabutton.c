@@ -67,7 +67,8 @@ static boolean cleanbutton (hdlobject h, short height, short width, Rect *r) {
 	
 
 static boolean canreplicatebutton (hdlobject h) {
-	
+#pragma unused(h)
+
 	return (true); /*it can be replicated*/
 	} /*canreplicatebutton*/
 	
@@ -99,7 +100,8 @@ static boolean getbuttonvalue (hdlobject h, Handle *hvalue) {
 	
 
 static boolean debugbutton (hdlobject h, bigstring errorstring) {
-	
+#pragma unused(h)
+
 	setstringlength (errorstring, 0);
 	
 	return (true);
@@ -108,12 +110,20 @@ static boolean debugbutton (hdlobject h, bigstring errorstring) {
 
 #if TARGET_API_MAC_CARBON == 1
 
-	static void MyThemeButtonDrawCallback (const Rect *bounds, ThemeButtonKind kind, const ThemeButtonDrawInfo *info,
-		UInt32 refcon, SInt16 depth, Boolean isColorDev) {
-		
-		/*
-		7.0b48 PBS: draw the label for a popup menu.
-		*/
+static void
+MyThemeButtonDrawCallback (
+	const Rect					*bounds,
+	ThemeButtonKind				 kind,
+	const ThemeButtonDrawInfo	*info,
+	UInt32						 refcon,
+	SInt16						 depth,
+	Boolean						 isColorDev)
+{
+#pragma unused(kind, info, depth, isColorDev)
+
+	/*
+	 7.0b48 PBS: draw the label for a popup menu.
+	 */
 		
 		Handle htext = (Handle) refcon;
 		ThemeFontID idfont;
@@ -293,7 +303,8 @@ static boolean getbuttoninvalrect (hdlobject h, Rect *r) {
 	
 	
 static boolean recalcbutton (hdlobject h, boolean flmajorrecalc) {
-	
+#pragma unused(flmajorrecalc)
+
 	bigstring errorstring;
 	Handle hvalue;
 	
@@ -309,7 +320,8 @@ static boolean recalcbutton (hdlobject h, boolean flmajorrecalc) {
 
 
 static boolean clickbutton (hdlobject listhead, hdlobject h, Point pt, boolean flshiftkey, boolean fl2click) {
-	
+#pragma unused(listhead, pt, flshiftkey, fl2click)
+
 	IOArunbuttonscript (h);
 	
 	return (true); /*do a minor recalc*/

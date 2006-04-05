@@ -213,7 +213,8 @@ boolean settextbehindbullets (hdlobject h, void *pstring) {
 	
 
 static boolean debugedittext (hdlobject h, bigstring errorstring) {
-	
+#pragma unused(h)
+
 	setstringlength (errorstring, 0);
 	
 	return (true);
@@ -256,7 +257,8 @@ static boolean initedittext (tyobject *obj) {
 	
 	
 static boolean recalcedittext (hdlobject h, boolean flmajorrecalc) {
-	
+#pragma unused(flmajorrecalc)
+
 	hdltextdata hdata = (hdltextdata) (**h).objectdata;
 	
 	if (!(**hdata).bullets) 
@@ -301,7 +303,8 @@ static boolean recalcedittext (hdlobject h, boolean flmajorrecalc) {
 	
 	
 static boolean clickedittext (hdlobject listhead, hdlobject h, Point pt, boolean flshiftkey, boolean fl2click) {
-	
+#pragma unused(listhead, fl2click)
+
 	hdlcard hc = (**h).owningcard;
 	
 	if (h != (**hc).activetextobject) {
@@ -318,7 +321,8 @@ static boolean clickedittext (hdlobject listhead, hdlobject h, Point pt, boolean
 	
 	
 static boolean setcursoredittext (hdlobject h, Point pt) {
-	
+#pragma unused(h, pt)
+
 	CursHandle hcursor;
 	
 	hcursor = GetCursor (iBeamCursor);
@@ -355,6 +359,7 @@ static boolean editedittext (hdlobject h, boolean fledit) {
 	
 	
 static boolean idleedittext (hdlobject h) {
+#pragma unused(h)
 
 	IOAeditidle (IOAgetactiveeditrecord ());
 	

@@ -387,9 +387,9 @@ static boolean cleanpopup (hdlobject h, short height, short width, Rect *r) {
 	
 	/*side-effect -- we use the popup width when drawing the object*/ {
 		
-		hdlpopupdata hdata = (hdlpopupdata) (**h).objectdata;
+		hdlpopupdata lhdata = (hdlpopupdata) (**h).objectdata;
 		
-		(**hdata).popupwidth = popupwidth;
+		(**lhdata).popupwidth = popupwidth;
 		}
 	
 	return (true);
@@ -420,7 +420,8 @@ static void getpopuprects (hdlobject h, Rect *rtext, Rect *rpopup) {
 	
 	
 static boolean clickpopup (hdlobject listhead, hdlobject h, Point pt, boolean flshiftkey, boolean fl2click) {
-	
+#pragma unused(listhead, flshiftkey, fl2click)
+
 	hdlpopupdata hdata = (hdlpopupdata) (**h).objectdata;
 	hdlcard hc = (**h).owningcard;
 	MenuHandle hmenu;
@@ -518,7 +519,8 @@ static boolean clickpopup (hdlobject listhead, hdlobject h, Point pt, boolean fl
 
 	static void MyThemeButtonDrawCallback (const Rect *bounds, ThemeButtonKind kind, const ThemeButtonDrawInfo *info,
 		UInt32 refcon, SInt16 depth, Boolean isColorDev) {
-		
+#pragma unused(kind, info, depth, isColorDev)
+
 		/*
 		7.0b48 PBS: draw the label for a popup menu.
 		*/
@@ -670,13 +672,14 @@ static boolean initpopup (tyobject *obj) {
 	
 	return (true); /*we do want to edit it*/
 	} /*initpopup*/
-	
-	
+
+
 static boolean recalcpopup (hdlobject h, boolean flmajorrecalc) {
-	
+#pragma unused(flmajorrecalc)
+
 	bigstring errorstring;
 	Handle htoss;
-	
+
 	if (!IOAevalscript (h, (**h).objectrecalcscript, &htoss, (**h).objectlanguage, errorstring))
 		return (false);
 	
@@ -725,13 +728,14 @@ static boolean getpopupinvalrect (hdlobject h, Rect *r) {
 	
 	return (true);
 	} /*getpopupinvalrect*/
-	
-	
+
+
 static boolean canreplicatepopup (hdlobject h) {
-	
+#pragma unused(h)
+
 	return (true); 
 	} /*canreplicatepopup*/
-	
+
 
 static boolean getpopupeditrect (hdlobject h, Rect *redit) {
 	
@@ -765,7 +769,8 @@ static boolean getpopupvalue (hdlobject h, Handle *hvalue) {
 	
 
 static boolean debugpopup (hdlobject h, bigstring errorstring) {
-	
+#pragma unused(h)
+
 	setstringlength (errorstring, 0);
 	
 	return (true);

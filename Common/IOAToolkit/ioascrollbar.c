@@ -81,7 +81,8 @@ static boolean checkcontrolexists (hdlobject h) {
 	
 
 static boolean cleanscrollbar (hdlobject h, short textheight, short textwidth, Rect *r) {
-	
+#pragma unused(textwidth, textheight)
+
 	short height, width;
 	
 	if (!checkcontrolexists (h))
@@ -175,7 +176,9 @@ static pascal void trackscrollarrow (hdlscrollbar sb, short part) {
 #endif
 		
 static boolean clickscrollbar (hdlobject listhead, hdlobject h, Point pt, boolean flshiftkey, boolean fl2click) {
-	
+#pragma unused(listhead, flshiftkey, fl2click)
+
+	// hdlscrollbardata hdata = (hdlscrollbardata) (**h).objectdata;
 	hdlcard hc = (**h).owningcard;
 	
 	if (!checkcontrolexists (h))
@@ -297,7 +300,8 @@ static boolean initscrollbar (tyobject *obj) {
 	
 	
 static boolean recalcscrollbar (hdlobject h, boolean flmajorrecalc) {
-	
+#pragma unused(flmajorrecalc)
+
 	return (IOArecalcobjectvalue (h));
 	} /*recalcscrollbar*/
 	
@@ -311,13 +315,15 @@ static boolean getscrollbarinvalrect (hdlobject h, Rect *r) {
 	
 	
 static boolean canreplicatescrollbar (hdlobject h) {
-	
+#pragma unused(h)
+
 	return (true); 
 	} /*canreplicatescrollbar*/
 	
 
 static boolean getscrollbareditrect (hdlobject h, Rect *r) {
-	
+#pragma unused(h, r)
+
 	return (false); /*can't be edited*/
 	} /*getscrollbareditrect*/
 	
@@ -343,7 +349,8 @@ static boolean getscrollbarvalue (hdlobject h, Handle *hvalue) {
 	
 
 static boolean debugscrollbar (hdlobject h, bigstring errorstring) {
-	
+#pragma unused(h)
+
 	setstringlength (errorstring, 0);
 	
 	return (true);

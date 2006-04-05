@@ -65,25 +65,29 @@ static boolean cleanpicture (hdlobject h, short height, short width, Rect *r) {
 	
 
 static boolean canreplicatepicture (hdlobject h) {
-	
+#pragma unused(h)
+
 	return (true); /*it can be replicated*/
 	} /*canreplicatepicture*/
 	
 
 static boolean getpictureeditrect (hdlobject h, Rect *r) {
+#pragma unused(h, r)
 
 	return (false); /*text of object can't be edited*/
 	} /*getpictureeditrect*/
 	
 
 static boolean getpicturevalue (hdlobject h, Handle *hvalue) {
-	
+#pragma unused(h, hvalue)
+
 	return (false); /*picture doesn't have a value for a script*/
 	} /*getpicturevalue*/
 	
 
 static boolean debugpicture (hdlobject h, bigstring errorstring) {
-	
+#pragma unused(h)
+
 	setstringlength (errorstring, 0);
 	
 	return (true);

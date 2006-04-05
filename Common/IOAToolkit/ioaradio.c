@@ -80,7 +80,8 @@ static boolean cleanradio (hdlobject h, short height, short width, Rect *r) {
 	
 
 static boolean canreplicateradio (hdlobject h) {
-	
+#pragma unused(h)
+
 	return (true); /*it can be replicated*/
 	} /*canreplicateradio*/
 	
@@ -108,7 +109,8 @@ static boolean setradiovalue (hdlobject h, Handle hvalue) {
 	
 	
 static boolean debugradio (hdlobject h, bigstring errorstring) {
-	
+#pragma unused(h)
+
 	setstringlength (errorstring, 0);
 	
 	return (true);
@@ -119,7 +121,8 @@ static boolean debugradio (hdlobject h, bigstring errorstring) {
 
 	static void MyThemeButtonDrawCallback (const Rect *bounds, ThemeButtonKind kind, const ThemeButtonDrawInfo *info,
 		UInt32 refcon, SInt16 depth, Boolean isColorDev) {
-		
+#pragma unused(bounds, kind, info, refcon, depth, isColorDev)
+
 		//StringPtr bs = (StringPtr) refcon;
 		
 		//pushstyle (geneva, 10, 0);
@@ -218,13 +221,15 @@ static boolean drawradio (hdlobject h) {
 	
 
 static boolean initradio (tyobject *obj) {
-	
+#pragma unused(obj)
+
 	return (true); /*nothing special, we do want to edit it*/
 	} /*initradio*/
 	
 	
 static boolean recalcradio (hdlobject h, boolean flmajorrecalc) {
-	
+#pragma unused(flmajorrecalc)
+
 	bigstring errorstring;
 	Handle hboolvalue;
 	
@@ -238,7 +243,8 @@ static boolean recalcradio (hdlobject h, boolean flmajorrecalc) {
 	
 
 static boolean clickradio (hdlobject listhead, hdlobject h, Point pt, boolean flshiftkey, boolean fl2click) {
-	
+#pragma unused(pt, flshiftkey, fl2click)
+
 	/*
 	the one you hit goes on, all others go off
 	*/

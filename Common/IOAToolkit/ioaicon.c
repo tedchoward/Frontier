@@ -94,7 +94,8 @@ static boolean cleanicon (hdlobject h, short height, short width, Rect *r) {
 	
 
 static boolean canreplicateicon (hdlobject h) {
-	
+#pragma unused(h)
+
 	return (true); /*it can be replicated*/
 	} /*canreplicateicon*/
 	
@@ -106,7 +107,8 @@ static boolean geticonvalue (hdlobject h, Handle *hvalue) {
 	
 
 static boolean debugicon (hdlobject h, bigstring errorstring) {
-	
+#pragma unused(h)
+
 	setstringlength (errorstring, 0);
 	
 	return (true);
@@ -209,7 +211,8 @@ static boolean drawiconobject (hdlobject h) {
 	
 	
 static boolean recalciconobject (hdlobject h, boolean flmajorrecalc) {
-	
+#pragma unused(flmajorrecalc)
+
 	return (IOArecalcobjectvalue (h));
 	} /*recalciconobject*/
 	
@@ -326,12 +329,13 @@ static boolean unpackicondata (hdlobject h) {
 	
 	
 static boolean clickicon (hdlobject listhead, hdlobject h, Point pt, boolean flshiftkey, boolean fl2click) {
-	
+#pragma unused(listhead, pt, flshiftkey)
+
 	hdlicondata hdata = (hdlicondata) (**h).objectdata;
-	tyiconclickcallback callback = (**hdata).iconclick;
+	tyiconclickcallback lcallback = (**hdata).iconclick;
 	
-	if (callback != nil)
-		return ((*callback) (h, fl2click));
+	if (lcallback != nil)
+		return ((*lcallback) (h, fl2click));
 	
 	if (fl2click)
 		IOArunbuttonscript (h);

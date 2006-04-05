@@ -478,7 +478,8 @@ Handle IOAgetactiveeditrecord (void) {
 	
 	
 boolean IOAincolorwindow (hdlobject h) {
-	
+#pragma unused(h)
+
 	return (true); /*need to fill this in*/
 	} /*IOAincolorwindow*/
 	
@@ -509,7 +510,8 @@ static boolean defaultGetObjectInvalRectCallback (hdlobject h, Rect *r) {
 	
 
 static boolean defaultDebugObjectCallback (hdlobject h, bigstring errorstring) {
-	
+#pragma unused(h)
+
 	IOAcopystring ("\pbad object type", errorstring);
 	
 	return (false);
@@ -517,37 +519,43 @@ static boolean defaultDebugObjectCallback (hdlobject h, bigstring errorstring) {
 	
 	
 static boolean defaultRecalcObjectCallback (hdlobject h, boolean flmajorrecalc) {
-	
+#pragma unused(h, flmajorrecalc)
+
 	return (true);
 	} /*defaultRecalcObjectCallback*/
 	
 
 static boolean defaultClickObjectCallback (hdlobject listhead, hdlobject h, Point pt, boolean flshiftkey, boolean fl2click) {
-	
+#pragma unused(h, listhead, pt, flshiftkey, fl2click)
+
 	return (false); /*don't do a minor recalc*/
 	} /*defaultClickObjectCallback*/
 	
 
 static boolean defaultSetObjectCursorCallback (hdlobject h, Point pt) {
-	
+#pragma unused(h, pt)
+
 	return (false); /*we accept the default cursor*/
 	} /*defaultSetObjectCursorCallback*/
 	
 	
 static boolean defaultCatchReturnCallback (hdlobject h) {
-	
+#pragma unused(h)
+
 	return (false); /*we don't want to intercept the Return key*/
 	} /*defaultCatchReturnCallback*/
 	
 	
 static boolean defaultUnpackDataCallback (hdlobject h) {
-	
+#pragma unused(h)
+
 	return (true); /*do nothing*/
 	} /*defaultUnpackDataCallback*/
 	
 	
 static boolean defaultAppleEventCallback (hdlobject h, AppleEvent *event) {
-	
+#pragma unused(h, event)
+
 	return (true); /*do nothing*/
 	} /*defaultAppleEventCallback*/
 	
@@ -564,46 +572,47 @@ static boolean defaultPackDataCallback (hdlobject h, Handle *hpackeddata) {
 	
 	
 static boolean defaultDisposeDataCallback (hdlobject h) {
+#pragma unused(h)
 
 	return (true);
 	} /*defaultDisposeDataCallback*/
 	
 	
-static void callsetuproutine (setupcallback callback, tyioaconfigrecord *config) {
+static void callsetuproutine (setupcallback pcallback, tyioaconfigrecord *pconfig) {
+// 2006-04-03 - kw --- renamed parameter config -> pconfig	
+	IOAclearbytes (pconfig, longsizeof (tyioaconfigrecord));
 	
-	IOAclearbytes (config, longsizeof (tyioaconfigrecord));
+	(*pconfig).setValueFromScriptCallback = IOAsetobjectvalue;
 	
-	(*config).setValueFromScriptCallback = IOAsetobjectvalue;
+	(*pconfig).getObjectInvalRectCallback = defaultGetObjectInvalRectCallback;
 	
-	(*config).getObjectInvalRectCallback = defaultGetObjectInvalRectCallback;
+	(*pconfig).recalcObjectCallback = defaultRecalcObjectCallback;
 	
-	(*config).recalcObjectCallback = defaultRecalcObjectCallback;
+	(*pconfig).debugObjectCallback = defaultDebugObjectCallback;
 	
-	(*config).debugObjectCallback = defaultDebugObjectCallback;
+	(*pconfig).clickObjectCallback = defaultClickObjectCallback;
 	
-	(*config).clickObjectCallback = defaultClickObjectCallback;
+	(*pconfig).setObjectCursorCallback = defaultSetObjectCursorCallback;
 	
-	(*config).setObjectCursorCallback = defaultSetObjectCursorCallback;
+	(*pconfig).catchReturnCallback = defaultCatchReturnCallback;
 	
-	(*config).catchReturnCallback = defaultCatchReturnCallback;
+	(*pconfig).getAttributesCallback = defaultAppleEventCallback;
 	
-	(*config).getAttributesCallback = defaultAppleEventCallback;
+	(*pconfig).setAttributesCallback = defaultAppleEventCallback;
 	
-	(*config).setAttributesCallback = defaultAppleEventCallback;
+	(*pconfig).packDataCallback = defaultPackDataCallback;
 	
-	(*config).packDataCallback = defaultPackDataCallback;
+	(*pconfig).unpackDataCallback = defaultUnpackDataCallback;
 	
-	(*config).unpackDataCallback = defaultUnpackDataCallback;
+	(*pconfig).disposeDataCallback = defaultDisposeDataCallback;
 	
-	(*config).disposeDataCallback = defaultDisposeDataCallback;
+	(*pconfig).handlesMouseTrack = false;
 	
-	(*config).handlesMouseTrack = false;
+	(*pconfig).editableInRunMode = false;
 	
-	(*config).editableInRunMode = false;
+	(*pconfig).isFontAware = true;
 	
-	(*config).isFontAware = true;
-	
-	(*callback) (config);
+	(*pcallback) (pconfig);
 	} /*callsetuproutine*/
 
 
@@ -625,7 +634,8 @@ static pascal ComponentResult IOAopen (ComponentInstance self) {
 
 
 static pascal ComponentResult IOAclose (ComponentInstance self) {
-	
+#pragma unused(self)
+
 	return (noErr);
 	} /*IOAclose*/
 
@@ -1276,7 +1286,8 @@ static pascal ComponentResult debugobjectcommand (hdlobject h, Str255 errorstrin
 	//Code change by Timothy Paustian Saturday, July 8, 2000 8:23:29 AM
 	//I changed this to plain pascal instead of static. Will this shoot things?
 static	pascal ComponentResult IOAmain (ComponentParameters *params, Handle hstorage) {
-	
+#pragma unused (hstorage)
+
 #endif
 	
 	ComponentResult result;
@@ -1793,13 +1804,13 @@ static	pascal ComponentResult IOAmain (ComponentParameters *params, Handle hstor
 		} /*scrollbarmain*/
 		
 	
-	static boolean IOAregister (short ixarray, OSType subtype, ComponentRoutine main, setupcallback callback) {
+	static boolean IOAregister (short ixarray, OSType subtype, ComponentRoutine main, setupcallback pcallback) {
 		
 		ComponentDescription desc;
 		Component comp;
 		ComponentRoutineUPP routinePtr;
 		
-		callsetuproutine (callback, &configarray [ixarray]);
+		callsetuproutine (pcallback, &configarray [ixarray]);
 		
 		IOAclearbytes (&desc, longsizeof (desc));
 		
