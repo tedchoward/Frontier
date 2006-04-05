@@ -329,7 +329,9 @@ static boolean isthisprocess (ProcessSerialNumber *targetPSN) {
 
 
 static boolean landchecksameprocess (tynetworkaddress *adr) {
-	
+#if TARGET_API_MAC_CARBON == 1
+#	pragma unused (adr)
+#endif
 	/*
 	3/9/92 dmb: if GetProcessSerialNumberFromPortName returns an error, leave 
 	flsendingtoself false, but return true.  adr may be a valid port that 
@@ -426,7 +428,7 @@ pascal boolean landstring2networkaddress (ConstStr255Param bsadr, tynetworkaddre
 #else
 
 pascal boolean landstring2networkaddress (ConstStr255Param bsadr, tynetworkaddress *adr) {
-
+#pragma unused (bsadr, adr)
 	/*
 	2004-10-21 aradke: Can't do this on Carbon, send back a bogus error.
 	*/
@@ -444,8 +446,7 @@ pascal boolean landstring2networkaddress (ConstStr255Param bsadr, tynetworkaddre
 	//we don't do anything on Carbon because we can't use this anyway.
 
 static pascal Boolean landbrowserfilter (LocationNamePtr ln, PortInfoPtr port) {
-	
-	#pragma unused (ln)
+#pragma unused (ln)
 	
 	register hdllandglobals hg;
 	register tyapplicationid id;
@@ -491,7 +492,9 @@ static pascal Boolean landbrowserfilter (LocationNamePtr ln, PortInfoPtr port) {
 
 
 pascal boolean landbrowsenetworkapps (ConstStr255Param bsprompt, tynetworkaddress *adr, tyapplicationid id) {
-	
+#if TARGET_API_MAC_CARBON
+#	pragma unused (bsprompt, adr, id)
+#endif
 	/*
 	7/15/91 DW: return false on system 6.
 	
@@ -1055,7 +1058,7 @@ pascal OSErr landsystem7getsenderinfo (const AppleEvent *event, ProcessSerialNum
 
 
 static pascal OSErr landsystem7replyroutine (AppleEvent *message, AppleEvent *reply, long refcon) {
-
+#pragma unused (reply, refcon)
 	/*
 	10/24/91 dmb: created.
 	
@@ -1090,6 +1093,7 @@ static pascal OSErr landsystem7replyroutine (AppleEvent *message, AppleEvent *re
 
 
 static pascal OSErr landsystem7openapproutine (AppleEvent *message, AppleEvent *reply, long refcon) {
+#pragma unused(reply, message, refcon)
 
 	/*
 	this is the dispatch routine for the open application (required) core event.
@@ -1165,7 +1169,7 @@ static pascal OSErr landsystem7visitdoclist (AppleEvent *message, landfilespecca
 
 
 static pascal OSErr landsystem7opendocsroutine (AppleEvent *message, AppleEvent *reply, long refcon) {
-
+#pragma unused (reply, refcon)
 	/*
 	this is the dispatch routine for the open documents (required) core event.
 	*/
@@ -1192,7 +1196,7 @@ static pascal OSErr landsystem7printdocsroutine (AppleEvent *message, AppleEvent
 
 
 static pascal OSErr landsystem7quitapproutine (AppleEvent *message, AppleEvent *reply, long refcon) {
-
+#pragma unused (message, reply, refcon)
 	/*
 	this is the dispatch routine for the quit application (required) core event.
 	
@@ -1332,13 +1336,13 @@ void landsystem7disposeverb (hdlverbrecord hverb) {
 
 
 static pascal Boolean landsystem7idleroutine (EventRecord *ev, long *sleep, RgnHandle *mousergn) {
+#pragma unused (sleep, mousergn)
 	
 	/*
 	10/23/91 dmb: we now pass the event through to the application so it can 
 	respond to it
 	*/
 	
-	#pragma unused (sleep, mousergn)
 	
 	if (landbreakembrace (ev)) /*user holding down cmd, option and shift keys*/
 		return (-1); /*stop waiting*/
@@ -2037,7 +2041,8 @@ boolean landsystem7close (void) {
 
 
 static pascal OSErr whyinternational (DescType itxt, const void *x, Size len, DescType text, SInt32 refcon, AEDesc *result) {
-	
+#pragma unused (itxt, refcon)
+
 	if (*(short *) x != smRoman) /*can't treat this as plain text*/
 		return (errAECoercionFail);
 	

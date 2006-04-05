@@ -559,6 +559,7 @@ pascal boolean landclose (void) {
 	
 	
 pascal boolean landefaultbreakembrace (EventRecord *ev) {
+#pragma unused (ev)
 
 	/*
 	return true if the user is holding down the cmd, option and shift keys.
