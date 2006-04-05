@@ -896,7 +896,8 @@ static short passworditem = -1;
 
 
 static void passwordprocesskey (DialogPtr pdialog, char chkb, EventRecord *ev, short *item) {
-	
+#pragma unused (item)
+
 	TEHandle hte;
 	char *buffer;
 	short start, end;
@@ -1083,10 +1084,10 @@ pascal boolean modaldialogcallback (DialogPtr pdialog, EventRecord *ev, short *i
 			//at some points to use ModalDialog Correctly.
 			#if TARGET_API_MAC_CARBON == 1
 				{
-				WindowRef pWindow = GetDialogWindow(pdialog);
+				WindowRef lpWindow = GetDialogWindow(pdialog);
 				CGrafPtr thePort = GetDialogPort(pdialog);
 				
-				SelectWindow(pWindow);
+				SelectWindow(lpWindow);
 				QDFlushPortBuffer(thePort, nil);	
 				}
 			#else

@@ -121,14 +121,14 @@ boolean shellgetgrowiconrect (hdlwindowinfo hinfo, Rect *r) {
 
 
 void shelldrawgrowicon (hdlwindowinfo hinfo) {
-	
-	#ifdef MACVERSION
 
-		#if TARGET_API_MAC_CARBON == 1
-		
-			return;
-			
-		#else
+#	ifdef MACVERSION
+#		if TARGET_API_MAC_CARBON == 1
+#			pragma unused (hinfo)
+
+	return;
+
+#	else
 			
 			Rect r;
 			
@@ -1218,7 +1218,8 @@ boolean shellvisittypedwindows (short id, shellwindowvisitcallback visit, ptrvoi
 
 
 static boolean counttypedvisit (WindowPtr w,  ptrvoid refcon) {
-	
+#pragma unused(w)
+
 	(*(short *)refcon)++;
 	
 	return (true);
@@ -1451,7 +1452,8 @@ boolean shellfirstchildwindow (hdlwindowinfo hparent, hdlwindowinfo *hchild) {
 
 
 static boolean graywindowvisit (WindowPtr w, ptrvoid refcon) {
-	
+#pragma unused (refcon)
+
 	graywindow (w);
 	
 	return (true);
@@ -2346,7 +2348,8 @@ boolean shellsizewindowhidden (hdlwindowinfo hinfo, short h, short v) {
 
 
 boolean shellzoomwindow (hdlwindowinfo hinfo, boolean flzoomin) {
-	
+#pragma unused (flzoomin)
+
 	/*
 	9/16/91 dmb: use the new getcontentsizeroutine to apply intelligent 
 	window sizing when zooming window.
@@ -2988,7 +2991,7 @@ void closewindowfile (WindowPtr wptr) {
 		if ((**h).flneversaved)
 			deletefile (&fspec);
 		
-		flushvolumechanges (&fspec, (short) NULL);
+		flushvolumechanges (&fspec, (hdlfilenum)0);
 		}
 	
 	(**h).fnum = 0; /*indicate no file open*/

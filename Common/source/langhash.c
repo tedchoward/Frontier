@@ -2533,7 +2533,7 @@ static boolean hashpackvisit (bigstring bsname, hdlhashnode hnode, tyvaluerecord
 	6.2a15 AR: added flmustsave parameter
 	*/
 	
-	typackinforecord *pi = (typackinforecord *) refcon;
+	typackinforecord *lpi = (typackinforecord *) refcon;
 	tydisksymbolrecord rec;
 	bigstring bsvalue;
 	long size;
@@ -2559,7 +2559,7 @@ static boolean hashpackvisit (bigstring bsname, hdlhashnode hnode, tyvaluerecord
 	
 	clearbytes (&rec, sizeof (rec));
 	
-	if (!hashpackstring (&pi->s2, bsname, &rec.ixkey))
+	if (!hashpackstring (&lpi->s2, bsname, &rec.ixkey))
 		goto error;
 	
 	memtodisklong (rec.ixkey);
@@ -2576,7 +2576,7 @@ static boolean hashpackvisit (bigstring bsname, hdlhashnode hnode, tyvaluerecord
 		case oldstringvaluetype:
 			copyheapstring ((hdlstring) val.data.stringvalue, bsvalue);
 			
-			if (!hashpackstring (&pi->s2, bsvalue, &rec.data.longvalue))
+			if (!hashpackstring (&lpi->s2, bsvalue, &rec.data.longvalue))
 				goto error;
 			
 			break;
@@ -2591,7 +2591,7 @@ static boolean hashpackvisit (bigstring bsname, hdlhashnode hnode, tyvaluerecord
 			if (!fl) // on error, bsvalue should at least be item's name; don't break the save
 				;
 			
-			if (!hashpackstring (&pi->s2, bsvalue, &rec.data.longvalue))
+			if (!hashpackstring (&lpi->s2, bsvalue, &rec.data.longvalue))
 				goto error;
 			
 			break;
@@ -2614,7 +2614,7 @@ static boolean hashpackvisit (bigstring bsname, hdlhashnode hnode, tyvaluerecord
 				
 			enablelangerror ();
 			
-			if (!hashpackbinary (&pi->s2, (Handle) x, &rec.data.longvalue))
+			if (!hashpackbinary (&lpi->s2, (Handle) x, &rec.data.longvalue))
 				goto error;
 			
 			disposehandle ((Handle) halias); /*3.0.2*/
@@ -2628,7 +2628,7 @@ static boolean hashpackvisit (bigstring bsname, hdlhashnode hnode, tyvaluerecord
 			
 			recttodiskrect (*val.data.rectvalue, &rdisk);
 			
-			if (!hashpackdata (&pi->s2, &rdisk, sizeof (rdisk), &rec.data.longvalue))
+			if (!hashpackdata (&lpi->s2, &rdisk, sizeof (rdisk), &rec.data.longvalue))
 				goto error;
 			
 			break;
@@ -2639,7 +2639,7 @@ static boolean hashpackvisit (bigstring bsname, hdlhashnode hnode, tyvaluerecord
 			
 			rgbtodiskrgb (*val.data.rgbvalue, &rgbdisk);
 			
-			if (!hashpackdata (&pi->s2, &rgbdisk, sizeof (rgbdisk), &rec.data.longvalue))
+			if (!hashpackdata (&lpi->s2, &rgbdisk, sizeof (rgbdisk), &rec.data.longvalue))
 				goto error;
 			
 			break;
@@ -2657,7 +2657,7 @@ static boolean hashpackvisit (bigstring bsname, hdlhashnode hnode, tyvaluerecord
 					dtox80 (&x, &x80);
 				#endif	
 				
-				if (!hashpackdata (&pi->s2, &x80, sizeof (x80), &rec.data.longvalue))
+				if (!hashpackdata (&lpi->s2, &x80, sizeof (x80), &rec.data.longvalue))
 					goto error;
 				
 				break;
@@ -2681,7 +2681,7 @@ static boolean hashpackvisit (bigstring bsname, hdlhashnode hnode, tyvaluerecord
 		case listvaluetype:
 		case recordvaluetype:
 	#endif
-			if (!hashpackscalar (&pi->s2, hnode, &rec.data.longvalue))
+			if (!hashpackscalar (&lpi->s2, hnode, &rec.data.longvalue))
 				goto error;
 				
 			break;
@@ -2692,7 +2692,7 @@ static boolean hashpackvisit (bigstring bsname, hdlhashnode hnode, tyvaluerecord
 			if (!oppacklist (val.data.listvalue, &hpacked))
 				goto error;
 			
-			if (!hashpackbinary (&pi->s2, hpacked, &rec.data.longvalue))
+			if (!hashpackbinary (&lpi->s2, hpacked, &rec.data.longvalue))
 				goto error;
 			
 			rec.version = 2;
@@ -2708,7 +2708,7 @@ static boolean hashpackvisit (bigstring bsname, hdlhashnode hnode, tyvaluerecord
 			if (!langpackfileval (&val, &hpacked))
 				goto error;
 			
-			if (!hashpackbinary (&pi->s2, hpacked, &rec.data.longvalue))
+			if (!hashpackbinary (&lpi->s2, hpacked, &rec.data.longvalue))
 				goto error;
 			
 			rec.version = 2;
@@ -2722,7 +2722,7 @@ static boolean hashpackvisit (bigstring bsname, hdlhashnode hnode, tyvaluerecord
 			if (!langpacktree (val.data.codevalue, &hpacked))
 				goto error;
 			
-			if (!hashpackbinary (&pi->s2, hpacked, &rec.data.longvalue))
+			if (!hashpackbinary (&lpi->s2, hpacked, &rec.data.longvalue))
 				goto error;
 			
 			disposehandle (hpacked); /*3.0.2*/
@@ -2732,10 +2732,10 @@ static boolean hashpackvisit (bigstring bsname, hdlhashnode hnode, tyvaluerecord
 		case externalvaluetype: {
 			boolean flnewdbaddress = false;
 			
-			if (!hashpackexternal (&pi->s2, (hdlexternalvariable) val.data.externalvalue, &rec.data.longvalue, &flnewdbaddress))
+			if (!hashpackexternal (&lpi->s2, (hdlexternalvariable) val.data.externalvalue, &rec.data.longvalue, &flnewdbaddress))
 				goto error;
 			
-			pi->flmustsave = pi->flmustsave || flnewdbaddress;
+			lpi->flmustsave = lpi->flmustsave || flnewdbaddress;
 				
 			break;
 			}
@@ -2792,7 +2792,7 @@ static boolean hashpackvisit (bigstring bsname, hdlhashnode hnode, tyvaluerecord
 	if (size == sizeof (short))
 		memtodiskshort (rec.data.intvalue);
 	
-	if (!writehandlestream (&pi->s1, &rec, sizeof (rec))) 
+	if (!writehandlestream (&lpi->s1, &rec, sizeof (rec))) 
 		goto error;
 	
 	languntraperrors (savecallback, saverefcon, false);
@@ -2801,9 +2801,9 @@ static boolean hashpackvisit (bigstring bsname, hdlhashnode hnode, tyvaluerecord
 	
 	error:
 	
-	disposehandlestream (&pi->s1); 
+	disposehandlestream (&lpi->s1); 
 	
-	disposehandlestream (&pi->s2); 
+	disposehandlestream (&lpi->s2); 
 	
 	languntraperrors (savecallback, saverefcon, true);
 	
@@ -3519,12 +3519,12 @@ boolean hashgetnthnode (hdlhashtable htable, long n, hdlhashnode *hnode) {
 	} /*hashgetnthnode*/
 	
 	
-boolean hashgetsortedindex (hdlhashtable htable, hdlhashnode hnode, long *index) {
+boolean hashgetsortedindex (hdlhashtable htable, hdlhashnode hnode, long *idx) {
 	
 	/*
 	traverse the sorted list for the indicated table, looking for the indicated node.
 	
-	if we find it, set *index to its index, and return true.
+	if we find it, set *idx to its index, and return true.
 	
 	the index is 0-based.
 	*/
@@ -3536,7 +3536,7 @@ boolean hashgetsortedindex (hdlhashtable htable, hdlhashnode hnode, long *index)
 		
 		if (nomad == hnode) { /*found it*/
 			
-			*index = ct;
+			*idx = ct;
 			
 			return (true);
 			}

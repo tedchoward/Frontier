@@ -668,9 +668,17 @@ drawiconsequence (Rect r, short firsticon, short lasticon, bigstring bs) {
 
 #if TARGET_API_MAC_CARBON == 1
 
-	static void MyThemeButtonDrawCallback (const Rect *bounds, ThemeButtonKind kind, const ThemeButtonDrawInfo *info,
-		UInt32 refcon, SInt16 depth, Boolean isColorDev) {
-		
+static void
+MyThemeButtonDrawCallback (
+		const Rect					*bounds,
+		ThemeButtonKind				 kind,
+		const ThemeButtonDrawInfo	*info,
+		UInt32						 refcon,
+		SInt16						 depth,
+		Boolean						 isColorDev)
+{
+#pragma unused (kind, info, refcon, depth, isColorDev)
+
 		/*
 		7.0b48 PBS: draw the arrow for a pushbutton. It will be centered.
 		*/
@@ -684,8 +692,9 @@ drawiconsequence (Rect r, short firsticon, short lasticon, bigstring bs) {
 		
 		rarrow.left++; /*it appears to need it*/
 				
-		DrawThemePopupArrow (&rarrow, kThemeArrowRight, kThemeArrow9pt, kThemeStateActive, NULL, (UInt32) NULL);
-		} /*MyThemeButtonDrawCallback*/
+		DrawThemePopupArrow (&rarrow, kThemeArrowRight, kThemeArrow9pt, kThemeStateActive, NULL, 0);
+
+	} /*MyThemeButtonDrawCallback*/
 
 #endif
 

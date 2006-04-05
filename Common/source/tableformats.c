@@ -774,29 +774,30 @@ void tabledisposeoutline (hdltableformats hf) {
 
 
 boolean tablenewformatsrecord (hdlhashtable ht, Rect tablerect, hdltableformats *hformats) {
-	
+#pragma unused(tablerect)
+
 	/*
 	allocate a new tableformats and set default and/or initial values of fields of
 	the record.
 	*/
 	 
 	register hdltableformats hf = nil;
-	tyconfigrecord config;
+	tyconfigrecord lconfig;
 	
 	if (!newtableformats (hformats))
 		return (false);
 	
 	hf = *hformats; /*copy into register*/
 	
-	langexternalgetconfig (tablevaluetype, idtableconfig, &config);
+	langexternalgetconfig (tablevaluetype, idtableconfig, &lconfig);
 	
-	(**hf).windowrect = config.defaultwindowrect;
+	(**hf).windowrect = lconfig.defaultwindowrect;
 	
-	(**hf).fontnum = config.defaultfont;
+	(**hf).fontnum = lconfig.defaultfont;
 	
-	(**hf).fontsize = config.defaultsize;
+	(**hf).fontsize = lconfig.defaultsize;
 	
-	(**hf).fontstyle = config.defaultstyle;
+	(**hf).fontstyle = lconfig.defaultstyle;
 	
 	tableformatsdata = hf; /*set global for displayinfo routine*/
 	
@@ -828,7 +829,8 @@ boolean tablenewformatsrecord (hdlhashtable ht, Rect tablerect, hdltableformats 
 
 
 static boolean notexpandedvisit (hdlheadrecord hnode, ptrvoid refcon)  {
-	
+#pragma unused (refcon)
+
 	return (!opsubheadsexpanded (hnode));
 	} /*notexpandedvisit*/
 
@@ -1067,10 +1069,10 @@ boolean tableunpackformats (Handle hpacked, hdltableformats hformats) {
 	
 	//load table outline
 	if (info.savedoutline) {
+
+		tyconfigrecord lconfig;
 		
-		tyconfigrecord config;
-		
-		langexternalgetconfig (tablevaluetype, idtableconfig, &config); // force loading of prefs
+		langexternalgetconfig (tablevaluetype, idtableconfig, &lconfig); // force loading of prefs
 	
 		fl = opunpack (hpacked, &ixhandle, &ho);
 		
