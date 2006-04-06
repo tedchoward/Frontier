@@ -2202,17 +2202,17 @@ void invertrect (Rect r) {
 #endif
 
 
-void setrect (Rect *rset, short top, short left, short bottom, short right) {
+void setrect (Rect *rset, short top, short pleft, short bottom, short pright) {
 	
 	register Rect *r = rset;
 	
 	(*r).top = top;
 	
-	(*r).left = left;
+	(*r).left = pleft;
 	
 	(*r).bottom = bottom;
 	
-	(*r).right = right;
+	(*r).right = pright;
 	} /*setrect*/
 	
 

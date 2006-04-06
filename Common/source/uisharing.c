@@ -1309,11 +1309,11 @@ Boolean uisStubStart (void) {
 
 #endif
 
-Boolean uisOpenHandle (Handle h, Boolean flscriptedcard, Str255 windowname, short top, short left, uisEventCallback filter) {
+Boolean uisOpenHandle (Handle h, Boolean flscriptedcard, Str255 windowname, short top, short pleft, uisEventCallback filter) {
 	
 	Point pt;
 	
-	pt.h = left; pt.v = top;
+	pt.h = pleft; pt.v = top;
 	
 	if (wsGlobals.windowserver == 0)
 		return (false);
@@ -1324,7 +1324,7 @@ Boolean uisOpenHandle (Handle h, Boolean flscriptedcard, Str255 windowname, shor
 	} /*uisOpenHandle*/
 	
 	
-Boolean uisOpenCardResource (short id, Boolean flscriptedcard, Str255 windowname, short top, short left, uisEventCallback filter) {
+Boolean uisOpenCardResource (short id, Boolean flscriptedcard, Str255 windowname, short top, short pleft, uisEventCallback filter) {
 	
 	Handle h;
 	
@@ -1339,15 +1339,15 @@ Boolean uisOpenCardResource (short id, Boolean flscriptedcard, Str255 windowname
 		
 	DetachResource (h);
 	
-	return (uisOpenHandle (h, flscriptedcard, windowname, top, left, filter));
+	return (uisOpenHandle (h, flscriptedcard, windowname, top, pleft, filter));
 	} /*uisOpenCardResource*/
 	
 	
-Boolean uisRunModalHandle (Handle h, Boolean flscriptedcard, Str255 windowname, short top, short left, uisEventCallback filter) {
+Boolean uisRunModalHandle (Handle h, Boolean flscriptedcard, Str255 windowname, short top, short pleft, uisEventCallback filter) {
 	
 	Point pt;
 	
-	pt.h = left; pt.v = top;
+	pt.h = pleft; pt.v = top;
 	
 	if (wsGlobals.windowserver == 0)
 		return (false);
@@ -1358,7 +1358,7 @@ Boolean uisRunModalHandle (Handle h, Boolean flscriptedcard, Str255 windowname, 
 	} /*uisRunModalHandle*/
 	
 	
-Boolean uisRunModalResource (short id, Boolean flscriptedcard, Str255 windowname, short top, short left, uisEventCallback filter) {
+Boolean uisRunModalResource (short id, Boolean flscriptedcard, Str255 windowname, short top, short pleft, uisEventCallback filter) {
 	
 	Handle h;
 	
@@ -1373,7 +1373,7 @@ Boolean uisRunModalResource (short id, Boolean flscriptedcard, Str255 windowname
 		
 	DetachResource (h);
 	
-	return (uisRunModalHandle (h, flscriptedcard, windowname, top, left, filter));
+	return (uisRunModalHandle (h, flscriptedcard, windowname, top, pleft, filter));
 	} /*uisRunModalResource*/
 	
 #ifndef isFrontier
@@ -1433,12 +1433,12 @@ Boolean uisEdit (short editcommand) {
 	} /*uisEdit*/
 	
 
-Boolean uisInit (ProcPtr callback, short idinsertafter, OSType idclientapp, unsigned short bitarray) {
+Boolean uisInit (ProcPtr pcallback, short idinsertafter, OSType idclientapp, unsigned short bitarray) {
 	
 	/*
 	initialize window sharing and menu sharing. 
 	
-	the callback is a routine that receives a Str255 as a parameter. it should
+	the pcallback is a routine that receives a Str255 as a parameter. it should
 	display the string in a modal dialog box and wait for the user to click 
 	on OK. it's used for reporting script compiling or runtime errors. pass in
 	nil if you want errors to not be reported to the user (not a great thing
@@ -1503,7 +1503,7 @@ Boolean uisInit (ProcPtr callback, short idinsertafter, OSType idclientapp, unsi
 			if (initsharedmenusGlue (msGlobals.menuserver) != noErr)
 				goto error;
 		
-			if (setscripterrorcallbackGlue (msGlobals.menuserver, callback) != noErr)
+			if (setscripterrorcallbackGlue (msGlobals.menuserver, pcallback) != noErr)
 				goto error;
 			}
 		}
