@@ -423,7 +423,8 @@ boolean browserexpand (hdlheadrecord hnode, long ctlevels) {
 	
 	
 static boolean expandcancelledvisit (hdlheadrecord hnode, ptrvoid refcon) {
-	
+#pragma unused (refcon)
+
 	if ((**hnode).tmpbit) {
 		
 		opstartinternalchange ();

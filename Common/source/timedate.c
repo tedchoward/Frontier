@@ -524,9 +524,9 @@ void GetDateTime (long * secs) {
 #endif
 
 
-void timestamp (long *time) {
+void timestamp (long *ptime) {
 	
-	GetDateTime ((unsigned long *) time);
+	GetDateTime ((unsigned long *) ptime);
 	} /*timestamp*/
 	
 	
@@ -571,42 +571,49 @@ boolean setsystemclock (unsigned long secs) {
 			}
 
 		return (true);
-	#endif
+#endif
 	} /*setsystemclock*/
 
 
-static void adjustforcurrenttimezone (unsigned long *time) {
-	
+static void
+adjustforcurrenttimezone (unsigned long *ptime)
+{
 	/*
 	5.1b23 dmb: avoid wraparound for near-zero dates
 	*/
 
-	unsigned long adjustedtime = *time + getcurrenttimezonebias ();
-	
-	if (sgn (*time) == sgn (adjustedtime))
-		*time = adjustedtime;
+	unsigned long adjustedtime = *ptime + getcurrenttimezonebias ();
+
+	if (sgn (*ptime) == sgn (adjustedtime))
+		*ptime = adjustedtime;
 	} /*adjustforcurrenttimezone*/
 
 
-boolean timegreaterthan (unsigned long time1, unsigned long time2) {
-	
+boolean
+timegreaterthan (
+		unsigned long time1,
+		unsigned long time2)
+{
 	return (time1 > time2);
 	} /*timegreaterthan*/
-	
-	
-boolean timelessthan (unsigned long time1, unsigned long time2) {
-	
+
+
+boolean
+timelessthan (
+		unsigned long time1,
+		unsigned long time2)
+{
 	return (time1 < time2);
-	} /*timelessthan*/
+} /*timelessthan*/
 
 
-boolean timetotimestring (unsigned long time, bigstring bstime, boolean flwantseconds) {
+boolean timetotimestring (unsigned long ptime, bigstring bstime, boolean flwantseconds) {
 
-	#ifdef MACVERSION
-		//Code change by Timothy Paustian Sunday, June 25, 2000 9:45:30 PM
-		//updated call for carbon, the nil parameter says use the current script
-		//for formatting the time.
-		TimeString (time, flwantseconds, bstime, nil);
+#ifdef MACVERSION
+	//Code change by Timothy Paustian Sunday, June 25, 2000 9:45:30 PM
+	//updated call for carbon, the nil parameter says use the current script
+	//for formatting the time.
+	TimeString (ptime, flwantseconds, bstime, nil);
 
 		return (true);
 	#endif
@@ -616,7 +623,7 @@ boolean timetotimestring (unsigned long time, bigstring bstime, boolean flwantse
 		FILETIME filetime;
 		int len;
 
-		secondstofiletime (time, &filetime);
+		secondstofiletime (ptime, &filetime);
 
 		FileTimeToSystemTime (&filetime, &date);
 
@@ -629,14 +636,14 @@ boolean timetotimestring (unsigned long time, bigstring bstime, boolean flwantse
 	} /*timetotimestring*/
 
 
-boolean timetodatestring (unsigned long time, bigstring bsdate, boolean flabbreviate) {
+boolean timetodatestring (unsigned long ptime, bigstring bsdate, boolean flabbreviate) {
 
-	#ifdef MACVERSION
-		//Code change by Timothy Paustian Sunday, June 25, 2000 9:45:49 PM
-		//Updated call for carbon
-		DateString (time, flabbreviate? abbrevDate : shortDate, bsdate, nil);
+#ifdef MACVERSION
+	//Code change by Timothy Paustian Sunday, June 25, 2000 9:45:49 PM
+	//Updated call for carbon
+	DateString (ptime, flabbreviate? abbrevDate : shortDate, bsdate, nil);
 
-		return (true);
+	return (true);
 	#endif
 
 	#ifdef WIN95VERSION
@@ -644,7 +651,7 @@ boolean timetodatestring (unsigned long time, bigstring bsdate, boolean flabbrev
 		FILETIME filetime;
 		int len;
 
-		secondstofiletime (time, &filetime);
+		secondstofiletime (ptime, &filetime);
 
 		FileTimeToSystemTime (&filetime, &date);
 
@@ -657,7 +664,7 @@ boolean timetodatestring (unsigned long time, bigstring bsdate, boolean flabbrev
 	} /*timetodatestring*/
 
 
-boolean stringtotime (bigstring bsdate, unsigned long *time) {
+boolean stringtotime (bigstring bsdate, unsigned long *ptime) {
 	
 	/*
 	9/13/91 dmb: use the script manager to translate a string to a 
@@ -681,20 +688,20 @@ boolean stringtotime (bigstring bsdate, unsigned long *time) {
 		boolean flgottime;
 		DateTimeRec shortdate;
 		boolean flUseGMT = false;
-		long index;
+		long idx;
 		
-		index = stringlength (bsdate);
+		idx = stringlength (bsdate);
 
-		while (getstringcharacter(bsdate, index-1) == ' ')
-			--index;
+		while (getstringcharacter(bsdate, idx-1) == ' ')
+			--idx;
 
-		if (index > 3) {
-			if ((getstringcharacter(bsdate, index - 3) == 'G') && (getstringcharacter(bsdate, index - 2) == 'M') && (getstringcharacter(bsdate, index -1) == 'T')) {
+		if (idx > 3) {
+			if ((getstringcharacter(bsdate, idx - 3) == 'G') && (getstringcharacter(bsdate, idx - 2) == 'M') && (getstringcharacter(bsdate, idx -1) == 'T')) {
 				flUseGMT = true;
 				}
 			}
 
-		*time = 0; /*default return value*/
+		*ptime = 0; /*default return value*/
 		
 		clearbytes (&longdate, sizeof (longdate));
 		
@@ -731,10 +738,10 @@ boolean stringtotime (bigstring bsdate, unsigned long *time) {
 		
 		shortdate.second = longdate.ld.second;
 		
-		DateToSeconds (&shortdate, time);
+		DateToSeconds (&shortdate, ptime);
 
 		if (flUseGMT) {
-			adjustforcurrenttimezone (time);
+			adjustforcurrenttimezone (ptime);
 			}
 		
 	#endif
@@ -746,7 +753,7 @@ boolean stringtotime (bigstring bsdate, unsigned long *time) {
 		unsigned long vu;
 		tyvalidationerror errinfo;
 		bigstring bsdate1, bstime1;
-		short index;
+		short idx;
 		tyinternationalinfo * ii;
 		boolean flUseGMT = false;
 		boolean flSaveTimeFormat;
@@ -756,36 +763,36 @@ boolean stringtotime (bigstring bsdate, unsigned long *time) {
 		if (ii == NULL)
 			return (false);
 
-		index = stringlength (bsdate);
+		idx = stringlength (bsdate);
 		
-		if (index > 128) //5.0b17 dmb: too long for a date, avoid crash
+		if (idx > 128) //5.0b17 dmb: too long for a date, avoid crash
 			return (false);
 
-		while (getstringcharacter(bsdate, index-1) == ' ')
-			--index;
+		while (getstringcharacter(bsdate, idx-1) == ' ')
+			--idx;
 
-		if (index > 3) {
-			if ((getstringcharacter(bsdate, index - 3) == 'G') && (getstringcharacter(bsdate, index - 2) == 'M') && (getstringcharacter(bsdate, index -1) == 'T')) {
+		if (idx > 3) {
+			if ((getstringcharacter(bsdate, idx - 3) == 'G') && (getstringcharacter(bsdate, idx - 2) == 'M') && (getstringcharacter(bsdate, idx -1) == 'T')) {
 				flUseGMT = true;
 				flSaveTimeFormat = ii->defaultTimeFormat;
 				ii->defaultTimeFormat = true;
 				}
 			}
 
-		index = 1;
-		if (scanstring (getstringcharacter(ii->timesep, 0), bsdate, &index)) {
-			--index;
+		idx = 1;
+		if (scanstring (getstringcharacter(ii->timesep, 0), bsdate, &idx)) {
+			--idx;
 			/* now check to see if this is a time preceded by a date */
-			if (index > 5) {  /*blank digit colon - 3 min, possibly 4 - date must be at least 3 i.e. 1/5 */
-				if (isnumeric (getstringcharacter(bsdate, index-1))) {
-					if (index + 1 < stringlength (bsdate)) {
-						if (isnumeric (getstringcharacter(bsdate, index+1))) {
-							if (getstringcharacter(bsdate, index-2) == ' ') {
-								setstringcharacter(bsdate, index-2, ';');
+			if (idx > 5) {  /*blank digit colon - 3 min, possibly 4 - date must be at least 3 i.e. 1/5 */
+				if (isnumeric (getstringcharacter(bsdate, idx-1))) {
+					if (idx + 1 < stringlength (bsdate)) {
+						if (isnumeric (getstringcharacter(bsdate, idx+1))) {
+							if (getstringcharacter(bsdate, idx-2) == ' ') {
+								setstringcharacter(bsdate, idx-2, ';');
 								}
 							else {
-								if ((getstringcharacter(bsdate, index-3) == ' ') && (isnumeric (getstringcharacter(bsdate, index-2)))) {
-									setstringcharacter(bsdate, index-3, ';');
+								if ((getstringcharacter(bsdate, idx-3) == ' ') && (isnumeric (getstringcharacter(bsdate, idx-2)))) {
+									setstringcharacter(bsdate, idx-3, ';');
 									}
 								}
 							}
@@ -794,20 +801,20 @@ boolean stringtotime (bigstring bsdate, unsigned long *time) {
 				}
 			}
 		else {
-			index = 1;
-			if (scanstring (':', bsdate, &index)) {
-				--index;
+			idx = 1;
+			if (scanstring (':', bsdate, &idx)) {
+				--idx;
 				/* now check to see if this is a time preceded by a date */
-				if (index > 5) {  /*blank digit colon - 3 min, possibly 4 - date must be at least 3 i.e. 1/5 */
-					if (isnumeric (getstringcharacter(bsdate, index-1))) {
-						if (index + 1 < stringlength (bsdate)) {
-							if (isnumeric (getstringcharacter(bsdate, index+1))) {
-								if (getstringcharacter(bsdate, index-2) == ' ') {
-									setstringcharacter(bsdate, index-2, ';');
+				if (idx > 5) {  /*blank digit colon - 3 min, possibly 4 - date must be at least 3 i.e. 1/5 */
+					if (isnumeric (getstringcharacter(bsdate, idx-1))) {
+						if (idx + 1 < stringlength (bsdate)) {
+							if (isnumeric (getstringcharacter(bsdate, idx+1))) {
+								if (getstringcharacter(bsdate, idx-2) == ' ') {
+									setstringcharacter(bsdate, idx-2, ';');
 									}
 								else {
-									if ((getstringcharacter(bsdate, index-3) == ' ') && (isnumeric (getstringcharacter(bsdate, index-2)))) {
-										setstringcharacter(bsdate, index-3, ';');
+									if ((getstringcharacter(bsdate, idx-3) == ' ') && (isnumeric (getstringcharacter(bsdate, idx-2)))) {
+										setstringcharacter(bsdate, idx-3, ';');
 										}
 									}
 								}
@@ -819,14 +826,14 @@ boolean stringtotime (bigstring bsdate, unsigned long *time) {
 
 		/* if the string contains a semicolon ";" then split into two strings are parse date;time */
 
-		index = 1;
-		if (scanstring (';', bsdate, &index)) {
-			midstring (bsdate, 1, index-1, bsdate1);
-			midstring (bsdate, index + 1, stringlength(bsdate) - index, bstime1);
+		idx = 1;
+		if (scanstring (';', bsdate, &idx)) {
+			midstring (bsdate, 1, idx-1, bsdate1);
+			midstring (bsdate, idx + 1, stringlength(bsdate) - idx, bstime1);
 
-			++index;
-			if (scanstring (';', bsdate, &index)) {
-				midstring (bsdate, index + 1, stringlength(bsdate) - index, bstime1);
+			++idx;
+			if (scanstring (';', bsdate, &idx)) {
+				midstring (bsdate, idx + 1, stringlength(bsdate) - idx, bstime1);
 				}
 
 
@@ -836,11 +843,11 @@ boolean stringtotime (bigstring bsdate, unsigned long *time) {
 				{
 				ValidTime (stringbaseaddress (bstime1), stringlength (bstime1), &return2DT, &actualDT, &vu, &errinfo); 
 
-				*time = datetimetoseconds (returnDT.day, returnDT.month, returnDT.year, return2DT.hour, return2DT.minute, return2DT.second);
+				*ptime = datetimetoseconds (returnDT.day, returnDT.month, returnDT.year, return2DT.hour, return2DT.minute, return2DT.second);
 
 				if (errinfo.errorNumber == 0) {
 					if (flUseGMT) {
-						adjustforcurrenttimezone (time);
+						adjustforcurrenttimezone (ptime);
 						ii->defaultTimeFormat = flSaveTimeFormat;
 						}
 					return (true);
@@ -853,18 +860,18 @@ boolean stringtotime (bigstring bsdate, unsigned long *time) {
 
 		ValidDate (stringbaseaddress (bsdate), stringlength (bsdate), &returnDT, &actualDT, &vu, &errinfo); 
 
-		*time = datetimetoseconds (returnDT.day, returnDT.month, returnDT.year, 0,0,0);
+		*ptime = datetimetoseconds (returnDT.day, returnDT.month, returnDT.year, 0,0,0);
 
 		if (errinfo.errorNumber != 0)
 			{
 			if (errinfo.errorNumber == err_kInvalidPunctuation) {
 				ValidTime (stringbaseaddress (bsdate), stringlength (bsdate), &returnDT, &actualDT, &vu, &errinfo); 
 
-				*time = datetimetoseconds (returnDT.day, returnDT.month, returnDT.year, returnDT.hour, returnDT.minute, returnDT.second);
+				*ptime = datetimetoseconds (returnDT.day, returnDT.month, returnDT.year, returnDT.hour, returnDT.minute, returnDT.second);
 
 				if (errinfo.errorNumber == 0) {
 					if (flUseGMT) {
-						adjustforcurrenttimezone (time);
+						adjustforcurrenttimezone (ptime);
 						ii->defaultTimeFormat = flSaveTimeFormat;
 						}
 					return (true);
@@ -896,21 +903,21 @@ long datetimetoseconds (short day, short month, short year, short hour, short mi
 		
 		if (year < 100) { /*use script manager's StringToDate heuristic -- pg 188 in § docs*/
 			
-			long thisyear, century;
+			long thisyear, lcentury;
 			
 			GetTime (&date);
 			
 			thisyear = date.year % 100;
 			
-			century = date.year - thisyear;
+			lcentury = date.year - thisyear;
 			
 			if ((thisyear <= 10) && (year >= 90)) /*assume last century*/
-				century -= 100;
+				lcentury -= 100;
 			else
 				if ((thisyear >= 90) && (year <= 10)) /*assume next century*/
-					century += 100;
+					lcentury += 100;
 			
-			year += century;
+			year += lcentury;
 			}
 		
 		clearbytes (&date, sizeof (date));
@@ -938,21 +945,21 @@ long datetimetoseconds (short day, short month, short year, short hour, short mi
 		
 		if (year < 100) { /*use script manager's StringToDate heuristic -- pg 188 in § docs*/
 			
-			long thisyear, century;
+			long thisyear, lcentury;
 			
 			GetSystemTime (&date);
 			
 			thisyear = date.wYear % 100;
 			
-			century = date.wYear - thisyear;
+			lcentury = date.wYear - thisyear;
 			
 			if ((thisyear <= 10) && (year >= 90)) /*assume last century*/
-				century -= 100;
+				lcentury -= 100;
 			else
 				if ((thisyear >= 90) && (year <= 10)) /*assume next century*/
-					century += 100;
+					lcentury += 100;
 			
-			year += century;
+			year += lcentury;
 			}
 		
 		// Win call doesn't wrap around h:m:s
