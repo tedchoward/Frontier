@@ -274,6 +274,7 @@ static boolean isopenverb (hdltreenode hparam1, tyvaluerecord *vreturned) {
 
 
 static boolean openverb (hdltreenode hparam1, tyvaluerecord *vreturned, bigstring bserror) {
+#pragma unused (bserror)
 
 	/*
 	7.0b6 PBS: optional flReadOnly parameter allows outline-type windows
@@ -290,7 +291,7 @@ static boolean openverb (hdltreenode hparam1, tyvaluerecord *vreturned, bigstrin
 	hdlwindowinfo hinfo;
 	short ctparams;
 	boolean flreadonly = false; /*editable by default*/
-	boolean flreturn = false;
+	boolean lflreturn = false;
 	boolean flbuttontable = false;
 	boolean flvisible = true;
 
@@ -332,15 +333,15 @@ static boolean openverb (hdltreenode hparam1, tyvaluerecord *vreturned, bigstrin
 	
 	if ((flreadonly) && ((**hv).id == idwordprocessor)) { /*7.0b6 PBS: read-only wp-text is an error.*/
 	
-		hdlwindowinfo hinfo;
+		hdlwindowinfo lhinfo;
 				
 		langerrormessage ("\x5a""Can't open window as read-only because windows of type wp text don't support this feature.");	
 		
-		if (shellfinddatawindow ((Handle) (**hv).variabledata, &hinfo)) { /*window may be hidden -- if so, close*/
+		if (shellfinddatawindow ((Handle) (**hv).variabledata, &lhinfo)) { /*window may be hidden -- if so, close*/
 			
-			if ((**hinfo).flhidden) { /*if hidden, close the window*/
+			if ((**lhinfo).flhidden) { /*if hidden, close the window*/
 				
-				shellclose ((**hinfo).macwindow, false);
+				shellclose ((**lhinfo).macwindow, false);
 				} /*if*/
 			} /*if*/
 		
@@ -349,15 +350,15 @@ static boolean openverb (hdltreenode hparam1, tyvaluerecord *vreturned, bigstrin
 	
 	if ((flbuttontable) && ((**hv).id != idoutlineprocessor)) { /*7.1b18 PBS: buttons for non-outlines is an error.*/
 
-		hdlwindowinfo hinfo;
+		hdlwindowinfo lhinfo;
 
 		langerrormessage ("\x52""Can't attach buttons to window because windows only outlines support this feature.");
 
-		if (shellfinddatawindow ((Handle) (**hv).variabledata, &hinfo)) { /*window may be hidden -- if so, close*/
+		if (shellfinddatawindow ((Handle) (**hv).variabledata, &lhinfo)) { /*window may be hidden -- if so, close*/
 			
-			if ((**hinfo).flhidden) { /*if hidden, close the window*/
+			if ((**lhinfo).flhidden) { /*if hidden, close the window*/
 				
-				shellclose ((**hinfo).macwindow, false);
+				shellclose ((**lhinfo).macwindow, false);
 				} /*if*/
 			} /*if*/
 		
@@ -414,17 +415,18 @@ static boolean openverb (hdltreenode hparam1, tyvaluerecord *vreturned, bigstrin
 			shelladjustaftergrow ((**hinfo).macwindow);
 
 			shellpopglobals ();
-		#endif
+#endif
 		} /*if*/		
 	
 	if (!langzoomvalwindow (htable, bsname, val, true)) /*now make it visible*/
+
 		return (false);
 	
-	flreturn = langexternalsetreadonly (hv, flreadonly); /*7.0b6 PBS: set the read-only flag.*/
+	lflreturn = langexternalsetreadonly (hv, flreadonly); /*7.0b6 PBS: set the read-only flag.*/
 	
-	(*vreturned).data.flvalue = flreturn;
+	(*vreturned).data.flvalue = lflreturn;
 	
-	return (flreturn);
+	return (lflreturn);
 	} /*openverb*/
 
 
@@ -659,12 +661,12 @@ static boolean showhideverb (hdltreenode hparam1, boolean flshow, tyvaluerecord 
 static boolean closeverb (hdltreenode hparam1, tyvaluerecord *vreturned) {
 	
 	/*
-	2005-09-14 creedon: added fldialog parameter
-
-	8/26/92 dmb: don't allow the root window to be closed with this verb.
-	
-	(note: used to crash; need to call shellclose to handle root windows)
-	*/
+	 2005-09-14 creedon: added fldialog parameter
+	 
+	 8/26/92 dmb: don't allow the root window to be closed with this verb.
+	 
+	 (note: used to crash; need to call shellclose to handle root windows)
+	 */
 	
 	register boolean fl = false;
 	hdlwindowinfo hinfo;
@@ -672,7 +674,7 @@ static boolean closeverb (hdltreenode hparam1, tyvaluerecord *vreturned) {
 	tyvaluerecord val;
 	short ctconsumed = 1;
 	short ctpositional = 1;
-
+	
 	setbooleanvalue (false, &val); /* defaults to false */
 	
 	if (!getwinparam (hparam1, 1, &hinfo))
@@ -684,17 +686,17 @@ static boolean closeverb (hdltreenode hparam1, tyvaluerecord *vreturned) {
 		return (false);
 	
 	fldialog = val.data.flvalue;
-
+	
 	if (hinfo != nil) { /* close it if it isn't a root window */
 		
 		// if ((**hinfo).parentwindow != nil /*|| shellgetexternaldata (hinfo, &hdata)*/)
-			fl = shellclose ((**hinfo).macwindow, fldialog);
-		}
+		fl = shellclose ((**hinfo).macwindow, fldialog);
+	}
 	
 	setbooleanvalue (fl, vreturned);
 	
 	return (true); 
-	} /* closeverb */
+} /*closeverb*/
 	
 
 static boolean updateverb (hdltreenode hparam1, tyvaluerecord *vreturned) {
