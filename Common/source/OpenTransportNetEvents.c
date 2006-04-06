@@ -2459,7 +2459,7 @@ static boolean fwsbackgroundtask (void) {
 	}/*fwsbackgroundtask*/
 
 
-static boolean fwsNetEventLaunch (struct hostData *data) {
+static boolean fwsNetEventLaunch (void *data) {
 #pragma unused (data)
 
 	/*

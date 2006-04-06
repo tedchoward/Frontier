@@ -1715,22 +1715,31 @@ for (;; ptr++)
 
         posix_class *= 3;
         for (i = 0; i < 3; i++)
-          {
-          BOOL isblank = strncmp((char *)ptr, "blank", 5) == 0;
-          int taboffset = posix_class_maps[posix_class + i];
-          if (taboffset < 0) break;
-          if (local_negate)
-            {
-            for (c = 0; c < 32; c++) class[c] |= ~cbits[c+taboffset];
-            if (isblank) class[1] |= 0x3c;
-            }
-          else
-            {
-            for (c = 0; c < 32; c++) class[c] |= cbits[c+taboffset];
-            if (isblank) class[1] &= ~0x3c;
-            }
-          }
+		{
+			BOOL lisblank = strncmp((char *)ptr, "blank", 5) == 0;
+			int taboffset = posix_class_maps[posix_class + i];
 
+			if (taboffset < 0)
+				break;
+
+			if (local_negate)
+            {
+				for (c = 0; c < 32; c++)
+					class[c] |= ~cbits[c+taboffset];
+
+				if (lisblank)
+					class[1] |= 0x3c;
+            }
+			else
+            {
+				for (c = 0; c < 32; c++)
+					class[c] |= cbits[c+taboffset];
+
+				if (lisblank)
+					class[1] &= ~0x3c;
+            }
+		}
+		
         ptr = tempptr + 1;
         class_charcount = 10;  /* Set > 1; assumes more than 1 per class */
         continue;    /* End of POSIX syntax handling */
