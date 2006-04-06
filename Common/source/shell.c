@@ -1288,15 +1288,14 @@ boolean shellinit (void) {
 	
 	#if TARGET_API_MAC_CARBON == 1
 	
-		initservices ();
-	
-	#endif
+	initservices ();
 
-	
+#endif
+
 #if isFrontier || flruntime || winhybrid
 
 	initlang (); /*init callbacks and other basic inits*/
-	
+
 	langcallbacks.processeventcallback = &shellprocessevent; /*4.1b13 dmb - new*/
 	
 	if (!inittablestructure ()) /*create initial hashtable structure*/
@@ -1377,21 +1376,21 @@ boolean shellinit (void) {
 										NULL,
 										&theTimer);*/
 										
-		/*Install dock menu handler.*/
+	/*Install dock menu handler.*/
 		
-		EventHandlerUPP dockmenuUPP;										
-		OSStatus ec = noErr;
-		EventTypeSpec eventTypes [1];
-		
-		eventTypes[0].eventClass = kEventClassApplication;
-		eventTypes[0].eventKind  = 20; /*kEventAppGetDockTileMenu; -- not in CodeWarrior yet 11/12/01*/
-		
-		dockmenuUPP = NewEventHandlerUPP (dockmenuhandler);
-		
-		ec = InstallApplicationEventHandler (dockmenuUPP, 1, eventTypes, NULL, NULL);
+	EventHandlerUPP dockmenuUPP;										
+	OSStatus ec = noErr;
+	EventTypeSpec eventTypes [1];
 
-    	/*If it fails, oh well, there's nothing to be done. So ec isn't checked.*/
-    	}
+	eventTypes[0].eventClass = kEventClassApplication;
+	eventTypes[0].eventKind  = kEventAppGetDockTileMenu;
+
+	dockmenuUPP = NewEventHandlerUPP (dockmenuhandler);
+
+	ec = InstallApplicationEventHandler (dockmenuUPP, 1, eventTypes, NULL, NULL);
+
+	/*If it fails, oh well, there's nothing to be done. So ec isn't checked.*/
+	}
     
 	#endif
 

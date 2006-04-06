@@ -126,14 +126,19 @@ short System7Open (FSSpec fs2) {
 	OSType fndrCreator;
 	Boolean wasChanged;
 	AliasHandle targetAlias;
-	long index;
+	long idx;	// 2006-04-03 - kw --- renamed
 	long nTargets = 1;
 	FSSpec	targets[1];
 	FSSpec	*targetList;
 	targets[0] = fs2;
 	targetList = targets;
-		/* verify parameters */
-	if ((nTargets == 0) || (targetList == NULL)) return paramErr;
+
+	/* verify parameters */
+	if (	(nTargets == 0)
+		 || (targetList == NULL))
+	{
+		return paramErr;
+	}
 
 		/* set up locals  */
 	AECreateDesc(typeNull, NULL, 0, &theAEvent);
@@ -155,13 +160,13 @@ short System7Open (FSSpec fs2) {
 		/* create the list of files to open */
 	err = AECreateList(NULL, 0, false, &targetListDesc);
 	if (err != noErr) goto bail;
-	for ( index=0; index < nTargets; index++) {
+	for ( idx = 0; idx < nTargets; idx++) {
 		if (targetAlias == NULL)
-			err = NewAlias(NULL, (targetList + index), &targetAlias);
-		else err = UpdateAlias(NULL, (targetList + index), targetAlias, &wasChanged);
+			err = NewAlias(NULL, (targetList + idx), &targetAlias);
+		else err = UpdateAlias(NULL, (targetList + idx), targetAlias, &wasChanged);
 		if (err != noErr) goto bail;
 		HLock((Handle) targetAlias);
-		err = AEPutPtr(&targetListDesc, (index + 1), typeAlias, *targetAlias, GetHandleSize((Handle) targetAlias));
+		err = AEPutPtr(&targetListDesc, (idx + 1), typeAlias, *targetAlias, GetHandleSize((Handle) targetAlias));
 		HUnlock((Handle) targetAlias);
 		if (err != noErr) goto bail;
 	}
