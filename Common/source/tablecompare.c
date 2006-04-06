@@ -206,7 +206,8 @@ static langcomparenodescallback origcomparenodescallback;
 
 
 static short tableoverridecomparenodes (hdlhashtable htable, hdlhashnode hnode1, hdlhashnode hnode2) {
-	
+#pragma unused (htable, hnode1)
+
 	if (hnode2 == nextnodecompare)
 		return (-1);
 	else
