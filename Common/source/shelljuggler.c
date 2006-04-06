@@ -90,11 +90,16 @@ boolean shellactivate (void) {
 #endif
 	
 	return (true);
-	} /*shellactivate*/
+} /*shellactivate*/
 
 
-static boolean shelljugglervisit (WindowPtr w, ptrvoid refcon) {
-	
+static boolean
+shelljugglervisit (
+		WindowPtr	 w,
+		ptrvoid		 refcon)
+{
+#pragma unused (refcon)
+
 	shellpushglobals (w);
 	
 	(*shellglobals.resumeroutine) (flshellactive);

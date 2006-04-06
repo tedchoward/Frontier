@@ -295,12 +295,12 @@ boolean langpackvalue (tyvaluerecord val, Handle *h, hdlhashnode hnode) {
 			break;
 		
 		case externalvaluetype: {
-			register Handle h = val.data.externalvalue;
+			register Handle lh = val.data.externalvalue;
 			Handle hpacked;
 			
 			initbeachball (left);
 			
-			fl = langexternalmemorypack ((hdlexternalvariable) h, &hpacked, hnode);
+			fl = langexternalmemorypack ((hdlexternalvariable) lh, &hpacked, hnode);
 			
 			if (!fl)
 				break;

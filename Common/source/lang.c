@@ -551,7 +551,8 @@ boolean langdefaultpushtable (hdlhashtable *htable) {
 	
 	
 boolean langdefaultpoptable (hdlhashtable htable) {
-	
+#pragma unused (htable)
+
 	register hdlhashtable ht = currenthashtable;
 	
 	unchainhashtable ();
@@ -629,12 +630,14 @@ void languntraperrors (langerrormessagecallback savecallback, ptrvoid saverefcon
 	if (flerror) {
 		
 		if (isemptystring (bserror))
+		{
 			if (getoserror () != noErr)
 				getsystemerrorstring (getoserror (), bserror);
 			else
 				getstringlist (langerrorlist, undefinederror, bserror);
 		}
-	
+	}
+
 	langcallbacks.errormessagecallback = savecallback;
 	
 	langcallbacks.errormessagerefcon = saverefcon;
@@ -697,7 +700,8 @@ void langpopscopechain (void) {
 
 
 static boolean renumberlinesvisit (hdltreenode hnode, ptrvoid refcon) {
-	
+#pragma unused (refcon)
+
 	/*
 	when langrun executes code from within a script, it tries to preserve 
 	the ability to locate errors and step in the debugger.  from the 
