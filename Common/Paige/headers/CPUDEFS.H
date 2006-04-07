@@ -123,7 +123,8 @@ some each compiler seems to interpret differently.  */
 		#define WIN32_COMPILE
 		//#define WINDOWS_EMULATE_COMPILE   /* Fakes Windows environment on Mac */
 	#else
-#endif
+		#define MAC_COMPILE		/* 2006-04-07 aradke: compiling with Xcode */
+	#endif
 #endif
 
 #ifdef ACCESS_MS_DLL
