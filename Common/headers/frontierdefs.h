@@ -34,7 +34,6 @@
 
 
 #ifdef WIN95VERSION
-	#define PACKFLIPPED		/* enable little endian / big endian conversion for database file functions */
 	#define FRONTIERCOM 1
 #ifndef OPMLEDITOR
 	#define FRONTIERWEB 0

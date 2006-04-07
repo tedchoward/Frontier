@@ -307,4 +307,19 @@
 #include <string.h>
 #include <assert.h>
 
+/*
+	2006-04-07 aradke: determine native byte order.
+		checking whether WIN32 is defined is rather crude,
+		but I haven't found a better way yet.
+*/
+
+#if defined(__LITTLE_ENDIAN__) || defined(WIN32)
+	#define PACKFLIPPED	1	/* enable little endian / big endian conversion for database file functions */
+#elif defined(__BIG_ENDIAN__)
+	#undef PACKFLIPPED		/* big endian is native database format, no need to convert */
+#else
+	#error Failed to determine native byte order of target architecture, update osincludes.h
+#endif
+
+
 #endif /* __osincludes_h__ */
