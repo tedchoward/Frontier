@@ -82,8 +82,9 @@ hdldialogrecord langdialogdata = nil;
 
 static boolean langdialogselectall (void) {
 	
+	DialogPtr pdialog = GetDialogFromWindow (langdialogwindow);
 	
-	return (dialogselectall ((DialogPtr) langdialogwindow));
+	return (dialogselectall (pdialog));
 	} /*langdialogselectall*/
 
 
