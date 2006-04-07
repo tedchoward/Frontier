@@ -36,8 +36,14 @@
 #define __FRONTIER_H__
 
 
+/* sanity check of prefix headers and build environment */
+
 #if !defined(MACVERSION) && !defined(WIN95VERSION)
 	#error Either MACVERSION or WIN95VERSION must always be defined!
+#endif
+
+#if !defined(__LITTLE_ENDIAN__) && !defined(__BIG_ENDIAN__)
+	#error Either __LITTLE_ENDIAN__ or __BIG_ENDIAN__ must be defined!
 #endif
 
 

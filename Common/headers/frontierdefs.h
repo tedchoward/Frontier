@@ -32,9 +32,13 @@
 #ifndef __FRONTIERDEFS_H__
 #define __FRONTIERDEFS_H__
 
+#if defined(__LITTLE_ENDIAN__)	/* 2006-04-07 aradke: use appropriate defines instead of target platform, prepare for MacIntel */
+	#define PACKFLIPPED	1	/* enable little endian / big endian conversion for database file functions */
+#elif defined(__BIG_ENDIAN__)
+	#undef PACKFLIPPED		/* big endian is native database format, no need to convert */
+#endif
 
 #ifdef WIN95VERSION
-	#define PACKFLIPPED		/* enable little endian / big endian conversion for database file functions */
 	#define FRONTIERCOM 1
 #ifndef OPMLEDITOR
 	#define FRONTIERWEB 0
