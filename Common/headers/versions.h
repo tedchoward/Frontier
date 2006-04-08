@@ -42,7 +42,7 @@
 
 /* common strings for all targets */
 
-#define	APP_COPYRIGHT_FROM	"1992"
+#define	APP_COPYRIGHT_FROM	"2004"
 #define	APP_COPYRIGHT_TILL	"2006"
 
 
@@ -128,6 +128,7 @@
 
 #endif
 
+#define bs_APP_COPYRIGHT2	"\x22" "© 1992-2004 UserLand Software, Inc"
 #define APP_COPYRIGHT		APP_COPYRIGHT_FROM "-" APP_COPYRIGHT_TILL " " APP_COPYRIGHT_HOLDER
 
 #define APPNAME_SHORT	APPNAME		/* 2006-02-04 aradke */

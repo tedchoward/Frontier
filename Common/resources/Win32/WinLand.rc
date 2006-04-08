@@ -2027,7 +2027,7 @@ BEGIN
 	size12,
 	plain,
 	0,
-	40L, 40L, 460L, 100L
+	40L, 40L, 460L, 114L
 	END
 
 /*resource 'cnfg' (138, "quick script") {*/

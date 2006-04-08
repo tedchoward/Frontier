@@ -151,7 +151,7 @@ static bigstring bsmiscinfo = "";
 
 #define aboutrectheightStats (aboutvertinset * 2 + aboutvertstart + aboutrowsStats * aboutlineheight + aboutvertgap)
 
-#define aboutrowsNoStats 3
+#define aboutrowsNoStats 4
 
 #define aboutrectheightNoStats (aboutvertinset * 2 + aboutvertstart + aboutrowsNoStats * aboutlineheight + aboutvertgap)
 
@@ -166,6 +166,8 @@ static bigstring bsmiscinfo = "";
 static byte * aboutstrings [] = {
 
 	bs_APP_SLOGAN,		/* 2006-02-06 aradke: see versions.h */
+	
+	bs_APP_COPYRIGHT2,	/* 2006-04-08 aradke: see versions.h */
 	
 	bs_APP_COPYRIGHT,	/* 2006-02-06 aradke: see versions.h */
 	
@@ -199,6 +201,8 @@ static byte * aboutstrings [] = {
 enum { /*main window items*/
 	
 	sloganitem,
+	
+	copyright2item,
 	
 	copyrightitem,
 	
@@ -724,6 +728,8 @@ static void	ccdrawabout (void) {
 		#endif
 		
 		setglobalfontsizestyle (geneva, 9, bold);
+		
+		rabout.top += max ((aboutrowsNoStats * aboutlineheight - abouticonsize) / 2, 0);
 	
 		rabout.left += abouticonsize; /*2005-01-12 aradke: shorter frontieritem, indent it too*/ 
 
@@ -746,6 +752,8 @@ static void	ccdrawabout (void) {
 		ccdrawfrontiericon (rabout, false);
 		}
 	
+	ccdrawtextitem (copyright2item, nil, normal, leftjustified);
+
 	ccdrawtextitem (copyrightitem, nil, normal, leftjustified);
 	
 	ccdrawurlitem (false);

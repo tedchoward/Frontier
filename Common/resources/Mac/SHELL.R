@@ -4017,7 +4017,7 @@ resource 'cnfg' (137, "about") {
 	plain,
 	//302,
 	0, /*7.0b50 PBS: the About window has no buttons*/
-	{40, 40, 100, 460},
+	{40, 40, 114, 460},
 };
 
 resource 'cnfg' (138, "quick script") {
