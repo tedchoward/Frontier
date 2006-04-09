@@ -408,7 +408,8 @@ INCLUDE_FILES = \
 	$(SRCDIR)/Common/Paige/headers/PGERRORS.h \
 	$(SRCDIR)/Common/headers/frontierdefs.h \
 	$(SRCDIR)/Common/headers/langmath.h \
-	$(SRCDIR)/Common/headers/FastTimes.h
+	$(SRCDIR)/Common/headers/FastTimes.h \
+	$(SRCDIR)/Common/headers/byteorder.h
 
 #================================================================================================
 # Sources and Objects Definitions

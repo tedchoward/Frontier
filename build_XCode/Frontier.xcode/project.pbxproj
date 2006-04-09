@@ -1837,7 +1837,6 @@
 				6599180809C494EA00F6F58C,
 				6599181509C4950300F6F58C,
 				65F9C22809C4CDDE00DCC29E,
-				655A983C09E929F8009EFFEA,
 			);
 			isa = PBXSourcesBuildPhase;
 			runOnlyForDeploymentPostprocessing = 0;
@@ -4199,7 +4198,6 @@
 				6599180709C494EA00F6F58C,
 				6599181409C4950300F6F58C,
 				65F9C22709C4CDDE00DCC29E,
-				655A983B09E929F8009EFFEA,
 			);
 			isa = PBXSourcesBuildPhase;
 			runOnlyForDeploymentPostprocessing = 0;
@@ -5430,7 +5428,6 @@
 				651525EB072BFC6700411831,
 				651525EC072BFC6700411831,
 				651525ED072BFC6700411831,
-				655A983A09E929F8009EFFEA,
 				651525EE072BFC6700411831,
 				651525EF072BFC6700411831,
 				651525F0072BFC6700411831,
@@ -11969,27 +11966,6 @@
 		};
 		655A983709E929CC009EFFEA = {
 			fileRef = 655A983509E929CC009EFFEA;
-			isa = PBXBuildFile;
-			settings = {
-			};
-		};
-		655A983A09E929F8009EFFEA = {
-			fileEncoding = 30;
-			isa = PBXFileReference;
-			lastKnownFileType = sourcecode.c.c;
-			name = byteorder.c;
-			path = ../Common/source/byteorder.c;
-			refType = 2;
-			sourceTree = SOURCE_ROOT;
-		};
-		655A983B09E929F8009EFFEA = {
-			fileRef = 655A983A09E929F8009EFFEA;
-			isa = PBXBuildFile;
-			settings = {
-			};
-		};
-		655A983C09E929F8009EFFEA = {
-			fileRef = 655A983A09E929F8009EFFEA;
 			isa = PBXBuildFile;
 			settings = {
 			};

@@ -1,5 +1,5 @@
 
-/*	$Id: $    */
+/*	$Id$    */
 
 /******************************************************************************
 
@@ -70,8 +70,83 @@
 #define shortswap(foo)	do {foo = doshortswap(foo);} while (0)
 
 
-long dolongswap (long);		/* byteorder.c */
-short doshortswap (short);
+#if (defined(TARGET_API_MAC_CARBON) && (TARGET_API_MAC_CARBON == 1) && defined(__GNUC__))
+
+	/* using system sdk functions from CFByteOrder.h */
+
+	#define dolongswap(foo)			CFSwapInt32(foo)
+	#define doshortswap(foo)		CFSwapInt16(foo)
+	
+#elif (defined(__i386__) && defined(__GNUC__))
+
+	/* using AT&T x86 assembly code syntax */
+
+	inline long dolongswap (long foo) {
+
+		__asm__("mov foo,%eax\nbswap %eax\nmov %eax,foo\n");
+
+		return (foo);
+		} /*dolongswap*/
+
+	inline short doshortswap (short foo) {
+
+		__asm__("mov foo,%ax\n mov %al,%bh\nmov %ah,%bl\nmov %bx,foo");
+
+		return (foo);
+		} /*doshortswap*/
+
+#elif defined(WIN32)
+
+	/* using Intel x86 assembly code syntax */
+	
+	__inline long dolongswap (long foo) {
+
+		_asm
+			{
+			mov eax,foo
+			bswap eax
+			mov foo,eax
+			}
+
+		return (foo);
+		} /*dolongswap*/
+
+	__inline short doshortswap (short foo) {
+
+		_asm
+			{
+			mov ax,foo
+			mov bh,al
+			mov bl,ah
+			mov foo,bx
+			}
+		
+		return (foo);
+		} /*doshortswap*/
+
+#else
+
+	/* portable code using only C operators */
+	
+	inline long dolongswap (long foo) {
+
+		foo = ((((foo) >> 24) & 0x000000ff)
+				| (((foo) & 0x00ff0000) >> 8)
+				| (((foo) & 0x0000ff00) << 8)
+				| (((foo) & 0x000000ff) << 24));
+		
+		return (foo);
+		} /*dolongswap*/
+
+	inline short doshortswap (short foo) {
+
+		foo = ((((foo) >> 8) & 0x00ff)
+				| (((foo) << 8) & 0xff00));
+
+		return (foo);
+		} /*doshortswap*/
+
+#endif
 
 
 #endif /* byteorderinclude */
