@@ -1478,10 +1478,6 @@
 					</FileConfiguration>
 				</File>
 				<File
-					RelativePath="..\Common\source\byteorder.c"
-					>
-				</File>
-				<File
 					RelativePath="..\Common\source\cursor.c"
 					>
 					<FileConfiguration
