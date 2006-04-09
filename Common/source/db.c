@@ -303,34 +303,34 @@ static boolean dbwriteswap (dbaddress adr, long ctbytes, ptrvoid pdata) {
 	if (!dbseek (adr))
 		return (false);
 
-#ifdef WIN32
+#ifdef SWAP_BYTE_ORDER
 	if (ctbytes == sizeof (long))
 		{
-		longswap (*((long *)pdata));
+		memtodisklong (*((long *)pdata));
 		}
 
 	if (ctbytes == sizeof(short))
 		{
-		shortswap (*((short*)pdata));
+		memtodiskshort (*((short*)pdata));
 		}
 #endif
 	
 	res = filewrite ((hdlfilenum)((**databasedata).fnumdatabase), ctbytes, pdata);
 
-#ifdef WIN32
+#ifdef SWAP_BYTE_ORDER
 	if (ctbytes == sizeof (long))
 		{
-		longswap (*((long *)pdata));
+		disktomemlong (*((long *)pdata));
 		}
 
 	if (ctbytes == sizeof(short))
 		{
-		shortswap (*((short*)pdata));
+		disktomemshort (*((short*)pdata));
 		}
 #endif
 
 	return (res);
-	} /*dbwrite*/
+	} /*dbwriteswap*/
 	
 
 static boolean dbreadswap (dbaddress adr, long ctbytes, ptrvoid pdata) {
@@ -341,22 +341,22 @@ static boolean dbreadswap (dbaddress adr, long ctbytes, ptrvoid pdata) {
 				
 	res = fileread ((hdlfilenum)((**databasedata).fnumdatabase), ctbytes, pdata); 
 
-#ifdef WIN32
+#ifdef SWAP_BYTE_ORDER
 	if (ctbytes == sizeof (long))
 		{
-		longswap (*((long *)pdata));
+		disktomemlong (*((long *)pdata));
 		}
 	else
 		{
 		if (ctbytes == sizeof(short))
 			{
-			shortswap (*((short*)pdata));
+			disktomemshort (*((short*)pdata));
 			}
 		}
 #endif
 
 	return (res);
-	} /*dbread*/
+	} /*dbreadswap*/
 	
 
 boolean dbgeteof (long *eof) {
@@ -401,20 +401,20 @@ static boolean dbflushheader (void) {
 			clearbytes (&diskrec.u.growthspace, sizeof (diskrec.u.growthspace)); /*in-memory structure only*/
 		#endif
 
-		#ifdef WIN32
+		#ifdef SWAP_BYTE_ORDER
 			{
 			short i;
-			longswap (diskrec.availlist);
-			longswap (diskrec.u.extensions.availlistblock);
-			shortswap (diskrec.flags);
+			memtodisklong (diskrec.availlist);
+			memtodisklong (diskrec.u.extensions.availlistblock);
+			memtodiskshort (diskrec.flags);
 			for (i = 0; i < ctviews; i++)
 				{
-				longswap (diskrec.views[i]);
+				memtodisklong (diskrec.views[i]);
 				}
-		//	longswap (diskrec.fnumdatabase);
-			longswap (diskrec.headerLength);
-			shortswap (diskrec.longversionMajor);
-			shortswap (diskrec.longversionMinor);
+		//	memtodisklong (diskrec.fnumdatabase);
+			memtodisklong (diskrec.headerLength);
+			memtodiskshort (diskrec.longversionMajor);
+			memtodiskshort (diskrec.longversionMinor);
 			}
 		#endif
 		
@@ -449,10 +449,8 @@ boolean dbreadheader (dbaddress adr, boolean *flfree, long *ctbytes, tyvariance 
 	if (!dbread (adr, sizeheader, &header))
 		return (false);
 	
-#ifdef WIN32
-	longswap(header.variance);
-	longswap(header.sizefreeword.size);
-#endif
+	disktomemlong (header.variance);
+	disktomemlong (header.sizefreeword.size);
 
 	*flfree = (header.sizefreeword.size & 0x80000000L) == 0x80000000L ? true : false;
 	
@@ -471,9 +469,7 @@ boolean dbreadtrailer (dbaddress adr, boolean *flfree, long *ctbytes) {
 	if (!dbread (adr, sizetrailer, &trailer))
 		return (false);
 		
-#ifdef WIN32
-	longswap(trailer.sizefreeword.size);
-#endif
+	disktomemlong (trailer.sizefreeword.size);
 
 	*flfree = (trailer.sizefreeword.size & 0x80000000L) == 0x80000000L ? true : false;
 	
@@ -494,10 +490,8 @@ static boolean dbwriteheader (dbaddress adr, boolean flfree, long ctbytes, tyvar
 	
 	header.variance = variance;
 	
-#ifdef WIN32
-	longswap(header.variance);
-	longswap(header.sizefreeword.size);
-#endif
+	memtodisklong (header.variance);
+	memtodisklong (header.sizefreeword.size);
 
 	return (dbwrite (adr, sizeheader, &header));
 	} /*dbwriteheader*/
@@ -512,9 +506,7 @@ static boolean dbwritetrailer (dbaddress adr, boolean flfree, long ctbytes) {
 	if (flfree)
 		trailer.sizefreeword.size |= 0x80000000L;
 	
-#ifdef WIN32
-	longswap(trailer.sizefreeword.size);
-#endif
+	memtodisklong (trailer.sizefreeword.size);
 
 	return (dbwrite (adr, sizetrailer, &trailer));
 	} /*dbwritetrailer*/
@@ -854,15 +846,15 @@ static boolean dbwriteshadowavaillist (void) {
 				}
 		#endif
 		
-		#ifdef WIN32
+		#ifdef SWAP_BYTE_ORDER
 			/*switch byte order*/ {
 			long ix;
 			long ct = databytes / sizeof (tyavailnodeshadow);
 			register tyavailnodeshadow* p = (tyavailnodeshadow *) *h;
 
 			for (ix = 0; ix < ct; ix++) {
-				longswap (p[ix].adr);
-				longswap (p[ix].size);
+				memtodisklong (p[ix].adr);
+				memtodisklong (p[ix].size);
 				}
 			}
 		#endif
@@ -928,15 +920,15 @@ static boolean dbreadshadowavaillist (void) {
 	if (!dbrefhandle (adrblock, (Handle*) &h))
 		return (false);
 
-#ifdef WIN32
+#ifdef SWAP_BYTE_ORDER
 	/*switch byte order*/ {
 		long ix;
 		long ct = gethandlesize ((Handle) h) / sizeof (tyavailnodeshadow);
 		register tyavailnodeshadow* p = *h;
 
 		for (ix = 0; ix < ct; ix++) {
-			longswap (p[ix].adr);
-			longswap (p[ix].size);
+			disktomemlong (p[ix].adr);
+			disktomemlong (p[ix].size);
 			}
 		}
 #endif
@@ -2520,20 +2512,20 @@ boolean dbopenfile (hdlfilenum fnum, boolean flreadonly) {
 	if (!dbread ((dbaddress) 0, sizeof (tydatabaserecord), &diskrec))
 		goto error;
 	
-	#ifdef WIN32
+	#ifdef SWAP_BYTE_ORDER
 		{
 		short i;
-		longswap (diskrec.availlist);
-		longswap (diskrec.u.extensions.availlistblock);
-		shortswap (diskrec.flags);
+		disktomemlong (diskrec.availlist);
+		disktomemlong (diskrec.u.extensions.availlistblock);
+		disktomemshort (diskrec.flags);
 		for (i = 0; i < ctviews; i++)
 			{
-			longswap (diskrec.views[i]);
+			disktomemlong (diskrec.views[i]);
 			}
-//		longswap (diskrec.fnumdatabase);
-		longswap (diskrec.headerLength);
-		shortswap (diskrec.longversionMajor);
-		shortswap (diskrec.longversionMinor);
+//		disktomemlong (diskrec.fnumdatabase);
+		disktomemlong (diskrec.headerLength);
+		disktomemshort (diskrec.longversionMajor);
+		disktomemshort (diskrec.longversionMinor);
 		}
 	#endif
 	

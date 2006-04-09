@@ -38,6 +38,9 @@
 
 
 #if defined(__LITTLE_ENDIAN__) && ((__LITTLE_ENDIAN__ == 1) || !defined (__BIG_ENDIAN__))
+
+	#define SWAP_BYTE_ORDER	1
+
 	#define conditionallongswap(x) dolongswap(x)
 	#define conditionalshortswap(x) doshortswap(x)
 	#define conditionalenumswap(x) doshortswap(x)
@@ -49,7 +52,11 @@
 	#define disktomemlong(x)  longswap(x)
 	#define memtodiskshort(x) shortswap(x)
 	#define memtodisklong(x) longswap(x)
+
 #elif defined(__BIG_ENDIAN__) && ((__BIG_ENDIAN__ == 1) || !defined (__LITTLE_ENDIAN__))
+
+	#undef SWAP_BYTE_ORDER
+
 	#define conditionallongswap(x) x
 	#define conditionalshortswap(x) x
 	#define conditionalenumswap(x) x
@@ -61,8 +68,11 @@
 	#define disktomemlong(x)
 	#define memtodiskshort(x)
 	#define memtodisklong(x)
+
 #else
+
 	#error "Couldn't determine byte order of target architecture, update osincludes.h"
+
 #endif
 
 

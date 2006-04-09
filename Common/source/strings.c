@@ -1862,9 +1862,7 @@ void ostypetostring (OSType type, bigstring bs) {
 	
 	setstringlength (bs, sizeof (OSType));
 	
-	#ifdef WIN95VERSION
-		longswap (type);
-	#endif
+	disktomemlong (type);
 
 	moveleft (&type, stringbaseaddress (bs), longsizeof (OSType));
 
@@ -1896,9 +1894,7 @@ boolean stringtoostype (bigstring bs, OSType *type) {
 		
 	moveleft (stringbaseaddress (bs), type, (long) len);
 	
-#ifdef WIN95VERSION
-	longswap (*type);
-#endif
+	disktomemlong (*type);
 	
 	return (fl);
 	} /*stringtoostype*/
