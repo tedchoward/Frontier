@@ -44,6 +44,7 @@
 #include "tableverbs.h"
 #include "oplist.h"
 #include "timedate.h"
+#include "byteorder.h"	/* 2006-04-08 aradke: endianness conversion macros */
 
 #if TARGET_API_MAC_CARBON == 1 /*PBS 03/14/02: AE OS X fix.*/
 	#include "aeutils.h" /*PBS 03/14/02: AE OS X fix.*/

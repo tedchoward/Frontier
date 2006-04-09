@@ -38,6 +38,7 @@
 #include "opinternal.h"
 #include "menueditor.h"
 #include "menuinternal.h"
+#include "byteorder.h"	/* 2006-04-08 aradke: endianness conversion macros */
 
 	
 

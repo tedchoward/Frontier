@@ -47,6 +47,7 @@
 	#include "shellprivate.h"
 #endif
 #include "timedate.h"
+#include "byteorder.h"	/* 2006-04-08 aradke: endianness conversion macros */
 
 
 typedef struct tycancoonrecord { /*one of these for every cancoon file that's open*/

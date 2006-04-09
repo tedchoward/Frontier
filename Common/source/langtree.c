@@ -33,6 +33,7 @@
 #include "lang.h"
 #include "langinternal.h"
 #include "tablestructure.h"
+#include "byteorder.h"	/* 2006-04-08 aradke: endianness conversion macros */
 
 
 typedef struct tydisktreenode {

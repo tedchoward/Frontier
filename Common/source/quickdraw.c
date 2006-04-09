@@ -44,6 +44,7 @@ quickdraw.c -- code which builds on top of basic quickdraw operations.
 #include "quickdraw.h"
 #include "frontierwindows.h"
 #include "shell.h"
+#include "byteorder.h"	/* 2006-04-08 aradke: endianness conversion macros */
 
 
 #ifdef WIN95VERSION
@@ -3029,11 +3030,9 @@ void diskrgbtorgb (diskrgb *rgbdisk, RGBColor *r) {
 	
 	(*r).blue = (*rgbdisk).blue;
 
-	#ifdef PACKFLIPPED
-		shortswap(r->red);
-		shortswap(r->green);
-		shortswap(r->blue);
-	#endif
+	disktomemshort(r->red);
+	disktomemshort(r->green);
+	disktomemshort(r->blue);
 	} /*diskrgbtorgb*/
 
 
@@ -3045,11 +3044,9 @@ void rgbtodiskrgb (RGBColor *r, diskrgb *rgbdisk) {
 	
 	(*rgbdisk).blue = (short) (*r).blue;
 
-	#ifdef PACKFLIPPED
-		shortswap(rgbdisk->red);
-		shortswap(rgbdisk->green);
-		shortswap(rgbdisk->blue);
-	#endif
+	memtodiskshort(rgbdisk->red);
+	memtodiskshort(rgbdisk->green);
+	memtodiskshort(rgbdisk->blue);
 	} /*rgbtodiskrgb*/
 
 

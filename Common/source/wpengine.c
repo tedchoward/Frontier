@@ -37,6 +37,7 @@
 #include "standard.h"
 
 #include "bitmaps.h"
+#include "byteorder.h"	/* 2006-04-08 aradke: endianness conversion macros */
 #include "cursor.h"
 #include "error.h"
 #include "font.h"

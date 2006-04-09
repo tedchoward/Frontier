@@ -34,7 +34,7 @@
 #include "op.h"
 #include "opinternal.h"
 #include "oplist.h"
-
+#include "byteorder.h"	/* 2006-04-08 aradke: endianness conversion macros */
 
 
 /*
@@ -52,21 +52,6 @@ goals.  so here goes!
 #define fldebugging false 
 
 #define oplistversionnumber 1
-
-
-#ifdef MACVERSION
-	#define unconditionallongswap(x) ((((x) >> 24) & 0x000000ff) | (((x) & 0x00ff0000) >> 8) | (((x) & 0x0000ff00) << 8) | (((x) & 0x000000ff) << 24))
-	#define unconditionalshortswap(x) ((((x) >> 8) & 0x00ff) | (((x) << 8) & 0xff00))
-	#define unconditionallyswaplong(x) do {(x) = unconditionallongswap(x);} while (0)
-	#define unconditionallyswapshort(x) do {(x) = unconditionalshortswap(x);} while (0)
-#endif
-
-#ifdef WIN95VERSION
-	#define unconditionallongswap(x) dolongswap(x)
-	#define unconditionalshortswap(x) doshortswap(x)
-	#define unconditionallyswaplong(x) longswap(x)
-	#define unconditionallyswapshort(x) shortswap(x)
-#endif
 
 
 typedef struct tylistrecord {
@@ -725,11 +710,11 @@ boolean opunpacklist (Handle hpacked, hdllistrecord *hnewlist) {
 		
 		if (gethandlesize (hpackedoutline) != (long) info.ctoutlinebytes) { //old, unbyteswapped?
 			
-			unconditionallyswapshort (info.ctitems);
+			shortswap (info.ctitems);
 			
-			// unconditionallyswapshort (info.ctitems_hiword);
+			// shortswap (info.ctitems_hiword);
 			
-			unconditionallyswaplong (info.ctoutlinebytes);
+			longswap (info.ctoutlinebytes);
 			
 			info.isrecord = info.flunused;
 			

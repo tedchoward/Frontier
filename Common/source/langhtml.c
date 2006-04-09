@@ -65,6 +65,7 @@
 #endif
 
 #include "tableverbs.h"  //6.1b8 AR: we need gettablevalue
+#include "byteorder.h"	/* 2006-04-08 aradke: endianness conversion macros */
 
 #include "iso8859.c"
 

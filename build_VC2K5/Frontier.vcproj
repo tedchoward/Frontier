@@ -1478,6 +1478,10 @@
 					</FileConfiguration>
 				</File>
 				<File
+					RelativePath="..\Common\source\byteorder.c"
+					>
+				</File>
+				<File
 					RelativePath="..\Common\source\cursor.c"
 					>
 					<FileConfiguration
@@ -8609,6 +8613,10 @@
 				>
 			</File>
 			<File
+				RelativePath="..\Common\headers\byteorder.h"
+				>
+			</File>
+			<File
 				RelativePath="..\Common\headers\cancoon.h"
 				>
 			</File>
@@ -8918,6 +8926,10 @@
 			</File>
 			<File
 				RelativePath="..\Common\headers\osacomponent.h"
+				>
+			</File>
+			<File
+				RelativePath="..\Common\headers\osincludes.h"
 				>
 			</File>
 			<File

@@ -37,6 +37,7 @@
 #include "shell.rsrc.h"
 #include "timedate.h"
 #include "langinternal.h" /* 2006-02-26 creedon */
+#include "byteorder.h"	/* 2006-04-08 aradke: endianness conversion macros */
 
 
 #define ctparseparams 4

@@ -40,32 +40,6 @@ standard.h -- standard types and constants
 	#include "FastTimes.h"
 #endif
 
-#ifdef PACKFLIPPED
-	#define conditionallongswap(x) dolongswap(x)
-	#define conditionalshortswap(x) doshortswap(x)
-	#define conditionalenumswap(x) doshortswap(x)
-	#define disklong(x) dolongswap(x)
-	#define memlong(x) dolongswap(x)
-	#define diskshort(x) doshortswap(x)
-	#define memshort(x) doshortswap(x)
-	#define disktomemshort(x) shortswap(x)
-	#define disktomemlong(x)  longswap(x)
-	#define memtodiskshort(x) shortswap(x)
-	#define memtodisklong(x) longswap(x)
-#else
-	#define conditionallongswap(x) x
-	#define conditionalshortswap(x) x
-	#define conditionalenumswap(x) x
-	#define disklong(x) x
-	#define memlong(x) x
-	#define diskshort(x) x
-	#define memshort(x) x
-	#define disktomemshort(x)
-	#define disktomemlong(x)
-	#define memtodiskshort(x)
-	#define memtodisklong(x)
-#endif
-
 #include "stringdefs.h"		/* embedded string definitions */
 
 #ifndef appletdefsinclude

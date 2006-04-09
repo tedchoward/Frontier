@@ -39,6 +39,7 @@
 #include "db.h"
 #include "dbinternal.h"
 #include "ops.h" //6.2b3 AR: for numbertostring
+#include "byteorder.h"	/* 2006-04-08 aradke: endianness conversion macros */
 
 #include "frontierdebug.h" //6.2b7 AR
 

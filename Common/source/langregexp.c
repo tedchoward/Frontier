@@ -48,6 +48,7 @@
 #include "kernelverbs.h"
 #include "kernelverbdefs.h"
 #include "search.h"
+#include "byteorder.h"	/* 2006-04-08 aradke: endianness conversion macros */
 
 #include "langregexp.h"
 

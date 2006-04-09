@@ -43,6 +43,7 @@
 #include "process.h"
 #include "pict.h"
 #include "timedate.h"
+#include "byteorder.h"	/* 2006-04-08 aradke: endianness conversion macros */
 
 
 

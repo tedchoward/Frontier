@@ -46,6 +46,7 @@
 #include "claycallbacks.h"
 #include "claybrowservalidate.h"
 #include "timedate.h"
+#include "byteorder.h"	/* 2006-04-08 aradke: endianness conversion macros */
 
 
 #define mincolwidth 50

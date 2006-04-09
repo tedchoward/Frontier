@@ -44,6 +44,7 @@
 #include "tablestructure.h"
 #include "claybrowser.h"
 //#include "clayicons.h"
+#include "byteorder.h"	/* 2006-04-08 aradke: endianness conversion macros */
 
 
 typedef struct tydisklinelayout {

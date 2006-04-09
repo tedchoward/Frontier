@@ -57,7 +57,7 @@
 #include "tableformats.h" /*7.0b6 PBS*/
 #include "menuverbs.h" /*7.0b6 PBS*/
 #include "op.h" /*7.0b6 PBS*/
-
+#include "byteorder.h"	/* 2006-04-08 aradke: endianness conversion macros */
 
 
 /*

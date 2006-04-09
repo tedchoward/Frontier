@@ -64,6 +64,7 @@
 #include "tableverbs.h"  //6.1b7 AR: we need gettablevalue
 #include "tableinternal.h" //6.1b7 AR: we need tablepacktable and tableunpacktable
 #include "serialnumber.h" //7.1b34 dmb: new isvalidserialnumber verb
+#include "byteorder.h"	/* 2006-04-08 aradke: endianness conversion macros */
 
 #define systemevents (osMask | activMask)
 

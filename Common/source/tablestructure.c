@@ -38,6 +38,7 @@
 #include "tableinternal.h"
 #include "tableverbs.h"
 #include "tablestructure.h"
+#include "byteorder.h"	/* 2006-04-08 aradke: endianness conversion macros */
 
 
 /*
@@ -498,9 +499,7 @@ boolean tablesavesystemtable (Handle hvariable, dbaddress *adr) {
 	
 	popfromhandle (htmp, sizeof (dbaddress), adr);
 	
-#ifdef PACKFLIPPED
-	longswap (*adr); // un-swap it; tableverbpack swapped it
-#endif
+	disktomemlong (*adr); // un-swap it; tableverbpack swapped it
 	
 	disposehandle (htmp); /*we can get the address from the variable record, below*/
 	

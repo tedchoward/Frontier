@@ -65,6 +65,7 @@
 #include "serialnumber.h"
 
 #include "WinSockNetEvents.h" /*6.2a14 AR*/
+#include "byteorder.h"	/* 2006-04-08 aradke: endianness conversion macros */
 
 
 

@@ -33,6 +33,7 @@
 #include "ops.h"
 #include "shellhooks.h"
 #include "strings.h"
+#include "byteorder.h"	/* 2006-04-08 aradke: endianness conversion macros */
 
 
 #define safetycushionsize 0x2800 /*10K*/
@@ -1814,7 +1815,7 @@ boolean debugmergehandles (char * filename, unsigned long linenumber, unsigned l
 	*hmerged = nil; /*default return value*/
 	
 	sizefirsthandle = gethandlesize (h1);
-	storesizefirsthandle = conditionallongswap (sizefirsthandle);
+	storesizefirsthandle = disklong (sizefirsthandle);
 	
 	sizesecondhandle = gethandlesize (h2);
 	
@@ -1924,9 +1925,7 @@ boolean debugunmergehandles (char * filename, unsigned long linenumber, unsigned
 	
 	moveleft (*h, &sizefirsthandle, sizeof (long));
 
-#ifdef PACKFLIPPED
-	longswap (sizefirsthandle);
-#endif
+	disktomemlong (sizefirsthandle);
 	
 	ix = sizeof (long);
 	
@@ -1978,7 +1977,7 @@ boolean debugunmergehandles (char * filename, unsigned long linenumber, unsigned
 	memoryerror ();
 	
 	return (false);
-	} /*unmergehandles*/
+	} /*debugunmergehandles*/
 	
 	
 boolean debugnewintarray (char * filename, unsigned long linenumber, unsigned long threadid, short ct, hdlintarray *harray) {
@@ -2061,7 +2060,7 @@ boolean mergehandles (Handle h1, Handle h2, Handle *hmerged) {
 	*hmerged = nil; /*default return value*/
 	
 	sizefirsthandle = gethandlesize (h1);
-	storesizefirsthandle = conditionallongswap (sizefirsthandle);
+	storesizefirsthandle = disklong (sizefirsthandle);
 	
 	sizesecondhandle = gethandlesize (h2);
 	
@@ -2171,9 +2170,7 @@ boolean unmergehandles (Handle hmerged, Handle *hfirst, Handle *hsecond) {
 	
 	moveleft (*h, &sizefirsthandle, sizeof (long));
 
-#ifdef PACKFLIPPED
-	longswap (sizefirsthandle);
-#endif
+	disktomemlong (sizefirsthandle);
 	
 	ix = sizeof (long);
 	

@@ -35,8 +35,7 @@
 #include "ops.h"
 #include "op.h"
 #include "opinternal.h"
-
-
+#include "byteorder.h"	/* 2006-04-08 aradke: endianness conversion macros */
 
 
 typedef struct tylinetableitem {

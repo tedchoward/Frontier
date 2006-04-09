@@ -40,6 +40,7 @@
 #include "langexternal.h"
 #include "langsystem7.h"
 #include "tablestructure.h"
+#include "byteorder.h"	/* 2006-04-08 aradke: endianness conversion macros */
 
 
 

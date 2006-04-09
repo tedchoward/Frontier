@@ -35,7 +35,7 @@
 #include "lang.h"
 #include "langinternal.h"
 #include "langparser.h"
-
+#include "byteorder.h"	/* 2006-04-08 aradke: endianness conversion macros */
 
 
 

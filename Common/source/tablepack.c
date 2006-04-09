@@ -36,6 +36,7 @@
 #include "tablestructure.h"
 #include "tableinternal.h"
 #include "tableverbs.h"
+#include "byteorder.h"	/* 2006-04-08 aradke: endianness conversion macros */
 
 
 
@@ -357,9 +358,7 @@ boolean tableverbpack (hdlexternalvariable h, Handle *hpacked, boolean *flnewdba
 	if (!fl)
 		return (false);
 	
-#ifdef PACKFLIPPED
-	longswap (adr);
-#endif
+	memtodisklong (adr);
 	
 	return (enlargehandle (*hpacked, sizeof (adr), (ptrchar) &adr));
 	} /*tableverbpack*/
