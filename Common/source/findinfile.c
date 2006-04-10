@@ -37,7 +37,7 @@
 
 
 
-#define filebuffersize 1024
+#define filebuffersize	(32 * 1024)		/* 2006-04-10 aradke: updated from 1kB to 32kB for speed */
 
 
 typedef struct tyopenfile {
