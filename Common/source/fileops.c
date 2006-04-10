@@ -2389,8 +2389,11 @@ static boolean hasdesktopmanager (short vnum) {
 boolean findapplication (OSType creator, tyfilespec *fsapp) {
 	
 	/*
-	12/5/91 dmb.
+	2006-04-09 creedon: use LSFindApplicationForInfo if available
 	
+	2.1b11 dmb: loop through all files in each db if necessary to find one 
+	that's actually an application
+
 	9/7/92 dmb: make two passes, skipping volumes mounted with a foreign 
 	file system the first time through. note: if this turns out not to be 
 	the best criteria, we could check for shared volumes instead by testing  
@@ -2400,83 +2403,95 @@ boolean findapplication (OSType creator, tyfilespec *fsapp) {
 	need to verify that the file we locate still exists. added fileexists 
 	call before returning true.
 	
-	2.1b11 dmb: loop through all files in each db if necessary to find one 
-	that's actually an application
+	12/5/91 dmb
 	*/
 	
-	bigstring bsapp;
-	DTPBRec dt;
-	HParamBlockRec pb;
-	OSType type;
-	register OSErr errcode;
-	boolean fltryremote = false;
-	boolean flremote;
+	 if ((UInt32) LSFindApplicationForInfo != (UInt32) kUnresolvedCFragSymbolAddress) {
 	
-	clearbytes (&pb, sizeof (pb));
+		FSRef myRef;
+		
+		if (LSFindApplicationForInfo (creator, NULL, NULL, &myRef, NULL) != noErr)
+			return (false);
+				
+		if (FSRefMakeFSSpec (&myRef, fsapp) != noErr)
+			return (false);
+				
+		return (true);
+		}
+	else {
 	
-	while (true) {
+		bigstring bsapp;
+		DTPBRec dt;
+		HParamBlockRec pb;
+		OSType type;
+		register OSErr errcode;
+		boolean fltryremote = false;
+		boolean flremote;
 		
-		++pb.volumeParam.ioVolIndex;
+		clearbytes (&pb, sizeof (pb));
 		
-		errcode = PBHGetVInfoSync (&pb);
-		
-		if (errcode == nsvErr) { /*index out of range*/
+		while (true) {
 			
-			if (fltryremote) /*we've tried everything*/
+			++pb.volumeParam.ioVolIndex;
+			
+			errcode = PBHGetVInfoSync (&pb);
+			
+			if (errcode == nsvErr) { // index out of range
+				
+				if (fltryremote) // we've tried everything
+					return (false);
+				
+				pb.volumeParam.ioVolIndex = 0; // reset
+				
+				fltryremote = true;
+				
+				continue;
+				}
+			
+			if (errcode != noErr)
 				return (false);
 			
-			pb.volumeParam.ioVolIndex = 0; /*reset*/
+			flremote = pb.volumeParam.ioVFSID != 0; // actually means foreign file system
 			
-			fltryremote = true;
-			
-			continue;
-			}
-		
-		if (errcode != noErr)
-			return (false);
-		
-		flremote = pb.volumeParam.ioVFSID != 0; /*actually means foreign file system*/
-		
-		if (fltryremote != flremote)
-			continue;
-		
-		if (!hasdesktopmanager (pb.volumeParam.ioVRefNum))
-			continue;
-		
-		dt.ioNamePtr = NULL;
-		dt.ioVRefNum = pb.volumeParam.ioVRefNum;
-		
-		if (PBDTGetPath (&dt) != noErr)
-			return (false);
-		
-		dt.ioNamePtr = (StringPtr) &bsapp;
-		dt.ioIndex = 0;
-		dt.ioFileCreator = creator;
-		
-		for (dt.ioIndex = 0; ; ++dt.ioIndex) {
-			
-			if (PBDTGetAPPLSync (&dt) != noErr) /*go to next volume*/
-				break;
-			
-			if (FSMakeFSSpec (pb.volumeParam.ioVRefNum, dt.ioAPPLParID, bsapp, fsapp) != noErr)
+			if (fltryremote != flremote)
 				continue;
 			
-			if (!getfiletype (fsapp, &type))
+			if (!hasdesktopmanager (pb.volumeParam.ioVRefNum))
+				continue;
+			
+			dt.ioNamePtr = NULL;
+			dt.ioVRefNum = pb.volumeParam.ioVRefNum;
+			
+			if (PBDTGetPath (&dt) != noErr)
 				return (false);
 			
-			if (type == 'APPL') /*desktop db can contain references to non-apps*/
-				return (true);
-			}
-		
-		/*
-		if (PBDTGetAPPLSync (&dt) == noErr) {
+			dt.ioNamePtr = (StringPtr) &bsapp;
+			dt.ioIndex = 0;
+			dt.ioFileCreator = creator;
 			
-			if (FSMakeFSSpec (pb.volumeParam.ioVRefNum, dt.ioAPPLParID, bsapp, fsapp) == noErr)
-				return (true);
+			for (dt.ioIndex = 0; ; ++dt.ioIndex) {
+				
+				if (PBDTGetAPPLSync (&dt) != noErr) // go to next volume
+					break;
+				
+				if (FSMakeFSSpec (pb.volumeParam.ioVRefNum, dt.ioAPPLParID, bsapp, fsapp) != noErr)
+					continue;
+				
+				if (!getfiletype (fsapp, &type))
+					return (false);
+				
+				if (type == 'APPL') // desktop db can contain references to non-apps
+					return (true);
+				}
+			
+			// if (PBDTGetAPPLSync (&dt) == noErr) {
+				
+				// if (FSMakeFSSpec (pb.volumeParam.ioVRefNum, dt.ioAPPLParID, bsapp, fsapp) == noErr)
+					// return (true);
+				// }
 			}
-		*/
-		}
-	} /*findapplication*/
+		} /* if */
+	} /* findapplication */
 
 
 #if 0
