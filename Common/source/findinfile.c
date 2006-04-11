@@ -852,6 +852,54 @@ boolean fifreadhandle (const tyfilespec *fs, long ctbytes, Handle *x) {
 	} /*fifreadhandle*/
 
 
+boolean fifreadfile (const tyfilespec *fs, Handle *x) {
+	
+	/*
+	read the whole file into memory and return the data to the caller.
+	we assume that the file pointer is still at the beginning of the file,
+	i.e. the file has just been opened but we haven't read from it yet.
+	on success, caller is responsible for disposing the returned handle.
+	
+	2006-04-11 aradke: implemented for readwholefileverb in fileverbs.c
+	*/
+
+	hdlopenfile hfile, hprev;
+	long ctbytes;
+	boolean fl;
+	Handle h;
+
+	*x = nil;
+
+	if (!findopenfile (fs, &hfile, &hprev)) { /*file isn't open*/
+		
+		fifopenfileerror (fs);
+
+		return (false);
+		}
+	
+	if (!filegeteof ((**hfile).fnum, &ctbytes))
+		return (false);
+	
+	if (!newhandle (ctbytes, &h))
+		return (false);
+	
+	lockhandle (h);
+	
+	fl = fileread ((**hfile).fnum, ctbytes, *h);
+	
+	unlockhandle (h);
+	
+	if (fl) {
+		*x = h;
+		}
+	else {
+		disposehandle (h);
+		}
+	
+	return (fl);
+	} /*fifreadfile*/
+
+
 boolean fifwritehandle (const tyfilespec *fs, Handle x) {
 	
 	/*

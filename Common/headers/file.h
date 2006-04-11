@@ -411,6 +411,8 @@ extern boolean fifwriteline (const tyfilespec *, Handle);
 
 extern boolean fifreadhandle (const tyfilespec *, long, Handle *);
 
+extern boolean fifreadfile (const tyfilespec *fs, Handle *x);	/* 2006-04-11 aradke */
+
 extern boolean fifwritehandle (const tyfilespec *, Handle);
 
 extern boolean fifsetposition (const tyfilespec *, long);

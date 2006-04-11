@@ -664,7 +664,8 @@
 			"getpathchar\0",
 			"freespaceonvolumedouble\0",
 			"volumesizedouble\0",
-			"getmp3info\0" /*7.0b12 PBS: André's file.getMp3Info verb*/
+			"getmp3info\0", /*7.0b12 PBS: André's file.getMp3Info verb*/
+			"readwholefile\0"	/* 2006-04-11 aradke */
 	END
 
 1008 /*idrezverbs*/ EFP 	DISCARDABLE

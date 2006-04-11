@@ -249,6 +249,8 @@ typedef enum tyfiletoken { /*verbs that are processed by file.c*/
 	
 	getmp3infofunc,
 	
+	readwholefilefunc,	/* 2006-04-11 aradke */
+	
 	ctfileverbs
 	} tyfiletoken;
 
@@ -2319,6 +2321,49 @@ static boolean writelineverb (hdltreenode hparam1, tyvaluerecord *v) {
 	} /*writelineverb*/
 
 
+static boolean readwholefileverb (hdltreenode hparam1, tyvaluerecord *v) {
+	
+	/*
+	Read the whole file into memory and return the data to the caller.
+	
+	2006-04-11 aradke: Kernelized file.readWholeFile. Obsolete script code follows:
+	
+		on readWholeFile (f) {
+			«10/31/97 at 1:02:04 PM by DW -- moved from toys.readWholeFile
+			local (s);
+			file.open (f);
+			s = file.read (f, infinity);
+			file.close (f);
+			return (s)}
+	
+	This kernel implementation is much more efficient than file.read because
+	it pre-allocates a handle large enough for the whole file.
+	*/
+
+	tyfilespec fs;
+	Handle x;
+	boolean fl;
+	
+	flnextparamislast = true;
+	
+	if (!getpathvalue (hparam1, 1, &fs))
+		return (false);
+
+	if (!fifopenfile (&fs, currentprocess))
+		return (false);
+
+	fl = fifreadfile (&fs, &x);
+		
+	disablelangerror ();
+		
+	(void) fifclosefile (&fs);	/* ignore return value, we got what we wanted */
+	
+	enablelangerror ();
+	
+	return (fl && setbinaryvalue (x, '\?\?\?\?', v));
+	} /*readwholefileverb*/
+
+
 static boolean readverb (hdltreenode hparam1, tyvaluerecord *v) {
 	
 	tyfilespec fs;
@@ -2608,6 +2653,8 @@ static boolean filefunctionvalue (short token, hdltreenode hparam1, tyvaluerecor
 	informative message instead of failing silently
 	
 	5.0.2b16 dmb: added getpathcharfunc
+	
+	2006-04-11 aradke: added readwholefilefunc
 	*/
 	
 	register hdltreenode hp1 = hparam1;
@@ -3578,6 +3625,9 @@ static boolean filefunctionvalue (short token, hdltreenode hparam1, tyvaluerecor
 			
 			return (true);
 			}
+		
+		case readwholefilefunc:	/* 2006-04-11 aradke */
+			return (readwholefileverb (hparam1, v));
 	
 		#ifdef WIN95VERSION
 			case newaliasfunc:

@@ -691,7 +691,8 @@ resource 'EFP#' (idfileverbs, "file") {
 		"getpathchar",
 		"freespaceonvolumedouble",
 		"volumesizedouble",
-		"getmp3info"
+		"getmp3info",
+		"readwholefile"		/* 2006-04-11 aradke */
 		}
 	}
 };
