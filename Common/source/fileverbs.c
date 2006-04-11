@@ -2349,7 +2349,7 @@ static boolean readwholefileverb (hdltreenode hparam1, tyvaluerecord *v) {
 	if (!getpathvalue (hparam1, 1, &fs))
 		return (false);
 
-	if (!fifopenfile (&fs, currentprocess))
+	if (!fifopenfile (&fs, (long) currentprocess))
 		return (false);
 
 	fl = fifreadfile (&fs, &x);
