@@ -200,7 +200,7 @@ boolean pushprocess (register hdlprocessrecord hp) {
 	
 	if (processstack.top >= ctprocesses) {
 		
-		shellinternalerror (idprocessstackfull, "\x17" "process stack overflow!");
+		shellinternalerror (idprocessstackfull, BIGSTRING ("\x17" "process stack overflow!"));
 		
 		return (false);
 		}
@@ -1266,7 +1266,7 @@ boolean processyield (void) {
 	if (!infrontierthread()) {	// should never happen
 		
 		#ifdef fldebug
-		DebugStr ("\x0c" "don't yield!");
+		DebugStr (BIGSTRING ("\x0c" "don't yield!"));
 		#endif
 		
 		return (true);
@@ -1989,7 +1989,7 @@ static boolean getstatsvisit (hdlthreadglobals hthread, long refcon) {
 
 	/*compute name for table entry*/
 
-	copystring ("\x06" "thread", bsname);
+	copystring (BIGSTRING ("\x06" "thread"), bsname);
 
 	pushlong (id, bsname);
 
@@ -2000,7 +2000,7 @@ static boolean getstatsvisit (hdlthreadglobals hthread, long refcon) {
 	
 	/*assign info string*/
 	
-	if (!langassignstringvalue (ht, "\x0b" "threadstats", bsdata))
+	if (!langassignstringvalue (ht, BIGSTRING ("\x0b" "threadstats"), bsdata))
 		return (false);
 
 	/*create and assign stack traceback*/
@@ -2010,7 +2010,7 @@ static boolean getstatsvisit (hdlthreadglobals hthread, long refcon) {
 		if (!gettracebacklist ((Handle) (**hp).herrorstack, &vlist))
 			return (false);
 
-		if (!hashtableassign (ht, "\x09" "traceback", vlist))
+		if (!hashtableassign (ht, BIGSTRING ("\x09" "traceback"), vlist))
 			return (false);
 		
 		exemptfromtmpstack (&vlist);
@@ -3174,7 +3174,7 @@ static pascal void *agentthreadmain (void *ignore) {
 	can hang if someone is trying to kill us
 	*/
 	
-	initprocessthread ("\x06" "agents"); /*must call from every thread main*/
+	initprocessthread (BIGSTRING ("\x06" "agents")); /*must call from every thread main*/
 	
 	while (flagentsenabled && ingoodthread () && !flagentsdisabled && !flshellclosingall) {
 		

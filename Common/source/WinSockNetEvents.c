@@ -153,98 +153,98 @@ For reference I am listing the error codes from the windows winsock.h file here
 
 
 static unsigned char * tcperrorstrings [80] = {
-	"",
-	"\x1b" "Host not found. (DNS error)",					/* 1 */
-	"\x37" "Non-authoritative host not found. (Temporary DNS error)",	/* 2 */
-	"\x22" "Non-recoverable error. (DNS error)",						/* 3 */
-	"\x39" "Valid name, no data record of requested type. (DNS error)",	/* 4 */
-	"\x12" "Input/output error",				/* 5 */
-	"\x15" "Device not configured",			/* 6 */
-	"\x16" "Argument list too long",			/* 7 */
-	"\x11" "Exec format error",				/* 8 */
-	"\x13" "Bad file descriptor",			/* 9 */
-	"\x12" "No child processes",				/* 10 */
-	"\x19" "Resource deadlock avoided",		/* 11 */
-	"\x16" "Cannot allocate memory",			/* 12 */
-	"\x11" "Permission denied",				/* 13 */
-	"\x0b" "Bad address",					/* 14 */
-	"\x15" "Block device required",			/* 15 */
-	"\x0b" "Device busy",					/* 16 */
-	"\x0b" "File exists",					/* 17 */
-	"\x11" "Cross-device link",				/* 18 */
-	"\x21" "Operation not supported by device",	/* 19 */
-	"\x0f" "Not a directory",				/* 20 */
-	"\x0e" "Is a directory",					/* 21 */
-	"\x10" "Invalid argument",				/* 22 */
-	"\x1d" "Too many open files in system",	/* 23 */
-	"\x15" "Too many open sockets",			/* 24 */
-	"\x1e" "Inappropriate ioctl for device",	/* 25 */
-	"\x0e" "Text file busy",					/* 26 */
-	"\x0e" "File too large",					/* 27 */
-	"\x17" "No space left on device",		/* 28 */
-	"\x0d" "Illegal seek",					/* 29 */
-	"\x15" "Read-only file system",			/* 30 */
-	"\x0e" "Too many links",					/* 31 */
-	"\x0b" "Broken pipe",					/* 32 */
-	"",
-	"",
+	BIGSTRING (""),
+	BIGSTRING ("\x1b" "Host not found. (DNS error)"),					/* 1 */
+	BIGSTRING ("\x37" "Non-authoritative host not found. (Temporary DNS error)"),	/* 2 */
+	BIGSTRING ("\x22" "Non-recoverable error. (DNS error)"),						/* 3 */
+	BIGSTRING ("\x39" "Valid name, no data record of requested type. (DNS error)"),	/* 4 */
+	BIGSTRING ("\x12" "Input/output error"),				/* 5 */
+	BIGSTRING ("\x15" "Device not configured"),			/* 6 */
+	BIGSTRING ("\x16" "Argument list too long"),			/* 7 */
+	BIGSTRING ("\x11" "Exec format error"),				/* 8 */
+	BIGSTRING ("\x13" "Bad file descriptor"),			/* 9 */
+	BIGSTRING ("\x12" "No child processes"),				/* 10 */
+	BIGSTRING ("\x19" "Resource deadlock avoided"),		/* 11 */
+	BIGSTRING ("\x16" "Cannot allocate memory"),			/* 12 */
+	BIGSTRING ("\x11" "Permission denied"),				/* 13 */
+	BIGSTRING ("\x0b" "Bad address"),					/* 14 */
+	BIGSTRING ("\x15" "Block device required"),			/* 15 */
+	BIGSTRING ("\x0b" "Device busy"),					/* 16 */
+	BIGSTRING ("\x0b" "File exists"),					/* 17 */
+	BIGSTRING ("\x11" "Cross-device link"),				/* 18 */
+	BIGSTRING ("\x21" "Operation not supported by device"),	/* 19 */
+	BIGSTRING ("\x0f" "Not a directory"),				/* 20 */
+	BIGSTRING ("\x0e" "Is a directory"),					/* 21 */
+	BIGSTRING ("\x10" "Invalid argument"),				/* 22 */
+	BIGSTRING ("\x1d" "Too many open files in system"),	/* 23 */
+	BIGSTRING ("\x15" "Too many open sockets"),			/* 24 */
+	BIGSTRING ("\x1e" "Inappropriate ioctl for device"),	/* 25 */
+	BIGSTRING ("\x0e" "Text file busy"),					/* 26 */
+	BIGSTRING ("\x0e" "File too large"),					/* 27 */
+	BIGSTRING ("\x17" "No space left on device"),		/* 28 */
+	BIGSTRING ("\x0d" "Illegal seek"),					/* 29 */
+	BIGSTRING ("\x15" "Read-only file system"),			/* 30 */
+	BIGSTRING ("\x0e" "Too many links"),					/* 31 */
+	BIGSTRING ("\x0b" "Broken pipe"),					/* 32 */
+	BIGSTRING (""),
+	BIGSTRING (""),
 
 /* non-blocking and interrupt i/o */
-	"\x20" "Resource temporarily unavailable",	/* 35 */
+	BIGSTRING ("\x20" "Resource temporarily unavailable"),	/* 35 */
 
 /* ipc/network software -- argument errors */
-	"\x23" "A blocking operation is in progress",			/* 36 */
-	"\x20" "Operation is already in progress",		/* 37 */
+	BIGSTRING ("\x23" "A blocking operation is in progress"),			/* 36 */
+	BIGSTRING ("\x20" "Operation is already in progress"),		/* 37 */
 
 /* ipc/network software -- argument errors */
-	"\x20" "Socket operation on a non-socket",	/* 38 */
-	"\x1f" "Destination address is required",		/* 39 */
-	"\x10" "Message too long",					/* 40 */
-	"\x1e" "Protocol wrong type for socket",	/* 41 */
-	"\x16" "Protocol not available",			/* 42 */
-	"\x16" "Protocol not supported",			/* 43 */
-	"\x19" "Socket type not supported",			/* 44 */
-	"\x21" "Operation not supported on socket",	/* 45 */
-	"\x1d" "Protocol family not supported",		/* 46 */
-	"\x2f" "Address family not supported by protocol family",	/* 47 */
-	"\x16" "Address already in use",			/* 48 */
-	"\x1e" "Can't assign requested address",	/* 49 */
+	BIGSTRING ("\x20" "Socket operation on a non-socket"),	/* 38 */
+	BIGSTRING ("\x1f" "Destination address is required"),		/* 39 */
+	BIGSTRING ("\x10" "Message too long"),					/* 40 */
+	BIGSTRING ("\x1e" "Protocol wrong type for socket"),	/* 41 */
+	BIGSTRING ("\x16" "Protocol not available"),			/* 42 */
+	BIGSTRING ("\x16" "Protocol not supported"),			/* 43 */
+	BIGSTRING ("\x19" "Socket type not supported"),			/* 44 */
+	BIGSTRING ("\x21" "Operation not supported on socket"),	/* 45 */
+	BIGSTRING ("\x1d" "Protocol family not supported"),		/* 46 */
+	BIGSTRING ("\x2f" "Address family not supported by protocol family"),	/* 47 */
+	BIGSTRING ("\x16" "Address already in use"),			/* 48 */
+	BIGSTRING ("\x1e" "Can't assign requested address"),	/* 49 */
 
 /* ipc/network software -- operational errors */
-	"\x0f" "Network is down",					/* 50 */
-	"\x16" "Network is unreachable",			/* 51 */
-	"\x23" "Network dropped connection on reset",	/* 52 */
-	"\x20" "Software caused connection abort",	/* 53 */
-	"\x18" "Connection reset by peer",			/* 54 */
-	"\x19" "No buffer space available",			/* 55 */
-	"\x1b" "Socket is already connected",		/* 56 */
-	"\x17" "Socket is not connected",			/* 57 */
-	"\x20" "Can't send after socket shutdown",	/* 58 */
-	"\x21" "Too many references: can't splice",	/* 59 */
-	"\x14" "Connection timed out",				/* 60 */
-	"\x12" "Connection refused",				/* 61 */
+	BIGSTRING ("\x0f" "Network is down"),					/* 50 */
+	BIGSTRING ("\x16" "Network is unreachable"),			/* 51 */
+	BIGSTRING ("\x23" "Network dropped connection on reset"),	/* 52 */
+	BIGSTRING ("\x20" "Software caused connection abort"),	/* 53 */
+	BIGSTRING ("\x18" "Connection reset by peer"),			/* 54 */
+	BIGSTRING ("\x19" "No buffer space available"),			/* 55 */
+	BIGSTRING ("\x1b" "Socket is already connected"),		/* 56 */
+	BIGSTRING ("\x17" "Socket is not connected"),			/* 57 */
+	BIGSTRING ("\x20" "Can't send after socket shutdown"),	/* 58 */
+	BIGSTRING ("\x21" "Too many references: can't splice"),	/* 59 */
+	BIGSTRING ("\x14" "Connection timed out"),				/* 60 */
+	BIGSTRING ("\x12" "Connection refused"),				/* 61 */
 
-	"\x21" "Too many levels of symbolic links",	/* 62 */
-	"\x12" "File name too long",				/* 63 */
+	BIGSTRING ("\x21" "Too many levels of symbolic links"),	/* 62 */
+	BIGSTRING ("\x12" "File name too long"),				/* 63 */
 
-	"\x0c" "Host is down",						/* 64 */
-	"\x10" "No route to host",					/* 65 */
-	"\x13" "Directory not empty",				/* 66 */
-	"\x12" "Too many processes",				/* 67 */
-	"\x0e" "Too many users",					/* 68 */
-	"\x13" "Disc quota exceeded",				/* 69 */
+	BIGSTRING ("\x0c" "Host is down"),						/* 64 */
+	BIGSTRING ("\x10" "No route to host"),					/* 65 */
+	BIGSTRING ("\x13" "Directory not empty"),				/* 66 */
+	BIGSTRING ("\x12" "Too many processes"),				/* 67 */
+	BIGSTRING ("\x0e" "Too many users"),					/* 68 */
+	BIGSTRING ("\x13" "Disc quota exceeded"),				/* 69 */
 
 /* Network File System */
-	"\x15" "Stale NFS file handle",				/* 70 */
-	"\x21" "Too many levels of remote in path",	/* 71 */
-	"\x11" "RPC struct is bad",					/* 72 */
-	"\x11" "RPC version wrong",					/* 73 */
-	"\x13" "RPC prog. not avail",				/* 74 */
-	"\x15" "Program version wrong",				/* 75 */
-	"\x19" "Bad procedure for program",			/* 76 */
-	"\x12" "No locks available",				/* 77 */
-	"\x18" "Function not implemented",			/* 78 */
-	"\x21" "Inappropriate file type or format",	/* 79 */
+	BIGSTRING ("\x15" "Stale NFS file handle"),				/* 70 */
+	BIGSTRING ("\x21" "Too many levels of remote in path"),	/* 71 */
+	BIGSTRING ("\x11" "RPC struct is bad"),					/* 72 */
+	BIGSTRING ("\x11" "RPC version wrong"),					/* 73 */
+	BIGSTRING ("\x13" "RPC prog. not avail"),				/* 74 */
+	BIGSTRING ("\x15" "Program version wrong"),				/* 75 */
+	BIGSTRING ("\x19" "Bad procedure for program"),			/* 76 */
+	BIGSTRING ("\x12" "No locks available"),				/* 77 */
+	BIGSTRING ("\x18" "Function not implemented"),			/* 78 */
+	BIGSTRING ("\x45" "Can't read stream because the TCP connection was closed unexpectedly."),	/* 79 */
 	}; //tcperrorstrings
 
 
@@ -497,7 +497,7 @@ static char * TCPGETTYPE (tysocktypeid typeID) {
 
 
 
-#define STR_P_ERROR_CLOSED_PREMATURELY	"\x45" "Can't read stream because the TCP connection was closed unexpectedly."
+#define STR_P_ERROR_CLOSED_PREMATURELY	BIGSTRING ("\x45" "Can't read stream because the TCP connection was closed unexpectedly.")
 
 /*
 	To disable the tcp tracker, don't define TCPTRACKER.
@@ -945,7 +945,7 @@ static void neterror (char * cannot, long errcode) {
 	//if (equaltextidentifiers (stringbaseaddress(bs), "No information available for error number", (short)strlen("No information available for error number")) != true) {
 	if (!isemptystring (bs)) {
 		
-		pushstring ("\x03" " - ", errbs);
+		pushstring (BIGSTRING ("\x03" " - "), errbs);
 		
 		pushstring (bs, errbs);
 		}
@@ -1367,11 +1367,11 @@ static boolean fwsNetEventLaunch (struct hostData *data) {
 			
 			#if (TCPTRACKER >= 2) //if reporting to file
 				long l;
-				if (getProfileLong ("\x0a" "TCPTracker", &l)) {
+				if (getProfileLong (BIGSTRING ("\x0a" "TCPTracker"), &l)) {
 					fllogger = (boolean) l;
 					}
 				else {
-					setProfileLong ("\x0a" "TCPTracker", fllogger);		/*this just sets the value in the registry*/
+					setProfileLong (BIGSTRING ("\x0a" "TCPTracker"), fllogger);		/*this just sets the value in the registry*/
 					}
 			#endif
 
@@ -2537,7 +2537,7 @@ static boolean fwsOpenStream (struct sockaddr_in *sa, unsigned long * stream) {
 #ifdef PIKE
 	if (!incrementconnectioncounter ()) {
 
-		plainneterror ("\x54" "Can't open stream because no more than five TCP connections may be open at any time.");
+		plainneterror (BIGSTRING ("\x54" "Can't open stream because no more than five TCP connections may be open at any time."));
 
 		return (false);
 		}

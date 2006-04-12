@@ -54,20 +54,20 @@
 static char * dayofweeknames[7] = {"Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"};
 static char * monthnames[12] = {"Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"};
 
-#define STR_P_MONTHLIST 		"\x7A""{\"January\", \"February\", \"March\", \"April\", \"May\", \"June\", \"July\", \"August\", \"September\", \"October\", \"November\", \"December\"}"
-#define STR_P_DAYOFWEEKLIST 	"\x4E""{\"Sunday\", \"Monday\", \"Tuesday\", \"Wednesday\", \"Thursday\", \"Friday\", \"Saturday\"}"
-#define STR_P_USERPREFSDATES 	"\x10""user.prefs.dates"
-#define STR_P_MONTHNAMES 		"\x0A""monthNames"
-#define STR_P_DAYNAMES 			"\x08""dayNames"
-#define STR_P_PREFS				"\x05""prefs"
-#define STR_P_DATES				"\x05""dates"
-#define STR_P_USER				"\x04""user"
-#define STR_P_GMT				"\x04"" GMT"
-#define STR_P_COMMA				"\x02"", "
+#define STR_P_MONTHLIST 		BIGSTRING ("\x7A""{\"January\", \"February\", \"March\", \"April\", \"May\", \"June\", \"July\", \"August\", \"September\", \"October\", \"November\", \"December\"}")
+#define STR_P_DAYOFWEEKLIST 	BIGSTRING ("\x4E""{\"Sunday\", \"Monday\", \"Tuesday\", \"Wednesday\", \"Thursday\", \"Friday\", \"Saturday\"}")
+#define STR_P_USERPREFSDATES 	BIGSTRING ("\x10""user.prefs.dates")
+#define STR_P_MONTHNAMES 		BIGSTRING ("\x0A""monthNames")
+#define STR_P_DAYNAMES 			BIGSTRING ("\x08""dayNames")
+#define STR_P_PREFS				BIGSTRING ("\x05""prefs")
+#define STR_P_DATES				BIGSTRING ("\x05""dates")
+#define STR_P_USER				BIGSTRING ("\x04""user")
+#define STR_P_GMT				BIGSTRING ("\x04"" GMT")
+#define STR_P_COMMA				BIGSTRING ("\x02"", ")
 
 /*These should go elsewhere...?*/
-#define STR_P_MONTHNUMERROR 	"\x40""Can't convert ^0 to a string because it is not between 1 and 12."
-#define STR_P_DAYNUMERROR 		"\x3F""Can't convert ^0 to a string because it is not between 1 and 7."
+#define STR_P_MONTHNUMERROR 	BIGSTRING ("\x40""Can't convert ^0 to a string because it is not between 1 and 12.")
+#define STR_P_DAYNUMERROR 		BIGSTRING ("\x3F""Can't convert ^0 to a string because it is not between 1 and 7.")
 
 
 /* Return a string that looks like: Sat, 29 Nov 1997 00:51:47 GMT */

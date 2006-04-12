@@ -2146,7 +2146,7 @@ static boolean opstopprofileverb (hdltreenode hp1, tyvaluerecord *v) {
 	
 	flnextparamislast = true;
 	
-	if (!getoptionalparamvalue (hp1, &ctconsumed, &ctpositional, "\x11" "flUseMilliseconds", &vflusemilliseconds))
+	if (!getoptionalparamvalue (hp1, &ctconsumed, &ctpositional, BIGSTRING ("\x11" "flUseMilliseconds"), &vflusemilliseconds))
 		return (false);
 	
 	if (!processstopprofiling ())
@@ -2337,14 +2337,14 @@ static boolean opsetrefconverb (hdltreenode hparam1, hdlheadrecord hnode, tyvalu
 	} /*opsetrefconverb*/
 
 
-#define str_searchfor		("\x09" "searchfor")
-#define str_replacewith		("\x0b" "replacewith")
-#define str_casesensitive	("\x0d" "casesensitive")
-#define str_wholewords		("\x0a" "wholewords")
-#define str_wraparound		("\x0a" "wraparound")
-#define str_flatsearch		("\x0a" "flatsearch")
-#define str_frontwindowonly	("\x0f" "frontwindowonly")
-#define str_closewindows	("\x0c" "closewindows")
+#define str_searchfor		(BIGSTRING ("\x09" "searchfor"))
+#define str_replacewith		(BIGSTRING ("\x0b" "replacewith"))
+#define str_casesensitive	(BIGSTRING ("\x0d" "casesensitive"))
+#define str_wholewords		(BIGSTRING ("\x0a" "wholewords"))
+#define str_wraparound		(BIGSTRING ("\x0a" "wraparound"))
+#define str_flatsearch		(BIGSTRING ("\x0a" "flatsearch"))
+#define str_frontwindowonly	(BIGSTRING ("\x0f" "frontwindowonly"))
+#define str_closewindows	(BIGSTRING ("\x0c" "closewindows"))
 
 static boolean opfindverb (hdltreenode hp1, tyvaluerecord *vreturned) {
 
@@ -3820,7 +3820,7 @@ static boolean opfunctionvalue (short token, hdltreenode hparam1, tyvaluerecord 
 
 			flnextparamislast = true;
 
-			if (!getoptionalparamvalue (hparam1, &ctconsumed, &ctpositional, "\x08" "flindent", &vindent))
+			if (!getoptionalparamvalue (hparam1, &ctconsumed, &ctpositional, BIGSTRING ("\x08" "flindent"), &vindent))
 				return (false);
 
 			fl = opgetsuboutlineverb (hbarcursor, vindent.data.flvalue, v);

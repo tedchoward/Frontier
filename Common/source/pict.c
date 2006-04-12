@@ -264,7 +264,7 @@ boolean pictunpack (Handle hpacked, long *ixload, hdlpictrecord *hpict) {
 
 	if (!loadfromhandle (hpacked, ixload, longsizeof (header), &header)) {
 	
-		shellerrormessage ("\x3d" "Can't unpack picture because unexpected data was encountered.");
+		shellerrormessage (BIGSTRING ("\x3d" "Can't unpack picture because unexpected data was encountered."));
 		
 		return (false);
 		}

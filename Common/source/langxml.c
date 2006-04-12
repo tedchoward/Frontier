@@ -51,73 +51,73 @@
 #define stringerrorlist 264
 #define notimplementederror 1
 
-#define STR_atts 	("\x05" "/atts")
-#define STR_i4		("\x02" "i4")
-#define STR_i2		("\x02" "i2")
-#define STR_i1		("\x02" "i1")
-#define STR_float	("\x05" "float")
+#define STR_atts 	(BIGSTRING ("\x05" "/atts"))
+#define STR_i4		(BIGSTRING ("\x02" "i4"))
+#define STR_i2		(BIGSTRING ("\x02" "i2"))
+#define STR_i1		(BIGSTRING ("\x02" "i1"))
+#define STR_float	(BIGSTRING ("\x05" "float"))
 
-#define STR_base64_begin	("\x08" "<base64>")
-#define STR_base64_end		("\x09" "</base64>")
-#define STR_value_begin		("\x07" "<value>")
-#define STR_value_end		("\x08" "</value>")
-#define STR_array_begin		("\x07" "<array>")
-#define STR_array_end		("\x08" "</array>")
-#define STR_data_begin		("\x06" "<data>")
-#define STR_data_end		("\x07" "</data>")
-#define STR_struct_begin	("\x08" "<struct>")
-#define STR_struct_end		("\x09" "</struct>")
-#define STR_member_begin	("\x08" "<member>")
-#define STR_member_end		("\x09" "</member>")
-#define STR_name_begin		("\x06" "<name>")
-#define STR_name_end		("\x07" "</name>")
+#define STR_base64_begin	(BIGSTRING ("\x08" "<base64>"))
+#define STR_base64_end		(BIGSTRING ("\x09" "</base64>"))
+#define STR_value_begin		(BIGSTRING ("\x07" "<value>"))
+#define STR_value_end		(BIGSTRING ("\x08" "</value>"))
+#define STR_array_begin		(BIGSTRING ("\x07" "<array>"))
+#define STR_array_end		(BIGSTRING ("\x08" "</array>"))
+#define STR_data_begin		(BIGSTRING ("\x06" "<data>"))
+#define STR_data_end		(BIGSTRING ("\x07" "</data>"))
+#define STR_struct_begin	(BIGSTRING ("\x08" "<struct>"))
+#define STR_struct_end		(BIGSTRING ("\x09" "</struct>"))
+#define STR_member_begin	(BIGSTRING ("\x08" "<member>"))
+#define STR_member_end		(BIGSTRING ("\x09" "</member>"))
+#define STR_name_begin		(BIGSTRING ("\x06" "<name>"))
+#define STR_name_end		(BIGSTRING ("\x07" "</name>"))
 
-#define STR_struct		("\x06" "struct")
-#define STR_member		("\x06" "member")
-#define STR_base64		("\x06" "base64")
-#define STR_array		("\x05" "array")
-#define STR_value		("\x05" "value")
-#define STR_data		("\x04" "data")
-#define STR_name		("\x04" "name")
+#define STR_struct		(BIGSTRING ("\x06" "struct"))
+#define STR_member		(BIGSTRING ("\x06" "member"))
+#define STR_base64		(BIGSTRING ("\x06" "base64"))
+#define STR_array		(BIGSTRING ("\x05" "array"))
+#define STR_value		(BIGSTRING ("\x05" "value"))
+#define STR_data		(BIGSTRING ("\x04" "data"))
+#define STR_name		(BIGSTRING ("\x04" "name"))
 
-#define STR_contents	("\x09" "/contents")
-#define STR_namespace	("\x09" "namespace")
-#define STR_version		("\x07" "version")
-#define STR_prefix		("\x06" "prefix")
-#define STR_pcdata		("\x07" "/pcdata")
-#define STR_cdata		("\x06" "/cdata")
-#define STR_pi			("\x03" "/pi")
-#define STR_doctype		("\x08" "/doctype")
-#define STR_comment		("\x08" "/comment")
+#define STR_contents	(BIGSTRING ("\x09" "/contents"))
+#define STR_namespace	(BIGSTRING ("\x09" "namespace"))
+#define STR_version		(BIGSTRING ("\x07" "version"))
+#define STR_prefix		(BIGSTRING ("\x06" "prefix"))
+#define STR_pcdata		(BIGSTRING ("\x07" "/pcdata"))
+#define STR_cdata		(BIGSTRING ("\x06" "/cdata"))
+#define STR_pi			(BIGSTRING ("\x03" "/pi"))
+#define STR_doctype		(BIGSTRING ("\x08" "/doctype"))
+#define STR_comment		(BIGSTRING ("\x08" "/comment"))
 
-#define STR_xmldecl				("\x04" "?xml")
-#define STR_xmlversion			("\x15" "<?xml version=\"1.0\"?>")
-#define STR_xmlnamespace		("\x0e" "?xml:namespace")
-#define STR_endtag				("\x01" ">")
-#define STR_startCDATA			("\x09" "<![CDATA[")
-#define STR_endCDATA			("\x03" "]]>")
-#define STR_startcomment		("\x04" "<!--")
-#define STR_endcomment			("\x03" "-->")
-#define STR_startdoctype		("\x0a" "<!DOCTYPE ")
+#define STR_xmldecl				(BIGSTRING ("\x04" "?xml"))
+#define STR_xmlversion			(BIGSTRING ("\x15" "<?xml version=\"1.0\"?>"))
+#define STR_xmlnamespace		(BIGSTRING ("\x0e" "?xml:namespace"))
+#define STR_endtag				(BIGSTRING ("\x01" ">"))
+#define STR_startCDATA			(BIGSTRING ("\x09" "<![CDATA["))
+#define STR_endCDATA			(BIGSTRING ("\x03" "]]>"))
+#define STR_startcomment		(BIGSTRING ("\x04" "<!--"))
+#define STR_endcomment			(BIGSTRING ("\x03" "-->"))
+#define STR_startdoctype		(BIGSTRING ("\x0a" "<!DOCTYPE "))
 
-#define STR_datetimeiso8601		("\x10" "dateTime.iso8601")
-#define STR_cantendwithLT 		("\x1d" "can't end the text with a '<'")
-#define STR_didntfindGTafterLT	("\x1d" "didn't find a '>' after a '<'")
-#define STR_tagmustbeofform		("\x1f" "tag must be of the form <?xxx?>")
-#define STR_improperlyformatted ("\x27" "string constant is improperly formatted")
-#define STR_itmustendwithtag	("\x19" "it must end with a </tag>")
-#define STR_itcantendontag		("\x17" "it can't end on a <tag>")
-#define STR_wewereexpecting		("\x17" "we were expecting </^0>")
-#define STR_toomanytags			("\x10" "too many </tag>s")
-#define STR_wewereexpectingtag	("\x1d" "we were expecting a </^0> tag")
-#define STR_atcharacteroffset	("\x14" " (At character #^0.)")
-#define STR_tablehasnosubs		("\x1c" " the table has no sub-items.")
+#define STR_datetimeiso8601		(BIGSTRING ("\x10" "dateTime.iso8601"))
+#define STR_cantendwithLT 		(BIGSTRING ("\x1d" "can't end the text with a '<'"))
+#define STR_didntfindGTafterLT	(BIGSTRING ("\x1d" "didn't find a '>' after a '<'"))
+#define STR_tagmustbeofform		(BIGSTRING ("\x1f" "tag must be of the form <?xxx?>"))
+#define STR_improperlyformatted (BIGSTRING ("\x27" "string constant is improperly formatted"))
+#define STR_itmustendwithtag	(BIGSTRING ("\x19" "it must end with a </tag>"))
+#define STR_itcantendontag		(BIGSTRING ("\x17" "it can't end on a <tag>"))
+#define STR_wewereexpecting		(BIGSTRING ("\x17" "we were expecting </^0>"))
+#define STR_toomanytags			(BIGSTRING ("\x10" "too many </tag>s"))
+#define STR_wewereexpectingtag	(BIGSTRING ("\x1d" "we were expecting a </^0> tag"))
+#define STR_atcharacteroffset	(BIGSTRING ("\x14" " (At character #^0.)"))
+#define STR_tablehasnosubs		(BIGSTRING ("\x1c" " the table has no sub-items."))
 
-#define STR_user_protocols				("\x0e" "user.protocols")
-#define STR_sys_protocols				("\x12" "Frontier.protocols")
-#define STR_unknown_protocol			("\x35" "Can't call \"^0\" because the \"^1\" protocol is unknown.")
-#define STR_serverprefix				("\x03" "://")
-#define STR_cant_decompile_empty_table	("\x46" "Can't decompile the table to an XML string because the table is empty.")
+#define STR_user_protocols				(BIGSTRING ("\x0e" "user.protocols"))
+#define STR_sys_protocols				(BIGSTRING ("\x12" "Frontier.protocols"))
+#define STR_unknown_protocol			(BIGSTRING ("\x35" "Can't call \"^0\" because the \"^1\" protocol is unknown."))
+#define STR_serverprefix				(BIGSTRING ("\x03" "://"))
+#define STR_cant_decompile_empty_table	(BIGSTRING ("\x46" "Can't decompile the table to an XML string because the table is empty."))
 
 
 typedef enum tyxmlverbtoken { /*verbs that are processed by langxml.c*/
@@ -1355,7 +1355,7 @@ static boolean serialstring (hdlhashtable ht, bigstring serializedname) {
 	while (stringlength (serializedname) < 5)
 		insertchar ('0', serializedname);
 	
-	pushstring ("\x04" "000\t", serializedname);
+	pushstring (BIGSTRING ("\x04" "000\t"), serializedname);
 	
 	return (true);
 	} /*serialstring*/
@@ -1711,10 +1711,10 @@ static boolean getnexttoken (handlestream *source, hdlhashtable namespaces, xmlt
 		
 		if ((*adrtoken).isDoctype) { //it's for validating parsers
 			
-			if (handlecontains (tokenstring, "\x01" "[") && !handlecontains (tokenstring, "\x01" "]")) { // didn't read far enough, 
+			if (handlecontains (tokenstring, BIGSTRING ("\x01" "[")) && !handlecontains (tokenstring, BIGSTRING ("\x01" "]"))) { // didn't read far enough, 
 			
 				// skip to end of [decls]
-				if (!findinhandlestream (x, "\x01" "]", false))
+				if (!findinhandlestream (x, BIGSTRING ("\x01" "]"), false))
 					scriptError (badxmltexterror, STR_didntfindGTafterLT, nil, (*adrtoken).pos);
 				
 				// now skip to true end of tag
@@ -1764,7 +1764,7 @@ static boolean getnexttoken (handlestream *source, hdlhashtable namespaces, xmlt
 			
 			if (lasthandlestreamcharacter (&s) == '/') {
 			
-				pushtexthandle ("\x01" "/", (*adrtoken).tokenstring);
+				pushtexthandle (BIGSTRING ("\x01" "/"), (*adrtoken).tokenstring);
 				
 				s.eof--;
 				}
@@ -1844,7 +1844,7 @@ static boolean getnexttoken (handlestream *source, hdlhashtable namespaces, xmlt
 	
 	if ((*adrtoken).isTag) { //check tokenstring for namespaces
 	
-		if (handlecontains ((*adrtoken).tokenstring, "\x01" ":") && !handlebeginswith ((*adrtoken).tokenstring, "\x01" "?")) {
+		if (handlecontains ((*adrtoken).tokenstring, BIGSTRING ("\x01" ":")) && !handlebeginswith ((*adrtoken).tokenstring, BIGSTRING ("\x01" "?"))) {
 		
 			bigstring shortname, longname;
 			
@@ -1883,26 +1883,26 @@ static boolean getnexttoken (handlestream *source, hdlhashtable namespaces, xmlt
 				}
 			}
 		
-		if (!replaceallinhandle ("\x04" "&gt;", "\x01" ">", (*adrtoken).tokenstring))
+		if (!replaceallinhandle (BIGSTRING ("\x04" "&gt;"), BIGSTRING ("\x01" ">"), (*adrtoken).tokenstring))
 			return (false);
 		}
 	else { //not a tag
 		
 		trimtrailingwhitespace ((*adrtoken).tokenstring);
 		
-		if (!replaceallinhandle ("\x06" "]]&gt;", "\x03" "]]>", (*adrtoken).tokenstring))
+		if (!replaceallinhandle (BIGSTRING ("\x06" "]]&gt;"), BIGSTRING ("\x03" "]]>"), (*adrtoken).tokenstring))
 			return (false);
 		}
 
 	if (!(*adrtoken).isCDATA) { // always true; we bail early for cdata
 		
-		if (!replaceallinhandle ("\x04" "&lt;", "\x01" "<", (*adrtoken).tokenstring))
+		if (!replaceallinhandle (BIGSTRING ("\x04" "&lt;"), BIGSTRING ("\x01" "<"), (*adrtoken).tokenstring))
 			return (false);
 		
-		if (!replaceallinhandle ("\x04" "&gt;", "\x01" ">", (*adrtoken).tokenstring))
+		if (!replaceallinhandle (BIGSTRING ("\x04" "&gt;"), BIGSTRING ("\x01" ">"), (*adrtoken).tokenstring))
 			return (false);
 
-		if (!replaceallinhandle ("\x05" "&amp;", "\x01" "&", (*adrtoken).tokenstring))
+		if (!replaceallinhandle (BIGSTRING ("\x05" "&amp;"), BIGSTRING ("\x01" "&"), (*adrtoken).tokenstring))
 			return (false);
 		}
 	
@@ -2009,7 +2009,7 @@ boolean xmlcompile (Handle htext, xmladdress *xmladr) {
 				bigstring prefix, ns;
 			
 				// namespaces.[token.atts.prefix] = token.atts.ns
-				if (lookupstringvalue (token.atts, STR_prefix, prefix) && lookupstringvalue (token.atts, "\x02" "ns", ns)) {
+				if (lookupstringvalue (token.atts, STR_prefix, prefix) && lookupstringvalue (token.atts, BIGSTRING ("\x02" "ns"), ns)) {
 				
 					if (!langassignstringvalue (namespaces, prefix, ns))
 						goto exit;
@@ -2319,11 +2319,11 @@ boolean xmlgetname (bigstring bsname) {
 	if (stringfindchar ('\t', bsname))
 		nthword (bsname, 2, '\t', bsname);
 	
-	replaceallinstring ('&', "\x05" "&amp;", bsname);
+	replaceallinstring ('&', BIGSTRING ("\x05" "&amp;"), bsname);
 	
-	replaceallinstring ('<', "\x04" "&lt;",  bsname);
+	replaceallinstring ('<', BIGSTRING ("\x04" "&lt;"),  bsname);
 	
-	replaceallinstring ('>', "\x04" "&gt;",  bsname);
+	replaceallinstring ('>', BIGSTRING ("\x04" "&gt;"),  bsname);
 	
 	return (true);
 	} /*xmlgetname*/
@@ -2365,13 +2365,13 @@ static boolean xmlvaltostring (tyvaluerecord xmlval, short indentlevel, boolean 
 			
 			if (fltranslatestrings) {
 				
-				if (!replaceallinhandle ("\x01" "&", "\x05" "&amp;", val.data.stringvalue))
+				if (!replaceallinhandle (BIGSTRING ("\x01" "&"), BIGSTRING ("\x05" "&amp;"), val.data.stringvalue))
 					return (false);
 				
-				if (!replaceallinhandle ("\x01" "<", "\x04" "&lt;", val.data.stringvalue))
+				if (!replaceallinhandle (BIGSTRING ("\x01" "<"), BIGSTRING ("\x04" "&lt;"), val.data.stringvalue))
 					return (false);
 				
-				if (!replaceallinhandle ("\x03" "]]>", "\x06" "]]&gt;", val.data.stringvalue))
+				if (!replaceallinhandle (BIGSTRING ("\x03" "]]>"), BIGSTRING ("\x06" "]]&gt;"), val.data.stringvalue))
 					return (false);
 				}
 			
@@ -2449,7 +2449,7 @@ static boolean xmlvaltostring (tyvaluerecord xmlval, short indentlevel, boolean 
 			
 			copystring (STR_datetimeiso8601, bstag);
 			
-			parsedialogstring ("\x0b" "<^0>^1</^0>", bstag, bsval, nil, nil, bsxml);
+			parsedialogstring (BIGSTRING ("\x0b" "<^0>^1</^0>"), bstag, bsval, nil, nil, bsxml);
 			
 			return (newtexthandle (bsxml, string));
 		
@@ -2476,7 +2476,7 @@ static boolean xmlvaltostring (tyvaluerecord xmlval, short indentlevel, boolean 
 	if (!pushhandle (val.data.stringvalue, *string))
 		return (false);
 	
-	midinsertstring ("\x01" "/", bstag, 2);
+	midinsertstring (BIGSTRING ("\x01" "/"), bstag, 2);
 	 
 	return (pushtexthandle (bstag, *string));
 	} /*xmlvaltostring*/
@@ -2504,7 +2504,7 @@ static boolean xmladdstring (bigstring bs, Handle h, short indentlevel, handlest
 	else
 		fl = writehandlestreamstring (xmltext, bs);
 	
-	return (fl && writehandlestreamstring (xmltext, "\x02\r\n"));
+	return (fl && writehandlestreamstring (xmltext, BIGSTRING ("\x02\r\n")));
 	} /*xmladdstring*/
 
 
@@ -2565,7 +2565,7 @@ static boolean decompilespecialtable (hdlhashtable ht, Handle *hnamevalpairs, bi
 			specialval = attvalue;
 			}
 		else {
-			pushstring ("\x02" "=\"", attname);
+			pushstring (BIGSTRING ("\x02" "=\""), attname);
 			
 			if (flwantleadingspace || attstring != nil)
 				insertchar (' ', attname);
@@ -2577,7 +2577,7 @@ static boolean decompilespecialtable (hdlhashtable ht, Handle *hnamevalpairs, bi
 			
 			pushhandle (attvalue.data.stringvalue, attstring);
 			
-			pushtexthandle ("\x01" "\"", attstring);
+			pushtexthandle (BIGSTRING ("\x01" "\""), attstring);
 			
 			disposevaluerecord (attvalue, false);
 			}
@@ -2653,7 +2653,7 @@ static boolean decompilevisit (hdlhashtable adrtable, bigstring nametable, short
 			else {
 				insertchar (' ', attname);
 				
-				pushstring ("\x02" "=\"", attname);
+				pushstring (BIGSTRING ("\x02" "=\""), attname);
 				
 				if (attstring == nil)
 					newtexthandle (attname, &attstring);
@@ -2662,7 +2662,7 @@ static boolean decompilevisit (hdlhashtable adrtable, bigstring nametable, short
 				
 				pushhandle (attvalue.data.stringvalue, attstring);
 				
-				pushtexthandle ("\x01" "\"", attstring);
+				pushtexthandle (BIGSTRING ("\x01" "\""), attstring);
 				
 				disposevaluerecord (attvalue, false);
 				}
@@ -2675,14 +2675,14 @@ static boolean decompilevisit (hdlhashtable adrtable, bigstring nametable, short
 	//		opentag = opentag + namespace};
 	//	opentag = opentag + nametable + attstring + ">";
 	
-	newtexthandle ("\x01" "<", &opentag);
+	newtexthandle (BIGSTRING ("\x01" "<"), &opentag);
 	
 	if (namespace != nil)
 		pushhandle (namespace, opentag);
 	
 	pushtexthandle (nametable, opentag);
 	pushhandle (attstring, opentag);
-	pushtexthandle ("\x01" ">", opentag);
+	pushtexthandle (BIGSTRING ("\x01" ">"), opentag);
 	
 	//	local (adrcontents = @adrtable^.["/contents"]);
 	//	if defined (adrcontents^) {
@@ -2700,7 +2700,7 @@ static boolean decompilevisit (hdlhashtable adrtable, bigstring nametable, short
 		
 		disposevaluerecord (contentsval, false);
 		
-		pushtexthandle ("\x02" "</", opentag);
+		pushtexthandle (BIGSTRING ("\x02" "</"), opentag);
 		
 		if (!pushhandle (namespace, opentag))
 			goto exit;
@@ -2802,7 +2802,7 @@ static boolean decompilevisit (hdlhashtable adrtable, bigstring nametable, short
 					fl = insertinhandle (pistring, 0, stringbaseaddress (nameitem), stringlength (nameitem));
 					
 					if (fl)
-						fl = pushtexthandle ("\x02" "?>", pistring);
+						fl = pushtexthandle (BIGSTRING ("\x02" "?>"), pistring);
 				
 					if (fl)
 						fl = xmladdstring (nil, pistring, indentlevel, xmltext);
@@ -2848,7 +2848,7 @@ static boolean decompilevisit (hdlhashtable adrtable, bigstring nametable, short
 			if (valitem == nil) {
 				
 				// add ("<" + nameitem + "/>")
-				parsedialogstring ("\x05" "<^0/>", nameitem, nil, nil, nil, bsadd);
+				parsedialogstring (BIGSTRING ("\x05" "<^0/>"), nameitem, nil, nil, nil, bsadd);
 				
 				fl = xmladdstring (bsadd, nil, indentlevel, xmltext);
 				}
@@ -2885,13 +2885,13 @@ static boolean decompilevisit (hdlhashtable adrtable, bigstring nametable, short
 				else {
 				
 					// add ("<" + nameitem + ">" + valitem + "</" + nameitem + ">")
-					parsedialogstring ("\x04" "<^0>", nameitem, nil, nil, nil, bsadd);
+					parsedialogstring (BIGSTRING ("\x04" "<^0>"), nameitem, nil, nil, nil, bsadd);
 					
 					fl = insertinhandle (valitem, 0, stringbaseaddress (bsadd), stringlength (bsadd));
 					
 					if (fl) {
 					
-						parsedialogstring ("\x05" "</^0>", nameitem, nil, nil, nil, bsadd);
+						parsedialogstring (BIGSTRING ("\x05" "</^0>"), nameitem, nil, nil, nil, bsadd);
 						
 						fl = pushtexthandle (bsadd, valitem);
 						}
@@ -2909,9 +2909,9 @@ static boolean decompilevisit (hdlhashtable adrtable, bigstring nametable, short
 		goto exit;
 		
 	//	add ("</" + namespace + nametable + ">"); indentlevel--};
-	newtexthandle ("\x02" "</", &hadd);
+	newtexthandle (BIGSTRING ("\x02" "</"), &hadd);
 	pushhandle (namespace, hadd);
-	pushstring ("\x01" ">", nametable);
+	pushstring (BIGSTRING ("\x01" ">"), nametable);
 	
 	if (!pushtexthandle (nametable, hadd))
 		goto exit;

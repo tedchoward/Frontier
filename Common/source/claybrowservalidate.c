@@ -385,7 +385,7 @@ boolean browservalidatepaste (hdlheadrecord hscrap, hdlheadrecord hdest, tydirec
 	
 	if (hfolder == hdest) {
 		
-		alertdialog ("\x32" "Can’t paste at the top level of a browser outline.");
+		alertdialog (BIGSTRING ("\x32" "Can’t paste at the top level of a browser outline."));
 		
 		return (false);
 		}
@@ -440,7 +440,7 @@ static boolean browservalidatefolderpaste (hdlheadrecord hfolder, FSSpec *clipfo
 	
 	if ((**hfolder).headlinkleft == hfolder) {
 		
-		alertdialog ("\x32" "Can’t paste at the top level of a browser outline.");
+		alertdialog (BIGSTRING ("\x32" "Can’t paste at the top level of a browser outline."));
 		
 		return (false);
 		}
@@ -453,7 +453,7 @@ static boolean browservalidatefolderpaste (hdlheadrecord hfolder, FSSpec *clipfo
 	
 	folderloop (clipfolderspec, false, &validatepastecallback, &draginfo);
 		
-	return (browsercollisiondialog (hfolder, "\x07" "pasting"));
+	return (browsercollisiondialog (hfolder, BIGSTRING ("\x07" "pasting")));
 	} /*browservalidatefolderpaste*/
 
 #endif
@@ -477,15 +477,15 @@ static boolean compareforcopyvisit (hdlheadrecord hnode, ptrvoid refcon) {
 	if (!equalidentifiers (bsnode, bs)) 
 		return (true);
 	
-	copystring ("\x06" "Can’t ", bs);
+	copystring (BIGSTRING ("\x06" "Can’t "), bs);
 	
 	pushstring (pcommand, bs);
 	
-	pushstring ("\x35" " because there are two or more selected items named “", bs);
+	pushstring (BIGSTRING ("\x35" " because there are two or more selected items named “"), bs);
 	
 	pushstring (bsnode, bs);
 	
-	pushstring ("\x02" "”.", bs);
+	pushstring (BIGSTRING ("\x02" "”."), bs);
 	
 	alertdialog (bs);
 	

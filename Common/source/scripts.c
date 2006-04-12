@@ -1169,7 +1169,7 @@ static boolean scriptdebugerrordebugger (bigstring bsmsg, ptrvoid refcon) {
 	boolean fl;
 	//static boolean scriptdebuggereventloop (void); /* 2006-02-04 aradke: declare at top of file */
 	hdlhashnode hhashnode;
-	#define str_userdebugprefs ("\x10" "user.prefs.debug")
+	#define str_userdebugprefs (BIGSTRING ("\x10" "user.prefs.debug"))
 	
 	if (langcallbacks.errormessagecallback == scriptdebugerrormessage) //errors aren't being trapped
 		return (true);
@@ -1181,7 +1181,7 @@ static boolean scriptdebugerrordebugger (bigstring bsmsg, ptrvoid refcon) {
 	
 	fl = langfastaddresstotable (roottable, str_userdebugprefs, &hdebugprefs) &&
 		
-		hashtablelookup (hdebugprefs, "\x0a" "trapErrors", &val, &hhashnode) &&
+		hashtablelookup (hdebugprefs, BIGSTRING ("\x0a" "trapErrors"), &val, &hhashnode) &&
 		
 		copyvaluerecord (val, &val) && 
 		
@@ -1196,7 +1196,7 @@ static boolean scriptdebugerrordebugger (bigstring bsmsg, ptrvoid refcon) {
 	
 	disablelangerror ();
 	
-	if (hashtablelookup (hdebugprefs, "\x0f" "trapErrorString", &val, &hhashnode) &&
+	if (hashtablelookup (hdebugprefs, BIGSTRING ("\x0f" "trapErrorString"), &val, &hhashnode) &&
 		
 		val.valuetype == stringvaluetype) {
 		
@@ -2731,7 +2731,7 @@ static void scriptgetlevelname (bigstring bs) {
 	
 	pushint (level, bs);
 	
-	pushstring ("\x02" ": ", bs); /*prepare to append script name*/
+	pushstring (BIGSTRING ("\x02" ": "), bs); /*prepare to append script name*/
 	
 	h = (**hd).scriptsourcestack [(**hd).topscriptsource - 1].hnode;
 	
@@ -2849,7 +2849,7 @@ boolean scriptpoptable (hdlhashtable htable) {
 	pushhashtable (runtimestacktable);
 	
 	if (!hashdelete (bs, true, false)) /*also disposes of the hashtable*/
-		shellinternalerror (idscriptpoptablefailed, "\x15" "scriptpoptable failed");
+		shellinternalerror (idscriptpoptablefailed, BIGSTRING ("\x15" "scriptpoptable failed"));
 	
 	pophashtable ();
 	
@@ -3324,10 +3324,10 @@ static boolean scriptverifycompilation () {
 	if (!langrunstringnoerror (bsscript, bsresult)) /*couldn't find/run the script*/
 		return (true);
 	
-	if (equalstrings (bsresult, "\x01" "3")) /*yes/no/cancel was cancelled*/
+	if (equalstrings (bsresult, BIGSTRING ("\x01" "3"))) /*yes/no/cancel was cancelled*/
 		return (false);
 	
-	if (!equalstrings (bsresult, bstrue) && !equalstrings (bsresult, "\x01" "1")) /*script didn't ask for compilation*/
+	if (!equalstrings (bsresult, bstrue) && !equalstrings (bsresult, BIGSTRING ("\x01" "1"))) /*script didn't ask for compilation*/
 		return (true);
 	
 	langerrorclear (); /*be sure error window is empty*/
@@ -3736,7 +3736,7 @@ static boolean scriptfillerrorpopup (hdlmenu hmenu, short *checkeditem) {
 		tyerrorrecord *pe = &(**hs).stack [ix];
 		
 		if ((*pe).errorcallback == nil)
-			copystring ("\x02" "(-", bsname);
+			copystring (BIGSTRING ("\x02" "(-"), bsname);
 		else
 			if (!(*(*pe).errorcallback) ((*pe).errorrefcon, 0, 0, &htable, bsname))
 				return (false);
@@ -3770,7 +3770,7 @@ static void scriptupdateserverpopup (void) {
 	//hs = langcallbacks.scripterrorstack; /*langerrorgetstack ();*/
 	
 	if (scriptinruntimestack () /*hs != nil*/ ) /*popup is stack, not language*/
-		copystring ("\x06" "Stack:", bs);
+		copystring (BIGSTRING ("\x06" "Stack:"), bs);
 	else {
 	#endif
 	
@@ -4032,11 +4032,11 @@ boolean scriptgettypename (long signature, bigstring bsname) {
 #else
 	switch (signature) {
 		case typeLAND:
-			copystring ("\x08" "UserTalk", bsname);
+			copystring (BIGSTRING ("\x08" "UserTalk"), bsname);
 			break;
 
 		case 'ascr':
-			copystring ("\x0B" "AppleScript", bsname);
+			copystring (BIGSTRING ("\x0B" "AppleScript"), bsname);
 			break;
 		} /* switch */
 
@@ -4086,11 +4086,11 @@ boolean scriptgetnametype (bigstring bsname, long *signature) {
 	
 	return (cbd.signature != 0);
 #else
-	if (comparestrings (bsname, "\x08" "UserTalk") == 0) {
+	if (comparestrings (bsname, BIGSTRING ("\x08" "UserTalk")) == 0) {
 		*signature = typeLAND;
 		return (true);
 	}
-	else if (comparestrings (bsname, "\x0B" "AppleScript") == 0) {
+	else if (comparestrings (bsname, BIGSTRING ("\x0B" "AppleScript")) == 0) {
 		*signature = 'ascr';
 		return (true);
 	}

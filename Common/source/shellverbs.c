@@ -147,7 +147,7 @@ typedef enum tyeditmenutoken { /*editMenu verbs*/
 	} tyeditmenutoken;
 
 
-#define str_hidden ("\x06" "hidden")
+#define str_hidden (BIGSTRING ("\x06" "hidden"))
 
 
 #ifdef WIN95VERSION
@@ -184,11 +184,11 @@ static boolean copytodialog (bigstring bssource, bigstring bsdest) {
 	
 	copystring (bssource, bsdest);
 	
-	while ((ix = patternmatch ("\x01" "\r", bsdest)) > 0)
-		replacestring (bsdest, ix, 1, "\x02" "\\r");
+	while ((ix = patternmatch (BIGSTRING ("\x01" "\r"), bsdest)) > 0)
+		replacestring (bsdest, ix, 1, BIGSTRING ("\x02" "\\r"));
 	
-	while ((ix = patternmatch ("\x01" "\t", bsdest)) > 0)
-		replacestring (bsdest, ix, 1, "\x02" "\\t");
+	while ((ix = patternmatch (BIGSTRING ("\x01" "\t"), bsdest)) > 0)
+		replacestring (bsdest, ix, 1, BIGSTRING ("\x02" "\\t"));
 	
 	nullterminate (bsdest);
 
@@ -208,11 +208,11 @@ static boolean copyfromdialog (bigstring bssource, bigstring bsdest) {
 	
 	copyctopstring (stringbaseaddress (bssource), bsdest);
 	
-	while ((ix = patternmatch ("\x02" "\\r", bsdest)) > 0)
-		replacestring (bsdest, ix, 2, "\x01" "\r");
+	while ((ix = patternmatch (BIGSTRING ("\x02" "\\r"), bsdest)) > 0)
+		replacestring (bsdest, ix, 2, BIGSTRING ("\x01" "\r"));
 	
-	while ((ix = patternmatch ("\x02" "\\t", bsdest)) > 0)
-		replacestring (bsdest, ix, 2, "\x01" "\t");
+	while ((ix = patternmatch (BIGSTRING ("\x02" "\\t"), bsdest)) > 0)
+		replacestring (bsdest, ix, 2, BIGSTRING ("\x01" "\t"));
 	
 	return (true);
 	} /*copyfromdialog*/
@@ -226,23 +226,23 @@ static WindowPtr lastwindowsearched = nil;
 
 static byte *nameparams [] = {
 	
-	"\x09" "searchfor",
+	BIGSTRING ("\x09" "searchfor"),
 	
-	"\x0b" "replacewith",
+	BIGSTRING ("\x0b" "replacewith"),
 	
-	"\x0d" "casesensitive",
+	BIGSTRING ("\x0d" "casesensitive"),
 	
-	"\x0a" "wholewords",
+	BIGSTRING ("\x0a" "wholewords"),
 	
-	"\x0a" "wraparound",
+	BIGSTRING ("\x0a" "wraparound"),
 	
-	"\x0a" "flatsearch",
+	BIGSTRING ("\x0a" "flatsearch"),
 	
-	"\x0f" "frontwindowonly",
+	BIGSTRING ("\x0f" "frontwindowonly"),
 	
-	"\x0c" "closewindows",
+	BIGSTRING ("\x0c" "closewindows"),
 	
-	"\x11" "regularexpression"
+	BIGSTRING ("\x11" "regularexpression")
 	};
 
 enum nameindexes {
@@ -993,7 +993,7 @@ boolean shellprocessfindmessage (FINDREPLACE * fr) {
 	if (fr->Flags & FR_FINDNEXT) {
 		bigstring bsresult;
 		
-		langrunstring ("\x11" "search.findnext()", bsresult);
+		langrunstring (BIGSTRING ("\x11" "search.findnext()"), bsresult);
 		
 		if (equalstrings (bsresult, bstrue)) {
 			
@@ -1009,7 +1009,7 @@ boolean shellprocessfindmessage (FINDREPLACE * fr) {
 	if (fr->Flags & FR_REPLACE) {
 		bigstring bsresult;
 		
-		langrunstring ("\x3b" "if search.replace() {search.findnext()}else{speaker.beep()}", bsresult);
+		langrunstring (BIGSTRING ("\x3b" "if search.replace() {search.findnext()}else{speaker.beep()}"), bsresult);
 		
 		goto exit;
 		}
@@ -1026,7 +1026,7 @@ boolean shellprocessfindmessage (FINDREPLACE * fr) {
 
 			numbertostring (searchparams.ctreplaced, bs);
 
-			pushstring ("\x13" " replacements made.", bs);
+			pushstring (BIGSTRING ("\x13" " replacements made."), bs);
 
 			notifyuser (bs);
 			}
@@ -1201,7 +1201,7 @@ static boolean filemenufunctionvalue (short token, hdltreenode hparam1, tyvaluer
 				
 				flnextparamislast = true;
 				
-				if (!getoptionalparamvalue (hparam1, &ctconsumed, &ctpositional, "\x08""fldialog", &val))
+				if (!getoptionalparamvalue (hparam1, &ctconsumed, &ctpositional, BIGSTRING ("\x08""fldialog"), &val))
 					return (false);
 	
 				if (hinfo != nil)
@@ -1343,7 +1343,7 @@ static boolean filemenufunctionvalue (short token, hdltreenode hparam1, tyvaluer
 
 			flnextparamislast = true;
 			
-			if (!getoptionalparamvalue (hparam1, &ctconsumed, &ctpositional, "\x04""path", &val))
+			if (!getoptionalparamvalue (hparam1, &ctconsumed, &ctpositional, BIGSTRING ("\x04""path"), &val))
 				return (false);
 			
 			if (val.data.stringvalue) {

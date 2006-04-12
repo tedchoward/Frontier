@@ -474,69 +474,69 @@ print, punct, and cntrl. Other classes are built from combinations. */
 
 /* pascal strings for regexp.compile */
 
-#define STR_flCaseSensitive			"\x0f" "flCaseSensitive"
-#define STR_flDotMatchesAll			"\x0f" "flDotMatchesAll"
-#define STR_flMultiLine				"\x0b" "flMultiLine"
-#define STR_flAutoCapture			"\x0d" "flAutoCapture"
-#define STR_flGreedyQuantifiers		"\x13" "flGreedyQuantifiers"
-#define STR_flMatchEmptyString		"\x12" "flMatchEmptyString"
-#define STR_flExtendedMode			"\x0e" "flExtendedMode"
+#define STR_flCaseSensitive			BIGSTRING ("\x0f" "flCaseSensitive")
+#define STR_flDotMatchesAll			BIGSTRING ("\x0f" "flDotMatchesAll")
+#define STR_flMultiLine				BIGSTRING ("\x0b" "flMultiLine")
+#define STR_flAutoCapture			BIGSTRING ("\x0d" "flAutoCapture")
+#define STR_flGreedyQuantifiers		BIGSTRING ("\x13" "flGreedyQuantifiers")
+#define STR_flMatchEmptyString		BIGSTRING ("\x12" "flMatchEmptyString")
+#define STR_flExtendedMode			BIGSTRING ("\x0e" "flExtendedMode")
 
 /* pascal strings for regexp.match */
 
-#define STR_ix						"\x02" "ix"
-#define STR_ct						"\x02" "ct"
-#define STR_adrMatchInfoTable		"\x11" "adrMatchInfoTable"
-#define STR_flMakeGroups			"\x0c" "flMakeGroups"
-#define STR_flMakeNamedGroups		"\x11" "flMakeNamedGroups"
+#define STR_ix						BIGSTRING ("\x02" "ix")
+#define STR_ct						BIGSTRING ("\x02" "ct")
+#define STR_adrMatchInfoTable		BIGSTRING ("\x11" "adrMatchInfoTable")
+#define STR_flMakeGroups			BIGSTRING ("\x0c" "flMakeGroups")
+#define STR_flMakeNamedGroups		BIGSTRING ("\x11" "flMakeNamedGroups")
 
 /* pascal strings for the match info table */
 
-#define STR_matchOffset				"\x0b" "matchOffset"
-#define STR_matchLength				"\x0b" "matchLength"
-#define STR_matchString				"\x0b" "matchString"
-#define STR_groupOffsets			"\x0c" "groupOffsets"
-#define STR_groupLengths			"\x0c" "groupLengths"
-#define STR_groupStrings			"\x0c" "groupStrings"
-#define STR_namedGroups				"\x0b" "namedGroups"
-#define STR_groupNumber				"\x0b" "groupNumber"
+#define STR_matchOffset				BIGSTRING ("\x0b" "matchOffset")
+#define STR_matchLength				BIGSTRING ("\x0b" "matchLength")
+#define STR_matchString				BIGSTRING ("\x0b" "matchString")
+#define STR_groupOffsets			BIGSTRING ("\x0c" "groupOffsets")
+#define STR_groupLengths			BIGSTRING ("\x0c" "groupLengths")
+#define STR_groupStrings			BIGSTRING ("\x0c" "groupStrings")
+#define STR_namedGroups				BIGSTRING ("\x0b" "namedGroups")
+#define STR_groupNumber				BIGSTRING ("\x0b" "groupNumber")
 
 /* pascal strings for regexp.replace */
 
-#define STR_maxReplacements			"\x0f" "maxReplacements"
-#define STR_adrReplacementCount		"\x13" "adrReplacementCount"
-#define STR_adrCallback				"\x0b" "adrCallback"
-#define STR_matchInfo				"\x09" "matchInfo"
-#define STR_replacementString		"\x11" "replacementString"
+#define STR_maxReplacements			BIGSTRING ("\x0f" "maxReplacements")
+#define STR_adrReplacementCount		BIGSTRING ("\x13" "adrReplacementCount")
+#define STR_adrCallback				BIGSTRING ("\x0b" "adrCallback")
+#define STR_matchInfo				BIGSTRING ("\x09" "matchInfo")
+#define STR_replacementString		BIGSTRING ("\x11" "replacementString")
 
 /* pascal strings for regexp.extract */
 
-#define STR_groups					"\x06" "groups"
+#define STR_groups					BIGSTRING ("\x06" "groups")
 
 /* pascal strings for regexp.split */
 
-#define STR_maxSplits				"\x09" "maxSplits"
+#define STR_maxSplits				BIGSTRING ("\x09" "maxSplits")
 
 /* pascal strings for regexp.visit */
 
-#define STR_maxRuns					"\x07" "maxRuns"
-#define STR_matchInfoTable			"\x0e" "matchInfoTable"
+#define STR_maxRuns					BIGSTRING ("\x07" "maxRuns")
+#define STR_matchInfoTable			BIGSTRING ("\x0e" "matchInfoTable")
 
 /* pascal strings for regexp.grep */
 
-#define STR_flIncludeMatches		"\x10" "flIncludeMatches"
+#define STR_flIncludeMatches		BIGSTRING ("\x10" "flIncludeMatches")
 
 /* pascal strings for regexp.getPatternInfo */
 
-#define STR_backRefMax				"\x0a" "backRefMax"
-#define STR_captureCount			"\x0c" "captureCount"
-#define STR_firstByte				"\x09" "firstByte"
-#define STR_firstByteTable			"\x0e" "firstByteTable"
-#define STR_lastLiteral				"\x0b" "lastLiteral"
-#define STR_nameTable				"\x09" "nameTable"
-#define STR_options					"\x07" "options"
-#define STR_size					"\x04" "size"
-#define STR_studySize				"\x09" "studySize"
+#define STR_backRefMax				BIGSTRING ("\x0a" "backRefMax")
+#define STR_captureCount			BIGSTRING ("\x0c" "captureCount")
+#define STR_firstByte				BIGSTRING ("\x09" "firstByte")
+#define STR_firstByteTable			BIGSTRING ("\x0e" "firstByteTable")
+#define STR_lastLiteral				BIGSTRING ("\x0b" "lastLiteral")
+#define STR_nameTable				BIGSTRING ("\x09" "nameTable")
+#define STR_options					BIGSTRING ("\x07" "options")
+#define STR_size					BIGSTRING ("\x04" "size")
+#define STR_studySize				BIGSTRING ("\x09" "studySize")
 
 /* identifiers for use in packed patterns */
 
@@ -741,7 +741,7 @@ static void regexpverberrorwithnumber (short stringnum, int x, bigstring bserror
 	
 	numbertostring (x, bsnum);
 	
-	parsedialogstring (bserror, "\x02" "^0", bsnum, nil, nil, bserror);
+	parsedialogstring (bserror, BIGSTRING ("\x02" "^0"), bsnum, nil, nil, bserror);
 
 	return;
 	} /*regexpverberrorwithnumber*/

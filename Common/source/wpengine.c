@@ -2508,7 +2508,7 @@ boolean wpunpack (Handle hpacked, hdlwprecord *hwp) {
 	return (true);
 	
 	error:
-		shellerrormessage ("\x43" "Can't unpack wptext object because unexpected data was encountered.");
+		shellerrormessage (BIGSTRING ("\x43" "Can't unpack wptext object because unexpected data was encountered."));
 
 		return (false);
 	} /*wpunpack*/

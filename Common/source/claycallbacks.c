@@ -203,7 +203,7 @@ boolean claymovefile (const tybrowserspec *fs, const tybrowserspec *fsto) {
 	
 	if (!claygetdirid (fsto, &hdest)) {
 		
-		langerrormessage ("\x1b" "destination must be a table");
+		langerrormessage (BIGSTRING ("\x1b" "destination must be a table"));
 		
 		return (false);
 		}
@@ -448,7 +448,7 @@ boolean claygetspecialfolder (void *foldername, boolean flcreate, tybrowserspec 
 	#if filebrowser
 		tybrowserspec fsuserland, fsfolder;
 		
-		if (!filegetprefsspec ("\x08" "UserLand", &fsuserland)) 
+		if (!filegetprefsspec (BIGSTRING ("\x08" "UserLand"), &fsuserland)) 
 			return (false);
 			
 		if (!clayfileexists (&fsuserland, &flfolder)) {
@@ -457,7 +457,7 @@ boolean claygetspecialfolder (void *foldername, boolean flcreate, tybrowserspec 
 				return (false);
 			}
 		
-		if (!claygetsubitemspec (&fsuserland, "\x12" "Clay Basket Folder", &fsfolder))
+		if (!claygetsubitemspec (&fsuserland, BIGSTRING ("\x12" "Clay Basket Folder"), &fsfolder))
 			return (false);
 			
 		if (!clayfileexists (&fsfolder, &flfolder)) { 
@@ -881,7 +881,7 @@ static void pushadjective (bigstring adjective, bigstring bs) {
 	
 	if (stringlength (bs) > 0) {
 	
-		pushstring ("\x01" " ", bs);
+		pushstring (BIGSTRING ("\x01" " "), bs);
 		
 		alllower (adj);
 		}
@@ -899,32 +899,32 @@ static void claygetfilekindstring (const tybrowserinfo *info, bigstring bs) {
 		setstringlength (bs, 0);
 	
 		if ((*info).flejectable)
-			pushadjective ("\x09" "Removable", bs);
+			pushadjective (BIGSTRING ("\x09" "Removable"), bs);
 			
 		if ((*info).flhardwarelock)
-			pushadjective ("\x09" "Read-only", bs);
+			pushadjective (BIGSTRING ("\x09" "Read-only"), bs);
 			
 		if ((*info).flremotevolume)
-			pushadjective ("\x06" "Shared", bs);
+			pushadjective (BIGSTRING ("\x06" "Shared"), bs);
 		
 		if (stringlength (bs) > 0)
-			pushstring ("\x05" " disk", bs);
+			pushstring (BIGSTRING ("\x05" " disk"), bs);
 		else
-			copystring ("\x04" "Disk", bs);
+			copystring (BIGSTRING ("\x04" "Disk"), bs);
 		
 		return;
 		}
 	
 	if ((*info).flfolder) {
 		
-		copystring ("\x06" "Folder", bs);
+		copystring (BIGSTRING ("\x06" "Folder"), bs);
 		
 		return;
 		}
 	
 	if ((*info).flalias) {
 		
-		copystring ("\x05" "Alias", bs);
+		copystring (BIGSTRING ("\x05" "Alias"), bs);
 		
 		return;
 		}
@@ -932,12 +932,12 @@ static void claygetfilekindstring (const tybrowserinfo *info, bigstring bs) {
 	switch ((*info).filecreator) {
 		
 		case 'DMGR': case 'ERIK':
-			copystring ("\x14" "Desktop Manager file", bs);
+			copystring (BIGSTRING ("\x14" "Desktop Manager file"), bs);
 		
 			return;
 
 		case 'MACS':
-			copystring ("\x0f" "System Software", bs);
+			copystring (BIGSTRING ("\x0f" "System Software"), bs);
 			
 			return;
 		} /*switch*/
@@ -945,42 +945,42 @@ static void claygetfilekindstring (const tybrowserinfo *info, bigstring bs) {
 	switch ((*info).filetype) {
 		
 		case 'APPL':
-			copystring ("\x13" "Application program", bs);
+			copystring (BIGSTRING ("\x13" "Application program"), bs);
 		
 			return;
 			
 		case 'cdev':
-			copystring ("\x0d" "Control Panel", bs);
+			copystring (BIGSTRING ("\x0d" "Control Panel"), bs);
 		
 			return;
 			
 		case 'INIT': case 'appe': case 'fext': case 'adev':
-			copystring ("\x10" "System Extension", bs);
+			copystring (BIGSTRING ("\x10" "System Extension"), bs);
 		
 			return;
 		
 		case 'thng': 
-			copystring ("\x10" "System Component", bs);
+			copystring (BIGSTRING ("\x10" "System Component"), bs);
 		
 			return;
 			
 		case 'PRER': case 'PRES':
-			copystring ("\x11" "Chooser Extension", bs);
+			copystring (BIGSTRING ("\x11" "Chooser Extension"), bs);
 		
 			return;
 			
 		case 'FFIL':
-			copystring ("\x0d" "Font Suitcase", bs);
+			copystring (BIGSTRING ("\x0d" "Font Suitcase"), bs);
 			
 			return;
 			
 		case 'dbgr':
-			copystring ("\x08" "Debugger", bs);
+			copystring (BIGSTRING ("\x08" "Debugger"), bs);
 			
 			return;
 			
 		case 'dfil':
-			copystring ("\x0e" "Desk Accessory", bs);
+			copystring (BIGSTRING ("\x0e" "Desk Accessory"), bs);
 			
 			return;
 		} /*switch*/
@@ -991,7 +991,7 @@ static void claygetfilekindstring (const tybrowserinfo *info, bigstring bs) {
 		
 			copystring (appspec.name, bs);
 	
-			pushstring ("\x09" " document", bs);
+			pushstring (BIGSTRING ("\x09" " document"), bs);
 		
 			return;
 			}
@@ -1002,7 +1002,7 @@ static void claygetfilekindstring (const tybrowserinfo *info, bigstring bs) {
 		}
 #endif
 	
-	copystring ("\x08" "document", bs);
+	copystring (BIGSTRING ("\x08" "document"), bs);
 	} /*claygetfilekindstring*/
 	
 
@@ -1032,10 +1032,10 @@ static void claygetfatsizestring (const tybrowserinfo *browserinfo, bigstring bs
 		
 		numbertostring (ctfiles, bs);
 		
-		pushstring ("\x05" " item", bs);
+		pushstring (BIGSTRING ("\x05" " item"), bs);
 		
 		if (ctfiles != 1)
-			pushstring ("\x01" "s", bs);
+			pushstring (BIGSTRING ("\x01" "s"), bs);
 	
 		return;
 		}

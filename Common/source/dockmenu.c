@@ -190,7 +190,7 @@ static void dockmenuinsertsubmenu (hdlmenu hmenu, short itemnumber, hdlheadrecor
 		id = idsubmenu;
 	#endif
 	
-	hsubmenu = Newmenu (id, "");
+	hsubmenu = Newmenu (id, BIGSTRING (""));
 
 	#ifdef MACVERSION	
 		InsertMenu (hsubmenu, -1);
@@ -461,7 +461,7 @@ pascal OSStatus dockmenuhandler (EventHandlerCallRef nextHandler, EventRef theEv
 		flinited = true;
 		} /*if*/
 	
-	hmenu = Newmenu (defaultpopupmenuid, "");
+	hmenu = Newmenu (defaultpopupmenuid, BIGSTRING (""));
 	
 	if (!dockmenufillpopup (hmenu, &hm))
 		goto exit;

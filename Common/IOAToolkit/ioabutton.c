@@ -136,7 +136,7 @@ MyThemeButtonDrawCallback (
 		
 		GetThemeFont (kThemePushButtonFont, smSystemScript, fontname, &fontsize, &fontstyle);
 		
-		fontgetnumber (fontname, &idfont);
+		fontgetnumber (fontname, (short *)(&idfont));
 		
 		pushstyle (geneva, 9, bold);
 

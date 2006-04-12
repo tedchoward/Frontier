@@ -351,12 +351,12 @@ boolean ploticoncustom (const Rect *r, short align, short transform, bigstring b
 	HDC hdcmask;
 	HBITMAP hbmmask, oldmaskbm;
 	COLORREF oldclr, oldclr2;
-	bigstring bsfilepath = "\x11" "Appearance\\Icons\\";
+	bigstring bsfilepath = BIGSTRING ("\x11" "Appearance\\Icons\\");
 	char cfilepath [256];
 	
 	pushstring (bsiconname, bsfilepath); /*add file name to folder path*/
 
-	pushstring ("\x04" ".bmp", bsfilepath); /*add .bmp file extension*/
+	pushstring (BIGSTRING ("\x04" ".bmp"), bsfilepath); /*add .bmp file extension*/
 
 	copyptocstring (bsfilepath, cfilepath);
 
@@ -454,12 +454,12 @@ boolean ploticoncustom (const Rect *r, short align, short transform) {
 	HBITMAP hbmmask, oldmaskbm;
 	COLORREF oldclr, oldclr2;
 
-	bigstring bsadricon = "\x18" "user.playlist.icons.face";
+	bigstring bsadricon = BIGSTRING ("\x18" "user.playlist.icons.face");
 	bigstring bsname;
 	hdlhashtable ht;
 	hdlhashnode hn;
 	tyvaluerecord iconvalue;
-	bigstring bsiconname = "\x04" "face";
+	bigstring bsiconname = BIGSTRING ("\x04" "face");
 	boolean flexpanded = false;
 	boolean fllookup = false;
 	Handle hicon;

@@ -49,69 +49,69 @@ Spec: http://radio.userland.com/opmlspec.html
 #include "ops.h"
 
 
-#define STR_quot			("\x06" "&quot;")
-#define STR_quot_replace	("\x01" "\"")
-#define STR_lt				("\x04" "&lt;")
-#define STR_lt_replace		("\x01" "<")
-#define STR_gt				("\x04" "&gt;") 
-#define STR_gt_replace		("\x01" ">")
-#define STR_amp				("\x05" "&amp;")
-#define STR_amp_replace		("\x01" "&")
-#define STR_attstablename	("\x05" "/atts")
-#define STR_textitemname	("\x04" "text")
-#define STR_windowtop		("\x09" "windowTop")
-#define STR_windowleft		("\x0a" "windowLeft")
-#define STR_windowbottom	("\x0c" "windowBottom")
-#define STR_windowright		("\x0b" "windowRight")
-#define STR_title			("\x05" "title")
-#define STR_datecreated		("\x0b" "dateCreated")
-#define STR_datemodified	("\x0c" "dateModified")
-#define STR_ownername		("\x09" "ownerName")
-#define STR_owneremail		("\x0a" "ownerEmail")
-#define STR_expansionstate	("\x0e" "expansionState")
-#define STR_vertscrollstate ("\x0f" "vertScrollState")
-#define STR_outlinedocument ("\x0f" "outlineDocument")
-#define STR_opmldocument	("\x04" "opml")
-#define STR_head			("\x04" "head")
-#define STR_openhead		("\x06" "<head>")
-#define STR_closehead		("\x07" "</head>")
-#define STR_body			("\x04" "body")
-#define STR_xmlheader		("\x2b" "<?xml version=\"1.0\" encoding=\"ISO-8859-1\"?>")
-#define STR_docheader		("\x14" "<opml version=\"1.1\">")
-#define STR_closedoc		("\x07" "</opml>")
-#define STR_userprefs		("\x0a" "user.prefs")
-#define STR_name			("\x04" "name")
-#define STR_email			("\x0b" "mailaddress")
-#define STR_outlinetag		("\x07" "outline")
-#define	STR_closeoutline	("\x0a" "</outline>")
-#define STR_openbody		("\x06" "<body>")
-#define STR_closebody		("\x07" "</body>")
-#define STR_openoutlinetext	("\x0f" "<outline text=\"")
-#define STR_space			("\x01" " ")
-#define STR_equalsquotes	("\x02" "=\"")
-#define STR_iscomment		("\x09" "isComment")
-#define STR_isbreakpoint	("\x0c" "isBreakpoint")
-#define STR_booleantrue		("\x04" "true")
-#define STR_xstruct			("\x07" "xstruct")
+#define STR_quot			(BIGSTRING ("\x06" "&quot;"))
+#define STR_quot_replace	(BIGSTRING ("\x01" "\""))
+#define STR_lt				(BIGSTRING ("\x04" "&lt;"))
+#define STR_lt_replace		(BIGSTRING ("\x01" "<"))
+#define STR_gt				(BIGSTRING ("\x04" "&gt;")) 
+#define STR_gt_replace		(BIGSTRING ("\x01" ">"))
+#define STR_amp				(BIGSTRING ("\x05" "&amp;"))
+#define STR_amp_replace		(BIGSTRING ("\x01" "&"))
+#define STR_attstablename	(BIGSTRING ("\x05" "/atts"))
+#define STR_textitemname	(BIGSTRING ("\x04" "text"))
+#define STR_windowtop		(BIGSTRING ("\x09" "windowTop"))
+#define STR_windowleft		(BIGSTRING ("\x0a" "windowLeft"))
+#define STR_windowbottom	(BIGSTRING ("\x0c" "windowBottom"))
+#define STR_windowright		(BIGSTRING ("\x0b" "windowRight"))
+#define STR_title			(BIGSTRING ("\x05" "title"))
+#define STR_datecreated		(BIGSTRING ("\x0b" "dateCreated"))
+#define STR_datemodified	(BIGSTRING ("\x0c" "dateModified"))
+#define STR_ownername		(BIGSTRING ("\x09" "ownerName"))
+#define STR_owneremail		(BIGSTRING ("\x0a" "ownerEmail"))
+#define STR_expansionstate	(BIGSTRING ("\x0e" "expansionState"))
+#define STR_vertscrollstate (BIGSTRING ("\x0f" "vertScrollState"))
+#define STR_outlinedocument (BIGSTRING ("\x0f" "outlineDocument"))
+#define STR_opmldocument	(BIGSTRING ("\x04" "opml"))
+#define STR_head			(BIGSTRING ("\x04" "head"))
+#define STR_openhead		(BIGSTRING ("\x06" "<head>"))
+#define STR_closehead		(BIGSTRING ("\x07" "</head>"))
+#define STR_body			(BIGSTRING ("\x04" "body"))
+#define STR_xmlheader		(BIGSTRING ("\x2b" "<?xml version=\"1.0\" encoding=\"ISO-8859-1\"?>"))
+#define STR_docheader		(BIGSTRING ("\x14" "<opml version=\"1.1\">"))
+#define STR_closedoc		(BIGSTRING ("\x07" "</opml>"))
+#define STR_userprefs		(BIGSTRING ("\x0a" "user.prefs"))
+#define STR_name			(BIGSTRING ("\x04" "name"))
+#define STR_email			(BIGSTRING ("\x0b" "mailaddress"))
+#define STR_outlinetag		(BIGSTRING ("\x07" "outline"))
+#define	STR_closeoutline	(BIGSTRING ("\x0a" "</outline>"))
+#define STR_openbody		(BIGSTRING ("\x06" "<body>"))
+#define STR_closebody		(BIGSTRING ("\x07" "</body>"))
+#define STR_openoutlinetext	(BIGSTRING ("\x0f" "<outline text=\""))
+#define STR_space			(BIGSTRING ("\x01" " "))
+#define STR_equalsquotes	(BIGSTRING ("\x02" "=\""))
+#define STR_iscomment		(BIGSTRING ("\x09" "isComment"))
+#define STR_isbreakpoint	(BIGSTRING ("\x0c" "isBreakpoint"))
+#define STR_booleantrue		(BIGSTRING ("\x04" "true"))
+#define STR_xstruct			(BIGSTRING ("\x07" "xstruct"))
 
-#define STR_version			("\x07" "version")
-#define STR_cloud			("\x05" "cloud")
-#define STR_opencloud		("\x06" "<cloud")
-#define STR_domain			("\x06" "domain")
-#define STR_port			("\x04" "port")
-#define STR_path			("\x04" "path")
-#define STR_regProcedure	("\x11" "registerProcedure")
-#define STR_protocol		("\x08" "protocol")
-#define STR_legalprotocols	("\x16" "xml-rpc|soap|http-post")
+#define STR_version			(BIGSTRING ("\x07" "version"))
+#define STR_cloud			(BIGSTRING ("\x05" "cloud"))
+#define STR_opencloud		(BIGSTRING ("\x06" "<cloud"))
+#define STR_domain			(BIGSTRING ("\x06" "domain"))
+#define STR_port			(BIGSTRING ("\x04" "port"))
+#define STR_path			(BIGSTRING ("\x04" "path"))
+#define STR_regProcedure	(BIGSTRING ("\x11" "registerProcedure"))
+#define STR_protocol		(BIGSTRING ("\x08" "protocol"))
+#define STR_legalprotocols	(BIGSTRING ("\x16" "xml-rpc|soap|http-post"))
 #define CH_legaldelim		('|')
 
-#define STR_errornotopml	("\x41" "Can't convert to an outline because this is not an OPML document.")
+#define STR_errornotopml	(BIGSTRING ("\x41" "Can't convert to an outline because this is not an OPML document."))
 
-#define STR_errornohead     ("\x42" "Can't convert to an outline because the <head> section is missing.")
+#define STR_errornohead     (BIGSTRING ("\x42" "Can't convert to an outline because the <head> section is missing."))
 
-#define STR_errornobody     ("\x4b" "Can't convert to an outline because the <body> section is missing or empty.")
+#define STR_errornobody     (BIGSTRING ("\x4b" "Can't convert to an outline because the <body> section is missing or empty."))
 
-#define STR_errornooutlines ("\x54" "Can't convert to an outline because the <body> section contains no outline elements.")
+#define STR_errornooutlines (BIGSTRING ("\x54" "Can't convert to an outline because the <body> section contains no outline elements."))
 
 
 
@@ -278,7 +278,7 @@ boolean opxmltooutline (Handle htext, hdloutlinerecord ho, boolean flnewoutline,
 
 	pullstringvalue (&vvers, bsvers);
 
-	dateversionlessthan (bsvers, "\x03" "1.1", &v);
+	dateversionlessthan (bsvers, BIGSTRING ("\x03" "1.1"), &v);
 
 	flcanhavecloud = !v.data.flvalue;
 
@@ -450,25 +450,25 @@ static boolean opxmlbuildtaggedstring (bigstring bstag, Handle hvalue, Handle hd
 	
 	boolean fl = false;
 	
-	if (!pushtexthandle ("\x01""<", hdest)) /*<*/
+	if (!pushtexthandle (BIGSTRING ("\x01""<"), hdest)) /*<*/
 		goto exit;
 		
 	if (!pushtexthandle (bstag, hdest)) /*<tag*/
 		goto exit;
 		
-	if (!pushtexthandle ("\x01"">", hdest)) /*<tag>*/
+	if (!pushtexthandle (BIGSTRING ("\x01"">"), hdest)) /*<tag>*/
 		goto exit;
 		
 	if (!pushhandle (hvalue, hdest)) /*<tag>value*/
 		goto exit;
 		
-	if (!pushtexthandle ("\x02""</", hdest)) /*<tag>value</*/
+	if (!pushtexthandle (BIGSTRING ("\x02""</"), hdest)) /*<tag>value</*/
 		goto exit;
 		
 	if (!pushtexthandle (bstag, hdest)) /*<tag>value</tag*/
 		goto exit;
 		
-	if (!pushtexthandle ("\x01"">", hdest)) /*<tag>value</tag>*/
+	if (!pushtexthandle (BIGSTRING ("\x01"">"), hdest)) /*<tag>value</tag>*/
 		goto exit;
 		
 	fl = true; /*success*/
@@ -617,7 +617,7 @@ static boolean opxmlpushcloudtag (hdlhashtable hcloud, short indentlevel, Handle
 	if (!opxmlpushcloudattribute (hcloudtag, hcloud, STR_protocol, STR_legalprotocols))
 		goto exit;
 
-	if (!pushtexthandle ("\x02" "/>", hcloudtag))
+	if (!pushtexthandle (BIGSTRING ("\x02" "/>"), hcloudtag))
 		goto exit;
 	
 	fl = opxmlpushhandleline (htext, hcloudtag, indentlevel);
@@ -929,10 +929,10 @@ static boolean opxmlbodyvisit (hdlheadrecord hnode, ptrvoid htext) {
 		flsubs = false;
 	
 	if (flsubs) /*Has subs?*/
-		fl = pushtexthandle ("\x02"">\r", htext); /*Add closing > and carriage return.*/
+		fl = pushtexthandle (BIGSTRING ("\x02"">\r"), htext); /*Add closing > and carriage return.*/
 	else { /*No subs*/
 	
-		if (!pushtexthandle ("\x03""/>\r", htext)) /*Add closing /> and carriage return.*/
+		if (!pushtexthandle (BIGSTRING ("\x03""/>\r"), htext)) /*Add closing /> and carriage return.*/
 			goto exit;
 		
 		fl = true;
@@ -1220,7 +1220,7 @@ static boolean opxmlpushstringline (Handle htext, bigstring bs, short indentleve
 	if (!pushtexthandle (bs, htext)) /*Add string to htext.*/
 		return (false);
 	
-	return (pushtexthandle ("\x01" "\r", htext)); /*Add \r to htext.*/
+	return (pushtexthandle (BIGSTRING ("\x01" "\r"), htext)); /*Add \r to htext.*/
 	} /*opxmlpushstringline*/
 
 
@@ -1239,7 +1239,7 @@ static boolean opxmlpushhandleline (Handle htext, Handle h, short indentlevel) {
 	if (!pushhandle (h, htext)) /*Add h to htext.*/
 		return (false);
 	
-	return (pushtexthandle ("\x01" "\r", htext)); /*Add \r to htext.*/
+	return (pushtexthandle (BIGSTRING ("\x01" "\r"), htext)); /*Add \r to htext.*/
 	} /*opxmlpushhandleline*/
 	
 
@@ -1455,7 +1455,7 @@ static boolean opxmlsetwindowexpansionstate (hdlhashtable ht, hdlwindowinfo hinf
 	if (!insertinhandle (htext, 0, "{", 1)) /*text = { + text*/
 		goto exit1;
 
-	if (!pushtexthandle ("\x01" "}", htext)) /*text = text + }*/
+	if (!pushtexthandle (BIGSTRING ("\x01" "}"), htext)) /*text = text + }*/
 		goto exit1;
 	
 	/*Create a value record containing the text.*/

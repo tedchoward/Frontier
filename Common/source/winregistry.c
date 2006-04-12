@@ -313,12 +313,12 @@ boolean getRegKeyBinary (Handle regkey, bigstring subkey, bigstring itemname, un
 
 #ifdef PIKE
 #ifndef OPMLEDITOR
-#define ProgramKey "\x16" "Software\\UserLand\\Pike"
+#define ProgramKey BIGSTRING ("\x16" "Software\\UserLand\\Pike")
 #else //OPMLEDITOR
-#define ProgramKey "\x16" "Software\\Scripting.com\\OPML"
+#define ProgramKey BIGSTRING ("\x16" "Software\\Scripting.com\\OPML")
 #endif  //OPMLEDITOR
 #else
-#define ProgramKey "\x1a" "Software\\UserLand\\Frontier"
+#define ProgramKey BIGSTRING ("\x1a" "Software\\UserLand\\Frontier")
 #endif
 
 boolean setProfileString (bigstring itemname, bigstring bsval) {
@@ -416,7 +416,7 @@ boolean registerFileType (bigstring extension, bigstring filetype, bigstring con
 	setRegKeyValue (extension, NULL, filetype);
 
 	if (contenttype != NULL) {
-		setRegKeyValue (extension, "\x0c" "Content Type", contenttype);
+		setRegKeyValue (extension, BIGSTRING ("\x0c" "Content Type"), contenttype);
 		}
 
 	if (filedescription == NULL)
@@ -430,14 +430,14 @@ boolean registerFileType (bigstring extension, bigstring filetype, bigstring con
 		pushint (iconid, sval);
 
 		copystring (filetype, skey);
-		pushstring ("\x0c" "\\DefaultIcon", skey);
+		pushstring (BIGSTRING ("\x0c" "\\DefaultIcon"), skey);
 
 		setRegKeyValue (skey, NULL, sval);
 		}
 
 	if (shellopen != NULL) {
 		copystring (filetype, skey);
-		pushstring ("\x13" "\\shell\\open\\command", skey);
+		pushstring (BIGSTRING ("\x13" "\\shell\\open\\command"), skey);
 
 		setRegKeyValue (skey, NULL, shellopen);
 		}
@@ -460,7 +460,7 @@ static boolean winregpullhkeyfromtext (Handle htext, HKEY *hkey) {
 	bigstring bsbase;
 	boolean fl = false;
 	
-	ixslash = textpatternmatch (*htext, gethandlesize (htext), "\x01\\", true);
+	ixslash = textpatternmatch (*htext, gethandlesize (htext), BIGSTRING ("\x01\\"), true);
 
 	if (ixslash == -1) /*didn't find?*/
 		return (false);

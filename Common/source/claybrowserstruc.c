@@ -92,7 +92,7 @@ static void filepushsuffixnumber (short suffixnum, bigstring name) {
 	
 	if (suffixnum > 0) {
 	
-		pushstring ("\x02" " #", name);
+		pushstring (BIGSTRING ("\x02" " #"), name);
 	
 		pushint (suffixnum, name);
 		}
@@ -106,7 +106,7 @@ static void filepopsuffixnumber (short suffixnum, bigstring name) {
 	
 	if (suffixnum > 0) {
 	
-		copystring ("\x02" " #", bssuffix);
+		copystring (BIGSTRING ("\x02" " #"), bssuffix);
 		
 		pushint (suffixnum, bssuffix);
 		
@@ -191,22 +191,22 @@ boolean browserchecklinelength (short newlen, bigstring bs) {
 	if (newlen <= (short) (**outlinedata).maxlinelen) 
 		return (true);
 	
-	copystring ("\x0e" "The file name ", bsalert);
+	copystring (BIGSTRING ("\x0e" "The file name "), bsalert);
 	
 	if (stringlength (bs) > 0) {
 		
-		pushstring ("\x01" "“", bsalert);
+		pushstring (BIGSTRING ("\x01" "“"), bsalert);
 		
 		pushstring (bs, bsalert);
 		
-		pushstring ("\x01" "”", bsalert);
+		pushstring (BIGSTRING ("\x01" "”"), bsalert);
 		}
 	
-	pushstring ("\x2e" " is too long. The maximum file name length is ", bsalert);
+	pushstring (BIGSTRING ("\x2e" " is too long. The maximum file name length is "), bsalert);
 	
 	pushlong ((**outlinedata).maxlinelen, bsalert);
 	
-	pushstring ("\x0c" " characters.", bsalert);
+	pushstring (BIGSTRING ("\x0c" " characters."), bsalert);
 	
 	alertdialog (bsalert);
 	
@@ -362,7 +362,7 @@ static boolean claygetuniquefilename (tybrowserspec *fs, short *suffixnum) {
 		#if filebrowser
 			return (false);
 		#else
-			copystring ("\x04" "item", origname);
+			copystring (BIGSTRING ("\x04" "item"), origname);
 			flmustsuffixize = true;
 		#endif
 		}
@@ -403,7 +403,7 @@ static boolean getundofolderspec (void) {
 	if (folderfound)
 		return (true);
 	
-	folderfound = claygetspecialfolder ("\x04" "Undo", true, &undofolderspec);
+	folderfound = claygetspecialfolder (BIGSTRING ("\x04" "Undo"), true, &undofolderspec);
 	
 	return (folderfound);
 	} /*getundofolderspec*/
@@ -416,7 +416,7 @@ static boolean getclipfolderspec (void) {
 	if (folderfound)
 		return (true);
 	
-	folderfound = claygetspecialfolder ("\x09" "Clipboard", true, &clipfolderspec);
+	folderfound = claygetspecialfolder (BIGSTRING ("\x09" "Clipboard"), true, &clipfolderspec);
 	
 	return (folderfound);
 	} /*getclipfolderspec*/
@@ -682,9 +682,9 @@ boolean browserpredrag (hdlheadrecord *htarget, tydirection *dragdir) {
 		opcleartmpbits ();
 		
 		#ifdef MACVERSION
-			parsedialogstring ("\x3b" "Can’t move “^0” here because it would replace its ancestor.", bsunsafe, nil, nil, nil, bsmsg);
+			parsedialogstring (BIGSTRING ("\x3b" "Can’t move “^0” here because it would replace its ancestor."), bsunsafe, nil, nil, nil, bsmsg);
 		#else
-			parsedialogstring ("\x3b" "Can't move \"^0\" here because it would replace its ancestor.", bsunsafe, nil, nil, nil, bsmsg);
+			parsedialogstring (BIGSTRING ("\x3b" "Can't move \"^0\" here because it would replace its ancestor."), bsunsafe, nil, nil, nil, bsmsg);
 		#endif
 		
 		alertdialog (bsmsg);
@@ -768,7 +768,7 @@ boolean browserdragcopy (hdlheadrecord hmove, hdlheadrecord hdest) {
 		
 		bigstring bs;
 		
-		copystring ("\x20" "Copy or move the selected items?", bs);
+		copystring (BIGSTRING ("\x20" "Copy or move the selected items?"), bs);
 		
 	//	return (twowaydialog (bs, "\x04" "Copy", "\x04" "Move"));
 		return (msgdialog (bs));

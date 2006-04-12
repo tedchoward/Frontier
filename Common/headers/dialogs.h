@@ -96,15 +96,15 @@
 /* dialog button text */
 
 #ifdef MACVERSION
-	#define cancelbuttontext "\x06" "Cancel"
-	#define duplicatebuttontext "\x09" "Duplicate"
-	#define replacebuttontext "\x07" "Replace"
+	#define cancelbuttontext BIGSTRING ("\x06" "Cancel")
+	#define duplicatebuttontext BIGSTRING ("\x09" "Duplicate")
+	#define replacebuttontext BIGSTRING ("\x07" "Replace")
 #endif
 
 #ifdef WIN95VERSION
-	#define cancelbuttontext "\x07" "&Cancel"
-	#define duplicatebuttontext "\x0a" "&Duplicate"
-	#define replacebuttontext "\x08" "&Replace"
+	#define cancelbuttontext BIGSTRING ("\x07" "&Cancel")
+	#define duplicatebuttontext BIGSTRING ("\x0a" "&Duplicate")
+	#define replacebuttontext BIGSTRING ("\x08" "&Replace")
 #endif
 
 

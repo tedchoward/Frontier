@@ -566,7 +566,7 @@ static boolean daveNetMassager (short indentlen, short maxlinelen, Handle h, Han
 	setstringwithchar (' ', space);
 	
 	for (i = 1; i <= 16; i++)
-		pushstring ("\x04" " ---", dashes);
+		pushstring (BIGSTRING ("\x04" " ---"), dashes);
 	
 	if (!pushtexthandle (indent, hnew))
 		goto error;
@@ -580,7 +580,7 @@ static boolean daveNetMassager (short indentlen, short maxlinelen, Handle h, Han
 		
 		if ((*h) [ixhandle] == chreturn) {
 			
-			if (equalstrings (word, "\x03" "---")) {
+			if (equalstrings (word, BIGSTRING ("\x03" "---"))) {
 				
 				if (!pushtexthandle (dashes, hnew))
 					goto error;
@@ -730,7 +730,7 @@ static boolean stringreplaceverb (hdltreenode hparam1, tyvaluerecord *vreturned,
 
 	flnextparamislast = true;
 
-	if (!getoptionalparamvalue (hparam1, &ctconsumed, &ctpositional, "\x0f""flCaseSensitive", &vcase)) 
+	if (!getoptionalparamvalue (hparam1, &ctconsumed, &ctpositional, BIGSTRING ("\x0f""flCaseSensitive"), &vcase)) 
 		goto exit;
 
 	if (!textfindreplace (hfind, hreplace, h, flreplaceall, !(boolean)vcase.data.flvalue))
@@ -1002,7 +1002,7 @@ static boolean stringmultiplereplaceallverb (hdltreenode hp, tyvaluerecord *v) {
 	
 	setbooleanvalue (true, &vcasesensitive);
 	
-	if (!getoptionalparamvalue (hp, &ctconsumed, &ctpositional, ("\x0f" "flCaseSensitive"), &vcasesensitive))
+	if (!getoptionalparamvalue (hp, &ctconsumed, &ctpositional, (BIGSTRING ("\x0f" "flCaseSensitive")), &vcasesensitive))
 		return (false);
 	
 	flcasesensitive = vcasesensitive.data.flvalue;
@@ -1011,7 +1011,7 @@ static boolean stringmultiplereplaceallverb (hdltreenode hp, tyvaluerecord *v) {
 	
 	initvalue (&vstartchars, stringvaluetype);
 	
-	if (!getoptionalparamvalue (hp, &ctconsumed, &ctpositional, ("\x0f" "startCharacters"), &vstartchars))
+	if (!getoptionalparamvalue (hp, &ctconsumed, &ctpositional, (BIGSTRING ("\x0f" "startCharacters")), &vstartchars))
 		return (false);
 	
 	pullstringvalue (&vstartchars, bsstartstring);
@@ -1022,7 +1022,7 @@ static boolean stringmultiplereplaceallverb (hdltreenode hp, tyvaluerecord *v) {
 	
 	initvalue (&vendchars, stringvaluetype);
 	
-	if (!getoptionalparamvalue (hp, &ctconsumed, &ctpositional, ("\x0d" "endCharacters"), &vendchars))
+	if (!getoptionalparamvalue (hp, &ctconsumed, &ctpositional, (BIGSTRING ("\x0d" "endCharacters")), &vendchars))
 		return (false);
 	
 	pullstringvalue (&vendchars, bsendstring);
@@ -1841,7 +1841,7 @@ static boolean stringfunctionvalue (short token, hdltreenode hparam1, tyvaluerec
 			setlongvalue (1, &vixstart);
 			
 			/* 2004-12-27 smd: added optional ix parameter */
-			if (!getoptionalparamvalue (hp1, &ctconsumed, &ctpositional, "\x02""ix", &vixstart))
+			if (!getoptionalparamvalue (hp1, &ctconsumed, &ctpositional, BIGSTRING ("\x02""ix"), &vixstart))
 				return (false);
 			
 			if (vixstart.data.longvalue > 0) /*switch to 0-index*/
@@ -2105,7 +2105,7 @@ static boolean stringfunctionvalue (short token, hdltreenode hparam1, tyvaluerec
 
 			flnextparamislast = true;
 
-			if (!getoptionalparamvalue (hp1, &ctconsumed, &ctpositional, "\x0b""flTranslate", &vtranslate)) 
+			if (!getoptionalparamvalue (hp1, &ctconsumed, &ctpositional, BIGSTRING ("\x0b""flTranslate"), &vtranslate)) 
 				return (false);
 
 /*			if (langgetparamcount (hparam1) > 1) {

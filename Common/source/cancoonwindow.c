@@ -461,7 +461,7 @@ boolean ccwindowstart (void) {
 	cb = cancooncallbacks; /*copy into register*/
 	
 	if (!shellfindcallbacks (idtableconfig, &ixtableconfig))
-		shellerrormessage ("\x24" "must initialize table before cancoon");
+		shellerrormessage (BIGSTRING ("\x24" "must initialize table before cancoon"));
 	 
 	*cb = globalsarray [ixtableconfig]; // start with table callbacks
 	

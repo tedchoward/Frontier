@@ -361,7 +361,7 @@ static boolean tablekindrecalc (tyvaluetype valuetype) {
 			
 			langgettypestring ((tyvaluetype) (outlinevaluetype + externalid), bsefp);
 			
-			pushstring ("\x04" "type", bsefp);
+			pushstring (BIGSTRING ("\x04" "type"), bsefp);
 			}
 		else if (val.valuetype == stringvaluetype) {
 			
@@ -384,7 +384,7 @@ static boolean tablekindrecalc (tyvaluetype valuetype) {
 			
 			langgettypestring ((tyvaluetype) (outlinevaluetype + externalid), bsefp);
 			
-			pushstring ("\x04" "type", bsefp);
+			pushstring (BIGSTRING ("\x04" "type"), bsefp);
 			}
 		else
 			pbsparse = (ptrstring) "\x11" "unpack (@^0, @^0)";

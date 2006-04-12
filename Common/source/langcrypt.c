@@ -89,7 +89,7 @@ static boolean cryptfunctionvalue (short token, hdltreenode hparam1, tyvaluereco
 
 			flnextparamislast = true;
 
-			if (!getoptionalparamvalue (hp1, &ctconsumed, &ctpositional, "\x0b""flTranslate", &vtranslate)) 
+			if (!getoptionalparamvalue (hp1, &ctconsumed, &ctpositional, BIGSTRING ("\x0b""flTranslate"), &vtranslate)) 
 				return (false);
 
 			lockhandle (h);
@@ -149,7 +149,7 @@ static boolean cryptfunctionvalue (short token, hdltreenode hparam1, tyvaluereco
 
 			flnextparamislast = true;
 
-			if (!getoptionalparamvalue (hp1, &ctconsumed, &ctpositional, "\x0b""flTranslate", &vtranslate)) 
+			if (!getoptionalparamvalue (hp1, &ctconsumed, &ctpositional, BIGSTRING ("\x0b""flTranslate"), &vtranslate)) 
 				return (false);
 
 			lockhandle (hkey);
@@ -206,7 +206,7 @@ static boolean cryptfunctionvalue (short token, hdltreenode hparam1, tyvaluereco
 
 			flnextparamislast = true;
 
-			if (!getoptionalparamvalue (hp1, &ctconsumed, &ctpositional, "\x0b""flTranslate", &vtranslate)) 
+			if (!getoptionalparamvalue (hp1, &ctconsumed, &ctpositional, BIGSTRING ("\x0b""flTranslate"), &vtranslate)) 
 				return (false);
 
 			lockhandle (x);
@@ -265,7 +265,7 @@ static boolean cryptfunctionvalue (short token, hdltreenode hparam1, tyvaluereco
 
 			flnextparamislast = true;
 
-			if (!getoptionalparamvalue (hp1, &ctconsumed, &ctpositional, "\x0b""flTranslate", &vtranslate)) 
+			if (!getoptionalparamvalue (hp1, &ctconsumed, &ctpositional, BIGSTRING ("\x0b""flTranslate"), &vtranslate)) 
 				return (false);
 
 			lockhandle (h);
@@ -327,7 +327,7 @@ static boolean cryptfunctionvalue (short token, hdltreenode hparam1, tyvaluereco
 
 			flnextparamislast = true;
 
-			if (!getoptionalparamvalue (hp1, &ctconsumed, &ctpositional, "\x0b""flTranslate", &vtranslate)) 
+			if (!getoptionalparamvalue (hp1, &ctconsumed, &ctpositional, BIGSTRING ("\x0b""flTranslate"), &vtranslate)) 
 				return (false);
 
 			lockhandle (hkey);

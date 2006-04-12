@@ -219,16 +219,16 @@ typedef enum tystackid { /*stack names*/
 	} tystackid;
 
 
-#define machinePPC	"\x07" "PowerPC"
-#define machine68K	"\x03" "68K"
-#define machinex86	"\x03" "x86"
+#define machinePPC	BIGSTRING ("\x07" "PowerPC")
+#define machine68K	BIGSTRING ("\x03" "68K")
+#define machinex86	BIGSTRING ("\x03" "x86")
 
-#define osMacOS		"\x05" "MacOS"
-#define osWin95		"\x05" "Win95"
-#define osWinNT		"\x05" "WinNT"
+#define osMacOS		BIGSTRING ("\x05" "MacOS")
+#define osWin95		BIGSTRING ("\x05" "Win95")
+#define osWinNT		BIGSTRING ("\x05" "WinNT")
 //Code change by Timothy Paustian Tuesday, July 11, 2000 9:42:50 PM
 //Add a const to return for the carbon OS
-#define osCarbon	"\x05" "MacCn"
+#define osCarbon	BIGSTRING ("\x05" "MacCn")
 
 typedef boolean (*langtreevisitcallback) (hdltreenode, ptrvoid);
 

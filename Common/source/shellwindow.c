@@ -2074,7 +2074,7 @@ boolean shellrunwindowconfirmationscript (WindowPtr pwindow, short idscript) {
 	if (!fl) /*couldn't find/run the script*/
 		return (true);
 	
-	if (equalstrings (bsresult, "\x01" "3")) /*yes/no/cancel was cancelled*/
+	if (equalstrings (bsresult, BIGSTRING ("\x01" "3"))) /*yes/no/cancel was cancelled*/
 		return (false);
 	
 	if (equalstrings (bsresult, bsfalse))

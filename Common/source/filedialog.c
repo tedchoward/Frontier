@@ -779,29 +779,29 @@ boolean sfdialog (tysfverb sfverb, bigstring bsprompt, ptrsftypelist filetypes, 
 				//RAB: 1/22/98 use string since the windows type can be any case
 				ostypetostring ((*filetypes).types [0], osstring);
 
-				if (equalidentifiers (osstring, "\x04" "fatp"))
-					copystring ("\x016" "Fat Page [*.fatp]\0*.*\0", filter);
+				if (equalidentifiers (osstring, BIGSTRING ("\x04" "fatp")))
+					copystring (BIGSTRING ("\x016" "Fat Page [*.fatp]\0*.*\0"), filter);
 
-				else if (equalidentifiers (osstring, "\x04" "ftop"))
-					copystring ("\x015" "Outline [*.ftop]\0*.*\0", filter);
+				else if (equalidentifiers (osstring, BIGSTRING ("\x04" "ftop")))
+					copystring (BIGSTRING ("\x015" "Outline [*.ftop]\0*.*\0"), filter);
 
-				else if (equalidentifiers (osstring, "\x04" "ftwp"))
-					copystring ("\x019" "WP Document [*.ftwp]\0*.*\0", filter);
+				else if (equalidentifiers (osstring, BIGSTRING ("\x04" "ftwp")))
+					copystring (BIGSTRING ("\x019" "WP Document [*.ftwp]\0*.*\0"), filter);
 
-				else if (equalidentifiers (osstring, "\x04" "fttb"))
-					copystring ("\x013" "Table [*.fttb]\0*.*\0", filter);
+				else if (equalidentifiers (osstring, BIGSTRING ("\x04" "fttb")))
+					copystring (BIGSTRING ("\x013" "Table [*.fttb]\0*.*\0"), filter);
 
-				else if (equalidentifiers (osstring, "\x04" "ftmb"))
-					copystring ("\x012" "Menu [*.ftmb]\0*.*\0", filter);
+				else if (equalidentifiers (osstring, BIGSTRING ("\x04" "ftmb")))
+					copystring (BIGSTRING ("\x012" "Menu [*.ftmb]\0*.*\0"), filter);
 
-				else if (equalidentifiers (osstring, "\x04" "ftsc"))
-					copystring ("\x014" "Script [*.ftsc]\0*.*\0", filter);
+				else if (equalidentifiers (osstring, BIGSTRING ("\x04" "ftsc")))
+					copystring (BIGSTRING ("\x014" "Script [*.ftsc]\0*.*\0"), filter);
 
-				else if (equalidentifiers (osstring, "\x04" "ftds"))
-					copystring ("\x01c" "Desktop Script [*.ftds]\0*.*\0", filter);
+				else if (equalidentifiers (osstring, BIGSTRING ("\x04" "ftds")))
+					copystring (BIGSTRING ("\x01c" "Desktop Script [*.ftds]\0*.*\0"), filter);
 
-				else if (equalidentifiers (osstring, "\x04" "root"))
-					copystring ("\x016" "Database [*.root]\0*.*\0", filter);
+				else if (equalidentifiers (osstring, BIGSTRING ("\x04" "root")))
+					copystring (BIGSTRING ("\x016" "Database [*.root]\0*.*\0"), filter);
 
 				if (! isemptystring (filter)) {
 					convertpstring (filter);
@@ -870,7 +870,7 @@ boolean sfdialog (tysfverb sfverb, bigstring bsprompt, ptrsftypelist filetypes, 
 
 					poptrailingwhitespace (type);
 					
-					pushstring ("\x02" "*.", extension);
+					pushstring (BIGSTRING ("\x02" "*."), extension);
 
 					pushstring (type, extension);
 
@@ -878,7 +878,7 @@ boolean sfdialog (tysfverb sfverb, bigstring bsprompt, ptrsftypelist filetypes, 
 						
 						setstringlength (type, 3);
 
-						pushstring ("\x03" ";*.", extension);
+						pushstring (BIGSTRING ("\x03" ";*."), extension);
 						
 						pushstring (type, extension);
 						}
@@ -887,27 +887,27 @@ boolean sfdialog (tysfverb sfverb, bigstring bsprompt, ptrsftypelist filetypes, 
 
 				filterlen = 0;
 
-				buildfilter (filter, &filterlen, "\x1c" "Openable Types: [*.clickers]", extension);
+				buildfilter (filter, &filterlen, BIGSTRING ("\x1c" "Openable Types: [*.clickers]"), extension);
 				
 				if (fldatabases)
-					buildfilter (filter, &filterlen, "\x12" "Databases [*.root]", "\x0c" "*.root;*.roo");
+					buildfilter (filter, &filterlen, BIGSTRING ("\x12" "Databases [*.root]"), BIGSTRING ("\x0c" "*.root;*.roo"));
 
 				//					pushstring ("\x20\0Databases [*.root]\0*.roo;*.root", filter);
 
 				if (flfatpages) {
-					buildfilter (filter, &filterlen, "\x12" "Fat Pages [*.fatp]", "\x5a" "*.fatp;*.fat;*.FTsc;*.FTs;*.FTwp;*.FTw;*.FTop;*.FTo;*.FTmb;*.FTm;*.FTtb;*.FTt;*.Ftds;*.FTd");
-					buildfilter (filter, &filterlen, "\x17" "Frontier Menus [*.FTmb]",    "\x0c" "*.FTmb;*.FTm");
-					buildfilter (filter, &filterlen, "\x1a" "Frontier Outlines [*.FTop]", "\x0c" "*.FTop;*.FTo");
-					buildfilter (filter, &filterlen, "\x19" "Frontier Scripts [*.FTsc]",  "\x0c" "*.FTsc;*.FTs");
-					buildfilter (filter, &filterlen, "\x21" "Frontier Desktop Scripts [*.FTds]",  "\x0c" "*.FTds;*.FTd");
-					buildfilter (filter, &filterlen, "\x18" "Frontier Tables [*.FTtb]",	  "\x0c" "*.FTtb;*.FTt");
-					buildfilter (filter, &filterlen, "\x19" "Frontier WP Text [*.FTwp]",  "\x0c" "*.FTwp;*.FTw");
+					buildfilter (filter, &filterlen, BIGSTRING ("\x12" "Fat Pages [*.fatp]"), BIGSTRING ("\x5a" "*.fatp;*.fat;*.FTsc;*.FTs;*.FTwp;*.FTw;*.FTop;*.FTo;*.FTmb;*.FTm;*.FTtb;*.FTt;*.Ftds;*.FTd"));
+					buildfilter (filter, &filterlen, BIGSTRING ("\x17" "Frontier Menus [*.FTmb]"),    BIGSTRING ("\x0c" "*.FTmb;*.FTm"));
+					buildfilter (filter, &filterlen, BIGSTRING ("\x1a" "Frontier Outlines [*.FTop]"), BIGSTRING ("\x0c" "*.FTop;*.FTo"));
+					buildfilter (filter, &filterlen, BIGSTRING ("\x19" "Frontier Scripts [*.FTsc]"),  BIGSTRING ("\x0c" "*.FTsc;*.FTs"));
+					buildfilter (filter, &filterlen, BIGSTRING ("\x21" "Frontier Desktop Scripts [*.FTds]"),  BIGSTRING ("\x0c" "*.FTds;*.FTd"));
+					buildfilter (filter, &filterlen, BIGSTRING ("\x18" "Frontier Tables [*.FTtb]"),	  BIGSTRING ("\x0c" "*.FTtb;*.FTt"));
+					buildfilter (filter, &filterlen, BIGSTRING ("\x19" "Frontier WP Text [*.FTwp]"),  BIGSTRING ("\x0c" "*.FTwp;*.FTw"));
 					}
 
 				//					pushstring ("\x20\0Fat Pages [*.fatp]\0*.fat;*.fatp", filter);
 
-				buildfilter (filter, &filterlen, "\x12" "Plain Text [*.txt]",  "\x12" "*.Text;*.txt;*.tex");
-				buildfilter (filter, &filterlen, "\x0f" "All Files [*.*]",  "\x03" "*.*");
+				buildfilter (filter, &filterlen, BIGSTRING ("\x12" "Plain Text [*.txt]"),  BIGSTRING ("\x12" "*.Text;*.txt;*.tex"));
+				buildfilter (filter, &filterlen, BIGSTRING ("\x0f" "All Files [*.*]"),  BIGSTRING ("\x03" "*.*"));
 
 				OpenFileName.lpstrFilter = filter;
 

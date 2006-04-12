@@ -945,7 +945,7 @@ void getsizestring (unsigned long size, bigstring bs) {
 			x++;
 		
 		if (x == 0)
-			copystring ("\x05" "zero ", bs);
+			copystring (BIGSTRING ("\x05" "zero "), bs);
 		else
 			numbertostring (x, (byte *) bs);
 			

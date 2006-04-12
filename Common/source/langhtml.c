@@ -74,17 +74,17 @@ extern boolean sysos (tyvaluerecord *v); //implemted in shellsysverbs.c
 
 #define fldebugwebsite false
 
-#define str_separatorline "\x17<hr size=2 width=100% />\r"/* 2005-12-18 creedon - end tag with space slash for compatibility with post HTML 4.01 standards */
-#define str_macroerror "\x20<b>[</b>Macro error: ^0<b>]</b>\r"
-#define str_mailto	"\x1A<a href=\"mailto:^0\">^0</a>"
-#define str_hotlink	"\x13<a href=\"^0\">^1</a>"
-#define str_pagebreak "\x05<p />" /* 2005-10-29 creedon - changed from <p> to <p /> for compatibility with post HTML 4.01 standards */
-#define str_startbold "\x03<b>"
-#define str_endbold	"\x04</b>"
-#define str_default "\x07" "default"
-#define str_index "\x05" "index"
+#define str_separatorline BIGSTRING ("\x17<hr size=2 width=100% />\r")/* 2005-12-18 creedon - end tag with space slash for compatibility with post HTML 4.01 standards */
+#define str_macroerror BIGSTRING ("\x20<b>[</b>Macro error: ^0<b>]</b>\r")
+#define str_mailto	BIGSTRING ("\x1A<a href=\"mailto:^0\">^0</a>")
+#define str_hotlink	BIGSTRING ("\x13<a href=\"^0\">^1</a>")
+#define str_pagebreak BIGSTRING ("\x05<p />") /* 2005-10-29 creedon - changed from <p> to <p /> for compatibility with post HTML 4.01 standards */
+#define str_startbold BIGSTRING ("\x03<b>")
+#define str_endbold	BIGSTRING ("\x04</b>")
+#define str_default BIGSTRING ("\x07" "default")
+#define str_index BIGSTRING ("\x05" "index")
 
-#define str_closetag "\x05" "</^0>"
+#define str_closetag BIGSTRING ("\x05" "</^0>")
 
 #define flcurlybracemacros true
 #define startmacrochar '{'
@@ -93,158 +93,158 @@ extern boolean sysos (tyvaluerecord *v); //implemted in shellsysverbs.c
 
 #define maxglossarynamelength 127 /*DW 5/3/96: upped from 31*/
 
-#define str_no	"\x02" "no"
-#define str_yes	"\x03" "yes"
+#define str_no	BIGSTRING ("\x02" "no")
+#define str_yes	BIGSTRING ("\x03" "yes")
 
-#define str_adrpagetable		"\x16" "html.data.adrpagetable"
-#define str_websitesdata		"\x0e" "websites.#data"
-#define str_userhtmlprefs		"\x0f" "user.html.prefs"
-#define str_usermacros			"\x10" "user.html.macros"
-#define str_standardmacros		"\x18" "html.data.standardMacros"
-#define str_tools				"\x05" "tools"
-#define str_glossary			"\x08" "glossary"
-#define str_images				"\x06" "images"
-#define str_glosspatch			"\x0e" "[[#glossPatch "
-#define str_useglosspatcher		"\x0f" "useGlossPatcher"
-#define str_renderedtext		"\x0c" "renderedtext"
+#define str_adrpagetable		BIGSTRING ("\x16" "html.data.adrpagetable")
+#define str_websitesdata		BIGSTRING ("\x0e" "websites.#data")
+#define str_userhtmlprefs		BIGSTRING ("\x0f" "user.html.prefs")
+#define str_usermacros			BIGSTRING ("\x10" "user.html.macros")
+#define str_standardmacros		BIGSTRING ("\x18" "html.data.standardMacros")
+#define str_tools				BIGSTRING ("\x05" "tools")
+#define str_glossary			BIGSTRING ("\x08" "glossary")
+#define str_images				BIGSTRING ("\x06" "images")
+#define str_glosspatch			BIGSTRING ("\x0e" "[[#glossPatch ")
+#define str_useglosspatcher		BIGSTRING ("\x0f" "useGlossPatcher")
+#define str_renderedtext		BIGSTRING ("\x0c" "renderedtext")
 #ifdef MACVERSION
-	#define str_iso8859map		"\x15" "html.data.iso8859.mac"
+	#define str_iso8859map		BIGSTRING ("\x15" "html.data.iso8859.mac")
 #else
-	#define str_iso8859map		"\x15" "html.data.iso8859.win"
+	#define str_iso8859map		BIGSTRING ("\x15" "html.data.iso8859.win")
 #endif
 
-#define str_template			"\x08" "template"
-#define str_indirecttemplate	"\x10" "indirectTemplate"
-#define str_adrobject			"\x09" "adrobject"
-#define str_ftpsite				"\x07" "ftpsite"
-#define str_fileextension 		"\x0d" "fileextension"
-#define str_maxfilenamelength	"\x11" "maxfilenamelength"
-#define str_defaulttemplate		"\x0f" "defaulttemplate"
-#define str_defaultfilename		"\x0f" "defaultfilename"
-#define str_directivesonlyatbeginning	"\x19" "directivesOnlyAtBeginning"
+#define str_template			BIGSTRING ("\x08" "template")
+#define str_indirecttemplate	BIGSTRING ("\x10" "indirectTemplate")
+#define str_adrobject			BIGSTRING ("\x09" "adrobject")
+#define str_ftpsite				BIGSTRING ("\x07" "ftpsite")
+#define str_fileextension 		BIGSTRING ("\x0d" "fileextension")
+#define str_maxfilenamelength	BIGSTRING ("\x11" "maxfilenamelength")
+#define str_defaulttemplate		BIGSTRING ("\x0f" "defaulttemplate")
+#define str_defaultfilename		BIGSTRING ("\x0f" "defaultfilename")
+#define str_directivesonlyatbeginning	BIGSTRING ("\x19" "directivesOnlyAtBeginning")
 
-#define STR_P_ERRORPAGETEMPLATE			"\x4C" "<HTML><HEAD><TITLE>^0</TITLE></HEAD><BODY><H1>^0</H1><P>^1</P></BODY></HTML>"
-#define STR_P_MISSING_HOST_HEADER		"\x40" "Every HTTP/1.1 request must include a Host header"
-#define STR_P_UNSUPPORTED_VERSION		"\x24" "This server does not support HTTP/^0"
-#define STR_P_INVALID_URI				"\x23" "All URIs must begin with / or http:"
-#define STR_P_BODY_NOT_READ				"\x22" "The request body couldn't be read."
-#define STR_P_METHOD_NOT_ALLOWED		"\x20" "^0 isn't allowed on this object."
-#define STR_P_INVALID_REQUEST_LINE		"\x1C" "The request line is invalid."
-#define STR_P_USERWEBSERVERPOSTFILTERS	"\x1A" "user.webserver.postfilters"
-#define STR_P_USERWEBSERVERPREFILTERS	"\x19" "user.webserver.prefilters"
-#define STR_P_USERWEBSERVERRESPONDERS	"\x19" "user.webserver.responders"
-#define STR_P_PROCESSING_STARTED		"\x18" "requestProcessingStarted"
-#define STR_P_WEBSERVERDATARESPONSES	"\x18" "webserver.data.responses"
+#define STR_P_ERRORPAGETEMPLATE			BIGSTRING ("\x4C" "<HTML><HEAD><TITLE>^0</TITLE></HEAD><BODY><H1>^0</H1><P>^1</P></BODY></HTML>")
+#define STR_P_MISSING_HOST_HEADER		BIGSTRING ("\x40" "Every HTTP/1.1 request must include a Host header")
+#define STR_P_UNSUPPORTED_VERSION		BIGSTRING ("\x24" "This server does not support HTTP/^0")
+#define STR_P_INVALID_URI				BIGSTRING ("\x23" "All URIs must begin with / or http:")
+#define STR_P_BODY_NOT_READ				BIGSTRING ("\x22" "The request body couldn't be read.")
+#define STR_P_METHOD_NOT_ALLOWED		BIGSTRING ("\x20" "^0 isn't allowed on this object.")
+#define STR_P_INVALID_REQUEST_LINE		BIGSTRING ("\x1C" "The request line is invalid.")
+#define STR_P_USERWEBSERVERPOSTFILTERS	BIGSTRING ("\x1A" "user.webserver.postfilters")
+#define STR_P_USERWEBSERVERPREFILTERS	BIGSTRING ("\x19" "user.webserver.prefilters")
+#define STR_P_USERWEBSERVERRESPONDERS	BIGSTRING ("\x19" "user.webserver.responders")
+#define STR_P_PROCESSING_STARTED		BIGSTRING ("\x18" "requestProcessingStarted")
+#define STR_P_WEBSERVERDATARESPONSES	BIGSTRING ("\x18" "webserver.data.responses")
 
-#define STR_P_macrostartchars			"\x14" "macrostartcharacters" /*PBS 7.1b1*/
-#define STR_P_macroendchars				"\x12" "macroendcharacters"
+#define STR_P_macrostartchars			BIGSTRING ("\x14" "macrostartcharacters") /*PBS 7.1b1*/
+#define STR_P_macroendchars				BIGSTRING ("\x12" "macroendcharacters")
 
-#define STR_P_flprocessmacrosintags     "\x17" "processmacrosinhtmltags"
+#define STR_P_flprocessmacrosintags     BIGSTRING ("\x17" "processmacrosinhtmltags")
 
 #ifdef PIKE /*7.0 PBS: server string is Radio UserLand*/
 
 #ifndef OPMLEDITOR
 
 	#if TARGET_API_MAC_CARBON == 1
-		#define STR_P_SERVERSTRING				"\x15" "Radio UserLand/^0-^1X"
+		#define STR_P_SERVERSTRING				BIGSTRING ("\x15" "Radio UserLand/^0-^1X")
 	#else
-		#define STR_P_SERVERSTRING				"\x14" "Radio UserLand/^0-^1"
+		#define STR_P_SERVERSTRING				BIGSTRING ("\x14" "Radio UserLand/^0-^1")
 	#endif
 
 #else  // OPMLEDITOR 2005-04-06 dluebbert
 	#if TARGET_API_MAC_CARBON == 1
-		#define STR_P_SERVERSTRING				"\x0b" "OPML/^0-^1X"
+		#define STR_P_SERVERSTRING				BIGSTRING ("\x0b" "OPML/^0-^1X")
 	#else
-		#define STR_P_SERVERSTRING				"\x0a" "OPML/^0-^1"
+		#define STR_P_SERVERSTRING				BIGSTRING ("\x0a" "OPML/^0-^1")
 	#endif
 #endif // OPMLEDITOR
 
 #else // !PIKE
 
 	#if TARGET_API_MAC_CARBON == 1
-		#define STR_P_SERVERSTRING			"\x0f" "Frontier/^0-^1X" /* 2005-01-04 creedon - removed UserLand for open source release */
+		#define STR_P_SERVERSTRING			BIGSTRING ("\x0f" "Frontier/^0-^1X") /* 2005-01-04 creedon - removed UserLand for open source release */
 	#else
-		#define STR_P_SERVERSTRING			"\x0e" "Frontier/^0-^1" /* 2005-01-04 creedon - removed UserLand for open source release */
+		#define STR_P_SERVERSTRING			BIGSTRING ("\x0e" "Frontier/^0-^1") /* 2005-01-04 creedon - removed UserLand for open source release */
 	#endif
 
 #endif  //!PIKE
 
-#define STR_P_RESPONDERERROR			"\x16" "Responder method error"
-#define STR_P_LOGADD					"\x16" "log.addToGuestDatabase"
-#define STR_P_USERWEBSERVERCONFIG		"\x15" "user.webserver.config"
-#define STR_P_USERWEBSERVERPREFS		"\x14" "user.webserver.prefs"
-#define STR_P_USERWEBSERVERSTATS		"\x14" "user.webserver.stats"
-#define STR_P_INETDCONFIGTABLEADR		"\x13" "inetdConfigTableAdr"
-#define STR_P_DEFAULTTIMEOUTSECS		"\x12" "defaultTimeoutSecs"
-#define STR_P_USERINETDLISTENS			"\x12" "user.inetd.listens"
-#define STR_P_WEBSERVERDISPATCH			"\x12" "webserver.dispatch"
-#define STR_P_RESPONDERTABLEADR			"\x11" "responderTableAdr"
-#define STR_P_POSTFILTERERROR			"\x11" "Post Filter error"
-#define STR_P_PREFILTERERROR			"\x10" "Pre filter error"
-#define STR_P_DEFAULTRESPONDER			"\x10" "defaultResponder"
-#define STR_P_USERINETDPREFS			"\x10" "user.inetd.prefs"
-#define STR_P_RESPONSEHEADERS			"\x0F" "responseHeaders"
-#define STR_P_WHATWEREWEDOING			"\x0F" "whatWereWeDoing"
-#define STR_P_RETURNCHUNKSIZE			"\x0F" "returnChunkSize"
-#define STR_P_ADRHEADERTABLE			"\x0E" "adrHeaderTable"
-#define STR_P_MAXCONNECTIONS			"\x0E" "maxConnections"
-#define STR_P_REQUESTHEADERS	 		"\x0E" "requestHeaders"
-#define STR_P_CONTENT_LENGTH			"\x0E" "Content-Length"
-#define STR_P_WHATWENTWRONG				"\x0D" "whatWentWrong"
-#define STR_P_100CONTINUE				"\x0C" "100-continue"
-#define STR_P_RESPONSEBODY				"\x0C" "responseBody"
-#define STR_P_REQUESTBODY				"\x0B" "requestBody"
-#define STR_P_MAXMEMAVAIL				"\x0B" "maxMemAvail"
-#define STR_P_MINMEMAVAIL				"\x0B" "minMemAvail"
-#define STR_P_CONNECTION				"\x0A" "Connection"
-#define STR_P_PARAMTABLE 				"\x0A" "paramTable"
-#define STR_P_SEARCHARGS				"\x0A" "searchArgs"
-#define STR_P_FIRSTLINE					"\x09" "firstLine"
-#define STR_P_CHUNKSIZE					"\x09" "chunksize"
-#define STR_P_HTTP11					"\x09" "HTTP/1.1 "
-#define STR_P_CONDITION					"\x09" "condition"
-#define STR_P_RESPONDER					"\x09" "responder"
-#define STR_P_PATHARGS					"\x08" "pathArgs"
-#define	STR_P_ADRTABLE					"\x08" "adrTable"
-#define STR_P_FLPARAMS					"\x08" "flParams"
-#define STR_P_ENABLED					"\x07" "enabled"
-#define STR_P_REQUEST					"\x07" "request"
-#define STR_P_TIMEOUT					"\x07" "timeout"
-#define STR_P_COOKIES					"\x07" "cookies"
-#define STR_P_METHODS					"\x07" "methods"
-#define STR_P_FLLEGAL					"\x07" "flLegal"
-#define STR_P_FLCLOSE					"\x07" "flClose"
-#define STR_P_NOWAIT					"\x06" "noWait"
-#define STR_P_METHOD					"\x06" "method"
-#define STR_P_EXPECT					"\x06" "Expect"
-#define STR_P_STREAM					"\x06" "stream"
-#define STR_P_REFCON					"\x06" "refcon"
-#define STR_P_CLIENT					"\x06" "client"
-#define STR_P_COOKIE					"\x06" "Cookie"
-#define STR_P_SERVER					"\x06" "Server"
-#define STR_P_UNKNOWN					"\x07" "UNKNOWN"
-#define STR_P_THREAD					"\x06" "thread"
-#define STR_P_DAEMON					"\x06" "daemon"
-#define STR_P_ALLOW						"\x05" "ALLOW"
-#define STR_P_CLOSE						"\x05" "close"
-#define STR_P_READY						"\x05" "ready"
-#define STR_P_STATS						"\x05" "stats"
-#define STR_P_COUNT						"\x05" "count"
-#define STR_P_CODE						"\x04" "code"
-#define STR_P_HITS						"\x04" "hits"
-#define STR_P_HOST						"\x04" "host"
-#define STR_P_PORT						"\x04" "port"
-#define STR_P_PATH						"\x04" "path"
-#define STR_P_DATE						"\x04" "Date"
-#define STR_P_CRLFCRLF					"\x04" "\r\n\r\n"
-#define STR_P_ANY						"\x03" "any"
-#define STR_P_URI						"\x03" "URI"
-#define STR_P_DOLLAR_ENCODED			"\x03" "%24"
-#define STR_P_CRLF						"\x02" "\r\n"
-#define STR_P_COLON						"\x02" ": "
-#define STR_P_DOLLAR					"\x01" "$"
-#define STR_P_SPACE						"\x01" " "
-#define STR_P_EMPTY						"\x00"
+#define STR_P_RESPONDERERROR			BIGSTRING ("\x16" "Responder method error")
+#define STR_P_LOGADD					BIGSTRING ("\x16" "log.addToGuestDatabase")
+#define STR_P_USERWEBSERVERCONFIG		BIGSTRING ("\x15" "user.webserver.config")
+#define STR_P_USERWEBSERVERPREFS		BIGSTRING ("\x14" "user.webserver.prefs")
+#define STR_P_USERWEBSERVERSTATS		BIGSTRING ("\x14" "user.webserver.stats")
+#define STR_P_INETDCONFIGTABLEADR		BIGSTRING ("\x13" "inetdConfigTableAdr")
+#define STR_P_DEFAULTTIMEOUTSECS		BIGSTRING ("\x12" "defaultTimeoutSecs")
+#define STR_P_USERINETDLISTENS			BIGSTRING ("\x12" "user.inetd.listens")
+#define STR_P_WEBSERVERDISPATCH			BIGSTRING ("\x12" "webserver.dispatch")
+#define STR_P_RESPONDERTABLEADR			BIGSTRING ("\x11" "responderTableAdr")
+#define STR_P_POSTFILTERERROR			BIGSTRING ("\x11" "Post Filter error")
+#define STR_P_PREFILTERERROR			BIGSTRING ("\x10" "Pre filter error")
+#define STR_P_DEFAULTRESPONDER			BIGSTRING ("\x10" "defaultResponder")
+#define STR_P_USERINETDPREFS			BIGSTRING ("\x10" "user.inetd.prefs")
+#define STR_P_RESPONSEHEADERS			BIGSTRING ("\x0F" "responseHeaders")
+#define STR_P_WHATWEREWEDOING			BIGSTRING ("\x0F" "whatWereWeDoing")
+#define STR_P_RETURNCHUNKSIZE			BIGSTRING ("\x0F" "returnChunkSize")
+#define STR_P_ADRHEADERTABLE			BIGSTRING ("\x0E" "adrHeaderTable")
+#define STR_P_MAXCONNECTIONS			BIGSTRING ("\x0E" "maxConnections")
+#define STR_P_REQUESTHEADERS	 		BIGSTRING ("\x0E" "requestHeaders")
+#define STR_P_CONTENT_LENGTH			BIGSTRING ("\x0E" "Content-Length")
+#define STR_P_WHATWENTWRONG				BIGSTRING ("\x0D" "whatWentWrong")
+#define STR_P_100CONTINUE				BIGSTRING ("\x0C" "100-continue")
+#define STR_P_RESPONSEBODY				BIGSTRING ("\x0C" "responseBody")
+#define STR_P_REQUESTBODY				BIGSTRING ("\x0B" "requestBody")
+#define STR_P_MAXMEMAVAIL				BIGSTRING ("\x0B" "maxMemAvail")
+#define STR_P_MINMEMAVAIL				BIGSTRING ("\x0B" "minMemAvail")
+#define STR_P_CONNECTION				BIGSTRING ("\x0A" "Connection")
+#define STR_P_PARAMTABLE 				BIGSTRING ("\x0A" "paramTable")
+#define STR_P_SEARCHARGS				BIGSTRING ("\x0A" "searchArgs")
+#define STR_P_FIRSTLINE					BIGSTRING ("\x09" "firstLine")
+#define STR_P_CHUNKSIZE					BIGSTRING ("\x09" "chunksize")
+#define STR_P_HTTP11					BIGSTRING ("\x09" "HTTP/1.1 ")
+#define STR_P_CONDITION					BIGSTRING ("\x09" "condition")
+#define STR_P_RESPONDER					BIGSTRING ("\x09" "responder")
+#define STR_P_PATHARGS					BIGSTRING ("\x08" "pathArgs")
+#define	STR_P_ADRTABLE					BIGSTRING ("\x08" "adrTable")
+#define STR_P_FLPARAMS					BIGSTRING ("\x08" "flParams")
+#define STR_P_ENABLED					BIGSTRING ("\x07" "enabled")
+#define STR_P_REQUEST					BIGSTRING ("\x07" "request")
+#define STR_P_TIMEOUT					BIGSTRING ("\x07" "timeout")
+#define STR_P_COOKIES					BIGSTRING ("\x07" "cookies")
+#define STR_P_METHODS					BIGSTRING ("\x07" "methods")
+#define STR_P_FLLEGAL					BIGSTRING ("\x07" "flLegal")
+#define STR_P_FLCLOSE					BIGSTRING ("\x07" "flClose")
+#define STR_P_NOWAIT					BIGSTRING ("\x06" "noWait")
+#define STR_P_METHOD					BIGSTRING ("\x06" "method")
+#define STR_P_EXPECT					BIGSTRING ("\x06" "Expect")
+#define STR_P_STREAM					BIGSTRING ("\x06" "stream")
+#define STR_P_REFCON					BIGSTRING ("\x06" "refcon")
+#define STR_P_CLIENT					BIGSTRING ("\x06" "client")
+#define STR_P_COOKIE					BIGSTRING ("\x06" "Cookie")
+#define STR_P_SERVER					BIGSTRING ("\x06" "Server")
+#define STR_P_UNKNOWN					BIGSTRING ("\x07" "UNKNOWN")
+#define STR_P_THREAD					BIGSTRING ("\x06" "thread")
+#define STR_P_DAEMON					BIGSTRING ("\x06" "daemon")
+#define STR_P_ALLOW						BIGSTRING ("\x05" "ALLOW")
+#define STR_P_CLOSE						BIGSTRING ("\x05" "close")
+#define STR_P_READY						BIGSTRING ("\x05" "ready")
+#define STR_P_STATS						BIGSTRING ("\x05" "stats")
+#define STR_P_COUNT						BIGSTRING ("\x05" "count")
+#define STR_P_CODE						BIGSTRING ("\x04" "code")
+#define STR_P_HITS						BIGSTRING ("\x04" "hits")
+#define STR_P_HOST						BIGSTRING ("\x04" "host")
+#define STR_P_PORT						BIGSTRING ("\x04" "port")
+#define STR_P_PATH						BIGSTRING ("\x04" "path")
+#define STR_P_DATE						BIGSTRING ("\x04" "Date")
+#define STR_P_CRLFCRLF					BIGSTRING ("\x04" "\r\n\r\n")
+#define STR_P_ANY						BIGSTRING ("\x03" "any")
+#define STR_P_URI						BIGSTRING ("\x03" "URI")
+#define STR_P_DOLLAR_ENCODED			BIGSTRING ("\x03" "%24")
+#define STR_P_CRLF						BIGSTRING ("\x02" "\r\n")
+#define STR_P_COLON						BIGSTRING ("\x02" ": ")
+#define STR_P_DOLLAR					BIGSTRING ("\x01" "$")
+#define STR_P_SPACE						BIGSTRING ("\x01" " ")
+#define STR_P_EMPTY						BIGSTRING ("\x00")
 
 #define STR_STATUSCONTINUE				"HTTP/1.1 100 CONTINUE\r\n\r\n"
 #define sizestatuscontinue				25
@@ -772,16 +772,16 @@ static boolean htmlgetpref (typrocessmacrosinfo *pmi, bigstring pref, tyvaluerec
 	alllower (bs);
 	
 	if (equalstrings (bs, str_fileextension))
-		return (setstringvalue ("\x05" ".html", val));
+		return (setstringvalue (BIGSTRING ("\x05" ".html"), val));
 	
 	if (equalstrings (bs, str_maxfilenamelength))
 		return (setlongvalue (31, val));
 	
 	if (equalstrings (bs, str_defaulttemplate))
-		return (setstringvalue ("\x06" "normal", val));
+		return (setstringvalue (BIGSTRING ("\x06" "normal"), val));
 	
 	if (equalstrings (bs, str_defaultfilename))
-		return (setstringvalue ("\x07" "default", val));
+		return (setstringvalue (BIGSTRING ("\x07" "default"), val));
 
 	//	else { Çunknown or default prefs are true
 	//		return (true)}};
@@ -849,7 +849,7 @@ static boolean htmlrefglossary (typrocessmacrosinfo *pmi, Handle hreference, big
 	
 	langcallbacks.errormessagerefcon = perrorstring;
 	
-	fl = langrunscript ("\x10" "html.refglossary", &vparams, nil, &vresult) && strongcoercetostring (&vresult);
+	fl = langrunscript (BIGSTRING ("\x10" "html.refglossary"), &vparams, nil, &vresult) && strongcoercetostring (&vresult);
 	
 	langcallbacks.errormessagerefcon = saveerrorstring;
 	
@@ -1025,23 +1025,23 @@ static boolean htmlcleanforexport (Handle x) {
 					break;
 				
 				case 0xc9:	/* 'É' ellipsis */
-					mergehandlestreamstring (&s, 1, "\x03" "...");
+					mergehandlestreamstring (&s, 1, BIGSTRING ("\x03" "..."));
 					--s.pos;
 					break;
 				
 				case 0xd0:	/* 'Ð' n-dash */
 				case 0xd1:	/* 'Ñ' m-dash */
-					mergehandlestreamstring (&s, 1, "\x02" "--");
+					mergehandlestreamstring (&s, 1, BIGSTRING ("\x02" "--"));
 					--s.pos;
 					break;
 				
 				case chcomment:
-					mergehandlestreamstring (&s, 1, "\x08" "&lt;&lt;");
+					mergehandlestreamstring (&s, 1, BIGSTRING ("\x08" "&lt;&lt;"));
 					--s.pos;
 					break;
 				
 				case chendcomment:
-					mergehandlestreamstring (&s, 1, "\x08" "&gt;&gt;");
+					mergehandlestreamstring (&s, 1, BIGSTRING ("\x08" "&gt;&gt;"));
 					--s.pos;
 					break;
 				}
@@ -1101,7 +1101,7 @@ static boolean htmlbuildmacrocontext (typrocessmacrosinfo *pmi) {
 	if (!setaddressvalue (ht, bs, &val))
 		goto error;
 	
-	if (!hashtableassign (hcontext, "\x0c" "adrPageTable", val))
+	if (!hashtableassign (hcontext, BIGSTRING ("\x0c" "adrPageTable"), val))
 		goto error;
 	
 	exemptfromtmpstack (&val);
@@ -1266,7 +1266,7 @@ static boolean htmlreportmacroerror (typrocessmacrosinfo *pmi, Handle macro, big
 	if (!langpushlistval (vparams.data.listvalue, nil, &val))
 		return (false);
 	
-	return (langrunscript ("\x17" "html.data.logMacroError", &vparams, nil, &vresult));
+	return (langrunscript (BIGSTRING ("\x17" "html.data.logMacroError"), &vparams, nil, &vresult));
 	} /*htmlreportmacroerror*/
 
 
@@ -1407,7 +1407,7 @@ static boolean getmacrocharacters (typrocessmacrosinfo *pmi, bigstring bsstart, 
 
 	if (equalidentifiers (bsstart, bstrue)) /*not found*/
 				
-			copystring ("\x01{", bsstart);
+			copystring (BIGSTRING ("\x01{"), bsstart);
 
 	else
 
@@ -1417,7 +1417,7 @@ static boolean getmacrocharacters (typrocessmacrosinfo *pmi, bigstring bsstart, 
 
 	if (equalidentifiers (bsend, bstrue)) /*not found*/
 		
-		copystring ("\x01}", bsend);
+		copystring (BIGSTRING ("\x01}"), bsend);
 		
 	else
 		
@@ -1773,7 +1773,7 @@ static boolean processhtmltext (handlestream *s, typrocessmacrosinfo *pmi) {
 							if (hmacroresult == nil) /*6.2b6 AR: Assume that our thread has been killed and unwind recursion*/
 								return (false);
 							
-							if (htmlgetbooleanpref (pmi, "\x0e" "logMacroErrors", &fllogerrors) && fllogerrors) {
+							if (htmlgetbooleanpref (pmi, BIGSTRING ("\x0e" "logMacroErrors"), &fllogerrors) && fllogerrors) {
 							
 								if (!newhandle (lenmacro, &macro))
 									return (false);
@@ -2301,7 +2301,7 @@ static boolean iso8859encode (handlestream *s, hdlhashtable hiso8859usermap) {
 		
 		if (getsystemtablescript (iduseriso8859map, bs)) {
 			
-			pushstring ("\x08" ".[\"128\"]", bs);	/*refer to 1st entry in table*/
+			pushstring (BIGSTRING ("\x08" ".[\"128\"]"), bs);	/*refer to 1st entry in table*/
 			
 			disablelangerror ();
 			
@@ -2338,7 +2338,7 @@ static boolean iso8859encode (handlestream *s, hdlhashtable hiso8859usermap) {
 
 			/*encode the character*/
 			
-			copyctopstring (iso8859table [ch], bs);	// 3/26/97 dmb: it's a c string now
+			copyctopstring ((char *)(iso8859table [ch]), bs);	// 3/26/97 dmb: it's a c string now
 			}
 		
 		if (!mergehandlestreamstring (s, 1, bs))
@@ -2412,23 +2412,23 @@ boolean processhtmlmacrosverb (hdltreenode hp1, tyvaluerecord *vreturned) {
 		pageinfo.flactiveurls = false;
 		}
 	else {
-		if (!htmlgetbooleanpref (&pageinfo, "\x0e" "autoParagraphs", &pageinfo.flautoparagraphs))
+		if (!htmlgetbooleanpref (&pageinfo, BIGSTRING ("\x0e" "autoParagraphs"), &pageinfo.flautoparagraphs))
 			return (false);
 		
-		if (!htmlgetbooleanpref (&pageinfo, "\x0a" "activeURLs", &pageinfo.flactiveurls))
+		if (!htmlgetbooleanpref (&pageinfo, BIGSTRING ("\x0a" "activeURLs"), &pageinfo.flactiveurls))
 			return (false);
 		
-		if (!htmlgetbooleanpref (&pageinfo, "\x11" "clayCompatibility", &pageinfo.flclaycompatibility))
+		if (!htmlgetbooleanpref (&pageinfo, BIGSTRING ("\x11" "clayCompatibility"), &pageinfo.flclaycompatibility))
 			return (false);
 		}
 	
-	if (!htmlgetbooleanpref (&pageinfo, "\x0d" "processMacros", &pageinfo.flprocessmacros))
+	if (!htmlgetbooleanpref (&pageinfo, BIGSTRING ("\x0d" "processMacros"), &pageinfo.flprocessmacros))
 		return (false);
 	
-	if (!htmlgetbooleanpref (&pageinfo, "\x13" "expandGlossaryItems", &pageinfo.flexpandglossaryitems))
+	if (!htmlgetbooleanpref (&pageinfo, BIGSTRING ("\x13" "expandGlossaryItems"), &pageinfo.flexpandglossaryitems))
 		return (false);
 	
-	if (!htmlgetbooleanpref (&pageinfo, "\x09" "isoFilter", &pageinfo.flisofilter))
+	if (!htmlgetbooleanpref (&pageinfo, BIGSTRING ("\x09" "isoFilter"), &pageinfo.flisofilter))
 		return (false);
 	
 	// get the text and process it!
@@ -3229,7 +3229,7 @@ boolean getjpegheightwidthverb (hdltreenode hparam1, tyvaluerecord *vreturned) {
 	
 	/* JES: 10/28/2002, 9.1b1 -- ScriptError if the file couldn't be parsed for JPEG height/width instead of a silent failure */
 	if (!fl) {
-		langerrormessage ("\x49""Can't get JPEG height and width because the file isn't a valid JPEG file.");
+		langerrormessage (BIGSTRING ("\x49""Can't get JPEG height and width because the file isn't a valid JPEG file."));
 		}
 	
 	return (false);
@@ -3305,7 +3305,7 @@ static boolean additemtopagetable (hdlhashtable htable, hdlhashnode hnode, hdlha
 		switch (objecttype) {
 			
 			case tablevaluetype:
-				if (equalstrings (lowername, "\x05" "prefs")) {
+				if (equalstrings (lowername, BIGSTRING ("\x05" "prefs"))) {
 					hdlhashtable ht;
 					hdlhashnode hn;
 					
@@ -3436,12 +3436,12 @@ static boolean buildpagetableverb (hdltreenode hparam1, tyvaluerecord *vreturned
 				//	if lowername == "ftpsite" {	 // dmb: pulled this out of additemtopagetable
 					//	adrpagetable^.subdirectoryPath = subdirpath;
 					//	adrpagetable^.adrSiteRootTable = nomad}; Ç4.2
-				if (equalidentifiers (name, "\x08" "#ftpsite") && !hashtablesymbolexists (hpagetable, str_ftpsite)) {
+				if (equalidentifiers (name, BIGSTRING ("\x08" "#ftpsite")) && !hashtablesymbolexists (hpagetable, str_ftpsite)) {
 					
-					if (!langassignstringvalue (hpagetable, "\x10" "subdirectoryPath", subdirpath))
+					if (!langassignstringvalue (hpagetable, BIGSTRING ("\x10" "subdirectoryPath"), subdirpath))
 						return (false);
 					
-					if (!langassignaddressvalue (hpagetable, "\x10" "adrSiteRootTable", &nomad))
+					if (!langassignaddressvalue (hpagetable, BIGSTRING ("\x10" "adrSiteRootTable"), &nomad))
 						return (false);
 					}
 				
@@ -3458,12 +3458,12 @@ static boolean buildpagetableverb (hdltreenode hparam1, tyvaluerecord *vreturned
 		//	if defined (nomad^.tools) {
 		//		addItemToPageTable (@nomad^.tools)};
 		
-		if (hashtablelookupnode (nomadtable, "\x05" "tools", &hn))
+		if (hashtablelookupnode (nomadtable, BIGSTRING ("\x05" "tools"), &hn))
 			additemtopagetable (nomadtable, hn, hpagetable);
 		
 		//	if defined (nomad^.glossary) {
 		//		addItemToPageTable (@nomad^.glossary)};
-		if (hashtablelookupnode (nomadtable, "\x08" "glossary", &hn))
+		if (hashtablelookupnode (nomadtable, BIGSTRING ("\x08" "glossary"), &hn))
 			additemtopagetable (nomadtable, hn, hpagetable);
 		
 		//	subdirpath = nameOf (nomad^) + pc + subdirpath;
@@ -3853,10 +3853,10 @@ static boolean runoutlinedirectivesverb (hdltreenode hp1, tyvaluerecord *v) {
 			
 			newtype = (tyexternalid) -1;
 			
-			if (equalstrings (lastdirective, "\x06" "define"))
+			if (equalstrings (lastdirective, BIGSTRING ("\x06" "define")))
 				newtype = idoutlineprocessor;
 			
-			else if (equalstrings (lastdirective, "\x0c" "definescript"))
+			else if (equalstrings (lastdirective, BIGSTRING ("\x0c" "definescript")))
 				newtype = idscriptprocessor;
 			
 			if (newtype != (tyexternalid) -1) {
@@ -4119,7 +4119,7 @@ static boolean glossarypatcherverb (hdltreenode hp1, tyvaluerecord *v) {
 		if (!findinparenttable (nomad.ht, &nomad.ht, nomad.bs))
 			break;
 
-		if (!pushtexthandle ("\x03" "../", hurl))
+		if (!pushtexthandle (BIGSTRING ("\x03" "../"), hurl))
 			goto exit;
 		}/*while*/
 
@@ -4146,7 +4146,7 @@ static boolean glossarypatcherverb (hdltreenode hp1, tyvaluerecord *v) {
 		
 		ix = ixstart + stringlength (str_glosspatch);
 		
-		ixend = textpatternmatch (*s.data + ix, s.eof - ix, "\x02" "]]", false);
+		ixend = textpatternmatch (*s.data + ix, s.eof - ix, BIGSTRING ("\x02" "]]"), false);
 		
 		if (ixend < 0)
 			ixend = s.eof;
@@ -4361,7 +4361,7 @@ static boolean getpagetableaddressverb (hdltreenode hp1, tyvaluerecord *v) {
 	if (!langcheckparamcount (hp1, 0))
 		return (false);
 
-	if (!langfastaddresstotable (systemtable, "\x17" "temp.pageTableAddresses", &ptatable))
+	if (!langfastaddresstotable (systemtable, BIGSTRING ("\x17" "temp.pageTableAddresses"), &ptatable))
 		return (false);
 	
 	numbertostring (getthreadid (getcurrentthread ()), bsname);
@@ -4479,7 +4479,7 @@ static boolean parsepageaddress (bigstring bsaddress, bigstring bspage, bigstrin
 		return (true);
 		}
 	
-	if (patternmatch ("\x03" "://", bsaddress)) { // an url
+	if (patternmatch (BIGSTRING ("\x03" "://"), bsaddress)) { // an url
 	
 		ctwords = countwords (bsaddress, '/');
 		
@@ -4537,7 +4537,7 @@ static boolean isstalepageaddress (bigstring bsaddress) {
 		return (hashtablesymbolexists (hparent, bspage));
 		}
 	
-	if (patternmatch ("\x03" "://", bsaddress)) { // an url
+	if (patternmatch (BIGSTRING ("\x03" "://"), bsaddress)) { // an url
 	
 		return (false); // not handled now
 		}
@@ -4628,7 +4628,7 @@ static boolean deindexpage (hdlhashtable hindex, bigstring bspagekey) {
 						if (!hashtabledelete (hwords, bsword))
 							return (false);
 					}
-				else if (equalstrings (bsword, "\x07" "item #1")) {
+				else if (equalstrings (bsword, BIGSTRING ("\x07" "item #1"))) {
 					
 					if (!hashtabledelete (hwords, bsword))
 						return (false);
@@ -4639,7 +4639,7 @@ static boolean deindexpage (hdlhashtable hindex, bigstring bspagekey) {
 				if (!hashtabledelete (hindex, bsletter))
 					return (false);
 			}
-		else if (equalstrings (bsletter, "\x07" "item #1")) {
+		else if (equalstrings (bsletter, BIGSTRING ("\x07" "item #1"))) {
 	
 			if (!hashtabledelete (hindex, bsletter))
 				return (false);
@@ -4731,7 +4731,7 @@ static boolean indexpage (bigstring bsaddress, bigstring bsurl, bigstring bstitl
 		poptrailingchars (bsword, 's'); //pop off trailing s's
 		
 		if (stringlength (bsword) < 3) //we don't index 1- and 2-letter words, except for "op" and "wp"
-			if (!equalstrings (bsword, "\x02" "op") && !equalstrings (bsword, "\x02" "wp"))
+			if (!equalstrings (bsword, BIGSTRING ("\x02" "op")) && !equalstrings (bsword, BIGSTRING ("\x02" "wp")))
 				continue;
 		
 		if (hashtablesymbolexists (hstopwords, bsword)) //check if this is on the list of words not to index
@@ -6153,7 +6153,7 @@ static boolean visitmethods (hdlhashnode hnode , Handle *h) {
 	bigstring bs;
 	
 	if (gethandlesize (*h) > 0)
-		if (!pushtexthandle ("\x02" ", ", *h))
+		if (!pushtexthandle (BIGSTRING ("\x02" ", "), *h))
 			return (false);
 	
 	gethashkey (hnode, bs);
@@ -6304,7 +6304,7 @@ static boolean webserveraddtoerrorlog (tyaddress *adrmethod, bigstring bstype, b
 	if (!getaddresspath (vaddress, bsaddress))
 		goto exit;
 
-	if (!newtexthandle ("\x0A" "^0: ^1: ^2", &htext)
+	if (!newtexthandle (BIGSTRING ("\x0A" "^0: ^1: ^2"), &htext)
 			|| !newtexthandle (bstype, &htype)
 			|| !newtexthandle (bserror, &herror)
 			|| !newtexthandle (bsaddress, &haddress)
@@ -6330,10 +6330,10 @@ static boolean webserveraddtoerrorlog (tyaddress *adrmethod, bigstring bstype, b
 	if (!langpushlisttext (hlist, htext)) /*consumes htext*/
 		goto exit;
 
-	if (!langpushliststring (hlist, "\x09" "webserver"))
+	if (!langpushliststring (hlist, BIGSTRING ("\x09" "webserver")))
 		goto exit;
 
-	if (!langrunscript ("\x1D" "system.verbs.builtins.log.add", &vparams, nil, &val))
+	if (!langrunscript (BIGSTRING ("\x1D" "system.verbs.builtins.log.add"), &vparams, nil, &val))
 		goto exit;
 
 exit:
@@ -6413,7 +6413,7 @@ static boolean webservercallresponder (tyaddress *pta, tyaddress *adrresponder, 
 			
 			tyvaluerecord vserve;
 			
-			if (!webservergetpref ("\x19" "flEnableDirectFileServing", &vserve))
+			if (!webservergetpref (BIGSTRING ("\x19" "flEnableDirectFileServing"), &vserve))
 				goto internal_error;
 			
 			if (!coercetoboolean (&vserve))
@@ -7188,15 +7188,15 @@ exit:
 
 
 static unsigned char * bswhatwerewedoing [] = {
-	"\x21" "Checking user.inetd.shutdown flag",
-	"\x13" "Creating paramtable",
-	"\x1e" "Adding client IP to paramtable",
-	"\x17" "Initializing paramtable",
-	"\x29" "Looking up timeout and chunksize settings",
-	"\x10" "Waiting for data",
-	"\x12" "Calling the daemon",
-	"\x24" "Returning the response to the client",
-	"\x0B" "Cleaning up"
+	BIGSTRING ("\x21" "Checking user.inetd.shutdown flag"),
+	BIGSTRING ("\x13" "Creating paramtable"),
+	BIGSTRING ("\x1e" "Adding client IP to paramtable"),
+	BIGSTRING ("\x17" "Initializing paramtable"),
+	BIGSTRING ("\x29" "Looking up timeout and chunksize settings"),
+	BIGSTRING ("\x10" "Waiting for data"),
+	BIGSTRING ("\x12" "Calling the daemon"),
+	BIGSTRING ("\x24" "Returning the response to the client"),
+	BIGSTRING ("\x0B" "Cleaning up")
 	};
 
 static boolean inetdaddtoerrorlog (long code, bigstring bserror, hdlhashtable hparamtable) {
@@ -7217,7 +7217,7 @@ static boolean inetdaddtoerrorlog (long code, bigstring bserror, hdlhashtable hp
 
 	/* get address of new table in log GDB */
 
-	if (!newtexthandle ("\x33""log.addToGuestDatabase (\"inetd\", flHourlyRoll:true)", &hscript))
+	if (!newtexthandle (BIGSTRING ("\x33""log.addToGuestDatabase (\"inetd\", flHourlyRoll:true)"), &hscript))
 		return (false);
 
 	if (!langrun (hscript, &vlogtable) || !coercetoaddress (&vlogtable)) /*htext is always consumed*/
@@ -7300,7 +7300,7 @@ static boolean inetdsupervisor (long stream, long refcon, tyvaluerecord * vretur
 		if (!fwsNetEventCloseStream (stream))
 			goto exit;
 
-		if (!langrunstring ("\x0C" "inetd.stop()", bsresult))
+		if (!langrunstring (BIGSTRING ("\x0C" "inetd.stop()"), bsresult))
 			goto exit;
 
 		goto done;
@@ -7684,7 +7684,7 @@ static boolean mrcalendargetdayaddressverb (hdltreenode hp1, tyvaluerecord *v) {
 		
 	setbooleanvalue (true, &val);
 	
-	if (!getoptionalparamvalue (hp1, &ctconsumed, &ctpositional, "\x08""flcreate", &val))
+	if (!getoptionalparamvalue (hp1, &ctconsumed, &ctpositional, BIGSTRING ("\x08""flcreate"), &val))
 		return (false);
 	
 	flcreate = val.data.flvalue;
@@ -7693,7 +7693,7 @@ static boolean mrcalendargetdayaddressverb (hdltreenode hp1, tyvaluerecord *v) {
 	
 	flnextparamislast = true;
 	
-	if (!getoptionalparamvalue (hp1, &ctconsumed, &ctpositional, "\x07""objtype", &val))
+	if (!getoptionalparamvalue (hp1, &ctconsumed, &ctpositional, BIGSTRING ("\x07""objtype"), &val))
 		return (false);
 	
 	idtype = val.data.ostypevalue;
@@ -7777,7 +7777,7 @@ error:
 
 	enablelangerror ();
 
-	langerrormessage ("\x76""Can't get the first address in the calendar because adrcalendar doesn't point to a valid non-empty calendar structure.");
+	langerrormessage (BIGSTRING ("\x76""Can't get the first address in the calendar because adrcalendar doesn't point to a valid non-empty calendar structure."));
 
 	return (false);
 	}/*mrcalendargetfirstaddressverb*/
@@ -7828,7 +7828,7 @@ error:
 
 	enablelangerror ();
 
-	langerrormessage ("\x72""Can't get the first day in the calendar because adrcalendar doesn't point to a valid non-empty calendar structure.");
+	langerrormessage (BIGSTRING ("\x72""Can't get the first day in the calendar because adrcalendar doesn't point to a valid non-empty calendar structure."));
 
 	return (false);
 	}/*mrcalendargetfirstday*/
@@ -7927,7 +7927,7 @@ error:
 
 	enablelangerror ();
 
-	langerrormessage ("\x75""Can't get the last address in the calendar because adrcalendar doesn't point to a valid non-empty calendar structure.");
+	langerrormessage (BIGSTRING ("\x75""Can't get the last address in the calendar because adrcalendar doesn't point to a valid non-empty calendar structure."));
 
 	return (false);
 	}/*mrcalendargetlastaddressverb*/
@@ -7991,7 +7991,7 @@ error:
 
 	enablelangerror ();
 
-	langerrormessage ("\x71""Can't get the last day in the calendar because adrcalendar doesn't point to a valid non-empty calendar structure.");
+	langerrormessage (BIGSTRING ("\x71""Can't get the last day in the calendar because adrcalendar doesn't point to a valid non-empty calendar structure."));
 
 	return (false);
 	}/*mrcalendargetlastday*/
@@ -8058,7 +8058,7 @@ static boolean mrcalendargetmostrecentaddress (tyaddress adrcalendar, unsigned l
 	
 	timedatestring (date, bsdate);
 	
-	parsedialogstring ("\x6e""Can't get the most recent address in the calendar because the calendar doesn't contain any elements before ^0.", bsdate, nil, nil, nil, bserror);
+	parsedialogstring (BIGSTRING ("\x6e""Can't get the most recent address in the calendar because the calendar doesn't contain any elements before ^0."), bsdate, nil, nil, nil, bserror);
 	
 	langerrormessage (bserror);
 	
@@ -8081,7 +8081,7 @@ static boolean mrcalendargetmostrecentaddressverb (hdltreenode hp1, tyvaluerecor
 		
 	setdatevalue (timenow (), &val);
 
-	if (!getoptionalparamvalue (hp1, &ctconsumed, &ctpositional, "\x01""d", &val))
+	if (!getoptionalparamvalue (hp1, &ctconsumed, &ctpositional, BIGSTRING ("\x01""d"), &val))
 		return (false);
 
 	date = val.data.datevalue;
@@ -8123,7 +8123,7 @@ static boolean mrcalendargetmostrecentdayverb (hdltreenode hp1, tyvaluerecord *v
 		
 	setdatevalue (timenow (), &val);
 
-	if (!getoptionalparamvalue (hp1, &ctconsumed, &ctpositional, "\x01""d", &val))
+	if (!getoptionalparamvalue (hp1, &ctconsumed, &ctpositional, BIGSTRING ("\x01""d"), &val))
 		return (false);
 
 	date = val.data.datevalue;
@@ -8159,7 +8159,7 @@ static boolean mrcalendargetmostrecentdayverb (hdltreenode hp1, tyvaluerecord *v
 	
 	timedatestring (date, bsdate);
 	
-	parsedialogstring ("\x6a""Can't get the most recent day in the calendar because the calendar doesn't contain any elements before ^0.", bsdate, nil, nil, nil, bserror);
+	parsedialogstring (BIGSTRING ("\x6a""Can't get the most recent day in the calendar because the calendar doesn't contain any elements before ^0."), bsdate, nil, nil, nil, bserror);
 	
 	langerrormessage (bserror);
 	
@@ -8216,7 +8216,7 @@ static boolean mrcalendargetnextaddress (tyaddress adrcalendar, unsigned long da
 	
 	timedatestring (date, bsdate);
 	
-	parsedialogstring ("\x66""Can't get the next address in the calendar because the calendar doesn't contain any elements after ^0.", bsdate, nil, nil, nil, bserror);
+	parsedialogstring (BIGSTRING ("\x66""Can't get the next address in the calendar because the calendar doesn't contain any elements after ^0."), bsdate, nil, nil, nil, bserror);
 	
 	langerrormessage (bserror);
 	
@@ -8239,7 +8239,7 @@ static boolean mrcalendargetnextaddressverb (hdltreenode hp1, tyvaluerecord *v) 
 		
 	setdatevalue (timenow (), &val);
 
-	if (!getoptionalparamvalue (hp1, &ctconsumed, &ctpositional, "\x01""d", &val))
+	if (!getoptionalparamvalue (hp1, &ctconsumed, &ctpositional, BIGSTRING ("\x01""d"), &val))
 		return (false);
 
 	date = val.data.datevalue;
@@ -8282,7 +8282,7 @@ static boolean mrcalendargetnextdayverb (hdltreenode hp1, tyvaluerecord *v) {
 		
 	setdatevalue (timenow (), &val);
 
-	if (!getoptionalparamvalue (hp1, &ctconsumed, &ctpositional, "\x01""d", &val))
+	if (!getoptionalparamvalue (hp1, &ctconsumed, &ctpositional, BIGSTRING ("\x01""d"), &val))
 		return (false);
 
 	date = val.data.datevalue;
@@ -8318,7 +8318,7 @@ static boolean mrcalendargetnextdayverb (hdltreenode hp1, tyvaluerecord *v) {
 	
 	timedatestring (date, bsdate);
 	
-	parsedialogstring ("\x62""Can't get the next day in the calendar because the calendar doesn't contain any elements after ^0.", bsdate, nil, nil, nil, bserror);
+	parsedialogstring (BIGSTRING ("\x62""Can't get the next day in the calendar because the calendar doesn't contain any elements after ^0."), bsdate, nil, nil, nil, bserror);
 	
 	langerrormessage (bserror);
 	
@@ -8360,7 +8360,7 @@ static boolean mrcalendarnavigateverb (hdltreenode hp1, tyvaluerecord *v) {
 	
 	if (!getaddressvalue (valday, &adrday.ht, adrday.bs) || !hashtablesymbolexists (adrday.ht, adrday.bs)) { /*consistency check*/
 		
-		langerrormessage ("\x64""Can't navigate the calendar structure because adrDay does not point to an existing calendar element.");
+		langerrormessage (BIGSTRING ("\x64""Can't navigate the calendar structure because adrDay does not point to an existing calendar element."));
 		
 		return (false);
 		}
@@ -8442,10 +8442,10 @@ on draw ( adrcalendar=nil, urlprefix="", colwidth=32, rowheight=22, tableborder=
 
 */
 
-#define str_calendartdwithinfo "\x1f""\t\t<td^0 width=\"^1\" height=\"^2\">"
-#define str_calendartdspacer "\x21""\t\t<td^0 colspan=\"^1\">&nbsp;</td>\r"
+#define str_calendartdwithinfo BIGSTRING ("\x1f""\t\t<td^0 width=\"^1\" height=\"^2\">")
+#define str_calendartdspacer BIGSTRING ("\x21""\t\t<td^0 colspan=\"^1\">&nbsp;</td>\r")
 
-#define str_calendartodaytemplate "\x09""<b>^0</b>"
+#define str_calendartodaytemplate BIGSTRING ("\x09""<b>^0</b>")
 
 #define dayofweektocolumn(i,f) ((((i) - ((f) - 1) + 6) % 7) + 1)
 #define columntodayofweek(i,f) ((((i) + ((f) - 1) - 1) % 7) + 1)
@@ -8497,7 +8497,7 @@ static boolean addclassattribute (handlestream *s, Handle hcssprefix, bigstring 
 	if (hcssprefix == nil)
 		return (true);
 			
-	if (!writehandlestreamstring (s, "\x08" " class=\""))
+	if (!writehandlestreamstring (s, BIGSTRING ("\x08" " class=\"")))
 		return (false);
 	
 	if (!writehandlestreamhandle (s, hcssprefix))
@@ -8521,7 +8521,7 @@ static boolean fillintemplate (Handle h, Handle hinsert) {
 	if (h == nil || hinsert == nil)
 		return (true);
 	
-	if (!newtexthandle ("\x03""***", &hplaceholder))
+	if (!newtexthandle (BIGSTRING ("\x03""***"), &hplaceholder))
 		return (false);
 		
 	fl = textfindreplace (hplaceholder, hinsert, h, true, false);	
@@ -8577,20 +8577,20 @@ addday (
 	
 	fldaylinked = (hmonthtable != nil) && hashtablesymbolexists (hmonthtable, paddeddaystring);
 
-	if (!writehandlestreamstring (s, "\x05""\t\t<td"))
+	if (!writehandlestreamstring (s, BIGSTRING ("\x05""\t\t<td")))
 		return (false);
 	
 	if (fltoday) {
-		if (!addclassattribute (s, hcssprefix, "\x12" "CalendarDayCurrent"))
+		if (!addclassattribute (s, hcssprefix, BIGSTRING ("\x12" "CalendarDayCurrent")))
 			return (false);
 		}
 	else {		
 		if (fldaylinked) {
-			if (!addclassattribute (s, hcssprefix, "\x11" "CalendarDayLinked"))
+			if (!addclassattribute (s, hcssprefix, BIGSTRING ("\x11" "CalendarDayLinked")))
 				return (false);
 			}
 		else {
-			if (!addclassattribute (s, hcssprefix, "\x0b" "CalendarDay"))
+			if (!addclassattribute (s, hcssprefix, BIGSTRING ("\x0b" "CalendarDay")))
 				return (false);
 			}
 		}
@@ -8603,7 +8603,7 @@ addday (
 
 	if (flfirstcolumn) {
 
-		if (!writehandlestreamstring (s, "\x09"" height=\""))
+		if (!writehandlestreamstring (s, BIGSTRING ("\x09"" height=\"")))
 			return (false);
 
 		if (!writehandlestreamhandle (s, hrowheight))
@@ -8632,7 +8632,7 @@ addday (
 
 		if (fldaylinked) {
 
-			if (!newtexthandle ("\x09""<a href=\"", &hlink))
+			if (!newtexthandle (BIGSTRING ("\x09""<a href=\""), &hlink))
 				goto error;
 
 			if (!pushhandle (hurlprefix, hlink))
@@ -8641,13 +8641,13 @@ addday (
 			if (!pushtexthandle (paddeddaystring, hlink))
 				goto error;
 
-			if (!pushtexthandle ("\x02""\">", hlink))
+			if (!pushtexthandle (BIGSTRING ("\x02""\">"), hlink))
 				goto error;
 
 			if (!pushtexthandle (daystring, hlink))
 				goto error;
 
-			if (!pushtexthandle ("\x04""</a>", hlink))
+			if (!pushtexthandle (BIGSTRING ("\x04""</a>"), hlink))
 				goto error;
 			}
 
@@ -8664,7 +8664,7 @@ addday (
 	if (!writehandlestreamhandle (s, hday))
 		goto error;
 
-	if (!writehandlestreamstring (s, "\x05""</td>"))
+	if (!writehandlestreamstring (s, BIGSTRING ("\x05""</td>")))
 		goto error;
 
 	if (!writehandlestreamchar (s, '\r'))
@@ -8779,19 +8779,19 @@ static boolean getmonthurl (unsigned long curdate, Handle hurldelimiter, Handle 
 
 static boolean openoutertable (handlestream *s, Handle hcssprefix, Handle htableborder) {
 
-	if (!writehandlestreamstring (s, "\x06" "<table"))
+	if (!writehandlestreamstring (s, BIGSTRING ("\x06" "<table")))
 		return (false);
 	
-	if (!addclassattribute (s, hcssprefix, "\x0d" "CalendarTable"))
+	if (!addclassattribute (s, hcssprefix, BIGSTRING ("\x0d" "CalendarTable")))
 		return (false);
 
-	if (!writehandlestreamstring (s, "\x19" " cellspacing=\"0\" border=\""))
+	if (!writehandlestreamstring (s, BIGSTRING ("\x19" " cellspacing=\"0\" border=\"")))
 		return (false);
 
 	if (!writehandlestreamhandle (s, htableborder))
 		return (false);
 
-	if (!writehandlestreamstring (s, "\x03" "\">\r"))
+	if (!writehandlestreamstring (s, BIGSTRING ("\x03" "\">\r")))
 		return (false);
 
 	return (true);
@@ -8819,25 +8819,25 @@ static boolean addmonthyearrow (handlestream *s, tyvaluerecord vmonthlist, unsig
 	if (!fl)
 		return (false);
 	
-	if (!writehandlestreamstring (s, "\x04" "\t<tr"))
+	if (!writehandlestreamstring (s, BIGSTRING ("\x04" "\t<tr")))
 		return (false);
 
-	if (!addclassattribute (s, hcssprefix, "\x14" "CalendarMonthYearRow"))
+	if (!addclassattribute (s, hcssprefix, BIGSTRING ("\x14" "CalendarMonthYearRow")))
 		return (false);
 
-	if (!writehandlestreamstring (s, "\x04" "><td"))
+	if (!writehandlestreamstring (s, BIGSTRING ("\x04" "><td")))
 		return (false);
 
 	if (!writehandlestreamhandle (s, hbgcolor))
 		return (false);
 
-	if (!writehandlestreamstring (s, "\x0d" " colspan=\"7\">"))
+	if (!writehandlestreamstring (s, BIGSTRING ("\x0d" " colspan=\"7\">")))
 		return (false);
 
 	if (!writehandlestreamhandle (s, hmonthyeartemplate))
 		return (false);
 
-	if (!writehandlestreamstring (s, "\x0b" "</td></tr>\r"))
+	if (!writehandlestreamstring (s, BIGSTRING ("\x0b" "</td></tr>\r")))
 		return (false);
 	
 	return (true);
@@ -8860,13 +8860,13 @@ static boolean adddaynamesrow (handlestream *s, Handle hcssprefix, Handle hbgcol
 	Handle htd = nil;
 	long i;
 
-	if (!writehandlestreamstring (s, "\x04" "\t<tr"))
+	if (!writehandlestreamstring (s, BIGSTRING ("\x04" "\t<tr")))
 		goto error;
 
-	if (!addclassattribute (s, hcssprefix, "\x12" "CalendarDayNameRow"))
+	if (!addclassattribute (s, hcssprefix, BIGSTRING ("\x12" "CalendarDayNameRow")))
 		goto error;
 
-	if (!writehandlestreamstring (s, "\x02" ">\r"))
+	if (!writehandlestreamstring (s, BIGSTRING ("\x02" ">\r")))
 		goto error;
 
 	if (!newtexthandle (str_calendartdwithinfo, &htd))
@@ -8899,11 +8899,11 @@ static boolean adddaynamesrow (handlestream *s, Handle hcssprefix, Handle hbgcol
 		if (!fl)
 			goto error;
 			
-		if (!writehandlestreamstring (s, "\x06" "</td>\r"))
+		if (!writehandlestreamstring (s, BIGSTRING ("\x06" "</td>\r")))
 			goto error;
 		}/*for*/	
 
-	if (!writehandlestreamstring (s, "\x08" "\t\t</tr>\r"))
+	if (!writehandlestreamstring (s, BIGSTRING ("\x08" "\t\t</tr>\r")))
 		goto error;
 	
 	disposehandle (htd);
@@ -8982,13 +8982,13 @@ static boolean adddayrows (handlestream *s, unsigned long curdate, long firstday
 	
 	/*begin writing table*/
 
-	if (!writehandlestreamstring (s, "\x04" "\t<tr"))
+	if (!writehandlestreamstring (s, BIGSTRING ("\x04" "\t<tr")))
 		return (false);
 
-	if (!addclassattribute (s, hcssprefix, "\x0e" "CalendarDayRow"))
+	if (!addclassattribute (s, hcssprefix, BIGSTRING ("\x0e" "CalendarDayRow")))
 		return (false);
 
-	if (!writehandlestreamstring (s, "\x02" ">\r"))
+	if (!writehandlestreamstring (s, BIGSTRING ("\x02" ">\r")))
 		return (false);
 
 	if (firstcolumn > 1) {
@@ -9025,7 +9025,7 @@ static boolean adddayrows (handlestream *s, unsigned long curdate, long firstday
 		daynum++;
 		}
 
-	if (!writehandlestreamstring (s, "\x08" "\t\t</tr>\r"))
+	if (!writehandlestreamstring (s, BIGSTRING ("\x08" "\t\t</tr>\r")))
 		return (false);
 
 	/*
@@ -9041,13 +9041,13 @@ static boolean adddayrows (handlestream *s, unsigned long curdate, long firstday
 
 	while (daynum <= maxdays) {
 
-		if (!writehandlestreamstring (s, "\x04" "\t<tr"))
+		if (!writehandlestreamstring (s, BIGSTRING ("\x04" "\t<tr")))
 			return (false);
 
-		if (!addclassattribute (s, hcssprefix, "\x0e" "CalendarDayRow"))
+		if (!addclassattribute (s, hcssprefix, BIGSTRING ("\x0e" "CalendarDayRow")))
 			return (false);
 
-		if (!writehandlestreamstring (s, "\x02" ">\r"))
+		if (!writehandlestreamstring (s, BIGSTRING ("\x02" ">\r")))
 			return (false);
 
 		for (i = 1; i <= 7; i++) {
@@ -9086,7 +9086,7 @@ static boolean adddayrows (handlestream *s, unsigned long curdate, long firstday
 			daynum++;
 			}
 
-		if (!writehandlestreamstring (s, "\x08" "\t\t</tr>\r"))
+		if (!writehandlestreamstring (s, BIGSTRING ("\x08" "\t\t</tr>\r")))
 			return (false);
 		}
 	
@@ -9216,7 +9216,7 @@ static boolean htmlcalendardraw (handlestream *s,
 		</table>
 	*/
 
-	if (!writehandlestreamstring (s, "\x0A""\t</table>\r"))
+	if (!writehandlestreamstring (s, BIGSTRING ("\x0A""\t</table>\r")))
 		return (false);
 
 	return (true);
@@ -10107,9 +10107,9 @@ static boolean neutermacros (Handle h, hdlhashtable hmacrostable) {
 						if (!loadfromhandletohandle (s.data, &ixload, len, true, &hrepl))
 							goto exit;
 
-						fl = stringfindreplace ("\x01" "{", "\x06" "&#123;", hrepl, true, false);
+						fl = stringfindreplace (BIGSTRING ("\x01" "{"), BIGSTRING ("\x06" "&#123;"), hrepl, true, false);
 
-						fl = fl && stringfindreplace ("\x01" "}", "\x06" "&#125;", hrepl, true, false);
+						fl = fl && stringfindreplace (BIGSTRING ("\x01" "}"), BIGSTRING ("\x06" "&#125;"), hrepl, true, false);
 						
 						if (!fl) {
 
@@ -10132,7 +10132,7 @@ static boolean neutermacros (Handle h, hdlhashtable hmacrostable) {
 
 			else {
 
-				if (!mergehandlestreamstring (&s, 1, "\x06" "&#125;"))
+				if (!mergehandlestreamstring (&s, 1, BIGSTRING ("\x06" "&#125;")))
 					goto exit;
 
 				s.pos--;
@@ -10156,9 +10156,9 @@ static boolean neutermacros (Handle h, hdlhashtable hmacrostable) {
 		if (!loadfromhandletohandle (s.data, &ixload, len, true, &hrepl))
 			goto exit;
 
-		fl = stringfindreplace ("\x01" "{", "\x06" "&#123;", hrepl, true, false);
+		fl = stringfindreplace (BIGSTRING ("\x01" "{"), BIGSTRING ("\x06" "&#123;"), hrepl, true, false);
 
-		fl = fl && stringfindreplace ("\x01" "}", "\x06" "&#125;", hrepl, true, false);
+		fl = fl && stringfindreplace (BIGSTRING ("\x01" "}"), BIGSTRING ("\x06" "&#125;"), hrepl, true, false);
 						
 		if (!fl) {
 
@@ -10320,7 +10320,7 @@ static boolean neutertags (Handle h, hdlhashtable htagstable) {
 
 			if (ixend == 0) { /*hit end of stream, tag doesn't end*/
 
-				if (!mergehandlestreamstring (&s, 1, "\x04" "&lt;"))
+				if (!mergehandlestreamstring (&s, 1, BIGSTRING ("\x04" "&lt;")))
 					goto exit;
 				
 				continue; //don't increment our position any further
@@ -10358,7 +10358,7 @@ static boolean neutertags (Handle h, hdlhashtable htagstable) {
 						}
 					}
 				else
-					if (!mergehandlestreamstring (&s, 1, "\x04" "&lt;"))
+					if (!mergehandlestreamstring (&s, 1, BIGSTRING ("\x04" "&lt;")))
 						goto exit;
 
 				s.pos += ix - ixstart - 1;

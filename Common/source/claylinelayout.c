@@ -281,7 +281,7 @@ static void setcomputedfields (hdltableformats hf) {
 			(**hf).computedlineinfo.filenamewidth = (globalfontinfo.widMax * 31) / 2;
 		#endif
 		#ifdef WIN95VERSION
-			(**hf).computedlineinfo.filenamewidth = stringpixels ("\x02" "Wi") * 16;
+			(**hf).computedlineinfo.filenamewidth = stringpixels (BIGSTRING ("\x02" "Wi")) * 16;
 		#endif
 
 		popstyle ();
@@ -293,7 +293,7 @@ static void setcomputedfields (hdltableformats hf) {
 	
 		(**hf).computedlineinfo.othertextlineheight = globalfontinfo.ascent + globalfontinfo.descent;
 	
-		(**hf).computedlineinfo.datewidth = stringpixels ("\x08" "11:59 AM");
+		(**hf).computedlineinfo.datewidth = stringpixels (BIGSTRING ("\x08" "11:59 AM"));
 	
 		(**hf).computedlineinfo.datewidth += (**hf).computedlineinfo.datewidth / 3;
 	
@@ -567,7 +567,7 @@ static void getfatsizestring (tybrowserinfo *browserinfo, bigstring bs) {
 		
 		shorttostring (ctfiles, bs);
 		
-		pushstring ("\x05" " item", bs);
+		pushstring (BIGSTRING ("\x05" " item"), bs);
 		
 		if (ctfiles != 1)
 			pushchar ('s', bs);
@@ -858,7 +858,7 @@ boolean claypostdrawline (hdlheadrecord hnode, const Rect *linerect, boolean fls
 				
 				hashgettypestring (val, bstype);
 				
-				pushstring ("\x02" ", ", bstype);
+				pushstring (BIGSTRING ("\x02" ", "), bstype);
 				
 				insertstring (bstype, bs);
 				}
@@ -1429,7 +1429,7 @@ boolean clayinitlinelayout (tylinelayout *layout) {
 	
 	hdlhashtable hprefs;
 	
-	if (!langfastaddresstotable (roottable, "\x17" "user.prefs.tableDisplay", &hprefs))
+	if (!langfastaddresstotable (roottable, BIGSTRING ("\x17" "user.prefs.tableDisplay"), &hprefs))
 		return (false);
 	
 	return (claytabletolayout (hprefs, layout));

@@ -193,28 +193,28 @@ boolean opattributesgetpackedtablevalue (hdlheadrecord hnode, tyvaluerecord *val
 	
 	if (!ophasrefcon (hnode)) {/*if no refcon, no attributes*/
 	
-		langerrormessage ("\x39""Can't get attributes because this headline has no refcon.");
+		langerrormessage (BIGSTRING ("\x39""Can't get attributes because this headline has no refcon."));
 		
 		goto exit1;
 		}
 	
 	if (!langunpackvalue (hrefcon, &linkedval)) { /*try to unpack the refcon*/
 		
-		langerrormessage ("\x3e""Can't get attributes because of an error unpacking the refcon.");
+		langerrormessage (BIGSTRING ("\x3e""Can't get attributes because of an error unpacking the refcon."));
 
 		goto exit1;
 		}
 	
 	if (linkedval.valuetype != binaryvaluetype) { /*must be a binary*/
 		
-		langerrormessage ("\x3e""Can't get attributes because the refcon is not of binary type.");
+		langerrormessage (BIGSTRING ("\x3e""Can't get attributes because the refcon is not of binary type."));
 
 		goto exit2;
 		}
 	
 	if (!langunpackvalue (linkedval.data.binaryvalue, val)) { /*it's a packed binary: unpack it.*/
 		
-		langerrormessage ("\x3e""Can't get attributes because of an error unpacking the refcon.");
+		langerrormessage (BIGSTRING ("\x3e""Can't get attributes because of an error unpacking the refcon."));
 
 		goto exit2;
 		}
@@ -276,7 +276,7 @@ boolean opattributesgettypestring (hdlheadrecord hnode, bigstring bstype) {
 		
 		goto exit1;
 	
-	if (hashtablelookup (htable, "\x04""type", &valheadlinetype, &hnheadlinetype)) {
+	if (hashtablelookup (htable, BIGSTRING ("\x04""type"), &valheadlinetype, &hnheadlinetype)) {
 	
 		pullstringvalue (&valheadlinetype, bstype);
 		

@@ -291,261 +291,261 @@ unsigned char * iso8859table [256] = {
 
 	/*127*/	nil,
 
-	/*128*/ "&Auml;",
+	/*128*/ BIGSTRING ("&Auml;"),
 
-	/*129*/ "&Aring;",
+	/*129*/ BIGSTRING ("&Aring;"),
 
-	/*130*/ "&Ccedil;",
+	/*130*/ BIGSTRING ("&Ccedil;"),
 
-	/*131*/ "&Eacute;",
+	/*131*/ BIGSTRING ("&Eacute;"),
 
-	/*132*/ "&Ntilde;",
+	/*132*/ BIGSTRING ("&Ntilde;"),
 
-	/*133*/ "&Ouml;",
+	/*133*/ BIGSTRING ("&Ouml;"),
 
-	/*134*/ "&Uuml;",
+	/*134*/ BIGSTRING ("&Uuml;"),
 
-	/*135*/ "&aacute;",
+	/*135*/ BIGSTRING ("&aacute;"),
 
-	/*136*/ "&agrave;",
+	/*136*/ BIGSTRING ("&agrave;"),
 
-	/*137*/ "&acirc;",
+	/*137*/ BIGSTRING ("&acirc;"),
 
-	/*138*/ "&auml;",
+	/*138*/ BIGSTRING ("&auml;"),
 
-	/*139*/ "&atilde;",
+	/*139*/ BIGSTRING ("&atilde;"),
 
-	/*140*/ "&aring;",
+	/*140*/ BIGSTRING ("&aring;"),
 
-	/*141*/ "&ccedil;",
+	/*141*/ BIGSTRING ("&ccedil;"),
 
-	/*142*/ "&eacute;",
+	/*142*/ BIGSTRING ("&eacute;"),
 
-	/*143*/ "&egrave;",
+	/*143*/ BIGSTRING ("&egrave;"),
 
-	/*144*/ "&ecirc;",
+	/*144*/ BIGSTRING ("&ecirc;"),
 
-	/*145*/ "&euml;",
+	/*145*/ BIGSTRING ("&euml;"),
 
-	/*146*/ "&iacute;",
+	/*146*/ BIGSTRING ("&iacute;"),
 
-	/*147*/ "&igrave;",
+	/*147*/ BIGSTRING ("&igrave;"),
 
-	/*148*/ "&icirc;",
+	/*148*/ BIGSTRING ("&icirc;"),
 
-	/*149*/ "&iuml;",
+	/*149*/ BIGSTRING ("&iuml;"),
 
-	/*150*/ "&ntilde;",
+	/*150*/ BIGSTRING ("&ntilde;"),
 
-	/*151*/ "&oacute;",
+	/*151*/ BIGSTRING ("&oacute;"),
 
-	/*152*/ "&ograve;",
+	/*152*/ BIGSTRING ("&ograve;"),
 
-	/*153*/ "&ocirc;",
+	/*153*/ BIGSTRING ("&ocirc;"),
 
-	/*154*/ "&ouml;",
+	/*154*/ BIGSTRING ("&ouml;"),
 
-	/*155*/ "&otilde;",
+	/*155*/ BIGSTRING ("&otilde;"),
 
-	/*156*/ "&uacute;",
+	/*156*/ BIGSTRING ("&uacute;"),
 
-	/*157*/ "&ugrave;",
+	/*157*/ BIGSTRING ("&ugrave;"),
 
-	/*158*/ "&ucirc;",
+	/*158*/ BIGSTRING ("&ucirc;"),
 
-	/*159*/ "&uuml;",
+	/*159*/ BIGSTRING ("&uuml;"),
 
-	/*160*/ "[sgl dagger]",
+	/*160*/ BIGSTRING ("[sgl dagger]"),
 
-	/*161*/ "&#176;",
+	/*161*/ BIGSTRING ("&#176;"),
 
-	/*162*/ "&#162;",
+	/*162*/ BIGSTRING ("&#162;"),
 
-	/*163*/ "&#163;",
+	/*163*/ BIGSTRING ("&#163;"),
 
-	/*164*/ "&#167;",
+	/*164*/ BIGSTRING ("&#167;"),
 
-	/*165*/ "o", //"[bullet]",
+	/*165*/ BIGSTRING ("o"), //"[bullet]",
 
-	/*166*/ "&#182;",
+	/*166*/ BIGSTRING ("&#182;"),
 
-	/*167*/ "&szlig;",
+	/*167*/ BIGSTRING ("&szlig;"),
 
-	/*168*/ "&reg;",
+	/*168*/ BIGSTRING ("&reg;"),
 
-	/*169*/ "&copy;",
+	/*169*/ BIGSTRING ("&copy;"),
 
-	/*170*/ "[trademark]",
+	/*170*/ BIGSTRING ("[trademark]"),
 
-	/*171*/ "&#180;",
+	/*171*/ BIGSTRING ("&#180;"),
 
-	/*172*/ "&#168;",
+	/*172*/ BIGSTRING ("&#168;"),
 
-	/*173*/ "[not equal]",
+	/*173*/ BIGSTRING ("[not equal]"),
 
-	/*174*/ "&AElig;",
+	/*174*/ BIGSTRING ("&AElig;"),
 
-	/*175*/ "&Oslash;",
+	/*175*/ BIGSTRING ("&Oslash;"),
 
-	/*176*/ "°",
+	/*176*/ BIGSTRING ("°"),
 
-	/*177*/ "&#177;",
+	/*177*/ BIGSTRING ("&#177;"),
 
-	/*178*/ "[less equal]",
+	/*178*/ BIGSTRING ("[less equal]"),
 
-	/*179*/ "[greater equal]",
+	/*179*/ BIGSTRING ("[greater equal]"),
 
-	/*180*/ "&#165;",
+	/*180*/ BIGSTRING ("&#165;"),
 
-	/*181*/ "&#181;",
+	/*181*/ BIGSTRING ("&#181;"),
 
-	/*182*/ "[partial diff]",
+	/*182*/ BIGSTRING ("[partial diff]"),
 
-	/*183*/ "[sigma]",
+	/*183*/ BIGSTRING ("[sigma]"),
 
-	/*184*/ "[product]",
+	/*184*/ BIGSTRING ("[product]"),
 
-	/*185*/ "[pi]",
+	/*185*/ BIGSTRING ("[pi]"),
 
-	/*186*/ "[integral]",
+	/*186*/ BIGSTRING ("[integral]"),
 
-	/*187*/ "&#186;",
+	/*187*/ BIGSTRING ("&#186;"),
 
-	/*188*/ "&#170;",
+	/*188*/ BIGSTRING ("&#170;"),
 
-	/*189*/ "[omega]",
+	/*189*/ BIGSTRING ("[omega]"),
 
-	/*190*/ "&aelig;",
+	/*190*/ BIGSTRING ("&aelig;"),
 
-	/*191*/ "&oslash;",
+	/*191*/ BIGSTRING ("&oslash;"),
 
-	/*192*/ "&#191;",
+	/*192*/ BIGSTRING ("&#191;"),
 
-	/*193*/ "&#161;",
+	/*193*/ BIGSTRING ("&#161;"),
 
-	/*194*/ "&#172;",
+	/*194*/ BIGSTRING ("&#172;"),
 
-	/*195*/ "[radical]",
+	/*195*/ BIGSTRING ("[radical]"),
 
-	/*196*/ "[florin]",
+	/*196*/ BIGSTRING ("[florin]"),
 
-	/*197*/ "[approx equal]",
+	/*197*/ BIGSTRING ("[approx equal]"),
 
-	/*198*/ "[delta]",
+	/*198*/ BIGSTRING ("[delta]"),
 
-	/*199*/ "&#171;",
+	/*199*/ BIGSTRING ("&#171;"),
 
-	/*200*/ "&#187;",
+	/*200*/ BIGSTRING ("&#187;"),
 
-	/*201*/ "...", // "[...]",
+	/*201*/ BIGSTRING ("..."), // "[...]",
 
-	/*202*/ "&nbsp;",
+	/*202*/ BIGSTRING ("&nbsp;"),
 
-	/*203*/ "&Agrave;",
+	/*203*/ BIGSTRING ("&Agrave;"),
 
-	/*204*/ "&Atilde;",
+	/*204*/ BIGSTRING ("&Atilde;"),
 
-	/*205*/ "&Otilde;",
+	/*205*/ BIGSTRING ("&Otilde;"),
 
-	/*206*/ "[OE]",
+	/*206*/ BIGSTRING ("[OE]"),
 
-	/*207*/ "[oe]",
+	/*207*/ BIGSTRING ("[oe]"),
 
-	/*208*/ "-", //"[en dash]",
+	/*208*/ BIGSTRING ("-"), //"[en dash]",
 
-	/*209*/ "--", //"[em dash]",
+	/*209*/ BIGSTRING ("--"), //"[em dash]",
 
-	/*210*/ "\"", //"[open \"]",
+	/*210*/ BIGSTRING ("\""), //"[open \"]",
 
-	/*211*/ "\"", //"[close \"]",
+	/*211*/ BIGSTRING ("\""), //"[close \"]",
 
-	/*212*/ "'", //"[open ']",
+	/*212*/ BIGSTRING ("'"), //"[open ']",
 
-	/*213*/ "'", //"[close ']",
+	/*213*/ BIGSTRING ("'"), //"[close ']",
 
-	/*214*/ "&#247;",
+	/*214*/ BIGSTRING ("&#247;"),
 
-	/*215*/ "[lozenge]",
+	/*215*/ BIGSTRING ("[lozenge]"),
 
-	/*216*/ "&yuml;",
+	/*216*/ BIGSTRING ("&yuml;"),
 
-	/*217*/ "[Y&#168;]",
+	/*217*/ BIGSTRING ("[Y&#168;]"),
 
-	/*218*/ "/",
+	/*218*/ BIGSTRING ("/"),
 
-	/*219*/ "&#164;",
+	/*219*/ BIGSTRING ("&#164;"),
 
-	/*220*/ "[&lt;]",
+	/*220*/ BIGSTRING ("[&lt;]"),
 
-	/*221*/ "[&gt;]",
+	/*221*/ BIGSTRING ("[&gt;]"),
 
-	/*222*/ "[fi]",
+	/*222*/ BIGSTRING ("[fi]"),
 
-	/*223*/ "[fl]",
+	/*223*/ BIGSTRING ("[fl]"),
 
-	/*224*/ "[dbl dagger]",
+	/*224*/ BIGSTRING ("[dbl dagger]"),
 
-	/*225*/ "&#183;",
+	/*225*/ BIGSTRING ("&#183;"),
 
-	/*226*/ "[base ']",
+	/*226*/ BIGSTRING ("[base ']"),
 
-	/*227*/ "[base \"]",
+	/*227*/ BIGSTRING ("[base \"]"),
 
-	/*228*/ "[per thou]",
+	/*228*/ BIGSTRING ("[per thou]"),
 
-	/*229*/ "&Acirc;",
+	/*229*/ BIGSTRING ("&Acirc;"),
 
-	/*230*/ "&Ecirc;",
+	/*230*/ BIGSTRING ("&Ecirc;"),
 
-	/*231*/ "&Aacute;",
+	/*231*/ BIGSTRING ("&Aacute;"),
 
-	/*232*/ "&Euml;",
+	/*232*/ BIGSTRING ("&Euml;"),
 
-	/*233*/ "&Egrave;",
+	/*233*/ BIGSTRING ("&Egrave;"),
 
-	/*234*/ "&Iacute;",
+	/*234*/ BIGSTRING ("&Iacute;"),
 
-	/*235*/ "&Icirc;",
+	/*235*/ BIGSTRING ("&Icirc;"),
 
-	/*236*/ "&Iuml;",
+	/*236*/ BIGSTRING ("&Iuml;"),
 
-	/*237*/ "&Igrave;",
+	/*237*/ BIGSTRING ("&Igrave;"),
 
-	/*238*/ "&Oacute;",
+	/*238*/ BIGSTRING ("&Oacute;"),
 
-	/*239*/ "&Ocirc;",
+	/*239*/ BIGSTRING ("&Ocirc;"),
 
-	/*240*/ "[apple]",
+	/*240*/ BIGSTRING ("[apple]"),
 
-	/*241*/ "&Ograve;",
+	/*241*/ BIGSTRING ("&Ograve;"),
 
-	/*242*/ "&Uacute;",
+	/*242*/ BIGSTRING ("&Uacute;"),
 
-	/*243*/ "&Ucirc;",
+	/*243*/ BIGSTRING ("&Ucirc;"),
 
-	/*244*/ "&Ugrave;",
+	/*244*/ BIGSTRING ("&Ugrave;"),
 
-	/*245*/ "[dotless i]",
+	/*245*/ BIGSTRING ("[dotless i]"),
 
-	/*246*/ "[^]",
+	/*246*/ BIGSTRING ("[^]"),
 
-	/*247*/ "[~]",
+	/*247*/ BIGSTRING ("[~]"),
 
-	/*248*/ "[macron]",
+	/*248*/ BIGSTRING ("[macron]"),
 
-	/*249*/ "[breve]",
+	/*249*/ BIGSTRING ("[breve]"),
 
-	/*250*/ "[dot accent]",
+	/*250*/ BIGSTRING ("[dot accent]"),
 
-	/*251*/ "[ring]",
+	/*251*/ BIGSTRING ("[ring]"),
 
-	/*252*/ "[cedilla]",
+	/*252*/ BIGSTRING ("[cedilla]"),
 
-	/*253*/ "[hungarian umlaut]",
+	/*253*/ BIGSTRING ("[hungarian umlaut]"),
 
-	/*254*/ "[ogonek]",
+	/*254*/ BIGSTRING ("[ogonek]"),
 
-	/*255*/ "[caron]"
+	/*255*/ BIGSTRING ("[caron]")
 
 	}; /*iso8859table*/
 

@@ -230,7 +230,7 @@ boolean tableverbinmemory (hdlexternalvariable hvariable, hdlhashnode hnode) {
 	
 	if (adr == nildbaddress) { /*table has never been allocated*/
 		
-		shellinternalerror (idniltableaddress, "\x2b" "nil table address.  (Creating empty table.)");
+		shellinternalerror (idniltableaddress, BIGSTRING ("\x2b" "nil table address.  (Creating empty table.)"));
 		
 		fl = false;
 		}

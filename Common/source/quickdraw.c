@@ -209,7 +209,7 @@ boolean winpushport (WindowPtr w, HDC hdc) {
 	
 	if (topport >= ctports) {
 		
-		shellinternalerror (idportstackfull, "\x13" "port stack overflow");
+		shellinternalerror (idportstackfull, BIGSTRING ("\x13" "port stack overflow"));
 		
 		return (false);
 		}
@@ -316,7 +316,7 @@ boolean pushport (CGrafPtr p) {
 	
 	if (topport >= ctports) {
 		
-		shellinternalerror (idportstackfull, "\x13" "port stack overflow");
+		shellinternalerror (idportstackfull, BIGSTRING ("\x13" "port stack overflow"));
 		
 		return (false);
 		}
@@ -366,7 +366,7 @@ boolean popport (void) {
 	
 	if (topport <= 0) {
 		
-		shellinternalerror (idportstackempty, "\x11" "too many popports");
+		shellinternalerror (idportstackempty, BIGSTRING ("\x11" "too many popports"));
 		
 		return (false);
 		}
@@ -434,7 +434,7 @@ boolean pushcliprgn (hdlregion rgnclip, boolean flomit) {
 	
 	if (topclip >= ctclip) {
 		
-		shellinternalerror (idregionstackfull, "\x15" "region stack overflow");
+		shellinternalerror (idregionstackfull, BIGSTRING ("\x15" "region stack overflow"));
 		
 		return (false);
 		}
@@ -501,7 +501,7 @@ boolean superpushclip (Rect r) {
 
 	if (topclip >= ctclip) {
 		
-		shellinternalerror (idclipstackfull, "\x13" "clip stack overflow");
+		shellinternalerror (idclipstackfull, BIGSTRING ("\x13" "clip stack overflow"));
 		
 		return (false);
 		}
@@ -602,7 +602,7 @@ boolean popclip (void) {
 
 	if (topclip <= 0) {
 		
-		shellinternalerror (idclipstackempty, "\x11" "too many popclips");
+		shellinternalerror (idclipstackempty, BIGSTRING ("\x11" "too many popclips"));
 		
 		return (false);
 		}
@@ -626,7 +626,7 @@ boolean pushstyle (short fnum, short fsize, short fstyle) {
 	
 	if (topstyle >= ctstyle) {
 		
-		shellinternalerror (idstylestackfull, "\x14" "style stack overflow");
+		shellinternalerror (idstylestackfull, BIGSTRING ("\x14" "style stack overflow"));
 		
 		return (false);
 		}
@@ -651,7 +651,7 @@ boolean popstyle (void) {
 
 	if (topstyle <= 0) {
 		
-		shellinternalerror (idstylestackempty, "\x12" "too many popstyles");
+		shellinternalerror (idstylestackempty, BIGSTRING ("\x12" "too many popstyles"));
 		
 		return (false);
 		}
@@ -715,7 +715,7 @@ boolean pushforecolor (const RGBColor *rgb) {
 	
 		if (topforecolor >= ctforecolors) {
 			
-			DebugStr ("\x1f" "pushforecolor: no room on stack");
+			DebugStr (BIGSTRING ("\x1f" "pushforecolor: no room on stack"));
 			
 			return (false);
 			}
@@ -755,7 +755,7 @@ boolean popforecolor (void) {
 	
 		if (topforecolor <= 0) {
 			
-			DebugStr ( "\x1e" "popforecolor: nothing on stack");
+			DebugStr ( BIGSTRING ("\x1e" "popforecolor: nothing on stack"));
 			
 			return (false);
 			}
@@ -786,7 +786,7 @@ boolean pushbackcolor (const RGBColor *rgb) {
 		
 		if (topbackcolor >= ctbackcolors) {
 			
-			DebugStr ("\x1f" "pushbackcolor: no room on stack");
+			DebugStr (BIGSTRING ("\x1f" "pushbackcolor: no room on stack"));
 			
 			return (false);
 			}
@@ -822,7 +822,7 @@ boolean popbackcolor (void) {
 	
 		if (topbackcolor <= 0) {
 			
-			DebugStr ("\x1e" "popbackcolor: nothing on stack");
+			DebugStr (BIGSTRING ("\x1e" "popbackcolor: nothing on stack"));
 			
 			return (false);
 			}
@@ -885,7 +885,7 @@ boolean poppen (void) {
 
 	if (toppen <= 0) {
 		
-		shellinternalerror (idpenstackempty, "\x10" "too many poppens");
+		shellinternalerror (idpenstackempty, BIGSTRING ("\x10" "too many poppens"));
 		
 		return (false);
 		}

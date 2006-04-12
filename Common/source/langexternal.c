@@ -1619,8 +1619,8 @@ boolean fullpathstats (hdlhashtable intable, boolean flfirst) {
 	return (true);
 	} /*fullpathstats*/
 
-#define STR_Comma_Space "\x02" ", "
-#define STR_Colon_Space "\x02" ": "
+#define STR_Comma_Space BIGSTRING ("\x02" ", ")
+#define STR_Colon_Space BIGSTRING ("\x02" ": ")
 
 boolean hashstatsverb (tyvaluerecord *v) {
 
@@ -1982,7 +1982,7 @@ boolean langexternalsetreadonly (hdlexternalvariable hv, boolean flreadonly) {
 			
 				fl = false;			
 			
-				langerrormessage ("\x4b""Can't open as read-only because wp-text windows don't support this feature.");
+				langerrormessage (BIGSTRING ("\x4b""Can't open as read-only because wp-text windows don't support this feature."));
 				} /*if*/
 				
 			break;
@@ -2334,7 +2334,7 @@ static boolean updateconfigsettings (tyvaluetype type, short configid) {
 		}
 	
 	// build the path the the font size pref
-	pushstring ("\x04Size", bspref);
+	pushstring (BIGSTRING ("\x04Size"), bspref);
 	
 	if (langexpandtodotparams (bspref, &htable, bs) && hashtablelookup (htable, bs, &val, &hnode)) {
 		

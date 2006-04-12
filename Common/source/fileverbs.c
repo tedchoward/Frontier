@@ -756,7 +756,7 @@ static boolean filedialogverb (tysfverb sfverb, hdltreenode hparam1, tyvaluereco
 		
 		setostypevalue (oscreator, &lval);
 
-		if (!getoptionalparamvalue (hparam1, &ctconsumed, &ctpositional, "\x07""creator", &lval))
+		if (!getoptionalparamvalue (hparam1, &ctconsumed, &ctpositional, BIGSTRING ("\x07""creator"), &lval))
 			return (false);
 	
 		oscreator = lval.data.ostypevalue;
@@ -880,7 +880,7 @@ static boolean getresourceverb (hdltreenode hparam1, boolean flnamed, tyvaluerec
 	
 	setintvalue (resourcefork, &val); /* defaults to 1 */
 
-	if (!getoptionalparamvalue (hparam1, &ctconsumed, &ctpositional, "\x04""fork", &val))
+	if (!getoptionalparamvalue (hparam1, &ctconsumed, &ctpositional, BIGSTRING ("\x04""fork"), &val))
 		return (false);
 	
 	forktype = val.data.intvalue;
@@ -941,7 +941,7 @@ static boolean putresourceverb (hdltreenode hparam1, boolean flnamed, tyvaluerec
 	
 	setintvalue (resourcefork, &val); /* defaults to 1 */
 
-	if (!getoptionalparamvalue (hparam1, &ctconsumed, &ctpositional, "\x04""fork", &val))
+	if (!getoptionalparamvalue (hparam1, &ctconsumed, &ctpositional, BIGSTRING ("\x04""fork"), &val))
 		return (false);
 
 	forktype = val.data.intvalue;
@@ -971,7 +971,7 @@ static boolean countrestypesverb (hdltreenode hparam1, tyvaluerecord *v) {
 	
 	setintvalue (resourcefork, &val); /* defaults to 1 */
 
-	if (!getoptionalparamvalue (hparam1, &ctconsumed, &ctpositional, "\x04""fork", &val))
+	if (!getoptionalparamvalue (hparam1, &ctconsumed, &ctpositional, BIGSTRING ("\x04""fork"), &val))
 		return (false);
 	
 	forktype = val.data.intvalue;
@@ -1014,7 +1014,7 @@ static boolean getnthrestypeverb (hdltreenode hparam1, tyvaluerecord *v) {
 	
 	setintvalue (resourcefork, &val); /* defaults to 1 */
 
-	if (!getoptionalparamvalue (hparam1, &ctconsumed, &ctpositional, "\x04""fork", &val))
+	if (!getoptionalparamvalue (hparam1, &ctconsumed, &ctpositional, BIGSTRING ("\x04""fork"), &val))
 		return (false);
 	
 	forktype = val.data.intvalue;
@@ -1059,7 +1059,7 @@ static boolean countresourcesverb (hdltreenode hparam1, tyvaluerecord *v) {
 	
 	setintvalue (resourcefork, &val); /* defaults to 1 */
 
-	if (!getoptionalparamvalue (hparam1, &ctconsumed, &ctpositional, "\x04""fork", &val))
+	if (!getoptionalparamvalue (hparam1, &ctconsumed, &ctpositional, BIGSTRING ("\x04""fork"), &val))
 		return (false);
 	
 	forktype = val.data.intvalue;
@@ -1109,7 +1109,7 @@ static boolean getnthresourceverb (hdltreenode hparam1, tyvaluerecord *v) {
 	
 	setintvalue (resourcefork, &val); /* defaults to 1 */
 
-	if (!getoptionalparamvalue (hparam1, &ctconsumed, &ctpositional, "\x04""fork", &val))
+	if (!getoptionalparamvalue (hparam1, &ctconsumed, &ctpositional, BIGSTRING ("\x04""fork"), &val))
 		return (false);
 	
 	forktype = val.data.intvalue;
@@ -1180,7 +1180,7 @@ static boolean getnthresinfoverb (hdltreenode hparam1, tyvaluerecord *v) {
 	
 	setintvalue (resourcefork, &val); /* defaults to 1 */
 
-	if (!getoptionalparamvalue (hparam1, &ctconsumed, &ctpositional, "\x04""fork", &val))
+	if (!getoptionalparamvalue (hparam1, &ctconsumed, &ctpositional, BIGSTRING ("\x04""fork"), &val))
 		return (false);
 	
 	forktype = val.data.intvalue;
@@ -1240,7 +1240,7 @@ static boolean resourceexistsverb (hdltreenode hparam1, boolean flnamed, tyvalue
 	
 	setintvalue (resourcefork, &val); /* defaults to 1 */
 
-	if (!getoptionalparamvalue (hparam1, &ctconsumed, &ctpositional, "\x04""fork", &val))
+	if (!getoptionalparamvalue (hparam1, &ctconsumed, &ctpositional, BIGSTRING ("\x04""fork"), &val))
 		return (false);
 	
 	forktype = val.data.intvalue;
@@ -1280,7 +1280,7 @@ static boolean getresourceattrsverb (hdltreenode hparam1, boolean flnamed, tyval
 	
 	setintvalue (resourcefork, &val); /* defaults to 1 */
 
-	if (!getoptionalparamvalue (hparam1, &ctconsumed, &ctpositional, "\x04""fork", &val))
+	if (!getoptionalparamvalue (hparam1, &ctconsumed, &ctpositional, BIGSTRING ("\x04""fork"), &val))
 		return (false);
 	
 	forktype = val.data.intvalue;
@@ -1324,7 +1324,7 @@ static boolean setresourceattrsverb (hdltreenode hparam1, boolean flnamed, tyval
 	
 	setintvalue (resourcefork, &val); /* defaults to 1 */
 
-	if (!getoptionalparamvalue (hparam1, &ctconsumed, &ctpositional, "\x04""fork", &val))
+	if (!getoptionalparamvalue (hparam1, &ctconsumed, &ctpositional, BIGSTRING ("\x04""fork"), &val))
 		return (false);
 	
 	forktype = val.data.intvalue;
@@ -1365,7 +1365,7 @@ static boolean deleteresourceverb (hdltreenode hparam1, boolean flnamed, tyvalue
 	
 	setintvalue (resourcefork, &val); /* defaults to 1 */
 
-	if (!getoptionalparamvalue (hparam1, &ctconsumed, &ctpositional, "\x04""fork", &val))
+	if (!getoptionalparamvalue (hparam1, &ctconsumed, &ctpositional, BIGSTRING ("\x04""fork"), &val))
 		return (false);
 	
 	forktype = val.data.intvalue;
@@ -1661,7 +1661,7 @@ static boolean getshortversionverb (hdltreenode hparam1, tyvaluerecord *v) {
 	
 	setintvalue (resourcefork, &val); /* defaults to 1 */
 
-	if (!getoptionalparamvalue (hparam1, &ctconsumed, &ctpositional, "\x04""fork", &val))
+	if (!getoptionalparamvalue (hparam1, &ctconsumed, &ctpositional, BIGSTRING ("\x04""fork"), &val))
 		return (false);
 	
 	forktype = val.data.intvalue;
@@ -1721,7 +1721,7 @@ static boolean setshortversionverb (hdltreenode hparam1, tyvaluerecord *v) {
 	
 	setintvalue (resourcefork, &val); /* defaults to 1 */
 
-	if (!getoptionalparamvalue (hparam1, &ctconsumed, &ctpositional, "\x04""fork", &val))
+	if (!getoptionalparamvalue (hparam1, &ctconsumed, &ctpositional, BIGSTRING ("\x04""fork"), &val))
 		return (false);
 	
 	forktype = val.data.intvalue;
@@ -1767,7 +1767,7 @@ static boolean getlongversionverb (hdltreenode hparam1, tyvaluerecord *v) {
 	
 	setintvalue (resourcefork, &val); /* defaults to 1 */
 
-	if (!getoptionalparamvalue (hparam1, &ctconsumed, &ctpositional, "\x04""fork", &val))
+	if (!getoptionalparamvalue (hparam1, &ctconsumed, &ctpositional, BIGSTRING ("\x04""fork"), &val))
 		return (false);
 	
 	forktype = val.data.intvalue;
@@ -1817,7 +1817,7 @@ static boolean setlongversionverb (hdltreenode hparam1, tyvaluerecord *v) {
 	
 	setintvalue (resourcefork, &val); /* defaults to 1 */
 
-	if (!getoptionalparamvalue (hparam1, &ctconsumed, &ctpositional, "\x04""fork", &val))
+	if (!getoptionalparamvalue (hparam1, &ctconsumed, &ctpositional, BIGSTRING ("\x04""fork"), &val))
 		return (false);
 	
 	forktype = val.data.intvalue;
@@ -3373,10 +3373,10 @@ static boolean filefunctionvalue (short token, hdltreenode hparam1, tyvaluerecor
 				return (false);
 			
 			#ifdef MACVERSION
-				return (setstringvalue ("\x01" ":", v));
+				return (setstringvalue (BIGSTRING ("\x01" ":"), v));
 			#endif
 			#ifdef WIN95VERSION
-				return (setstringvalue ("\x01" "\\", v));
+				return (setstringvalue (BIGSTRING ("\x01" "\\"), v));
 			#endif
 		
 		case getshortversionfunc: 

@@ -335,7 +335,7 @@ static boolean openverb (hdltreenode hparam1, tyvaluerecord *vreturned, bigstrin
 	
 		hdlwindowinfo lhinfo;
 				
-		langerrormessage ("\x5a""Can't open window as read-only because windows of type wp text don't support this feature.");	
+		langerrormessage (BIGSTRING ("\x5a""Can't open window as read-only because windows of type wp text don't support this feature."));
 		
 		if (shellfinddatawindow ((Handle) (**hv).variabledata, &lhinfo)) { /*window may be hidden -- if so, close*/
 			
@@ -352,7 +352,7 @@ static boolean openverb (hdltreenode hparam1, tyvaluerecord *vreturned, bigstrin
 
 		hdlwindowinfo lhinfo;
 
-		langerrormessage ("\x52""Can't attach buttons to window because windows only outlines support this feature.");
+		langerrormessage (BIGSTRING ("\x52""Can't attach buttons to window because windows only outlines support this feature."));
 
 		if (shellfinddatawindow ((Handle) (**hv).variabledata, &lhinfo)) { /*window may be hidden -- if so, close*/
 			
@@ -682,7 +682,7 @@ static boolean closeverb (hdltreenode hparam1, tyvaluerecord *vreturned) {
 	
 	flnextparamislast = true;
 	
-	if (!getoptionalparamvalue (hparam1, &ctconsumed, &ctpositional, "\x08""fldialog", &val))
+	if (!getoptionalparamvalue (hparam1, &ctconsumed, &ctpositional, BIGSTRING ("\x08""fldialog"), &val))
 		return (false);
 	
 	fldialog = val.data.flvalue;

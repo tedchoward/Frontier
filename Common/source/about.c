@@ -173,28 +173,28 @@ static byte * aboutstrings [] = {
 	
 	bs_APP_URL,		/* 2006-02-06 aradke: see versions.h */
 	
-	"\x02" "^0",
+	BIGSTRING ("\x02" "^0"),
 	
-	"\x12" "Scripts Running:  ",
+	BIGSTRING ("\x12" "Scripts Running:  "),
 	
-	"\x11" "Current Thread:  ",
+	BIGSTRING ("\x11" "Current Thread:  "),
 	
 	#ifdef MACVERSION
-		"\x13" "Available Memory:  ",
+		BIGSTRING ("\x13" "Available Memory:  "),
 	#endif
 	#ifdef WIN95VERSION
-		"\x14" "Handles Allocated:  ",
+		BIGSTRING ("\x14" "Handles Allocated:  "),
 	#endif
 
-	"",
+	BIGSTRING (""),
 
-	"\x10" "Visible Agent:  ",
+	BIGSTRING ("\x10" "Visible Agent:  "),
 	
-	"\x0f" "Current Time:  ",
+	BIGSTRING ("\x0f" "Current Time:  "),
 	
 	bs_APP_NAME,		/* 2006-02-06 aradke: see versions.h */
 	
-	"\x02" "^0",
+	BIGSTRING ("\x02" "^0"),
 	};
 
 
@@ -720,7 +720,7 @@ static void	ccdrawabout (void) {
 		#ifdef WIN95VERSION
 			short tmfont;
 
-			fontgetnumber ("\x05" "Arial", &tmfont);
+			fontgetnumber (BIGSTRING ("\x05" "Arial"), &tmfont);
 
 			if (tmfont != 0)
 				setglobalfontsizestyle (tmfont, 9, bold);
@@ -761,11 +761,11 @@ static void	ccdrawabout (void) {
 	#if __powerc
 	
 	//	ccdrawtextitem (isaitem, "\pPowerPC", normal);
-		parsedialogstring (aboutstrings [isaitem], "\x07" "PowerPC", nil, nil, nil, bs);
+		parsedialogstring (aboutstrings [isaitem], BIGSTRING ("\x07" "PowerPC"), nil, nil, nil, bs);
 	
 	#else
 	
-		parsedialogstring (aboutstrings [isaitem], "\x05" "680x0", nil, nil, nil, bs);
+		parsedialogstring (aboutstrings [isaitem], BIGSTRING ("\x05" "680x0"), nil, nil, nil, bs);
 	
 	#endif
 	
@@ -779,7 +779,7 @@ static void	ccdrawabout (void) {
 	
 	#ifdef fltrialsize
 	
-		insertstring ("\x06" "Trial ", bs);
+		insertstring (BIGSTRING ("\x06" "Trial "), bs);
 		
 	#endif
 	
@@ -841,7 +841,7 @@ boolean aboutsetthreadstring (hdlprocessthread hp, boolean flin) {
 
 		if ((**hg).hprocess) {
 			
-			pushstring ("\x02" " [", bstheadinfo);
+			pushstring (BIGSTRING ("\x02" " ["), bstheadinfo);
 
 			pushstring ((**(**hg).hprocess).bsname, bstheadinfo);
 
@@ -849,7 +849,7 @@ boolean aboutsetthreadstring (hdlprocessthread hp, boolean flin) {
 			}
 		}
 	else
-		insertstring ("\x06" "(out) ", bstheadinfo);
+		insertstring (BIGSTRING ("\x06" "(out) "), bstheadinfo);
 	
 	if (aboutdata != nil)
 		ccupdatestatistics (false);
@@ -1613,7 +1613,7 @@ static boolean newaboutwindow (boolean flbootsplash) {
 	copystring (aboutstrings [frontieritem], bstitle);
 	
 	if (!flbootsplash)
-		insertstring ("\x06" "About ", bstitle);	/* 2006-02-04 aradke: eliminated titleitem */
+		insertstring (BIGSTRING ("\x06" "About "), bstitle);	/* 2006-02-04 aradke: eliminated titleitem */
 	
 	if (!newchildwindow (idaboutconfig, nil, &rwindow, &rzoom, bstitle, &w)) {
 		

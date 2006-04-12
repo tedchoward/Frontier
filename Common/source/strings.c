@@ -857,7 +857,7 @@ boolean textcommentdelete (Handle x) {
 	long ixcomment, ix2;
 	
 	//scan for doubleslash
-	if (!newtexthandle ("\x02//", &hcomment))
+	if (!newtexthandle (BIGSTRING ("\x02//"), &hcomment))
 		return (false);
 	
 	ixcomment = searchhandle (x, hcomment, 0, longinfinity);

@@ -78,7 +78,7 @@ boolean tablepushformats (hdltableformats hformats) {
 	
 	if (topformatstack >= ctformatstack) {
 		
-		shellinternalerror (idformatstackfull, "\16" "format stack overflow!");
+		shellinternalerror (idformatstackfull, BIGSTRING ("\16" "format stack overflow!"));
 		
 		return (false);
 		}
@@ -97,7 +97,7 @@ boolean tablepopformats (void) {
 	
 	if (topformatstack <= 0) {
 		
-		shellinternalerror (idformatstackempty, "\x13" "too many popformats");
+		shellinternalerror (idformatstackempty, BIGSTRING ("\x13" "too many popformats"));
 		
 		return (false);
 		}
@@ -950,7 +950,7 @@ static boolean tableunpackversion1formats (Handle hpacked, hdltableformats hform
 	
 	if (!loadfromhandle (hpacked, &ixhandle, sizeof (info), &info)) {
 		
-		shellinternalerror (iderrorloadingformats, "\x2b" "error loading table formatting information.");
+		shellinternalerror (iderrorloadingformats, BIGSTRING ("\x2b" "error loading table formatting information."));
 		
 		return (false);
 		}
@@ -1059,7 +1059,7 @@ boolean tableunpackformats (Handle hpacked, hdltableformats hformats) {
 	
 	if ((info.versionnumber < 1) || (info.versionnumber > 0x001f)) { /*not in handleable range*/
 		
-		shellinternalerror (idbadtableformatsversion, "\x21" "bad table formats version number.");
+		shellinternalerror (idbadtableformatsversion, BIGSTRING ("\x21" "bad table formats version number."));
 		
 		return (false);
 		}
@@ -1143,7 +1143,7 @@ boolean tableunpackformats (Handle hpacked, hdltableformats hformats) {
 	
 	loaderror:
 		
-		shellinternalerror (iderrorloadingformats, "\x2b" "error loading table formatting information.");
+		shellinternalerror (iderrorloadingformats, BIGSTRING ("\x2b" "error loading table formatting information."));
 		
 		return (false);
 	} /*tableunpackformats*/

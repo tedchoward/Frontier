@@ -2033,7 +2033,7 @@ static void volumeinfoerror (OSErr errnum) {
 
 	bigstring bserr, bserrnum;
 
-	copystring ("\x42" "Can't get volume information because an error of type ^0 occurred.", bserr);
+	copystring (BIGSTRING ("\x42" "Can't get volume information because an error of type ^0 occurred."), bserr);
 
 	numbertostring (errnum, bserrnum);
 

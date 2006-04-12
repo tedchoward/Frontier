@@ -195,7 +195,7 @@ static pascal void *cmdthreadmain (tythreadmainparams hprocess) {
 	hdlhashtable hcontext = nil;
 	boolean fl;
 	
-	initprocessthread ("\x0c" "quick script"); /*must call from every thread main*/
+	initprocessthread (BIGSTRING ("\x0c" "quick script")); /*must call from every thread main*/
 	
 	if ((**hp).fldisposewhenidle)
 		fl = false;

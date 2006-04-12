@@ -167,58 +167,58 @@ static bigstring bsmiscinfo = "";
 
 static byte * aboutstrings [] = {
 
-	"\x2e" "Powerful cross-platform web content management", /*6.1 AR*/
+	BIGSTRING ("\x2e" "Powerful cross-platform web content management"), /*6.1 AR*/
 	 
     /*"\x25" "Powerful cross-platform web scripting",*/
 	
-	"\x23" "© 1992-2000 UserLand Software, Inc.",
+	BIGSTRING ("\x23" "© 1992-2000 UserLand Software, Inc."),
 
 #ifdef PIKE
-	"\x19" "http://pike.userland.com/",
+	BIGSTRING ("\x19" "http://pike.userland.com/"),
 #else
-	"\x1d" "http://frontier.userland.com/",
+	BIGSTRING ("\x1d" "http://frontier.userland.com/"),
 #endif
 	
-	"\x02" "^0",
+	BIGSTRING ("\x02" "^0"),
 	
-	"\x12" "Scripts Running:  ",
+	BIGSTRING ("\x12" "Scripts Running:  "),
 	
-	"\x11" "Current Thread:  ",
+	BIGSTRING ("\x11" "Current Thread:  "),
 	
 	#ifdef MACVERSION
-		"\x13" "Available Memory:  ",
+		BIGSTRING ("\x13" "Available Memory:  "),
 	#endif
 	#ifdef WIN95VERSION
-		"\x14" "Handles Allocated:  ",
+		BIGSTRING ("\x14" "Handles Allocated:  "),
 	#endif
 
-	"",
+	BIGSTRING (""),
 
-	"\x10" "Visible Agent:  ",
+	BIGSTRING ("\x10" "Visible Agent:  "),
 	
-	"\x0f" "Current Time:  ",
+	BIGSTRING ("\x0f" "Current Time:  "),
 	
 #ifdef PIKE
 	#ifdef MACVERSION
-		"\x0e" "UserLand Pikeª",
+		BIGSTRING ("\x0e" "UserLand Pikeª"),
 	#endif
 	#ifdef WIN95VERSION
-		"\x0e" "UserLand Pike™",
+		BIGSTRING ("\x0e" "UserLand Pike™"),
 	#endif
 	
-	"\x0a" "About Pike",
+	BIGSTRING ("\x0a" "About Pike"),
 #else
 	#ifdef MACVERSION
-		"\x12" "UserLand Frontierª",
+		BIGSTRING ("\x12" "UserLand Frontierª"),
 	#endif
 	#ifdef WIN95VERSION
-		"\x12" "UserLand Frontier™",
+		BIGSTRING ("\x12" "UserLand Frontier™"),
 	#endif
 	
-	"\x0e" "About Frontier",
+	BIGSTRING ("\x0e" "About Frontier"),
 #endif
 	
-	"\x02" "^0",
+	BIGSTRING ("\x02" "^0"),
 	};
 
 
@@ -714,7 +714,7 @@ static void	ccdrawabout (void) {
 		#ifdef WIN95VERSION
 			short tmfont;
 
-			fontgetnumber ("\x05" "Arial", &tmfont);
+			fontgetnumber (BIGSTRING ("\x05" "Arial"), &tmfont);
 
 			if (tmfont != 0)
 				setglobalfontsizestyle (tmfont, 9, bold);
@@ -749,11 +749,11 @@ static void	ccdrawabout (void) {
 	#if __powerc
 	
 	//	ccdrawtextitem (isaitem, "\pPowerPC", normal);
-		parsedialogstring (aboutstrings [isaitem], "\x07" "PowerPC", nil, nil, nil, bs);
+		parsedialogstring (aboutstrings [isaitem], BIGSTRING ("\x07" "PowerPC"), nil, nil, nil, bs);
 	
 	#else
 	
-		parsedialogstring (aboutstrings [isaitem], "\x05" "680x0", nil, nil, nil, bs);
+		parsedialogstring (aboutstrings [isaitem], BIGSTRING ("\x05" "680x0"), nil, nil, nil, bs);
 	
 	#endif
 	
@@ -767,7 +767,7 @@ static void	ccdrawabout (void) {
 	
 	#ifdef fltrialsize
 	
-		insertstring ("\x06" "Trial ", bs);
+		insertstring (BIGSTRING ("\x06" "Trial "), bs);
 		
 	#endif
 	
@@ -828,7 +828,7 @@ boolean aboutsetthreadstring (hdlthreadglobals hg, boolean flin) {
 
 		if ((**hg).hprocess) {
 			
-			pushstring ("\x02" " [", bstheadinfo);
+			pushstring (BIGSTRING ("\x02" " ["), bstheadinfo);
 
 			pushstring ((**(**hg).hprocess).bsname, bstheadinfo);
 
@@ -836,7 +836,7 @@ boolean aboutsetthreadstring (hdlthreadglobals hg, boolean flin) {
 			}
 		}
 	else
-		insertstring ("\x06" "(out) ", bstheadinfo);
+		insertstring (BIGSTRING ("\x06" "(out) "), bstheadinfo);
 	
 	if (aboutdata != nil)
 		ccupdatestatistics (false);

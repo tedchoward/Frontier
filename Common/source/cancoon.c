@@ -635,7 +635,7 @@ static boolean loadversion2cancoonfile (dbaddress adr, hdlcancoonrecord hcancoon
 		
 		shellgetstring (openolddatabasestring, bsprompt);
 		
-		if (!twowaydialog (bsprompt, "\x07" "Convert", "\x06" "Cancel"))
+		if (!twowaydialog (bsprompt, BIGSTRING ("\x07" "Convert"), BIGSTRING ("\x06" "Cancel")))
 			return (false);
 		
 		dbrefheapstring (info.adrscriptstring, &hstring);

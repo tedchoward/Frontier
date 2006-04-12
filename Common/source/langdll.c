@@ -742,7 +742,7 @@ odbBool xCALLBACK extInvoke (bigstring bsscriptname, void * pDispParams, odbValu
 	#endif
 	#ifdef MACVERSION
 		res = false;
-		setstringvalue ("\x29" "Invoke is not supported on this platform.", &val);
+		setstringvalue (BIGSTRING ("\x29" "Invoke is not supported on this platform."), &val);
 	#endif
 
 	converttyvaltoodb (&val, retval);

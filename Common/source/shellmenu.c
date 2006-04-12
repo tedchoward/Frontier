@@ -986,7 +986,7 @@ static void pikesetfilemenuitemname (short ixmenu) {
 
 	getfilemenuitemidentifier (ixmenu, bsitem);
 
-	copystring ("\x1e""pike.getFileMenuItemName(\"^0\")", bsscript);
+	copystring (BIGSTRING ("\x1e""pike.getFileMenuItemName(\"^0\")"), bsscript);
 
 	parsedialogstring (bsscript, bsitem, nil, nil, nil, bsscript);
 
@@ -1658,7 +1658,7 @@ boolean shellhandlemenu (long menucode) {
 #ifndef PIKE
 			
 				bigstring bs;
-				boolean flrunfilemenuscript = langrunstringnoerror ("\x2C" "Frontier.tools.windowTypes.runFileMenuScript", bs);				
+				boolean flrunfilemenuscript = langrunstringnoerror (BIGSTRING ("\x2C" "Frontier.tools.windowTypes.runFileMenuScript"), bs);				
 				
 				if (flrunfilemenuscript) {
 			
@@ -2168,65 +2168,65 @@ void getfilemenuitemidentifier (short ixmenu, bigstring bsitem) {
 	switch (ixmenu) {
 
 		case openitem:
-			copystring ("\x04""open", bsitem);
+			copystring (BIGSTRING ("\x04""open"), bsitem);
 			break;
 		
 		case closeitem:
-			copystring ("\x05""close", bsitem);
+			copystring (BIGSTRING ("\x05""close"), bsitem);
 			break;
 
 		case saveitem:
-			copystring ("\x04""save", bsitem);
+			copystring (BIGSTRING ("\x04""save"), bsitem);
 			break;
 
 		case saveasitem:
-			copystring ("\x06""saveas", bsitem);
+			copystring (BIGSTRING ("\x06""saveas"), bsitem);
 			break;
 		
 		case revertitem:
-			copystring ("\x06""revert", bsitem);
+			copystring (BIGSTRING ("\x06""revert"), bsitem);
 			break;
 		
 		case quititem:
-			copystring ("\x04""quit", bsitem);
+			copystring (BIGSTRING ("\x04""quit"), bsitem);
 			break;
 			
 		#ifdef PIKE
 
 		case newitem:
-			copystring ("\x03""new", bsitem);
+			copystring (BIGSTRING ("\x03""new"), bsitem);
 			break;
 		
 		case openurlitem: /*7.0b17 PBS*/
-			copystring ("\x07""openurl", bsitem);
+			copystring (BIGSTRING ("\x07""openurl"), bsitem);
 			break;
 
 		#ifndef OPMLEDITOR
 			
 		case openmanilasiteitem: /*7.0b27 PBS*/
-			copystring ("\x0e""openmanilasite", bsitem);
+			copystring (BIGSTRING ("\x0e""openmanilasite"), bsitem);
 			break;
 		
 		case saveashtmlitem:
-			copystring ("\x0a""saveashtml", bsitem);
+			copystring (BIGSTRING ("\x0a""saveashtml"), bsitem);
 			break;
 			
 		case saveasplaintextitem:
-			copystring ("\x0f""saveasplaintext", bsitem);
+			copystring (BIGSTRING ("\x0f""saveasplaintext"), bsitem);
 			break;
 		
 		#endif //!OPMLEDITOR
 			
 		case viewinbrowseritem:
-			copystring ("\x0d""viewinbrowser", bsitem);
+			copystring (BIGSTRING ("\x0d""viewinbrowser"), bsitem);
 			break;
 
 		case updateradiorootitem:		/*7.0d10 PBS*/
-			copystring ("\x06""update", bsitem);
+			copystring (BIGSTRING ("\x06""update"), bsitem);
 			break;
 		
 		case workofflineitem: /*7.0b25 PBS*/
-			copystring ("\x0b""workoffline", bsitem); 
+			copystring (BIGSTRING ("\x0b""workoffline"), bsitem); 
 			break;
 
 		#endif //PIKE
@@ -2282,32 +2282,32 @@ void getcommonstylesmenuitemtext (short ixmenu, bigstring bsmenuitem) {
 
 		case 1:
 
-			copystring ("\x04""tiny", bsitem);
+			copystring (BIGSTRING ("\x04""tiny"), bsitem);
 
 			break;
 
 		case 2:
 
-			copystring ("\x06""medium", bsitem);
+			copystring (BIGSTRING ("\x06""medium"), bsitem);
 
 			break;
 
 
 		case 3:
 
-			copystring ("\x08""readable", bsitem);
+			copystring (BIGSTRING ("\x08""readable"), bsitem);
 
 			break;
 
 
 		case 4:
 
-			copystring ("\x04""huge", bsitem);
+			copystring (BIGSTRING ("\x04""huge"), bsitem);
 
 			break;		
 		} /*switch*/
 
-	copystring ("\x22""menus.scripts.styleMenuItem (\"^0\")", bsscript);
+	copystring (BIGSTRING ("\x22""menus.scripts.styleMenuItem (\"^0\")"), bsscript);
 
 	parsedialogstring (bsscript, bsitem, nil, nil, nil, bsscript);
 
@@ -2366,14 +2366,14 @@ void geteditmenuitemidentifier (short ixmenu, short ixitem, bigstring bsitem) {
 #ifndef OPMLEDITOR	
 
 			case opennotepaditem:
-				copystring ("\x0b""opennotepad", bsitem);
+				copystring (BIGSTRING ("\x0b""opennotepad"), bsitem);
 				break;
 
 #endif // !OPMLEDITOR		
 #endif // PIKE
 
 			case insertdatetimeitem:
-				copystring ("\x0e""insertdatetime", bsitem);
+				copystring (BIGSTRING ("\x0e""insertdatetime"), bsitem);
 				break;
 			} /*switch*/
 		} /*if*/
@@ -2384,19 +2384,19 @@ void geteditmenuitemidentifier (short ixmenu, short ixitem, bigstring bsitem) {
 		switch (ixitem) {
 
 			case 1:
-				copystring ("\x04""find", bsitem);
+				copystring (BIGSTRING ("\x04""find"), bsitem);
 				break;
 
 			case 2:
-				copystring ("\x07""replace", bsitem);
+				copystring (BIGSTRING ("\x07""replace"), bsitem);
 				break;
 
 			case 3:
-				copystring ("\x08""findnext", bsitem);
+				copystring (BIGSTRING ("\x08""findnext"), bsitem);
 				break;
 
 			case 4:
-				copystring ("\x12""replaceandfindnext", bsitem);
+				copystring (BIGSTRING ("\x12""replaceandfindnext"), bsitem);
 				break;
 
 			} /*switch*/
@@ -2407,19 +2407,19 @@ void geteditmenuitemidentifier (short ixmenu, short ixitem, bigstring bsitem) {
 		switch (ixitem) {
 
 			case 1:
-				copystring ("\x04""tiny", bsitem);
+				copystring (BIGSTRING ("\x04""tiny"), bsitem);
 				break;
 
 			case 2:
-				copystring ("\x06""medium", bsitem);
+				copystring (BIGSTRING ("\x06""medium"), bsitem);
 				break;
 
 			case 3:
-				copystring ("\x08""readable", bsitem);
+				copystring (BIGSTRING ("\x08""readable"), bsitem);
 				break;
 
 			case 4:
-				copystring ("\x04""huge", bsitem);
+				copystring (BIGSTRING ("\x04""huge"), bsitem);
 				break;
 
 			} /*switch*/

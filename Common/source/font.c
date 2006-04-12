@@ -248,7 +248,7 @@ void fontgetnumber (bigstring fontname, short *fontnumber) {
 #ifdef MACVERSION	
 	GetFNum (bsfont, &cachedfontnum);
 
-	if ((cachedfontnum == 0) && !equalstrings (bsfont, "\x07" "Chicago"))
+	if ((cachedfontnum == 0) && !equalstrings (bsfont, BIGSTRING ("\x07" "Chicago")))
 		if (mapxfont (bsfont))
 			GetFNum (bsfont, &cachedfontnum);
 #endif

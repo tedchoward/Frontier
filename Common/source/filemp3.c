@@ -444,7 +444,7 @@ boolean getmp3info (const tyfilespec *fs, long *seconds, long *bitrate, long *fr
 		}
 	else {
 		
-		shellerrormessage ("\x4b" "Can't get the MP3 file info because an MP3 frame header could not be found.");
+		shellerrormessage (BIGSTRING ("\x4b" "Can't get the MP3 file info because an MP3 frame header could not be found."));
 
 		goto exit;
 		}

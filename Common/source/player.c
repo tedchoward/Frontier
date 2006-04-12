@@ -95,7 +95,7 @@ static Rect currentmovierect;
 
 static byte * playerstrings [] = {
 
-	"\x06" "Player",
+	BIGSTRING ("\x06" "Player"),
 
 	};
 

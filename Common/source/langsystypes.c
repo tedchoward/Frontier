@@ -323,14 +323,14 @@ static boolean getostypedisplaystring (OSType key, bigstring bsdisplay) {
 	
 	exit:
 	
-	if (!isemptystring (bsdisplay) && !equalstrings (bsdisplay, "\x02" "id"))
+	if (!isemptystring (bsdisplay) && !equalstrings (bsdisplay, BIGSTRING ("\x02" "id")))
 		return (true);
 	
 	ostypetostring (key, bskey);
 	
 	langdeparsestring (bskey, chsinglequote); /*add needed escape sequences*/
 	
-	parsedialogstring ("\x04'^0'", bskey, nil, nil, nil, bsdisplay);
+	parsedialogstring (BIGSTRING ("\x04'^0'"), bskey, nil, nil, nil, bsdisplay);
 	
 	return (false);
 	} /*getostypedisplaystring*/
@@ -489,7 +489,7 @@ boolean getobjectmodeldisplaystring (tyvaluerecord *vitem, bigstring bsdisplay) 
 				return (false);
 			
 			if (isemptystring (bsdisplay))
-				copystring ("\x02\"\"", bsdisplay);
+				copystring (BIGSTRING ("\x02\"\""), bsdisplay);
 			
 			break;
 			

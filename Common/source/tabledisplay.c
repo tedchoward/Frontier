@@ -809,7 +809,7 @@ boolean tablegetcellstring (hdlheadrecord hnode, short col, bigstring bs, boolea
 	
 	if (stringlength (bssize) > 0) { /*non-trivial size, show it*/
 		
-		pushstring ("\x02" " [", bstype);
+		pushstring (BIGSTRING ("\x02" " ["), bstype);
 		
 		pushstring (bssize, bstype);
 		

@@ -301,7 +301,7 @@ boolean tabledisposetable (hdlhashtable htable, boolean fldisk) {
 
 			if (tablefinddatawindow (ht, &hinfo)) {
 				
-				shellinternalerror (0, "\x1d" "table shouldn't have a window");
+				shellinternalerror (0, BIGSTRING ("\x1d" "table shouldn't have a window"));
 				
 				shellclosewindow ((**hinfo).macwindow);
 				}

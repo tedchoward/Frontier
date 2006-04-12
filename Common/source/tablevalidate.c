@@ -77,7 +77,7 @@ static boolean validate (hdlhashtable htable, boolean flalert) {
 	if (ht == nil) {
 		
 		if (flalert)
-			shellinternalerror (idnilhashtable, "\x17" "hashtable handle is nil");
+			shellinternalerror (idnilhashtable, BIGSTRING ("\x17" "hashtable handle is nil"));
 		
 		return (false);
 		}
@@ -89,7 +89,7 @@ static boolean validate (hdlhashtable htable, boolean flalert) {
 			if ((**ht).tmpstack [i].data.binaryvalue != nil) {
 				
 				if (flalert)
-					shellinternalerror (idnilhashtable, "\x14" "non-empty temp stack");
+					shellinternalerror (idnilhashtable, BIGSTRING ("\x14" "non-empty temp stack"));
 				
 				return (false);
 				}
@@ -112,7 +112,7 @@ static boolean validate (hdlhashtable htable, boolean flalert) {
 			if (gethandlesize ((Handle) x) != (long) sizeof (tyhashnode) + stringsize (bs)) {
 				
 				if (flalert)
-					shellinternalerror (idbadbucketliststring, "\x17" "bad string in hash node");
+					shellinternalerror (idbadbucketliststring, BIGSTRING ("\x17" "bad string in hash node"));
 				
 				return (false);
 				}
@@ -120,7 +120,7 @@ static boolean validate (hdlhashtable htable, boolean flalert) {
 			if (hashfunction (bs) != i) {
 				
 				if (flalert)
-					shellinternalerror (idbadbucketliststring, "\x1b" "bad string in a bucket list");
+					shellinternalerror (idbadbucketliststring, BIGSTRING ("\x1b" "bad string in a bucket list"));
 				
 				return (false);
 				}
@@ -136,7 +136,7 @@ static boolean validate (hdlhashtable htable, boolean flalert) {
 				if (!tableverbinmemory ((hdlexternalvariable) hvariable, x)) {
 					
 					if (flalert)
-						shellinternalerror (iderrorloadingtable, "\x13" "error loading table");
+						shellinternalerror (iderrorloadingtable, BIGSTRING ("\x13" "error loading table"));
 					
 					return (false);
 					}

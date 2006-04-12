@@ -44,24 +44,24 @@
 #include "sysshellcall.h" /* 2006-03-09 aradke: unixshellcall moved from CallMachOFramework.h */
 
 
-#define str_isPike				"\x06" "isPike"
-#define str_isOpmlEditor        "\x0c" "isOpmlEditor"    /* 2005-04-06 dluebbert */
-#define str_isFrontier           "\x0a" "isFrontier"      /* 2005-04-06 dluebbert */
-#define str_isRadio				"\x07" "isRadio"
-#define str_isMac				"\x05" "isMac"
-#define str_isMacOsClassic		"\x0e" "isMacOsClassic" /* 2004-11-19 creedon */
-#define str_isServer				"\x08" "isServer" /* 2004-11-19 creedon */
-#define str_isWindows			"\x09" "isWindows"
-#define str_osFlavor				"\x08" "osFlavor"
-#define str_osMajorVersion		"\x0e" "osMajorVersion"
-#define str_osMinorVersion		"\x0e" "osMinorVersion"
-#define str_osPointVersion			"\x0e" "osPointVersion" /* 2004-11-19 creedon */
-#define str_osBuildNumber		"\x0d" "osBuildNumber"
-#define str_osVersionString		"\x0f" "osVersionString"
-#define str_osFullNameForDisplay	"\x14" "osFullNameForDisplay"
-#define str_winServicePackNumber	"\x14" "winServicePackNumber"
-#define str_isCarbon				"\x08" "isCarbon"
-#define str_maxTcpConnections		"\x11" "maxTcpConnections"
+#define str_isPike				BIGSTRING ("\x06" "isPike")
+#define str_isOpmlEditor        BIGSTRING ("\x0c" "isOpmlEditor")    /* 2005-04-06 dluebbert */
+#define str_isFrontier          BIGSTRING ("\x0a" "isFrontier")      /* 2005-04-06 dluebbert */
+#define str_isRadio				BIGSTRING ("\x07" "isRadio")
+#define str_isMac				BIGSTRING ("\x05" "isMac")
+#define str_isMacOsClassic		BIGSTRING ("\x0e" "isMacOsClassic") /* 2004-11-19 creedon */
+#define str_isServer			BIGSTRING ("\x08" "isServer") /* 2004-11-19 creedon */
+#define str_isWindows			BIGSTRING ("\x09" "isWindows")
+#define str_osFlavor			BIGSTRING ("\x08" "osFlavor")
+#define str_osMajorVersion		BIGSTRING ("\x0e" "osMajorVersion")
+#define str_osMinorVersion		BIGSTRING ("\x0e" "osMinorVersion")
+#define str_osPointVersion		BIGSTRING ("\x0e" "osPointVersion") /* 2004-11-19 creedon */
+#define str_osBuildNumber		BIGSTRING ("\x0d" "osBuildNumber")
+#define str_osVersionString		BIGSTRING ("\x0f" "osVersionString")
+#define str_osFullNameForDisplay	BIGSTRING ("\x14" "osFullNameForDisplay")
+#define str_winServicePackNumber	BIGSTRING ("\x14" "winServicePackNumber")
+#define str_isCarbon				BIGSTRING ("\x08" "isCarbon")
+#define str_maxTcpConnections		BIGSTRING ("\x11" "maxTcpConnections")
 
 
 void initsegment (void) {
@@ -312,7 +312,7 @@ static boolean initenvironment (hdlhashtable ht) {
 			
 			langassignbooleanvalue (ht, str_isCarbon, false);
 
-			copystring ("\x06" "Mac OS", bsos); /* 2004-11-19 creedon - Mac OS, used to be Macintosh*/ 
+			copystring (BIGSTRING ("\x06" "Mac OS"), bsos); /* 2004-11-19 creedon - Mac OS, used to be Macintosh*/ 
 			
 			isMacOsClassic = true; /* 2004-11-19 creedon */
 			
@@ -339,23 +339,23 @@ static boolean initenvironment (hdlhashtable ht) {
 		
 		GetVersionEx (&osinfo);
 		
-		copystring ("\x08" "Windows ", bsos);
+		copystring (BIGSTRING ("\x08" "Windows "), bsos);
 		
 		langassignbooleanvalue (ht, str_isMac, false);
 		
 		langassignbooleanvalue (ht, str_isWindows, true);
 		
 		if (osinfo.dwPlatformId == VER_PLATFORM_WIN32_NT) {
-			copystring ("\x02" "NT", bsflavor);
+			copystring (BIGSTRING ("\x02" "NT"), bsflavor);
 			
 			isServer = true; /* 2004-11-19 creedon */
 			}
 		else {
 			
 			if (osinfo.dwBuildNumber == 0)
-				copystring ("\x02" "95", bsflavor);
+				copystring (BIGSTRING ("\x02" "95"), bsflavor);
 			else
-				copystring ("\x02" "98", bsflavor);
+				copystring (BIGSTRING ("\x02" "98"), bsflavor);
 			
 			isServer = false; /* 2004-11-19 creedon */
 			}
@@ -591,7 +591,7 @@ static boolean langinitconsttable (void) {
 	tyvaluetype type;
 	bigstring bs;
 	
-	if (!tablenewsystemtable (langtable, (ptrstring) "\x09" "constants", &hconsttable))
+	if (!tablenewsystemtable (langtable, (ptrstring) BIGSTRING ("\x09" "constants"), &hconsttable))
 		return (false);
 		
 	pushhashtable (hconsttable); /*converted to constants by the scanner*/
@@ -649,14 +649,14 @@ static boolean langinitconsttable (void) {
 				
 				lastword (bs, chspace, bs);
 				
-				pushstring ((ptrstring) "\x04Type", bs);
+				pushstring ((ptrstring) BIGSTRING ("\x04Type"), bs);
 				
 				addtype (bs, type);
 				
 				break;
 			}
 	
-	addtype ("\x09shortType", intvaluetype); /*special case to match coercion verb*/
+	addtype (BIGSTRING ("\x09shortType"), intvaluetype); /*special case to match coercion verb*/
 	
 	addstring ("machinePPC", machinePPC);
 	addstring ("machine68K", machine68K);
@@ -677,7 +677,7 @@ static boolean langinitconsttable (void) {
 
 static boolean langinitbuiltintable (void) {
 	
-	if (!tablenewsystemtable (langtable, (ptrstring) "\x08" "builtins", &hbuiltinfunctions))
+	if (!tablenewsystemtable (langtable, (ptrstring) BIGSTRING ("\x08" "builtins"), &hbuiltinfunctions))
 		return (false);
 	
 	pushhashtable (hbuiltinfunctions); /*converted to function ops by the parser*/
@@ -732,7 +732,7 @@ static boolean langinitkeywordtable (void) {
 	3/6/92 dmb: added "with" token
 	*/
 	
-	if (!tablenewsystemtable (langtable, (ptrstring) "\x08" "keywords", &hkeywordtable))
+	if (!tablenewsystemtable (langtable, (ptrstring) BIGSTRING ("\x08" "keywords"), &hkeywordtable))
 		return (false);
 	
 	pushhashtable (hkeywordtable); /*converted to tokens by the scanner*/

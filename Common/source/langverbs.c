@@ -997,7 +997,7 @@ boolean langfindtargetwindow (short id, WindowPtr *targetwindow) {
 		
 		if (!langexternalwindowopen (val, &hinfo)) {
 			
-			shellinternalerror (idwindowzoombug, "\x23" "windowzoom/windowopen inconsistency");
+			shellinternalerror (idwindowzoombug, BIGSTRING ("\x23" "windowzoom/windowopen inconsistency"));
 			
 			return (false);
 			}
@@ -2138,7 +2138,7 @@ static boolean langfunctionvalue (short token, hdltreenode hparam1, tyvaluerecor
 
 			flnextparamislast = true;
 			
-			if (!getoptionalparamvalue (hparam1, &ctconsumed, &ctpositional, "\x07" "theDate", &vsecs)) 
+			if (!getoptionalparamvalue (hparam1, &ctconsumed, &ctpositional, BIGSTRING ("\x07" "theDate"), &vsecs)) 
 				return (false);
 			
 			if (!vsecs.data.datevalue) {
@@ -3617,14 +3617,14 @@ static boolean langfunctionvalue (short token, hdltreenode hparam1, tyvaluerecor
 				
 			initvalue (&vprefix, stringvaluetype);
 
-			if (!getoptionalparamvalue (hparam1, &ctconsumed, &ctpositional, "\x06" "prefix", &vprefix)) 
+			if (!getoptionalparamvalue (hparam1, &ctconsumed, &ctpositional, BIGSTRING ("\x06" "prefix"), &vprefix)) 
 				return (false);
 			
 			initvalue (&vsuffix, stringvaluetype);
 
 			flnextparamislast = true;
 
-			if (!getoptionalparamvalue (hparam1, &ctconsumed, &ctpositional, "\x06" "suffix", &vsuffix)) 
+			if (!getoptionalparamvalue (hparam1, &ctconsumed, &ctpositional, BIGSTRING ("\x06" "suffix"), &vsuffix)) 
 				return (false);
 
 			if (!fwsNetEventWriteFileToStream (stream, vprefix.data.stringvalue, vsuffix.data.stringvalue, &fs))
