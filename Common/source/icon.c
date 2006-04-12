@@ -351,8 +351,10 @@ boolean ploticoncustom (const Rect *r, short align, short transform, bigstring b
 	HDC hdcmask;
 	HBITMAP hbmmask, oldmaskbm;
 	COLORREF oldclr, oldclr2;
-	bigstring bsfilepath = BIGSTRING ("\x11" "Appearance\\Icons\\");
+	bigstring bsfilepath;
 	char cfilepath [256];
+	
+	copystring (BIGSTRING ("\x11" "Appearance\\Icons\\"), bsfilepath);
 	
 	pushstring (bsiconname, bsfilepath); /*add file name to folder path*/
 
