@@ -84,9 +84,6 @@
 #undef fltracklocaladdresses		/*2004-12-08 aradke: disable [buggy] code for tracking deleted local addresses*/
 
 
-#define BIGSTRING( s ) ( (unsigned char *)( s ) )
-
-
 #ifdef MACVERSION
 	#define macBirdRuntime	1
 	#undef appRunsCards			/*for Applet Toolkit, Iowa Runtime is baked in*/

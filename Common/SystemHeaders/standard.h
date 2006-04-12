@@ -326,6 +326,8 @@ void pwsetstringlength(char * bs, short len);
 #define lastchar(bs) (bs [stringlength (bs)-1])
 #endif
 
+#define BIGSTRING(s) ((unsigned char *)(s))
+
 #define setemptystring(bs) (setstringlength(bs,0))
 
 #define isemptystring(bs) (stringlength(bs)==0)
