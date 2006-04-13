@@ -2464,6 +2464,8 @@ static boolean fwsNetEventLaunch (void *data) {
 
 	/*
 	Initialize the NetEvents system	
+
+	5.0.2b5 dmb: added hostData parameter and GUSI support to handle threading
 	*/
 
 	if (!frontierWinSockLoaded) {
@@ -5140,3 +5142,4 @@ boolean fwsNetEventGetStats (unsigned long stream, bigstring bs) {
 
 	return (true);
 	}/*fwsNetEventGetStats*/
+
