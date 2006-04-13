@@ -2390,9 +2390,9 @@ static void converttextencoding (Handle h, Handle hresult, long inputcharset, lo
 
 	lentext = gethandlesize (h);
 
-	TECConvertText (converter, *h, lentext, &ctorigbytes, *hresult, sizeoutputbuffer, &ctoutputbytes);
+	TECConvertText (converter, (ConstTextPtr)(*h), lentext, &ctorigbytes, (TextPtr)(*hresult), sizeoutputbuffer, &ctoutputbytes);
 
-	TECFlushText (converter, *hresult, sizeoutputbuffer, &ctflushedbytes);
+	TECFlushText (converter, (TextPtr)(*hresult), sizeoutputbuffer, &ctflushedbytes);
 
 	TECDisposeConverter (converter);
 

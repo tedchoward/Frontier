@@ -122,7 +122,7 @@ boolean handlesearch (Handle h, long *offset, long *lenmatch) {
 
 	lockhandle (h);
 	
-	fl = textsearch (*h, gethandlesize (h), offset, lenmatch);
+	fl = textsearch (BIGSTRING (*h), gethandlesize (h), offset, lenmatch);
 	
 	unlockhandle (h);
 	

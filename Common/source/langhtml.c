@@ -1006,41 +1006,41 @@ static boolean htmlcleanforexport (Handle x) {
 			
 			switch ((*x) [s.pos]) { // set chreplace or bsreplace
 			
-				case 0xd4:	/* 'Ô' open single quote */
-				case 0xd5:	/* 'Õ' close single quote */
+				case (char)0xd4:	/* 'Ô' open single quote */
+				case (char)0xd5:	/* 'Õ' close single quote */
 					(*x) [s.pos] = '\'';
 					break;
 				
-				case chopencurlyquote:
-				case chclosecurlyquote:
+				case (char)chopencurlyquote:
+				case (char)chclosecurlyquote:
 					(*x) [s.pos] = '\"';
 					break;
 				
-				case 0xa5:	/* '¥' disk */
+				case (char)0xa5:	/* '¥' disk */
 					(*x) [s.pos] = 'o';
 					break;
 					
-				case 0xca:	/* 'Ê' non-breaking space */
+				case (char)0xca:	/* 'Ê' non-breaking space */
 					(*x) [s.pos] = ' ';
 					break;
 				
-				case 0xc9:	/* 'É' ellipsis */
+				case (char)0xc9:	/* 'É' ellipsis */
 					mergehandlestreamstring (&s, 1, BIGSTRING ("\x03" "..."));
 					--s.pos;
 					break;
 				
-				case 0xd0:	/* 'Ð' n-dash */
-				case 0xd1:	/* 'Ñ' m-dash */
+				case (char)0xd0:	/* 'Ð' n-dash */
+				case (char)0xd1:	/* 'Ñ' m-dash */
 					mergehandlestreamstring (&s, 1, BIGSTRING ("\x02" "--"));
 					--s.pos;
 					break;
 				
-				case chcomment:
+				case (char)chcomment:
 					mergehandlestreamstring (&s, 1, BIGSTRING ("\x08" "&lt;&lt;"));
 					--s.pos;
 					break;
 				
-				case chendcomment:
+				case (char)chendcomment:
 					mergehandlestreamstring (&s, 1, BIGSTRING ("\x08" "&gt;&gt;"));
 					--s.pos;
 					break;
@@ -2731,8 +2731,8 @@ static boolean nthfieldhandle (Handle htext, byte fielddelim, long fieldnum, Han
 	unsigned long ixload = 0;
 	unsigned long ctload = 0;
 	
-	if (textnthword ((ptrbyte)*htext, gethandlesize (htext), fieldnum, fielddelim, true, &ixload, &ctload))
-		return (loadfromhandletohandle (htext, &ixload, ctload, false, hreturnedtext));
+	if (textnthword ((ptrbyte)*htext, gethandlesize (htext), fieldnum, fielddelim, true, (long *)(&ixload), (long *)(&ctload)))
+		return (loadfromhandletohandle (htext, (long *)(&ixload), ctload, false, hreturnedtext));
 
 	return (newemptyhandle (hreturnedtext));
 	} /*nthfieldhandle*/
@@ -3137,7 +3137,7 @@ static boolean ScanJPEGHeader(hdlfilenum file_ref, unsigned short * height, unsi
             case M_SOF15:       // Differential lossless, arithmetic 
 					{
                     unsigned short  length;
-                    short           image_height, image_width;
+                    unsigned short  image_height, image_width;
                     unsigned char   data_precision;
                     
                     result = read_2_bytes(file_ref, &length);
@@ -3594,7 +3594,7 @@ static boolean htmlrundirective (typrocessmacrosinfo *pmi, Handle s, bigstring f
 	bigstring lerrorstring;
 	tyvaluerecord val;
 	
-	textfirstword (*s, gethandlesize (s), chspace, fieldname);
+	textfirstword ((ptrbyte)(*s), gethandlesize (s), chspace, fieldname);
 	
 	pullfromhandle (s, 0, stringlength (fieldname) + 1, nil);
 	
@@ -4131,7 +4131,7 @@ static boolean glossarypatcherverb (hdltreenode hp1, tyvaluerecord *v) {
 		//	if ixstart == 0 {
 		//		break};
 		
-		ixstart = textpatternmatch (*s.data + s.pos, s.eof - s.pos, str_glosspatch, false);
+		ixstart = textpatternmatch ((byte *)(*s.data + s.pos), s.eof - s.pos, str_glosspatch, false);
 		
 		if (ixstart < 0)
 			break;
@@ -4146,7 +4146,7 @@ static boolean glossarypatcherverb (hdltreenode hp1, tyvaluerecord *v) {
 		
 		ix = ixstart + stringlength (str_glosspatch);
 		
-		ixend = textpatternmatch (*s.data + ix, s.eof - ix, BIGSTRING ("\x02" "]]"), false);
+		ixend = textpatternmatch ((byte *)(*s.data + ix), s.eof - ix, BIGSTRING ("\x02" "]]"), false);
 		
 		if (ixend < 0)
 			ixend = s.eof;
@@ -4175,7 +4175,7 @@ static boolean glossarypatcherverb (hdltreenode hp1, tyvaluerecord *v) {
 
 		lenpath = gethandlesize (hpath);
 
-		textnthword (*hpath, lenpath, 2, '.', true, &ixword, &lenword);
+		textnthword ((ptrbyte)(*hpath), lenpath, 2, '.', true, &ixword, &lenword);
 		
 		if ((lenword == 0) && (lenpath > 0) && ((*hpath)[lenpath - 1] != '/')) {
 
@@ -4382,7 +4382,7 @@ static boolean getpagetableaddressverb (hdltreenode hp1, tyvaluerecord *v) {
 
 static boolean stripmarkup (handlestream *s) {
 
-	byte *p;
+	char *p;
 	byte ch;
 	byte bsskipthru [8];
 	long ix;
@@ -4418,7 +4418,7 @@ static boolean stripmarkup (handlestream *s) {
 		
 		if (!isemptystring (bsskipthru)) {
 		
-			ix = textpatternmatch (p + (*s).pos, (*s).eof - (*s).pos, bsskipthru, false);
+			ix = textpatternmatch ((byte *)(p + (*s).pos), (*s).eof - (*s).pos, bsskipthru, false);
 			
 			if (ix < 0)
 				break;
@@ -4676,7 +4676,7 @@ static boolean indexpage (bigstring bsaddress, bigstring bsurl, bigstring bstitl
 	
 	for ((*s).pos = 0; (*s).pos < (*s).eof; ++(*s).pos) {
 		
-		p = *(*s).data + (*s).pos;
+		p = (byte *)(*(*s).data + (*s).pos);
 		
 		switch (*p) { // set chreplace or bsreplace
 		
@@ -4711,7 +4711,7 @@ static boolean indexpage (bigstring bsaddress, bigstring bsurl, bigstring bstitl
 	if (!stripmarkup (s))
 		return (false);
 	
-	p = *(*s).data;
+	p = (unsigned char *)(*(*s).data);
 	
 	ctwords = textcountwords (p, (*s).eof, chspace, true);
 	
@@ -5308,7 +5308,7 @@ static boolean webserverparseheaders (Handle htext, hdlhashtable hheadertable, H
 
 	/*locate end of first line*/
 
-	lenfirstline = textpatternmatch (*htext, hsize, STR_P_CRLF, false);
+	lenfirstline = textpatternmatch ((byte *)(*htext), hsize, STR_P_CRLF, false);
 
 	if (lenfirstline == -1 || hheadertable == nil)
 		goto done; /*there's no line terminator, we are done*/
@@ -5445,7 +5445,7 @@ static boolean webserverparsecookies (hdlhashtable hparamtable, tyvaluerecord *v
 	
 		tyvaluerecord vcookie;
 
-		if (!textnthword (*hcookie, lencookie, 1, ';', /*flstrict:*/ true, &ix, &len))
+		if (!textnthword ((ptrbyte)(*hcookie), lencookie, 1, ';', /*flstrict:*/ true, &ix, &len))
 			break;
 
 		if (!loadfromhandletohandle (hcookie, &ix, len, false, &hfirstpart))
@@ -5463,7 +5463,7 @@ static boolean webserverparsecookies (hdlhashtable hparamtable, tyvaluerecord *v
 		else
 			sethandlesize (hcookie, 0L);
 
-		if (!textnthword (*hfirstpart, gethandlesize (hfirstpart), 1, '=', /*flstrict:*/ true, &ix, &len))
+		if (!textnthword ((ptrbyte)(*hfirstpart), gethandlesize (hfirstpart), 1, '=', /*flstrict:*/ true, &ix, &len))
 			break;
 		
 		if (len > 0) {
@@ -6803,7 +6803,7 @@ static boolean webserverprocessfirstline (hdlhashtable ht, long *errorcode, bigs
 
 	hsize = gethandlesize (h);
 	
-	if (!textnthword (*h, hsize, 1, chspace, false, &wdstart, &wdlength)) {
+	if (!textnthword ((ptrbyte)(*h), hsize, 1, chspace, false, &wdstart, &wdlength)) {
 		
 		*errorcode = 400;
 		
@@ -6817,7 +6817,7 @@ static boolean webserverprocessfirstline (hdlhashtable ht, long *errorcode, bigs
 	if (!loadfromhandletohandle (h, &wdstart, wdlength, false, &hmethod))
 		goto exit;
 
-	if (!textnthword (*h, hsize, 2, chspace, false, &wdstart, &wdlength)) {
+	if (!textnthword ((ptrbyte)(*h), hsize, 2, chspace, false, &wdstart, &wdlength)) {
 		
 		*errorcode = 400;
 		
@@ -6831,7 +6831,7 @@ static boolean webserverprocessfirstline (hdlhashtable ht, long *errorcode, bigs
 	if (!loadfromhandletohandle (h, &wdstart, wdlength, false, &hpath))
 		goto exit;
 
-	if (!textnthword (*h, hsize, 3, chspace, false, &wdstart, &wdlength)) {
+	if (!textnthword ((ptrbyte)(*h), hsize, 3, chspace, false, &wdstart, &wdlength)) {
 		
 		*errorcode = 400;
 		
@@ -6847,7 +6847,7 @@ static boolean webserverprocessfirstline (hdlhashtable ht, long *errorcode, bigs
 
 	/* Extract HTTP version number: "HTTP/1.1" --> "1.1" */
 	
-	if (!textnthword (*hversion, gethandlesize (hversion), 2, '/', false, &wdstart, &wdlength)) {
+	if (!textnthword ((ptrbyte)(*hversion), gethandlesize (hversion), 2, '/', false, &wdstart, &wdlength)) {
 		
 		*errorcode = 400;
 		
@@ -6881,7 +6881,7 @@ static boolean webserverprocessfirstline (hdlhashtable ht, long *errorcode, bigs
 		bigstring bsmainversion;
 		long mainversion = 1;
 	
-		if (!textnthword (*hversion, gethandlesize (hversion), 1, '.', false, &wdstart, &wdlength)) {
+		if (!textnthword ((ptrbyte)(*hversion), gethandlesize (hversion), 1, '.', false, &wdstart, &wdlength)) {
 			
 			*errorcode = 400;
 			
@@ -6919,7 +6919,7 @@ static boolean webserverprocessfirstline (hdlhashtable ht, long *errorcode, bigs
 		&& (getlower((*hpath)[3]) == 'p')
 		&& (getlower((*hpath)[4]) == ':')) { /* It's a future-style full URL, remove scheme and host name */
 		
-		if (!textnthword (*hpath, gethandlesize (hpath), 3, '/', true, &wdstart, &wdlength)
+		if (!textnthword ((ptrbyte)(*hpath), gethandlesize (hpath), 3, '/', true, &wdstart, &wdlength)
 				|| !pullfromhandle (hpath, 0, wdstart + wdlength, nil)) {
 			
 			*errorcode = 400;
@@ -6944,20 +6944,20 @@ static boolean webserverprocessfirstline (hdlhashtable ht, long *errorcode, bigs
 
 	/* Extract searchArgs from path -- the stuff after the '?' */
 
-	if (textnthword (*hpath, gethandlesize (hpath), 2, '\?', true, &wdstart, &wdlength))
+	if (textnthword ((ptrbyte)(*hpath), gethandlesize (hpath), 2, '\?', true, &wdstart, &wdlength))
 		if (!loadfromhandletohandle (hpath, &wdstart, wdlength, false, &hsearchargs))
 			goto exit;
 
-	if (textnthword (*hpath, gethandlesize (hpath), 1, '\?', true, &wdstart, &wdlength))
+	if (textnthword ((ptrbyte)(*hpath), gethandlesize (hpath), 1, '\?', true, &wdstart, &wdlength))
 		sethandlesize (hpath, wdlength); /* keep only stuff before the question mark */
 
 	/* Extract pathArgs from path -- the stuff after the '$' */
 
-	wdstart = textpatternmatch ((*hpath), gethandlesize (hpath), STR_P_DOLLAR, false);
+	wdstart = textpatternmatch ((byte *)(*hpath), gethandlesize (hpath), STR_P_DOLLAR, false);
 
 	if (wdstart == -1) { /*fix for proxies which encode "$" as "%24"*/
 
-		wdstart = textpatternmatch ((*hpath), gethandlesize (hpath), STR_P_DOLLAR_ENCODED, false);
+		wdstart = textpatternmatch ((byte *)(*hpath), gethandlesize (hpath), STR_P_DOLLAR_ENCODED, false);
 
 		if (wdstart != -1)
 			pullfromhandle (hpath, wdstart + 1, 2, nil);
@@ -9610,7 +9610,7 @@ static boolean findtokencallback (hdlhashnode hn, ptrvoid p) {
 	if ((**hn).val.valuetype == tokenvaluetype)
 		if ((**hn).val.data.tokenvalue == (*ptrinfo).token) {
 
-			copystring ((**hn).hashkey, (*ptrinfo).str);
+			copystring ((**hn).hashkey, BIGSTRING ((*ptrinfo).str));
 
 			return (false);
 			}
