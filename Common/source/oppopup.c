@@ -176,7 +176,7 @@ static void oppopupinsertsubmenu (hdlmenu hmenu, short itemnumber, hdlheadrecord
 	hdlmenu hsubmenu;
 	short idsubmenu = currmenuid;
 
-	hsubmenu = Newmenu (idsubmenu, "");
+	hsubmenu = Newmenu (idsubmenu, BIGSTRING (""));
 	
 #if MACVERSION
 	InsertMenu (hsubmenu, -1);

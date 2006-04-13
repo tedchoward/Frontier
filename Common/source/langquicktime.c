@@ -98,7 +98,7 @@ static boolean quicktimeopenverb (hdltreenode hp1, tyvaluerecord *v) {
 
 	if (!playeropenmovieinwindow (&fs)) {
 		
-		langerrormessage ("\x31" "Can't open the file because of a QuickTime error.");
+		langerrormessage (BIGSTRING ("\x31" "Can't open the file because of a QuickTime error."));
 		
 		return (false);
 		} /*if*/

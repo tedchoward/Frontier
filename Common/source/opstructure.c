@@ -2497,7 +2497,7 @@ boolean isoutlinetext (Handle htext) {
 
 	setstringwithchar (chreturn, bsreturn);
 
-	return (textpatternmatch (*htext, gethandlesize (htext), bsreturn, false) >= 0);
+	return (textpatternmatch ((byte *) (*htext), gethandlesize (htext), bsreturn, false) >= 0);
 	
 	/*
 	bigstring bs;

@@ -682,9 +682,9 @@ static void TCPWRITEMSG () {
 	
 	if (fllogger) {
 		
-		convertcstring (TCPmsg);
+		convertcstring (BIGSTRING (TCPmsg));
 		
-		aboutsetmiscstring (TCPmsg);
+		aboutsetmiscstring ( BIGSTRING (TCPmsg));
 		}
 	} /*TCPWRITEMSG*/
 
@@ -2604,9 +2604,9 @@ boolean fwsNetEventAddressDecode (unsigned long addr, bigstring IPaddr) {
 	
 	setstringlength (IPaddr, 0);
 	
-	OTInetHostToString (addr, stringbaseaddress (IPaddr));
+	OTInetHostToString (addr, (char *)(stringbaseaddress (IPaddr)));
 	
-	setstringlength (IPaddr, strlen (stringbaseaddress (IPaddr)));
+	setstringlength (IPaddr, strlen (stringbaseaddress ((char *)IPaddr)));
 
 	return (true);
 	} /*fwsNetEventAddressDecode*/
@@ -2624,7 +2624,7 @@ boolean fwsNetEventAddressEncode (bigstring IPaddr, unsigned long  * addr) {
 	
 	nullterminate (IPaddr);
 	
-	err = OTInetStringToHost (stringbaseaddress (IPaddr), &host);
+	err = OTInetStringToHost (stringbaseaddress ((char *)IPaddr), &host);
 	
 	if (err != kOTNoError) {
 	
@@ -2690,7 +2690,7 @@ boolean fwsNetEventAddressToName (unsigned long addr, bigstring domainName) {
 	
 	/*fire off query*/
 	
-	err = OTInetAddressToName (inetservice, (InetHost) addr, stringbaseaddress (domainName));
+	err = OTInetAddressToName (inetservice, (InetHost) addr, stringbaseaddress ((char *)domainName));
 
 	if (err != kOTNoError) 
 		goto exit2;
@@ -2715,7 +2715,7 @@ boolean fwsNetEventAddressToName (unsigned long addr, bigstring domainName) {
 		return (false);
 		}
 	
-	setstringlength (domainName, strlen (stringbaseaddress (domainName)));
+	setstringlength (domainName, strlen (stringbaseaddress ((char *)domainName)));
 	
 	poptrailingchars (domainName, '.');
 
@@ -3218,9 +3218,9 @@ static boolean fwslaunchacceptingthread (ListenRecordRef listenref) {
 	OSStatus err;
 
 	#if TARGET_API_MAC_CARBON == 1
-		err = NewThread (kCooperativeThread, gThreadEntryCallback, (void *)listenref, 0, kUsePremadeThread + kCreateIfNeeded + kFPUNotNeeded, nil, &listenref->idthread);	
+		err = NewThread (kCooperativeThread, gThreadEntryCallback, (void *)listenref, 0, kUsePremadeThread + kCreateIfNeeded + kFPUNotNeeded, nil, (ThreadID *)(&listenref->idthread));
 	#else
-		err = NewThread (kCooperativeThread, fwsacceptingthreadmain, (void *)listenref, 0, kUsePremadeThread + kCreateIfNeeded + kFPUNotNeeded, nil, &listenref->idthread);
+		err = NewThread (kCooperativeThread, fwsacceptingthreadmain, (void *)listenref, 0, kUsePremadeThread + kCreateIfNeeded + kFPUNotNeeded, nil, (ThreadID *)(&listenref->idthread));
 	#endif
 
 	if (kOTNoError != err) {

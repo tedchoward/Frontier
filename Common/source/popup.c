@@ -127,7 +127,7 @@ static short handlepopup (hdlmenu hmenu, Rect r, short item) {
 	hchosenmenu = GetMenuHandle (idmenu);
 	
 	if (hchosenmenu != nil) /* 2002-10-12 AR */
-		if (GetMenuItemCommandID (hchosenmenu, iditem, &commandid) == noErr)
+		if (GetMenuItemCommandID (hchosenmenu, iditem, (MenuCommand *)(&commandid)) == noErr)
 			if (commandid > 0)
 				return (commandid);
 	/*

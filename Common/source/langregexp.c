@@ -2259,14 +2259,14 @@ boolean regexptextsearch (byte *ptext, long lentext, long *offset, long *lenmatc
 		
 			tyregexpsearchinfo info;
 			
-			info.p = ptext;
+			info.p = (char *)ptext;
 			info.hcp = hcp;
 			info.hovector = hovector;
 			openhandlestream (nil, &info.s);
 			
 			disablelangerror ();
 			
-			fl = regexpscanreplacement (stringbaseaddress (searchparams.bsorigreplace),
+			fl = regexpscanreplacement (stringbaseaddress ((char *) searchparams.bsorigreplace),
 								stringlength (searchparams.bsorigreplace),
 								bsdummy,
 								&regexptextsearchwriteliteral,

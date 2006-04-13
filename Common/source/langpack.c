@@ -386,7 +386,7 @@ boolean langpackwindowverb (hdltreenode hparam1, tyvaluerecord *vreturned) {
 	
 	if (hinfo == nil) {
 		
-		langparamerror (badwindowerror, "\x04" "pack");
+		langparamerror (badwindowerror, BIGSTRING ("\x04" "pack"));
 		
 		return (false);
 		}

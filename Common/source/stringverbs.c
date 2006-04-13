@@ -1148,7 +1148,7 @@ static void innercasehandle (Handle h) {
 	lockhandle (h);
 
 #if MACVERSION
-	maclowertext ((Ptr) *h, gethandlesize (h));
+	maclowertext ((byte *) (*h), gethandlesize (h));
 #else
 	lowertext ((ptrbyte) *h, gethandlesize (h));
 #endif
@@ -1767,7 +1767,7 @@ static boolean stringfunctionvalue (short token, hdltreenode hparam1, tyvaluerec
 			lockhandle (x);
 			
 		#if MACVERSION
-			macuppertext ((Ptr) *x, gethandlesize (x));
+			macuppertext ((byte *) (*x), gethandlesize (x));
 		#else
 			uppertext ((ptrbyte) *x, gethandlesize (x));
 		#endif
@@ -1791,7 +1791,7 @@ static boolean stringfunctionvalue (short token, hdltreenode hparam1, tyvaluerec
 			lockhandle (x);
 		
 		#if MACVERSION
-			maclowertext ((Ptr) *x, gethandlesize (x));
+			maclowertext ((byte *) (*x), gethandlesize (x));
 		#else
 			lowertext ((ptrbyte) *x, gethandlesize (x));
 		#endif

@@ -892,10 +892,10 @@ boolean shellprint (WindowPtr w, boolean fldialog) {
 	
 	//limit this to the number of pages the user asked for. 
 
-	theErr = PMGetFirstPage(shellprintinfo.printsettings, &firstPage);
+	theErr = PMGetFirstPage(shellprintinfo.printsettings, (UInt32 *) (&firstPage));
 	if (theErr == noErr)
 	{
-		theErr = PMGetLastPage(shellprintinfo.printsettings, &lastPage);
+		theErr = PMGetLastPage(shellprintinfo.printsettings, (UInt32 *) (&lastPage));
 	}
 
 	//sanity checks

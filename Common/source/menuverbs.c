@@ -501,7 +501,7 @@ static boolean mefindusedblocksvisit (hdlheadrecord hnode, ptrvoid refcon) {
 		
 		pushchar (']', bspath);
 
-		insertstring ("\x02" " [", bspath);
+		insertstring (BIGSTRING ("\x02" " ["), bspath);
 
 		insertstring (bsparent, bspath);
 

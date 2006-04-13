@@ -521,14 +521,14 @@ boolean getsearchparams (void) {
 			
 			options = PCRE_DOTALL | PCRE_MULTILINE | PCRE_NOTEMPTY | (searchparams.flunicase ? PCRE_CASELESS : 0L);
 
-			if (!regexpcompile (stringbaseaddress (searchparams.bsorigfind), options, bsmsg, &searchparams.hcompiledpattern)) {
+			if (!regexpcompile (stringbaseaddress ((char *) (searchparams.bsorigfind)), options, bsmsg, &searchparams.hcompiledpattern)) {
 				if (!isemptystring (bsmsg))
 					langerrormessage (bsmsg);
 				goto exit;
 				}
 			
 			if (!regexpcheckreplacement (searchparams.hcompiledpattern,
-											stringbaseaddress (searchparams.bsorigreplace),
+											stringbaseaddress ((char *) (searchparams.bsorigreplace)),
 											stringlength (searchparams.bsorigreplace))) {
 				goto exit;
 				}

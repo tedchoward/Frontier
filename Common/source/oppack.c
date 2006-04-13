@@ -599,7 +599,7 @@ boolean oppack (Handle *hpackedoutline) {
 		
 		register ptrbyte p;
 		
-		p = *h;
+		p = BIGSTRING (*h);
 		
 		p += ixheader;
 		
@@ -835,7 +835,7 @@ static boolean opgetlinetext (boolean flmapchars, handlestream *textstream, shor
 	
 	while ((*textstream).pos < (*textstream).eof) { /*copy the text chars into the string*/
 		
-		p = *(*textstream).data + (*textstream).pos;
+		p = (ptrbyte) (*(*textstream).data + (*textstream).pos);
 		
 		if (*p == chreturn) {
 			
@@ -1108,7 +1108,7 @@ boolean opunpack (Handle hpackedoutline, long *ixload, hdloutlinerecord *houtlin
 	
 	if (!readhandlestream (&packstream, &versionnumber, sizeof (versionnumber))) {
 	
-		shellerrormessage ("\x3d" "Can't unpack outline because unexpected data was encountered.");
+		shellerrormessage (BIGSTRING ("\x3d" "Can't unpack outline because unexpected data was encountered."));
 		
 		opdisposeoutline (ho, false);
 		

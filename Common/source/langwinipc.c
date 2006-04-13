@@ -1071,7 +1071,7 @@ boolean langipcrunscript (bigstring bsscriptname, tyvaluerecord *vparams, hdlhas
 	
 	if (!fl) {
 		
-		setstringvalue ("0x31" "Can't complete call because of a parameter error.", vreturned);
+		setstringvalue (BIGSTRING ("0x31" "Can't complete call because of a parameter error."), vreturned);
 		
 		langdisposetree (hfunctioncall);
 		

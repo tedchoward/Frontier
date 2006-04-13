@@ -58,8 +58,8 @@
 	#include "FrontierWinMain.h"
 #endif
 
-#define str_desktopscript	"\x04" "ftds"
-#define str_normalscript	"\x04" "ftsc"
+#define str_desktopscript	BIGSTRING ("\x04" "ftds")
+#define str_normalscript	BIGSTRING ("\x04" "ftsc")
 #define type_desktopscript	'FTds'
 #define type_normalscript	'FTsc'
 #define type_wptext			'FTwp'
@@ -262,7 +262,7 @@ static boolean clickersvisit (hdlhashnode hnode, ptrvoid refcon) {
 	
 	gethashkey (hnode, bs);
 	
-	if (patternmatch ("\x04type", bs) == 1) {
+	if (patternmatch (BIGSTRING ("\x04type"), bs) == 1) {
 		
 		midstring (bs, 5, 4, bstype);
 		

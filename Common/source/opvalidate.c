@@ -150,7 +150,7 @@ boolean opvalidate (hdloutlinerecord houtline) {
 	
 	if (ctexpanded != (**ho).ctexpanded) {
 	
-		shellinternalerror(idinvalidoutline, "\x15" "expansion count error");
+		shellinternalerror(idinvalidoutline, BIGSTRING ("\x15" "expansion count error"));
 		
 		(**ho).ctexpanded = ctexpanded; /*once is enough for this message*/
 

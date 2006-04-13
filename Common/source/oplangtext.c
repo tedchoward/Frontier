@@ -225,7 +225,7 @@ static boolean oplangtextvisit (hdlheadrecord hnode, ptrvoid refcon) {
 	
 	if (len1 > 0) {
 		
-		len2 = langcommentdelete (chcomment, *bshead, len1);
+		len2 = langcommentdelete (chcomment, (byte *) (*bshead), len1);
 		
 		if (len2 >= 0) { /* line is partly a comment */
 		
@@ -261,11 +261,11 @@ static boolean oplangtextvisit (hdlheadrecord hnode, ptrvoid refcon) {
 			if ((level < langtextlastlevel) || !fllastwascomment) {
 				
 				if (bshead)
-					textfirstword (*bshead, gethandlesize (bshead), chspace, bsfirst);
+					textfirstword ((ptrbyte) (*bshead), gethandlesize (bshead), chspace, bsfirst);
 				else
 					setemptystring (bsfirst);
 
-				if (!equalidentifiers (bsfirst, STR_else)) { /*never want a semicolon before else*/
+				if (!equalidentifiers (bsfirst, BIGSTRING (STR_else))) { /*never want a semicolon before else*/
 					
 					if (!flmakeitpretty || !flcomment || !remainingsubheadsarecomments (h))  /* no semicolon before the closing braces */
 						pushchar (';', bs);

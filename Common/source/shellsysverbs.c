@@ -1590,7 +1590,7 @@ static boolean threadfunctionvalue (short token, hdltreenode hparam1, tyvaluerec
 		case settimeslicefunc:
 			flnextparamislast = true;
 
-			if (!getlongvalue (hparam1, 1, &ticks))
+			if (!getlongvalue (hparam1, 1, (long *) (&ticks)))
 				return (false);
 			
 			return (setbooleanvalue (setprocesstimeslice (ticks), v));
@@ -1606,7 +1606,7 @@ static boolean threadfunctionvalue (short token, hdltreenode hparam1, tyvaluerec
 		case setdefaulttimeslicefunc:
 			flnextparamislast = true;
 
-			if (!getlongvalue (hparam1, 1, &ticks))
+			if (!getlongvalue (hparam1, 1, (long *) (&ticks)))
 				return (false);
 			
 			return (setbooleanvalue (setdefaulttimeslice (ticks), v));

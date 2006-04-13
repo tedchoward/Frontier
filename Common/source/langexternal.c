@@ -1318,7 +1318,7 @@ static boolean fullpathsearch (hdlhashtable intable, hdlhashtable fortable, bigs
 
 	if (pht != nil) { /*Then lets follow the nodes up...*/
 
-		if (fullpathsearch (ht, pht, "", flonlyinmemory, flquote, flincludeself, bs, hroot)) {
+		if (fullpathsearch (ht, pht, BIGSTRING (""), flonlyinmemory, flquote, flincludeself, bs, hroot)) {
 
 			if ((ht != pht) || flincludeself) {
 

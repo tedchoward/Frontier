@@ -565,7 +565,7 @@ static boolean settimesverb (tylangtoken token, hdltreenode hparam1, tyvaluereco
 	
 	hv = (hdlexternalvariable) v.data.externalvalue;
 	
-	if (!langexternalgettimes (hv, &timecreated, &timemodified, hnode))
+	if (!langexternalgettimes (hv, (long *)(&timecreated), (long *)(&timemodified), hnode))
 		return (false);
 	
 	if (token == settimecreatedfunc)
@@ -3294,7 +3294,7 @@ static boolean langfunctionvalue (short token, hdltreenode hparam1, tyvaluerecor
 			if (!getstringvalue (hparam1, 1, bs))
 				return (false);
 
-			if (fwsNetEventAddressEncode(bs, &addr))
+			if (fwsNetEventAddressEncode(bs, (unsigned long *)(&addr)))
 				return (setlongvalue (addr, v));
 
 			return (false);
@@ -3324,7 +3324,7 @@ static boolean langfunctionvalue (short token, hdltreenode hparam1, tyvaluerecor
 			if (!getstringvalue (hparam1, 1, bs))
 				return (false);
 
-			if (fwsNetEventNameToAddress(bs, &addr))
+			if (fwsNetEventNameToAddress(bs, (unsigned long *)(&addr)))
 				return (setlongvalue (addr, v));
 
 			return (false);
@@ -3334,7 +3334,7 @@ static boolean langfunctionvalue (short token, hdltreenode hparam1, tyvaluerecor
 			{
 			long addr;
 
-			if (fwsNetEventMyAddress(&addr))
+			if (fwsNetEventMyAddress((unsigned long *)(&addr)))
 				return (setlongvalue (addr, v));
 
 			return (false);
@@ -3399,7 +3399,7 @@ static boolean langfunctionvalue (short token, hdltreenode hparam1, tyvaluerecor
 			if (!getlongvalue (hparam1, 2, &port))
 				return (false);
 
-			if (fwsNetEventOpenAddrStream (addr, port, &stream))
+			if (fwsNetEventOpenAddrStream (addr, port, (unsigned long *)(&stream)))
 				return (setlongvalue (stream, v));
 
 			return (false);
@@ -3418,7 +3418,7 @@ static boolean langfunctionvalue (short token, hdltreenode hparam1, tyvaluerecor
 			if (!getlongvalue (hparam1, 2, &port))
 				return (false);
 
-			if (fwsNetEventOpenNameStream (bs, port, &stream))
+			if (fwsNetEventOpenNameStream (bs, port, (unsigned long *)(&stream)))
 				return (setlongvalue (stream, v));
 
 			return (false);
@@ -3446,7 +3446,7 @@ static boolean langfunctionvalue (short token, hdltreenode hparam1, tyvaluerecor
 
 			charbuffer = *buf;
 
-			if (fwsNetEventReadStream (stream, &len, charbuffer)) {
+			if (fwsNetEventReadStream (stream, (unsigned long *)(&len), charbuffer)) {
 				unlockhandle (buf);
 				SetHandleSize (buf, len);
 				return (setbinaryvalue (buf, '\?\?\?\?', v));
@@ -3518,10 +3518,10 @@ static boolean langfunctionvalue (short token, hdltreenode hparam1, tyvaluerecor
 
 			flnextparamislast = true;
 	
-			if (!getlongvalue (hparam1, 5, &ipaddr))
+			if (!getlongvalue (hparam1, 5, (long *)(&ipaddr)))
 				return (false);
 			
-			if (fwsNetEventListenStream (port, depth, bsFullName, refcon, &stream, ipaddr, (long)(**((hdlexternalvariable)(**ht).hashtablerefcon)).hdatabase))
+			if (fwsNetEventListenStream (port, depth, bsFullName, refcon, (unsigned long *)(&stream), ipaddr, (long)(**((hdlexternalvariable)(**ht).hashtablerefcon)).hdatabase))
 				return (setlongvalue (stream, v));
 
 			return (false);

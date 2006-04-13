@@ -59,8 +59,8 @@ typedef enum tyaction {
 
 byte * actionstrings [] = {
 	
-	"\x06" "moving",
-	"\x07" "pasting"
+	BIGSTRING ("\x06" "moving"),
+	BIGSTRING ("\x07" "pasting")
 	};
 
 
@@ -75,16 +75,16 @@ enum {
 
 
 byte * dialogstrings [] = {
-	"\x40" "Some items in this location have the same names as items you're ",
-	"\x02" "An",
-	"\x07" "A newer",
-	"\x08" "An older",
+	BIGSTRING ("\x40" "Some items in this location have the same names as items you're "),
+	BIGSTRING ("\x02" "An"),
+	BIGSTRING ("\x07" "A newer"),
+	BIGSTRING ("\x08" "An older"),
 	#ifdef MACVERSION
-		"\x0d" " item named Ò",
-		"\x22" "Ó already exists in this location."
+		BIGSTRING ("\x0d" " item named Ò"),
+		BIGSTRING ("\x22" "Ó already exists in this location.")
 	#else
-		"\x0d" " item named \"",
-		"\x22" "\" already exists in this location."
+		BIGSTRING ("\x0d" " item named \""),
+		BIGSTRING ("\x22" "\" already exists in this location.")
 	#endif
 	};
 

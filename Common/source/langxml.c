@@ -178,7 +178,7 @@ static boolean handlebeginswith (Handle h, bigstring bs) {
 	if (ct < ctcompare)
 		return (false);
 	
-	return (strncmp (stringbaseaddress (bs), ((char *) *h), ctcompare) == 0);
+	return (strncmp (stringbaseaddress ((char *) bs), ((char *) *h), ctcompare) == 0);
 	} /*handleendswith*/
 
 
@@ -200,7 +200,7 @@ static boolean handleendswith (Handle h, bigstring bs) {
 
 static boolean handlecontains (Handle h, bigstring bs) {
 
-	return (textpatternmatch (*h, gethandlesize (h), bs, false) >= 0);
+	return (textpatternmatch ((byte *)(*h), gethandlesize (h), bs, false) >= 0);
 	} /*handlecontains*/
 
 
@@ -1543,7 +1543,7 @@ static void setiso8601datetimestring (bigstring bsiso8601, unsigned long *secs) 
 
 static boolean findinhandlestream (handlestream *s, bigstring bsfind, boolean flunicase) {
 	
-	byte *p = *(*s).data;
+	byte *p = (byte *) (*(*s).data);
 	long ix;
 	
 	ix = textpatternmatch (p + (*s).pos, (*s).eof - (*s).pos, bsfind, flunicase);
@@ -1872,7 +1872,7 @@ static boolean getnexttoken (handlestream *source, hdlhashtable namespaces, xmlt
 				long ctbytes = gethandlesize ((*adrtoken).tokenstring);
 				long ixword, lenword;
 			
-				if (!textnthword (*h, ctbytes, 2, ':', true, &ixword, &lenword))
+				if (!textnthword ((ptrbyte)(*h), ctbytes, 2, ':', true, &ixword, &lenword))
 					sethandlesize (h, 0);
 				else {
 					
@@ -3153,7 +3153,7 @@ static boolean xmlgetpathaddress (tyaddress *xtable, Handle h, tyaddress *adrres
 	if ((*h)[0] == '/') /*handle leading slash*/
 		ctwd++;
 	
-	while (textnthword (*h, len, ctwd++, '/', true, &ix, &lenwd)) {
+	while (textnthword ((ptrbyte)(*h), len, ctwd++, '/', true, &ix, &lenwd)) {
 
 		disablelangerror ();
 

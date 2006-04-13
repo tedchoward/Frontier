@@ -376,7 +376,7 @@ odbBool xCALLBACK extOdbDeleteListValue (odbRef odb, odbValueRecord *value, long
 	grabthreadglobals ();
 
 	if (((value->valuetype == odb_recordvaluetype) || (value->valuetype == odb_listvaluetype)) && (value->data.listvalue != NULL)) {
-		res = opdeletelistitem ((hdllistrecord) value->data.listvalue, (short) idx, recordname);
+		res = opdeletelistitem ((hdllistrecord) value->data.listvalue, (short) idx, (ptrstring)recordname);
 		}
 
 	releasethreadglobals ();
@@ -397,7 +397,7 @@ odbBool xCALLBACK extOdbSetListValue (odbRef odb, odbValueRecord *value, long id
 
 		convertodbtotyval (valueData, &val);
 
-		res = setnthlistval ((hdllistrecord) value->data.listvalue, idx, recordname, &val);
+		res = setnthlistval ((hdllistrecord) value->data.listvalue, idx, (ptrstring) recordname, &val);
 		}
 
 	releasethreadglobals ();
@@ -416,7 +416,7 @@ odbBool xCALLBACK extOdbGetListValue (odbRef odb, odbValueRecord *value, long id
 	grabthreadglobals ();
 
 	if (((value->valuetype == odb_recordvaluetype) || (value->valuetype == odb_listvaluetype)) && (value->data.listvalue != NULL)) {
-		res = getnthlistval ((hdllistrecord) value->data.listvalue, idx, recordname, &valret);
+		res = getnthlistval ((hdllistrecord) value->data.listvalue, idx, (ptrstring) recordname, &valret);
 
 		if (res)
 			res = converttyvaltoodb (&valret, valueReturn);
@@ -441,7 +441,7 @@ odbBool xCALLBACK extOdbAddListValue (odbRef odb, odbValueRecord *value, char * 
 
 		convertodbtotyval (valueData, &val);
 
-		res = langpushlistval ((hdllistrecord) value->data.listvalue, recordname, &val);
+		res = langpushlistval ((hdllistrecord) value->data.listvalue, (ptrstring) recordname, &val);
 		}
 
 	releasethreadglobals ();

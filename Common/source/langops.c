@@ -155,7 +155,7 @@ static tytypeinfo typeinfo [ctvaluetypes] = {
 	
 	{'scpt', STR_script},
 	
-	{'mbar', STR_menubar},
+	{'mbar', BIGSTRING (STR_menubar)},
 	
 	{'pict', STR_picture}
 	

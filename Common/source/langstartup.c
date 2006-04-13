@@ -184,7 +184,7 @@ boolean loadfunctionprocessor (short id, langvaluecallback valuecallback) {
 	
 	while (--ctefps >= 0) {
 		
-		copyrezstring (*hefps + ix, bsname);
+		copyrezstring (BIGSTRING (*hefps + ix), bsname);
 		
 		ix += stringsize (bsname);
 		
@@ -201,7 +201,7 @@ boolean loadfunctionprocessor (short id, langvaluecallback valuecallback) {
 		
 		while (--ctverbs >= 0 && fl) {
 			
-			copyrezstring (*hefps + ix, bsname);
+			copyrezstring (BIGSTRING (*hefps + ix), bsname);
 			
 			ix += stringsize (bsname);
 			
@@ -235,7 +235,7 @@ static boolean initenvironment (hdlhashtable ht) {
 		
 		#endif
 		
-		gestalt (gestaltSystemVersion, &x);
+		gestalt (gestaltSystemVersion, (long *)(&x));
 		
 		langassignbooleanvalue (ht, str_isMac, true);
 		
@@ -278,7 +278,7 @@ static boolean initenvironment (hdlhashtable ht) {
 
 			/* get os full display name */
 
-			copystring ("sw_vers -productName", bs); 
+			copystring ((unsigned char *)"sw_vers -productName", bs); 
 
 			sethandlecontents (bs, stringsize (bs), hcommand);
 
@@ -294,7 +294,7 @@ static boolean initenvironment (hdlhashtable ht) {
 			/* 2004-11-19 creedon - is mac os classic */
 			/* This needs to be checked on Mac OS Classic as well as Mac OS 9 proper. */
 			
-			err = gestalt (gestaltMacOSCompatibilityBoxAttr, &response);
+			err = gestalt (gestaltMacOSCompatibilityBoxAttr, (long *)(&response));
 			
 			if ((err == noErr) && ((response & (1 << gestaltMacOSCompatibilityBoxPresent)) != 0))
 				isMacOsClassic = true;

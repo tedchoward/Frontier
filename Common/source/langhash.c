@@ -2219,7 +2219,7 @@ static void hashunpackstring (Handle hget, bigstring bs, long ix) {
 
 	register ptrbyte p;
 	
-	p = *hget + ix;
+	p = (ptrbyte)(*hget + ix);
 	
 	moveleft (p, bs, (unsigned long) *p + 1);
 	} /*hashunpackstring*/
@@ -2259,7 +2259,7 @@ static boolean hashpackbinary (handlestream *s, Handle hbinary, long *ix) {
 
 static boolean hashunpackbinary (Handle hget, Handle *hbinary, long ix) {
 	
-	unsigned long ctbytes;
+	long ctbytes;
 	
 	if (!loadlongfromdiskhandle (hget, &ix, &ctbytes))
 		return (false);
@@ -2395,7 +2395,7 @@ static boolean hashunpackscalar (Handle hget, tyvaluerecord *val, long ix) {
 	
 	*/
 	
-	unsigned long ctbytes;
+	long ctbytes;
 	
 	if (!loadlongfromdiskhandle (hget, &ix, &ctbytes))
 		return (false);
@@ -2452,7 +2452,7 @@ static boolean hashpackexternal (handlestream *s, hdlexternalvariable h, long *i
 
 static boolean hashunpackexternal (Handle hget, boolean flmemory, hdlexternalhandle *h, long ix) {
 	
-	unsigned long ctbytes;
+	long ctbytes;
 	Handle hpacked;
 	boolean fl;
 	

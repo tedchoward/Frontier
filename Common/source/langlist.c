@@ -341,7 +341,7 @@ static boolean listtostring (hdllistrecord hlist, tyvaluerecord *val) {
 			goto error;
 		
 		if (i < n)
-			if (!writehandlestreamstring (&s, "\x02, "))
+			if (!writehandlestreamstring (&s, BIGSTRING ("\x02, ")))
 				goto error;
 		}
 	

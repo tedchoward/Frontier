@@ -1471,9 +1471,9 @@ boolean claypacklinelayout (Handle hpacked) {
 	
 	info.statuscolor = layout.statuscolor;
 	
-	fontgetname (layout.filenamefont, info.filenamefont);
+	fontgetname (layout.filenamefont, BIGSTRING (info.filenamefont));
 	
-	fontgetname (layout.othertextfont, info.othertextfont);
+	fontgetname (layout.othertextfont, BIGSTRING (info.othertextfont));
 	
 	info.filenamefontsize = layout.filenamefontsize;
 	
@@ -1560,9 +1560,9 @@ boolean clayunpacklinelayout (Handle hpacked, long *ixhandle, hdltableformats hf
 	
 	layout.statuscolor = info.statuscolor;
 	
-	fontgetnumber (info.filenamefont, &layout.filenamefont);
+	fontgetnumber (BIGSTRING (info.filenamefont), &layout.filenamefont);
 	
-	fontgetnumber (info.othertextfont, &layout.othertextfont);
+	fontgetnumber (BIGSTRING (info.othertextfont), &layout.othertextfont);
 	
 	layout.filenamefontsize = info.filenamefontsize;
 	
