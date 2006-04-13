@@ -53,8 +53,8 @@
 	#if TARGET_API_MAC_CARBON
 		#include "MoreFilesX.h"
 	#else
-		pascal OSErr XGetVInfo(short volReference, StringPtr volName, short *vRefNum,
-												UInt64 *freeBytes, UInt64 *totalBytes);
+		pascal OSErr XGetVInfo(short volReference, StringPtr volName, short *vRefNum, UInt64 *freeBytes,
+			UInt64 *totalBytes);
 	#endif
 	
 	#ifdef flcomponent
@@ -65,7 +65,7 @@
 	
 	#ifndef __MOREFILESEXTRAS__
 		enum { /*permissions used by MoreFile 1.1 code*/
-			dmNone			= 0x0000,
+			dmNone		= 0x0000,
 			dmNoneDenyRd	= 0x0010,
 			dmNoneDenyWr	= 0x0020,
 			dmNoneDenyRdWr	= 0x0030,
@@ -75,9 +75,9 @@
 			dmRdDenyRdWr	= 0x0031,
 			dmWr			= 0x0002,
 			dmWrDenyRd		= 0x0012,
-			dmWrDenyWr		= 0x0022,
+			dmWrDenyWr	= 0x0022,
 			dmWrDenyRdWr	= 0x0032,
-			dmRdWr			= 0x0003,	/* Shared access - equivalent to fsRdWrShPerm */
+			dmRdWr		= 0x0003,	/* Shared access - equivalent to fsRdWrShPerm */
 			dmRdWrDenyRd	= 0x0013,
 			dmRdWrDenyWr	= 0x0023,	/* Single writer, multiple readers; the writer */
 			dmRdWrDenyRdWr	= 0x0033	/* Exclusive access - equivalent to fsRdWrPerm */
@@ -169,6 +169,7 @@ boolean endswithpathsep (bigstring bs) {
 
 	return (false);
 	} /*endswithpathsep*/
+
 
 boolean cleanendoffilename (bigstring bs) {
 	if (endswithpathsep(bs)) {
@@ -595,9 +596,10 @@ static boolean filegetfsvolumeinfo (const tyfilespec *fs, tyfileinfo *info) {
 		return (true);
 		}
 
-	wsprintf (stringbaseaddress(errmsg), "Can't complete function because \"%s\" is not a valid volume name.", stringbaseaddress(fsname(fs)));
+	wsprintf (stringbaseaddress (errmsg), "Can't complete function because \"%s\" is not a valid volume name.",
+		stringbaseaddress (fsname (fs)));
 
-	setstringlength (errmsg, strlen(stringbaseaddress(errmsg)));
+	setstringlength (errmsg, strlen (stringbaseaddress (errmsg)));
 
 	shellerrormessage (errmsg);
 
@@ -737,8 +739,8 @@ boolean filegetinfo (const tyfilespec *fs, tyfileinfo *info) {
 			}
 		}
 	else {
-		fref = (Handle) CreateFile (stringbaseaddress(fn), GENERIC_READ | GENERIC_WRITE, 0,
-													NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL);
+		fref = (Handle) CreateFile (stringbaseaddress (fn), GENERIC_READ | GENERIC_WRITE, 0, NULL, OPEN_EXISTING,
+			FILE_ATTRIBUTE_NORMAL, NULL);
 
 		if (fref == INVALID_HANDLE_VALUE) {
 			info->flbusy = true;
@@ -753,7 +755,6 @@ boolean filegetinfo (const tyfilespec *fs, tyfileinfo *info) {
 	return (true);
 	} /*filegetinfo*/
 		
-
 	
 boolean filegetvolumename (short vnum, bigstring volname) {
 #ifdef MACVERSION	
@@ -801,7 +802,6 @@ boolean filegetvolumename (short vnum, bigstring volname) {
 	return (res);
 #endif
 	} /*filegetvolumename*/
-	
 	
 	
 boolean fileisbusy (const tyfilespec *fs, boolean *flbusy) {
@@ -945,7 +945,6 @@ boolean filesetvisible (const tyfilespec *fs, boolean flvisible) {
 	} /*filesetvisible*/
 
 
-
 boolean getfiletype (const tyfilespec *fs, OSType *type) {
 	
 	tyfileinfo info;
@@ -974,7 +973,6 @@ boolean getfilecreator (const tyfilespec *fs, OSType *creator) {
 	
 	return (true);
 	} /*getfilecreator*/
-
 
 
 boolean filesize (const tyfilespec *fs, long *size) {
@@ -1794,8 +1792,15 @@ static boolean pathtovolume (bigstring bspath, short *vnum) {
 //Timothy Paustian's comments
 //warning the values returned by getspecialfolderpath on OS X are very different
 //than classic Mac OS
+
 boolean getspecialfolderpath (bigstring bsvol, bigstring bsfolder, boolean flcreate, tyfilespec *fs) {
-	
+	/*
+	2006-04-11 creedon: windows now honors flcreate
+				   for windows added; CSIDL_PROGRAM_FILES, CSIDL_MYDOCUMENTS, CSIDL_MYMUSIC,
+						CSIDL_MYPICTURES, CSIDL_MYVIDEO;
+				   for windows replaced more complex code with CSIDL_SYSTEM, CSIDL_WINDOWS
+	*/
+
 #ifdef MACVERSION
 	/*
 	9/1/92 dmb: last new verb for 2.0.  (?)
@@ -1865,13 +1870,12 @@ boolean getspecialfolderpath (bigstring bsvol, bigstring bsfolder, boolean flcre
 
 #ifdef WIN95VERSION
 	int nFolder = -1;
-	int res;
+	// int res;
 	ITEMIDLIST * il;
 	// Global pointer to the shell's IMalloc interface.  
 	LPMALLOC g_pMalloc = NULL;  
 
-
-	if (equalidentifiers ("\x6" "system", bsfolder)) {
+	/* if (equalidentifiers ("\x6" "system", bsfolder)) {
 		unsigned char str[MAX_PATH];
 
 		res = GetSystemDirectory (str, MAX_PATH);
@@ -1905,7 +1909,7 @@ boolean getspecialfolderpath (bigstring bsvol, bigstring bsfolder, boolean flcre
 		pushchar ('\\', fsname(fs));
 		nullterminate (fsname(fs));
 		return (true);
-		}
+		} */
 
 	if (equalidentifiers ("\x9" "bitbucket", bsfolder))
 		nFolder = CSIDL_BITBUCKET;
@@ -1939,8 +1943,25 @@ boolean getspecialfolderpath (bigstring bsvol, bigstring bsfolder, boolean flcre
 		nFolder = CSIDL_STARTUP;
 	else if (equalidentifiers ("\x9" "templates", bsfolder))
 		nFolder = CSIDL_TEMPLATES;
+	else if (equalidentifiers ("\xD" "program files", bsfolder))
+		nFolder = CSIDL_PROGRAM_FILES;
+	else if (equalidentifiers ("\x6" "system", bsfolder))
+		nFolder = CSIDL_SYSTEM;
+	else if (equalidentifiers ("\x7" "windows", bsfolder))
+		nFolder = CSIDL_WINDOWS;
+	else if (equalidentifiers ("\xC" "my documents", bsfolder))
+		nFolder = CSIDL_MYDOCUMENTS;
+	else if (equalidentifiers ("\x8" "my music", bsfolder))
+		nFolder = CSIDL_MYMUSIC;
+	else if (equalidentifiers ("\xB" "my pictures", bsfolder))
+		nFolder = CSIDL_MYPICTURES;
+	else if (equalidentifiers ("\x8" "my video", bsfolder))
+		nFolder = CSIDL_MYVIDEO;
 
-	if(nFolder != -1) {
+	if (flcreate)
+		nFolder += CSIDL_FLAG_CREATE;
+
+if (nFolder != -1) {
 		// Get the shell's allocator. 
 		if (!SUCCEEDED(SHGetMalloc(&g_pMalloc))) {
 			oserror (ERROR_INVALID_FUNCTION);
@@ -2092,7 +2113,11 @@ boolean langgetextendedvolumeinfo (const tyfilespec *fs, double *totalbytes, dou
 
 #ifdef MACVERSION
 
-	 /* 2005-01-24 creedon - reversed free and total parameters to match FSGetVInfo and XGetVInfo functions < http://groups.yahoo.com/group/frontierkernel/message/846 > */
+	 /*
+	 2005-01-24 creedon - reversed free and total parameters to match FSGetVInfo and XGetVInfo functions
+		< http://groups.yahoo.com/group/frontierkernel/message/846 >
+	*/
+	
 	#if TARGET_API_MAC_CARBON
 		errnum = FSGetVInfo (fs->vRefNum, nil, &ui64freebytes, &ui64totalbytes);
 	#else
@@ -2288,54 +2313,6 @@ boolean lockvolume (const tyfilespec *fs, boolean fllock) {
 #endif
 	} /*lockvolume*/
 
-
-#ifdef WIN95VERSION
-boolean findapplication (OSType creator, tyfilespec *fsapp) {
-	
-	/*
-	5.0.1 dmb: implemented for Win using the registry
-	*/
-
-	byte bsextension [8];
-	bigstring bsregpath, bsoptions;
-
-	ostypetostring (creator, bsextension);
-
-	poptrailingwhitespace (bsextension);
-
-	insertchar ('.', bsextension);
-	
-	pushchar (chnul, bsextension);
-	
-//	copyctopstring ("software\\Microsoft\\Windows\\CurrentVersion", bsregpath);
-
-	if (!getRegKeyString ((Handle) HKEY_CLASSES_ROOT, bsextension, NULL, bsregpath))
-		return (false);
-	
-	pushstring ("\x13\\shell\\open\\command", bsregpath);
-
-	if (!getRegKeyString ((Handle) HKEY_CLASSES_ROOT, bsregpath, NULL, bsregpath))
-		return (false);
-	
-	if (getstringcharacter (bsregpath, 0) == '"') {
-		
-		popleadingchars (bsregpath, '"');
-
-		firstword (bsregpath, '"', bsregpath);
-		}
-	else {
-		
-		lastword (bsregpath, ' ', bsoptions);
-
-		if (stringlength (bsoptions) < stringlength (bsregpath))
-			deletestring (bsregpath, stringlength (bsregpath) - stringlength (bsoptions) + 1, stringlength (bsoptions));
-		}
-	
-	return (pathtofilespec (bsregpath, fsapp));
-	} /*findapplication*/
-#endif
-
-
 #ifdef MACVERSION
 boolean unmountvolume (const tyfilespec *fs) {
 	
@@ -2384,114 +2361,6 @@ static boolean hasdesktopmanager (short vnum) {
 	
 	return ((volparms.vMAttrib & (1 << bHasDesktopMgr)) != 0);
 	} /*hasdesktopmanager*/
-
-
-boolean findapplication (OSType creator, tyfilespec *fsapp) {
-	
-	/*
-	2006-04-09 creedon: use LSFindApplicationForInfo if available
-	
-	2.1b11 dmb: loop through all files in each db if necessary to find one 
-	that's actually an application
-
-	9/7/92 dmb: make two passes, skipping volumes mounted with a foreign 
-	file system the first time through. note: if this turns out not to be 
-	the best criteria, we could check for shared volumes instead by testing  
-	vMLocalHand in hasdesktopmanager.
-	
-	also: since we don't maintain the desktop DB when we delete files, we 
-	need to verify that the file we locate still exists. added fileexists 
-	call before returning true.
-	
-	12/5/91 dmb
-	*/
-	
-	 if ((UInt32) LSFindApplicationForInfo != (UInt32) kUnresolvedCFragSymbolAddress) {
-	
-		FSRef myRef;
-		
-		if (LSFindApplicationForInfo (creator, NULL, NULL, &myRef, NULL) != noErr)
-			return (false);
-				
-		if (FSRefMakeFSSpec (&myRef, fsapp) != noErr)
-			return (false);
-				
-		return (true);
-		}
-	else {
-	
-		bigstring bsapp;
-		DTPBRec dt;
-		HParamBlockRec pb;
-		OSType type;
-		register OSErr errcode;
-		boolean fltryremote = false;
-		boolean flremote;
-		
-		clearbytes (&pb, sizeof (pb));
-		
-		while (true) {
-			
-			++pb.volumeParam.ioVolIndex;
-			
-			errcode = PBHGetVInfoSync (&pb);
-			
-			if (errcode == nsvErr) { // index out of range
-				
-				if (fltryremote) // we've tried everything
-					return (false);
-				
-				pb.volumeParam.ioVolIndex = 0; // reset
-				
-				fltryremote = true;
-				
-				continue;
-				}
-			
-			if (errcode != noErr)
-				return (false);
-			
-			flremote = pb.volumeParam.ioVFSID != 0; // actually means foreign file system
-			
-			if (fltryremote != flremote)
-				continue;
-			
-			if (!hasdesktopmanager (pb.volumeParam.ioVRefNum))
-				continue;
-			
-			dt.ioNamePtr = NULL;
-			dt.ioVRefNum = pb.volumeParam.ioVRefNum;
-			
-			if (PBDTGetPath (&dt) != noErr)
-				return (false);
-			
-			dt.ioNamePtr = (StringPtr) &bsapp;
-			dt.ioIndex = 0;
-			dt.ioFileCreator = creator;
-			
-			for (dt.ioIndex = 0; ; ++dt.ioIndex) {
-				
-				if (PBDTGetAPPLSync (&dt) != noErr) // go to next volume
-					break;
-				
-				if (FSMakeFSSpec (pb.volumeParam.ioVRefNum, dt.ioAPPLParID, bsapp, fsapp) != noErr)
-					continue;
-				
-				if (!getfiletype (fsapp, &type))
-					return (false);
-				
-				if (type == 'APPL') // desktop db can contain references to non-apps
-					return (true);
-				}
-			
-			// if (PBDTGetAPPLSync (&dt) == noErr) {
-				
-				// if (FSMakeFSSpec (pb.volumeParam.ioVRefNum, dt.ioAPPLParID, bsapp, fsapp) == noErr)
-					// return (true);
-				// }
-			}
-		} /* if */
-	} /* findapplication */
 
 
 #if 0
@@ -2593,7 +2462,7 @@ static boolean index2label (short ixlabel, bigstring bslabel) {
 	
 	/*
 	new: pascal OSErr GetLabel(short labelNumber, RGBColor *labelColor, Str255 labelString)
-       =  {0x303c, 0x050B, 0xABC9};
+	=  {0x303c, 0x050B, 0xABC9};
 	*/
 	
 	Handle hlabel;
@@ -2878,7 +2747,6 @@ boolean fileparsevolname (bigstring bspath, short *vnum, bigstring bsvol)
 	} /*fileparsevolname*/
 
 
-
 #ifdef MACVERSION
 
 boolean fileresolvealias (tyfilespec *fs) {
@@ -3150,7 +3018,7 @@ boolean renamefile (const tyfilespec *fs, bigstring bsnew) {
 	#endif
 
 	#ifdef WIN95VERSION
-		char fn[300];
+		char fn [300];
 		bigstring bsfolder;
 
 		if (!surefile (fs)) /*file doesn't exist -- catch error*/
@@ -3168,7 +3036,7 @@ boolean renamefile (const tyfilespec *fs, bigstring bsnew) {
 
 		nullterminate (bsfolder);
 
-		if (MoveFile (stringbaseaddress (fn), stringbaseaddress(bsfolder)))
+		if (MoveFile (stringbaseaddress (fn), stringbaseaddress (bsfolder)))
 			return (true);
 		
 		winfileerror (fs);
@@ -3276,8 +3144,8 @@ boolean newfile (const tyfilespec *fs, OSType creator, OSType filetype) {
 	
 	nullterminate (fn);
 	
-	f = CreateFile (stringbaseaddress(fn), GENERIC_READ | GENERIC_WRITE,
-				FILE_SHARE_READ, NULL, CREATE_NEW, FILE_ATTRIBUTE_NORMAL, NULL);
+	f = CreateFile (stringbaseaddress(fn), GENERIC_READ | GENERIC_WRITE, FILE_SHARE_READ, NULL, CREATE_NEW,
+		FILE_ATTRIBUTE_NORMAL, NULL);
 
 	if (f == INVALID_HANDLE_VALUE) {
 		
@@ -3359,4 +3227,86 @@ boolean initfile (void) {
 	} /*initfile*/
 
 
+boolean findapplication (OSType creator, tyfilespec *fsapp) {
+	
+	/*
+	2006-04-10 creedon: deleted old code, see revision 1246 for old code
+	
+	2006-04-09 creedon: use LSFindApplicationForInfo if available
+	
+	5.0.1 dmb: implemented for Win using the registry
+
+	2.1b11 dmb: loop through all files in each db if necessary to find one that's actually an application
+
+	9/7/92 dmb: make two passes, skipping volumes mounted with a foreign 
+	file system the first time through. note: if this turns out not to be 
+	the best criteria, we could check for shared volumes instead by testing  
+	vMLocalHand in hasdesktopmanager.
+	
+	also: since we don't maintain the desktop DB when we delete files, we 
+	need to verify that the file we locate still exists. added fileexists 
+	call before returning true.
+	
+	12/5/91 dmb
+	*/
+	
+	#ifdef MACVERSION
+
+		 if ((UInt32) LSFindApplicationForInfo == (UInt32) kUnresolvedCFragSymbolAddress)
+			return (false);
+		
+		FSRef myRef;
+		
+		if (LSFindApplicationForInfo (creator, NULL, NULL, &myRef, NULL) != noErr)
+			return (false);
+				
+		if (FSRefMakeFSSpec (&myRef, fsapp) != noErr)
+			return (false);
+				
+		return (true);
+	
+	#endif /* MACVERSION */
+
+	#ifdef WIN95VERSION
+
+		byte bsextension [8];
+		bigstring bsregpath, bsoptions;
+
+		ostypetostring (creator, bsextension);
+
+		poptrailingwhitespace (bsextension);
+
+		insertchar ('.', bsextension);
+		
+		pushchar (chnul, bsextension);
+		
+		// copyctopstring ("software\\Microsoft\\Windows\\CurrentVersion", bsregpath);
+
+		if (!getRegKeyString ((Handle) HKEY_CLASSES_ROOT, bsextension, NULL, bsregpath))
+			return (false);
+		
+		pushstring ("\x13\\shell\\open\\command", bsregpath);
+
+		if (!getRegKeyString ((Handle) HKEY_CLASSES_ROOT, bsregpath, NULL, bsregpath))
+			return (false);
+		
+		if (getstringcharacter (bsregpath, 0) == '"') {
+			
+			popleadingchars (bsregpath, '"');
+
+			firstword (bsregpath, '"', bsregpath);
+			}
+		else {
+			
+			lastword (bsregpath, ' ', bsoptions);
+
+			if (stringlength (bsoptions) < stringlength (bsregpath))
+				deletestring (bsregpath, stringlength (bsregpath) - stringlength (bsoptions) + 1, stringlength (bsoptions));
+			}
+		
+		return (pathtofilespec (bsregpath, fsapp));
+
+	#endif /* WIN95VERSION */
+
+	} /* findapplication */
 
