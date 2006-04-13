@@ -2252,7 +2252,7 @@ static boolean stringfunctionvalue (short token, hdltreenode hparam1, tyvaluerec
 
 			ansitoutf16 (h, hresult);
 
-			disposehandle(h); // kw 2005-07-23 --- memleak
+			disposehandle (h); // kw 2005-07-23 --- memleak
 
 			return (setheapvalue (hresult, stringvaluetype, v));
 			}
@@ -2293,7 +2293,7 @@ static boolean stringfunctionvalue (short token, hdltreenode hparam1, tyvaluerec
 
 			utf8tomacroman (h, hresult);
 
-			disposehandle(h);
+			disposehandle (h);
 
 			return (setheapvalue (hresult, stringvaluetype, v));
 			}
