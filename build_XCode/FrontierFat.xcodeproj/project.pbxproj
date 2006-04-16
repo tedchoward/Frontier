@@ -3679,7 +3679,7 @@
 				INFOPLIST_FILE = Info_Frontier.plist;
 				LIBRARY_SEARCH_PATHS = tools;
 				MACOSX_DEPLOYMENT_TARGET_i386 = 10.4;
-				MACOSX_DEPLOYMENT_TARGET_ppc = 10.0;
+				MACOSX_DEPLOYMENT_TARGET_ppc = 10.1;
 				OTHER_CFLAGS = (
 					"-fno-inline",
 					"-malign-mac68k",
@@ -3733,7 +3733,7 @@
 				INFOPLIST_FILE = Info_Frontier.plist;
 				LIBRARY_SEARCH_PATHS = tools;
 				MACOSX_DEPLOYMENT_TARGET_i386 = 10.4;
-				MACOSX_DEPLOYMENT_TARGET_ppc = 10.0;
+				MACOSX_DEPLOYMENT_TARGET_ppc = 10.1;
 				OTHER_CFLAGS = (
 					"-fno-inline",
 					"-malign-mac68k",
@@ -3792,7 +3792,7 @@
 				INFOPLIST_FILE = Info_OPML.plist;
 				LIBRARY_SEARCH_PATHS = tools;
 				MACOSX_DEPLOYMENT_TARGET_i386 = 10.4;
-				MACOSX_DEPLOYMENT_TARGET_ppc = 10.0;
+				MACOSX_DEPLOYMENT_TARGET_ppc = 10.1;
 				OTHER_CFLAGS = (
 					"-fno-inline",
 					"-malign-mac68k",
@@ -3846,7 +3846,7 @@
 				INFOPLIST_FILE = Info_OPML.plist;
 				LIBRARY_SEARCH_PATHS = tools;
 				MACOSX_DEPLOYMENT_TARGET_i386 = 10.4;
-				MACOSX_DEPLOYMENT_TARGET_ppc = 10.0;
+				MACOSX_DEPLOYMENT_TARGET_ppc = 10.1;
 				OTHER_CFLAGS = (
 					"-fno-inline",
 					"-malign-mac68k",
