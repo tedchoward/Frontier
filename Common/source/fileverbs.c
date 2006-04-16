@@ -45,6 +45,7 @@
 #include "tablestructure.h"
 #include "kernelverbdefs.h"
 #include "shell.rsrc.h"
+#include "byteorder.h"		/* 2006-04-16 aradke: for SWAP_REZ_BYTE_ORDER */
 
 
 #ifdef MACVERSION
@@ -1458,6 +1459,15 @@ pick apart the BCD
 */
 
 typedef struct lNumVersion {
+#ifdef SWAP_REZ_BYTE_ORDER
+	unsigned short nonRelRev2: 4;		/*  2nd nibble of revision level*/
+	unsigned short nonRelRev1 : 4;		/*revision level of non-released version*/
+	unsigned short stage : 8;			/*stage code: dev, alpha, beta, final*/
+	unsigned short bugFixRev : 4; 		/*3rd part is 1 nibble in BCD*/
+	unsigned short minorRev : 4;		/*2nd part is 1 nibble in BCD*/
+	unsigned short majorRev2: 4; 		/*  2nd nibble of 1st part*/
+	unsigned short majorRev1: 4; 		/*1st part of version number in BCD*/
+#else
 	unsigned short majorRev1: 4; 		/*1st part of version number in BCD*/
 	unsigned short majorRev2: 4; 		/*  2nd nibble of 1st part*/
 	unsigned short minorRev : 4;		/*2nd part is 1 nibble in BCD*/
@@ -1465,6 +1475,7 @@ typedef struct lNumVersion {
 	unsigned short stage : 8;			/*stage code: dev, alpha, beta, final*/
 	unsigned short nonRelRev1 : 4;		/*revision level of non-released version*/
 	unsigned short nonRelRev2: 4;		/*  2nd nibble of revision level*/
+#endif
 	} lNumVersion;
 
 typedef struct lVersRec {
