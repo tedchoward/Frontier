@@ -71,41 +71,7 @@
 
 
 typedef struct tyconfigrecord {
-#ifdef MACVERSION	
-	boolean flhorizscroll: 1; /*window has horiz scrollbar?*/
-	
-	boolean flvertscroll: 1;
-	
-	boolean flwindowfloats: 1; /*is it a floating palette window?*/		// NOT USED
-	
-	boolean flmessagearea: 1; /*allocate space for a message area?*/
-	
-	boolean flinsetcontentrect: 1; /*if true we inset by 3 pixels*/
-	
-	boolean flnewonlaunch: 1;
-	
-	boolean flopenresfile: 1;
-	
-	boolean fldialog: 1; /*do a GetNewDialog on creating one of these windows?*/
-	
-	boolean flgrowable: 1; /*provide a grow box for window*/
-	
-	boolean flcreateonnew: 1;
-	
-	boolean flwindoidscrollbars: 1;
-	
-	boolean flstoredindatabase: 1;
-	
-	boolean flparentwindowhandlessave: 1;
-	
-	boolean fleraseonresize: 1;
-	
-	boolean fldontconsumefrontclicks: 1; 
-	
-	boolean flcolorwindow: 1; 
-#endif
-	
-#ifdef WIN95VERSION
+
 	short flhorizscroll; /*window has horiz scrollbar?*/
 	
 	short flvertscroll;
@@ -137,8 +103,6 @@ typedef struct tyconfigrecord {
 	short fldontconsumefrontclicks; 
 	
 	short flcolorwindow; 
-#endif
-
 
 	short messageareafraction;
 	

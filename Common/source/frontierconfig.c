@@ -37,6 +37,7 @@
 #include "shell.rsrc.h"
 #include "frontierconfig.h"
 #include "shell.h"
+#include "byteorder.h"	/* 2006-04-16 aradke: swap byte order in loadconfigresource */
 
 
 #ifdef MACVERSION
@@ -90,6 +91,8 @@ void loadconfigresource (short configresnum, tyconfigrecord *cr) {
 	
 	/*
 	2.1b5 dmb: release the config resource when done with it
+	
+	2006-04-16 aradke: swap byte-order on Intel Macs
 	*/
 	
 	register Handle h;
@@ -100,14 +103,66 @@ void loadconfigresource (short configresnum, tyconfigrecord *cr) {
 	if (h != nil) {
 	
 		moveleft (*h, cr, sizeof (tyconfigrecord)); 
+	
+		releaseresourcehandle (h);
+		
+		reztomemshort ((*cr).flhorizscroll);
+	
+		reztomemshort ((*cr).flvertscroll);
+	
+		reztomemshort ((*cr).flwindowfloats);
+	
+		reztomemshort ((*cr).flmessagearea);
+	
+		reztomemshort ((*cr).flinsetcontentrect);
+	
+		reztomemshort ((*cr).flnewonlaunch);
+	
+		reztomemshort ((*cr).flopenresfile);
+	
+		reztomemshort ((*cr).fldialog);
+	
+		reztomemshort ((*cr).flgrowable);
+	
+		reztomemshort ((*cr).flcreateonnew);
+	
+		reztomemshort ((*cr).flwindoidscrollbars);
+	
+		reztomemshort ((*cr).flstoredindatabase);
+	
+		reztomemshort ((*cr).flparentwindowhandlessave);
+	
+		reztomemshort ((*cr).fleraseonresize);
+	
+		reztomemshort ((*cr).fldontconsumefrontclicks);
+	
+		reztomemshort ((*cr).flcolorwindow);
+
+		reztomemshort ((*cr).messageareafraction);
+
+		reztomemlong ((*cr).filecreator);	/* OSType */
+		
+		reztomemlong ((*cr).filetype);	/* OSType */
+		
+		reztomemrect ((*cr).rmin);
+		
+		reztomemshort ((*cr).templateresnum);
+		
+		reztomemshort ((*cr).defaultfont);
+		
+		reztomemshort ((*cr).defaultsize);
+		
+		reztomemshort ((*cr).defaultstyle);
+		
+		reztomemshort ((*cr).idbuttonstringlist);
+		
+		reztomemrect ((*cr).defaultwindowrect);
 		
 		getstringlist (fontnamelistnumber, (*cr).defaultfont, bs);
 		
 		fontgetnumber (bs, &(*cr).defaultfont);
 		
 		centerrectondesktop (&(*cr).defaultwindowrect);
-	
-		releaseresourcehandle (h);
 		}
 	else
 		initconfigrecord (cr);

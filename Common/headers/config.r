@@ -27,37 +27,37 @@
 
 type'cnfg' {
 	
-	boolean nohorizscroll, horizscroll; /*window has horiz scrollbar?*/
+	integer nohorizscroll = 0, horizscroll = 1; /*window has horiz scrollbar?*/
 	
-	boolean novertscroll, vertscroll;
+	integer novertscroll = 0, vertscroll = 1;
 	
-	boolean dontfloat, windowfloats; /*is it a floating palette window?*/
+	integer dontfloat = 0, windowfloats = 1; /*is it a floating palette window?*/
 	
-	boolean nomessagearea, messagearea; /*allocate space for a message area?*/
+	integer nomessagearea = 0, messagearea = 1; /*allocate space for a message area?*/
 	
-	boolean dontinsetcontentrect, insetcontentrect; /*if true we inset by 3 pixels*/
+	integer dontinsetcontentrect = 0, insetcontentrect = 1; /*if true we inset by 3 pixels*/
 	
-	boolean nonewonlaunch, newonlaunch;
+	integer nonewonlaunch = 0, newonlaunch = 1;
 	
-	boolean dontopenresfile, openresfile;
+	integer dontopenresfile = 0, openresfile = 1;
 	
-	boolean normalwindow, dialogwindow; /*do a GetNewDialog on creating one of these windows?*/
+	integer normalwindow = 0, dialogwindow = 1; /*do a GetNewDialog on creating one of these windows?*/
 	
-	boolean notgrowable, isgrowable; /*provide a grow box for window*/
+	integer notgrowable = 0, isgrowable = 1; /*provide a grow box for window*/
 	
-	boolean dontcreateonnew, createonnew;
+	integer dontcreateonnew = 0, createonnew = 1;
 	
-	boolean nowindoidscrollbars, windoidscrollbars;
+	integer nowindoidscrollbars = 0, windoidscrollbars = 1;
 	
-	boolean notstoredindatabase, storedindatabase;
+	integer notstoredindatabase = 0, storedindatabase = 1;
 	
-	boolean handlesownsave, parentwindowhandlessave;
+	integer handlesownsave = 0, parentwindowhandlessave = 1;
 	
-	boolean donteraseonresize, eraseonresize;
+	integer donteraseonresize = 0, eraseonresize = 1;
 	
-	boolean consumefrontclicks, dontconsumefrontclicks;
+	integer consumefrontclicks = 0, dontconsumefrontclicks = 1;
 	
-	boolean monochromewindow, colorwindow;
+	integer monochromewindow = 0, colorwindow = 1;
 	
 	integer onehalf = 2, onethird = 3, onequarter = 4;
 	
