@@ -47,7 +47,7 @@ typedef struct tylinetableitem {
 
 typedef enum tylinetableitemflags {
 
-#ifdef MACVERSION
+#ifndef SWAP_BYTE_ORDER
 	flexpanded = 0x8000, /*was the line expanded when the outline was closed?*/
 	flopenwindow = 0x4000, /*was the linked window open when its owner was closed?*/
 	appbit0 = 0x2000, /*application-defined bit*/
@@ -55,9 +55,7 @@ typedef enum tylinetableitemflags {
 	fllocked = 0x0800, /*is the line locked?*/
 	flcomment = 0x0400, /*is this line a comment?*/
 	flbreakpoint = 0x0200 /*is a breakpoint set on this line?*/
-#endif
-
-#ifdef WIN95VERSION
+#else
 	flexpanded = 0x0080, /*was the line expanded when the outline was closed?*/
 	flopenwindow = 0x0040, /*was the linked window open when its owner was closed?*/
 	appbit0 = 0x0020, /*application-defined bit*/
