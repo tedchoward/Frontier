@@ -50,7 +50,7 @@ boolean getstringlist (short listnum, short id, bigstring bs) {
 	is of zero length.
 	*/
 	
-	#ifdef fldebug
+	#if 0 //#ifdef fldebug	/* 2006-04-16 aradke: disabled for Mac Intel build */
 	
 	if (GetResource ('STR#', listnum) == nil)
 		DebugStr ("\pmissing STR# resource");
