@@ -42,6 +42,7 @@
 #include "resources.h"
 #include "WinSockNetEvents.h"
 #include "sysshellcall.h" /* 2006-03-09 aradke: unixshellcall moved from CallMachOFramework.h */
+#include "byteorder.h"	/* 2006-04-16 aradke: swap byte-order in loadfunctionprocessor */
 
 
 #define str_isPike				BIGSTRING ("\x06" "isPike")
@@ -155,6 +156,8 @@ boolean loadfunctionprocessor (short id, langvaluecallback valuecallback) {
 	'040 instruction cache bug in Think C's run-time implementation of same, 
 	it's time to create the kernel tables directly from resources.  that's 
 	what this routine does.
+	
+	2006-04-16 aradke: swap byte-order on Intel Macs
 	*/
 	
 	bigstring bsname;
@@ -182,6 +185,8 @@ boolean loadfunctionprocessor (short id, langvaluecallback valuecallback) {
 	if (!loadfromhandle (hefps, &ix, 2, &ctefps))
 		return (false);
 	
+	reztomemshort (ctefps);
+	
 	while (--ctefps >= 0) {
 		
 		copyrezstring (BIGSTRING (*hefps + ix), bsname);
@@ -191,11 +196,15 @@ boolean loadfunctionprocessor (short id, langvaluecallback valuecallback) {
 		if (!loadfromhandle (hefps, &ix, 2, &flwindow))
 			return (false);
 		
+		reztomemshort (flwindow);
+		
 		if (!newfunctionprocessor (bsname, valuecallback, (boolean) flwindow, &htable))
 			return (false);
 		
 		if (!loadfromhandle (hefps, &ix, 2, &ctverbs))
 			return (false);
+		
+		reztomemshort (ctverbs);
 		
 		pushhashtable (htable); 
 		
