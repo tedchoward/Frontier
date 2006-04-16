@@ -76,6 +76,36 @@
 #endif
 
 
+/*
+	2006-04-16 aradke: Carbon resource manager resources are in big endian format.
+		If we are running on an Intel Mac, we need to perform byte order conversion.
+*/
+
+#if (defined(TARGET_API_MAC_CARBON) && (TARGET_API_MAC_CARBON == 1) && defined(SWAP_BYTE_ORDER))
+
+	#define SWAP_REZ_BYTE_ORDER	1
+
+	#define reztomemshort(x)	shortswap(x)
+	#define reztomemlong(x)		longswap(x)
+	#define reztomemrect(x)		do {shortswap((x).top); shortswap((x).left); shortswap((x).bottom); shortswap((x).right);} while(0)
+	#define memtorezshort(x)	shortswap(x)
+	#define memtorezlong(x)		longswap(x)
+	#define memtorezrect(x)		do {shortswap((x).top); shortswap((x).left); shortswap((x).bottom); shortswap((x).right);} while(0)
+
+#else
+
+	#undef SWAP_REZ_BYTE_ORDER
+
+	#define reztomemshort(x)
+	#define reztomemlong(x)
+	#define reztomemrect(x)
+	#define memtorezshort(x)
+	#define memtorezlong(x)
+	#define memtorezrect(x)
+
+#endif
+
+
 #define longswap(foo)	do {foo = dolongswap(foo);} while (0)
 #define shortswap(foo)	do {foo = doshortswap(foo);} while (0)
 
