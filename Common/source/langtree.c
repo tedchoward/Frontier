@@ -38,11 +38,10 @@
 
 typedef struct tydisktreenode {
 
-#ifdef MACVERSION
-	tytreetype nodetype; /*add, subtract, if, etc.*/
-#endif
-#ifdef WIN95VERSION
+#ifdef SWAP_BYTE_ORDER
 	short nodetype;	/*low byte will coincide with MAC enum*/
+#else
+	tytreetype nodetype; /*add, subtract, if, etc.*/
 #endif
 
 	long nodevalsize;
@@ -70,17 +69,7 @@ typedef struct tydisktreenode {
 
 typedef enum tydisktreenodeparaminfo {
 
-#ifdef MACVERSION
-	ctparams_mask = 0xf000,
-	ctparams_1 = 0x1000,
-	hasparam1_mask = 0x0800,
-	hasparam2_mask = 0x0400,
-	hasparam3_mask = 0x0200,
-	hasparam4_mask = 0x0100,
-	haslink_mask = 0x0080
-#endif
-
-#ifdef WIN95VERSION
+#ifdef SWAP_BYTE_ORDER
 	ctparams_mask = 0x00f0,
 	ctparams_1 = 0x0010,
 	hasparam1_mask = 0x0008,
@@ -88,6 +77,14 @@ typedef enum tydisktreenodeparaminfo {
 	hasparam3_mask = 0x0002,
 	hasparam4_mask = 0x0001,
 	haslink_mask = 0x8000
+#else
+	ctparams_mask = 0xf000,
+	ctparams_1 = 0x1000,
+	hasparam1_mask = 0x0800,
+	hasparam2_mask = 0x0400,
+	hasparam3_mask = 0x0200,
+	hasparam4_mask = 0x0100,
+	haslink_mask = 0x0080
 #endif
 	} tydisktreenodeparaminfo;
 
@@ -108,10 +105,10 @@ typedef struct tydisktreerec {
 
 typedef struct tyOLD42disktreenode {
 
-	#ifdef MACVERSION
+	#ifdef __BIG_ENDIAN__
 	tytreetype nodetype; /*add, subtract, if, etc.*/
 	#endif
-	#ifdef WIN95VERSION
+	#ifdef __LITTLE_ENDIAN__
 	short nodetype;
 	#endif
 
