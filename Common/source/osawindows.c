@@ -97,13 +97,13 @@ static WindowPtr osageteventwindow (EventRecord *ev) {
 static boolean removewindowsharinghandlers (void);
 
 
-static pascal ComponentResult
-handlewindoweventcommand (
-		Handle					 hglobals,
-		EventRecord				*ev,
-		tyWindowSharingGlobals	*pwsGlobals)
-{
-#pragma unused (hglobals)
+static pascal ComponentResult handlewindoweventcommand (Handle hglobals, EventRecord *ev, tyWindowSharingGlobals *pwsGlobals) {
+	
+	/*
+	2006-04-17 aradke: update jugglerEvt case for Intel Macs using endianness-agnostic code
+	*/
+	
+	#pragma unused (hglobals)
 
 	boolean flcloseallwindows = false;
 	WindowPtr w;
@@ -130,10 +130,9 @@ handlewindoweventcommand (
 			break;
 		
 		case jugglerEvt: {
-			tyjugglermessage *jmsg = (tyjugglermessage *) &(*ev).message;
 			
-			if ((*jmsg).eventtype == 1) /*suspend or resume subevent*/
-				shellactivatewindow (w, (*jmsg).flresume);
+			if ((((*ev).message >> 24) & 0xff) == suspendResumeMessage) /*suspend or resume subevent*/
+				shellactivatewindow (w, ((*ev).message & resumeFlag) != 0);
 			
 			break;
 			}

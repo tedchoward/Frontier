@@ -93,11 +93,7 @@ boolean shellactivate (void) {
 } /*shellactivate*/
 
 
-static boolean
-shelljugglervisit (
-		WindowPtr	 w,
-		ptrvoid		 refcon)
-{
+static boolean shelljugglervisit (WindowPtr w, ptrvoid refcon) {
 #pragma unused (refcon)
 
 	shellpushglobals (w);
@@ -116,18 +112,18 @@ void shellhandlejugglerevent (void) {
 	7/13/90 DW: deactivate the front window when we're swapped into the
 	background on a juggler event.  activate it when we're swapped back 
 	into the foreground.
+
+	2006-04-17 aradke: updated for Intel Macs using endianness-agnostic code
 	*/
 	
 	register boolean flresume;
-	tyjugglermessage jmsg;
+	long message = shellevent.message;
 	
-	moveleft (&shellevent.message, &jmsg, longsizeof (jmsg));
-	
-	if (jmsg.eventtype == 1) { /*suspend or resume subevent*/
+	if (((message >> 24) & 0xff) == suspendResumeMessage) { /*suspend or resume subevent*/
 		
 		boolean fl;
 		
-		flresume = jmsg.flresume; /*copy into register*/
+		flresume = ((message & resumeFlag) != 0); /*copy into register*/
 		
 		flshellactive = flresume; /*set global*/
 		
@@ -142,14 +138,20 @@ void shellhandlejugglerevent (void) {
 		
 		if (fl)
 			shellactivatewindow (shellwindow, flshellactive);
-		
-		if (jmsg.flconvertclipboard) {
+
+		#if !TARGET_API_MAC_CARBON
+			/*
+			2006-04-17 aradke: convertClipboardFlag is never set on Carbon
+			*/
 			
-			if (flresume)
-				; /*shellreadscrap ()*/ /*12/28/90 dmb: see comment in shellreadscrap*/
-			else
-				shellwritescrap (anyscraptype);
-			}
+			if ((message & convertClipboardFlag) != 0) {
+				
+				if (flresume)
+					; /*shellreadscrap ()*/ /*12/28/90 dmb: see comment in shellreadscrap*/
+				else
+					shellwritescrap (anyscraptype);
+				}
+		#endif
 		
 		if (fl)
 			shellpopglobals ();

@@ -63,17 +63,6 @@ typedef enum tymenustate {
 	} tymenustate;
 
 
-typedef struct tyjugglermessage {
-	
-	long eventtype: 8; /*bits 24 -- 31*/
-	
-	long reservedbits: 22; /*bits 2 -- 23*/
-	
-	long flconvertclipboard: 1; /*bit 1*/
-	
-	long flresume: 1; /*bit 0*/
-	} tyjugglermessage;
-
 #ifdef version42orgreater
 	#define cteditors 14
 #else
