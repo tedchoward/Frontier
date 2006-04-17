@@ -67,7 +67,9 @@ extern CHAR szFrame[];
 #define wmouseUp		38			//Windows Only
 #define zoomEvt			39			//Windows Only
 
-	
+#define suspendResumeMessage	0x0001
+#define resumeFlag				0x01
+
 #define everyEvent		-1
 #define activeFlag		256
 #define activMask		256

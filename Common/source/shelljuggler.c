@@ -139,7 +139,7 @@ void shellhandlejugglerevent (void) {
 		if (fl)
 			shellactivatewindow (shellwindow, flshellactive);
 
-		#if !TARGET_API_MAC_CARBON
+		#if defined(TARGET_API_MAC_OS8) && (TARGET_API_MAC_OS8 == 1)
 			/*
 			2006-04-17 aradke: convertClipboardFlag is never set on Carbon
 			*/

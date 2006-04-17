@@ -1820,22 +1820,23 @@ BOOL WinProcessActivateAppEvent (HWND hwnd, UINT msg, WPARAM wParam, LPARAM lPar
 	
 	/*
 	5.0a22 dmb: added
+	
+	2006-04-17 aradke: Removed tyjugglermessage for endianness-agnostic code.
+		See shellhandlejugglerevent in shelljuggler.c.
 	*/
 
 	EventRecord ev;
-	tyjugglermessage jmsg;
 
 	ev.hwnd = hwnd;
 	ev.winmsg = msg;
 	ev.wparam = wParam;
 	ev.lparam = lParam;
-
-	*((long *)&jmsg) = 0;
-	jmsg.eventtype = 1;
-	jmsg.flresume = (BOOL) wParam;
+	
+	ev.message = 0;
+	ev.message |= (suspendResumeMessage << 24);
+	ev.message |= ((wParam != 0) ? resumeFlag : 0);
 
 	ev.what = jugglerEvt;
-	ev.message = *(long *) &jmsg;
 	ev.when = gettickcount ();
 	ev.where.h = 0;
 	ev.where.v = 0;
