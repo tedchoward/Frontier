@@ -187,7 +187,7 @@ typedef struct tydiskobject {
 
 #ifdef SWAP_BYTE_ORDER
 	
-	unsigned short wastebits: 9;	/* room for more booleans */
+	unsigned short wastebits1: 1;	/* room for more booleans */
 	
 	unsigned short objectdisabled: 1;
 	
@@ -202,6 +202,8 @@ typedef struct tydiskobject {
 	unsigned short objectflag: 1;
 
 	unsigned short objecthasframe: 1;
+	
+	unsigned short wastebits2: 8;	/* room for more booleans */
 
 #else
 
