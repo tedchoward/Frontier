@@ -514,7 +514,7 @@
 	1,					//Number of "blocks" in this resource
 		"string\0",		//Function Processor Name
 		false,			//Window required
-			58,			//Count of verbs
+			59,			//Count of verbs
 			"delete\0",		
 			"insert\0",	
 			"popleading\0",
@@ -573,6 +573,7 @@
 			"multiplereplaceall\0",
 			"macromantoutf8\0", // 2006-02-25 creedon
 			"utf8tomacroman\0", // 2006-02-25 creedon
+			"convertcharset\0"  /* 2006-04-16 smd */
 	END
 
 

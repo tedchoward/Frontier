@@ -600,7 +600,8 @@ resource 'EFP#' (idstringverbs, "string") {
 		"ansitoutf16",
 		"multipleReplaceAll",
 		"macromantoutf8", // 2006-02-25 creedon
-		"utf8tomacroman" // 2006-02-25 creedon
+		"utf8tomacroman", // 2006-02-25 creedon
+		"convertcharset"  /* 2006-04-13 smd */
 		}
 	}
 };
