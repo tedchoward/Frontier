@@ -2265,10 +2265,10 @@ static HRESULT UnicodeToAnsi(Handle h, Handle hresult, unsigned long encoding)
 
     ULONG cbAnsi, cCharacters;
  	long lentext;
-
+	
     cCharacters = wcslen((const unsigned short*) *h)+1;
  
-	cbAnsi = cCharacters*2;
+	cbAnsi = cCharacters * 2;
 
 	sethandlesize (hresult, cbAnsi);
 
@@ -2313,16 +2313,17 @@ static HRESULT AnsiToUnicode (Handle h, Handle hresult, unsigned long encoding)
 		char ch = (*hresult) [ix];
 
 		if (ch == '\0') {
+			
+			if ((*hresult) [ix + 1] == '\0') {
 
-			if (lastch == '\0') {
-
-				sethandlesize (hresult, ix);
+				sethandlesize (hresult, ix + 2);
 
 				break;
-				} /*if*/
+				} /* if */
+			
 			} /*if*/
 
-		ix++;
+		ix += 2;
 
 		if (ix > cbUni)
 			break;
@@ -2337,11 +2338,12 @@ static HRESULT AnsiToUnicode (Handle h, Handle hresult, unsigned long encoding)
 #endif /*end Windows character conversion routines*/
 
 
+boolean converttextencoding (Handle h, Handle hresult, long inputcharset, long outputcharset) {
+
 #ifdef MACVERSION /*Mac character conversion common routine*/
 
-static void converttextencoding (Handle h, Handle hresult, long inputcharset, long outputcharset) {
-
 	TECObjectRef converter;		
+	OSStatus status;
 	ByteCount ctorigbytes, ctoutputbytes, ctflushedbytes;		
 	long sizeoutputbuffer;
 	long pullBytes = 0;
@@ -2390,21 +2392,89 @@ static void converttextencoding (Handle h, Handle hresult, long inputcharset, lo
 
 	lentext = gethandlesize (h);
 
-	TECConvertText (converter, (ConstTextPtr)(*h), lentext, &ctorigbytes, (TextPtr)(*hresult), sizeoutputbuffer, &ctoutputbytes);
+	status = TECConvertText (converter, (ConstTextPtr)(*h), lentext, &ctorigbytes, (TextPtr)(*hresult), sizeoutputbuffer, &ctoutputbytes);
+	
+	if (status != noErr)
+		return (false);
 
 	TECFlushText (converter, (TextPtr)(*hresult), sizeoutputbuffer, &ctflushedbytes);
 
 	TECDisposeConverter (converter);
 
 	sethandlesize (hresult, ctoutputbytes + ctflushedbytes);
+	
+	return (true);
 
 	// kwchange 2005-05-23 --- commented out to see if this is the missing trailing char bug
 	// kwchange 2005-05-27 --- ran this the last week and have no complains
 	//sethandlesize (hresult, gethandlesize (hresult) - 1); /*pop trailing terminator*/
-	} /*converttextencoding*/
-
 
 #endif /*end Mac character conversion routine(s)*/
+
+#ifdef WIN95VERSION
+
+	long lentext;
+
+	switch ( inputcharset ) {
+		
+		case 0: /* unicode with BOM, not handled as a code page. I Hatesk Windows. */
+			lentext = gethandlesize (h);
+
+			sethandlesize (h,lentext + 2);
+
+			(*h) [lentext] = '\0';
+			(*h) [lentext + 1] = '\0';
+
+			if (UnicodeToAnsi (h, hresult, outputcharset))
+				return (false);
+
+			if ((*h) [0] == '\xFF')
+				pullfromhandle (hresult,0, 1, NULL);  /* Pop off the BOM */
+
+		default: {
+			lentext = gethandlesize (h);
+
+			switch ( outputcharset ) {
+				case 0: /* unicode with BOM, not handled as a code page. I Sitll Hatesk Windows (and rrrabbits) */
+
+					if (AnsiToUnicode (h, hresult, inputcharset))
+						return (false);
+				
+				default: {
+					Handle htemp;
+					boolean flResult = true;
+
+					newemptyhandle (&htemp);
+
+					sethandlesize (h, lentext + 1);
+					(*h) [lentext] = '\0';
+
+					if (AnsiToUnicode (h, htemp, inputcharset))
+						flResult = false;
+
+					if (flResult && ! UnicodeToAnsi (htemp, hresult, outputcharset)) {
+
+						if ((*hresult) [0] == '\xFF')
+							pullfromhandle (hresult, 0, 1, NULL);  /* pop BOM ? */
+						
+						} /* unicodetoansi */
+					else
+						flResult = false;
+
+					disposehandle (htemp);
+
+					return (flResult);
+
+					} /* case default */
+
+				} /* switch outputcharset */
+
+			} /* case default */
+		
+		} /* switch inputcharset */
+
+#endif
+	} /*converttextencoding*/
 
 
 boolean utf16toansi (Handle h, Handle hresult) {
@@ -2442,7 +2512,8 @@ boolean utf16toansi (Handle h, Handle hresult) {
 		
 			insertinhandle (h, 0, NULL, 1);
 */		
-		converttextencoding (h, hresult, kTextEncodingUnicodeDefault, kTextEncodingWindowsLatin1);
+		if (!converttextencoding (h, hresult, kTextEncodingUnicodeDefault, kTextEncodingWindowsLatin1))
+			return (false);
 
 /*		OSErr err = noErr;
 	
@@ -2523,7 +2594,8 @@ boolean utf8toansi (Handle h, Handle hresult) {
 	
 	#ifdef MACVERSION
 		
-		converttextencoding (h, hresult, 0x08000100, kTextEncodingWindowsLatin1);
+		if (!converttextencoding (h, hresult, kCFStringEncodingUTF8, kTextEncodingWindowsLatin1))
+			return (false);
 
 /*		OSErr err = noErr;
 
@@ -2592,7 +2664,8 @@ boolean ansitoutf8 (Handle h, Handle hresult) {
 	
 	#ifdef MACVERSION
 	
-		converttextencoding (h, hresult, kTextEncodingWindowsLatin1, 0x08000100);
+		if (!converttextencoding (h, hresult, kTextEncodingWindowsLatin1, kCFStringEncodingUTF8))
+			return (false);
 	
 	#endif
 
@@ -2620,7 +2693,8 @@ boolean ansitoutf16 (Handle h, Handle hresult) {
 	
 	#ifdef MACVERSION
 	
-		converttextencoding (h, hresult, kTextEncodingWindowsLatin1, kTextEncodingUnicodeDefault);
+		if (!converttextencoding (h, hresult, kTextEncodingWindowsLatin1, kTextEncodingUnicodeDefault))
+			return (false);
 
 	#endif
 
@@ -2703,13 +2777,15 @@ boolean macromantoutf8 (Handle h, Handle hresult) {
 	
 	#ifdef WIN95VERSION
 
-		langerrormessage ("\x92" "Direct Mac Roman to UTF-8 string conversion currently only works on Mac OS.  On Windows string.macToLatin and string.ansiToUtf8 verbs can be used.");
+		if (!converttextencoding (h, hresult, 10000, CP_UTF8))
+			return (false);
 
 	#endif
 	
 	#ifdef MACVERSION
 	
-		converttextencoding (h, hresult, kTextEncodingMacRoman, 0x08000100);
+		if (!converttextencoding (h, hresult, kTextEncodingMacRoman, kCFStringEncodingUTF8))
+			return (false);
 	
 	#endif
 
@@ -2725,13 +2801,15 @@ boolean utf8tomacroman (Handle h, Handle hresult) {
 
 	#ifdef WIN95VERSION
 
-		langerrormessage ("\x92" "Direct UTF-8 to Mac Roman string conversion currently only works on Mac OS.  On Windows string.utf8ToAnsi and string.latinToMac verbs can be used.");
+		if (!converttextencoding (h, hresult, CP_UTF8, 10000))
+			return (false);
 
 	#endif
 	
 	#ifdef MACVERSION
 		
-		converttextencoding (h, hresult, 0x08000100, kTextEncodingMacRoman);
+		if (!converttextencoding (h, hresult, kCFStringEncodingUTF8, kTextEncodingMacRoman))
+			return (false);
 	
 	#endif
 
