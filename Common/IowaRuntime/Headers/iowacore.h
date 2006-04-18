@@ -28,6 +28,7 @@
 #ifndef iowacoreinclude
 #define iowacoreinclude
 
+#include "byteorder.h"	/* 2006-04-17 aradke: for SWAP_BYTE_ORDER */
 
 #ifdef coderesource /*we're building into a UCMD*/
 	
@@ -105,7 +106,25 @@ typedef struct tydiskheader {
 	short defaulttextcolor;
 	
 	short defaultframecolor;
+
+#ifdef SWAP_BYTE_ORDER
 	
+	unsigned short wastebits: 10; /*room for more booleans*/
+	
+	unsigned short floater: 1;
+	
+	unsigned short flinvisiblegrid: 1; 
+	
+	unsigned short flselection: 1;
+	
+	unsigned short flgrid: 1;
+	
+	unsigned short defaulttransparent: 1;
+
+	unsigned short defaulthasframe: 1;
+
+#else
+
 	unsigned short defaulthasframe: 1;
 	
 	unsigned short defaulttransparent: 1;
@@ -119,7 +138,9 @@ typedef struct tydiskheader {
 	unsigned short floater: 1;
 	
 	unsigned short wastebits: 10; /*room for more booleans*/
-	
+
+#endif
+
 	short gridunits;
 	
 	short rightborder, bottomborder;
@@ -163,7 +184,27 @@ typedef struct tydiskobject {
 	short objectlinespacing;
 	
 	short objectindentation;
+
+#ifdef SWAP_BYTE_ORDER
 	
+	unsigned short wastebits: 9;	/* room for more booleans */
+	
+	unsigned short objectdisabled: 1;
+	
+	unsigned short objectfastscript: 1;
+	
+	unsigned short objecttransparent: 1;
+	
+	unsigned short lastinlist: 1;
+	
+	unsigned short objectinvisible: 1;
+	
+	unsigned short objectflag: 1;
+
+	unsigned short objecthasframe: 1;
+
+#else
+
 	unsigned short objecthasframe: 1;
 	
 	unsigned short objectflag: 1;
@@ -178,6 +219,10 @@ typedef struct tydiskobject {
 	
 	unsigned short objectdisabled: 1;
 	
+	unsigned short wastebits: 9;	/* room for more booleans */
+
+#endif
+
 	long objecttype; /*room for lots of object types*/
 	
 	RGBColor objectfillcolor, objecttextcolor, objectframecolor;

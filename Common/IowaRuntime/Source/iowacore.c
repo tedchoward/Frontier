@@ -29,6 +29,7 @@
 #include "standard.h"
 
 #include "shelltypes.h"
+#include "byteorder.h"
 
 #ifdef iowaRuntime
 
@@ -2728,12 +2729,60 @@ static void postunpackfilter (hdlobject h) {
 
 boolean unpackobject (hdlobject *hobject, boolean *lastinlist) {
 	
+	/*
+	2006-04-17 aradke: must convert packed data to native byte-order on Intel Macs 
+	*/
+	
 	tydiskobject info;
 	tyobject obj;
 	hdlobject h;
 	
 	moveleft (unpack.p, &info, longsizeof (info));
 	
+	disktomemshort (info.versionnumber);
+	
+	disktomemshort (info.objectrect.top);
+	disktomemshort (info.objectrect.left);
+	disktomemshort (info.objectrect.bottom);
+	disktomemshort (info.objectrect.right);
+
+	disktomemlong (info.lenname);
+	disktomemlong (info.lenvalue);
+	disktomemlong (info.lenscript);
+	disktomemlong (info.lendata);
+	
+	disktomemshort (info.objectfontsize);
+	disktomemshort (info.objectstyle);
+	disktomemshort (info.objectjustification);
+	disktomemshort (info.objectrecalcstatus);
+	disktomemshort (info.objectrecalcperiod);
+	disktomemshort (info.unused1);
+	disktomemshort (info.objectdropshadowdepth);
+	disktomemshort (info.objectlinespacing);
+	disktomemshort (info.objectindentation);
+	
+	/* 
+	2006-04-17 aradke: The info.objecthasframe etc. bit-field doesn't need to be byte-swapped,
+		because this is already taken care of via the endian-specific definition in iowacore.h.
+	*/
+	
+	disktomemlong (info.objecttype);
+	
+	disktomemshort (info.objectfillcolor.red);
+	disktomemshort (info.objectfillcolor.green);
+	disktomemshort (info.objectfillcolor.blue);
+	
+	disktomemshort (info.objecttextcolor.red);
+	disktomemshort (info.objecttextcolor.green);
+	disktomemshort (info.objecttextcolor.blue);
+	
+	disktomemshort (info.objectframecolor.red);
+	disktomemshort (info.objectframecolor.green);
+	disktomemshort (info.objectframecolor.blue);
+	
+	disktomemlong (info.objectlanguage);
+	disktomemlong (info.lenrecalcscript);
+
 	if (info.versionnumber == 1) /*record format changed to allow 4 bytes for object type*/
 		info.objecttype = (unsigned long) info.v1objecttype;
 		
@@ -2898,6 +2947,10 @@ boolean unpacksingleobject (Handle hpacked, hdlobject *hobject) {
 	
 	
 boolean iowaunpack (Handle hpacked) {
+
+	/*
+	2006-04-17 aradke: must convert packed data to native byte-order on Intel Macs 
+	*/
 	
 	hdlcard hc = iowadata;
 	hdlobject newlist;
@@ -2917,12 +2970,38 @@ boolean iowaunpack (Handle hpacked) {
 	
 	unpack.p += longsizeof (header);
 	
+	disktomemshort (header.versionnumber);
+	
 	if (header.versionnumber < 4) { /*the header grew by 66 bytes in version 4*/
 		
 		header.lenwindowtitle = 0;
 		
 		unpack.p -= 66;
 		}
+	
+	disktomemshort (header.v2backcolor);
+
+	disktomemlong (header.lenembeddedtable);
+
+	disktomemshort (header.defaultfillcolor);
+	disktomemshort (header.defaulttextcolor);
+	disktomemshort (header.defaultframecolor);
+	
+	/* 
+	2006-04-17 aradke: The header.defaulthasframe etc. bit-field doesn't need to be byte-swapped,
+		because this is already taken care of via the endian-specific definition in iowacore.h.
+	*/
+	
+	disktomemshort (header.gridunits);
+	disktomemshort (header.rightborder);
+	disktomemshort (header.bottomborder);
+
+	disktomemshort (header.backcolor.red);
+	disktomemshort (header.backcolor.green);
+	disktomemshort (header.backcolor.blue);
+
+	disktomemlong (header.idwindow);
+	disktomemlong (header.lenwindowtitle);
 	
 	if (header.versionnumber <= 2) /*back color was stored as an index, now stored as a RGBColor*/
 		oldclutconverter (header.v2backcolor, &header.backcolor);

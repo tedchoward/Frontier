@@ -28,6 +28,8 @@
 #include "frontier.h"
 #include "standard.h"
 
+#include "byteorder.h"
+
 #include "shelltypes.h"
 #include <appletdefs.h>
 #include <iac.h>
@@ -2050,6 +2052,8 @@ boolean cardIsModal (Handle hpackedcard) {
 	tydiskheader header;
 	
 	moveleft (*hpackedcard, &header, longsizeof (header));
+	
+	disktomemlong (header.idwindow);	/* 2006-04-17 aradke: for Mac Intel */
 	
 	switch (header.idwindow) {
 		
