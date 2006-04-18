@@ -51,6 +51,7 @@
 #include "meprograms.h"
 #include "process.h"
 #include "processinternal.h"
+#include "byteorder.h"
 #ifdef flcomponent
 	#include <uisharing.h>
 	#include <uisinternal.h>
@@ -2175,6 +2176,8 @@ void binarytodesc (Handle hbinary, AEDesc *desc) {
 	
 	8/11/92 dmb: also special-case character values; they must go out as standard 
 	typeChar descriptors.
+	
+	2006-04-17 aradke: Must byte-swap valtype id extracted from binary value on Intel Macs.
 	*/
 	
 	register AEDesc *d = desc;
@@ -2182,14 +2185,15 @@ void binarytodesc (Handle hbinary, AEDesc *desc) {
 	#if TARGET_API_MAC_CARBON == 1 /*PBS 03/14/02: AE OS X fix.*/	
 		
 		Handle hcopy;
+		DescType dtype;
 		
-		newclearhandle (sizeof (DescType), &hcopy);
+		copyhandle (hbinary, &hcopy);
 		
-		copyhandlecontents (hbinary, hcopy);
+		pullfromhandle (hcopy, 0L, sizeof (DescType), &dtype);
 		
-		pullfromhandle (hcopy, 0L, sizeof (DescType), &(*d).descriptorType);
-
-		newdescwithhandle (d, (*d).descriptorType, hcopy);
+		disktomemlong (dtype);
+		
+		newdescwithhandle (d, dtype, hcopy);
 		
 		disposehandle (hcopy);
 	
@@ -2198,6 +2202,8 @@ void binarytodesc (Handle hbinary, AEDesc *desc) {
 		(*d).dataHandle = hbinary;
 	
 		pullfromhandle ((*d).dataHandle, 0L, sizeof (DescType), &(*d).descriptorType);
+		
+		disktomemlong ((*d).descriptorType);
 	
 	#endif
 	
