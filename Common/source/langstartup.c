@@ -588,6 +588,117 @@ static boolean langaddtypeconst (bigstring bs, tyvaluetype x) {
 #define addstring(x,y) if (!langaddstringconst ((ptrstring) x, y)) return (false)
 
 
+static boolean langinit_charset_consttable (void) {
+	
+	/*
+		First pass at a way to populate a table with many of
+		the known charsets. Key is the MIME charset name (the 
+		IANA-registered name), value is the platform-dependent 
+		value that identifies that character set. (Constants on
+		Mac, code page id numbers on Windows.)
+		
+		There may be a one-hit memory leak here, because nothing is done
+		to release the table... but maybe it can't be released, because
+		it needs to stick around?
+		
+		A better approach on both platforms would be some routine that
+		asks the OS for a list of the character sets it supports.
+		I couldn't find anything like that on the Mac, and on Windows
+		it requires COM which I couldn't get to work!
+	*/
+	
+	hdlhashtable hcharsetconsttable;
+	
+	if (!tablenewsystemtable (langtable, (ptrstring) "\x08" "charsets", &hcharsetconsttable))
+		return (false);
+	
+	pushhashtable (hcharsetconsttable);
+	
+#if MACVERSION
+	addlong( "ASCII",			kCFStringEncodingASCII );
+	addlong( "MacRoman",		kCFStringEncodingMacRoman );
+	addlong( "MACINTOSH",		kCFStringEncodingMacRoman );
+	
+	addlong( "iso-8859-1",		kCFStringEncodingISOLatin1 );
+	addlong( "iso-latin-1",		kCFStringEncodingISOLatin1 );
+	addlong( "iso-8859-2",		kCFStringEncodingISOLatin2 );
+	addlong( "iso-8859-3",		kCFStringEncodingISOLatin3 );
+	addlong( "iso-8859-4",		kCFStringEncodingISOLatin4 );
+	addlong( "iso-8859-5",		kCFStringEncodingISOLatin5 );
+	addlong( "iso-8859-6",		kCFStringEncodingISOLatin6 );
+	addlong( "iso-8859-7",		kCFStringEncodingISOLatin7 );
+	addlong( "iso-8859-8",		kCFStringEncodingISOLatin8 );
+	addlong( "iso-8859-9",		kCFStringEncodingISOLatin9 );
+	addlong( "iso-8859-10",		kCFStringEncodingISOLatin10 );
+	
+	addlong( "windows-1250",	kCFStringEncodingWindowsLatin2 );
+	addlong( "windows-latin-2", kCFStringEncodingWindowsLatin2 );  /* code page 1250, Central Europe */
+	
+	addlong( "windows-1251",	kCFStringEncodingWindowsCyrillic );  /* code page 1251, Slavic Cyrillic */
+	
+	addlong( "windows-1252",	kCFStringEncodingWindowsLatin1 );
+	addlong( "windows-latin-1",	kCFStringEncodingWindowsLatin1 );  /* ANSI 1252 */
+	
+	addlong( "windows-1253",	kCFStringEncodingWindowsLatin5 );  /* code page 1253 */
+	addlong( "windows-1254",	kCFStringEncodingWindowsLatin5 );  /* code page 1254, Turkish */
+	addlong( "windows-1255",	kCFStringEncodingWindowsHebrew );  /* code page 1255 */
+	addlong( "windows-1256",	kCFStringEncodingWindowsArabic );  /* code page 1256 */
+	addlong( "windows-1257",	kCFStringEncodingWindowsBalticRim );  /* code page 1257 */
+	addlong( "windows-1258",	kCFStringEncodingWindowsVietnamese );  /* code page 1258 */
+	addlong( "windows-1361",	kCFStringEncodingWindowsKoreanJohab );  /* code page 1361, for Windows NT */
+	
+	addlong( "UTF-7",			kCFStringEncodingNonLossyASCII );
+	addlong( "UTF-8",			kCFStringEncodingUTF8 );
+	addlong( "UTF-16",			kCFStringEncodingUnicode );
+	addlong( "UTF-16le",		kCFStringEncodingUTF16LE );
+	addlong( "UTF-16be",		kCFStringEncodingUTF16BE );
+#endif
+
+#if WIN95VERSION
+	addlong( "ASCII",			20127 );
+	addlong( "MacRoman",		10000 );
+	addlong( "MACINTOSH",		10000 );
+	
+	addlong( "iso-8859-1",		28591 );
+	addlong( "iso-latin-1",		28591 );
+	addlong( "iso-8859-2",		28592 );
+	addlong( "iso-8859-3",		28593 );
+	addlong( "iso-8859-4",		28594 );
+	addlong( "iso-8859-5",		28595 );
+	addlong( "iso-8859-6",		28596 );
+	addlong( "iso-8859-7",		28597 );
+	addlong( "iso-8859-8",		28598 );
+	addlong( "iso-8859-9",		28599 );
+	addlong( "iso-8859-10",		28592 );
+	
+	addlong( "windows-1250",	1250 );
+	addlong( "windows-latin-2", 1250 );  /* code page 1250, Central Europe */
+	
+	addlong( "windows-1251",	1251 );  /* code page 1251, Slavic Cyrillic */
+	
+	addlong( "windows-1252",	1252 );
+	addlong( "windows-latin-1",	1252 );
+	
+	addlong( "windows-1253",	1253 );  /* code page 1253 */
+	addlong( "windows-1254",	1254 );  /* code page 1254, Turkish */
+	addlong( "windows-1255",	1255 );  /* code page 1255 */
+	addlong( "windows-1256",	1256 );  /* code page 1256 */
+	addlong( "windows-1257",	1257 );  /* code page 1257 */
+	addlong( "windows-1258",	1258 );  /* code page 1258 */
+	addlong( "windows-1361",	1361 );  /* code page 1361, for Windows NT */
+	
+	addlong( "UTF-7",			65000 );
+	addlong( "UTF-8",			65001 );
+	addlong( "UTF-16",			0 );
+	addlong( "UTF-16le",		1200 );
+	addlong( "UTF-16be",		1201 );
+#endif
+	
+	pophashtable();
+	
+	return (true);
+	} /* langinit_charset_consttable */
+
 static boolean langinitconsttable (void) {
 	
 	/*
@@ -600,7 +711,7 @@ static boolean langinitconsttable (void) {
 	tyvaluetype type;
 	bigstring bs;
 	
-	if (!tablenewsystemtable (langtable, (ptrstring) BIGSTRING ("\x09" "constants"), &hconsttable))
+	if (!tablenewsystemtable (langtable, (ptrstring) ("\x09" "constants"), &hconsttable))
 		return (false);
 		
 	pushhashtable (hconsttable); /*converted to constants by the scanner*/
@@ -658,7 +769,7 @@ static boolean langinitconsttable (void) {
 				
 				lastword (bs, chspace, bs);
 				
-				pushstring ((ptrstring) BIGSTRING ("\x04Type"), bs);
+				pushstring ((ptrstring) ("\x04Type"), bs);
 				
 				addtype (bs, type);
 				
@@ -815,6 +926,9 @@ static boolean langinitkeywordtable (void) {
 static boolean langinstallresources (void) {
 	
 	if (!langinitconsttable ())
+		return (false);
+	
+	if (!langinit_charset_consttable ())
 		return (false);
 	
 	if (!langinitbuiltintable ())
