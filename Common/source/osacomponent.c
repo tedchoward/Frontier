@@ -66,6 +66,7 @@ version at the bottom. This file should be reconciled later.*/
 #include "osaparseaete.h"
 #include "osawindows.h"
 #include <SetUpA5.h>
+#include "byteorder.h"
 
 #if TARGET_API_MAC_CARBON == 1 /*PBS 03/14/02: AE OS X fix.*/
 	#include "aeutils.h"
@@ -2558,7 +2559,46 @@ osaLoad (
 				break;
 				}
 			
-			err = OSARemoveStorageType ((AEDataStorage) hdata);
+			#ifdef SWAP_BYTE_ORDER
+			{
+				/*
+				2006-04-17 aradke: This is a MAJOR HACK (FIXME)!
+				
+					Compiled osa scripts of the generic storage type have a 12-byte trailer:
+					
+					Bytes 0-3 contain the signature of the OSA component that knows
+					how to execute the script, e.g. 'LAND' for the UserTalk component.
+					The meaning of bytes 4-5 is unknown.
+					Bytes 6-7 seem to contain the length of the trailer as a 16bit integer.
+					Bytes 8-11 contain 0xFADEDEAD as a magic signature for the trailer.
+								
+					Example: 4C41 4E44 0001 000C FADE DEAD (see 'scpt' resource #1024 in iowaruntime.r)
+					
+					OSARemoveStorageType is supposed to remove this trailer if it is present.
+					However, it doesn't perform byte-order swapping on the length bytes in the trailer.
+					The call below ends up removing 3072 bytes instead of 12 bytes from hdata.
+					
+					Until we figure out how to properly deal with this bug(?), we use our own
+					implementation of OSARemoveStorageType on Intel Macs.
+				*/
+				
+				long hlen = gethandlesize (hdata);
+				char * p = *hdata;
+				long marker;
+				
+				p += (hlen - 4);
+				
+				marker = *(long *) p;
+				
+				disktomemlong (marker);
+				
+				if (marker == 0xFADEDEAD) {
+					sethandlesize (hdata, hlen - 12);	//remove storage type trailer
+					}
+			}
+			#else
+				err = OSARemoveStorageType ((AEDataStorage) hdata);
+			#endif
 			
 			if (err == noErr)
 				fl = langunpackvalue (hdata, &vscript);
@@ -2571,7 +2611,7 @@ osaLoad (
 			err = errOSABadStorageType;
 		}
 
-	#if TARGET_API_MAC_CARBON
+	#if TARGET_API_MAC_CARBON == 1
 		if(descData != nil) {
 
 			disposehandle(descData);	/* AE OS X fix */
