@@ -310,6 +310,8 @@ typedef enum tystringtoken { /*verbs that are processed by string.c*/
 	macromantoutf8func, // 2006-02-25 creedon
 	
 	utf8tomacromanfunc, // 2006-02-25 creedon
+	
+	convertcharsetfunc, /* 2006-04-14 smd */
 
 	ctstringverbs
 	} tystringtoken;
@@ -2196,7 +2198,8 @@ static boolean stringfunctionvalue (short token, hdltreenode hparam1, tyvaluerec
 
 			newemptyhandle (&hresult);
 
-			utf16toansi (h, hresult);
+			if (!utf16toansi (h, hresult))
+				return (false);
 
 			disposehandle(h); // kw 2005-07-23 --- memleak
 
@@ -2214,7 +2217,8 @@ static boolean stringfunctionvalue (short token, hdltreenode hparam1, tyvaluerec
 
 			newemptyhandle (&hresult);
 
-			utf8toansi (h, hresult);
+			if (!utf8toansi (h, hresult))
+				return (false);
 
 			disposehandle(h); // kw 2005-07-23 --- memleak
 
@@ -2232,7 +2236,8 @@ static boolean stringfunctionvalue (short token, hdltreenode hparam1, tyvaluerec
 
 			newemptyhandle (&hresult);
 
-			ansitoutf8 (h, hresult);
+			if (!ansitoutf8 (h, hresult))
+				return (false);
 
 			disposehandle(h); // kw 2005-07-23 --- memleak
 
@@ -2250,7 +2255,8 @@ static boolean stringfunctionvalue (short token, hdltreenode hparam1, tyvaluerec
 
 			newemptyhandle (&hresult);
 
-			ansitoutf16 (h, hresult);
+			if (!ansitoutf16 (h, hresult))
+				return (false);
 
 			disposehandle (h); // kw 2005-07-23 --- memleak
 
@@ -2268,12 +2274,13 @@ static boolean stringfunctionvalue (short token, hdltreenode hparam1, tyvaluerec
 
 			flnextparamislast = true;
 
-			if (!getexempttextvalue (hp1, 1, &h))
-				return (false);
+			if (!getreadonlytextvalue (hp1, 1, &h))
+				goto error;
 
 			newemptyhandle (&hresult);
 
-			macromantoutf8 (h, hresult);
+			if (!macromantoutf8 (h, hresult))
+				goto error;
 
 			disposehandle (h);
 
@@ -2286,15 +2293,42 @@ static boolean stringfunctionvalue (short token, hdltreenode hparam1, tyvaluerec
 
 			flnextparamislast = true;
 
-			if (!getexempttextvalue (hp1, 1, &h))
-				return (false);
+			if (!getreadonlytextvalue (hp1, 1, &h))
+				goto error;
 
 			newemptyhandle (&hresult);
 
-			utf8tomacroman (h, hresult);
+			if (!utf8tomacroman (h, hresult))
+				goto error;
 
 			disposehandle (h);
 
+			return (setheapvalue (hresult, stringvaluetype, v));
+			}
+		
+		case convertcharsetfunc: {  /* 2006-04-13 smd: convert any character set to any other character set, if the os supports it */
+			
+			Handle h, hresult;
+			long charsetIn, charsetOut;
+			
+			if (!getlongvalue (hp1, 1, &charsetIn))
+				goto error;
+			
+			if (!getlongvalue (hp1, 2, &charsetOut))
+				goto error;
+			
+			flnextparamislast = true;
+			
+			if (!getreadonlytextvalue (hp1, 3, &h))
+				goto error;
+			
+			newemptyhandle (&hresult);
+			
+			if (! converttextencoding (h, hresult, charsetIn, charsetOut))
+				goto error;
+			
+			disposehandle(h);
+			
 			return (setheapvalue (hresult, stringvaluetype, v));
 			}
 
