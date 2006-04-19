@@ -232,7 +232,7 @@ static boolean newicondata (hdlicondata *hdata) {
 	
 	(**h).haslabel = true;
 	
-	(**h).align = atVerticalCenter + atHorizontalCenter;
+	(**h).align = kAlignAbsoluteCenter;
 	
 	*hdata = h;
 	

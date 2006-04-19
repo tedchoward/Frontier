@@ -931,7 +931,7 @@ boolean claydrawnodeicon (hdlheadrecord hnode, const Rect *iconrect, boolean fls
 		transform = 0x4000; 
 	
 #ifdef MACVERSION
-	ploticonresource ((Rect *) iconrect, atVerticalCenter + atHorizontalCenter, transform, iconnum);
+	ploticonresource ((Rect *) iconrect, kAlignAbsoluteCenter, transform, iconnum);
 #endif
 
 #ifdef WIN95VERSION

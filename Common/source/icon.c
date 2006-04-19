@@ -74,6 +74,8 @@ boolean ploticonresource (const Rect *r, short align, short transform, short res
 	1.0b21 dmb: try geting normal b&w icon if all else fails
 
 	5.0a8 dmb: use srccopy, not srcand for win blits
+	 
+	Note that the Windows version does NOT use the transform parameter
 	*/
 	
 #ifdef MACVERSION

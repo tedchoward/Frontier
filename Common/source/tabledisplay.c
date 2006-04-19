@@ -1083,21 +1083,26 @@ boolean tabledrawline (hdlheadrecord hnode, const Rect *textrect, boolean flsele
 
 
 void browserdrawnodeicon (const Rect *r, boolean flhighlighted, hdlheadrecord hnode) {
-	
-	tybrowserinfo browserinfo;	
-	short transform = 0;
-	long align = 0;
+	/*
+	 This function draws the triangle icons inside tables (but not outlines).
+	 Outline triangles are in opicons.c, opdrawheadicon()
+	 */
+	tybrowserinfo browserinfo;
+	browsergetrefcon (hnode, &browserinfo);
+
+#ifdef MACVERSION
+	short transform = kTransformNone;
 	
 	if (flhighlighted)
-		transform = 0x4000; 
+		transform = kTransformSelected;
 	
-#ifdef MACVERSION
-	align = atVerticalCenter + atHorizontalCenter;
+	ploticonresource (r, kAlignAbsoluteCenter, transform, opgetheadicon (hnode));
+#endif
+	
+#ifdef WIN95VERSION
+	ploticonresource (r, 0, 0, opgetheadicon (hnode));
 #endif
 
-	browsergetrefcon (hnode, &browserinfo);
-	
-	ploticonresource (r, align, transform, opgetheadicon (hnode));
 	
 #if 0
 	transform += ttLabel [browserinfo.ixlabel]; /*color it according to the file's label*/

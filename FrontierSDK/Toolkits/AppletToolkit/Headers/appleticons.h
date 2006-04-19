@@ -9,13 +9,13 @@
 
 
 
-#define	atNone 0x0
-#define	atVerticalCenter 0x1
-#define atTop 0x2
-#define atBottom 0x3
-#define atHorizontalCenter 0x4
-#define atLeft 0x8
-#define atRight 0xC
+#define	atNone 0x00
+#define	atVerticalCenter 0x01
+#define atTop 0x02
+#define atBottom 0x03
+#define atHorizontalCenter 0x04
+#define atLeft 0x08
+#define atRight 0x0C
 
 
 extern unsigned short ttLabel [8];

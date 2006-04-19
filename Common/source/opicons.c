@@ -92,20 +92,24 @@ short opgetheadicon (hdlheadrecord hnode) {
 	
 	
 void opdrawheadicon (short iconnum, const Rect *r, boolean flselected) {
-	
-	short transform = 0;
-
-	if (flselected)
-		transform = 0x4000; 
+	/*
+	 This function draws the triangle icons inside outlines (but not root tables).
+	 Root table triangles are in tabledisplay.c, browserdrawnodeicon()
+	 */
 	
 	operaserect (*r);
 
 #ifdef MACVERSION
-	ploticonresource ((Rect *) r, atVerticalCenter + atHorizontalCenter, transform, iconnum);
+	short transform = kTransformNone;
+	
+	if (flselected)
+		transform = kTransformSelected; 
+	
+	ploticonresource ((Rect *) r, kAlignCenterRight, transform, iconnum);
 #endif
 
 #ifdef WIN95VERSION
-	ploticonresource (r, 0, transform, iconnum);
+	ploticonresource (r, 0, 0, iconnum);
 #endif
 	} /*opdrawheadicon*/
 
@@ -115,7 +119,7 @@ boolean opdrawheadiconcustom (bigstring bsiconname, const Rect *r, boolean flsel
 	short transform = 0;
 
 	if (flselected)
-		transform = 0x4000; 
+		transform = kTransformSelected; 
 	
 	operaserect (*r);
 

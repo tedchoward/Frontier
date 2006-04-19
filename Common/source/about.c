@@ -279,7 +279,7 @@ static void ccdrawfrontiericon (Rect rcicn, boolean flpressed) {
 
 		if (GetIconRefFromFile (&programfspec, &iconref, &label) == noErr) {
 			
-			ec = PlotIconRef (&r, atVerticalCenter + atHorizontalCenter, flpressed? kTransformSelected : 0, kIconServicesNormalUsageFlag, iconref);			
+			ec = PlotIconRef (&r, kAlignAbsoluteCenter, flpressed? kTransformSelected : 0, kIconServicesNormalUsageFlag, iconref);			
 			
 			ReleaseIconRef (iconref);
 		
@@ -288,7 +288,7 @@ static void ccdrawfrontiericon (Rect rcicn, boolean flpressed) {
 			} /*if*/
 	#endif
 	
-	ploticonresource (&rcicn, atVerticalCenter + atHorizontalCenter, flpressed? kTransformSelected : 0, idfrontiericon);
+	ploticonresource (&rcicn, kAlignAbsoluteCenter, flpressed? kTransformSelected : 0, idfrontiericon);
 	
 	} /*ccdrawfrontiericon*/
 
