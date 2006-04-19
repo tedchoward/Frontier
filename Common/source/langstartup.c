@@ -590,23 +590,6 @@ static boolean langaddtypeconst (bigstring bs, tyvaluetype x) {
 
 static boolean langinit_charset_consttable (void) {
 	
-	/*
-		First pass at a way to populate a table with many of
-		the known charsets. Key is the MIME charset name (the 
-		IANA-registered name), value is the platform-dependent 
-		value that identifies that character set. (Constants on
-		Mac, code page id numbers on Windows.)
-		
-		There may be a one-hit memory leak here, because nothing is done
-		to release the table... but maybe it can't be released, because
-		it needs to stick around?
-		
-		A better approach on both platforms would be some routine that
-		asks the OS for a list of the character sets it supports.
-		I couldn't find anything like that on the Mac, and on Windows
-		it requires COM which I couldn't get to work!
-	*/
-	
 	hdlhashtable hcharsetconsttable;
 	
 	if (!tablenewsystemtable (langtable, (ptrstring) "\x08" "charsets", &hcharsetconsttable))
@@ -615,6 +598,43 @@ static boolean langinit_charset_consttable (void) {
 	pushhashtable (hcharsetconsttable);
 	
 #if MACVERSION
+  #if 1
+	OSStatus err;
+	ItemCount ct, actual_ct, i;
+	
+	err = TECCountAvailableTextEncodings( &ct );
+	if ( err != noErr ) {
+		pophashtable();
+		
+		return (true);  // don't kill the whole startup
+	}
+	
+	TextEncoding enc;
+	TextEncoding availEncodings[ ct ];
+	bigstring ianaName;
+	
+	err = TECGetAvailableTextEncodings ( availEncodings, ct, &actual_ct );
+	if ( err != noErr ) {
+		pophashtable();
+		
+		return (true);  // we don't want to kill the whole startup here
+	}
+	
+	for ( i = 0; i < actual_ct; i++ ) {
+		enc = availEncodings[ i ];
+		// enc = i;
+		
+		err = TECGetTextEncodingInternetName( enc, ianaName );
+		if ( err != noErr )
+			continue;
+		
+		nullterminate( ianaName );
+				
+		if ( ! hashsymbolexists( ianaName ) )
+			langassignlongvalue( hcharsetconsttable, ianaName, enc );
+	}
+  #endif
+  #if 0
 	addlong( "ASCII",			kCFStringEncodingASCII );
 	addlong( "MacRoman",		kCFStringEncodingMacRoman );
 	addlong( "MACINTOSH",		kCFStringEncodingMacRoman );
@@ -658,6 +678,7 @@ static boolean langinit_charset_consttable (void) {
 		addlong( "UTF-16le",		kCFStringEncodingUTF16LE );
 		addlong( "UTF-16be",		kCFStringEncodingUTF16BE );
 	#endif
+  #endif
 #endif
 
 #if WIN95VERSION
