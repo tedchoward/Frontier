@@ -2355,16 +2355,19 @@ boolean converttextencoding (Handle h, Handle hresult, long inputcharset, long o
 
 	TECCreateConverter (&converter, inputcharset, outputcharset);
 
-	sizeoutputbuffer = lentext * 2;
+	sizeoutputbuffer = lentext * 4;
 
 	if (sizeoutputbuffer < 32) /*docs say use 32 minimum*/
 		sizeoutputbuffer = 32;
 
-	sethandlesize (hresult, sizeoutputbuffer);
+	if (!sethandlesize (hresult, sizeoutputbuffer)) {  // out of memory
+		TECDisposeConverter (converter);
+		return (false);
+	}
 
 	// 2005-08-26 --- kw better bytemark detecting
 	// see http://en.wikipedia.org/wiki/Byte_Order_Mark
-	if (inputcharset == 0x08000100) // we handle utf-8 input
+	if (inputcharset == kCFStringEncodingUTF8) // we handle utf-8 input
 	{
 		if (	(*h) [0] == '\xEF'
 			 && (*h) [1] == '\xBB'
@@ -2394,8 +2397,10 @@ boolean converttextencoding (Handle h, Handle hresult, long inputcharset, long o
 
 	status = TECConvertText (converter, (ConstTextPtr)(*h), lentext, &ctorigbytes, (TextPtr)(*hresult), sizeoutputbuffer, &ctoutputbytes);
 	
-	if (status != noErr)
+	if (status != noErr) {
+		TECDisposeConverter (converter);
 		return (false);
+	}
 
 	TECFlushText (converter, (TextPtr)(*hresult), sizeoutputbuffer, &ctflushedbytes);
 
