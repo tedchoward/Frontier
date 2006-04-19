@@ -105,7 +105,7 @@ void opdrawheadicon (short iconnum, const Rect *r, boolean flselected) {
 	if (flselected)
 		transform = kTransformSelected; 
 	
-	ploticonresource ((Rect *) r, kAlignCenterRight, transform, iconnum);
+	ploticonresource ((Rect *) r, kAlignAbsoluteCenter, transform, iconnum);
 #endif
 
 #ifdef WIN95VERSION
