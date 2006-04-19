@@ -629,7 +629,10 @@ static boolean langinit_charset_consttable (void) {
 	addlong( "iso-8859-7",		kCFStringEncodingISOLatin7 );
 	addlong( "iso-8859-8",		kCFStringEncodingISOLatin8 );
 	addlong( "iso-8859-9",		kCFStringEncodingISOLatin9 );
-	addlong( "iso-8859-10",		kCFStringEncodingISOLatin10 );
+	
+	#if MAC_OS_X_VERSION_MAX_ALLOWED >= MAC_OS_X_VERSION_10_4
+		addlong( "iso-8859-10",		kCFStringEncodingISOLatin10 );
+	#endif
 	
 	addlong( "windows-1250",	kCFStringEncodingWindowsLatin2 );
 	addlong( "windows-latin-2", kCFStringEncodingWindowsLatin2 );  /* code page 1250, Central Europe */
@@ -650,8 +653,11 @@ static boolean langinit_charset_consttable (void) {
 	addlong( "UTF-7",			kCFStringEncodingNonLossyASCII );
 	addlong( "UTF-8",			kCFStringEncodingUTF8 );
 	addlong( "UTF-16",			kCFStringEncodingUnicode );
-	addlong( "UTF-16le",		kCFStringEncodingUTF16LE );
-	addlong( "UTF-16be",		kCFStringEncodingUTF16BE );
+	
+	#if MAC_OS_X_VERSION_MAX_ALLOWED >= MAC_OS_X_VERSION_10_4
+		addlong( "UTF-16le",		kCFStringEncodingUTF16LE );
+		addlong( "UTF-16be",		kCFStringEncodingUTF16BE );
+	#endif
 #endif
 
 #if WIN95VERSION
