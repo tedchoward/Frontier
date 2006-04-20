@@ -41,6 +41,8 @@
 #include "resources.h" /*7.0b9 PBS*/
 #include "launch.h" /*7.0b9 PBS*/
 
+#include "byteorder.h"
+
 /*
 #define macicon 128
 #define bugicon 129
@@ -82,8 +84,17 @@ boolean ploticonresource (const Rect *r, short align, short transform, short res
 	OSErr ec;
 	CIconHandle hcicon;
 	Handle hicon;
+	Rect rlocal = *r;
 	
-	ec = PlotIconID (r, align, transform, resid);
+#ifdef SWAP_BYTE_ORDER
+	/* For some unknown reason the Intel OS X builds shift the icon displays */
+	rlocal.top		+= 3;
+	rlocal.bottom	+= 3;
+	rlocal.left	+= 6;
+	rlocal.right += 6;
+#endif
+	
+	ec = PlotIconID (&rlocal, align, transform, resid);
 	
 	if (ec == noErr)
 		return (true);
@@ -92,7 +103,7 @@ boolean ploticonresource (const Rect *r, short align, short transform, short res
 	
 	if (hcicon != nil) {
 		
-		PlotCIcon (r, hcicon);
+		PlotCIcon (&rlocal, hcicon);
 		
 		DisposeCIcon (hcicon);
 		
@@ -103,7 +114,7 @@ boolean ploticonresource (const Rect *r, short align, short transform, short res
 	
 	if (hicon != nil) {
 		
-		PlotIcon (r, hicon);
+		PlotIcon (&rlocal, hicon);
 		
 		/*ReleaseResource (hicon);*/ /*dmb 1.0b21 - don't need to*/
 		

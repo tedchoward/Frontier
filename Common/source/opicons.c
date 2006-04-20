@@ -193,16 +193,16 @@ boolean opdefaultdrawicon (hdlheadrecord hnode, const Rect *iconrect, boolean fl
 boolean opdefaultgeticonrect (hdlheadrecord hnode, const Rect *linerect, Rect *iconrect) {
 	
 	hdloutlinerecord ho = outlinedata;
-	Rect r = *linerect;
-	Rect rcontains;
+	Rect r;
+	Rect rcontains = *linerect;
 	
-	r.bottom = r.top + (**ho).iconheight;
+	rcontains.bottom = rcontains.top + (**ho).iconheight;
 	
-	r.left += opnodeindent (hnode);
+	rcontains.left += opnodeindent (hnode);
 		
-	r.right = r.left + (**ho).iconwidth;
+	rcontains.right = rcontains.left + (**ho).iconwidth;
 	
-	rcontains = r;
+	r = rcontains;
 	
 	if (opisfatheadlines (ho))
 		rcontains.bottom = rcontains.top + textvertinset + (**ho).defaultlineheight + textvertinset;
@@ -212,7 +212,7 @@ boolean opdefaultgeticonrect (hdlheadrecord hnode, const Rect *linerect, Rect *i
 	centerrect (&r, rcontains); /*center it vertically within the linerect*/
 	
 	*iconrect = r;
-	
+
 	return (true);
 	} /*opdefaultgeticonrect*/
 	
