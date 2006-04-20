@@ -105,6 +105,8 @@ boolean langpackvalue (tyvaluerecord val, Handle *h, hdlhashnode hnode) {
 	4/8/93 dmb: save/restore hdlpackedvalue to allow reentrancy needed for code values
 	
 	5.0.2b10 dmb: don't disable langerror when getting an address path.
+	
+	2006-04-20 sethdill & aradke: convert rgb values from native byte order to big-endian
 	*/
 	
 	register boolean fl;
@@ -213,6 +215,16 @@ boolean langpackvalue (tyvaluerecord val, Handle *h, hdlhashnode hnode) {
 			break;
 			}
 		
+		case rgbvaluetype: {	/* 2006-04-20 sethdill & aradke */
+			diskrgb rgbdiskk;
+			 
+			rgbtodiskrgb (*val.data.rgbvalue, &rgbdiskk);
+			
+			fl = langpackdata (sizeof (rgbdiskk), &rgbdiskk, hpackedvalue);
+			
+			break;
+			}
+		
 		#if noextended
 		
 			case doublevaluetype: {
@@ -239,7 +251,6 @@ boolean langpackvalue (tyvaluerecord val, Handle *h, hdlhashnode hnode) {
 		case passwordvaluetype:
 		case patternvaluetype:
 		case objspecvaluetype:
-		case rgbvaluetype:
 	#ifndef version5orgreater
 		case filespecvaluetype:
 		case aliasvaluetype:
@@ -494,6 +505,8 @@ boolean langunpackvalue (Handle hpacked, tyvaluerecord *val) {
 	4/8/93 dmb: save/restore hdlpackedvalue to allow reentrancy needed for code values
 	
 	5.0.2b3 dmb: unpacking addresses, if stringtoaddress fails, set valuetype to string
+	
+	2006-04-20 sethdill & aradke: convert rgb values to native byte order
 	*/
 	
 	tyvaluerecord v;
@@ -622,6 +635,25 @@ unpack:
 			break;
 			}
 		
+		case rgbvaluetype: { /* 2006-04-20 sethdill & aradke */
+			RGBColor rgb;
+			diskrgb rgbdisk;
+			 
+			fl = langunpackdata (sizeof (rgbdisk), &rgbdisk, h, &ixunpack);
+			
+			if (fl) {
+				
+				diskrgbtorgb (&rgbdisk, &rgb);
+				
+				fl = newheapvalue (&rgb, sizeof (rgb), rgbvaluetype, &v);
+				
+				if (fl)
+					exemptfromtmpstack (&v);
+				}
+			
+			break;
+			}
+		
 		#if noextended
 		
 			case doublevaluetype: {
@@ -655,7 +687,6 @@ unpack:
 		case stringvaluetype:
 		case passwordvaluetype: 
 		case patternvaluetype:
-		case rgbvaluetype:
 		case binaryvaluetype:
 	#ifndef version5orgreater
 		case objspecvaluetype:

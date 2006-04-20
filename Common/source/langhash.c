@@ -2924,6 +2924,8 @@ boolean hashunpacktable (Handle hpackedtable, boolean flmemory, hdlhashtable hta
 	2002-11-11 AR: Added assert to make sure the C compiler chose the
 	proper byte alignment for the tydisktablerecord struct. If it did not,
 	we would end up corrupting any database files we saved.
+	
+	2006-04-20 sethdill & aradke: convert rgb values to native byte order
 	*/
 	
 	boolean fl;
@@ -3122,6 +3124,25 @@ boolean hashunpacktable (Handle hpackedtable, boolean flmemory, hdlhashtable hta
 				break;
 				}
 			
+			case rgbvaluetype: { /* 2006-04-20 sethdill & aradke */
+				diskrgb **rgbdisk;
+				RGBColor rgb;
+				 
+				if (!hashunpackbinary (hstrings, (Handle *) &rgbdisk, ixstrings))
+					goto L1;
+				
+				diskrgbtorgb (*rgbdisk, &rgb);
+				
+				disposehandle ((Handle) rgbdisk);
+				
+				if (!newheapvalue (&rgb, sizeof (rgb), rgbvaluetype, &val))
+					goto L1;
+				
+				exemptfromtmpstack (&val);
+				
+				break;
+				}
+				
 		#if noextended
 		
 			case doublevaluetype: {
@@ -3159,7 +3180,6 @@ boolean hashunpacktable (Handle hpackedtable, boolean flmemory, hdlhashtable hta
 			case stringvaluetype:
 			case passwordvaluetype:
 			case patternvaluetype:
-			case rgbvaluetype:
 		#ifndef oplanglists
 			case listvaluetype:
 			case recordvaluetype:
