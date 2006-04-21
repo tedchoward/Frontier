@@ -2358,7 +2358,11 @@ boolean stringinitverbs (void) {
 	initialize the builtins directly.
 	
 	2.1b5 dmb: verb initialization is now resource-based
+	
+	2006-04-20 smd: added call to initialize the character sets
 	*/
+	
+	initcharsetstable();
 	
 	return (loadfunctionprocessor (idstringverbs, &stringfunctionvalue));
 	} /*stringinitverbs*/

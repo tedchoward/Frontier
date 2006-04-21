@@ -78,6 +78,7 @@
 	#define STR_this		BIGSTRING ("\x04" "this")
 	#define STR_temp		"\x04" "temp"
 	#define STR_environment	"\x0b" "environment"
+	#define STR_charsets	"\x08" "charsets"
 
 	#define STR_Stack_overflow	BIGSTRING ("\x0f" "Stack overflow!")
 

@@ -476,6 +476,11 @@ boolean inittablestructure (void) {
 	if (!initenvironment (environmenttable))
 		goto error;
 	
+	// and now the charsets table
+	
+	if (!tablenewsystemtable (htable, namecharsetstable, &charsetstable))
+		goto error;
+	
 	pophashtable ();
 	
 	return (true);
@@ -588,144 +593,6 @@ static boolean langaddtypeconst (bigstring bs, tyvaluetype x) {
 #define addstring(x,y) if (!langaddstringconst ((ptrstring) x, y)) return (false)
 
 
-static boolean langinit_charset_consttable (void) {
-	
-	hdlhashtable hcharsetconsttable;
-	
-	if (!tablenewsystemtable (langtable, (ptrstring) "\x08" "charsets", &hcharsetconsttable))
-		return (false);
-	
-	pushhashtable (hcharsetconsttable);
-	
-#if MACVERSION
-  #if 1
-	OSStatus err;
-	ItemCount ct, actual_ct, i;
-	
-	err = TECCountAvailableTextEncodings( &ct );
-	if ( err != noErr ) {
-		pophashtable();
-		
-		return (true);  // don't kill the whole startup
-	}
-	
-	TextEncoding enc;
-	TextEncoding availEncodings[ ct ];
-	bigstring ianaName;
-	
-	err = TECGetAvailableTextEncodings ( availEncodings, ct, &actual_ct );
-	if ( err != noErr ) {
-		pophashtable();
-		
-		return (true);  // we don't want to kill the whole startup here
-	}
-	
-	for ( i = 0; i < actual_ct; i++ ) {
-		enc = availEncodings[ i ];
-		// enc = i;
-		
-		err = TECGetTextEncodingInternetName( enc, ianaName );
-		if ( err != noErr )
-			continue;
-		
-		nullterminate( ianaName );
-				
-		if ( ! hashsymbolexists( ianaName ) )
-			langassignlongvalue( hcharsetconsttable, ianaName, enc );
-	}
-  #endif
-  #if 0
-	addlong( "ASCII",			kCFStringEncodingASCII );
-	addlong( "MacRoman",		kCFStringEncodingMacRoman );
-	addlong( "MACINTOSH",		kCFStringEncodingMacRoman );
-	
-	addlong( "iso-8859-1",		kCFStringEncodingISOLatin1 );
-	addlong( "iso-latin-1",		kCFStringEncodingISOLatin1 );
-	addlong( "iso-8859-2",		kCFStringEncodingISOLatin2 );
-	addlong( "iso-8859-3",		kCFStringEncodingISOLatin3 );
-	addlong( "iso-8859-4",		kCFStringEncodingISOLatin4 );
-	addlong( "iso-8859-5",		kCFStringEncodingISOLatin5 );
-	addlong( "iso-8859-6",		kCFStringEncodingISOLatin6 );
-	addlong( "iso-8859-7",		kCFStringEncodingISOLatin7 );
-	addlong( "iso-8859-8",		kCFStringEncodingISOLatin8 );
-	addlong( "iso-8859-9",		kCFStringEncodingISOLatin9 );
-	
-	#if MAC_OS_X_VERSION_MAX_ALLOWED >= MAC_OS_X_VERSION_10_4
-		addlong( "iso-8859-10",		kCFStringEncodingISOLatin10 );
-	#endif
-	
-	addlong( "windows-1250",	kCFStringEncodingWindowsLatin2 );
-	addlong( "windows-latin-2", kCFStringEncodingWindowsLatin2 );  /* code page 1250, Central Europe */
-	
-	addlong( "windows-1251",	kCFStringEncodingWindowsCyrillic );  /* code page 1251, Slavic Cyrillic */
-	
-	addlong( "windows-1252",	kCFStringEncodingWindowsLatin1 );
-	addlong( "windows-latin-1",	kCFStringEncodingWindowsLatin1 );  /* ANSI 1252 */
-	
-	addlong( "windows-1253",	kCFStringEncodingWindowsLatin5 );  /* code page 1253 */
-	addlong( "windows-1254",	kCFStringEncodingWindowsLatin5 );  /* code page 1254, Turkish */
-	addlong( "windows-1255",	kCFStringEncodingWindowsHebrew );  /* code page 1255 */
-	addlong( "windows-1256",	kCFStringEncodingWindowsArabic );  /* code page 1256 */
-	addlong( "windows-1257",	kCFStringEncodingWindowsBalticRim );  /* code page 1257 */
-	addlong( "windows-1258",	kCFStringEncodingWindowsVietnamese );  /* code page 1258 */
-	addlong( "windows-1361",	kCFStringEncodingWindowsKoreanJohab );  /* code page 1361, for Windows NT */
-	
-	addlong( "UTF-7",			kCFStringEncodingNonLossyASCII );
-	addlong( "UTF-8",			kCFStringEncodingUTF8 );
-	addlong( "UTF-16",			kCFStringEncodingUnicode );
-	
-	#if MAC_OS_X_VERSION_MAX_ALLOWED >= MAC_OS_X_VERSION_10_4
-		addlong( "UTF-16le",		kCFStringEncodingUTF16LE );
-		addlong( "UTF-16be",		kCFStringEncodingUTF16BE );
-	#endif
-  #endif
-#endif
-
-#if WIN95VERSION
-	addlong( "ASCII",			20127 );
-	addlong( "MacRoman",		10000 );
-	addlong( "MACINTOSH",		10000 );
-	
-	addlong( "iso-8859-1",		28591 );
-	addlong( "iso-latin-1",		28591 );
-	addlong( "iso-8859-2",		28592 );
-	addlong( "iso-8859-3",		28593 );
-	addlong( "iso-8859-4",		28594 );
-	addlong( "iso-8859-5",		28595 );
-	addlong( "iso-8859-6",		28596 );
-	addlong( "iso-8859-7",		28597 );
-	addlong( "iso-8859-8",		28598 );
-	addlong( "iso-8859-9",		28599 );
-	addlong( "iso-8859-10",		28592 );
-	
-	addlong( "windows-1250",	1250 );
-	addlong( "windows-latin-2", 1250 );  /* code page 1250, Central Europe */
-	
-	addlong( "windows-1251",	1251 );  /* code page 1251, Slavic Cyrillic */
-	
-	addlong( "windows-1252",	1252 );
-	addlong( "windows-latin-1",	1252 );
-	
-	addlong( "windows-1253",	1253 );  /* code page 1253 */
-	addlong( "windows-1254",	1254 );  /* code page 1254, Turkish */
-	addlong( "windows-1255",	1255 );  /* code page 1255 */
-	addlong( "windows-1256",	1256 );  /* code page 1256 */
-	addlong( "windows-1257",	1257 );  /* code page 1257 */
-	addlong( "windows-1258",	1258 );  /* code page 1258 */
-	addlong( "windows-1361",	1361 );  /* code page 1361, for Windows NT */
-	
-	addlong( "UTF-7",			65000 );
-	addlong( "UTF-8",			65001 );
-	addlong( "UTF-16",			0 );
-	addlong( "UTF-16le",		1200 );
-	addlong( "UTF-16be",		1201 );
-#endif
-	
-	pophashtable();
-	
-	return (true);
-	} /* langinit_charset_consttable */
-
 static boolean langinitconsttable (void) {
 	
 	/*
@@ -824,7 +691,7 @@ static boolean langinitconsttable (void) {
 
 static boolean langinitbuiltintable (void) {
 	
-	if (!tablenewsystemtable (langtable, (ptrstring) BIGSTRING ("\x08" "builtins"), &hbuiltinfunctions))
+	if (!tablenewsystemtable (langtable, (ptrstring) "\x08" "builtins", &hbuiltinfunctions))
 		return (false);
 	
 	pushhashtable (hbuiltinfunctions); /*converted to function ops by the parser*/
@@ -879,7 +746,7 @@ static boolean langinitkeywordtable (void) {
 	3/6/92 dmb: added "with" token
 	*/
 	
-	if (!tablenewsystemtable (langtable, (ptrstring) BIGSTRING ("\x08" "keywords"), &hkeywordtable))
+	if (!tablenewsystemtable (langtable, (ptrstring) "\x08" "keywords", &hkeywordtable))
 		return (false);
 	
 	pushhashtable (hkeywordtable); /*converted to tokens by the scanner*/
@@ -953,9 +820,6 @@ static boolean langinitkeywordtable (void) {
 static boolean langinstallresources (void) {
 	
 	if (!langinitconsttable ())
-		return (false);
-	
-	if (!langinit_charset_consttable ())
 		return (false);
 	
 	if (!langinitbuiltintable ())

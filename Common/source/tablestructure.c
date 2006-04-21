@@ -100,6 +100,8 @@ static byte nametemptable [] = STR_temp;
 
 byte nameenvironmenttable [] = STR_environment;
 
+byte namecharsetstable [] = STR_charsets;
+
 
 
 Handle rootvariable = nil;
@@ -145,6 +147,8 @@ hdlhashtable menubartable = nil;
 hdlhashtable objectmodeltable = nil;
 
 hdlhashtable environmenttable = nil;
+
+hdlhashtable charsetstable = nil;
 
 
 
@@ -257,6 +261,10 @@ boolean linksystemtablestructure (hdlhashtable hroot) {
 	
 	// link in the environment table, not part of saved structure
 	if (!linksystemtable (hsystem, nameenvironmenttable, environmenttable))
+		return (false);
+	
+	// link in the charsets table, not part of saved structure
+	if (!linksystemtable (hsystem, namecharsetstable, charsetstable))
 		return (false);
 	
 	// create the temp table, not part of saved structure

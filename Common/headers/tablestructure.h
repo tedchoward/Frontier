@@ -180,6 +180,8 @@ extern hdlhashtable objectmodeltable;
 
 extern hdlhashtable environmenttable;
 
+extern hdlhashtable charsetstable;
+
 
 extern byte nameinternaltable []; 
 
@@ -226,6 +228,8 @@ extern byte nameiachandlertable [];
 extern byte namemenubartable [];
 
 extern byte nameenvironmenttable [];
+
+extern byte namecharsetstable [];
 
 
 /*prototypes*/

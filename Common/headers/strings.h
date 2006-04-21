@@ -266,7 +266,9 @@ extern boolean macromantoutf8 (Handle, Handle); /* 2006-02-25 creedon */
 
 extern boolean utf8tomacroman (Handle, Handle); /* 2006-02-25 creedon */
 
-extern boolean converttextencoding (Handle, Handle, long, long);
+extern boolean converttextencoding (Handle, Handle, long, long);  /* 2006-04-14 smd */
+
+extern boolean initcharsetstable (void); /* 2006-04-20 smd */
 
 #endif
 
