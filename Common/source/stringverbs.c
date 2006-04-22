@@ -2282,8 +2282,6 @@ static boolean stringfunctionvalue (short token, hdltreenode hparam1, tyvaluerec
 			if (!macromantoutf8 (h, hresult))
 				goto error;
 
-			disposehandle (h);
-
 			return (setheapvalue (hresult, stringvaluetype, v));
 			}
 
@@ -2300,8 +2298,6 @@ static boolean stringfunctionvalue (short token, hdltreenode hparam1, tyvaluerec
 
 			if (!utf8tomacroman (h, hresult))
 				goto error;
-
-			disposehandle (h);
 
 			return (setheapvalue (hresult, stringvaluetype, v));
 			}
@@ -2327,11 +2323,11 @@ static boolean stringfunctionvalue (short token, hdltreenode hparam1, tyvaluerec
 			if (! converttextencoding (h, hresult, charsetIn, charsetOut))
 				goto error;
 			
-			disposehandle(h);
+			// disposehandle(h);
 			
 			return (setheapvalue (hresult, stringvaluetype, v));
 			}
-
+		
 		default:
 			errornum = notimplementederror;
 			
@@ -2358,11 +2354,7 @@ boolean stringinitverbs (void) {
 	initialize the builtins directly.
 	
 	2.1b5 dmb: verb initialization is now resource-based
-	
-	2006-04-20 smd: added call to initialize the character sets
 	*/
-	
-	initcharsetstable();
 	
 	return (loadfunctionprocessor (idstringverbs, &stringfunctionvalue));
 	} /*stringinitverbs*/

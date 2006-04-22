@@ -2339,6 +2339,34 @@ static HRESULT AnsiToUnicode (Handle h, Handle hresult, unsigned long encoding)
 #endif /*end Windows character conversion routines*/
 
 
+/* convert an "internet name" for an encoding into a platform-specific id for the character set */
+
+boolean gettextencodingid (const Handle h, long * encodingId) {
+
+#ifdef MACVERSION
+
+	OSStatus err;
+	TextEncoding oneEncoding;
+	bigstring ianaName;
+	long ct, ix = 0;
+	
+	ct = gethandlesize (h);
+	ianaName [0] = (byte) ct;
+	loadfromhandle (h, &ix, ct, ianaName + 1);
+	
+	err = TECGetTextEncodingFromInternetName( &oneEncoding, ianaName );
+	
+	if ( err != noErr )
+		return (false);
+	
+	*encodingId = (long) oneEncoding;
+	
+#endif
+	
+	return (true);
+}
+
+
 boolean converttextencoding (Handle h, Handle hresult, long inputcharset, long outputcharset) {
 
 #ifdef MACVERSION /*Mac character conversion common routine*/
@@ -2354,7 +2382,11 @@ boolean converttextencoding (Handle h, Handle hresult, long inputcharset, long o
 
 	// (*h) [lentext] = '\0';
 
-	TECCreateConverter (&converter, inputcharset, outputcharset);
+	status = TECCreateConverter (&converter, inputcharset, outputcharset);
+	if ( status != noErr ) {
+		TECDisposeConverter (converter);
+		return (false);
+	}
 
 	sizeoutputbuffer = lentext * 4;
 
@@ -2391,12 +2423,14 @@ boolean converttextencoding (Handle h, Handle hresult, long inputcharset, long o
 	// if (((*h) [0] == '\xFF') || ((*h) [0] == '\xEF')) /*pop byte order mark*/
 	//	pullfromhandle (h, 0, 3, NULL);
 
+	/*
 	if (pullBytes > 0)
 		pullfromhandle (h, 0, pullBytes, NULL);
+	*/
+	
+	lentext = gethandlesize (h) - pullBytes;
 
-	lentext = gethandlesize (h);
-
-	status = TECConvertText (converter, (ConstTextPtr)(*h), lentext, &ctorigbytes, (TextPtr)(*hresult), sizeoutputbuffer, &ctoutputbytes);
+	status = TECConvertText (converter, (ConstTextPtr)(*h + pullBytes), lentext, &ctorigbytes, (TextPtr)(*hresult), sizeoutputbuffer, &ctoutputbytes);
 	
 	if (status != noErr) {
 		TECDisposeConverter (converter);
@@ -2481,99 +2515,6 @@ boolean converttextencoding (Handle h, Handle hresult, long inputcharset, long o
 
 #endif
 	} /*converttextencoding*/
-
-boolean initcharsetstable (void) {
-
-#if MACVERSION
-	OSStatus err;
-	ItemCount ct, actual_ct, i;
-	tyvaluerecord v;
-	
-	v.valuetype = longvaluetype;
-	
-	err = TECCountAvailableTextEncodings( &ct );
-	if ( err != noErr ) {
-		pophashtable();
-		
-		return (true);  // don't kill the whole startup
-	}
-	
-	TextEncoding enc;
-	TextEncoding availEncodings[ ct ];
-	bigstring ianaName;
-	
-	err = TECGetAvailableTextEncodings ( availEncodings, ct, &actual_ct );
-	if ( err != noErr ) {
-		pophashtable();
-		
-		return (true);  // we don't want to kill the whole startup here
-	}
-	
-	for ( i = 0; i < actual_ct; i++ ) {
-		enc = availEncodings[ i ];
-		// enc = i;
-		
-		err = TECGetTextEncodingInternetName( enc, ianaName );
-		if ( err != noErr )
-			continue;
-		
-		nullterminate( ianaName );
-		
-		v.data.longvalue = (signed long) enc;
-		
-		hashtableassign( charsetstable, ianaName, v );
-	}
-#endif
-
-#if WIN95VERSION
-	pushhashtable (charsetstable);  /* global, table is created in langstartup.c : inittablestructure() */
-	
-	addlong( "ASCII",			20127 );
-	addlong( "US-ASCII"			20127 );  /* alias for ASCII */
-	
-	addlong( "MACINTOSH",		10000 );
-	addlong( "MacRoman",		10000 );  /* alias for MACINTOSH */
-	
-	addlong( "iso-8859-1",		28591 );
-	addlong( "iso-latin-1",		28591 );  /* alias for iso-8859-1 */
-	addlong( "iso-8859-2",		28592 );
-	addlong( "iso-8859-3",		28593 );
-	addlong( "iso-8859-4",		28594 );
-	addlong( "iso-8859-5",		28595 );
-	addlong( "iso-8859-6",		28596 );
-	addlong( "iso-8859-7",		28597 );
-	addlong( "iso-8859-8",		28598 );
-	addlong( "iso-8859-9",		28599 );
-	addlong( "iso-8859-10",		28592 );
-	
-	addlong( "windows-1250",	1250 );
-	addlong( "windows-latin-2", 1250 );  /* code page 1250, Central Europe */
-	
-	addlong( "windows-1251",	1251 );  /* code page 1251, Slavic Cyrillic */
-	
-	addlong( "windows-1252",	1252 );
-	addlong( "windows-latin-1",	1252 );
-	
-	addlong( "windows-1253",	1253 );  /* code page 1253 */
-	addlong( "windows-1254",	1254 );  /* code page 1254, Turkish */
-	addlong( "windows-1255",	1255 );  /* code page 1255 */
-	addlong( "windows-1256",	1256 );  /* code page 1256 */
-	addlong( "windows-1257",	1257 );  /* code page 1257 */
-	addlong( "windows-1258",	1258 );  /* code page 1258 */
-	addlong( "windows-1361",	1361 );  /* code page 1361, for Windows NT */
-	
-	addlong( "UTF-7",			65000 );
-	addlong( "UTF-8",			65001 );
-	addlong( "UTF-16",			0 );     /* not a real code page. 0 for special case handling in Frontier */
-	addlong( "UTF-16le",		1200 );
-	addlong( "UTF-16be",		1201 );
-	
-	pophashtable();
-#endif
-	
-	return (true);
-	} /* initcharsetstable */
-
 
 
 boolean utf16toansi (Handle h, Handle hresult) {
