@@ -699,7 +699,7 @@ static boolean langinitconsttable (void) {
 	tyvaluetype type;
 	bigstring bs;
 	
-	if (!tablenewsystemtable (langtable, (ptrstring) ("\x09" "constants"), &hconsttable))
+	if (!tablenewsystemtable (langtable, (ptrstring) "\x09" "constants", &hconsttable))
 		return (false);
 		
 	pushhashtable (hconsttable); /*converted to constants by the scanner*/
@@ -757,7 +757,7 @@ static boolean langinitconsttable (void) {
 				
 				lastword (bs, chspace, bs);
 				
-				pushstring ((ptrstring) ("\x04Type"), bs);
+				pushstring ((ptrstring) "\x04Type", bs);
 				
 				addtype (bs, type);
 				
