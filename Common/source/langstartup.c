@@ -426,13 +426,9 @@ static boolean initenvironment (hdlhashtable ht) {
 
 static boolean initCharsetsTable (hdlhashtable cSetsTable)
 {
-	tyvaluerecord v;
-	
 #if MACVERSION
 	OSStatus err;
 	ItemCount ct, actual_ct, i;
-	
-	v.valuetype = longvaluetype;
 	
 	err = TECCountAvailableTextEncodings( &ct );
 	if ( err != noErr ) {
@@ -451,7 +447,6 @@ static boolean initCharsetsTable (hdlhashtable cSetsTable)
 	
 	for ( i = 0; i < actual_ct; i++ ) {
 		enc = availEncodings[ i ];
-		// enc = i;
 		
 		/*
 			get the internet "iana" name for the encoding
@@ -461,7 +456,7 @@ static boolean initCharsetsTable (hdlhashtable cSetsTable)
 			continue;
 		
 		/*
-			now conver the "iana" name back into the canonical encoding value
+			now convert the "iana" name back into the canonical encoding value
 			(more than one encoding will point to the same iana name, 
 			this makes sure that we use the right one)
 		*/
@@ -474,47 +469,47 @@ static boolean initCharsetsTable (hdlhashtable cSetsTable)
 #endif
 
 #if WIN95VERSION
-	langassignlongvalue( cSetsTable, "ASCII",		20127 );
-	langassignlongvalue( cSetsTable, "US-ASCII"		20127 );  /* alias for ASCII */
+	langassignlongvalue( cSetsTable, "\x05" "ASCII",		20127 );
+	langassignlongvalue( cSetsTable, "\x08" "US-ASCII",		20127 );  /* alias for ASCII */
 	
-	langassignlongvalue( cSetsTable, "MACINTOSH",	10000 );
-	langassignlongvalue( cSetsTable, "MacRoman",		10000 );  /* alias for MACINTOSH */
+	langassignlongvalue( cSetsTable, "\x09" "MACINTOSH",	10000 );
+	langassignlongvalue( cSetsTable, "\x08" "MacRoman",		10000 );  /* alias for MACINTOSH */
 	
-	langassignlongvalue( cSetsTable, "iso-8859-1",	28591 );
-	langassignlongvalue( cSetsTable, "iso-latin-1",	28591 );  /* alias for iso-8859-1 */
-	langassignlongvalue( cSetsTable, "iso-8859-2",	28592 );
-	langassignlongvalue( cSetsTable, "iso-8859-3",	28593 );
-	langassignlongvalue( cSetsTable, "iso-8859-4",	28594 );
-	langassignlongvalue( cSetsTable, "iso-8859-5",	28595 );
-	langassignlongvalue( cSetsTable, "iso-8859-6",	28596 );
-	langassignlongvalue( cSetsTable, "iso-8859-7",	28597 );
-	langassignlongvalue( cSetsTable, "iso-8859-8",	28598 );
-	langassignlongvalue( cSetsTable, "iso-8859-9",	28599 );
-	langassignlongvalue( cSetsTable, "iso-8859-10",	28592 );
+	langassignlongvalue( cSetsTable, "\x0a" "iso-8859-1",	28591 );
+	langassignlongvalue( cSetsTable, "\x0b" "iso-latin-1",	28591 );  /* alias for iso-8859-1 */
+	langassignlongvalue( cSetsTable, "\x0a" "iso-8859-2",	28592 );
+	langassignlongvalue( cSetsTable, "\x0a" "iso-8859-3",	28593 );
+	langassignlongvalue( cSetsTable, "\x0a" "iso-8859-4",	28594 );
+	langassignlongvalue( cSetsTable, "\x0a" "iso-8859-5",	28595 );
+	langassignlongvalue( cSetsTable, "\x0a" "iso-8859-6",	28596 );
+	langassignlongvalue( cSetsTable, "\x0a" "iso-8859-7",	28597 );
+	langassignlongvalue( cSetsTable, "\x0a" "iso-8859-8",	28598 );
+	langassignlongvalue( cSetsTable, "\x0a" "iso-8859-9",	28599 );
+	langassignlongvalue( cSetsTable, "\x0b" "iso-8859-10",	28592 );
 	
-	langassignlongvalue( cSetsTable, "windows-1250",	 1250 );
-	langassignlongvalue( cSetsTable, "windows-latin-2",	1250 );  /* code page 1250, Central Europe */
+	langassignlongvalue( cSetsTable, "\x0c" "windows-1250",	 1250 );
+	langassignlongvalue( cSetsTable, "\x0f" "windows-latin-2",	 1250 );  /* code page 1250, Central Europe */
 	
-	langassignlongvalue( cSetsTable, "windows-1251",	 1251 );  /* code page 1251, Slavic Cyrillic */
+	langassignlongvalue( cSetsTable, "\x0c" "windows-1251",	 1251 );  /* code page 1251, Slavic Cyrillic */
 	
-	langassignlongvalue( cSetsTable, "windows-1252",	 1252 );
-	langassignlongvalue( cSetsTable, "windows-latin-1",	1252 );
+	langassignlongvalue( cSetsTable, "\x0c" "windows-1252",	 1252 );
+	langassignlongvalue( cSetsTable, "\x0f" "windows-latin-1",	 1252 );
 	
-	langassignlongvalue( cSetsTable, "windows-1253",	 1253 );  /* code page 1253 */
-	langassignlongvalue( cSetsTable, "windows-1254",	 1254 );  /* code page 1254, Turkish */
-	langassignlongvalue( cSetsTable, "windows-1255",	 1255 );  /* code page 1255 */
-	langassignlongvalue( cSetsTable, "windows-1256",	 1256 );  /* code page 1256 */
-	langassignlongvalue( cSetsTable, "windows-1257",	 1257 );  /* code page 1257 */
-	langassignlongvalue( cSetsTable, "windows-1258",	 1258 );  /* code page 1258 */
-	langassignlongvalue( cSetsTable, "windows-1361",	 1361 );  /* code page 1361, for Windows NT */
+	langassignlongvalue( cSetsTable, "\x0c" "windows-1253",	 1253 );  /* code page 1253 */
+	langassignlongvalue( cSetsTable, "\x0c" "windows-1254",	 1254 );  /* code page 1254, Turkish */
+	langassignlongvalue( cSetsTable, "\x0c" "windows-1255",	 1255 );  /* code page 1255 */
+	langassignlongvalue( cSetsTable, "\x0c" "windows-1256",	 1256 );  /* code page 1256 */
+	langassignlongvalue( cSetsTable, "\x0c" "windows-1257",	 1257 );  /* code page 1257 */
+	langassignlongvalue( cSetsTable, "\x0c" "windows-1258",	 1258 );  /* code page 1258 */
+	langassignlongvalue( cSetsTable, "\x0c" "windows-1361",	 1361 );  /* code page 1361, for Windows NT */
 	
-	langassignlongvalue( cSetsTable, "UTF-7",		65000 );
-	langassignlongvalue( cSetsTable, "UTF-8",		65001 );
+	langassignlongvalue( cSetsTable, "\x05" "UTF-7",		65000 );
+	langassignlongvalue( cSetsTable, "\x05" "UTF-8",		65001 );
 	
-	langassignlongvalue( cSetsTable, "UTF-16",			0 );  /* not a real code page. 0 for special case handling in Frontier */
+	langassignlongvalue( cSetsTable, "\x06" "UTF-16",			0 );  /* not a real code page. 0 for special case handling in Frontier */
 	
-	langassignlongvalue( cSetsTable, "UTF-16le",		 1200 );
-	langassignlongvalue( cSetsTable, "UTF-16be",		 1201 );
+	langassignlongvalue( cSetsTable, "\x08" "UTF-16le",		 1200 );
+	langassignlongvalue( cSetsTable, "\x08" "UTF-16be",		 1201 );
 #endif
 	
 	return (true);
