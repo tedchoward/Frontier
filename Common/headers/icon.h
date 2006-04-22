@@ -32,6 +32,7 @@
 	#define atVerticalCenter	0x01
 	#define atHorizontalCenter	0x02
 	#define kTransformSelected	0x04
+	#define kAlignAbsoluteCenter	(atVerticalCenter | atHorizontalCenter)
 #endif
 
 #ifdef MACVERSION /*7.0b9 PBS: tycustomicontypeinfo is for Mac custom icons*/
