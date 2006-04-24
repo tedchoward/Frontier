@@ -424,7 +424,7 @@ extern boolean fifsetendoffile (const tyfilespec *fs, long eof);
 extern boolean fifgetendoffile (const tyfilespec *fs, long *eof);
 
 
- /* filepath.c */
+#pragma mark === filepath.c ===
  
  extern boolean directorytopath (long, short, bigstring);
 
@@ -449,7 +449,7 @@ extern boolean getfsvolume (const tyfilespec *, long *);
 extern void initfsdefault (void); /* 2005-07-18 creedon */
 
  
- /*fileverbs.c*/
+#pragma mark === fileverbs.c ===
  
  //extern filecheckdefaultpath (bigstring);
 
@@ -458,7 +458,7 @@ extern boolean filegetprogramversion (bigstring);
 extern boolean filestart (void); /*6.1b15 AR*/
 
 
-// filedialog.c
+#pragma mark === filedialog.c ===
 
 extern boolean sfdialog (tysfverb, bigstring, ptrsftypelist, tyfilespec *, OSType); /* 2005-10-06 creedon - added OSType */
 
@@ -482,9 +482,14 @@ extern boolean initfiledialog (void);
                         
 #endif
 
-// filemp3.c
+#pragma mark === filemp3.c ===
 
 boolean getmp3info (const tyfilespec *, long *, long *, long *, long *, boolean *);
 
 
+#pragma mark === fileops.c ===
+
+extern short getfilelabelindex (const tyfilespec *, short *); /* 2006-04-23 creedon */
+
+extern boolean setfilelabelindex (const tyfilespec *, short, boolean); /* 2006-04-23 creedon */
 

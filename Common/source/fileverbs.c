@@ -46,6 +46,7 @@
 #include "kernelverbdefs.h"
 #include "shell.rsrc.h"
 #include "byteorder.h"		/* 2006-04-16 aradke: for SWAP_REZ_BYTE_ORDER */
+#include "oplist.h"			/* 2006-04-23 creedon */
 
 
 #ifdef MACVERSION
@@ -250,7 +251,13 @@ typedef enum tyfiletoken { /*verbs that are processed by file.c*/
 	
 	getmp3infofunc,
 	
-	readwholefilefunc,	/* 2006-04-11 aradke */
+	readwholefilefunc,			/* 2006-04-11 aradke */
+	
+	getlabelindexfunc,			/* 2006-04-23 creedon */
+	
+	setlabelindexfunc,			/* 2006-04-23 creedon */
+	
+	getlabelnamesfunc,			/* 2006-04-23 creedon */
 	
 	ctfileverbs
 	} tyfiletoken;
@@ -1914,6 +1921,87 @@ static boolean setlabelverb (hdltreenode hparam1, tyvaluerecord *v) {
 	return (setbooleanvalue (setfilelabel (&fs, bslabel), v));
 	} /*setlabelverb*/
 
+
+static boolean getlabelindexverb (hdltreenode hparam1, tyvaluerecord *v) {
+
+	/*
+	2006-04-24 creedon: created, cribbed from getlabelverb function
+	*/
+	
+	tyfilespec fs;
+	short ixlabel;
+	
+	flnextparamislast = true;
+
+	if (!getpathvalue (hparam1, 1, &fs)) 
+		return (false);
+
+	if (!getfilelabelindex (&fs, &ixlabel))
+		return (false);
+	
+	return (setintvalue (ixlabel, v));
+	} /* getlabelindexverb */
+
+
+static boolean setlabelindexverb (hdltreenode hparam1, tyvaluerecord *v) {
+
+	/*
+	2006-04-24 creedon: created, cribbed from setlabelverb function
+	*/
+	
+	tyfilespec fs;
+	short index;
+	
+	if (!getpathvalue (hparam1, 1, &fs)) 
+		return (false);
+	
+	flnextparamislast = true;
+	
+	if (!getintvalue (hparam1, 2, &index)) 
+		return (false);
+		
+	return (setbooleanvalue (setfilelabelindex (&fs, index, true), v));
+	} /* setlabelindexverb */
+
+
+static boolean getlabelnamesverb (hdltreenode hparam1, tyvaluerecord *v) {
+	#pragma unused (hparam1)
+
+	/*
+	2006-04-24 creedon: created, cribbed from statusbargetsectionsfunc case of langfunctionvalue function
+	*/
+
+	bigstring bsarray [8];
+	hdllistrecord hlist;
+	int ix;
+	RGBColor labelcolor;
+	short mapfromuserinterfaceindex [8] = {0, 6, 7, 5, 2, 4, 3, 1};
+
+	for (ix = 0; ix < 8; ++ix)
+	
+		if (GetLabel (ix, &labelcolor, bsarray [ix]) != noErr)
+		
+			return (false);
+			
+	if (!opnewlist (&hlist, false))
+		return (false);
+
+	for (ix = 0; ix < 8; ++ix)
+
+		if (!langpushliststring (hlist, bsarray [mapfromuserinterfaceindex [ix]]))
+		
+			goto getlabelnamesverberror;
+
+	return (setheapvalue ((Handle) hlist, listvaluetype, v));
+	
+	getlabelnamesverberror:
+
+	opdisposelist (hlist);
+	
+	return (false);
+
+	} /* getlabelnamesverb */
+		
 #endif
 
 
@@ -3529,7 +3617,15 @@ static boolean filefunctionvalue (short token, hdltreenode hparam1, tyvaluerecor
 			
 			return (true);
 			}
+			
+		case getlabelindexfunc: /* 2006-04-24 creedon */
+			return (getlabelindexverb (hp1, v));
 		
+		case setlabelindexfunc: /* 2006-04-24 creedon */
+			return (setlabelindexverb (hp1, v));
+		
+		case getlabelnamesfunc: /* 2006-04-24 creedon */
+			return (getlabelnamesverb (hp1, v));
 	#endif
 
 		case folderfrompathfunc:

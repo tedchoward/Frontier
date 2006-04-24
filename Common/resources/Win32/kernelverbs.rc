@@ -583,7 +583,7 @@
 	1,					//Number of "blocks" in this resource
 		"file\0",		//Function Processor Name
 		false,			//Window required
-			82,			//Count of verbs
+			86,			//Count of verbs
 			"created\0",
 			"modified\0",
 			"type\0",
@@ -664,8 +664,11 @@
 			"getpathchar\0",
 			"freespaceonvolumedouble\0",
 			"volumesizedouble\0",
-			"getmp3info\0", /*7.0b12 PBS: André's file.getMp3Info verb*/
-			"readwholefile\0"	/* 2006-04-11 aradke */
+			"getmp3info\0",				/*7.0b12 PBS: André's file.getMp3Info verb*/
+			"readwholefile\0",			/* 2006-04-11 aradke */
+			"getLabelIndex\0",			/* 2006-04-23 creedon */
+			"setLabelIndex\0",			/* 2006-04-23 creedon */
+			"getLabelNames"				/* 2006-04-23 creedon */
 	END
 
 1008 /*idrezverbs*/ EFP 	DISCARDABLE
@@ -692,12 +695,12 @@
 	END
 
 
-1009 /*idwindowverbs*/ EFP	DISCARDABLE
+1009 /* idwindowverbs */ EFP	DISCARDABLE
 	BEGIN
-	1,					//Number of "blocks" in this resource
-		"window\0",		//Function Processor Name
-		true,			//Window required
-			30,			//Count of verbs
+	1,					// Number of "blocks" in this resource
+		"window\0",		// Function Processor Name
+		true,				// Window required
+			31,			// Count of verbs
 			"isopen\0", 
 			"open\0",
 			"isfront\0",
@@ -727,7 +730,8 @@
 			"settitle\0",	
 			"about\0",
 			"getfile\0",
-			"isreadonly\0"
+			"isreadonly\0",
+			"quickscriptsetscript\0" // 2006-04-04 creedon
 	END
 
 
@@ -1066,11 +1070,12 @@
 	1,						// Number of "blocks" in this resource
 		"crypt\0",				// Function Processor name
 		false,					// Window required
-			5,				// Count of verbs
+			6,				// Count of verbs
 			"whirlpool\0",
 			"hmacMD5\0",
 			"MD5\0",
 			"SHA1\0",
-			"hmacSHA1\0"
+			"hmacSHA1\0",
+			"RIPEMD160\0"
 	END
 

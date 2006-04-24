@@ -2313,7 +2313,9 @@ boolean lockvolume (const tyfilespec *fs, boolean fllock) {
 #endif
 	} /*lockvolume*/
 
+
 #ifdef MACVERSION
+
 boolean unmountvolume (const tyfilespec *fs) {
 	
 	/*
@@ -2461,41 +2463,40 @@ boolean setfilecomment (const tyfilespec *fs, bigstring bscomment) {
 static boolean index2label (short ixlabel, bigstring bslabel) {
 	
 	/*
-	new: pascal OSErr GetLabel(short labelNumber, RGBColor *labelColor, Str255 labelString)
-	=  {0x303c, 0x050B, 0xABC9};
+	2006-04-24 creedon: use GetLabel instead of looking for resources that don't exists on Mac OS X
+				   deleted old code see revision 1268
 	*/
-	
-	Handle hlabel;
-	
-	setemptystring (bslabel);
 	
 	if ((ixlabel < 0) || (ixlabel > 7))
 		return (false);
 	
-	hlabel = GetResource ('lstr', -16392 + ixlabel);
+	RGBColor labelcolor; // we don't use the value we put into here
 	
-	if (hlabel == nil)
-		return (false);
-	
-	copyheapstring ((hdlstring) hlabel, bslabel);
-	
+	if (GetLabel (ixlabel, &labelcolor, bslabel) != noErr)
+		return (false); 
+		
 	return (true);
-	} /*index2label*/
+	} /* index2label */
 
 
 static boolean label2index (bigstring bslabel, short *ixlabel) {
 	
+	/*
+	2006-04-24 creedon: use GetLabel instead of looking for resources that don't exists on Mac OS X
+				   deleted old code see revision 1268
+	*/
+	
 	register short ix;
-	Handle hlabel;
+	RGBColor labelcolor; // we don't use the value we put into here
+	bigstring bs;
 	
 	for (ix = 0; ix < 8; ++ix) {
 		
-		hlabel = GetResource ('lstr', -16392 + ix);
+		if (GetLabel (ix, &labelcolor, bs) != noErr)
 		
-		if (hlabel == nil)
-			continue;
-		
-		if (RelString ((ptrstring) *hlabel, bslabel, false, false) == 0) {
+			return (false);
+			
+		if (RelString (bslabel, bs, false, false) == 0) {
 			
 			*ixlabel = ix;
 			
@@ -2504,7 +2505,7 @@ static boolean label2index (bigstring bslabel, short *ixlabel) {
 		}
 	
 	return (false);
-	} /*label2index*/
+	} /* label2index */
 
 
 boolean getfilelabel (const tyfilespec *fs, bigstring bslabel) {
@@ -2520,26 +2521,18 @@ boolean getfilelabel (const tyfilespec *fs, bigstring bslabel) {
 
 boolean setfilelabel (const tyfilespec *fs, bigstring bslabel) {
 	
-	CInfoPBRec pb;
-	register short flags;
+	/*
+	2006-04-24 creedon: factored most of the code into setfilelabelindex function
+				   code deleted see revision 1268
+	*/
+	
 	short ixlabel;
 	
 	if (!label2index (bslabel, &ixlabel))
 		return (false);
 	
-	if (!getmacfileinfo (fs, &pb)) 
-		return (false);
-	
-	flags = pb.hFileInfo.ioFlFndrInfo.fdFlags;
-	
-	flags &= 0xFFF1; /*clear out old index*/
-	
-	flags |= ixlabel << 1; /*slam in new index*/
-	
-	pb.hFileInfo.ioFlFndrInfo.fdFlags = flags;
-	
-	return (setmacfileinfo (fs, &pb));
-	} /*setfilelabel*/
+	return (setfilelabelindex (fs, ixlabel, false));
+	} /* setfilelabel */
 
 
 boolean mountvolume (bigstring volumepath, bigstring username, bigstring password) {
@@ -2627,6 +2620,58 @@ boolean mountvolume (bigstring volumepath, bigstring username, bigstring passwor
 	
 	return (!oserror (errcode));
 	} /*mountvolume*/
+
+
+short getfilelabelindex (const tyfilespec *fs, short *ixlabel) {
+
+	/*
+	2006-04-23 creedon: created, cribbed from getfilelabel function
+	*/
+	
+	tyfileinfo info;
+	short maptouserinterfaceindex [8] = {0, 7, 4, 6, 5, 3, 1, 2};
+	
+	if (!filegetinfo (fs, &info))
+		return (false);
+	
+	*ixlabel = maptouserinterfaceindex [info.ixlabel];
+	
+	return (true);
+	} /* getfilelabelindex */
+
+
+boolean setfilelabelindex (const tyfilespec *fs, short ixlabel, boolean flmapfromuserinterfaceindex) {
+
+	/*
+	2006-04-24 creedon: created, cribbed from setfilelabel function
+	*/
+	
+	CInfoPBRec pb;
+	register short flags;
+
+	if ((ixlabel < 0) || (ixlabel > 7))
+		return (false);
+	
+	if (!getmacfileinfo (fs, &pb)) 
+		return (false);
+	
+	flags = pb.hFileInfo.ioFlFndrInfo.fdFlags;
+	
+	flags &= 0xFFF1; // clear out old index
+	
+	if (flmapfromuserinterfaceindex) {
+		short mapfromuserinterfaceindex [8] = {0, 6, 7, 5, 2, 4, 3, 1};
+
+		ixlabel = mapfromuserinterfaceindex [ixlabel];
+		}
+	
+	flags |= ixlabel << 1; // slam in new index
+	
+	pb.hFileInfo.ioFlFndrInfo.fdFlags = flags;
+	
+	return (setmacfileinfo (fs, &pb));
+	} /* setfilelabelindex */
+
 #endif
 
 

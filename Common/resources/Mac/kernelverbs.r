@@ -694,7 +694,10 @@ resource 'EFP#' (idfileverbs, "file") {
 		"freespaceonvolumedouble",
 		"volumesizedouble",
 		"getmp3info",
-		"readwholefile"		/* 2006-04-11 aradke */
+		"readwholefile",			/* 2006-04-11 aradke */
+		"getLabelIndex",			/* 2006-04-23 creedon */
+		"setLabelIndex",			/* 2006-04-23 creedon */
+		"getLabelNames"			/* 2006-04-23 creedon */
 		}
 	}
 };
@@ -720,7 +723,6 @@ resource 'EFP#' (idrezverbs, "rez") {
 		"deletenamedresource",
 		"getresourceattributes",
 		"setresourceattributes"
-		
 		}
 	}
 };
@@ -761,7 +763,8 @@ resource 'EFP#' (idwindowverbs, "window") {
 		"about",
 		"quicktime", /*7.0b4 PBS: QuickTime Player window*/
 		"getfile",
-		"isreadonly" /*7.0b6 PBS: is a window read-only*/
+		"isreadonly", /*7.0b6 PBS: is a window read-only*/
+		"quickscriptsetscript" // 2006-04-04 creedon
 		}
 	}
 };
@@ -1133,7 +1136,8 @@ resource 'EFP#' (idcryptverbs, "crypt") { /* 2006-03-07 creedon: crypt verbs */
 		"hmacMD5",
 		"MD5",
 		"SHA1",
-		"hmacSHA1"
+		"hmacSHA1",
+		"RIPEMD160"
 		}
 	}
 };
