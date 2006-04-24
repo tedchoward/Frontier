@@ -2974,7 +2974,37 @@ Handle COMSYSModule() {
 	} /*COMSYSModule*/
 
 
+boolean initCOM ()
+{
+	if ( !flcominitialized )
+	{
+		LPVOID reserved = NULL;
+		HRESULT err;
+	
+		err = CoInitialize( reserved );
+	
+		if ( SUCCEEDED( err ) )
+		{
+			flcominitialized = true;
+			return (true);
+		}
+		else
+			return (false);
+	}
+
+	return (true);
+}
+
+void shutdownCOM ()
+{
+	CoUninitialize();
+	flcominitialized = false;
+}
+
+
 Handle COMStartup () {
+
+	initCOM();
 
 	gcomServerInfo.hCOMModule = LoadLibrary ("COMDLL.DLL");
 	
@@ -2991,7 +3021,7 @@ Handle COMStartup () {
 		if ((gcomServerInfo.cominit != NULL) && (gcomServerInfo.comclear != NULL)) {
 
 			fillcalltable(&gcomServerInfo.calltable);
-
+			
 			(*(gcomServerInfo.cominit)) (gcomServerInfo.hInstance, gcomServerInfo.hPrevInstance, gcomServerInfo.lpCmdLine, gcomServerInfo.nCmdShow, &gcomServerInfo.calltable);
 			}
 		}
@@ -3000,6 +3030,8 @@ Handle COMStartup () {
 	} /*COMStartup*/
 
 boolean COMShutdown () {
+	shutdownCOM();
+
 	if ((gcomServerInfo.cominit != NULL) && (gcomServerInfo.comclear != NULL))
 		(*(gcomServerInfo.comclear)) ();
 
@@ -3009,6 +3041,7 @@ boolean COMShutdown () {
 	gcomServerInfo.cominit = NULL;
 	gcomServerInfo.comclear = NULL;
 	gcomServerInfo.hCOMModule = NULL;
+
 	return (true);
 	} /*COMShutdown*/
 

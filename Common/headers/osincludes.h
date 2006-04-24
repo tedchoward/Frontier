@@ -37,6 +37,8 @@
 #ifdef WIN95VERSION
 
 	#define WIN32_LEAN_AND_MEAN 1
+	#define _WIN32_DCOM 1
+	#define CINTERFACE 1
 
 	#include <windows.h>
 
@@ -54,6 +56,10 @@
 	#include <mmsystem.h>
 	#include <winsock2.h>
 	#include <mswsock.h>
+
+	#undef __cplusplus
+	#include <objbase.h>
+	#include <mlang.h>
 
 #endif /* WIN95VERSION */
 

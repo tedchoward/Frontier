@@ -27,6 +27,7 @@
 
 #include "frontier.h"
 #include "standard.h"
+#include "FrontierWinMain.h"
 
 #include "font.h"
 #include "memory.h"
@@ -59,7 +60,7 @@ static byte bshexprefix [] = STR_hexprefix;
 /* declarations */
 
 static boolean converttextencoding( Handle, Handle, const long, const long );
-static boolean getTextEncodingID( const bigstring, long * );
+static boolean getTextEncodingID( bigstring, long * );
 
 #ifdef WIN95VERSION
 	static HRESULT UnicodeToAnsi(Handle, Handle, unsigned long);
@@ -1678,6 +1679,42 @@ void parsenumberstring (short listnum, short id, long number, bigstring bsparse)
 	} /*parsenumberstring*/
 
 
+
+#ifdef WIN95VERSION
+boolean copyWideToPString( const wchar_t * inString, bigstring bs )
+{
+	HRESULT err;
+	size_t lenOut;
+
+	err = wcstombs_s( &lenOut, bs, 255, inString, _TRUNCATE );
+
+	if ( FAILED( err ) )
+		return (false);
+	
+	convertcstring( bs );
+
+	return (true);
+} /* copyWideToPString */
+
+boolean copyPStringToWide( bigstring bs, long * lenResult, wchar_t * outString )
+{
+	HRESULT err;
+	size_t lenOut;
+
+	convertpstring( bs );
+	
+	err = mbstowcs_s( &lenOut, outString, 255, (const char *) bs, _TRUNCATE );
+	
+	if ( SUCCEEDED( err ) )
+	{
+		*lenResult = (long) lenOut;
+		return (true);
+	}
+	else
+		return (false);
+}
+#endif
+
 void convertpstring (bigstring bs) {
 	
 	/*
@@ -2278,14 +2315,14 @@ static HRESULT UnicodeToAnsi(Handle h, Handle hresult, unsigned long encoding)
     ULONG cbAnsi, cCharacters;
  	long lentext;
 	
-    cCharacters = wcslen((const unsigned short*) *h)+1;
+    cCharacters = wcslen((wchar_t *) *h)+1;
  
 	cbAnsi = cCharacters * 2;
 
 	sethandlesize (hresult, cbAnsi);
 
     // Convert to ANSI.
-    lentext = WideCharToMultiByte(encoding, 0,(const unsigned short*) *h, -1, *hresult,
+    lentext = WideCharToMultiByte( encoding, 0,(wchar_t *) *h, -1, *hresult,
                   cbAnsi, NULL, NULL);
     
 	sethandlesize (hresult, lentext - 1);
@@ -2298,13 +2335,16 @@ static HRESULT AnsiToUnicode (Handle h, Handle hresult, unsigned long encoding)
 {
 
 	/*
-	7.0b42 PBS: convert from Unicode to Ansi. Borrowed from Microsoft sample code.
+	7.0b42 PBS: convert from ANSI to Unicode. Borrowed from Microsoft sample code.
+
+	2006-04-24 smd:
+		fixed the description in the previous comment line
+		rewrote most of the function
 	*/
 
     ULONG cbUni, cCharacters;
 	long lentext;
-	unsigned long ix;
-	char lastch = ' ';
+	// unsigned long ix;
 
     cCharacters = gethandlesize (h);
 
@@ -2316,35 +2356,15 @@ static HRESULT AnsiToUnicode (Handle h, Handle hresult, unsigned long encoding)
 	sethandlesize (hresult, cbUni);
 
     // Convert to ANSI.
-    lentext = MultiByteToWideChar (encoding, 0, *h, -1, (unsigned short*) *hresult, cbUni);
+    lentext = MultiByteToWideChar (encoding, 0, *h, cCharacters, (wchar_t *) *hresult, cbUni);
 
-    ix = 0;
+	if ( lentext > 0 ) /* FIXME: what should we do if lentext is 0, which is an error condition? */
+	{
+		sethandlesize( hresult, ( lentext + 1 ) * 2 );
+		((wchar_t *)(*hresult))[lentext] = L'\0';
+	}
 
-	while (true) { /*find terminator*/
-
-		char ch = (*hresult) [ix];
-
-		if (ch == '\0') {
-			
-			if ((*hresult) [ix + 1] == '\0') {
-
-				sethandlesize (hresult, ix + 2);
-
-				break;
-				} /* if */
-			
-			} /*if*/
-
-		ix += 2;
-
-		if (ix > cbUni)
-			break;
-		
-		lastch = ch;
-		} /*while*/
-	
 	return NOERROR;
-
 } 
 
 #endif /*end Windows character conversion routines*/
@@ -2352,7 +2372,7 @@ static HRESULT AnsiToUnicode (Handle h, Handle hresult, unsigned long encoding)
 
 /* convert an "internet name" for an encoding into a platform-specific id for the character set */
 
-static boolean getTextEncodingID( const bigstring bsEncodingName, long * encodingId ) {
+static boolean getTextEncodingID( bigstring bsEncodingName, long * encodingId ) {
 
 #ifdef MACVERSION
 
@@ -2367,6 +2387,48 @@ static boolean getTextEncodingID( const bigstring bsEncodingName, long * encodin
 	*encodingId = (long) oneEncoding;
 	
 #endif
+
+#ifdef WIN95VERSION
+
+	HRESULT err;
+	IMultiLanguage2 * pMultiLanguage;
+	MIMECSETINFO setInfo;
+	wchar_t ianaName[ 512 ];
+	long lenIanaName;
+
+	lowertext( (ptrbyte) (bsEncodingName + 1), (long) bsEncodingName[ 0 ] );
+
+	if ( equalstrings( bsEncodingName, BIGSTRING ("\x06" "utf-16") ) )
+	{
+		*encodingId = 0;
+		return (true);
+	}
+
+	initCOM();
+
+	err = CoCreateInstance(
+			&CLSID_CMultiLanguage, 
+			NULL,
+			CLSCTX_INPROC_SERVER,
+			&IID_IMultiLanguage2,
+			(void **) &pMultiLanguage );
+
+	if ( FAILED( err ) )
+		return (false);
+
+	copyPStringToWide( bsEncodingName, &lenIanaName, ianaName );
+
+	// pSetInfo = (PMIMECSETINFO)CoTaskMemAlloc( sizeof(MIMECSETINFO) );
+
+	err = pMultiLanguage->lpVtbl->GetCharsetInfo( pMultiLanguage, ianaName, &setInfo );
+	if ( FAILED( err ) )
+		return (false);
+
+	*encodingId = (long)(setInfo.uiInternetEncoding);
+
+	pMultiLanguage->lpVtbl->Release( pMultiLanguage );
+
+#endif
 	
 	return (true);
 }
@@ -2375,20 +2437,14 @@ static boolean getTextEncodingID( const bigstring bsEncodingName, long * encodin
 	determine if the specified character set is recognized by the OS
 	bsEncodingName is an IANA-friendly name like "utf-8" , "macintosh", or "iso-8859-1"
 */
-boolean isTextEncodingAvailable( const bigstring bsEncodingName )
+boolean isTextEncodingAvailable( bigstring bsEncodingName )
 {
 	long encodingId;
-	boolean fl;
 	
-	fl = getTextEncodingID( bsEncodingName, &encodingId );
-	
-	if ( ! fl )
+	if ( ! getTextEncodingID( bsEncodingName, &encodingId ) )
 		return (false);
 	
-	if ( encodingId < 0 )
-		return (false);
-	
-	return (true);
+	return ( encodingId >= 0 );
 }
 
 static boolean converttextencoding( Handle h, Handle hresult, const long inputcharset, const long outputcharset) {
@@ -2478,14 +2534,15 @@ static boolean converttextencoding( Handle h, Handle hresult, const long inputch
 			if ((*h) [0] == '\xFF')
 				pullfromhandle (hresult,0, 1, NULL);  /* Pop off the BOM */
 
+			return (true);
+
 		default: {
 			lentext = gethandlesize (h);
 
 			switch ( outputcharset ) {
 				case 0: /* unicode with BOM, not handled as a code page. I Sitll Hatesk Windows (and rrrabbits) */
 
-					if (AnsiToUnicode (h, hresult, inputcharset))
-						return (false);
+					return (!AnsiToUnicode (h, hresult, inputcharset));
 				
 				default: {
 					Handle htemp;
@@ -2524,12 +2581,22 @@ static boolean converttextencoding( Handle h, Handle hresult, const long inputch
 	} /*converttextencoding*/
 
 
-boolean convertCharset( Handle hString, Handle hresult, const bigstring charsetIn, const bigstring charsetOut )
+boolean convertCharset( Handle hString, Handle hresult, bigstring charsetIn, bigstring charsetOut )
 {
 #ifdef MACVERSION
 	
 	TextEncoding teInputSet, teOutputSet;
-	
+
+#endif
+
+#ifdef WIN95VERSION
+
+	long teInputSet, teOutputSet;
+
+	initCOM();
+
+#endif
+
 	if ( ! getTextEncodingID( charsetIn, (long *) &teInputSet ) )
 	{
 		// FIXME: generate error, encoding not available
@@ -2542,13 +2609,7 @@ boolean convertCharset( Handle hString, Handle hresult, const bigstring charsetI
 		return (false);
 	}
 	
-	return converttextencoding( hString, hresult, (long) teInputSet, (long) teOutputSet );
-	
-#endif
-
-#ifdef WIN95VERSION
-
-#endif
+	return ( converttextencoding( hString, hresult, (long) teInputSet, (long) teOutputSet ) );
 }
 
 

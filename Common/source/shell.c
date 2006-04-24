@@ -256,7 +256,7 @@ boolean shellshutdown (void) {
 		fileshutdown();
 		UnregisterAppearanceClient();
 	#endif
-	
+
 	exittooperatingsystem (); /*doesn't return*/
 	
 	return (true); /*satisfy the compiler -- not a void function*/

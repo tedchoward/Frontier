@@ -426,6 +426,7 @@ static boolean initenvironment (hdlhashtable ht) {
 
 static boolean initCharsetsTable (hdlhashtable cSetsTable)
 {
+#if 1
 #if MACVERSION
 	OSStatus err;
 	ItemCount ct, actual_ct, i;
@@ -469,49 +470,59 @@ static boolean initCharsetsTable (hdlhashtable cSetsTable)
 #endif
 
 #if WIN95VERSION
-	langassignlongvalue( cSetsTable, "\x05" "ASCII",		20127 );
-	langassignlongvalue( cSetsTable, "\x08" "US-ASCII",		20127 );  /* alias for ASCII */
+	HRESULT err;
+	IMultiLanguage2 * pMultiLanguage;
+	IEnumCodePage * pEnumCodePage;
+	UINT i, cnum = 0;
+	MIMECPINFO cpInfo;
+	long ccpInfo;
+	bigstring ianaName, displayName;
+
+	initCOM();
+
+	err = CoCreateInstance(
+			&CLSID_CMultiLanguage, 
+			NULL,
+			CLSCTX_INPROC_SERVER,
+			&IID_IMultiLanguage2,
+			(void **) &pMultiLanguage );
+
+	if ( FAILED( err ) )
+		goto done;
+
+	err = pMultiLanguage->lpVtbl->EnumCodePages(
+		pMultiLanguage,
+		0,  // MIMECONTF_MAILNEWS | MIMECONTF_BROWSER | MIMECONTF_VALID | MIMECONTF_MIME_LATEST
+		9,  /* LANGID. I'm totally guessing that 0 means "all", here. -- smd */
+		(IEnumCodePage **) &pEnumCodePage );
 	
-	langassignlongvalue( cSetsTable, "\x09" "MACINTOSH",	10000 );
-	langassignlongvalue( cSetsTable, "\x08" "MacRoman",		10000 );  /* alias for MACINTOSH */
+	if ( FAILED( err ) )
+		goto done;
+
+	pMultiLanguage->lpVtbl->GetNumberOfCodePageInfo( pMultiLanguage, &cnum );
 	
-	langassignlongvalue( cSetsTable, "\x0a" "iso-8859-1",	28591 );
-	langassignlongvalue( cSetsTable, "\x0b" "iso-latin-1",	28591 );  /* alias for iso-8859-1 */
-	langassignlongvalue( cSetsTable, "\x0a" "iso-8859-2",	28592 );
-	langassignlongvalue( cSetsTable, "\x0a" "iso-8859-3",	28593 );
-	langassignlongvalue( cSetsTable, "\x0a" "iso-8859-4",	28594 );
-	langassignlongvalue( cSetsTable, "\x0a" "iso-8859-5",	28595 );
-	langassignlongvalue( cSetsTable, "\x0a" "iso-8859-6",	28596 );
-	langassignlongvalue( cSetsTable, "\x0a" "iso-8859-7",	28597 );
-	langassignlongvalue( cSetsTable, "\x0a" "iso-8859-8",	28598 );
-	langassignlongvalue( cSetsTable, "\x0a" "iso-8859-9",	28599 );
-	langassignlongvalue( cSetsTable, "\x0b" "iso-8859-10",	28592 );
-	
-	langassignlongvalue( cSetsTable, "\x0c" "windows-1250",	 1250 );
-	langassignlongvalue( cSetsTable, "\x0f" "windows-latin-2",	 1250 );  /* code page 1250, Central Europe */
-	
-	langassignlongvalue( cSetsTable, "\x0c" "windows-1251",	 1251 );  /* code page 1251, Slavic Cyrillic */
-	
-	langassignlongvalue( cSetsTable, "\x0c" "windows-1252",	 1252 );
-	langassignlongvalue( cSetsTable, "\x0f" "windows-latin-1",	 1252 );
-	
-	langassignlongvalue( cSetsTable, "\x0c" "windows-1253",	 1253 );  /* code page 1253 */
-	langassignlongvalue( cSetsTable, "\x0c" "windows-1254",	 1254 );  /* code page 1254, Turkish */
-	langassignlongvalue( cSetsTable, "\x0c" "windows-1255",	 1255 );  /* code page 1255 */
-	langassignlongvalue( cSetsTable, "\x0c" "windows-1256",	 1256 );  /* code page 1256 */
-	langassignlongvalue( cSetsTable, "\x0c" "windows-1257",	 1257 );  /* code page 1257 */
-	langassignlongvalue( cSetsTable, "\x0c" "windows-1258",	 1258 );  /* code page 1258 */
-	langassignlongvalue( cSetsTable, "\x0c" "windows-1361",	 1361 );  /* code page 1361, for Windows NT */
-	
-	langassignlongvalue( cSetsTable, "\x05" "UTF-7",		65000 );
-	langassignlongvalue( cSetsTable, "\x05" "UTF-8",		65001 );
-	
-	langassignlongvalue( cSetsTable, "\x06" "UTF-16",			0 );  /* not a real code page. 0 for special case handling in Frontier */
-	
-	langassignlongvalue( cSetsTable, "\x08" "UTF-16le",		 1200 );
-	langassignlongvalue( cSetsTable, "\x08" "UTF-16be",		 1201 );
+	// pcpInfo = (PMIMECPINFO)CoTaskMemAlloc( sizeof(MIMECPINFO) );
+
+	for ( i = 0; i < cnum; i++ )
+	{
+		err = pEnumCodePage->lpVtbl->Next( pEnumCodePage, 1, &cpInfo, &ccpInfo );
+
+		if ( SUCCEEDED( err ) && ( ccpInfo != 0 ) )
+		{
+			if ( copyWideToPString( cpInfo.wszWebCharset, ianaName )
+				&& copyWideToPString( cpInfo.wszDescription, displayName ) )
+				langassignstringvalue( cSetsTable, ianaName, displayName );
+				//langassignlongvalue( cSetsTable, ianaName, cpInfo.uiCodePage );
+		}
+	}
+
+	pEnumCodePage->lpVtbl->Release( pEnumCodePage );
+	pMultiLanguage->lpVtbl->Release( pMultiLanguage );
+	// CoTaskMemFree( (LPVOID) pcpInfo );
+
 #endif
-	
+#endif	
+done:
 	return (true);
 	} /* initCharsetsTable */
 

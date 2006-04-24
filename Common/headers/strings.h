@@ -161,6 +161,7 @@ extern void copyptocstring (const bigstring, char *);
 extern void copyctopstring (const char *, bigstring);
 
 #ifdef WIN95VERSION
+extern boolean copyWideToPString (const wchar_t *, bigstring);
 extern void copyrezstring (const bigstring, bigstring);
 #endif
 
@@ -266,9 +267,9 @@ extern boolean macromantoutf8 (Handle, Handle); /* 2006-02-25 creedon */
 
 extern boolean utf8tomacroman (Handle, Handle); /* 2006-02-25 creedon */
 
-extern boolean convertCharset( Handle, Handle, const bigstring, const bigstring );
+extern boolean convertCharset( Handle, Handle, bigstring, bigstring );
 
-extern boolean isTextEncodingAvailable( const bigstring ); /* 2006-04-23 smd */
+extern boolean isTextEncodingAvailable( bigstring ); /* 2006-04-23 smd */
 
 #endif
 

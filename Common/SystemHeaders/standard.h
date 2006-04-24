@@ -437,6 +437,10 @@ typedef struct tyDateCacheRecord
 
 #define quickdrawglobal(x) qd.x
 
+extern boolean flcominitialized; /* set up in lang.c */
+extern boolean initCOM( void ); /* see FrontierWinMain.c */
+extern void shutdownCOM( void );
+
 #endif
 
 #endif

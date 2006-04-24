@@ -81,6 +81,9 @@ hdltreenode herrornode = nil;
 
 tylangcallbacks langcallbacks; /*routines that wire the language into environment*/
 
+boolean flcominitialized = false;
+
+
 
 static short ctrootchains = 0; /*number of hashtable chains that include the root*/
 

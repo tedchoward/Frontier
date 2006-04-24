@@ -1387,6 +1387,11 @@ void disposethreadglobals (hdlthreadglobals hglobals) {
 		listunlink ((hdllinkedlist) processthreadlist, (hdllinkedlist) hg);
 	
 	if (hg == hthreadglobals) {
+
+		#ifdef WIN95VERSION
+			if ( flcominitialized )
+				shutdownCOM();
+		#endif
 		
 		disposehandle ((Handle) hashtablestack);
 		
@@ -1450,6 +1455,12 @@ boolean newthreadglobals (hdlthreadglobals *hglobals) {
 	(**hg).langcallbacks = langcallbacks;
 	
 	(**hg).timesliceticks = processonehottimeslice;
+
+	/*
+		2006-04-24 smd
+		has COM been initialized in this thread?
+	*/
+	(**hg).flcominitialized = false;
 
 #ifdef landinclude	
 	id = getprocesscreator ();
@@ -1580,6 +1591,12 @@ void copythreadglobals (hdlthreadglobals hglobals) {
 		(**hg).tryerror = tryerror;
 
 		(**hg).tryerrorstack = tryerrorstack;
+
+		/*
+			2006-04-24 smd
+			has COM been initialized in this thread?
+		*/
+		(**hg).flcominitialized = flcominitialized;
 		}
 	
 	(**hg).langcallbacks = langcallbacks;

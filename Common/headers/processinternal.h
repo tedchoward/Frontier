@@ -195,6 +195,9 @@ typedef struct tythreadglobals {
 	ThreadEntryUPP threadEntryCallbackUPP;
 	
 	#endif
+
+	boolean flcominitialized;
+
 	} tythreadglobals, *ptrthreadglobals, **hdlthreadglobals;
 
 
