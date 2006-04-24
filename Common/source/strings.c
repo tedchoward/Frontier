@@ -56,7 +56,18 @@ static hdlstring dirstrings [ctdirections];
 static byte bshexprefix [] = STR_hexprefix;
 
 
+/* declarations */
 
+static boolean converttextencoding( Handle, Handle, const long, const long );
+static boolean getTextEncodingID( const bigstring, long * );
+
+#ifdef WIN95VERSION
+	static HRESULT UnicodeToAnsi(Handle, Handle, unsigned long);
+	static HRESULT AnsiToUnicode(Handle, Handle, unsigned long);
+#endif
+
+
+/* definitions */
 
 boolean equalstrings (const bigstring bs1, const bigstring bs2) {
 
@@ -2341,20 +2352,14 @@ static HRESULT AnsiToUnicode (Handle h, Handle hresult, unsigned long encoding)
 
 /* convert an "internet name" for an encoding into a platform-specific id for the character set */
 
-boolean gettextencodingid (const Handle h, long * encodingId) {
+static boolean getTextEncodingID( const bigstring bsEncodingName, long * encodingId ) {
 
 #ifdef MACVERSION
 
 	OSStatus err;
 	TextEncoding oneEncoding;
-	bigstring ianaName;
-	long ct, ix = 0;
 	
-	ct = gethandlesize (h);
-	ianaName [0] = (byte) ct;
-	loadfromhandle (h, &ix, ct, ianaName + 1);
-	
-	err = TECGetTextEncodingFromInternetName( &oneEncoding, ianaName );
+	err = TECGetTextEncodingFromInternetName( &oneEncoding, bsEncodingName );
 	
 	if ( err != noErr )
 		return (false);
@@ -2366,8 +2371,27 @@ boolean gettextencodingid (const Handle h, long * encodingId) {
 	return (true);
 }
 
+/*
+	determine if the specified character set is recognized by the OS
+	bsEncodingName is an IANA-friendly name like "utf-8" , "macintosh", or "iso-8859-1"
+*/
+boolean isTextEncodingAvailable( const bigstring bsEncodingName )
+{
+	long encodingId;
+	boolean fl;
+	
+	fl = getTextEncodingID( bsEncodingName, &encodingId );
+	
+	if ( ! fl )
+		return (false);
+	
+	if ( encodingId < 0 )
+		return (false);
+	
+	return (true);
+}
 
-boolean converttextencoding (Handle h, Handle hresult, long inputcharset, long outputcharset) {
+static boolean converttextencoding( Handle h, Handle hresult, const long inputcharset, const long outputcharset) {
 
 #ifdef MACVERSION /*Mac character conversion common routine*/
 
@@ -2377,10 +2401,6 @@ boolean converttextencoding (Handle h, Handle hresult, long inputcharset, long o
 	long sizeoutputbuffer;
 	long pullBytes = 0;
 	long lentext = gethandlesize (h);
-
-	// sethandlesize (h, lentext + 1);
-
-	// (*h) [lentext] = '\0';
 
 	status = TECCreateConverter (&converter, inputcharset, outputcharset);
 	if ( status != noErr ) {
@@ -2419,15 +2439,6 @@ boolean converttextencoding (Handle h, Handle hresult, long inputcharset, long o
 		}
 	}
 
-	//old code
-	// if (((*h) [0] == '\xFF') || ((*h) [0] == '\xEF')) /*pop byte order mark*/
-	//	pullfromhandle (h, 0, 3, NULL);
-
-	/*
-	if (pullBytes > 0)
-		pullfromhandle (h, 0, pullBytes, NULL);
-	*/
-	
 	lentext = gethandlesize (h) - pullBytes;
 
 	status = TECConvertText (converter, (ConstTextPtr)(*h + pullBytes), lentext, &ctorigbytes, (TextPtr)(*hresult), sizeoutputbuffer, &ctoutputbytes);
@@ -2444,10 +2455,6 @@ boolean converttextencoding (Handle h, Handle hresult, long inputcharset, long o
 	sethandlesize (hresult, ctoutputbytes + ctflushedbytes);
 	
 	return (true);
-
-	// kwchange 2005-05-23 --- commented out to see if this is the missing trailing char bug
-	// kwchange 2005-05-27 --- ran this the last week and have no complains
-	//sethandlesize (hresult, gethandlesize (hresult) - 1); /*pop trailing terminator*/
 
 #endif /*end Mac character conversion routine(s)*/
 
@@ -2515,6 +2522,34 @@ boolean converttextencoding (Handle h, Handle hresult, long inputcharset, long o
 
 #endif
 	} /*converttextencoding*/
+
+
+boolean convertCharset( Handle hString, Handle hresult, const bigstring charsetIn, const bigstring charsetOut )
+{
+#ifdef MACVERSION
+	
+	TextEncoding teInputSet, teOutputSet;
+	
+	if ( ! getTextEncodingID( charsetIn, (long *) &teInputSet ) )
+	{
+		// FIXME: generate error, encoding not available
+		return (false);
+	}
+	
+	if ( ! getTextEncodingID( charsetOut, (long *) &teOutputSet ) )
+	{
+		// FIXME: generate error, encoding not available
+		return (false);
+	}
+	
+	return converttextencoding( hString, hresult, (long) teInputSet, (long) teOutputSet );
+	
+#endif
+
+#ifdef WIN95VERSION
+
+#endif
+}
 
 
 boolean utf16toansi (Handle h, Handle hresult) {

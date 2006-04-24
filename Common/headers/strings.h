@@ -266,9 +266,9 @@ extern boolean macromantoutf8 (Handle, Handle); /* 2006-02-25 creedon */
 
 extern boolean utf8tomacroman (Handle, Handle); /* 2006-02-25 creedon */
 
-extern boolean gettextencodingid (const Handle, long *);  /* 2006-04-20 smd */
+extern boolean convertCharset( Handle, Handle, const bigstring, const bigstring );
 
-extern boolean converttextencoding (Handle, Handle, long, long);  /* 2006-04-14 smd */
+extern boolean isTextEncodingAvailable( const bigstring ); /* 2006-04-23 smd */
 
 #endif
 

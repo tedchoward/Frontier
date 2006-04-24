@@ -312,6 +312,8 @@ typedef enum tystringtoken { /*verbs that are processed by string.c*/
 	utf8tomacromanfunc, // 2006-02-25 creedon
 	
 	convertcharsetfunc, /* 2006-04-14 smd */
+	
+	ischarsetavailablefunc, /* 2006-04-23 smd */
 
 	ctstringverbs
 	} tystringtoken;
@@ -1319,6 +1321,21 @@ void mactolatin (Handle h) {
 	} /*latintomac*/
 
 
+static boolean isCharsetAvailableVerb( hdltreenode hp1, tyvaluerecord *v )
+{
+	bigstring bscharset;
+	
+	flnextparamislast = true;
+	
+	if ( !getstringvalue( hp1, 1, bscharset ) ) /* IANA names can't be longer than 40 ASCII characters, so this is safe */
+		return (false);
+	
+	(*v).data.flvalue = isTextEncodingAvailable( bscharset );
+	
+	return (true);
+}
+
+
 static boolean stringfunctionvalue (short token, hdltreenode hparam1, tyvaluerecord *vreturned, bigstring bserror) {
 	
 	/*
@@ -2302,31 +2319,38 @@ static boolean stringfunctionvalue (short token, hdltreenode hparam1, tyvaluerec
 			return (setheapvalue (hresult, stringvaluetype, v));
 			}
 		
-		case convertcharsetfunc: {  /* 2006-04-13 smd: convert any character set to any other character set, if the os supports it */
-			
+		case convertcharsetfunc:  /* 2006-04-13 smd: convert any character set to any other character set, if the os supports it */
+		{
 			Handle h, hresult;
-			long charsetIn, charsetOut;
+			bigstring charsetIn, charsetOut;
 			
-			if (!getlongvalue (hp1, 1, &charsetIn))
+			/*
+				the "internet names" of character sets are 40 ASCII chars or less,
+				so this is a safe way to get the params
+			*/
+			if ( !getstringvalue( hp1, 1, charsetIn ) )
 				goto error;
 			
-			if (!getlongvalue (hp1, 2, &charsetOut))
+			if ( !getstringvalue( hp1, 2, charsetOut ) )
 				goto error;
 			
 			flnextparamislast = true;
 			
-			if (!getreadonlytextvalue (hp1, 3, &h))
+			if ( !getreadonlytextvalue( hp1, 3, &h ) )
 				goto error;
 			
-			newemptyhandle (&hresult);
+			newemptyhandle( &hresult );
 			
-			if (! converttextencoding (h, hresult, charsetIn, charsetOut))
+			if ( !convertCharset( h, hresult, charsetIn, charsetOut ) )
 				goto error;
 			
-			// disposehandle(h);
-			
-			return (setheapvalue (hresult, stringvaluetype, v));
-			}
+			return ( setheapvalue( hresult, stringvaluetype, v ) );
+		}
+		
+		case ischarsetavailablefunc:  /* 2006-04-23 smd: determine if a character set is available, based on an internet-friendly (IANA) name */
+		{
+			return isCharsetAvailableVerb( hparam1, v );
+		}
 		
 		default:
 			errornum = notimplementederror;
