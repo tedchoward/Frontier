@@ -764,7 +764,6 @@ resource 'EFP#' (idwindowverbs, "window") {
 		"quicktime", /*7.0b4 PBS: QuickTime Player window*/
 		"getfile",
 		"isreadonly", /*7.0b6 PBS: is a window read-only*/
-		"quickscriptsetscript" // 2006-04-04 creedon
 		}
 	}
 };
@@ -1137,7 +1136,6 @@ resource 'EFP#' (idcryptverbs, "crypt") { /* 2006-03-07 creedon: crypt verbs */
 		"MD5",
 		"SHA1",
 		"hmacSHA1",
-		"RIPEMD160"
 		}
 	}
 };
