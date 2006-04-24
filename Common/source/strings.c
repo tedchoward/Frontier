@@ -27,7 +27,10 @@
 
 #include "frontier.h"
 #include "standard.h"
-#include "FrontierWinMain.h"
+
+#ifdef WIN95VERSION
+	#include "FrontierWinMain.h"
+#endif
 
 #include "font.h"
 #include "memory.h"
@@ -2336,10 +2339,6 @@ static HRESULT AnsiToUnicode (Handle h, Handle hresult, unsigned long encoding)
 
 	/*
 	7.0b42 PBS: convert from ANSI to Unicode. Borrowed from Microsoft sample code.
-
-	2006-04-24 smd:
-		fixed the description in the previous comment line
-		rewrote most of the function
 	*/
 
     ULONG cbUni, cCharacters;
@@ -2444,7 +2443,19 @@ boolean isTextEncodingAvailable( bigstring bsEncodingName )
 	if ( ! getTextEncodingID( bsEncodingName, &encodingId ) )
 		return (false);
 	
-	return ( encodingId >= 0 );
+	#ifdef MACVERSION
+	
+		// the mac version has no encoding id 0, so this means a failure
+		return ( encodingId >= 0 );
+	
+	#endif
+	
+	#ifdef WIN95VERSION
+	
+		// we use 0 to refer to UTF-16 on Windows, as it's the default character set and has no code page
+		return (true);
+	
+	#endif
 }
 
 static boolean converttextencoding( Handle h, Handle hresult, const long inputcharset, const long outputcharset) {
@@ -2616,7 +2627,7 @@ boolean convertCharset( Handle hString, Handle hresult, bigstring charsetIn, big
 boolean utf16toansi (Handle h, Handle hresult) {
 
 	/*
-	7.0b42 PBS: convert from UTF-16 to UTF-8 character sets.
+	7.0b42 PBS: convert from UTF-16 to iso-8859-1 character sets.
 	*/
 	
 	#ifdef WIN95VERSION
@@ -2638,60 +2649,10 @@ boolean utf16toansi (Handle h, Handle hresult) {
 	#endif
 	
 	#ifdef MACVERSION
-/*	
-		if (((*h) [0] == '\xFF') || ((*h) [0] == '\xEF')) /#pop byte order mark#/
-		
-			pullfromhandle (h, 0, 2, NULL);
-
- 		// why do we need a string starting with a 0???
-		if ((*h) [0] != '\0')
-		
-			insertinhandle (h, 0, NULL, 1);
-*/		
+	
 		if (!converttextencoding (h, hresult, kTextEncodingUnicodeDefault, kTextEncodingWindowsLatin1))
 			return (false);
 
-/*		OSErr err = noErr;
-	
-		UnicodeToTextInfo utinfo;				
-		
-		UnicodeMapping utmapping;
-		
-		ByteCount ctunibytes, ctansibytes;
-		
-		long lentext = gethandlesize (h);
-
-		sethandlesize (h, lentext + 1);
-
-		(*h) [lentext] = '\0';
-
-		utmapping.unicodeEncoding = kTextEncodingUnicodeDefault;
-		
-		utmapping.otherEncoding = kTextEncodingISOLatin1;
-		
-		utmapping.mappingVersion = kUnicodeUseLatestMapping;
-		
-		err = CreateUnicodeToTextInfo (&utmapping, &utinfo);
-		
-		sethandlesize (hresult, lentext * 2);
-		
-		pullfromhandle (h, 0, 2, NULL);
-		
-		insertinhandle (h, 0, NULL, 1);
-		
-		lentext = gethandlesize (h);
-		
-		err = ConvertFromUnicodeToText (utinfo, lentext, (ConstUniCharArrayPtr) *h,
-			kUnicodeUseFallbacksMask,
-			0, NULL, NULL, NULL,
-			lentext * 2, &ctunibytes, &ctansibytes, *hresult);
-			
-		DisposeUnicodeToTextInfo (&utinfo);
-			
-		sethandlesize (hresult, ctansibytes);
-		
-		sethandlesize (hresult, gethandlesize (hresult) - 1); #*pop trailing terminator*/
-		
 	#endif
 
 	return (true);
@@ -2733,38 +2694,6 @@ boolean utf8toansi (Handle h, Handle hresult) {
 		if (!converttextencoding (h, hresult, kCFStringEncodingUTF8, kTextEncodingWindowsLatin1))
 			return (false);
 
-/*		OSErr err = noErr;
-
-		long lentext = gethandlesize (h);
-	
-		TECObjectRef converter;
-		
-		ByteCount ctunibytes, ctansibytes, ctflushedbytes;
-		
-		sethandlesize (h, lentext + 1);
-
-		(*h) [lentext] = '\0';
-		
-		err = TECCreateConverter (&converter, 0x08000100, kTextEncodingWindowsLatin1); #*0x08000100 is UTF-8*/
-		
-/*		sethandlesize (hresult, lentext * 2);
-		
-		if (((*h) [0] == '\xFF') || ((*h) [0] == '\xEF')) #*pop byte order mark*/
-		
-/*			pullfromhandle (h, 0, 3, NULL);
-		
-		lentext = gethandlesize (h);
-		
-		err = TECConvertText (converter, *h, lentext, &ctunibytes, *hresult, lentext * 2, &ctansibytes);
-		
-		TECFlushText (converter, *hresult, lentext * 2, &ctflushedbytes);
-			
-		TECDisposeConverter (converter);
-			
-		sethandlesize (hresult, ctansibytes);
-		
-		sethandlesize (hresult, gethandlesize (hresult) - 1); #*pop trailing terminator*/
-	
 	#endif
 
 	return (true);

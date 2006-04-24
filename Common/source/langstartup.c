@@ -426,21 +426,20 @@ static boolean initenvironment (hdlhashtable ht) {
 
 static boolean initCharsetsTable (hdlhashtable cSetsTable)
 {
-#if 1
 #if MACVERSION
 	OSStatus err;
 	ItemCount ct, actual_ct, i;
 	
 	err = TECCountAvailableTextEncodings( &ct );
 	if ( err != noErr ) {
-		pophashtable();
-		
 		return (true);  // don't kill the whole startup
 	}
 	
-	TextEncoding enc;
+	TextEncoding enc, encOut;
 	TextEncoding availEncodings[ ct ];
-	bigstring ianaName;
+	bigstring ianaName, displayName;
+	unsigned long lenDisplayName;
+	RegionCode reg;
 	
 	err = TECGetAvailableTextEncodings ( availEncodings, ct, &actual_ct );
 	if ( err != noErr )
@@ -465,8 +464,20 @@ static boolean initCharsetsTable (hdlhashtable cSetsTable)
 		if ( err != noErr )
 			continue;
 		
-		langassignlongvalue( cSetsTable, ianaName, (long) enc );
+		/*
+			get the encoding's display name, which is the value of the table cell
+		*/
+		err = GetTextEncodingName( enc, kTextEncodingFullName, verUS, kTextEncodingMacRoman, 255, &lenDisplayName, &reg, &encOut, (TextPtr) displayName + 1 );
+		if ( err != noErr )
+			continue;
+		
+		displayName[ 0 ] = (unsigned char) lenDisplayName;
+		
+		langassignstringvalue( cSetsTable, ianaName, displayName );
 	}
+	
+	return (true);
+	
 #endif
 
 #if WIN95VERSION
@@ -520,10 +531,10 @@ static boolean initCharsetsTable (hdlhashtable cSetsTable)
 	pMultiLanguage->lpVtbl->Release( pMultiLanguage );
 	// CoTaskMemFree( (LPVOID) pcpInfo );
 
-#endif
-#endif	
 done:
 	return (true);
+	
+#endif	
 	} /* initCharsetsTable */
 
 
