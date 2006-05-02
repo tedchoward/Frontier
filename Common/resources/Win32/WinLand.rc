@@ -1638,12 +1638,12 @@ END
 	1 File_Errors DISCARDABLE BEGIN "Internal error running \042file.^0\042.\0" END
 
 	1 String_Errors DISCARDABLE BEGIN "Internal error running \042string.^0\042.\0" END
-	2 String_Errors DISCARDABLE BEGIN "Unknown error converting character set.\0" END
-	3 String_Errors DISCARDABLE BEGIN "The character set (^0) is not supported.\0" END
-	4 String_Errors DISCARDABLE BEGIN "The text input contains a byte sequence that is not legal in the specified character set (^0).\0" END
-	5 String_Errors DISCARDABLE BEGIN "The text input contains a code point that is undefined in the specified character set (^0). The conversion could not be completed.\0" END
-	6 String_Errors DISCARDABLE BEGIN "There is no way to convert from the character set \042^0\042 to \042^1\042.\0" END
-	7 String_Errors DISCARDABLE BEGIN "The text input ends in the middle of a multibyte character. Conversion canceled.\0" END
+	2 String_Errors DISCARDABLE BEGIN "Can't convert character set because of an unknown error.\0" END
+	3 String_Errors DISCARDABLE BEGIN "Can't convert character set because \042^0\042 is not supported.\0" END
+	4 String_Errors DISCARDABLE BEGIN "Can't convert character set because the text contains a sequence that is not legal in the specified character set (^0).\0" END
+	5 String_Errors DISCARDABLE BEGIN "Can't convert character set because the text contains a code point that is undefined in the specified character set (^0).\0" END
+	6 String_Errors DISCARDABLE BEGIN "Can't convert character set because there is no way to convert from \042^0\042 to \042^1\042.\0" END
+	7 String_Errors DISCARDABLE BEGIN "Can't convert character set because the text ends in the middle of a multibyte character.\0" END
 
 	1 WP_Verb_Errors DISCARDABLE BEGIN "Can't do \042wp.^0\042 because the target window is not in edit mode, or does not contain editable text.\0" END
 	2 WP_Verb_Errors DISCARDABLE BEGIN "The address of a wptext object was expected here.\0" END
