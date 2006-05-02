@@ -51,11 +51,21 @@
 	
 #define stringerrorlist 263
 
+/*
+	constants related to text-conversion functions
+*/
 #define cs_utf8			BIGSTRING( "\xA5" "utf-8" )
 #define cs_utf16		BIGSTRING( "\x06" "utf-16" )
 #define cs_iso88591		BIGSTRING( "\xA0" "iso-8859-1" )
 #define cs_macintosh	BIGSTRING( "\x09" "macintosh" )
 
+#ifdef WIN95VERSION
+	#define kTextUnsupportedEncodingErr	-8738
+	#define kTextMalformedInputErr		-8739
+	#define kTextUndefinedElementErr	-8740
+	#define kTECNoConversionPathErr		-8749
+	#define kTECPartialCharErr			-8753
+#endif
 
 byte zerostring [] = "\0"; /*use this to conserve constant space*/
 
@@ -74,8 +84,8 @@ static boolean converttextencoding( Handle, Handle, const long, const long, long
 static boolean getTextEncodingID( bigstring, long * );
 
 #ifdef WIN95VERSION
-	static HRESULT UnicodeToAnsi(Handle, Handle, unsigned long);
-	static HRESULT AnsiToUnicode(Handle, Handle, unsigned long);
+	static boolean UnicodeToAnsi(Handle, Handle, unsigned long, long *);
+	static boolean AnsiToUnicode(Handle, Handle, unsigned long, long *);
 #endif
 
 
@@ -1724,14 +1734,17 @@ boolean copyWideToPString( const wchar_t * inString, bigstring bs )
 boolean copyPStringToWide( bigstring bs, long * lenResult, wchar_t * outString )
 {
 	HRESULT err;
-	size_t lenOut, lenIn;
+	size_t lenIn;
+	bigstring bsCString;
 
 	lenIn = (size_t) bs[ 0 ];
-	convertpstring( bs );
+
+	copystring( bs, bsCString );
+	convertpstring( bsCString );
 	
-	lenOut = MultiByteToWideChar( 1252, 0, bs, lenIn, (LPWSTR) outString, 255 );
+	*lenResult = (long) MultiByteToWideChar( 1252, 0, bsCString, lenIn, (LPWSTR) outString, 255 );
 	
-	if ( lenOut == 0 )
+	if ( *lenResult == 0 )
 	{
 		err = GetLastError();
 		
@@ -1746,6 +1759,8 @@ boolean copyPStringToWide( bigstring bs, long * lenResult, wchar_t * outString )
 				break;
 		}
 	}
+
+	outString[ *lenResult ] = L'\0'; /* the API doesn't seem to do this consistently */
 
 	return ( true );
 }
@@ -2343,11 +2358,6 @@ boolean assurelastchariscolon (bigstring bs) {
 
 static short getTextEncodingErrorNumFromOSCode( long osStatusCode )
 {
-#ifdef WIN95VERSION
-	return 2;
-#endif
-
-#ifdef MACVERSION
 	switch ( osStatusCode )
 	{
 		case kTextUnsupportedEncodingErr:
@@ -2364,7 +2374,6 @@ static short getTextEncodingErrorNumFromOSCode( long osStatusCode )
 		default:
 			return 2;
 	}
-#endif
 }
 
 static void setTextEncodingConversionError( const bigstring encIn, const bigstring encOut, long osStatusCode )
@@ -2399,7 +2408,7 @@ static boolean UnicodeToAnsi( Handle h, Handle hresult, unsigned long encoding, 
 	sethandlesize (hresult, cbAnsi);
 
     // Convert to ANSI.
-    lentext = WideCharToMultiByte( encoding, WC_COMPOSITECHECK, (wchar_t *) *h, -1, *hresult, cbAnsi, NULL, NULL);
+    lentext = WideCharToMultiByte( encoding, 0, (wchar_t *) *h, -1, *hresult, cbAnsi, NULL, NULL);
 	
 	if ( lentext == 0 )  // report error
 	{
@@ -2424,7 +2433,6 @@ static boolean AnsiToUnicode( Handle h, Handle hresult, unsigned long encoding, 
 
     ULONG cbUni, cCharacters;
 	long lentext;
-	// unsigned long ix;
 
     cCharacters = gethandlesize (h);
 
@@ -2490,7 +2498,7 @@ static boolean getTextEncodingID( bigstring bsEncodingName, long * encodingId )
 
 		if ( equalstrings( bsEncodingName, BIGSTRING ("\x06" "utf-16") ) )
 		{
-			*encodingId = 0;
+			*encodingId = 1200;
 			
 			return (true);
 		}
@@ -2513,12 +2521,10 @@ static boolean getTextEncodingID( bigstring bsEncodingName, long * encodingId )
 
 		copyPStringToWide( bsEncodingName, &lenIanaName, ianaName );
 
-		// pSetInfo = (PMIMECSETINFO)CoTaskMemAlloc( sizeof(MIMECSETINFO) );
-
 		err = pMultiLanguage->lpVtbl->GetCharsetInfo( pMultiLanguage, ianaName, &setInfo );
 		if ( FAILED( err ) )
 		{
-			setTextEncodingConversionError( bsEncodingName, BIGSTRING( "" ), err );
+			setTextEncodingConversionError( bsEncodingName, BIGSTRING( "" ), kTextUnsupportedEncodingErr );
 			
 			pMultiLanguage->lpVtbl->Release( pMultiLanguage );
 			
@@ -2543,7 +2549,15 @@ boolean isTextEncodingAvailable( bigstring bsEncodingName )
 	long encodingId;
 	
 	if ( ! getTextEncodingID( bsEncodingName, &encodingId ) )
+	{
+		/*
+			if the encoding isn't recognized then getTextEncodingId set an error
+			we need to clear that error
+		*/
+		langerrorclear();
+
 		return (false);
+	}
 	
 	#ifdef MACVERSION
 	
@@ -2554,7 +2568,7 @@ boolean isTextEncodingAvailable( bigstring bsEncodingName )
 	
 	#ifdef WIN95VERSION
 	
-		// we use 0 to refer to UTF-16 on Windows, as it's the default character set and has no code page
+		// we use 0 to refer to UTF-16 on Windows, as it's the default character set and seems to have no code page
 		return (true);
 	
 	#endif
@@ -2640,7 +2654,8 @@ static boolean converttextencoding( Handle h, Handle hresult, const long inputch
 	
 	switch ( inputcharset ) {
 		
-		case 0: /* unicode with BOM, not handled as a code page. I Hatesk Windows. */
+		case 1200:
+		case 0: /* utf-16le, a.k.a. "unicode" on windows, not handled as a code page. */
 
 			sethandlesize (h,lentext + 2);
 
@@ -2649,15 +2664,20 @@ static boolean converttextencoding( Handle h, Handle hresult, const long inputch
 
 			flResult = UnicodeToAnsi( h, hresult, outputcharset, OSStatusCode );
 
-			if ( flStatus && ( (*h) [0] == '\xFF') )
+			if ( flResult && ( (*h) [0] == '\xFF') )
 				pullfromhandle (hresult,0, 1, NULL);  /* Pop off the BOM */
+
+			break;
 
 		default: {
 
 			switch ( outputcharset ) {
-				case 0: /* unicode with BOM, not handled as a code page */
+				case 1200:
+				case 0: /* utf-16le, a.k.a. "unicode" on windows, not handled as a code page */
 
 					flResult = AnsiToUnicode( h, hresult, inputcharset, OSStatusCode );
+
+					break;
 				
 				default: {
 					Handle htemp;
@@ -2687,11 +2707,6 @@ static boolean converttextencoding( Handle h, Handle hresult, const long inputch
 			} /* case default */
 		
 		} /* switch inputcharset */
-	
-	/*
-	if ( ! flResult )
-		*OSStatusCode = (long) GetLastError();
-	*/
 	
 	return ( flResult );
 
@@ -2805,14 +2820,14 @@ boolean utf8toansi (Handle h, Handle hresult) {
 
 		if ( ! AnsiToUnicode (h, htemp, CP_UTF8, &err ) ) /*Convert to UTF-16*/
 		{
-			setTextEncodingConversionError( utf8, utf16, err );
+			setTextEncodingConversionError( cs_utf8, cs_utf16, err );
 			
 			return ( false );
 		}
 
 		if ( ! UnicodeToAnsi( htemp, hresult, CP_ACP, &err ) ) /*Convert from UTF-16 to ANSI*/
 		{
-			setTextEncodingConversionError( utf16, iso88591, err);
+			setTextEncodingConversionError( cs_utf16, cs_iso88591, err);
 			
 			return ( false );
 		}
