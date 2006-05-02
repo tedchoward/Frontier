@@ -1029,9 +1029,21 @@ resource 'STR#' (262, "File Errors", purgeable) {
 };
 
 resource 'STR#' (263, "String Errors", purgeable) {
-	{	/* array StringArray: 1 elements */
+	{	/* array StringArray: 7 elements */
 		/* [1] */
-		"Internal error running Òstring.^0Ó."
+		"Internal error running Òstring.^0Ó.",
+		/* [2] */
+		"Unknown error converting character set.",
+		/* [3]  - Mac OSStatus: kTextUnsupportedEncodingErr */
+		"The character set (^0) is not supported.",
+		/* [4]  - Mac OSStatus: kTextMalformedInputErr */
+		"The text input contains a sequence that is not legal in the specified encoding (^0).",
+		/* [5]  - Mac OSStatus: kTextUndefinedElementErr */
+		"The text input contains a code point that is undefined in the specified character set (^0). The conversion could not be completed.",
+		/* [6]  - Mac OSStatus: kTECNoConversionPathErr */
+		"There is no way to convert from the character set Ò^0Ó to Ò^1Ó.",
+		/* [7]  - Mac OSStatus: kTECPartialCharErr */
+		"The text input ends in the middle of a multibyte character. Conversion canceled."
 	}
 };
 
