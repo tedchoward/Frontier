@@ -1,14 +1,30 @@
 
 /*	$Id$    */
 
-/*
- *  langmath.c
- *  Frontier
- *
- *  Created by Seth Dillingham on 12/29/04.
- *  Copyright 2004 __MyCompanyName__. All rights reserved.
- *
- */
+/******************************************************************************
+
+    UserLand Frontier(tm) -- High performance Web content management,
+    object database, system-level and Internet scripting environment,
+    including source code editing and debugging.
+
+    Copyright (C) 1992-2004 UserLand Software, Inc.
+
+    This program is free software; you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation; either version 2 of the License, or
+    (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program; if not, write to the Free Software
+    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+
+******************************************************************************/
+
 #include <math.h>
 
 #include "frontier.h"
@@ -56,70 +72,87 @@ static boolean mathfunctionvalue (short token, hdltreenode hparam1, tyvaluerecor
 		case minfunc: { /* 2004/12/29 smd */
 			
 			tyvaluerecord v1, v2;
-			boolean fl;
+			tyvaluerecord v1copy, v2copy;
+			tyvaluerecord * vResult = NULL;
+			boolean fl = false;
 			
-			if (!getparamvalue (hp1, 1, &v1))
+			if (!getreadonlyparamvalue (hp1, 1, &v1))
 				break;
 			
 			flnextparamislast = true;
 			
-			if (!getparamvalue (hp1, 2, &v2))
+			if (!getreadonlyparamvalue (hp1, 2, &v2))
 				break;
 			
-			if (!coercetypes (&v1, &v2)) {
+			if (!copyvaluerecord (v1, &v1copy))  /* so that we don't coerce the original */
+				break;
+			
+			if (!copyvaluerecord (v2, &v2copy))  /* so that we don't coerce the original */
+				break;
+			
+			if (!coercetypes (&v1copy, &v2copy))
+			{
+				disposevalues (&v1copy, &v2copy);
 				
 				break;
 			}
 			
-			switch (v1.valuetype) {
+			switch (v1copy.valuetype) {
 				
 				case novaluetype: {  /* no test needed, nil is nil*/
 					initvalue (v, novaluetype);
-					return true;
+					
+					fl = true;
+					
+					break;
 					}
 				
-				case booleanvaluetype: /* just return an or */
-					return setbooleanvalue (v1.data.flvalue || v2.data.flvalue, v);
+				case booleanvaluetype: /* if v2 is true, then return v1 (false < true) */
+					vResult = v2copy.data.flvalue ? &v1 : &v2;
+					
+					break;
 				
 				/* all the rest return the greater of the two values */
 				case charvaluetype:
-					return setcharvalue (min (v1.data.chvalue, v2.data.chvalue), v);
+					vResult = ( v1copy.data.chvalue <= v2copy.data.chvalue ) ? &v1 : &v2;
+					
+					break;
 							
 				case intvaluetype:
-					return setintvalue (min (v1.data.intvalue, v2.data.intvalue), v);
+					vResult = ( v1copy.data.intvalue <= v2copy.data.intvalue ) ? &v1 : &v2;
+					
+					break;
 				
 				case longvaluetype:
-					return setlongvalue (min (v1.data.longvalue, v2.data.longvalue), v);
-				
 				case ostypevaluetype:
-					return setostypevalue (min (v1.data.longvalue, v2.data.longvalue), v);
+					vResult = ( v1copy.data.longvalue <= v2copy.data.longvalue ) ? &v1 : &v2;
 					
-/*				case fixedvaluetype:
-					return setfixedvalue (min (v1.data.longvalue, v2.data.longvalue), v);
-*/				
+					break;
+				
 				case directionvaluetype:
-					return setdirectionvalue (min ((short) v1.data.dirvalue, (short) v2.data.dirvalue), v);
+					vResult = ( (short) v1copy.data.dirvalue <= (short) v2copy.data.dirvalue ) ? &v1 : &v2;
+					
+					break;
 					
 				case datevaluetype:
-					return setdatevalue (timegreaterthan (v1.data.datevalue, v2.data.datevalue) ? v1.data.datevalue : v2.data.datevalue, v);
+					vResult = timegreaterthan( v2copy.data.datevalue, v1copy.data.datevalue ) ? &v1 : &v2;
+					
+					break;
 				
 				case singlevaluetype:
-					return setsinglevalue (min (v1.data.singlevalue, v2.data.singlevalue), v);
+					vResult = ( v1copy.data.singlevalue <= v2copy.data.singlevalue ) ? &v1 : &v2;
+					
+					break;
 				
 				case doublevaluetype:
-					return setdoublevalue (min (**v1.data.doublevalue, **v2.data.doublevalue), v);
+					vResult = ( **v1copy.data.doublevalue <= **v2copy.data.doublevalue ) ? &v1 : &v2;
+					
+					break;
 				
-				case stringvaluetype: {
+				case stringvaluetype:
+					vResult = ( comparehandles( v1copy.data.stringvalue, v2copy.data.stringvalue ) == 1 ) ? &v2 : &v1;
 					
-					Handle h;
-					
-					if (comparehandles (v1.data.stringvalue, v2.data.stringvalue) == 1)
-						copyhandle (v2.data.stringvalue, &h);
-					else
-						copyhandle (v1.data.stringvalue, &h);
-						
-					return (setheapvalue (h, stringvaluetype, v));
-					}
+					break;
 				
 				default:
 					langerror (comparisonnotpossibleerror);
@@ -127,80 +160,103 @@ static boolean mathfunctionvalue (short token, hdltreenode hparam1, tyvaluerecor
 					fl = false; /*operation is not defined*/
 					
 					break;
-				} /*switch*/
+			} /*switch*/
 			
-			return (false);
+			if ( vResult != NULL )
+			{
+				if ( copyvaluerecord( *vResult, v ) )
+					fl = true;
+				
+				disposevalues( &v1copy, &v2copy );
 			}
+			
+			return ( fl );
+		}
 		
 		case maxfunc: { /* 2004/12/29 smd */
 			
 			tyvaluerecord v1, v2;
-			boolean fl;
+			tyvaluerecord v1copy, v2copy;
+			tyvaluerecord * vResult = NULL;
+			boolean fl = false;
 			
-			if (!getparamvalue (hparam1, 1, &v1))
+			if (!getreadonlyparamvalue (hp1, 1, &v1))
 				break;
 			
 			flnextparamislast = true;
 			
-			if (!getparamvalue (hparam1, 2, &v2))
+			if (!getreadonlyparamvalue (hp1, 2, &v2))
 				break;
 			
-			if (!coercetypes (&v1, &v2)) {
-				
+			if (!copyvaluerecord (v1, &v1copy))  /* so that we don't coerce the original */
+				break;
+			
+			if (!copyvaluerecord (v2, &v2copy))  /* so that we don't coerce the original */
+				break;
+			
+			if (!coercetypes (&v1copy, &v2copy))
+			{
 				disposevalues (&v1, &v2);
 				
 				break;
 			}
 			
-			switch (v1.valuetype) {
+			switch (v1copy.valuetype) {
 				
 				case novaluetype: {  /* no test needed, nil is nil*/
 					initvalue (v, novaluetype);
-					return true;
+					
+					fl = true;
+					
+					break;
 					}
 				
-				case booleanvaluetype: /* just return an or */
-					return setbooleanvalue (v1.data.flvalue || v2.data.flvalue, v);
+				case booleanvaluetype: /* if v2 is true, then return v1 (false < true) */
+					vResult = v1copy.data.flvalue ? &v1 : &v2;
+					
+					break;
 				
 				/* all the rest return the greater of the two values */
 				case charvaluetype:
-					return setcharvalue (max (v1.data.chvalue, v2.data.chvalue), v);
+					vResult = ( v1copy.data.chvalue >= v2copy.data.chvalue ) ? &v1 : &v2;
+					
+					break;
 							
 				case intvaluetype:
-					return setintvalue (max (v1.data.intvalue, v2.data.intvalue), v);
+					vResult = ( v1copy.data.intvalue >= v2copy.data.intvalue ) ? &v1 : &v2;
+					
+					break;
 				
 				case longvaluetype:
-					return setlongvalue (max (v1.data.longvalue, v2.data.longvalue), v);
-				
 				case ostypevaluetype:
-					return setostypevalue (max (v1.data.longvalue, v2.data.longvalue), v);
+					vResult = ( v1copy.data.longvalue >= v2copy.data.longvalue ) ? &v1 : &v2;
 					
-/*				case fixedvaluetype:
-					return setfixedvalue (max (v1.data.longvalue, v2.data.longvalue), v);
-*/				
+					break;
+				
 				case directionvaluetype:
-					return setdirectionvalue (max ((short) v1.data.dirvalue, (short) v2.data.dirvalue), v);
+					vResult = ( (short) v1copy.data.dirvalue >= (short) v2copy.data.dirvalue ) ? &v1 : &v2;
+					
+					break;
 					
 				case datevaluetype:
-					return setdatevalue (timegreaterthan (v1.data.datevalue, v2.data.datevalue) ? v1.data.datevalue : v2.data.datevalue, v);
+					vResult = timegreaterthan( v1copy.data.datevalue, v2copy.data.datevalue ) ? &v1 : &v2;
+					
+					break;
 				
 				case singlevaluetype:
-					return setsinglevalue (max (v1.data.singlevalue, v2.data.singlevalue), v);
+					vResult = ( v1copy.data.singlevalue >= v2copy.data.singlevalue ) ? &v1 : &v2;
+					
+					break;
 				
 				case doublevaluetype:
-					return setdoublevalue (max (**v1.data.doublevalue, **v2.data.doublevalue), v);
+					vResult = ( **v1copy.data.doublevalue >= **v2copy.data.doublevalue ) ? &v1 : &v2;
+					
+					break;
 				
-				case stringvaluetype: {
+				case stringvaluetype:
+					vResult = ( comparehandles( v1copy.data.stringvalue, v2copy.data.stringvalue ) != -1 ) ? &v1 : &v2;
 					
-					Handle h;
-					
-					if (comparehandles (v1.data.stringvalue, v2.data.stringvalue) == 1)
-						copyhandle (v1.data.stringvalue, &h);
-					else
-						copyhandle (v2.data.stringvalue, &h);
-						
-					return (setheapvalue (h, stringvaluetype, v));
-					}
+					break;
 				
 				default:
 					langerror (comparisonnotpossibleerror);
@@ -208,10 +264,18 @@ static boolean mathfunctionvalue (short token, hdltreenode hparam1, tyvaluerecor
 					fl = false; /*operation is not defined*/
 					
 					break;
-				} /*switch*/
+			} /*switch*/
 			
-			return (false);
+			if ( vResult != NULL )
+			{
+				if ( copyvaluerecord( *vResult, v ) )
+					fl = true;
+				
+				disposevalues( &v1copy, &v2copy );
 			}
+			
+			return ( fl );
+		}
 		
 		case sqrtfunc: { /* 2004/12/29 smd */
 			
