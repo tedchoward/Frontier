@@ -3000,6 +3000,8 @@ boolean pullstringsuffix (bigstring bssource, bigstring bssuffix, unsigned char 
 boolean macromantoutf8 (Handle h, Handle hresult) {
 
 	/*
+	2006-05-03 creedon: fixed bug introduced in changeover to use converttextencoding function, reverse encIn and encOut
+				   values
 	2006-02-24 creedon: convert from Mac Roman character set to UTF-8, cribbed from ansitoutf8
 	*/
 	
@@ -3015,8 +3017,8 @@ boolean macromantoutf8 (Handle h, Handle hresult) {
 	
 	#ifdef MACVERSION
 		
-		encIn = kCFStringEncodingUTF8;
-		encOut = kTextEncodingMacRoman;
+		encIn = kTextEncodingMacRoman;
+		encOut = kCFStringEncodingUTF8;
 	
 	#endif
 	
