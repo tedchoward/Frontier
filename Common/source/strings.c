@@ -2547,15 +2547,15 @@ static boolean getTextEncodingIDFromIANA( bigstring bsEncodingName, long * encod
 boolean isTextEncodingAvailable( bigstring bsEncodingName )
 {
 	long encodingId;
+	boolean fl;
 	
 	disablelangerror();
 	
-	if ( ! getTextEncodingIDFromIANA( bsEncodingName, &encodingId ) )
-		return (false);
+	fl = getTextEncodingIDFromIANA( bsEncodingName, &encodingId );
 	
 	enablelangerror();
 	
-	return ( true );
+	return ( fl );
 }
 
 static boolean converttextencoding( Handle h, Handle hresult, const long inputcharset, const long outputcharset, long * OSStatusCode )
