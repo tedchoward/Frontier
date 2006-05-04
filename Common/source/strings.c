@@ -81,7 +81,7 @@ static byte bshexprefix [] = STR_hexprefix;
 /* declarations */
 
 static boolean converttextencoding( Handle, Handle, const long, const long, long * );
-static boolean getTextEncodingID( bigstring, long * );
+static boolean getTextEncodingIDFromIANA( bigstring, long * );
 
 #ifdef WIN95VERSION
 	static boolean UnicodeToAnsi(Handle, Handle, unsigned long, long *);
@@ -2466,7 +2466,7 @@ static boolean AnsiToUnicode( Handle h, Handle hresult, unsigned long encoding, 
 
 /* convert an "internet name" for an encoding into a platform-specific id for the character set */
 
-static boolean getTextEncodingID( bigstring bsEncodingName, long * encodingId )
+static boolean getTextEncodingIDFromIANA( bigstring bsEncodingName, long * encodingId )
 {
 	#ifdef MACVERSION
 
@@ -2548,30 +2548,14 @@ boolean isTextEncodingAvailable( bigstring bsEncodingName )
 {
 	long encodingId;
 	
-	if ( ! getTextEncodingID( bsEncodingName, &encodingId ) )
-	{
-		/*
-			if the encoding isn't recognized then getTextEncodingId set an error
-			we need to clear that error
-		*/
-		langerrorclear();
-
+	disablelangerror();
+	
+	if ( ! getTextEncodingIDFromIANA( bsEncodingName, &encodingId ) )
 		return (false);
-	}
 	
-	#ifdef MACVERSION
+	enablelangerror();
 	
-		// the mac version has no encoding id 0, so this means a failure
-		return ( encodingId >= 0 );
-	
-	#endif
-	
-	#ifdef WIN95VERSION
-	
-		// we use 0 to refer to UTF-16 on Windows, as it's the default character set and seems to have no code page
-		return (true);
-	
-	#endif
+	return ( true );
 }
 
 static boolean converttextencoding( Handle h, Handle hresult, const long inputcharset, const long outputcharset, long * OSStatusCode )
@@ -2732,10 +2716,10 @@ boolean convertCharset( Handle hString, Handle hresult, bigstring charsetIn, big
 
 	#endif
 	
-	if ( ! getTextEncodingID( charsetIn, (long *) &teInputSet ) )
+	if ( ! getTextEncodingIDFromIANA( charsetIn, (long *) &teInputSet ) )
 		return (false);
 	
-	if ( ! getTextEncodingID( charsetOut, (long *) &teOutputSet ) )
+	if ( ! getTextEncodingIDFromIANA( charsetOut, (long *) &teOutputSet ) )
 		return (false);
 	
 	if ( ! converttextencoding( hString, hresult, (long) teInputSet, (long) teOutputSet, &err ) )
