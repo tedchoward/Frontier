@@ -4373,6 +4373,8 @@ boolean wpsetselection (long startsel, long endsel) {
 	
 	wpdirtyselectioninfo ();
 	
+	wpupdate();  // 2006-05-04 smd: bug fix. background color will now be restored properly, so only the selected text looks selected
+	
 	return (true);
 	} /*wpsetselection*/
 
