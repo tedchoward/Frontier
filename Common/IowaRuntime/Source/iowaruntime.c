@@ -58,6 +58,7 @@
 #define	copyCmd		4
 #define	pasteCmd	5
 #define clearCmd	6
+#define selectAllCmd	8
 #endif
 
 
@@ -1719,6 +1720,11 @@ boolean cardEditCommand (short editcommand) {
 			
 		case clearCmd:
 			editreplace ("\p", hedit);
+			
+			break;
+			
+		case selectAllCmd:  /* 2006-05-04 smd */
+			editselectall (hedit);
 			
 			break;
 			

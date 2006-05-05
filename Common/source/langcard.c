@@ -145,6 +145,9 @@ static void modalcardeventfilter (EventRecord *ev) {
 						shellwritescrap (textscraptype);
 						cardEditCommand (pasteitem); break;
 					
+					case 'a':
+						cardEditCommand (selectallitem); break;
+					
 					default:
 						handled = false; break;
 					}
