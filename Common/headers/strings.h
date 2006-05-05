@@ -162,6 +162,7 @@ extern void copyctopstring (const char *, bigstring);
 
 #ifdef WIN95VERSION
 extern boolean copyWideToPString (const wchar_t *, bigstring);
+extern boolean copyPStringToWide (bigstring, long *, wchar_t *);
 extern void copyrezstring (const bigstring, bigstring);
 #endif
 
