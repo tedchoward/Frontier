@@ -283,7 +283,7 @@ boolean pictunpack (Handle hpacked, long *ixload, hdlpictrecord *hpict) {
 	
 	hp = *hpict; /*copy into register*/
 	
-	recttodiskrect (&(**hp).windowrect, &header.windowrect);
+	diskrecttorect (&header.windowrect, &(**hp).windowrect);
 	
 	(**hp).timecreated = conditionallongswap (header.timecreated);
 	
