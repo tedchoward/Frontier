@@ -1,0 +1,195 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist SYSTEM "file://localhost/System/Library/DTDs/PropertyList.dtd">
+<plist version="0.9">
+<dict>
+	<key>CFBundleDevelopmentRegion</key>
+	<string>English</string>
+	<key>CFBundleDocumentTypes</key>
+	<array>
+		<dict>
+			<key>CFBundleTypeExtensions</key>
+			<array>
+				<string>ftds</string>
+			</array>
+			<key>CFBundleTypeIconFile</key>
+			<string>130</string>
+			<key>CFBundleTypeName</key>
+			<string>Frontier Desktop Script</string>
+			<key>CFBundleTypeOSTypes</key>
+			<array>
+				<string>FTds</string>
+			</array>
+			<key>CFBundleTypeRole</key>
+			<string>Editor</string>
+		</dict>
+		<dict>
+			<key>CFBundleTypeExtensions</key>
+			<array>
+				<string>ftwp</string>
+			</array>
+			<key>CFBundleTypeIconFile</key>
+			<string>135</string>
+			<key>CFBundleTypeName</key>
+			<string>Frontier WP Text Document</string>
+			<key>CFBundleTypeOSTypes</key>
+			<array>
+				<string>FTwp</string>
+			</array>
+			<key>CFBundleTypeRole</key>
+			<string>Editor</string>
+		</dict>
+		<dict>
+			<key>CFBundleTypeExtensions</key>
+			<array>
+				<string>ftop</string>
+			</array>
+			<key>CFBundleTypeIconFile</key>
+			<string>133</string>
+			<key>CFBundleTypeName</key>
+			<string>Frontier Outline</string>
+			<key>CFBundleTypeOSTypes</key>
+			<array>
+				<string>FTop</string>
+			</array>
+			<key>CFBundleTypeRole</key>
+			<string>Editor</string>
+		</dict>
+		<dict>
+			<key>CFBundleTypeExtensions</key>
+			<array>
+				<string>ftmb</string>
+			</array>
+			<key>CFBundleTypeIconFile</key>
+			<string>136</string>
+			<key>CFBundleTypeName</key>
+			<string>Frontier Menubar</string>
+			<key>CFBundleTypeOSTypes</key>
+			<array>
+				<string>FTmb</string>
+			</array>
+			<key>CFBundleTypeRole</key>
+			<string>Editor</string>
+		</dict>
+		<dict>
+			<key>CFBundleTypeExtensions</key>
+			<array>
+				<string>fttb</string>
+			</array>
+			<key>CFBundleTypeIconFile</key>
+			<string>137</string>
+			<key>CFBundleTypeName</key>
+			<string>Frontier Table</string>
+			<key>CFBundleTypeOSTypes</key>
+			<array>
+				<string>FTtb</string>
+			</array>
+			<key>CFBundleTypeRole</key>
+			<string>Editor</string>
+		</dict>
+		<dict>
+			<key>CFBundleTypeExtensions</key>
+			<array>
+				<string>root</string>
+			</array>
+			<key>CFBundleTypeIconFile</key>
+			<string>129</string>
+			<key>CFBundleTypeName</key>
+			<string>Frontier Database</string>
+			<key>CFBundleTypeOSTypes</key>
+			<array>
+				<string>TABL</string>
+			</array>
+			<key>CFBundleTypeRole</key>
+			<string>Editor</string>
+		</dict>
+		<dict>
+			<key>CFBundleTypeExtensions</key>
+			<array>
+				<string>ftsc</string>
+			</array>
+			<key>CFBundleTypeIconFile</key>
+			<string>134</string>
+			<key>CFBundleTypeName</key>
+			<string>Frontier Script</string>
+			<key>CFBundleTypeOSTypes</key>
+			<array>
+				<string>FTsc</string>
+			</array>
+			<key>CFBundleTypeRole</key>
+			<string>Editor</string>
+		</dict>
+		<dict>
+			<key>CFBundleTypeExtensions</key>
+			<array>
+				<string>ftpc</string>
+			</array>
+			<key>CFBundleTypeIconFile</key>
+			<string>138</string>
+			<key>CFBundleTypeName</key>
+			<string>Frontier Picture</string>
+			<key>CFBundleTypeOSTypes</key>
+			<array>
+				<string>FTpc</string>
+			</array>
+			<key>CFBundleTypeRole</key>
+			<string>Editor</string>
+		</dict>
+		<dict>
+			<key>CFBundleTypeExtensions</key>
+			<array>
+				<string>card</string>
+			</array>
+			<key>CFBundleTypeIconFile</key>
+			<string>132</string>
+			<key>CFBundleTypeName</key>
+			<string>Frontier MacBird Card</string>
+			<key>CFBundleTypeOSTypes</key>
+			<array>
+				<string>CARD</string>
+			</array>
+			<key>CFBundleTypeRole</key>
+			<string>Editor</string>
+		</dict>
+		<dict>
+			<key>CFBundleTypeExtensions</key>
+			<array>
+				<string>fat</string>
+				<string>fatp</string>
+			</array>
+			<key>CFBundleTypeIconFile</key>
+			<string>131</string>
+			<key>CFBundleTypeName</key>
+			<string>Frontier Fat Page</string>
+			<key>CFBundleTypeOSTypes</key>
+			<array>
+				<string>FATP</string>
+				<string>FAT </string>
+			</array>
+			<key>CFBundleTypeRole</key>
+			<string>Editor</string>
+		</dict>
+	</array>
+	<key>CFBundleIconFile</key>
+	<string>128</string>
+	<key>CFBundleIdentifier</key>
+	<string>com.UserLand.Frontier</string>
+	<key>CFBundleInfoDictionaryVersion</key>
+	<string>6.0</string>
+	<key>CFBundleLongVersionString</key>
+	<string>9.0, Copyright 1992-2002 UserLand Software, Inc.</string>
+	<key>CFBundleName</key>
+	<string>Frontier</string>
+	<key>CFBundlePackageType</key>
+	<string>APPL</string>
+	<key>CFBundleShortVersionString</key>
+	<string>9.0</string>
+	<key>CFBundleSignature</key>
+	<string>LAND</string>
+	<key>LSRequiresCarbon</key>
+	<true/>
+	<key>NSAppleScriptEnabled</key>
+	<string>Yes</string>
+	<key>NSHumanReadableCopyright</key>
+	<string>Copyright 1992-2002 UserLand Software, Inc.</string>
+</dict>
+</plist>
