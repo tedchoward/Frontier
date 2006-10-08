@@ -345,7 +345,7 @@
 				Name="VCCLCompilerTool"
 				Optimization="0"
 				InlineFunctionExpansion="2"
-				AdditionalIncludeDirectories="..\Common\headers,..\Common\SystemHeaders,..\Common\Paige\headers,..\Common\PCRE"
+				AdditionalIncludeDirectories="..\Common\headers;..\Common\SystemHeaders;..\Common\Paige\headers;..\Common\PCRE;..\Common\sqlite3"
 				PreprocessorDefinitions="_DEBUG;FRONTIERCOM=1;WIN95VERSION;_WINDOWS;WIN32;WIN32_COMPILE"
 				RuntimeLibrary="1"
 				StructMemberAlignment="2"
@@ -4615,6 +4615,10 @@
 					</FileConfiguration>
 				</File>
 				<File
+					RelativePath="..\Common\source\langsqlite.c"
+					>
+				</File>
+				<File
 					RelativePath="..\Common\source\langstartup.c"
 					>
 					<FileConfiguration
@@ -8546,6 +8550,218 @@
 					</FileConfiguration>
 				</File>
 			</Filter>
+			<Filter
+				Name="sqlite"
+				>
+				<File
+					RelativePath="..\Common\sqlite3\alter.c"
+					>
+				</File>
+				<File
+					RelativePath="..\Common\sqlite3\analyze.c"
+					>
+				</File>
+				<File
+					RelativePath="..\Common\sqlite3\attach.c"
+					>
+				</File>
+				<File
+					RelativePath="..\Common\sqlite3\auth.c"
+					>
+				</File>
+				<File
+					RelativePath="..\Common\sqlite3\btree.c"
+					>
+				</File>
+				<File
+					RelativePath="..\Common\sqlite3\build.c"
+					>
+				</File>
+				<File
+					RelativePath="..\Common\sqlite3\callback.c"
+					>
+				</File>
+				<File
+					RelativePath="..\Common\sqlite3\complete.c"
+					>
+				</File>
+				<File
+					RelativePath="..\Common\sqlite3\date.c"
+					>
+				</File>
+				<File
+					RelativePath="..\Common\sqlite3\delete.c"
+					>
+				</File>
+				<File
+					RelativePath="..\Common\sqlite3\expr.c"
+					>
+				</File>
+				<File
+					RelativePath="..\Common\sqlite3\func.c"
+					>
+				</File>
+				<File
+					RelativePath="..\Common\sqlite3\hash.c"
+					>
+				</File>
+				<File
+					RelativePath="..\Common\sqlite3\insert.c"
+					>
+				</File>
+				<File
+					RelativePath="..\Common\sqlite3\legacy.c"
+					>
+				</File>
+				<File
+					RelativePath="..\Common\sqlite3\loadext.c"
+					>
+				</File>
+				<File
+					RelativePath="..\Common\sqlite3\main.c"
+					>
+					<FileConfiguration
+						Name="DbTracker|Win32"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+							ObjectFile="$(IntDir)\$(InputName)1.obj"
+							XMLDocumentationFileName="$(IntDir)\$(InputName)1.xdc"
+						/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="MemTracker|Win32"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+							ObjectFile="$(IntDir)\$(InputName)1.obj"
+							XMLDocumentationFileName="$(IntDir)\$(InputName)1.xdc"
+						/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release|Win32"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+							ObjectFile="$(IntDir)\$(InputName)1.obj"
+							XMLDocumentationFileName="$(IntDir)\$(InputName)1.xdc"
+						/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Debug|Win32"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+							ObjectFile="$(IntDir)\$(InputName)1.obj"
+							XMLDocumentationFileName="$(IntDir)\$(InputName)1.xdc"
+						/>
+					</FileConfiguration>
+				</File>
+				<File
+					RelativePath="..\Common\sqlite3\opcodes.c"
+					>
+				</File>
+				<File
+					RelativePath="..\Common\sqlite3\os.c"
+					>
+				</File>
+				<File
+					RelativePath="..\Common\sqlite3\os_os2.c"
+					>
+				</File>
+				<File
+					RelativePath="..\Common\sqlite3\os_unix.c"
+					>
+				</File>
+				<File
+					RelativePath="..\Common\sqlite3\os_win.c"
+					>
+				</File>
+				<File
+					RelativePath="..\Common\sqlite3\pager.c"
+					>
+				</File>
+				<File
+					RelativePath="..\Common\sqlite3\parse.c"
+					>
+				</File>
+				<File
+					RelativePath="..\Common\sqlite3\pragma.c"
+					>
+				</File>
+				<File
+					RelativePath="..\Common\sqlite3\prepare.c"
+					>
+				</File>
+				<File
+					RelativePath="..\Common\sqlite3\printf.c"
+					>
+				</File>
+				<File
+					RelativePath="..\Common\sqlite3\random.c"
+					>
+				</File>
+				<File
+					RelativePath="..\Common\sqlite3\select.c"
+					>
+				</File>
+				<File
+					RelativePath="..\Common\sqlite3\table.c"
+					>
+				</File>
+				<File
+					RelativePath="..\Common\sqlite3\tokenize.c"
+					>
+				</File>
+				<File
+					RelativePath="..\Common\sqlite3\trigger.c"
+					>
+				</File>
+				<File
+					RelativePath="..\Common\sqlite3\update.c"
+					>
+				</File>
+				<File
+					RelativePath="..\Common\sqlite3\utf.c"
+					>
+				</File>
+				<File
+					RelativePath="..\Common\sqlite3\util.c"
+					>
+				</File>
+				<File
+					RelativePath="..\Common\sqlite3\vacuum.c"
+					>
+				</File>
+				<File
+					RelativePath="..\Common\sqlite3\vdbe.c"
+					>
+				</File>
+				<File
+					RelativePath="..\Common\sqlite3\vdbeapi.c"
+					>
+				</File>
+				<File
+					RelativePath="..\Common\sqlite3\vdbeaux.c"
+					>
+				</File>
+				<File
+					RelativePath="..\Common\sqlite3\vdbefifo.c"
+					>
+				</File>
+				<File
+					RelativePath="..\Common\sqlite3\vdbemem.c"
+					>
+				</File>
+				<File
+					RelativePath="..\Common\sqlite3\vtab.c"
+					>
+				</File>
+				<File
+					RelativePath="..\Common\sqlite3\where.c"
+					>
+				</File>
+			</Filter>
 		</Filter>
 		<Filter
 			Name="Resource Files"
@@ -8790,6 +9006,10 @@
 			</File>
 			<File
 				RelativePath="..\Common\headers\langregexp.h"
+				>
+			</File>
+			<File
+				RelativePath="..\Common\headers\langsqlite.h"
 				>
 			</File>
 			<File
@@ -9152,6 +9372,62 @@
 				RelativePath="..\Common\headers\zoom.h"
 				>
 			</File>
+			<Filter
+				Name="sqlite"
+				>
+				<File
+					RelativePath="..\Common\sqlite3\btree.h"
+					>
+				</File>
+				<File
+					RelativePath="..\Common\sqlite3\hash.h"
+					>
+				</File>
+				<File
+					RelativePath="..\Common\sqlite3\keywordhash.h"
+					>
+				</File>
+				<File
+					RelativePath="..\Common\sqlite3\opcodes.h"
+					>
+				</File>
+				<File
+					RelativePath="..\Common\sqlite3\os.h"
+					>
+				</File>
+				<File
+					RelativePath="..\Common\sqlite3\os_common.h"
+					>
+				</File>
+				<File
+					RelativePath="..\Common\sqlite3\pager.h"
+					>
+				</File>
+				<File
+					RelativePath="..\Common\sqlite3\parse.h"
+					>
+				</File>
+				<File
+					RelativePath="..\Common\sqlite3\sqlite3.h"
+					>
+				</File>
+				<File
+					RelativePath="..\Common\sqlite3\sqlite3ext.h"
+					>
+				</File>
+				<File
+					RelativePath="..\Common\sqlite3\sqliteInt.h"
+					>
+				</File>
+				<File
+					RelativePath="..\Common\sqlite3\vdbe.h"
+					>
+				</File>
+				<File
+					RelativePath="..\Common\sqlite3\vdbeInt.h"
+					>
+				</File>
+			</Filter>
 		</Filter>
 	</Files>
 	<Globals>

@@ -202,6 +202,8 @@
 #define frnonexistantgroupnameerror 160
 #define replaceitemerror 161 /* 2005-09-26 creedon */
 #define cmdshellnotfounderror 162 /* 2006-03-10 aradke */
+#define sqliteopenerror 163 /* 2006-03-17 gewirtz */
+#define sqlitedberror 164 /* 2006-03-17 gewirtz */
 
 #define langstacklist 137
 

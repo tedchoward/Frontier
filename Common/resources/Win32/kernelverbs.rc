@@ -1077,3 +1077,26 @@
 			"hmacSHA1\0",
 	END
 
+1026 /* sqliteverbs */ EFP DISCARDABLE
+ BEGIN
+ 1,      // Number of "blocks" in this resource
+  "sqlite\0",    // Function Processor name
+  false,     // Window required
+   15,   // Count of verbs
+   "open\0",
+   "compileQuery\0",
+   "clearQuery\0",
+   "resetQuery\0",
+   "stepQuery\0",
+   "getColumnCount\0",
+   "getColumnType\0",
+   "getColumnInt\0",
+   "getColumnDouble\0",
+   "getColumnText\0",
+   "getColumnName\0",
+   "getColumn\0",
+   "getRow\0",
+   "getErrorMessage\0",
+   "close\0"
+ END
+

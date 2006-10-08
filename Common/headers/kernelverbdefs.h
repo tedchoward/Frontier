@@ -51,4 +51,4 @@
 #define idregexpverbs		1023 /*2003-04-22 AR: regular expression verbs*/
 #define idmathverbs			1024 /*2004-12-29 SMD: extended math verbs*/
 #define idcryptverbs			1025 /* 2006-03-07 creedon: crypt verbs */
-
+#define idsqliteverbs  1026 /* 2006-03-15 gewirtz sqlite verbs */
