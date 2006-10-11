@@ -245,7 +245,7 @@
 				Name="VCCLCompilerTool"
 				Optimization="4"
 				InlineFunctionExpansion="2"
-				AdditionalIncludeDirectories="..\Common\headers,..\Common\SystemHeaders,..\Common\Paige\headers,..\Common\PCRE"
+				AdditionalIncludeDirectories="..\Common\headers;..\Common\SystemHeaders;..\Common\Paige\headers;..\Common\PCRE;..\Common\sqlite3"
 				PreprocessorDefinitions="NDEBUG;FRONTIERCOM=1;WIN95VERSION;_WINDOWS;WIN32;FRONTIERWEB=0;WIN32_COMPILE"
 				RuntimeLibrary="0"
 				StructMemberAlignment="2"
