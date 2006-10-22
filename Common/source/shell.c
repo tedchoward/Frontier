@@ -28,7 +28,7 @@
 #include "frontier.h"
 #include "standard.h"
   
-#ifdef MACVERSION 
+#ifdef MACVERSION
 #include <land.h>
 #include <SetUpA5.h>
 #include "player.h" /*7.0b4 PBS*/
@@ -1038,11 +1038,6 @@ boolean shellstart (void) {
 	//#endif
 	#endif
 	
-	#ifdef flsystem6
-		if ((**landgetglobals ()).transport != macsystem7) /*under system 7, we wait for appleevents*/
-			shellopeninitialfiles ();
-	#endif
-
 	#ifdef WIN95VERSION
 		shellopeninitialfiles ();
 	#endif

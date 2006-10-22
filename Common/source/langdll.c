@@ -29,7 +29,10 @@
 #include "standard.h"
 
 #ifdef MACVERSION
-#include "langxcmd.h"
+
+	#include "langxcmd.h"
+	#include "MoreFilesX.h"
+	
 #endif
 
 #include "memory.h"
@@ -1000,10 +1003,13 @@ static void addprocinfo (tydllinfohandle hdll, typrocinfohandle hprocinfo) {
 
 static boolean locateprocinfo (tydllinfohandle hdll, bigstring bsprocname, typrocinfohandle *hprocinfoptr) {
 
-	/*
-	Look up the proc name in the hash table of procs
-	*/
+	//
+	// Look up the proc name in the hash table of procs
+	//
+	// 2006-06-25 creedon: for Mac, FSRef-ized
+	//
 
+	bigstring bs;
 	typrocinfohandle hnomad;
 	tyfilespec fs = (**hdll).fs;
 	long ixhashbucket;
@@ -1024,12 +1030,14 @@ static boolean locateprocinfo (tydllinfohandle hdll, bigstring bsprocname, typro
 			}
 		
 		hnomad = (**hnomad).hashlink;
-		}/*while*/
+		} // while
 	
-	lang2paramerror (cantfindprocinfofunctionerror, bsprocname, fsname (&fs));
+	getfsfile ( &fs, bs );
+	
+	lang2paramerror (cantfindprocinfofunctionerror, bsprocname,  bs );
 
 	return (false);
-	} /*locateprocinfo*/
+	} // locateprocinfo
 
 
 static void freeprocinfobuckets (tydllinfohandle hdll) {
@@ -1100,18 +1108,24 @@ static typrocinfohandle newprocinfo (char *pname, long lenname, char *pparams, l
 
 static boolean loadprocinforesource (tydllinfohandle hdll) {
 
-	/*
-	Platoform-specific code for loading the library's ProcInfo resource
-	
-	Caller is responsible for setting langerror
-	*/
+	//
+	// Platoform-specific code for loading the library's ProcInfo resource
+	//
+	// Caller is responsible for setting langerror
+	//
+	// 2006-06-25 creedon: for Mac, FSRef-ized
+	//
 
 	#ifdef MACVERSION
+	
 		tyfilespec fs = (**hdll).fs;
 		short resfile;
 		Handle hRes;
+		HFSUniStr255 resourceforkname;
+		
+		FSGetResourceForkName ( &resourceforkname );
 
-		resfile = FSpOpenResFile (&fs, fsRdPerm);
+		FSOpenFork ( &fs.fsref, resourceforkname.length, resourceforkname.unicode, fsRdWrPerm, &resfile );
 
 		if (ResError() == noErr) {
 			
@@ -1128,11 +1142,14 @@ static boolean loadprocinforesource (tydllinfohandle hdll) {
 				(**hdll).resdata = *hRes;
 				}
 			
-			CloseResFile (resfile);
+			FSCloseFork ( resfile );
+			
 			}
+			
 	#endif
 
 	#ifdef WIN95VERSION
+	
 		HRSRC frh;
 		HGLOBAL rh;
 
@@ -1152,7 +1169,7 @@ static boolean loadprocinforesource (tydllinfohandle hdll) {
 	#endif
 
 	return ((**hdll).hres != NULL);
-	} /*loadprocinforesource*/
+	} // loadprocinforesource
 
 
 static void unloadprocinforesource (tydllinfohandle hdll) {
@@ -1215,7 +1232,9 @@ static boolean parseprocinforesource (tydllinfohandle hdll, bigstring bsprocname
 		"I Counter ;Count the next number\0",
 		"\0\0"
 		END
- 
+	
+	2006-06-25 creedon: for Mac, FSRef-ized
+
  	*/
 
 	typrocinfohandle hprocinfo;
@@ -1232,11 +1251,17 @@ static boolean parseprocinforesource (tydllinfohandle hdll, bigstring bsprocname
 	if (!loadprocinforesource (hdll)) {
 	
 		tyfilespec fs = (**hdll).fs;
+		bigstring bs;
+		
+		getfsfile ( &fs, bs );
 		
 		if (bsprocname != nil)
-			lang2paramerror (cantfindprocinfoerror, bsprocname, fsname (&fs));
+		
+			lang2paramerror (cantfindprocinfoerror, bsprocname,  bs);
+			
 		else
-			langparamerror (cantfindprocinfoloaderror, fsname (&fs));
+			langparamerror (cantfindprocinfoloaderror, bs );
+			
 			
 		return (false);
 		}
@@ -1380,7 +1405,7 @@ static void removelibrary (tydllinfohandle hdll) {
 	} /*removelibrary*/
 
 
-static tydllinfohandle getlibrary (const tyfilespec *fs) {
+static tydllinfohandle getlibrary (const ptrfilespec fs) {
 
 	/*
 	Search linked list of stay-resident libraries for one with the given file path
@@ -1401,7 +1426,7 @@ static tydllinfohandle getlibrary (const tyfilespec *fs) {
 	} /*getlibrary*/
 
 
-static tydllinfohandle newlibrary (const tyfilespec *fs) {
+static tydllinfohandle newlibrary (const ptrfilespec fs) {
 
 	/*
 	Allocate and clear a handle for the library
@@ -1441,70 +1466,84 @@ static void freelibrary (tydllinfohandle hdll) {
 
 static boolean openlibrary (tydllinfohandle hdll) {
 
-	/*
-	Platform-specific code for loading the library code into memory
-	*/
+	//
+	// Platform-specific code for loading the library code into memory
+	//
+	// 2006-06-25 creedon: for Mac, FSRef-ized
+	//
 
 	tyfilespec fs = (**hdll).fs;
 
-#ifdef WIN95VERSION
-
-	bigstring fn;
-
-	#if (FRONTIERCOM == 1)
-		filefrompath ((ptrstring) fsname (&fs), fn);
-
-		nullterminate(fn);
-
-		if (stricmp (stringbaseaddress(fn), "COMDLL.DLL") == 0) {
-		
-			(**hdll).hdllsyshandle = (tydllsyshandle) COMStartup(); /*** FIXME: make sure we deal properly with the COM DLL ***/
+	#ifdef WIN95VERSION
+	
+		bigstring fn;
+	
+		#if (FRONTIERCOM == 1)
+			filefrompath ((ptrstring) fsname (&fs), fn);
+	
+			nullterminate(fn);
+	
+			if (stricmp (stringbaseaddress(fn), "COMDLL.DLL") == 0) {
 			
-			return ((**hdll).hdllsyshandle != nil);
-			}
-	#endif
-
-	copystring (fsname (&fs), fn);
+				(**hdll).hdllsyshandle = (tydllsyshandle) COMStartup(); /*** FIXME: make sure we deal properly with the COM DLL ***/
+				
+				return ((**hdll).hdllsyshandle != nil);
+				}
+		#endif
 	
-	nullterminate(fn);
-
-	(**hdll).hdllsyshandle = LoadLibrary (stringbaseaddress(fn));
-
-#endif
-
-#ifdef MACVERSION
-
-	long response;
-	OSErr err;
-	CFragConnectionID connID;
-	Ptr mainAddr;
-	Str255 errName;
-	
-	err = Gestalt (gestaltCFMAttr, &response);	/* make sure we have the Code Fragment Manager (CFM) */
-	
-	if ((err != noErr) || (response & (1 << gestaltCFMPresent)) == 0)
-		goto exit;
-	
-	err = GetDiskFragment (&fs, 0, kCFragGoesToEOF, fsname (&fs), kReferenceCFrag, &connID, &mainAddr, errName);
-	
-	if (err != noErr)
-		goto exit;
+		copystring (fsname (&fs), fn);
 		
-	(**hdll).hdllsyshandle = connID;
-
-exit:
-
-#endif
+		nullterminate(fn);
 	
+		(**hdll).hdllsyshandle = LoadLibrary (stringbaseaddress(fn));
+	
+	#endif
+	
+	#ifdef MACVERSION
+	
+		long response;
+		OSErr err;
+		CFragConnectionID connID;
+		Ptr mainAddr;
+		Str255 errName;
+		
+		err = Gestalt (gestaltCFMAttr, &response);	/* make sure we have the Code Fragment Manager (CFM) */
+		
+		if ((err != noErr) || (response & (1 << gestaltCFMPresent)) == 0)
+			goto exit;
+			
+		bigstring bs;
+		FSSpec fst;
+		
+		getfsfile ( &fs, bs );
+		
+		FSRefMakeFSSpec ( &fs.fsref, &fst );
+		
+		err = GetDiskFragment (&fst, 0, kCFragGoesToEOF, bs, kReferenceCFrag, &connID, &mainAddr, errName);
+		
+		if (err != noErr)
+			goto exit;
+			
+		(**hdll).hdllsyshandle = connID;
+	
+	exit:
+	
+	#endif
+		
 	if ((**hdll).hdllsyshandle == NULL) {
 	
-		lang2paramerror (cantconnecttodllerror, bsfunctionname, fsname (&fs));
+		bigstring bs;
+		
+		getfsfile ( &fs, bs );
+	
+		lang2paramerror (cantconnecttodllerror, bsfunctionname, bs );
 		
 		return (false);
 		}
 	
 	return (true);
-	} /*openlibrary*/
+	
+	} // openlibrary
 
 
 static void closelibrary (tydllinfohandle hdll) {
@@ -1538,7 +1577,7 @@ static void closelibrary (tydllinfohandle hdll) {
 	} /*closelibrary*/
 
 
-static tydllinfohandle loadlibrary (const tyfilespec *fs) {
+static tydllinfohandle loadlibrary (const ptrfilespec fs) {
 	
 	/*
 	Load the library into memory and prepare it for use
@@ -1713,32 +1752,38 @@ static boolean lookupprocaddress (tydllinfohandle hdll, typrocinfohandle hprocin
 
 static boolean callprocwithparams (tydllinfohandle hdll, typrocinfohandle hprocinfo, tydllparamblock *params, tyvaluerecord *vreturned) {
 	
-	/*
-	Call the library proc with the given set of parameters
-	
-	If the proc address hasn't been looked up yet, we do so now and save it for later
-	
-	After completing the call, we set up the result value or the error message
-	*/
+	//
+	// Call the library proc with the given set of parameters
+	//
+	// If the proc address hasn't been looked up yet, we do so now and save it for later
+	//
+	// After completing the call, we set up the result value or the error message
+	//
+	// 2006-06-25 creedon: for Mac, FSRef-ized
+	//
 	
 	boolean fl = false;
 
-	lockhandle ((Handle) hprocinfo); /* just to be sure our data doesn't move around */
+	lockhandle ((Handle) hprocinfo); // just to be sure our data doesn't move around
 
-	/* If procaddress is undefined, look it up now and save it for future reference */
+	// If procaddress is undefined, look it up now and save it for future reference
 	
 	if ((**hprocinfo).procaddress == nil)
 	
 		if (!lookupprocaddress (hdll, hprocinfo)) {
 		
+			bigstring bs;
+			
 			tyfilespec fs = (**hdll).fs;
 			
-			lang2paramerror (cantfinddllfunctionerror, (**hprocinfo).bsprocname, fsname (&fs));
+			getfsfile ( &fs, bs );
+			
+			lang2paramerror (cantfinddllfunctionerror, (**hprocinfo).bsprocname, bs );
 		
 			goto exit;
 			}
 
-	/* Now release the thread globals, call the library proc, and grab the thread globals again */
+	// Now release the thread globals, call the library proc, and grab the thread globals again
 
 	releasethreadglobals ();
 	
@@ -1754,7 +1799,7 @@ static boolean callprocwithparams (tydllinfohandle hdll, typrocinfohandle hproci
 	
 	grabthreadglobals ();
 
-	/* Set up the return value of the call or the error message */
+	// Set up the return value of the call or the error message
 	
 	if (fl) {
 	
@@ -1788,7 +1833,8 @@ exit:
 	unlockhandle ((Handle) hprocinfo);
 		
 	return (fl);
-	} /*callprocwithparams*/
+	
+	} // callprocwithparams
 
 
 static boolean callproc (hdltreenode hparam1, tydllinfohandle hdll, typrocinfohandle hprocinfo, tyvaluerecord *vreturned) {
@@ -1855,7 +1901,7 @@ static boolean callstayresident (hdltreenode hparam1, tydllinfohandle hdll, bigs
 	} /*callstayresident*/
 
 
-static boolean callvolatile (hdltreenode hparam1, const tyfilespec *fs, bigstring bsprocname, tyvaluerecord *vreturned) {
+static boolean callvolatile (hdltreenode hparam1, const ptrfilespec fs, bigstring bsprocname, tyvaluerecord *vreturned) {
 
 	/*
 	Load the library just for this call, get the procinfo, make the call, and unload the library
@@ -1901,7 +1947,7 @@ static boolean callvolatile (hdltreenode hparam1, const tyfilespec *fs, bigstrin
 	} /*callvolatile*/
 
 
-static boolean islibraryloaded (const tyfilespec *fs) {
+static boolean islibraryloaded (const ptrfilespec fs) {
 	
 	/*
 	Implements the dll.isloaded kernel verb
@@ -1913,7 +1959,7 @@ static boolean islibraryloaded (const tyfilespec *fs) {
 	} /*islibraryloaded*/
 
 
-static boolean dodllload (const tyfilespec *fs, tydllinfohandle *hdllptr) {
+static boolean dodllload (const ptrfilespec fs, tydllinfohandle *hdllptr) {
 	
 	/*
 	Implements dll.load kernel verb
@@ -1948,7 +1994,7 @@ static boolean dodllload (const tyfilespec *fs, tydllinfohandle *hdllptr) {
 	} /*dodllload*/
 
 
-static boolean dodllunload (const tyfilespec *fs) {
+static boolean dodllunload (const ptrfilespec fs) {
 
 	/*
 	Implements dll.unload kernel verb
@@ -1971,7 +2017,7 @@ static boolean dodllunload (const tyfilespec *fs) {
 	} /*dodllunload*/
 
 
-static boolean dodllcall (hdltreenode hparam1, const tyfilespec *fs, bigstring bsprocname, tyvaluerecord *vreturned) {
+static boolean dodllcall (hdltreenode hparam1, const ptrfilespec fs, bigstring bsprocname, tyvaluerecord *vreturned) {
 
 	/*
 	Implements the dll.call kernel verb
@@ -2067,7 +2113,7 @@ static boolean parseprocdata (bigstring bsprocname, tydllmoduleinfo *info) {
 //Changed to Opaque call for Carbon
 //I have to ask andre how to handle this stuff, this looks like plug in stuff.
 //This routine
-static boolean getprocinfo (const tyfilespec *fs, bigstring bsprocname, tydllmoduleinfo *info) {
+static boolean getprocinfo (const ptrfilespec fs, bigstring bsprocname, tydllmoduleinfo *info) {
 
 	/*
 	5.0.2 dmb: added fs parameter for errror reporting
@@ -2146,7 +2192,7 @@ static boolean getprocinfo (const tyfilespec *fs, bigstring bsprocname, tydllmod
 	} /*getprocinfo*/
 
 
-static boolean islibraryloaded (const tyfilespec *fs, Handle * hModule) {
+static boolean islibraryloaded (const ptrfilespec fs, Handle * hModule) {
 
 	#ifdef WIN95VERSION
 		bigstring fn;
@@ -2186,7 +2232,7 @@ static boolean islibraryloaded (const tyfilespec *fs, Handle * hModule) {
 	} /*islibraryloaded*/
 
 
-static Handle doloadlibrary (const tyfilespec *fs, boolean flforce) {
+static Handle doloadlibrary (const ptrfilespec fs, boolean flforce) {
 
 	Handle hModule = NULL;
 
@@ -2267,7 +2313,7 @@ static boolean dofreelibrary (Handle hModule, boolean flforce) {
 	} /*dofreelibrary*/
 
 
-static boolean loaddllmodule (const tyfilespec *fs, bigstring bsprocname, tydllmoduleinfo *info) {
+static boolean loaddllmodule (const ptrfilespec fs, bigstring bsprocname, tydllmoduleinfo *info) {
 	
 	boolean fl = false;
 	#ifdef WIN95VERSION
@@ -2804,3 +2850,4 @@ void dllinitverbs (void) {
 			fillcalltable (dllcallbacks);
 		}
 	} /*initdllverbs*/
+

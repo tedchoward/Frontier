@@ -857,14 +857,14 @@ boolean ccloadfile (hdlfilenum fnum, short rnum) {
 boolean ccloadspecialfile (ptrfilespec fspec, OSType filetype) {
 #pragma unused (filetype)
 
-	/*
-	7/28/92 dmb: use new finder2frontscript to set the Frontier.findertofront 
-	global, instead of having Frontier.finder2click always set it to true. also, 
-	handle updates now.
-	
-	2.1b3 dmb: only set finder2front to true if the sender of the 'odoc' event  
-	was the Finder
-	*/
+	//
+	// 2006-06-23 creedon: replace fsname macro with getfsfile function;
+	//
+	// 2.1b3 dmb: only set finder2front to true if the sender of the 'odoc' event was the Finder
+	//
+	// 1992-07-28 dmb: use new finder2frontscript to set the Frontier.findertofront global, instead of having
+	// Frontier.finder2click always set it to true. also, handle updates now.
+	//
 	
 	bigstring bspath;
 	bigstring bs;
@@ -883,15 +883,19 @@ boolean ccloadspecialfile (ptrfilespec fspec, OSType filetype) {
 		}
 	
 	if (!filespectopath (fspec, bspath)) {
+	
+		bigstring bs;
 		
-		filenotfounderror ((ptrstring) fsname (fspec));
+		getfsfile ( fspec, bs );
+		
+		filenotfounderror ( bs );
 		
 		return (false);
 		}
 	
-	langdeparsestring (bspath, chclosecurlyquote); /*add needed escape sequences*/
+	langdeparsestring (bspath, chclosecurlyquote); // add needed escape sequences
 	
-	if (getsystemtablescript (idfinder2frontscript, bs)) { /*frontier.findertofront=^0*/
+	if (getsystemtablescript (idfinder2frontscript, bs)) { // frontier.findertofront=^0
 		
 	#ifdef MACVERSION
 		if ((shellevent.what == kHighLevelEvent) && ((**landgetglobals ()).maceventsender == 'MACS'))
@@ -905,15 +909,15 @@ boolean ccloadspecialfile (ptrfilespec fspec, OSType filetype) {
 		langrunstringnoerror (bs, bs);
 		}
 	
-	if (!getsystemtablescript (idfinder2clickscript, bs)) /*frontier.finder2click ("^0")*/
+	if (!getsystemtablescript (idfinder2clickscript, bs)) // frontier.finder2click ("^0")
 		return (false);
 	
 	parsedialogstring (bs, bspath, nil, nil, nil, bs);
 	
-	shellpartialeventloop (updateMask); /*handle updates first*/
+	shellpartialeventloop (updateMask); // handle updates first
 	
 	return (processrunstring (bs));
-	} /*ccloadspecialfile*/
+	} // ccloadspecialfile
 
 
 boolean ccsavespecialfile (ptrfilespec fs, hdlfilenum fnum, short rnum, boolean flsaveas, boolean flrunnable) {

@@ -578,12 +578,12 @@
 	END
 
 
-1007 /*idfileverbs*/ EFP		DISCARDABLE
+1007 /* idfileverbs */ EFP		DISCARDABLE
 	BEGIN
-	1,					//Number of "blocks" in this resource
-		"file\0",		//Function Processor Name
-		false,			//Window required
-			86,			//Count of verbs
+	1,					// Number of "blocks" in this resource
+		"file\0",			// Function Processor Name
+		false,				// Window required
+			86,			// Count of verbs
 			"created\0",
 			"modified\0",
 			"type\0",
@@ -664,11 +664,12 @@
 			"getpathchar\0",
 			"freespaceonvolumedouble\0",
 			"volumesizedouble\0",
-			"getmp3info\0",			/*7.0b12 PBS: André's file.getMp3Info verb*/
-			"readwholefile\0",			/* 2006-04-11 aradke */
-			"getLabelIndex\0",			/* 2006-04-23 creedon */
-			"setLabelIndex\0",			/* 2006-04-23 creedon */
-			"getLabelNames"			/* 2006-04-23 creedon */
+			"getmp3info\0",			// 7.0b12 PBS: André's file.getMp3Info verb
+			"readwholefile\0",			// 2006-04-11 aradke
+			"getLabelIndex\0",			// 2006-04-23 creedon
+			"setLabelIndex\0",			// 2006-04-23 creedon
+			"getLabelNames\0",		// 2006-04-23 creedon
+			"getPosixPath\0"			// 2006-10-07 creedon
 	END
 
 1008 /*idrezverbs*/ EFP 	DISCARDABLE

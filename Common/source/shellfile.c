@@ -33,9 +33,6 @@
 #include "file.h"
 #include "kb.h"
 #include "launch.h"
-#ifdef MACVERSION
-	#include "mac.h"
-#endif
 #include "memory.h"
 #include "resources.h"
 #include "strings.h"
@@ -52,10 +49,17 @@
 #include "tablestructure.h"
 
 #ifdef MACVERSION
+
+	#include "mac.h"
+	#include "MoreFilesX.h" // 2006-09-16 creedon
 	#include <uisharing.h>
+	
 #endif
+
 #ifdef WIN95VERSION
+
 	#include "FrontierWinMain.h"
+	
 #endif
 
 #define str_desktopscript	BIGSTRING ("\x04" "ftds")
@@ -115,33 +119,36 @@ static boolean findfilevisit (WindowPtr w, ptrvoid refcon) {
 	} /*findfilevisit*/
 
 
-boolean shellopenfile (ptrfilespec fspec, boolean flhidden, WindowPtr *wnew) {
+boolean shellopenfile (ptrfilespec fs, boolean flhidden, WindowPtr *wnew) {
 	
-	/*
-	open the specified file in a new window.
-	
-	dmb 8/20/90:  show window after success (window now initially invisible).
-	
-	dmb 8/20/90:  added resfile support.
-	
-	8/31/90 DW: replace setglobals calls with shellpush/popglobals.  also commented
-	out the call to shellfrontglobals.
-	
-	11/8/90 dmb: push default globals so that caller doesn't have to
-	
-	7/29/92 dmb: moved handling of update events after loadspecial handler, so that 
-	is can see what kind of event triggered the open
-	
-	8/20/92 dmb: since handling of update events can push/pop globals, we need to 
-	re-establish default globals after calling partialeventloop
-	
-	2.1b3 dmb: resolve alias files
-	
-	3.0.2 dmb: if asked to open a file that's already open in a root window, 
-	just bring it to the front and return true
-
-	6.0a11 dmb: fixed wnew handling for already-open windows
-	*/
+	//
+	// open the specified file in a new window.
+	//
+	// 2006-08-26 creedon:	for Mac, FSRef-ized
+	//
+	//				for Mac, set the proxy icon to LAND/TABL
+	//
+	// 6.0a11 dmb: fixed wnew handling for already-open windows
+	//
+	// 3.0.2 dmb: if asked to open a file that's already open in a root window, just bring it to the front and return true
+	//
+	// 2.1b3 dmb: resolve alias files
+	//
+	// 1992-08-20 dmb:	since handling of update events can push/pop globals, we need to re-establish default globals
+	//				after calling partialeventloop
+	//
+	// 1992-07-29 dmb:	moved handling of update events after loadspecial handler, so that is can see what kind of event
+	//				triggered the open
+	//
+	// 1990-11-08 dmb: push default globals so that caller doesn't have to
+	//
+	// 1990-08-31 DW:	replace setglobals calls with shellpush/popglobals.  also commented out the call to
+	//				shellfrontglobals.
+	//
+	// 1990-08-20 dmb:	added resfile support.
+	//
+	//				show window after success (window now initially invisible).
+	//
 	
 	WindowPtr w;
 	hdlfilenum fnum;
@@ -149,14 +156,17 @@ boolean shellopenfile (ptrfilespec fspec, boolean flhidden, WindowPtr *wnew) {
 	boolean fl;
 	OSType filetype;
 	tyfindvisitinfo info;
-#ifdef MACVERSION
-	bigstring bsext;
-#endif
+	
+	#ifdef MACVERSION
+
+		bigstring bsext, bs;
+		
+	#endif
 
 	if (wnew != nil)
 		*wnew = nil;
 	
-	info.fsfind = fspec;
+	info.fsfind = fs;
 	info.wfound = wnew;
 	info.flhidden = flhidden;
 	
@@ -165,26 +175,29 @@ boolean shellopenfile (ptrfilespec fspec, boolean flhidden, WindowPtr *wnew) {
 	
 	initbeachball (right);
 	
-	if (!fileresolvealias (fspec))
+	if (!fileresolvealias (fs))
 		return (false);
 	
-	if (!getfiletype (fspec, &filetype))
+	if (!getfiletype (fs, &filetype))
 		return (false);
 	
-#ifdef MACVERSION
+	#ifdef MACVERSION
 
-	lastword (fspec->name, '.', bsext);
+		getfsfile ( fs, bs );
 
-	if (equalidentifiers (bsext, "\proot"))
-		filetype = 'TABL';
-#endif
+		lastword ( bs, '.', bsext);
+
+		if (equalidentifiers (bsext, "\proot"))
+			filetype = 'TABL';
+			
+	#endif
 	
 	if (!shellpushdefaultglobals ())
 		return (false);
 	
 	if (filetype != config.filetype) {
 		
-		fl = (*shellglobals.loadspecialroutine) (fspec, filetype);
+		fl = (*shellglobals.loadspecialroutine) (fs, filetype);
 		
 		shellpopglobals ();
 		
@@ -201,17 +214,26 @@ boolean shellopenfile (ptrfilespec fspec, boolean flhidden, WindowPtr *wnew) {
 	
 	rnum = -1;
 	
-	if (!openfile (fspec, &fnum, false))
+	if (!openfile (fs, &fnum, false))
 		goto error;
 	
-#ifdef MACVERSION
-	if (config.flopenresfile)
-		if (!openresourcefile (fspec, &rnum, resourcefork)) /* 2005-09-02 creedon - added support for fork parameter, see resources.c: openresourcefile and pushresourcefile */ 
-			goto error;
-#endif
+	#ifdef MACVERSION
 	
-	if (!newfilewindow (fspec, fnum, rnum, flhidden, &w))
+		if (config.flopenresfile)
+			if (!openresourcefile (fs, &rnum, resourcefork)) // 2005-09-02 creedon - added support for fork parameter,
+										// see resources.c: openresourcefile and pushresourcefile
+				goto error;
+				
+	#endif
+	
+	if (!newfilewindow (fs, fnum, rnum, flhidden, &w))
 		goto error;
+	
+	#ifdef MACVERSION
+	
+		SetWindowProxyCreatorAndType ( w, 'LAND', 'TABL', kOnSystemDisk );
+	
+	#endif
 	
 	if (wnew != nil)
 		*wnew = w;
@@ -246,12 +268,15 @@ boolean shellopenfile (ptrfilespec fspec, boolean flhidden, WindowPtr *wnew) {
 	
 	closefile (fnum);
 
-#ifdef MACVERSION
-	closeresourcefile (rnum);
-#endif
+	#ifdef MACVERSION
 	
+		closeresourcefile (rnum);
+		
+	#endif
+		
 	return (false);
-	} /*shellopenfile*/
+	
+	} // shellopenfile
 	
 
 static boolean clickersvisit (hdlhashnode hnode, ptrvoid refcon) {
@@ -275,22 +300,24 @@ static boolean clickersvisit (hdlhashnode hnode, ptrvoid refcon) {
 
 boolean shellopen (void) {
 	
-	/*
-	2.1b4 dmb: option-open to show all types
+	//
+	// 2006-10-18 creedon: for Mac, FSRef-ized
+	//
+	// 5.0d3 dmb: look in clickers table for types we can actually open
+	//
+	// 2.1b4 dmb: option-open to show all types
+	// 
 	
-	5.0d3 dmb: look in clickers table for types we can actually open
-	*/
-	
-	tyconfigrecord	lconfig;
-	tyfilespec		fspec;
-	tysftypelist	filetypes;
-	ptrsftypelist	ptypes = nil;
-	hdlhashtable	htable;
+	tyconfigrecord lconfig;
+	tyfilespec fspec;
+	tysftypelist filetypes;
+	ptrsftypelist ptypes = nil;
+	hdlhashtable htable;
 	bigstring bs;
 	boolean fl;
 	hdlwindowinfo hdummy;
 	
-	if (!keyboardstatus.floptionkey) { /*2.1b4*/
+	if (!keyboardstatus.floptionkey) { // 2.1b4
 		
 		shellgetconfig (iddefaultconfig, &lconfig);
 		
@@ -298,7 +325,7 @@ boolean shellopen (void) {
 		
 		filetypes.types [0] = lconfig.filetype;
 		
-	//	filetypes.types [1] = '2CLK'; // application glue files
+		// filetypes.types [1] = '2CLK'; // application glue files
 		
 		ptypes = &filetypes;
 		}
@@ -316,17 +343,21 @@ boolean shellopen (void) {
 	
 	clearbytes (&fspec, sizeof (fspec));
 	
-	//RAB: 1/27/98  - make this look better when opening a file after the root is open
+	// RAB: 1/27/98  - make this look better when opening a file after the root is open
+	
 	if (ccfindrootwindow (&hdummy) == false)
 		getstringlist (defaultlistnumber, startupfileprompt, bs);
 	else
 		getstringlist (defaultlistnumber, nonstartupfileprompt, bs);
 	
-	if (!sfdialog (sfgetfileverb, bs, ptypes, &fspec, 'LAND')) /* 2005-10-06 creedon - added 'LAND' */
+	if (!sfdialog (sfgetfileverb, bs, ptypes, &fspec, 'LAND')) // 2005-10-06 creedon - added 'LAND'
 		return (false);
 	
-	return (shellopenfile (&fspec, false, nil));
-	} /*shellopen*/
+	( void ) extendfilespec ( &fspec, &fspec );
+	
+	return ( shellopenfile ( &fspec, false, nil ) );
+	
+	} // shellopen
 
 
 static void prepuserforwait (WindowPtr w) {
@@ -409,17 +440,17 @@ static boolean shellsavefile (WindowPtr w, ptrfilespec fspec, hdlfilenum fnum, s
 
 static boolean shelldatabasesaveas (WindowPtr wsave, ptrfilespec fspec) {
 	
-	/*
-	a save-as designed for applications that work with a file that it reads
-	and writes while the user is working.
-	
-	10/3/90 dmb:  rewrote
-	
-	7/5/91 dmb: use new copyallresources routine to handle the resource fork.
-	
-	this routine now actually implements a "save a copy"; the newly-saved file 
-	does not become the current file.
-	*/
+	//
+	// a save-as designed for applications that work with a file that it reads and writes while the user is working.
+	//
+	// this routine now actually implements a "save a copy"; the newly-saved file does not become the current file.
+	//
+	// 2006-09-18 creedon: for Mac, set window proxy icon
+	//
+	// 1991-07-05 dmb: use new copyallresources routine to handle the resource fork.
+	//
+	// 1990-10-03 dmb: rewrote
+	//
 	
 	register WindowPtr w = wsave;
 	hdlfilenum fnum;
@@ -432,8 +463,10 @@ static boolean shelldatabasesaveas (WindowPtr wsave, ptrfilespec fspec) {
 	rnum = -1;
 
 #ifdef MACVERSION
+
 	if (config.flopenresfile)
-		if (!openresourcefile (fspec, &rnum, resourcefork)) { /* 2005-09-02 creedon - added support for fork parameter, see resources.c: openresourcefile and pushresourcefile */ 
+		if (!openresourcefile (fspec, &rnum, resourcefork)) { // 2005-09-02 creedon - added support for fork parameter, see
+									       // resources.c: openresourcefile and pushresourcefile
 			
 			closefile (fnum);
 			
@@ -443,10 +476,17 @@ static boolean shelldatabasesaveas (WindowPtr wsave, ptrfilespec fspec) {
 	
 	getwindowinfo (w, &hinfo);
 	
+#ifdef MACVERSION
+
+	if ( FSRefValid ( &( *fspec ).fsref ) && ( *fspec ).path == NULL )
+		SetWindowProxyCreatorAndType ( w, 'LAND', config.filetype, kOnSystemDisk );
+		
+#endif
+		
 	/*
 	shellbringtofront (hinfo);
 	
-	shellclosechildwindows (hinfo); /%Save As can't maintain these, so close them now%/
+	shellclosechildwindows (hinfo); // Save As can't maintain these, so close them now
 	*/
 	
 	if (!shellsavefile (w, fspec, fnum, rnum, true, false)) {
@@ -464,18 +504,21 @@ static boolean shelldatabasesaveas (WindowPtr wsave, ptrfilespec fspec) {
 		copyallresources ((**hinfo).rnum, rnum);
 
 #ifndef version42orgreater
+
 	shellsavewindowresource (w, fspec, rnum);
 	
 	shellsavefontresource (w, fspec, rnum);
+	
 #endif
 	
-	if (!flconvertingolddatabase) { /*close new file; we're really doing a "Save a Copy"*/
+	if (!flconvertingolddatabase) { // close new file; we're really doing a "Save a Copy"
 	
 		closefile (fnum);
 		
 		closeresourcefile (rnum);
+		
 		}
-	else { /*close old file and re-open newly-converted file*/
+	else { // close old file and re-open newly-converted file
 		
 		(*shellglobals.closeroutine) ();
 		
@@ -483,9 +526,9 @@ static boolean shelldatabasesaveas (WindowPtr wsave, ptrfilespec fspec) {
 		
 		shellclearwindowdata ();
 
-		closewindowfile (w); /*close old file*/
+		closewindowfile (w); // close old file
 		
-		(**hinfo).flneversaved = false; /*must do after closewindowfile*/
+		(**hinfo).flneversaved = false; // must do after closewindowfile
 		
 		windowsetfspec (w, fspec);
 		
@@ -495,7 +538,7 @@ static boolean shelldatabasesaveas (WindowPtr wsave, ptrfilespec fspec) {
 		
 		if (!(*shellglobals.loadroutine) (fnum, rnum)) {
 			
-			closewindowfile (w); /*close new file*/
+			closewindowfile (w); // close new file
 			
 			disposeshellwindow (w);
 			
@@ -507,19 +550,22 @@ static boolean shelldatabasesaveas (WindowPtr wsave, ptrfilespec fspec) {
 		windowsetchanges (w, false);
 		}
 	
-	flushvolumechanges (fspec, fnum); /*write changes out to disk*/
+	flushvolumechanges (fspec, fnum); // write changes out to disk
 	
 	return (true);
-	} /*shelldatabasesaveas*/
+	
+	} // shelldatabasesaveas
 
 
 static boolean shellnormalsaveas (WindowPtr wsave, ptrfilespec fspec, boolean flrunnable) {
 	
-	/*
-	8/20/90 dmb: added resfile support
-	
-	5.0.2b19 dmb: special case file type for runnable
-	*/
+	//
+	// 2006-09-18 creedon: for Mac, set window proxy icon
+	//
+	// 5.0.2b19 dmb: special case file type for runnable
+	//
+	// 8/20/90 dmb: added resfile support
+	//
 	
 	register WindowPtr w = wsave;
 	hdlfilenum fnum;
@@ -528,7 +574,7 @@ static boolean shellnormalsaveas (WindowPtr wsave, ptrfilespec fspec, boolean fl
 	OSType filetype = config.filetype;
 	OSType type;
 	
-	switch (filetype) { //handle special cases
+	switch (filetype) { // handle special cases
 	
 		case type_normalscript:
 			if (flrunnable)
@@ -548,7 +594,8 @@ static boolean shellnormalsaveas (WindowPtr wsave, ptrfilespec fspec, boolean fl
 	
 	if (config.flopenresfile) {
 	
-		if (!openresourcefile (fspec, &rnum, resourcefork)) { /* 2005-09-02 creedon - added support for fork parameter, see resources.c: openresourcefile and pushresourcefile */ 
+		if (!openresourcefile (fspec, &rnum, resourcefork)) { // 2005-09-02 creedon - added support for fork parameter, see
+									       // resources.c: openresourcefile and pushresourcefile
 			
 			closefile (fnum);
 			
@@ -560,12 +607,16 @@ static boolean shellnormalsaveas (WindowPtr wsave, ptrfilespec fspec, boolean fl
 		
 		(**shellwindowinfo).flneversaved = false;
 		
-		flushvolumechanges (fspec, fnum); /*write changes out to disk*/
+		flushvolumechanges (fspec, fnum); // write changes out to disk
 		
 		closefile (windowgetfnum (w));
 		
 	#ifdef MACVERSION
+	
 		closeresourcefile (windowgetrnum (w));
+		
+		SetWindowProxyCreatorAndType ( w, 'LAND', filetype, kOnSystemDisk );
+		
 	#endif
 	
 		windowsetchanges (w, false);
@@ -578,21 +629,25 @@ static boolean shellnormalsaveas (WindowPtr wsave, ptrfilespec fspec, boolean fl
 		}
 	
 	return (true);
-	} /*shellnormalsaveas*/
+	
+	} // shellnormalsaveas
 
 
 boolean shellsaveas (WindowPtr wsave, ptrfilespec fspec, boolean flrunnable) {
 	
-	/*
-	if we're given a path, save the current file to that location with no 
-	dialog.
-	
-	if bspath is nil, use standard file to determine the new file location
-	
-	12/12/91 dmb: make sure we don't use a full path as the default file name
-
-	5.0d8 dmb: pass file type to sfdialog for Win
-	*/
+	//
+	// if we're given a path, save the current file to that location with no dialog.
+	//
+	// if bspath is nil, use standard file to determine the new file location
+	//
+	// 2006-08-26 creedon:	for Mac, FSRef-ized
+	//
+	//				for Mac, add object type extension to file name
+	//
+	// 5.0d8 dmb: pass file type to sfdialog for Win
+	//
+	// 1991-12-12 dmb: make sure we don't use a full path as the default file name
+	//
 	
 //	#if TARGET_API_MAC_CARBON == 1 /*7.0b50 PBS: set window title icon*/
 //		OSStatus err = noErr;
@@ -603,10 +658,10 @@ boolean shellsaveas (WindowPtr wsave, ptrfilespec fspec, boolean flrunnable) {
 	tyfilespec fs;
 	tysftypelist filetypes;
 	
-	if (!shellpushrootglobals (wsave)) /*save as only operates on root windows*/
+	if (!shellpushrootglobals (wsave)) // save as only operates on root windows
 		return (false);
 	
-	w = shellwindow; /*move into register*/
+	w = shellwindow; // move into register
 	
 	if (fspec != nil) {
 		
@@ -616,14 +671,40 @@ boolean shellsaveas (WindowPtr wsave, ptrfilespec fspec, boolean flrunnable) {
 		}
 	else {
 		
-		if (!windowgetfspec (w, &fs))
-			getdefaultfilename (fsname (&fs));
+		if ( ! windowgetfspec ( w, &fs ) ) {
+		
+			bigstring bsname;
+			
+			#ifdef MACVERSION
+			
+				if ( fs.path != NULL )
+					CFStringRefToStr255 ( fs.path, bsname );
+				else
+			
+			#endif
+			
+			getdefaultfilename ( bsname );
+			
+			#ifdef MACVERSION
+			
+				fs.path = CFStringCreateWithPascalString ( kCFAllocatorDefault, bsname,
+					kCFStringEncodingMacRoman );
+
+			#endif
+
+			#ifdef WIN95VERSION
+			
+				copystring ( bsname, fsname ( &fs ) );
+			
+			#endif
+
+			}
 		
 		filetypes.cttypes = 1;
 
 		filetypes.types [0] = config.filetype;
 
-		if (flrunnable) { //special case for desktop scripts.
+		if (flrunnable) { // special case for desktop scripts.
 			bigstring bsfile, bssuffix;
 			
 			getfsfile (&fs, bsfile);
@@ -640,7 +721,7 @@ boolean shellsaveas (WindowPtr wsave, ptrfilespec fspec, boolean flrunnable) {
 			filetypes.types [0] = type_desktopscript;
 			}
 		
-		fl = sfdialog (sfputfileverb, nil, &filetypes, &fs, 'LAND'); /* 2005-10-06 creedon - added 'LAND' */
+		fl = sfdialog (sfputfileverb, nil, &filetypes, &fs, 'LAND'); // 2005-10-06 creedon - added 'LAND'
 		}
 	
 	if (fl) {
@@ -660,7 +741,8 @@ boolean shellsaveas (WindowPtr wsave, ptrfilespec fspec, boolean flrunnable) {
 	shellpopglobals ();
 	
 	return (fl);
-	} /*shellsaveas*/
+	
+	} // shellsaveas
 
 
 boolean shellnewfile (ptrfilespec fspec, boolean flhidden, WindowPtr *wnew) {
@@ -684,7 +766,7 @@ boolean shellnewfile (ptrfilespec fspec, boolean flhidden, WindowPtr *wnew) {
 	WindowPtr w = nil;
 	boolean fl;
 	
-	shellpushdefaultglobals (); /*so that config is correct*/
+	shellpushdefaultglobals (); // so that config is correct
 	
 	if (config.flcreateonnew) {
 		
@@ -692,16 +774,25 @@ boolean shellnewfile (ptrfilespec fspec, boolean flhidden, WindowPtr *wnew) {
 			goto error;
 
 	#ifdef MACVERSION
+	
 		if (config.flopenresfile)
-			if (!openresourcefile (fspec, &rnum, resourcefork)) /* 2005-09-02 creedon - added support for fork parameter, see resources.c: openresourcefile and pushresourcefile */ 
+			if (!openresourcefile (fspec, &rnum, resourcefork)) // 2005-09-02 creedon - added support for fork parameter,
+										     // see resources.c: openresourcefile and pushresourcefile
 				goto error;
 	#endif
+	
 		}
 	
 	if (!newfilewindow (fspec, fnum, rnum, flhidden, wnew)) 
 		goto error;
 	
 	w = *wnew;
+	
+	#ifdef MACVERSION
+	
+		SetWindowProxyCreatorAndType ( w, 'LAND', 'TABL', kOnSystemDisk );
+	
+	#endif
 	
 	shellpushglobals (w);
 	
@@ -722,9 +813,9 @@ boolean shellnewfile (ptrfilespec fspec, boolean flhidden, WindowPtr *wnew) {
 	
 	error:
 	
-	disposeshellwindow (w); /*checks for nil*/
+	disposeshellwindow (w); // checks for nil
 	
-	if (fnum != 0) { /*we actually opened a file*/
+	if (fnum != 0) { // we actually opened a file
 		
 		closefile (fnum);
 		
@@ -738,40 +829,63 @@ boolean shellnewfile (ptrfilespec fspec, boolean flhidden, WindowPtr *wnew) {
 	shellpopglobals ();
 	
 	return (false);
-	} /*shellnewfile*/
+	
+	} // shellnewfile
 	
 
 boolean shellnew (void) {
 	
-	/*
-	new front end to shellnewfile, isolates user interface
-
-	5.0d8 dmb: pass file type to sfdialog for Win
-	*/
+	//
+	// new front end to shellnewfile, isolates user interface
+	//
+	// 2006-08-26 creedon:	for Mac, FSRef-ized
+	//
+	//				for Mac, add ".root" to bsname
+	//
+	// 2005-10-06 creedon - added 'LAND' to sfdialog call
+	//
+	// 5.0d8 dmb: pass file type to sfdialog for Win
+	//
 	
 	tyconfigrecord lconfig;
 	tyfilespec fspec;
 	tysftypelist filetypes;
 	WindowPtr w;
+	bigstring bsname;
 	
 	shellgetconfig (iddefaultconfig, &lconfig);
 	
 	clearbytes (&fspec, sizeof (fspec));
 	
-	getuntitledfilename (fsname (&fspec));
+	getuntitledfilename ( bsname );
 	
+	#ifdef MACVERSION
+	
+		pushstring ( "\x05"".root", bsname );
+				
+		fspec.path = CFStringCreateWithPascalString ( kCFAllocatorDefault, bsname, kCFStringEncodingMacRoman );
+
+	#endif
+
+	#ifdef WIN95VERSION
+	
+		copystring ( bsname, fsname ( &fspec ) );
+	
+	#endif
+
 	if (lconfig.flcreateonnew) {
 		
 		filetypes.cttypes = 1;
 
 		filetypes.types [0] = lconfig.filetype;
 		
-		if (!sfdialog (sfputfileverb, nil, &filetypes, &fspec, 'LAND')) /* 2005-10-06 creedon - added 'LAND' */ /*user canceled*/
+		if (!sfdialog (sfputfileverb, nil, &filetypes, &fspec, 'LAND')) // user canceled
 			return (false);
 		}
 	
 	return (shellnewfile (&fspec, false, &w));
-	} /*shellnew*/
+	
+	} // shellnew
 	
 	
 boolean shellsave (WindowPtr wsave) {
@@ -804,7 +918,7 @@ boolean shellsave (WindowPtr wsave) {
 			
 			shellpopglobals ();
 			
-			return (shellsaveas (w, nil, false));
+			return ( shellsaveas ( w, nil, false ) );
 			}
 		}
 
@@ -1270,50 +1384,54 @@ boolean shellrevert (WindowPtr wrevert, boolean fldialog) {
 
 boolean shellopendefaultfile (void) {
 	
-	/*
-	no files were selected to be open from the finder.  we either open a new 
-	file, or we try to open the default startup file -- similar to autoexec.bat 
-	from MS-DOS and System.Startup from UCSD Pascal.
+	//
+	// no files were selected to be open from the finder.  we either open a new file, or we try to open the default startup file --
+	//	similar to autoexec.bat from MS-DOS and System.Startup from UCSD Pascal.
+	//
+	// 2006-10-18 creedon: for Mac, FSRef-ized
+	//
+	// 7.30.97 dmb: use defaultpath instead of application filespec, and use new setfsfile to plug in default file name
+	//
+	// 5/19/92 dmb: always return a value; explicitly return boolean
+	//
+	// 4/24/92 dmb: use filegetapplicationvnum rather than zero (the default volume) when opening the default file.
+	//		       otherwise, if the default volume changes later, the file info won't be adequate to locate the file.
+	//
+	// 5/20/91 dmb: if the option key is down, just do a normal open file
+	//
 	
-	5/20/91 dmb: if the option key is down, just do a normal open file
-	
-	4/24/92 dmb: use filegetapplicationvnum rather than zero (the default volume) 
-	when opening the default file.  otherwise, if the default volume changes later,
-	the file info won't be adequate to locate the file.
-	
-	5/19/92 dmb: always return a value; explicitly return boolean
-
-	7.30.97 dmb: use defaultpath instead of application filespec, 
-	and use new setfsfile to plug in default file name
-	*/
-	
-	tyfilespec fs;
-	boolean fl = false;
-	boolean flfolder;
 	bigstring bsdefault;
+	boolean fl = false, flfolder;
+	tyfilespec fs;
 	
 	if (optionkeydown ())
 		return (shellopen ());
 	
-	shellpushdefaultglobals (); /*so config is correct*/
+	shellpushdefaultglobals (); // so config is correct
 	
 	if (config.flnewonlaunch)
 		fl = shellnew ();
 	else {
-		getapplicationfilespec (nil, &fs); /*get our own app fspec*/
-	//	
+	
+		getapplicationfilespec (nil, &fs); // get our own app filespec
 		
 		if (getstringlist (defaultlistnumber, startupfilename, bsdefault)) {
 			
 			setfsfile (&fs, bsdefault);
-
+			
+			( void ) extendfilespec ( &fs, &fs );
+			
 			if (fileexists (&fs, &flfolder))
 				fl = shellopenfile (&fs, false, nil);
 			else {
 				
 				filegetdefaultpath (&fs);
 				
-				setfsfile (&fs, bsdefault);
+				( void ) extendfilespec ( &fs, &fs );
+				
+				setfsfile ( &fs, bsdefault );
+				
+				( void ) extendfilespec ( &fs, &fs );
 				
 				if (fileexists (&fs, &flfolder))
 					fl = shellopenfile (&fs, false, nil);
@@ -1327,44 +1445,6 @@ boolean shellopendefaultfile (void) {
 	
 	return (fl);
 	} /*shellopendefaultfile*/
-
-
-#ifdef flsystem6
-
-void shellopeninitialfiles (void) {
-	
-	/*
-	if the user double-clicked on the applications with files selected,
-	then we open the files.  otherwise we try to open the default startup
-	file -- similar to autoexec.bat from MS-DOS and System.Startup from 
-	UCSD Pascal.
-	*/
-	
-	bigstring bs;
-	register short ctfiles;
-	short vnum;		
-	
-	ctfiles = countinitialfiles ();
-	
-	if (ctfiles > 0) { /*one or more files selected on launch*/
-		
-		register short i;
-		
-		for (i = 1; i <= ctfiles; i++) {
-			
-			getinitialfile (i, bs, &vnum);
-			
-			shellopenfile (bs, vnum, nil);
-			} /*for*/
-		}
-	
-	else { /*zero files selected on launch*/
-		
-		shellopendefaultfile ();
-		}
-	} /*shellopeninitialfiles*/
-
-#endif
 
 
 #ifdef WIN95VERSION

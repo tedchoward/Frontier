@@ -41,15 +41,15 @@ typedef boolean (*tyfileloopcallback) (bigstring, tyfileinfo *, long);
 
 extern boolean diskinitloop (tyfileloopcallback, Handle *);
 
-extern boolean fileinitloop (const tyfilespec *, tyfileloopcallback, Handle *);
+extern boolean fileinitloop ( const ptrfilespec, tyfileloopcallback, Handle * );
 
 extern void fileendloop (Handle);
 
-extern boolean filenextloop (Handle, tyfilespec *, boolean *);
+extern boolean filenextloop ( Handle, ptrfilespec, boolean * );
 
 extern boolean diskloop (tyfileloopcallback, long);
 
-extern boolean folderloop (const tyfilespec *, boolean, tyfileloopcallback, long);
+extern boolean folderloop ( const ptrfilespec, boolean, tyfileloopcallback, long );
 
 
 

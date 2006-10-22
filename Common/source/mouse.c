@@ -28,7 +28,7 @@
 #include "frontier.h"
 #include "standard.h"
 
-#ifdef MACVERSION 
+#ifdef MACVERSION
 #define GetDoubleClickTime() GetDblTime()
 #endif
 

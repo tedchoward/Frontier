@@ -384,7 +384,7 @@ static boolean getxingheader (tympeginfostruct *info, Handle h, long ix, long *c
 	}/*getxingheader*/
 	
 
-boolean getmp3info (const tyfilespec *fs, long *seconds, long *bitrate, long *frequency, long *offset, boolean *flvariablebitrate) {
+boolean getmp3info (const ptrfilespec fs, long *seconds, long *bitrate, long *frequency, long *offset, boolean *flvariablebitrate) {
 
 	tympeginfostruct mp3;
 	long ix = 0;

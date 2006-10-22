@@ -33,7 +33,15 @@
 #include "strings.h"
 #include "ops.h"
 #include "file.h"
-#include "launch.h" /* 2005-07-18 creedon */ 
+#include "launch.h" // 2005-07-18 creedon
+
+#ifdef MACVERSION
+
+	#include "MoreFilesX.h" // 2006-05-31 creedon
+	#include <CoreFoundation/CFString.h> // 2006-08-10 creedon
+	#include <sys/param.h> // 2006-10-16 creedon
+
+#endif // MACVERSION
 
 
 #define flaux false /*if true, we're running under the A/UX operating system*/
@@ -41,61 +49,86 @@
 
 #ifdef MACVERSION
 
-static FSSpec fsdefault = {0}; /*we maintain our own default directory*/
+	static tyfilespec fsdefault; // we maintain our own default directory
 
-boolean directorytopath (long DirID, short vnum, bigstring path) {
-	
-	CInfoPBRec block;
-	bigstring bsdirectory;
-	OSErr errcode;
-	
-	setemptystring (path);
-	
-	clearbytes (&block, longsizeof (block));
-	
-	block.dirInfo.ioNamePtr = bsdirectory;
-	
-	block.dirInfo.ioDrParID = DirID;
-	
-	do {
-		block.dirInfo.ioVRefNum = vnum;
+
+	boolean directorytopath ( const ptrfilespec fs, bigstring path ) {
+
+		//
+		// 2006-09-09 creedon: FSRef-ized
+		//			       another way might be to use FSRefMakePath and then push insert the volume name on it
+		//
+
+		OSErr err;
+		OSStatus status;
 		
-		block.dirInfo.ioFDirIndex = -1;
+		/* bail if fs is Volumes directory */ {
 		
-		block.dirInfo.ioDrDirID = block.dirInfo.ioDrParID;
-		
-		errcode = PBGetCatInfoSync (&block);
-		
-		if (errcode != noErr)
-			return (false);
-		
-		if (flaux) {
-			if (bsdirectory[1] != '/')
-				if (!pushchar ('/', bsdirectory))
-					return (false);
-			} 
-		else 
-			if (!pushchar (':', bsdirectory))
-				return (false);
+			FSRef volumesfsref;
+			OSErr err;
 			
-		if (!pushstring (path, bsdirectory))
-			return (false);
+			status = FSPathMakeRef ( "/Volumes", &volumesfsref, NULL );
+			
+			err = FSCompareFSRefs ( &( *fs ).fsref , &volumesfsref );
+			
+			if ( err == noErr ) {
+			
+				setemptystring ( path );
+				
+				return ( true );
+				
+				}
+				
+			} // bail
+
+		CFMutableStringRef ioPath = CFStringCreateMutable ( NULL, 0 );
+		FSCatalogInfo catalogInfo;
+		FSRef localRef = ( *fs ).fsref;
+		HFSUniStr255 names [ 100 ];
+		int i, n;
+		UniChar inSepChar = ':';
 		
-		copystring (bsdirectory, path);
-		} while (block.dirInfo.ioDrDirID != fsRtDirID);
-	
-	return (true);
-	} /*directorytopath*/
+		err = noErr;
+
+		clearbytes ( &catalogInfo, longsizeof ( catalogInfo ) );
+
+		for ( n = 0 ; err == noErr && catalogInfo.nodeID != fsRtDirID && n < 100 ; n++ )
+			err = FSGetCatalogInfo ( &localRef, kFSCatInfoNodeID, &catalogInfo, &names [ n ], NULL, &localRef );
+
+		if ( err != noErr )
+			return ( false );
+			
+		for ( i = n - 1; i >= 0; --i ) {
+			CFStringAppendCharacters ( ioPath, names [ i ].unicode, names [ i ].length );
+
+			// if ( i > 0 )
+			
+			CFStringAppendCharacters ( ioPath, &inSepChar, 1 );
+			}
+		
+		return ( CFStringGetPascalString ( ioPath, path, 256, kCFStringEncodingMacRoman ) );
+
+		} // directorytopath
 
 #endif
 
-boolean filegetdefaultpath (tyfilespec *fs) {
+
+boolean filegetdefaultpath ( ptrfilespec fs ) {
+
+	//
+	// 2006-06-25 creedon: for Mac, FSRef-ized
+	//
 	
 	#ifdef MACVERSION
-		return (!oserror (FSMakeFSSpec (fsdefault.vRefNum, fsdefault.parID, nil, fs)));
+	
+		*fs = fsdefault;
+		
+		return ( true );
+
 	#endif
 
 	#ifdef WIN95VERSION
+	
 		DWORD sz;
 
 		sz = GetCurrentDirectory (257, stringbaseaddress (fsname (fs)));
@@ -112,41 +145,29 @@ boolean filegetdefaultpath (tyfilespec *fs) {
 		setstringlength(fsname (fs), sz + 1);
 		
 		return (true);
+		
 	#endif		
 	} /*filegetdefaultpath*/
 
 
-boolean filesetdefaultpath (const tyfilespec *fs) {
+boolean filesetdefaultpath ( const ptrfilespec fs ) {
+
+	//
+	// 2006-06-18 creedon: for Mac, FSRef-ized
+	//
 	
 	#ifdef MACVERSION
-		CInfoPBRec pb;
-		
-		clearbytes (&fsdefault, longsizeof (fsdefault));
-		
-		if (isemptystring ((*fs).name))
-			return (true);
-		
-		setoserrorparam ((ptrstring) (*fs).name);
-		
-		clearbytes (&pb, longsizeof (pb));
-		
-		pb.dirInfo.ioNamePtr = (StringPtr) (*fs).name;
-		
-		pb.dirInfo.ioVRefNum = (*fs).vRefNum;
-		
-		pb.dirInfo.ioDrDirID = (*fs).parID;
-		
-		if (oserror (PBGetCatInfoSync (&pb)))
-			return (false);
-		
-		fsdefault.vRefNum = pb.dirInfo.ioVRefNum;
-		
-		fsdefault.parID = pb.dirInfo.ioDrDirID;
 
+		setfserrorparam ( fs );
+		
+		fsdefault = *fs;
+		
 		return (true);
+		
 	#endif
 
 	#ifdef WIN95VERSION
+	
 		if (isemptystring (fsname (fs)))
 			return (true);
 		
@@ -158,55 +179,76 @@ boolean filesetdefaultpath (const tyfilespec *fs) {
 			}
 
 		return (true);
+		
 	#endif
-	} /*filesetdefaultpath*/
+	
+	} // filesetdefaultpath
 
 
-boolean filespectopath (const tyfilespec *fs, bigstring bspath) {
+boolean filespectopath (const ptrfilespec fs, bigstring bspath) {
 	
-	/*
-	6/28/91 dmb: when you resolve an alias of a volume, the fsspec has a 
-	parent dirid of 1.  we catch this as a special case here, and return 
-	the empty string as the path
-	
-	10/14/91 dmb: make sure folder paths end in :
-	
-	12/17/91 dmb: don't check for folderness if file doesn't exist-- we 
-	dont want to generate any errors here
-	
-	2.1a7 dmb: if it's a null filespec, return the empty string
-	*/
+	//
+	// 2006-09-09 creedon: for Mac, FSRef-ized
+	//
+	// 2.1a7 dmb: if it's a null filespec, return the empty string
+	//
+	// 1991-12-17 dmb: don't check for folderness if file doesn't exist-- we dont want to generate any errors here
+	//
+	// 1991-10-14 dmb: make sure folder paths end in :
+	//
+	// 1991-06-28 dmb:	when you resolve an alias of a volume, the fsspec has a parent dirid of 1.  we catch this as a
+	//				special case here, and return the empty string as the path
+	//
 	
 	#ifdef MACVERSION
+	
+		bigstring bs;
 		boolean flfolder;
+		FSCatalogInfo catalogInfo;
+		tyfilespec fsp, fst = *fs;
+		HFSUniStr255 outName;
+		OSErr err;
 		
-		if ((*fs).parID == fsRtParID) { /*it's a volume*/
+		( void ) extendfilespec ( &fst, &fst );
+		
+		err = FSGetCatalogInfo ( &fst.fsref, kFSCatInfoParentDirID | kFSCatInfoVolume, &catalogInfo, &outName, NULL,
+			&fsp.fsref );
 			
-			copystring ((ptrstring) (*fs).name, bspath);
+		if ( err != noErr )
+			return ( false );
+		
+		setemptystring ( bspath );
+		
+		if ( catalogInfo.parentDirID != fsRtParID ) // it's not a volume so lets get the directory path
+			if ( ! directorytopath ( &fsp, bspath ) )
+				return ( false );
+		
+		HFSUniStr255ToStr255 ( &outName, bs );
+		
+		pushstring ( bs, bspath );
+		
+		if ( fst.path != NULL ) {
 			
-			pushchar (':', bspath);
+			pushchar ( ':', bspath );
 			
-			return (true);
+			CFStringRefToStr255 ( fst.path, bs );
+			
+			pushstring ( bs, bspath );
+
+			return ( true );
+			
 			}
+
+		if ( fileexists ( &fst, &flfolder ) )
+			if ( flfolder )
+				assurelastchariscolon ( bspath );
 		
-		setemptystring (bspath);
+		return ( true );
 		
-		if (((*fs).parID == 0) && ((*fs).vRefNum == 0) && (isemptystring ((*fs).name)))
-			return (true);
-		
-		if (!directorytopath ((*fs).parID, (*fs).vRefNum, bspath))
-			return (false);
-		
-		pushstring ((ptrstring) (*fs).name, bspath);
-		
-		if (fileexists (fs, &flfolder))
-			if (flfolder)
-				assurelastchariscolon (bspath);
-		
-		return (true);
 	#endif
 
 	#ifdef WIN95VERSION
+	
 		// 5.0d12 dmb: use GetFullPath to clean up 8.3 names
 		char * fileptr;
 		
@@ -219,76 +261,271 @@ boolean filespectopath (const tyfilespec *fs, bigstring bspath) {
 		nullterminate (bspath);
 
 		return (true);
+		
 	#endif
-	} /*filespectopath*/
+	
+	} // filespectopath
 
 
-boolean pathtofilespec (bigstring bspath, tyfilespec *fs) {
+boolean pathtofilespec ( bigstring bspath, ptrfilespec fs ) {
 	
-	/*
-	7/5/91 dmb: use FSMakeFSSpec if it's available.  since it only returns 
-	noErr if the file exists, and we want to handle non-existant files, we 
-	don't give up right away.
-	
-	12/17/91 dmb: dont append path to default directory if it's a full path
-	
-	6/11/93 dmb: if FSMakeFSSpec returns fnfErr, the spec is cool (but file 
-	doesn't exist)
-	
-	2.1b2 dmb: added special case for empty string.  also, added drive number 
-	interpretation here.
-	
-	2.1b2 dmb: use new fsdefault for building filespec. note that if bspath 
-	isn't a partial path, the vref and dirid will be ignored.
-	*/
+	//
+	// 2006-10-16 creedon: for Mac, FSRef-ized
+	//
+	// 5.0d8 dmb: clear fs first thing
+	//
+	// 2.1b2 dmb: use new fsdefault for building filespec. note that if bspath isn't a partial path, the vref and dirid will be
+	//		   ignored.
+	//
+	// 2.1b2 dmb: added special case for empty string.  also, added drive number interpretation here.
+	//
+	// 1993-06-11 dmb: if FSMakeFSSpec returns fnfErr, the spec is cool (but file doesn't exist)
+	//
+	// 1991-012-17 dmb: dont append path to default directory if it's a full path
+	//
+	// 1991-07-05 dmb: use FSMakeFSSpec if it's available.  since it only returns noErr if the file exists, and we want to handle
+	//		     non-existant files, we don't give up right away.
+	//
 	
 	bigstring bsfolder;
+
+	clearbytes ( fs, sizeof ( *fs ) );
+
+	if ( isemptystring ( bspath ) )
+		return ( true );
+		
 	#ifdef MACVERSION
-	OSErr errcode;
-	short ix = 1;
-	#endif
-
-	clearbytes (fs, sizeof (tyfilespec));	// 5,0d8 dmb
-
-	if (isemptystring (bspath))
-		return (true);
 	
-	#ifdef MACVERSION
-		errcode = FSMakeFSSpec (fsdefault.vRefNum, fsdefault.parID, bspath, fs);
+		FSRef fsr;
+		HFSUniStr255 name;
+		OSErr err;
+		OSStatus status;
+		bigstring bs, bspathtmp;
+		short ix = 1, ixslashpos = 0, slashpos [ 255 ];
 		
-		//for some reason if there is a trailing : you get a dirNFErr and it doesn't work
-		//This little hack saves us. It still is a fnfErr, but it works.
-		#if TARGET_API_MAC_CARBON
-		if(errcode == dirNFErr)
-		{
-			poptrailingchars(bspath, ':');
-			errcode = FSMakeFSSpec (fsdefault.vRefNum, fsdefault.parID, bspath, fs);
-		}
-		#endif	
-		if ((errcode == noErr) || (errcode == fnfErr))
-			return (true);
+		copystring ( bspath, bspathtmp );
+
+		cleanendoffilename ( bspathtmp );
 		
-		if (scanstring (':', bspath, &ix) && (ix > 1)) { /*includes a colon, not the first thing*/
-			
-			short drivenum;
-			
-			midstring (bspath, 1, ix - 1, bsfolder); /*pull out volume name*/
-			
-			if (isallnumeric (bsfolder) && stringtoshort (bsfolder, &drivenum)) { /*it's a number*/
+		if ( scanstring ( ':', bspath, &ix ) && ( ix > 1 ) ) { // full path, includes a colon, not the first character
+		
+			bigstring bsfile, bsfullpath;
+		 
+			copystring ( bspathtmp, bsfullpath );
 				
-				midstring (bspath, ix, stringlength (bspath) - ix + 1, bsfolder);
+			insertstring ( BIGSTRING ( "\x09" ":Volumes:" ), bsfullpath );
+
+			copystring ( bsfullpath,  bs );
+
+			/* convert to / delimited path */ {
+			
+				while ( scanstring ( '/', bs, &ix ) )
+					slashpos [ ixslashpos++ ] = ix++;
 				
-				errcode = FSMakeFSSpec (drivenum, 0, bsfolder, fs);
+				stringreplaceall ( ':', '/', bs );
 				
-				if ((errcode == noErr) || (errcode == fnfErr))
-					return (true);
+				while ( ixslashpos > 0 )
+					setstringcharacter ( bs, slashpos [ --ixslashpos ] - 1, ':' );
 				}
-			}	
+			
+			/* convert from Mac Roman to UTF-8 */ {
+			
+				CFStringRef csr = CFStringCreateWithPascalString ( kCFAllocatorDefault, bs,
+					kCFStringEncodingMacRoman );
+			
+				CFStringGetCString ( csr, ( char * ) bs, sizeof ( bs ), kCFStringEncodingUTF8 );
+				
+				CFRelease ( csr );
 		
-		return (false);
+				}
+			
+			status = FSPathMakeRef ( bs, &fsr, NULL );
+
+			if ( status == noErr ) {
+			
+				err = FSGetCatalogInfo ( &fsr, kFSCatInfoNone, NULL, &name, NULL, &fsr );
+				
+				( *fs ).fsref = fsr;
+				
+				( *fs ).path = CFStringCreateWithCharacters ( kCFAllocatorDefault, name.unicode, name.length );
+				
+				return ( true );
+				
+				} // if
+			
+			filefrompath ( bsfullpath, bsfile );
+			
+			folderfrompath ( bsfullpath, bsfolder );
+			
+			/* convert to / delimited path */ {
+			
+				ix = 1;
+				ixslashpos = 0;
+					
+				while ( scanstring ( '/', bsfolder, &ix ) )
+					slashpos [ ixslashpos++ ] = ix++;
+				
+				stringreplaceall ( ':', '/', bsfolder );
+				
+				while ( ixslashpos > 0 )
+					setstringcharacter ( bsfolder, slashpos [ --ixslashpos ] - 1, ':' );
+				}
+			
+			/* convert from Mac Roman to UTF-8 */ {
+			
+				CFStringRef csr = CFStringCreateWithPascalString ( kCFAllocatorDefault, bsfolder,
+					kCFStringEncodingMacRoman );
+			
+				CFStringGetCString ( csr, ( char * ) bsfolder, sizeof ( bsfolder ), kCFStringEncodingUTF8 );
+				
+				CFRelease ( csr );
+		
+				}
+			
+			status = FSPathMakeRef ( bsfolder, &fsr, NULL );
+
+ 			if ( status == noErr ) {
+			
+				( *fs ).fsref = fsr;
+				
+				( *fs ).path = CFStringCreateWithPascalString ( kCFAllocatorDefault, bsfile,
+					kCFStringEncodingMacRoman );
+			
+				return ( true );
+				
+				} // if
+				
+			} // end full path
+			
+		else { // partial path
+		
+			bigstring bspartialpath;
+			tyfilespec fst;
+			
+			copystring ( bspathtmp, bspartialpath );
+			
+			if ( bspartialpath [ 1 ] != chpathseparator )
+				insertchar ( chpathseparator, bspartialpath );
+			
+			( void ) extendfilespec ( &fsdefault, &fst );
+			
+			status = FSRefMakePath ( &fst.fsref, ( UInt8 * ) bs, 256 ); // bs is now a c string
+			
+			convertcstring ( bs ); // bs is now a bigstring
+			
+			/* convert bs to colon delimited path */ {
+			
+				ix = 1;
+				ixslashpos = 0;
+				
+				while ( scanstring ( ':', bs, &ix ) )
+					slashpos [ ixslashpos++ ] = ix++;
+				
+				stringreplaceall ( '/', ':', bs );
+				
+				while ( ixslashpos > 0 )
+					setstringcharacter ( bs, slashpos [ --ixslashpos ] - 1, '/' );
+				}
+			
+			insertstring ( bs, bspartialpath ); // we now have a full path
+			
+			copystring ( bspartialpath, bs );
+			
+			 /* convert bs to / delimited path */ {
+			 
+				 ix = 1;
+				 ixslashpos = 0;
+				
+				 while ( scanstring ( '/', bs, &ix ) )
+					slashpos [ ixslashpos++ ] = ix++;
+				
+				stringreplaceall ( ':', '/', bs );
+				
+				while ( ixslashpos > 0 )
+					setstringcharacter ( bs, slashpos [ --ixslashpos ] - 1, ':' );
+				}
+			
+			/* convert from Mac Roman to UTF-8 */ {
+			
+				CFStringRef csr = CFStringCreateWithPascalString ( kCFAllocatorDefault, bsfolder,
+					kCFStringEncodingMacRoman );
+			
+				CFStringGetCString ( csr, ( char * ) bsfolder, sizeof ( bsfolder ), kCFStringEncodingUTF8 );
+				
+				CFRelease ( csr );
+		
+				}
+			
+			status = FSPathMakeRef ( bs, &fsr, NULL );
+
+			if ( status == noErr ) {
+			
+				err = FSGetCatalogInfo ( &fsr, kFSCatInfoNone, NULL, &name, NULL, &fsr );
+
+				( *fs ).fsref = fsr;
+				
+				( *fs ).path = CFStringCreateWithCharacters ( kCFAllocatorDefault, name.unicode, name.length );
+			
+				return ( true );
+				
+				} // if
+				
+			/* try parent of path */ {
+			
+				bigstring bsfile;
+			
+				filefrompath ( bspartialpath, bsfile );
+				
+				folderfrompath ( bspartialpath, bsfolder );
+				
+				 /* convert to slash delimited path */ {
+				 
+					 ix = 1;
+					 ixslashpos = 0;
+					
+					 while ( scanstring ( '/', bsfolder, &ix ) )
+						slashpos [ ixslashpos++ ] = ix++;
+					
+					stringreplaceall ( ':', '/', bsfolder );
+					
+					while ( ixslashpos > 0 )
+						setstringcharacter ( bsfolder, slashpos [ --ixslashpos ] - 1, ':' );
+					}
+				
+				/* convert from Mac Roman to UTF-8 */ {
+				
+					CFStringRef csr = CFStringCreateWithPascalString ( kCFAllocatorDefault, bsfolder,
+						kCFStringEncodingMacRoman );
+				
+					CFStringGetCString ( csr, ( char * ) bsfolder, sizeof ( bsfolder ), kCFStringEncodingUTF8 );
+					
+					CFRelease ( csr );
+		
+					}
+				
+				status = FSPathMakeRef ( bsfolder, &fsr, NULL );
+
+				if ( status == noErr ) {
+				
+					( *fs ).fsref = fsr;
+					
+					( *fs ).path = CFStringCreateWithPascalString ( kCFAllocatorDefault, bsfile,
+						kCFStringEncodingMacRoman );
+				
+					return ( true );
+					
+					} // if
+					
+				} // end try parent of path 
+				
+			} // end partial path
+		
+		return ( false );
+		
 	#endif
 
 	#ifdef WIN95VERSION
+	
 		copystring (bspath, fsname (fs));
 
 		folderfrompath (bspath, bsfolder);
@@ -303,44 +540,39 @@ boolean pathtofilespec (bigstring bspath, tyfilespec *fs) {
 		nullterminate (fsname (fs));
 		
 		return (true);
+
 	#endif
 
-	} /*pathtofilespec*/
+	} // pathtofilespec
 
 
-boolean setfsfile (tyfilespec *fs, bigstring bsfile) {
+boolean setfsfile ( ptrfilespec fs, bigstring bsfile ) {
 
-	/*
-	2004-10-26 aradke: Since the getmacfileinfo/foldertest gymnastics do not
-	seem to fit any particular purpose and since none of our callers
-	seem to rely it since they usually pass in a file rather than a directory,
-	I commented it out.
-		
-	The only time we get called with a directory is apparently by
-	shellopendefaultfile on startup in the Carbon/Mach-O build.
-	getapplicationfilespec returns a directory in that case and
-	the code below somehow screwed up when called to set the
-	filename to Frontier.root so that it wouldn't be found.
-	*/
+	//
+	// 2006-10-18 creedon: for Mac, FSRef-ized
+	//
+	// 2004-10-26 aradke: Since the getmacfileinfo/foldertest gymnastics do not seem to fit any particular purpose and since
+	//			     none of our callers seem to rely it since they usually pass in a file rather than a directory, I
+	//			     commented it out.
+	// 
+	//			     The only time we get called with a directory is apparently by shellopendefaultfile on startup in the
+	//			     Carbon/Mach-O build. getapplicationfilespec returns a directory in that case and the code below
+	//			     somehow screwed up when called to set the filename to Frontier.root so that it wouldn't be found.
+	//
 	
 	#ifdef MACVERSION
-		/*
-		CInfoPBRec pb;
-
-		if (getmacfileinfo (fs, &pb) && foldertest (&pb)) {
+	
+		if ( ( *fs ).path != NULL )
+			CFRelease ( ( *fs ).path );
 		
-			FSMakeFSSpec ((*fs).vRefNum, pb.dirInfo.ioDrDirID, bsfile, fs);
-			
-			return (false);
-			}
-		*/
+		( *fs ).path = CFStringCreateWithPascalString ( kCFAllocatorDefault, bsfile, kCFStringEncodingMacRoman );
 		
-		copystring (bsfile, (*fs).name);
-
-		return (true);
+		return ( true );
+		
 	#endif
 
 	#ifdef WIN95VERSION
+	
 		bigstring bsfolder;
 		
 		folderfrompath (fsname (fs), bsfolder);
@@ -352,68 +584,100 @@ boolean setfsfile (tyfilespec *fs, bigstring bsfile) {
 		nullterminate (fsname (fs));
 
 		return (true);
-	#endif
-	} /*setfsfile*/
-
-
-boolean getfsfile (const tyfilespec *fs, bigstring bsfile) {
-	
-	/*
-	5.0b9 dmb: we're needing this in a few places. better late
-	than never
-	*/
-	
-	#ifdef WIN95VERSION
-		bigstring bspath;
-
-		filespectopath (fs, bspath);
 		
-		filefrompath (bspath, bsfile);
-
-		return (true);
 	#endif
 	
+	} // setfsfile
+
+
+boolean getfsfile (const ptrfilespec fs, bigstring bsfile) {
+
+	//
+	// 2006-06-18 creedon: for Mac, FSRef-ized
+	//
+
 	#ifdef MACVERSION
-		copystring (fsname (fs), bsfile);
-
-		return (true);
-	#endif
-	} /*getfsfile*/
-
-
-boolean getfsvolume (const tyfilespec *fs, long *vnum) {
 	
-	/*
-	5.1.5b11 dmb: get the volume that is actually specified in the fspec.
-
-	don't expand partial paths using the default directory.
-	*/
+		if ( ( *fs ).path != NULL ) {
+		
+			if ( CFStringRefToStr255 ( ( *fs ).path, bsfile ) )
+				return ( true );
+			}
+		else {
+			FSRefGetNameStr255 ( &( *fs ).fsref, bsfile );
+			}
+	
+		if (stringlength ( bsfile ) > 0)
+			return (true);
+			
+		long vnum;
+		
+		getfsvolume ( fs, &vnum );
+			
+		return ( filegetvolumename ( vnum, bsfile ) );
+		
+	#endif
 
 	#ifdef WIN95VERSION
-		return (fileparsevolname ((ptrstring) fsname (fs), vnum, nil));
+	
+		lastword ((ptrstring) fs -> fullSpecifier, '\\', bsfile);
+
+		return (true);
+		
+	#endif
+	} // getfsfile
+
+
+boolean getfsvolume ( const ptrfilespec fs, long *vnum ) {
+	
+	//
+	// 2006-07-12 creedon: for Mac, FSRef-ized
+	//
+	// 5.1.5b11 dmb:	get the volume that is actually specified in the fspec.
+	//
+	//					don't expand partial paths using the default directory.
+	//
+
+	#ifdef MACVERSION
+	
+		FSCatalogInfo catalogInfo;
+		OSErr err = FSGetCatalogInfo ( &( *fs ).fsref, kFSCatInfoVolume, &catalogInfo, NULL, NULL, NULL );
+		
+		if ( catalogInfo.volume == 0 )
+			return ( false );
+		
+		*vnum = catalogInfo.volume;
+
+		return ( err == noErr );
+		
 	#endif
 	
-	#ifdef MACVERSION
-		HVolumeParam pb;
+	#ifdef WIN95VERSION
+
+		*vnum = 0;
+	
+		return ( true );
 		
-		*vnum = (*fs).vRefNum;
-		
-		if (*vnum == 0)
-			return (false);
-		
-		clearbytes (&pb, sizeof (pb)); /*init all fields to zero*/
-		
-		pb.ioVRefNum = *vnum;
-		
-		return (PBHGetVInfoSync ((HParmBlkPtr) &pb) == noErr);
 	#endif
-	} /*getfsvolume*/
+	
+	} // getfsvolume
 
 
 void initfsdefault (void) {
+
+	//
+	// 2006-06-18 creedon: FSRef-ized
+	//
+	// 2005-07-18 creedon, karstenw: created
+	//
+
 	#ifdef MACVERSION
-	/* 2005-07-18 creedon, karstenw */
-	getapplicationfilespec (nil, &fsdefault);
+	
+		getapplicationfilespec ( nil, &fsdefault );
+		
+		( void ) getfilespecparent ( &fsdefault );
+		
 	#endif
+	
 	} /* initfsdefault */
 

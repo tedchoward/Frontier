@@ -50,7 +50,11 @@
 #include "claycallbacks.h"
 #include "cancoon.h"
 
+#ifdef MACVERSION
 
+	#include "MoreFilesX.h"
+
+#endif
 
 
 boolean tablevaltotable (tyvaluerecord val, hdlhashtable *htable, hdlhashnode hnode) {
@@ -430,10 +434,12 @@ boolean tableverbsetupdisplay (hdlhashtable htable, hdlwindowinfo hinfo) {
 
 boolean tableedit (hdlexternalvariable hvariable, hdlwindowinfo hparent, ptrfilespec fs, bigstring bs, rectparam rzoom) {
 	
-	/*
-	3/30/93 dmb: don't resort the table before zooming. not sure why this 
-	was ever necessary, but it sure is slow for large tables
-	*/
+	//
+	// 2006-09-16 creedon: on Mac, only set the window proxy icon when the file exists
+	//
+	// 1993--3-30 dmb:	don't resort the table before zooming. not sure why this was ever necessary, but it sure is slow
+	//				for large tables
+	//
 	
 	register hdltablevariable hv = (hdltablevariable) hvariable;
 	register hdlhashtable ht;
@@ -444,7 +450,7 @@ boolean tableedit (hdlexternalvariable hvariable, hdlwindowinfo hparent, ptrfile
 	WindowPtr w;
 	hdlwindowinfo hi;
 	
-	if (!tableverbinmemory ((hdlexternalvariable) hv, HNoNode)) /*couldn't swap it into memory*/
+	if (!tableverbinmemory ((hdlexternalvariable) hv, HNoNode)) // couldn't swap it into memory
 		return (false);
 	
 	ht = (hdlhashtable) (**hv).variabledata;
@@ -452,7 +458,7 @@ boolean tableedit (hdlexternalvariable hvariable, hdlwindowinfo hparent, ptrfile
 	if (tablefindvariable ((hdlexternalvariable) hv, &hparenttable, bsname))
 		(**ht).parenthashtable = hparenttable;
 	
-	if (tablewindowopen ((hdlexternalvariable) hv, &hi)) { /*bring to front, return true*/
+	if (tablewindowopen ((hdlexternalvariable) hv, &hi)) { // bring to front, return true
 		
 		if ((*rzoom).top > -2)
 			shellbringtofront (hi);
@@ -463,7 +469,7 @@ boolean tableedit (hdlexternalvariable hvariable, hdlwindowinfo hparent, ptrfile
 	hf = (**ht).hashtableformats;
 	
 	if (hf == nil)
-		rwindow.top = -1; /*accept default*/
+		rwindow.top = -1; // accept default
 	else
 		rwindow = (**hf).windowrect;
 	
@@ -472,8 +478,18 @@ boolean tableedit (hdlexternalvariable hvariable, hdlwindowinfo hparent, ptrfile
 	
 	getwindowinfo (w, &hi);
 	
-	if (fs != nil)
+	if ( fs != nil ) {
+	
 		(**hi).fspec = *fs;
+		
+		#ifdef MACVERSION
+		
+			if ( FSRefValid ( &( *fs ).fsref ) && ( *fs ).path == NULL )
+				SetWindowProxyCreatorAndType ( w, 'LAND', 'FTtb', kOnSystemDisk );
+				
+		#endif
+		
+		}
 	
 	if (!tableverbsetupdisplay (ht, hi)) {
 		
@@ -481,12 +497,13 @@ boolean tableedit (hdlexternalvariable hvariable, hdlwindowinfo hparent, ptrfile
 		
 		return (false);
 		*/
+		
 		}
 	
 	hf = (**ht).hashtableformats;
 	
-	//if ((**hf).flneedresort)
-	//	hashresort (ht, nil); /*sort the table before zooming*/
+	// if ((**hf).flneedresort)
+	// 	hashresort (ht, nil); // sort the table before zooming
 	
 	if ((**ht).fldirty)
 		shellsetwindowchanges (hi, true);
@@ -495,22 +512,17 @@ boolean tableedit (hdlexternalvariable hvariable, hdlwindowinfo hparent, ptrfile
 	
 	(**(**hf).houtline).flwindowopen = true;
 	
-	#if TARGET_API_MAC_CARBON == 1
-	
-		SetWindowProxyCreatorAndType (w, 'LAND', 'FTtb', kOnSystemDisk);
-	
-	#endif
-	
 	windowzoom (w);
 	
-	#if TARGET_API_MAC_CARBON == 1
+	#ifdef MACVERSION
 	
 		shellupdatewindow (w);	
 	
 	#endif
 	
 	return (true);
-	} /*tableedit*/
+	
+	} // tableedit
 
 
 boolean tablewindowclosed (hdlexternalvariable hvariable) {

@@ -52,6 +52,12 @@
 #include "tablestructure.h"
 #include "cancoon.h"
 
+#ifdef MACVERSION
+
+	#include "MoreFilesX.h"
+
+#endif
+
 #ifdef WIN95VERSION
 #include "FrontierWinMain.h"
 #endif
@@ -451,23 +457,36 @@ void windowsetrnum (WindowPtr w, short rnum) {
 	
 	
 short windowgetvnum (WindowPtr w) {
+
+	//
+	// 2006-06-23 creedon: FSRef-ized
+	//
 	
 	hdlwindowinfo hinfo;
 	
 	if (!getwindowinfo (w, &hinfo))
 		return (0);
 	
-#ifdef MACVERSION
-	return ((**hinfo).fspec.vRefNum);
-#endif
+	#ifdef MACVERSION
+	
+		short vnum;
+	
+		FSGetVRefNum ( &(**hinfo).fspec.fsref, &vnum );
+	
+		return ( vnum );
+			
+	#endif
 
-#ifdef WIN95VERSION
-	return -1; // *** need new field?
-#endif
-	} /*windowgetvnum*/
+	#ifdef WIN95VERSION
+	
+		return -1; // *** need new field?
+		
+	#endif
+	
+	} // windowgetvnum
 	
 	
-boolean windowsetfspec (WindowPtr w, tyfilespec *fspec) {
+boolean windowsetfspec (WindowPtr w, ptrfilespec fspec) {
 
 	hdlwindowinfo hinfo;
 	bigstring bstitle;
@@ -485,12 +504,13 @@ boolean windowsetfspec (WindowPtr w, tyfilespec *fspec) {
 	} /*windowsetfspec*/
 	
 
-boolean windowgetfspec (WindowPtr w, tyfilespec *fspec) {
+boolean windowgetfspec ( WindowPtr w, ptrfilespec fspec ) {
 
-	/*
-	6.18.97 dmb: return boolean value indicating whether or not the
-	fspec actually points to an existing file
-	*/
+	//
+	// 2006-09-14 creedon: for Mac, FSRef-ized
+	//
+	// 1997-06-18 dmb: return boolean value indicating whether or not the fspec actually points to an existing file
+	//
 	
 	hdlwindowinfo hinfo;
 	long vnum;
@@ -503,11 +523,12 @@ boolean windowgetfspec (WindowPtr w, tyfilespec *fspec) {
 	
 	*fspec = (**hinfo).fspec;
 	
-	if (!getfsvolume (fspec, &vnum)) //don't allow default vol to satisfy fileexists
+	if (!getfsvolume (fspec, &vnum)) // don't allow default vol to satisfy fileexists
 		return (false);
+		
+	return ( fileexists ( fspec, &flfolder ) );
 	
-	return (fileexists (fspec, &flfolder));
-	} /*windowgetfspec*/
+	} // windowgetfspec
 
 
 boolean windowgetpath (WindowPtr w, bigstring bspath) {
@@ -634,6 +655,7 @@ boolean loaddefaultfont (WindowPtr w) {
 	tysavedfont savedfont;
 	short fontnum;
 	long resourceSize;
+
 	if (!getwindowinfo (w, &hinfo)) /*defensive driving*/
 		return (false);
 	
@@ -650,7 +672,9 @@ boolean loaddefaultfont (WindowPtr w) {
 	//I think a more insidious problem was that the sizeof() was returning
 	//a short that was not being picked up right when run under spotlight. 
 	//This may be a spotlight bug though.
+
 	resourceSize = sizeof (savedfont);
+
 	if (!loadresource (&fspec, (short) (**h).rnum, 'styl', 128, nil, resourceSize, &savedfont, resourcefork)) { /* 2005-09-02 creedon - added support for fork parameter, see resources.c: openresourcefile and pushresourcefile */
 		
 		(**h).defaultfont = config.defaultfont;
@@ -1781,7 +1805,7 @@ boolean newshellwindow (WindowPtr *wnew, hdlwindowinfo *hnew, tywindowposition *
 	} /*newshellwindow*/
 
 	
-boolean newfilewindow (ptrfilespec fspec, hdlfilenum fnum, short rnum, boolean flhidden, WindowPtr *wnew) { 
+boolean newfilewindow ( const ptrfilespec fspec, hdlfilenum fnum, short rnum, boolean flhidden, WindowPtr *wnew ) { 
 	
 	/*
 	create a new window to display the contents of a file.
@@ -1969,7 +1993,7 @@ boolean newchildwindow (short idtype, hdlwindowinfo hparentinfo, Rect * rwindow,
 		
 	pushport (thePort);
 	}
-	
+			
 	setfontsizestyle (config.defaultfont, config.defaultsize, config.defaultstyle);
 	
 	popport ();
@@ -2000,7 +2024,20 @@ boolean newchildwindow (short idtype, hdlwindowinfo hparentinfo, Rect * rwindow,
 		
 		shellsetwindowtitle (hinfo, bstitle); // 7.24.97 dmb: was windowsettitle
 		
-		copystring (bstitle, fsname (&(**hinfo).fspec));
+		// do we need to do this?
+		
+		#ifdef MACVERSION
+
+			(**hinfo).fspec.path = CFStringCreateWithPascalString (kCFAllocatorDefault, bstitle, kCFStringEncodingMacRoman );
+				
+			#endif // MACVERSION
+
+		#ifdef WIN95VERSION
+
+			copystring ( bstitle, fsname ( &( **hinfo ).fspec ) );
+
+		#endif // WIN95VERSION
+
 		}
 	
 	fl = true;
@@ -3138,7 +3175,4 @@ boolean shellgetdatabase (WindowPtr w, hdldatabaserecord *hdatabase) {
 
 	return (fl);
 	} /*shellgetdatabase*/
-
-
-
 

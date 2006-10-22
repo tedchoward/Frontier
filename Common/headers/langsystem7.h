@@ -45,7 +45,7 @@
 
 
 #ifdef MACVERSION
-	#define filespecsize(fs) (sizeof (tyfilespec) - sizeof (Str63) + stringsize ((fs).name))
+	#define filespecsize(fs) (sizeof (tyfilespec)) // - sizeof (CFStringRef) + stringsize ((fs).name))
 #endif
 
 #ifdef WIN95VERSION
@@ -58,11 +58,11 @@ typedef boolean (*langvisitlistvaluescallback) (tyvaluerecord *, ptrvoid); /*200
 
 /*prototypes*/
 
-extern boolean filespectoalias (const tyfilespec *, boolean, AliasHandle *);  /*landsystem7.c*/
+extern boolean filespectoalias (const ptrfilespec , boolean, AliasHandle *);  /*landsystem7.c*/
 
 extern boolean aliastostring (Handle, bigstring);
 
-extern boolean aliastofilespec (AliasHandle, tyfilespec *);
+extern boolean aliastofilespec (AliasHandle, ptrfilespec );
 
 extern boolean coercetoalias (tyvaluerecord *);
 

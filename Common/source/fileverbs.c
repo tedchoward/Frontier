@@ -40,7 +40,6 @@
 #include "process.h"
 #include "kernelverbs.h"
 #include "file.h"
-#include "filesystem7.h"
 #include "filealias.h"
 #include "tablestructure.h"
 #include "kernelverbdefs.h"
@@ -50,7 +49,10 @@
 
 
 #ifdef MACVERSION
+
+	#include "MoreFilesX.h"
 	#define chpathseparator ':'
+	
 #endif
 
 #ifdef WIN95VERSION
@@ -85,7 +87,7 @@ typedef enum tyfiletoken { /*verbs that are processed by file.c*/
 	
 	setfilecreatorfunc,
 	
-	fileisfolderfunc, 
+	fileisfolderfunc,
 	
 	fileisvolumefunc,
 	
@@ -101,11 +103,11 @@ typedef enum tyfiletoken { /*verbs that are processed by file.c*/
 	
 	filecopyresourceforkfunc,
 	
-	filedeletefunc, 
+	filedeletefunc,
 	
 	filerenamefunc,
 	
-	fileexistsfunc, 
+	fileexistsfunc,
 	
 	filesizefunc,
 	
@@ -119,17 +121,13 @@ typedef enum tyfiletoken { /*verbs that are processed by file.c*/
 	
 	folderfrompathfunc, 
 	
-	/*
-	getprogrampathfunc,
-	*/
-	
 	getsystempathfunc,
 	
 	getspecialpathfunc,
 	
 	newfunc,
 	
-	newfolderfunc, 
+	newfolderfunc,
 	
 	newaliasfunc,
 	
@@ -239,7 +237,7 @@ typedef enum tyfiletoken { /*verbs that are processed by file.c*/
 		
 		comparefunc,
 	
-	/*end of new verbs added by DW, 7/27/91*/
+	// end of new verbs added by DW, 7/27/91
 	
 	writewholefilefunc,
 		
@@ -251,15 +249,18 @@ typedef enum tyfiletoken { /*verbs that are processed by file.c*/
 	
 	getmp3infofunc,
 	
-	readwholefilefunc,			/* 2006-04-11 aradke */
+	readwholefilefunc,			// 2006-04-11 aradke
 	
-	getlabelindexfunc,			/* 2006-04-23 creedon */
+	getlabelindexfunc,			// 2006-04-23 creedon
 	
-	setlabelindexfunc,			/* 2006-04-23 creedon */
+	setlabelindexfunc,			// 2006-04-23 creedon
 	
-	getlabelnamesfunc,			/* 2006-04-23 creedon */
+	getlabelnamesfunc,			// 2006-04-23 creedon
+	
+	getposixpathfunc,			// 2006-10-07 creedon
 	
 	ctfileverbs
+	
 	} tyfiletoken;
 
 
@@ -363,7 +364,7 @@ filecheckdefaultpath (bigstring bspath) {
 
 #endif
 
-static boolean getpathvalue (hdltreenode hparam1, short pnum, tyfilespec *fspath) {
+static boolean getpathvalue (hdltreenode hparam1, short pnum, ptrfilespec fspath) {
 	
 	/*
 	get a path parameter for the parameter list.
@@ -413,23 +414,23 @@ static boolean getpathvalue (hdltreenode hparam1, short pnum, tyfilespec *fspath
 	} /*getpathvalue*/
 
 
-static boolean getvolumevalue (hdltreenode hparam1, short pnum, tyfilespec *fsvol) {
+static boolean getvolumevalue (hdltreenode hparam1, short pnum, ptrfilespec fsvol) {
 	
-	/*
-	get a volume path parameter for the parameter list.
+	//
+	// get a volume path parameter for the parameter list.
+	//
+	// make sure that a colon is included so a volume name isn't interpreted as
+	// a partial path
+	//
+	// 2.1b11 dmb:	ooops, we were copying bsvol into fsvol.name, potentially 
+	//				overflowing the str64. fileparsevolname now returns the vol
+	//				name.  note that if the caller needs to distinguish between
+	//				volumes and non-volumes, it can't call us.
+	//
+	// 2.1b8 dmb:	don't use pathtofilespec to convert the volume name, because
+	//				FSMakeFSSpec will prompt the user to insert the disk if the
+	//				volume has been ejected
 	
-	make sure that a colon is included so a volume name isn't interpreted 
-	as a partial path
-	
-	2.1b8 dmb: don't use pathtofilespec to convert the volume name, 
-	because FSMakeFSSpec will prompt the user to insert the disk if 
-	the volume has been ejected
-	
-	2.1b11 dmb: ooops, we were copying bsvol into fsvol.name, potentially 
-	overflowing the str64. fileparsevolname now returns the vol name.  note  
-	that if the caller needs to distinguish between volumes and non-volumes, 
-	it can't call us.
-	*/
 	
 	bigstring bsvol;
 	tyvaluerecord v;
@@ -439,15 +440,11 @@ static boolean getvolumevalue (hdltreenode hparam1, short pnum, tyfilespec *fsvo
 	
 	switch (v.valuetype) {
 		
-		case stringvaluetype:/*already a string, easy case*/
+		case stringvaluetype: // already a string, easy case
 			
 			pullstringvalue (&v, bsvol);
 			
-		#ifdef NEWFILESPECTYPE
-			if (!fileparsevolname (bsvol, &(*fsvol).volumeID, (*fsvol).fullSpecifier)) {
-		#else
-			if (!fileparsevolname (bsvol, &(*fsvol).vRefNum, (*fsvol).name)) {
-		#endif
+			if ( ! fileparsevolname ( bsvol, fsvol ) ) {
 				
 				setoserrorparam (bsvol);
 				
@@ -455,20 +452,6 @@ static boolean getvolumevalue (hdltreenode hparam1, short pnum, tyfilespec *fsvo
 				
 				return (false);
 				}
-		#ifdef MACVERSION			
-			(*fsvol).parID = fsRtParID;
-		#endif			
-
-			/* old code for string paths, pre-filespecs
-			if (!stringfindchar (chpathseparator, bsvol))
-				pushchar (chpathseparator, bsvol);
-			
-			if (!pathtofilespec (bsvol, fsvol)) {
-				setoserrorparam (bsvol);
-				oserror (errorVolume);
-				return (false);
-				}
-			*/
 			
 			break;
 		
@@ -484,40 +467,50 @@ static boolean getvolumevalue (hdltreenode hparam1, short pnum, tyfilespec *fsvo
 		}
 	
 	return (true);
-	} /*getvolumevalue*/
+	} // getvolumevalue
 
 
 static boolean copyfileverb (boolean fldata, boolean flresources, hdltreenode hparam1, tyvaluerecord *v) {
+
+	//
+	// 2006-06-18 creedon: for Mac, FSRef-ize
+	//
 	
 	tyfilespec fs1, fs2;
 	
-	if (!getpathvalue (hparam1, 1, &fs1)) /*fs1 holds the source path*/
+	if (!getpathvalue (hparam1, 1, &fs1)) // fs1 holds the source path
 		return (false);
 	
 	flnextparamislast = true;
 	
-	if (!getpathvalue (hparam1, 2, &fs2)) /*fs2 holds the dest path*/
+	if (!getpathvalue (hparam1, 2, &fs2)) // fs2 holds the dest path
 		return (false);
 	
-	if (equalfilespecs (&fs1, &fs2)) /*easy case making a copy of itself*/
+	if (equalfilespecs (&fs1, &fs2)) // easy case making a copy of itself
 		(*v).data.flvalue = true;
-	else
-		(*v).data.flvalue = copyfile (&fs1, &fs2, fldata, flresources);
+	else {
+	
+		( void ) extendfilespec ( &fs1, &fs1 );
+		
+		(*v).data.flvalue = copyfile ( &fs1, &fs2, fldata, flresources );
+		
+		}
 	
 	return (true);
-	} /*copyfileverb*/
+	
+	} // copyfileverb
 
 
 static boolean filefrompathverb (hdltreenode hparam1, tyvaluerecord *vreturned) {
 	
-	/*
-	2.1b2 dmb: do string manipulation if given a string, but otherwise 
-	work with filespecs. less critical than with folderfrompath, but might 
-	avoid full path string overflow
-	
-	2.1b3 dmb: be sure to add colon to name of folder even when filespec is 
-	being used.
-	*/
+	//
+	// 2006-06-19 creedon: for Mac, FSRef-ized
+	//
+	// 2.1b3 dmb: be sure to add colon to name of folder even when filespec is being used.
+	//
+	// 2.1b2 dmb:	do string manipulation if given a string, but otherwise work with filespecs. less critical than with
+	//			folderfrompath, but might avoid full path string overflow
+	//
 	
 	tyvaluerecord v;
 	tyfilespec fs;
@@ -539,43 +532,44 @@ static boolean filefrompathverb (hdltreenode hparam1, tyvaluerecord *vreturned) 
 			if (flfolder)
 				setstringlength (bs, stringlength (bs) - 1);
 			
-			filefrompath (bs, bs); /*bs now holds the filename*/
+			filefrompath (bs, bs); // bs now holds the filename
 			
 			break;
 		
 		default:
-			if (!coercetofilespec (&v))
-				return (false);
-		
-			#if TARGET_API_MAC_CARBON == 1
-	
-				fs.vRefNum = (**v.data.filespecvalue).vRefNum;
-				fs.parID = (**v.data.filespecvalue).parID;
-		
-				copystring ((**v.data.filespecvalue).name, fs.name);
-	
-			#else
-		
-				fs = **v.data.filespecvalue;
+			if ( ! coercetofilespec ( &v ) )
+				return ( false );
 			
+			fs = **v.data.filespecvalue;
+
+			#ifdef MACVERSION
+			
+				( void ) extendfilespec ( &fs, &fs );
+			
+				if ( fs.path == NULL )
+					FSRefGetNameStr255 ( &fs.fsref, bs );
+				else
+					CFStringRefToStr255 ( fs.path, bs );
+					
 			#endif
 			
-		#ifdef NEWFILESPECTYPE
-			copystring (fs.fullSpecifier, bs);
-		#else
-			copystring (fs.name, bs);
-		#endif			
-			/*
-			if (!fileexists (&fs, &flfolder) || !fileisfolder (&fs, &flfolder))
-				flfolder = false;
-			*/
-			fileexists (&fs, &flfolder);	/*don't care about return, just flfolder value*/
-		#ifdef WIN95VERSION
-			if (endswithpathsep (bs))
-				setstringlength (bs, stringlength (bs) - 1);
+			#ifdef WIN95VERSION
+			
+				copystring (fs.fullSpecifier, bs);
+				
+			#endif
+			
+			fileexists (&fs, &flfolder); // don't care about return, just flfolder value
+			
+			#ifdef WIN95VERSION
+			
+				if (endswithpathsep (bs))
+					setstringlength (bs, stringlength (bs) - 1);
 
-			filefrompath (bs, bs);		
-		#endif
+				filefrompath (bs, bs);
+						
+			#endif
+			
 			break;
 		}
 
@@ -583,16 +577,17 @@ static boolean filefrompathverb (hdltreenode hparam1, tyvaluerecord *vreturned) 
 		pushchar (chpathseparator, bs);
 	
 	return (setstringvalue (bs, vreturned));
-	} /*filefrompathverb*/
+	} // filefrompathverb
 
 
 static boolean folderfrompathverb (hdltreenode hparam1, tyvaluerecord *vreturned) {
 	
-	/*
-	2.1b2 dmb: do string manipulation if given a string, but otherwise 
-	work with filespecs. in addition to avoiding string overflow, this 
-	preserves ability to distinguish between identically-named volumes
-	*/
+	//
+	// 2006-08-24 creedon: for Mac, FSRef-ized
+	//
+	// 2.1b2 dmb:	do string manipulation if given a string, but otherwise work with filespecs. in addition to avoiding string
+	//			overflow, this preserves ability to distinguish between identically-named volumes
+	//
 	
 	tyvaluerecord v;
 	
@@ -602,13 +597,16 @@ static boolean folderfrompathverb (hdltreenode hparam1, tyvaluerecord *vreturned
 		return (false);
 	
 	#ifdef WIN95VERSION
-	if (!coercetostring (&v))
-		return (false);
+	
+		if (!coercetostring (&v))
+			return (false);
+		
 	#endif
 
 	switch (v.valuetype) {
 	
 		case stringvaluetype: {
+		
 			bigstring bs;
 			
 			pullstringvalue (&v, bs);
@@ -621,36 +619,31 @@ static boolean folderfrompathverb (hdltreenode hparam1, tyvaluerecord *vreturned
 			}
 		
 		default: {
-		#ifdef MACVERSION
-			tyfilespec fs;
+		
+			#ifdef MACVERSION
 			
-			if (!coercetofilespec (&v))
-				return (false);			
-			
-			#if TARGET_API_MAC_CARBON == 1
-
-				fs.vRefNum = (**v.data.filespecvalue).vRefNum;
+				tyfilespec fs;
 				
-				fs.parID = (**v.data.filespecvalue).parID;
-				
-				copystring ((**v.data.filespecvalue).name, fs.name);
-			
-			#else
+				if ( ! coercetofilespec ( &v ) )
+					return ( false );
 				
 				fs = **v.data.filespecvalue;
+				
+				if ( ! getfileparentfolder ( &fs, &fs ) )
+					return ( false );
+					
+				return ( setfilespecvalue ( &fs, vreturned ) );
+				
+			#else
 			
+				return ( false );
+				
 			#endif
 			
-			if (!getfileparentfolder (&fs, &fs))
-				return (false);
-			
-			return (setfilespecvalue (&fs, vreturned));
-		#else
-			return (false);
-		#endif
 			}
 		}
-	} /*folderfrompathverb*/
+		
+	} // folderfrompathverb
 
 
 static boolean gettypelistvalue (hdltreenode hparam1, short pnum, tysftypelist *filetypes, ptrsftypelist *x) {
@@ -717,18 +710,20 @@ static boolean gettypelistvalue (hdltreenode hparam1, short pnum, tysftypelist *
 
 static boolean filedialogverb (tysfverb sfverb, hdltreenode hparam1, tyvaluerecord *vreturned) {
 	
-	/*
-	put up one of the "standard file" dialogs.  if sfverb is sfputfileverb we use the "put" dialog, otherwise the "get" dialog.
-	
-	we take at least one parameter -- the name of a variable to receive the full path specified by the user.
-	
-	if it's the getfile dialog, we take a second parameter -- it indicates the
-	type of the file.
-	
-	2005-10-06 creedon: added creator parameter
-	
-	12/27/91 dmb: in all cases, check the current value of the filename variable, and pass it on to sf dialog so it can potentially set default directory.
-	*/
+	//
+	// put up one of the "standard file" dialogs.  if sfverb is sfputfileverb we use the "put" dialog, otherwise the "get" dialog.
+	//
+	// we take at least one parameter -- the name of a variable to receive the full path specified by the user.
+	//
+	// if it's the getfile dialog, we take a second parameter -- it indicates the type of the file.
+	//
+	// 2006-08-16 creedon: FSRef-ized
+	//
+	// 2005-10-06 creedon: added creator parameter
+	//
+	// 1991-12-27 dmb: in all cases, check the current value of the filename variable, and pass it on to sf dialog so it can
+	//				potentially set default directory.
+	//
 	
 	bigstring bsprompt;
 	bigstring bsvarname;
@@ -748,10 +743,10 @@ static boolean filedialogverb (tysfverb sfverb, hdltreenode hparam1, tyvaluereco
 	if (sfverb != sfgetfileverb)
 		flnextparamislast = true;
 	
-	if (!getvarparam (hparam1, 2, &htable, bsvarname)) /*returned filename holder*/
+	if (!getvarparam (hparam1, 2, &htable, bsvarname)) // returned filename holder
 		return (false);
 	
-	if (sfverb == sfgetfileverb) { /* get extra parameters for get file dialog, indicating file type(s) and file creator */
+	if (sfverb == sfgetfileverb) { // get extra parameters for get file dialog, indicating file type(s) and file creator
 		
 		short ctconsumed = 3;
 		short ctpositional = 3;
@@ -773,10 +768,10 @@ static boolean filedialogverb (tysfverb sfverb, hdltreenode hparam1, tyvaluereco
 	
 	clearbytes (&fs, sizeof (fs));
 	
-	/*
-	if (idstringvalue (htable, bsvarname, bsfname))
-		filecheckdefaultpath (bsfname);
-	*/
+	//
+	// if (idstringvalue (htable, bsvarname, bsfname))
+	// 	filecheckdefaultpath (bsfname);
+	//
 	
 	if (hashtablelookup (htable, bsvarname, &val, &hnode)) {
 		
@@ -792,9 +787,14 @@ static boolean filedialogverb (tysfverb sfverb, hdltreenode hparam1, tyvaluereco
 		}
 
 	if (sfverb == sfputfileverb) {
-		lastword (fsname(&fs), '.', bsext);
+	
+		bigstring bs;
+		
+		getfsfile ( &fs, bs );
+		
+		lastword ( bs, '.', bsext);
 
-		if (!((stringlength (fsname(&fs)) == stringlength (bsext)) || (stringlength (bsext) > 4))) {	/* extension */
+		if ( ! ( ( stringlength ( bs ) == stringlength ( bsext ) ) || ( stringlength ( bsext ) > 4 ) ) ) { // extension
 			stringtoostype (bsext, &ostype);
 			filetypes.cttypes = 1;
 			filetypes.types [0] = ostype;
@@ -804,7 +804,7 @@ static boolean filedialogverb (tysfverb sfverb, hdltreenode hparam1, tyvaluereco
 	
 	setbooleanvalue (false, vreturned); 
 	
-	if (!sfdialog (sfverb, bsprompt, typelist, &fs, oscreator)) /*user hit cancel*/
+	if (!sfdialog (sfverb, bsprompt, typelist, &fs, oscreator)) // user hit cancel
 		return (true);
 	
 	if (!setfilespecvalue (&fs, &val))
@@ -821,10 +821,11 @@ static boolean filedialogverb (tysfverb sfverb, hdltreenode hparam1, tyvaluereco
 	
 	exemptfromtmpstack (&val);
 	
-	(*vreturned).data.flvalue = true; /*the user did select a file*/
+	(*vreturned).data.flvalue = true; // the user did select a file
 	
 	return (true);
-	} /*filedialogverb*/
+	
+	} // filedialogverb
 
 
 static boolean getstringorintvalue (hdltreenode hfirst, short pnum, boolean flstring, short *intval, bigstring bsval) {
@@ -918,9 +919,11 @@ static boolean getresourceverb (hdltreenode hparam1, boolean flnamed, tyvaluerec
 
 static boolean putresourceverb (hdltreenode hparam1, boolean flnamed, tyvaluerecord *v) {
 
-	/*
-	2005-09-02 creedon: added support for fork parameter, see resources.c: openresourcefile and pushresourcefile
-	*/ 
+	//
+	// 2006-06-17 creedon: FSRef-ized
+	//
+	// 2005-09-02 creedon: added support for fork parameter, see resources.c: openresourcefile and pushresourcefile
+	// 
 	
 	tyfilespec fs;
 	OSType type, bintype;
@@ -951,13 +954,16 @@ static boolean putresourceverb (hdltreenode hparam1, boolean flnamed, tyvaluerec
 
 	if (!getoptionalparamvalue (hparam1, &ctconsumed, &ctpositional, BIGSTRING ("\x04""fork"), &val))
 		return (false);
+		
+	( void ) extendfilespec ( &fs, &fs );
 
 	forktype = val.data.intvalue;
 
 	(*v).data.flvalue = saveresourcehandle (&fs, type, id, bs, hbinary, forktype);
 	
 	return (true);
-	} /*putresourceverb*/
+	
+	} // putresourceverb
 
 
 static boolean countrestypesverb (hdltreenode hparam1, tyvaluerecord *v) {
@@ -1890,6 +1896,10 @@ static boolean setcommentverb (hdltreenode hparam1, tyvaluerecord *v) {
 
 static boolean getlabelverb (hdltreenode hparam1, tyvaluerecord *v) {
 	
+	//
+	// 2006-06-18 creedon: FSRef-ized
+	//
+	
 	tyfilespec fs;
 	bigstring bslabel;
 	
@@ -1898,14 +1908,21 @@ static boolean getlabelverb (hdltreenode hparam1, tyvaluerecord *v) {
 	if (!getpathvalue (hparam1, 1, &fs)) 
 		return (false);
 	
+	( void ) extendfilespec ( &fs, &fs );
+	
 	if (!getfilelabel (&fs, bslabel))
 		setemptystring (bslabel);
 	
 	return (setstringvalue (bslabel, v));
-	} /*getlabelverb*/
+	
+	} // getlabelverb
 
 
 static boolean setlabelverb (hdltreenode hparam1, tyvaluerecord *v) {
+
+	//
+	// 2006-06-18 creedon: FSRef-ized
+	//
 	
 	tyfilespec fs;
 	bigstring bslabel;
@@ -1918,15 +1935,20 @@ static boolean setlabelverb (hdltreenode hparam1, tyvaluerecord *v) {
 	if (!getstringvalue (hparam1, 2, bslabel)) 
 		return (false);
 	
+	( void ) extendfilespec ( &fs, &fs );
+	
 	return (setbooleanvalue (setfilelabel (&fs, bslabel), v));
-	} /*setlabelverb*/
+	
+	} // setlabelverb
 
 
 static boolean getlabelindexverb (hdltreenode hparam1, tyvaluerecord *v) {
 
-	/*
-	2006-04-24 creedon: created, cribbed from getlabelverb function
-	*/
+	//
+	// 2006-06-18 creedon: FSRef-ized
+	//
+	// 2006-04-24 creedon: created, cribbed from getlabelverb function
+	//
 	
 	tyfilespec fs;
 	short ixlabel;
@@ -1936,18 +1958,23 @@ static boolean getlabelindexverb (hdltreenode hparam1, tyvaluerecord *v) {
 	if (!getpathvalue (hparam1, 1, &fs)) 
 		return (false);
 
+	( void ) extendfilespec ( &fs, &fs );
+	
 	if (!getfilelabelindex (&fs, &ixlabel))
 		return (false);
 	
 	return (setintvalue (ixlabel, v));
-	} /* getlabelindexverb */
+	
+	} // getlabelindexverb
 
 
 static boolean setlabelindexverb (hdltreenode hparam1, tyvaluerecord *v) {
 
-	/*
-	2006-04-24 creedon: created, cribbed from setlabelverb function
-	*/
+	//
+	// 2006-06-18 creedon: FSRef-ized
+	//
+	// 2006-04-24 creedon: created, cribbed from setlabelverb function
+	//
 	
 	tyfilespec fs;
 	short index;
@@ -1960,8 +1987,11 @@ static boolean setlabelindexverb (hdltreenode hparam1, tyvaluerecord *v) {
 	if (!getintvalue (hparam1, 2, &index)) 
 		return (false);
 		
+	( void ) extendfilespec ( &fs, &fs );
+	
 	return (setbooleanvalue (setfilelabelindex (&fs, index, true), v));
-	} /* setlabelindexverb */
+	
+	} // setlabelindexverb
 
 
 static boolean getlabelnamesverb (hdltreenode hparam1, tyvaluerecord *v) {
@@ -2024,193 +2054,193 @@ static boolean findapplicationverb (hdltreenode hparam1, tyvaluerecord *v) {
 
 #ifdef WIN95VERSION
 
-boolean filegetprogramversion (bigstring bsversion) {
-	
-	return (getstringlist (defaultlistnumber, programversion, bsversion));
-	} /*filegetprogramversion*/
-
-
-static boolean getshortversionverb (hdltreenode hparam1, tyvaluerecord *v) {
-	
-	/*
-	file.getversion (path): string; return the version number as 
-	a string, e.g. "1.0b2".
-	*/
-	
-	tyfilespec fs;
-	DWORD dummyhandle;
-	bigstring bs;
-	DWORD buflen;
-	char * buf;
-	VS_FIXEDFILEINFO * ffi;
-	char * info;
-	boolean flffi;
-	
-	flnextparamislast = true;
-	
-	if (!getpathvalue (hparam1, 1, &fs)) 
-		return (false);
-	
-	nullterminate (fsname(&fs));
-
-	setemptystring (bs);
-
-	buflen = GetFileVersionInfoSize (stringbaseaddress(fsname(&fs)), &dummyhandle);
-
-	if (buflen > 0) {
-		buf = (char *) LocalAlloc (LPTR, buflen);
+	boolean filegetprogramversion (bigstring bsversion) {
 		
-		if (buf != NULL) {
-			if (GetFileVersionInfo (stringbaseaddress(fsname(&fs)), dummyhandle, buflen, buf)) {
-				buflen = sizeof(VS_FIXEDFILEINFO);
-
-				flffi = VerQueryValue (buf, "\\", &ffi, &buflen);
-
-				if (flffi)
-					flffi = buflen > 0;
-
-				buflen = 0;
-
-				VerQueryValue (buf, "\\StringFileInfo\\040904E4\\FileVersion", &info, &buflen);
-				
-				if (buflen == 0) {
-					VerQueryValue (buf, "\\StringFileInfo\\040904B0\\FileVersion", &info, &buflen);
-					}
-
-				if (buflen != 0)
-					copyctopstring (info, bs);
-				else if (flffi) {
-					wsprintf (stringbaseaddress (bs), "%d.%d.%d.%d", HIWORD(ffi->dwFileVersionMS), 
-							LOWORD(ffi->dwFileVersionMS), HIWORD(ffi->dwFileVersionLS), LOWORD(ffi->dwFileVersionLS));
-					setstringlength (bs, strlen(stringbaseaddress(bs)));
-					}
-				}
-
-			LocalFree (buf);
-			}
-		}
-
-	return (setstringvalue (bs, v));
-	} /*getshortversionverb*/
+		return (getstringlist (defaultlistnumber, programversion, bsversion));
+		} /*filegetprogramversion*/
 
 
-static boolean getlongversionverb (hdltreenode hparam1, tyvaluerecord *v) {
-
-	/*
-	file.getfullversion (path): string; return the long version string 
-	"1.0b2 © Copyright 1991 UserLand Software.".  need definitions above, 
-	which don't appear in the Think C headers anywhere
-	*/
-	
-	tyfilespec fs;
-	DWORD dummyhandle;
-	bigstring bs, bs2;
-	DWORD buflen;
-	char * buf;
-	VS_FIXEDFILEINFO * ffi;
-	char * info;
-	
-	flnextparamislast = true;
-	
-	if (!getpathvalue (hparam1, 1, &fs)) 
-		return (false);
-	
-	nullterminate (fsname(&fs));
-
-	setemptystring (bs);
-	setemptystring (bs2);
-
-	buflen = GetFileVersionInfoSize (stringbaseaddress(fsname(&fs)), &dummyhandle);
-
-	if (buflen > 0) {
-		buf = (char *) LocalAlloc (LPTR, buflen);
+	static boolean getshortversionverb (hdltreenode hparam1, tyvaluerecord *v) {
 		
-		if (buf != NULL) {
-			if (GetFileVersionInfo (stringbaseaddress(fsname(&fs)), dummyhandle, buflen, buf)) {
-				buflen = sizeof(VS_FIXEDFILEINFO);
-				VerQueryValue (buf, "\\", &ffi, &buflen);
-
-				VerQueryValue (buf, "\\StringFileInfo\\040904E4\\FileVersion", &info, &buflen);
-				
-				if (buflen == 0) {
-					VerQueryValue (buf, "\\StringFileInfo\\040904B0\\FileVersion", &info, &buflen);
-					}
-
-				if (buflen != 0)
-					copyctopstring (info, bs);
-
-				VerQueryValue (buf, "\\StringFileInfo\\040904E4\\LegalCopyright", &info, &buflen);
-				
-				if (buflen == 0) {
-					VerQueryValue (buf, "\\StringFileInfo\\040904B0\\LegalCopyright", &info, &buflen);
-					}
-
-				if (buflen != 0)
-					copyctopstring (info, bs2);
-
-				if (stringlength(bs) > 0)
-					pushspace (bs);
-
-				pushstring (bs2, bs);
-				}
-
-			LocalFree (buf);
-			}
-		}
-
-	return (setstringvalue (bs, v));
-	} /*getlongversionverb*/
-
-static boolean getcommentverb (hdltreenode hparam1, tyvaluerecord *v) {
-	
-	/*
-	file.getversion (path): string; return the version number as 
-	a string, e.g. "1.0b2".
-	*/
-	
-	tyfilespec fs;
-	DWORD dummyhandle;
-	bigstring bs;
-	DWORD buflen;
-	char * buf;
-	VS_FIXEDFILEINFO * ffi;
-	char * info;
-	
-	flnextparamislast = true;
-	
-	if (!getpathvalue (hparam1, 1, &fs)) 
-		return (false);
-	
-	nullterminate (fsname(&fs));
-
-	setemptystring (bs);
-
-	buflen = GetFileVersionInfoSize (stringbaseaddress(fsname(&fs)), &dummyhandle);
-
-	if (buflen > 0) {
-		buf = (char *) LocalAlloc (LPTR, buflen);
+		/*
+		file.getversion (path): string; return the version number as 
+		a string, e.g. "1.0b2".
+		*/
 		
-		if (buf != NULL) {
-			if (GetFileVersionInfo (stringbaseaddress(fsname(&fs)), dummyhandle, buflen, buf)) {
-				buflen = sizeof(VS_FIXEDFILEINFO);
-				VerQueryValue (buf, "\\", &ffi, &buflen);
+		tyfilespec fs;
+		DWORD dummyhandle;
+		bigstring bs;
+		DWORD buflen;
+		char * buf;
+		VS_FIXEDFILEINFO * ffi;
+		char * info;
+		boolean flffi;
+		
+		flnextparamislast = true;
+		
+		if (!getpathvalue (hparam1, 1, &fs)) 
+			return (false);
+		
+		nullterminate (fsname(&fs));
 
-				VerQueryValue (buf, "\\StringFileInfo\\040904E4\\FileDescription", &info, &buflen);
-				
-				if (buflen == 0) {
-					VerQueryValue (buf, "\\StringFileInfo\\040904B0\\FileDescription", &info, &buflen);
+		setemptystring (bs);
+
+		buflen = GetFileVersionInfoSize (stringbaseaddress(fsname(&fs)), &dummyhandle);
+
+		if (buflen > 0) {
+			buf = (char *) LocalAlloc (LPTR, buflen);
+			
+			if (buf != NULL) {
+				if (GetFileVersionInfo (stringbaseaddress(fsname(&fs)), dummyhandle, buflen, buf)) {
+					buflen = sizeof(VS_FIXEDFILEINFO);
+
+					flffi = VerQueryValue (buf, "\\", &ffi, &buflen);
+
+					if (flffi)
+						flffi = buflen > 0;
+
+					buflen = 0;
+
+					VerQueryValue (buf, "\\StringFileInfo\\040904E4\\FileVersion", &info, &buflen);
+					
+					if (buflen == 0) {
+						VerQueryValue (buf, "\\StringFileInfo\\040904B0\\FileVersion", &info, &buflen);
+						}
+
+					if (buflen != 0)
+						copyctopstring (info, bs);
+					else if (flffi) {
+						wsprintf (stringbaseaddress (bs), "%d.%d.%d.%d", HIWORD(ffi->dwFileVersionMS), 
+								LOWORD(ffi->dwFileVersionMS), HIWORD(ffi->dwFileVersionLS), LOWORD(ffi->dwFileVersionLS));
+						setstringlength (bs, strlen(stringbaseaddress(bs)));
+						}
 					}
 
-				if (buflen != 0)
-					copyctopstring (info, bs);
+				LocalFree (buf);
 				}
-
-			LocalFree (buf);
 			}
-		}
 
-	return (setstringvalue (bs, v));
-	} /*getcommentverb*/
+		return (setstringvalue (bs, v));
+		} /*getshortversionverb*/
+
+
+	static boolean getlongversionverb (hdltreenode hparam1, tyvaluerecord *v) {
+
+		/*
+		file.getfullversion (path): string; return the long version string 
+		"1.0b2 © Copyright 1991 UserLand Software.".  need definitions above, 
+		which don't appear in the Think C headers anywhere
+		*/
+		
+		tyfilespec fs;
+		DWORD dummyhandle;
+		bigstring bs, bs2;
+		DWORD buflen;
+		char * buf;
+		VS_FIXEDFILEINFO * ffi;
+		char * info;
+		
+		flnextparamislast = true;
+		
+		if (!getpathvalue (hparam1, 1, &fs)) 
+			return (false);
+		
+		nullterminate (fsname(&fs));
+
+		setemptystring (bs);
+		setemptystring (bs2);
+
+		buflen = GetFileVersionInfoSize (stringbaseaddress(fsname(&fs)), &dummyhandle);
+
+		if (buflen > 0) {
+			buf = (char *) LocalAlloc (LPTR, buflen);
+			
+			if (buf != NULL) {
+				if (GetFileVersionInfo (stringbaseaddress(fsname(&fs)), dummyhandle, buflen, buf)) {
+					buflen = sizeof(VS_FIXEDFILEINFO);
+					VerQueryValue (buf, "\\", &ffi, &buflen);
+
+					VerQueryValue (buf, "\\StringFileInfo\\040904E4\\FileVersion", &info, &buflen);
+					
+					if (buflen == 0) {
+						VerQueryValue (buf, "\\StringFileInfo\\040904B0\\FileVersion", &info, &buflen);
+						}
+
+					if (buflen != 0)
+						copyctopstring (info, bs);
+
+					VerQueryValue (buf, "\\StringFileInfo\\040904E4\\LegalCopyright", &info, &buflen);
+					
+					if (buflen == 0) {
+						VerQueryValue (buf, "\\StringFileInfo\\040904B0\\LegalCopyright", &info, &buflen);
+						}
+
+					if (buflen != 0)
+						copyctopstring (info, bs2);
+
+					if (stringlength(bs) > 0)
+						pushspace (bs);
+
+					pushstring (bs2, bs);
+					}
+
+				LocalFree (buf);
+				}
+			}
+
+		return (setstringvalue (bs, v));
+		} /*getlongversionverb*/
+
+	static boolean getcommentverb (hdltreenode hparam1, tyvaluerecord *v) {
+		
+		/*
+		file.getversion (path): string; return the version number as 
+		a string, e.g. "1.0b2".
+		*/
+		
+		tyfilespec fs;
+		DWORD dummyhandle;
+		bigstring bs;
+		DWORD buflen;
+		char * buf;
+		VS_FIXEDFILEINFO * ffi;
+		char * info;
+		
+		flnextparamislast = true;
+		
+		if (!getpathvalue (hparam1, 1, &fs)) 
+			return (false);
+		
+		nullterminate (fsname(&fs));
+
+		setemptystring (bs);
+
+		buflen = GetFileVersionInfoSize (stringbaseaddress(fsname(&fs)), &dummyhandle);
+
+		if (buflen > 0) {
+			buf = (char *) LocalAlloc (LPTR, buflen);
+			
+			if (buf != NULL) {
+				if (GetFileVersionInfo (stringbaseaddress(fsname(&fs)), dummyhandle, buflen, buf)) {
+					buflen = sizeof(VS_FIXEDFILEINFO);
+					VerQueryValue (buf, "\\", &ffi, &buflen);
+
+					VerQueryValue (buf, "\\StringFileInfo\\040904E4\\FileDescription", &info, &buflen);
+					
+					if (buflen == 0) {
+						VerQueryValue (buf, "\\StringFileInfo\\040904B0\\FileDescription", &info, &buflen);
+						}
+
+					if (buflen != 0)
+						copyctopstring (info, bs);
+					}
+
+				LocalFree (buf);
+				}
+			}
+
+		return (setstringvalue (bs, v));
+		} /*getcommentverb*/
 
 #endif
 
@@ -2266,9 +2296,11 @@ static boolean countlinesverb (hdltreenode hparam1, tyvaluerecord *v) {
 
 static boolean openfileverb (hdltreenode hparam1, tyvaluerecord *v) {
 	
-	/*
-	5.0.1 dmb: removed incorrect case for W95
-	*/
+	//
+	// 2006-06-25 creedon: for Mac, FSRef-ized
+	//
+	// 5.0.1 dmb: removed incorrect case for W95
+	//
 
 	tyfilespec fs;
 	
@@ -2276,44 +2308,64 @@ static boolean openfileverb (hdltreenode hparam1, tyvaluerecord *v) {
 	
 	if (!getpathvalue (hparam1, 1, &fs))
 		return (false);
-
+	
+	( void ) extendfilespec ( &fs, &fs );
+	
 	(*v).data.flvalue = fifopenfile (&fs, (long) currentprocess);
 	
 	return (true);
-	} /*openfileverb*/
+	
+	} // openfileverb
 	
 
 static boolean closefileverb (hdltreenode hparam1, tyvaluerecord *v) {
 
+	//
+	// 2006-06-17 creedon: for Mac, FSRef-ized
+	//
+
 	tyfilespec fs;
 	
 	flnextparamislast = true;
 	
 	if (!getpathvalue (hparam1, 1, &fs))
 		return (false);
-		
+	
+	( void ) extendfilespec ( &fs, &fs );
+	
 	(*v).data.flvalue = fifclosefile (&fs);
 	
 	return (true);
-	} /*closefileverb*/
+	
+	} // closefileverb
 
 
 static boolean endoffileverb (hdltreenode hparam1, tyvaluerecord *v) {
 
+	//
+	// 2006-06-18 creedon: FSRef-ized
+	//
+
 	tyfilespec fs;
 	
 	flnextparamislast = true;
 	
 	if (!getpathvalue (hparam1, 1, &fs))
 		return (false);
+	
+	( void ) extendfilespec ( &fs, &fs );
 		
 	(*v).data.flvalue = fifendoffile (&fs);
 	
 	return (true);
-	} /*endoffileverb*/
+	} // endoffileverb
 	
 
 static boolean setendoffileverb (hdltreenode hparam1, tyvaluerecord *v) {
+
+	//
+	// 2006-06-18 creedon: FSRef-ized
+	//
 
 	tyfilespec fs;
 	long eof;
@@ -2326,13 +2378,19 @@ static boolean setendoffileverb (hdltreenode hparam1, tyvaluerecord *v) {
 	if (!getlongvalue (hparam1, 2, &eof))
 		return (false);
 	
+	( void ) extendfilespec ( &fs, &fs );
+		
 	(*v).data.flvalue = fifsetendoffile (&fs, eof);
 	
 	return (true);
-	} /*endoffileverb*/
+	} // endoffileverb
 	
 
 static boolean getendoffileverb (hdltreenode hparam1, tyvaluerecord *v) {
+
+	//
+	// 2006-06-18 creedon: FSRef-ized
+	//
 
 	tyfilespec fs;
 	long eof;
@@ -2342,14 +2400,21 @@ static boolean getendoffileverb (hdltreenode hparam1, tyvaluerecord *v) {
 	if (!getpathvalue (hparam1, 1, &fs))
 		return (false);
 	
+	( void ) extendfilespec ( &fs, &fs );
+	
 	if (!fifgetendoffile (&fs, &eof))
 		return (false);
 	
 	return (setlongvalue (eof, v));
-	} /*endoffileverb*/
+	
+	} // endoffileverb
 
 
 static boolean setpositionverb (hdltreenode hparam1, tyvaluerecord *v) {
+
+	//
+	// 2006-06-18 creedon: FSRef-ized
+	//
 
 	tyfilespec fs;
 	long pos;
@@ -2362,13 +2427,20 @@ static boolean setpositionverb (hdltreenode hparam1, tyvaluerecord *v) {
 	if (!getlongvalue (hparam1, 2, &pos))
 		return (false);
 	
+	( void ) extendfilespec ( &fs, &fs );
+	
 	(*v).data.flvalue = fifsetposition (&fs, pos);
 	
 	return (true);
-	} /*positionverb*/
+	
+	} // positionverb
 	
 
 static boolean getpositionverb (hdltreenode hparam1, tyvaluerecord *v) {
+
+	//
+	// 2006-06-18 creedon: FSRef-ized
+	//
 
 	tyfilespec fs;
 	long pos;
@@ -2378,14 +2450,21 @@ static boolean getpositionverb (hdltreenode hparam1, tyvaluerecord *v) {
 	if (!getpathvalue (hparam1, 1, &fs))
 		return (false);
 	
+	( void ) extendfilespec ( &fs, &fs );
+	
 	if (!fifgetposition (&fs, &pos))
 		return (false);
 	
 	return (setlongvalue (pos, v));
-	} /*positionverb*/
+	
+	} // positionverb
 	
 
 static boolean readlineverb (hdltreenode hparam1, tyvaluerecord *v) {
+
+	//
+	// 2006-06-18 creedon: FSRef-ized
+	//
 
 	tyfilespec fs;
 	Handle linestring;
@@ -2395,13 +2474,20 @@ static boolean readlineverb (hdltreenode hparam1, tyvaluerecord *v) {
 	if (!getpathvalue (hparam1, 1, &fs))
 		return (false);
 	
+	( void ) extendfilespec ( &fs, &fs );
+	
 	fifreadline (&fs, &linestring);
 	
 	return (setheapvalue (linestring, stringvaluetype, v));
-	} /*readlineverb*/
+	
+	} // readlineverb
 	
 
 static boolean writelineverb (hdltreenode hparam1, tyvaluerecord *v) {
+
+	//
+	// 2006-06-18 creedon: for Mac, FSRef-ized
+	//
 
 	tyfilespec fs;
 	Handle linestring;
@@ -2414,30 +2500,35 @@ static boolean writelineverb (hdltreenode hparam1, tyvaluerecord *v) {
 	if (!gettextvalue (hparam1, 2, &linestring))
 		return (false);
 	
+	( void ) extendfilespec ( &fs, &fs );
+	
 	(*v).data.flvalue = fifwriteline (&fs, linestring);
 	
 	return (true);
-	} /*writelineverb*/
+	
+	} // writelineverb
 
 
 static boolean readwholefileverb (hdltreenode hparam1, tyvaluerecord *v) {
 	
-	/*
-	Read the whole file into memory and return the data to the caller.
-	
-	2006-04-11 aradke: Kernelized file.readWholeFile. Obsolete script code follows:
-	
-		on readWholeFile (f) {
-			«10/31/97 at 1:02:04 PM by DW -- moved from toys.readWholeFile
-			local (s);
-			file.open (f);
-			s = file.read (f, infinity);
-			file.close (f);
-			return (s)}
-	
-	This kernel implementation is much more efficient than file.read because
-	it pre-allocates a handle large enough for the whole file.
-	*/
+	//
+	// Read the whole file into memory and return the data to the caller.
+	//
+	// 2006-06-18 creedon: FSRef-ized
+	//
+	// 2006-04-11 aradke:	Kernelized file.readWholeFile. Obsolete script code follows:
+	//
+	//				on readWholeFile (f) {
+	//					«10/31/97 at 1:02:04 PM by DW -- moved from toys.readWholeFile
+	//					local (s);
+	//					file.open (f);
+	//					s = file.read (f, infinity);
+	//					file.close (f);
+	//					return (s)}
+	//
+	//				This kernel implementation is much more efficient than file.read because it pre-allocates a handle
+	//				large enough for the whole file.
+	//
 
 	tyfilespec fs;
 	Handle x;
@@ -2447,7 +2538,9 @@ static boolean readwholefileverb (hdltreenode hparam1, tyvaluerecord *v) {
 	
 	if (!getpathvalue (hparam1, 1, &fs))
 		return (false);
-
+	
+	( void ) extendfilespec ( &fs, &fs );
+		
 	if (!fifopenfile (&fs, (long) currentprocess))
 		return (false);
 
@@ -2455,15 +2548,20 @@ static boolean readwholefileverb (hdltreenode hparam1, tyvaluerecord *v) {
 		
 	disablelangerror ();
 		
-	(void) fifclosefile (&fs);	/* ignore return value, we got what we wanted */
+	(void) fifclosefile (&fs); // ignore return value, we got what we wanted
 	
 	enablelangerror ();
 	
 	return (fl && setbinaryvalue (x, '\?\?\?\?', v));
-	} /*readwholefileverb*/
+	
+	} // readwholefileverb
 
 
 static boolean readverb (hdltreenode hparam1, tyvaluerecord *v) {
+	
+	//
+	// 2006-06-18 creedon: FSRef-ized
+	//
 	
 	tyfilespec fs;
 	Handle x;
@@ -2477,10 +2575,12 @@ static boolean readverb (hdltreenode hparam1, tyvaluerecord *v) {
 	if (!getlongvalue (hparam1, 2, &ctbytes))
 		return (false);
 	
+	( void ) extendfilespec ( &fs, &fs );
+		
 	if (!fifreadhandle (&fs, ctbytes, &x))
 		return (true);
 	
-	if ((ctbytes < longinfinity) && (ctbytes != gethandlesize (x))) { /*ran out of data*/
+	if ((ctbytes < longinfinity) && (ctbytes != gethandlesize (x))) { // ran out of data
 		
 		disposehandle (x);
 		
@@ -2488,17 +2588,19 @@ static boolean readverb (hdltreenode hparam1, tyvaluerecord *v) {
 		}
 	
 	return (setbinaryvalue (x, '\?\?\?\?', v));
-	} /*readverb*/
+	
+	} // readverb
 
 
 static boolean writeverb (hdltreenode hparam1, tyvaluerecord *v) {
 	
-	/*
-	5.0.2b17 dmb: use new getreadonlytextvalue
-	*/
+	//
+	// 2006-06-18 creedon: FSRef-ized
+	//
+	// 5.0.2b17 dmb: use new getreadonlytextvalue
+	//
 	
 	tyfilespec fs;
-	//tyvaluerecord val;
 	Handle hdata;
 	
 	if (!getpathvalue (hparam1, 1, &fs))
@@ -2506,22 +2608,16 @@ static boolean writeverb (hdltreenode hparam1, tyvaluerecord *v) {
 	
 	flnextparamislast = true;
 	
-	/*
-	if (!getbinaryparam (hparam1, 2, &val))
-		return (false);
-	
-	if (!coercetostring (&val))
-		return (false);
-	
-	(*v).data.flvalue = fifwritehandle (&fs, (Handle) val.data.stringvalue);
-	*/
 	if (!getreadonlytextvalue (hparam1, 2, &hdata))
 		return (false);
+	
+	( void ) extendfilespec ( &fs, &fs );
 	
 	(*v).data.flvalue = fifwritehandle (&fs, hdata);
 	
 	return (true);
-	} /*writeverb*/
+	
+	} // writeverb
 
 
 #if 0
@@ -2570,6 +2666,10 @@ static boolean writewholefileverb (hdltreenode hparam1, tyvaluerecord *v) {
 
 static boolean comparefilesverb (hdltreenode hparam1, tyvaluerecord *v) {
 
+	//
+	// 2006-06-18 creedon: for Mac, FSRef-ized
+	//
+	
 	tyfilespec fs1, fs2;
 	
 	if (!getpathvalue (hparam1, 1, &fs1))
@@ -2580,181 +2680,342 @@ static boolean comparefilesverb (hdltreenode hparam1, tyvaluerecord *v) {
 	if (!getpathvalue (hparam1, 2, &fs2))
 		return (false);
 		
+	( void ) extendfilespec ( &fs1, &fs1 );
+	( void ) extendfilespec ( &fs2, &fs2 );
+	
 	(*v).data.flvalue = fifcomparefiles (&fs1, &fs2);
 	
 	return (true);
-	} /*comparefilesverb*/
+	
+	} // comparefilesverb
 	
 
 /*end of new verbs added by DW, 7/27/91*/
 
-#ifdef MACVERSION
-static boolean newaliasverb (hdltreenode hparam1, tyvaluerecord *vreturned) {
-	
-	/*
-	6/2/92 dmb: make sure that destination path doesn't end in a colon; 
-	otherwise pathtofilespec will fail
-	*/
-	
-	tyfilespec fs, fsalias;
-	
-	if (!langcanusealiases ())
-		return (false);
-	
-	if (!getpathvalue (hparam1, 1, &fs)) /*bs holds the source file's path*/
-		return (false);
-	
-	flnextparamislast = true;
-	
-	if (!getpathvalue (hparam1, 2, &fsalias)) /*bsalias holds the new alias's path*/
-		return (false);
-	
-	if (!surefile (&fs)) /*make sure source file exists*/
-		return (false);
-	
-	setoserrorparam ((ptrstring) fsalias.name); /*assume error will relate to new file*/
-	
-	setbooleanvalue (MakeAliasFile (&fs, &fsalias), vreturned);
-	
-	return (true);
-	} /*newaliasverb*/
 
+static boolean filedeleteverb ( hdltreenode hp1, tyvaluerecord *vreturned ) {
 
-static boolean followaliasverb (hdltreenode hparam1, tyvaluerecord *vreturned) {
-	
-	/*
-	1/29/92 dmb: a kernel version of what used to be implemented in glue.  
-	there a difference in the functionality as coded here:  ResolveAliasFile 
-	is being asked to follow chains of aliases; it will follow an alias to an alias 
-	to the original.  to match the original version & documentation, if the original 
-	file is not an alias, the empty string is returned.
-	also, we need to Gestalt aliases...
-	*/
-	
-	bigstring bs;
-	FSSpec fs;
-	boolean flfolder;
-	Boolean flaliasfolder, flwasalias;
-	OSErr errcode;
-	
-	if (!langcanusealiases ())
-		return (false);
-	
-	flnextparamislast = true;
-	
-	if (!getpathvalue (hparam1, 1, &fs)) /*bs holds the file path*/
-		return (false);
-	
-	if (!fileexists (&fs, &flfolder)) { /*make sure original*/
-		
-		setoserrorparam (bs);
-		
-		oserror (errorFileNotFound); /*file not found*/
-		
-		return (false);
-		}
-	
-	errcode = ResolveAliasFile (&fs, true, &flaliasfolder, &flwasalias);
-	
-	switch (errcode) {
-		
-		case errorNone:
-			if (flwasalias)
-				return (setfilespecvalue (&fs, vreturned));
-			else
-				setemptystring (bs);
-			
-			break;
-		
-		case errorFileNotFound:
-			setemptystring (bs);
-			
-			break;
-		
-		case userCanceledErr:
-			return (false);
-		
-		default:
-			oserror (errcode);
-			
-			return (false);
-		}
-	
-	return (setstringvalue (bs, vreturned));
-	} /*followaliasverb*/
-#endif
-
-
-#ifdef MACVERSION
-boolean filelaunchanythingverb (hdltreenode hparam1, tyvaluerecord *vreturned) {
-	
-	/*
-	6/1/92 dmb: generate oserror if System7Open fails
-	*/
+	//
+	// 2006-06-23 creedon:	FSRef-ized
+	//
+	//				created, factored from filefunctionvalue function
+	//
 	
 	tyfilespec fs;
 	
-	#ifdef flsystem6
+	flnextparamislast = true;
 	
-	if (!langcanuseappleevents ())
-		return (false);
+	if ( ! getfilespecvalue ( hp1, 1, &fs ) )
+		return ( false );
+		
+	if ( ! extendfilespec ( &fs, &fs ) )
+		return ( false );
+	
+	if ( ! deletefile ( &fs ) )
+		return ( false );
+				
+	return ( setbooleanvalue ( true, vreturned ) );
+		
+	} // filedeleteverb
+
+
+static boolean getposixpathverb ( hdltreenode hp1, tyvaluerecord *vreturned ) {
+
+	//
+	// 2006-10-07 creedon: created
+	//
+	
+	#ifdef	MACVERSION
+	
+		bigstring bs;
+		tyfilespec fs;
+		tyvaluerecord v;
+		
+		flnextparamislast = true;
+		
+		if ( ! getparamvalue ( hp1, 1, &v ) )
+			return ( false );
+		
+		switch ( v.valuetype ) {
+		
+			/* case stringvaluetype:
+			
+				pullstringvalue (&v, bs);
+
+				flfolder = endswithpathsep(bs);
+
+				if (flfolder)
+					setstringlength (bs, stringlength (bs) - 1);
+				
+				filefrompath (bs, bs); // bs now holds the filename
+				
+				break; */
+			
+			default:
+			
+				if ( ! coercetofilespec ( &v ) )
+					return ( false );
+				
+				fs = **v.data.filespecvalue;
+				
+				boolean fl;
+				OSStatus status;
+				
+				fl = extendfilespec ( &fs, &fs );
+				
+				status = FSRefMakePath ( &fs.fsref, ( UInt8 * ) bs, 256 ); // bs is now a c string
+				
+				convertcstring ( bs ); // bs is now a bigstring
+				
+				if ( fl ) {
+				
+					boolean flfolder;
+				
+					( void ) fileexists ( &fs, &flfolder ); // don't care about return, just flfolder value
+					
+					if ( flfolder && bs [*bs] != '/' ) 
+						pushchar ( '/', bs );
+					}
+					
+				else {
+				
+					if ( fs.path != NULL ) {
+					
+						bigstring bsfile;
+						
+						CFStringRefToStr255 ( fs.path, bsfile );
+						
+						pushchar ( '/', bs );
+						
+						pushstring ( bsfile, bs );
+						
+						}
+					}
+					
+				break;
+			}
+
+		return ( setstringvalue ( bs, vreturned ) );
+	
+	#endif // MACVERSION
+	
+	#ifdef	WIN95VERSION
+	
+		return ( false );
 	
 	#endif
 	
-	flnextparamislast = true;
-	
-	if (!getpathvalue (hparam1, 1, &fs)) /*bs holds the file's path*/
-		return (false);
-	
-	setoserrorparam (fs.name);
-	
-	if (oserror (System7Open (fs)))
-		return (false);
-	
-	return (setbooleanvalue (true, vreturned));
-	} /*filelaunchanythingverb*/
+	} // getposixpathverb
+
+
+#ifdef MACVERSION
+
+	static boolean newaliasverb (hdltreenode hparam1, tyvaluerecord *vreturned) {
+		
+		//
+		// 2006-06-18 creedon: FSRef-ized
+		//
+		// 1992-06-02 dmb: make sure that destination path doesn't end in a colon; otherwise pathtofilespec will fail
+		//
+		
+		boolean fl = false;
+		tyfilespec fs, fsalias;
+		
+		if (!langcanusealiases ())
+			return (false);
+		
+		if (!getpathvalue (hparam1, 1, &fs)) // bs holds the source file's path
+			return (false);
+		
+		flnextparamislast = true;
+		
+		if (!getpathvalue (hparam1, 2, &fsalias)) // bsalias holds the new alias's path
+			return (false);
+			
+		( void ) extendfilespec ( &fs, &fs );
+		
+		// make sure source file exists, this may be redundant, could return on extend failure or call FSRefValid
+		
+		if (!surefile (&fs))
+			return (false);
+		
+		setfserrorparam ( &fsalias ); // assume error will relate to new file
+		
+		if ( fsalias.path == NULL )
+			return ( false );
+		
+		/* coerce fsalias to FSSpec */ {
+		
+			FSCatalogInfo catinfo;
+			FSSpec fst, fsaliast;
+			
+			FSGetCatalogInfo ( &fs.fsref, kFSCatInfoNone, NULL, NULL, &fst, NULL );
+			
+			FSGetCatalogInfo ( &fsalias.fsref, kFSCatInfoVolume | kFSCatInfoNodeID, &catinfo, NULL, NULL, NULL );
+			
+			fsaliast.vRefNum = catinfo.volume;
+			fsaliast.parID = catinfo.nodeID;
+			
+			CFStringRefToStr255 ( fsalias.path, fsaliast.name );
+			
+			fl = MakeAliasFile ( &fst, &fsaliast );
+			
+			}
+		
+		setbooleanvalue ( fl, vreturned );
+		
+		return (true);
+		
+		} // newaliasverb
+
+
+	static boolean followaliasverb (hdltreenode hparam1, tyvaluerecord *vreturned) {
+		
+		//
+		// 2006-06-18 creedon: FSRef-ized
+		//
+		// 1992-01-29 dmb: a kernel version of what used to be implemented in glue.  there a difference in the functionality
+		// as coded here:  ResolveAliasFile is being asked to follow chains of aliases; it will follow an alias to an alias to the
+		// original.  to match the original version & documentation, if the original file is not an alias, the empty string is
+		// returned.  also, we need to Gestalt aliases...
+		//
+		
+		bigstring bs;
+		tyfilespec fs;
+		boolean flfolder;
+		Boolean flaliasfolder, flwasalias;
+		OSErr errcode;
+		
+		if (!langcanusealiases ())
+			return (false);
+		
+		flnextparamislast = true;
+		
+		if (!getpathvalue (hparam1, 1, &fs)) // fs holds the file path
+			return (false);
+		
+		( void ) extendfilespec ( &fs, &fs );
+			
+		if (!fileexists (&fs, &flfolder)) { // make sure original
+			
+			setfserrorparam ( &fs );
+			
+			oserror (errorFileNotFound); // file not found
+			
+			return (false);
+			}
+		
+		errcode = FSResolveAliasFile ( &fs.fsref, true, &flaliasfolder, &flwasalias );
+		
+		switch (errcode) {
+			
+			case errorNone:
+				if (flwasalias) {
+				
+					( void ) getfilespecparent ( &fs );
+					
+					return (setfilespecvalue ( &fs, vreturned));
+					}
+				else
+					setemptystring (bs);
+				
+				break;
+			
+			case errorFileNotFound:
+				setemptystring (bs);
+				
+				break;
+			
+			case userCanceledErr:
+				return (false);
+			
+			default:
+				oserror (errcode);
+				
+				return (false);
+			}
+		
+		return (setstringvalue (bs, vreturned));
+		
+		} // followaliasverb
+		
+
+	boolean filelaunchanythingverb ( hdltreenode hparam1, tyvaluerecord *vreturned ) {
+		
+		//
+		// 2006-06-26 creedon: replace System7Open with LSOpenFSRef
+		//
+		// 1992-06-01 dmb: generate oserror if System7Open fails
+		//
+		
+		OSStatus status;
+		tyfilespec fs;
+		
+		flnextparamislast = true;
+		
+		if ( ! getpathvalue ( hparam1, 1, &fs ) ) // fs holds the file's path
+			return ( false );
+		
+		setfserrorparam ( &fs );
+		
+		( void ) extendfilespec ( &fs, &fs );
+		
+		status = LSOpenFSRef ( &fs.fsref, NULL );
+		
+		if ( oserror ( status ) )
+			return ( false );
+		
+		return ( setbooleanvalue ( true, vreturned ) );
+		
+		} // filelaunchanythingverb
+		
 #endif
+
 
 static boolean filefunctionvalue (short token, hdltreenode hparam1, tyvaluerecord *vreturned, bigstring bserror) {
 	
-	/*
-	bridges file.c with the language.  the name of the verb is bs, its first parameter
-	is hparam1, and we return a value in vreturned.
-	
-	we use a limited number of support routines from lang.c to get parameters and
-	to return values. 
-	
-	return false only if the error is serious enough to halt the running of the script
-	that called us, otherwise error values are returned through the valuerecord, which
-	is available to the script.
-	
-	if we return false, we try to provide a descriptive error message in the 
-	returned string bserror.
-	
-	10/15/91: file.setpath, file.folderfrompath now handle partial paths corectly
-	
-	2/13/92 dmb: re-hooked up hasbundle verb
-	
-	6/2/92 dmb: made filefrompath work as documented so that glue isn't needed
-	
-	6/9/92 dmb: added file.isvisible, file.setvisible
-	
-	8/25/92 dmb: made newfunc delete existing file, so glue isn't necessary
-	
-	9/26/92 dmb: use one bigstring instead of two for filefrompath and folderfrompath.
-	also, dont allow getfullfilepath to generate an error in folderfrompath
-	
-	9/30/92 dmb: call new langcheckstackspace; most file functions chew up a good bit
-	
-	2.1b2 dmb: use filespecs everywhere. added volumeblocksize verb
-	
-	2.1b12 dmb: if mountservervolumefunc's volumepath is improperly formed, generate 
-	informative message instead of failing silently
-	
-	5.0.2b16 dmb: added getpathcharfunc
-	
-	2006-04-11 aradke: added readwholefilefunc
-	*/
+	//
+	// bridges file.c with the language.  the name of the verb is bs, its first
+	// parameter is hparam1, and we return a value in vreturned.
+	//
+	// we use a limited number of support routines from lang.c to get parameters
+	// and to return values. 
+	//
+	// return false only if the error is serious enough to halt the running of
+	// the script that called us, otherwise error values are returned through
+	// the valuerecord, which is available to the script.
+	//
+	// if we return false, we try to provide a descriptive error message in the 
+	// returned string bserror.
+	//
+	// 2006-06-25 creedon: FSRef-ized
+	//
+	// 2006-04-11 aradke: added readwholefilefunc
+	//
+	// 5.0.2b16 dmb: added getpathcharfunc
+	//
+	// 2.1b12 dmb:	if mountservervolumefunc's volumepath is improperly formed,
+	//				generate informative message instead of failing silently
+	//
+	// 2.1b2 dmb: use filespecs everywhere. added volumeblocksize verb
+	//
+	// 1992-09-30 dmb:	call new langcheckstackspace; most file functions chew
+	//					up a good bit
+	//
+	// 1992-09-26 dmb:	use one bigstring instead of two for filefrompath and
+	//					folderfrompath.  also, dont allow getfullfilepath to
+	//					generate an error in folderfrompath
+	//
+	// 1992-08-25 dmb: made newfunc delete existing file, so glue isn't necessary
+	//
+	// 1992-06-09 dmb: added file.isvisible, file.setvisible
+	//
+	// 1992-06-02 dmb: made filefrompath work as documented so that glue isn't needed
+	//
+	// 1992-02-13 dmb: re-hooked up hasbundle verb
+	//
+	// 1991-10-15: file.setpath, file.folderfrompath now handle partial paths corectly
+	//
 	
 	register hdltreenode hp1 = hparam1;
 	register tyvaluerecord *v = vreturned;
@@ -2767,8 +3028,9 @@ static boolean filefunctionvalue (short token, hdltreenode hparam1, tyvaluerecor
 	switch (token) {
 		
 		case filecreatedfunc: {
-			
+		
 			unsigned long datecreated, datetoss;
+			
 			boolean fl;
 			tyfilespec fs;
 			
@@ -2776,6 +3038,8 @@ static boolean filefunctionvalue (short token, hdltreenode hparam1, tyvaluerecor
 			
 			if (!getpathvalue (hp1, 1, &fs)) /*fs holds the file path*/
 				break;
+				
+			( void ) extendfilespec ( &fs, &fs );
 			
 			if (fileisvolume (&fs))
 				fl = volumecreated (&fs, &datecreated);
@@ -2798,6 +3062,8 @@ static boolean filefunctionvalue (short token, hdltreenode hparam1, tyvaluerecor
 			if (!getpathvalue (hp1, 1, &fs))
 				break;
 			
+			( void ) extendfilespec ( &fs, &fs );
+			
 			if (!getfiledates (&fs, &datetoss, &datemodified))
 				break;
 			
@@ -2813,7 +3079,9 @@ static boolean filefunctionvalue (short token, hdltreenode hparam1, tyvaluerecor
 			
 			if (!getpathvalue (hp1, 1, &fs))
 				break;
-			
+				
+			( void ) extendfilespec ( &fs, &fs );
+
 			if (!getfiletype (&fs, &type))
 				break;
 			
@@ -2830,6 +3098,8 @@ static boolean filefunctionvalue (short token, hdltreenode hparam1, tyvaluerecor
 			if (!getpathvalue (hp1, 1, &fs))
 				break;
 			
+			( void ) extendfilespec ( &fs, &fs );
+
 			if (!getfilecreator (&fs, &creator))
 				break;
 			
@@ -2847,6 +3117,8 @@ static boolean filefunctionvalue (short token, hdltreenode hparam1, tyvaluerecor
 			
 			if (!getdatevalue (hp1, 2, &when))
 				break;
+			
+			( void ) extendfilespec ( &fs, &fs );
 			
 			if (!setfilecreated (&fs, when))
 				break;
@@ -2868,6 +3140,8 @@ static boolean filefunctionvalue (short token, hdltreenode hparam1, tyvaluerecor
 			if (!getdatevalue (hp1, 2, &when))
 				break;
 			
+			( void ) extendfilespec ( &fs, &fs );
+			
 			if (!setfilemodified (&fs, when))
 				break;
 			
@@ -2883,6 +3157,8 @@ static boolean filefunctionvalue (short token, hdltreenode hparam1, tyvaluerecor
 			
 			if (!getpathvalue (hp1, 1, &fs))
 				break;
+				
+			( void ) extendfilespec ( &fs, &fs );
 			
 			if (!fileisfolder (&fs, &(*v).data.flvalue))
 				break;
@@ -2898,12 +3174,15 @@ static boolean filefunctionvalue (short token, hdltreenode hparam1, tyvaluerecor
 			if (!getpathvalue (hp1, 1, &fs)) /*was getvolumevalue*/
 				break;
 			
+			( void ) extendfilespec ( &fs, &fs );
+			
 			(*v).data.flvalue = fileisvolume (&fs);
 			
 			return (true);
 			}
 		
 		case fileislockedfunc: {
+		
 			boolean fl;
 			tyfilespec fs;
 			
@@ -2911,6 +3190,8 @@ static boolean filefunctionvalue (short token, hdltreenode hparam1, tyvaluerecor
 			
 			if (!getpathvalue (hp1, 1, &fs))
 				break;
+			
+			( void ) extendfilespec ( &fs, &fs );
 			
 			if (fileisvolume (&fs))
 				fl = isvolumelocked (&fs, &(*v).data.flvalue);
@@ -2921,6 +3202,7 @@ static boolean filefunctionvalue (short token, hdltreenode hparam1, tyvaluerecor
 				break;
 			
 			return (true);
+			
 			}
 		
 		case fileisbusyfunc: {
@@ -2931,6 +3213,8 @@ static boolean filefunctionvalue (short token, hdltreenode hparam1, tyvaluerecor
 			if (!getpathvalue (hp1, 1, &fs))
 				break;
 			
+			( void ) extendfilespec ( &fs, &fs );
+			
 			if (!fileisbusy (&fs, &(*v).data.flvalue))
 				break;
 			
@@ -2938,17 +3222,21 @@ static boolean filefunctionvalue (short token, hdltreenode hparam1, tyvaluerecor
 			}
 		
 		case filehasbundlefunc: {
+		
 			tyfilespec fs;
 			
 			flnextparamislast = true;
 			
-			if (!getpathvalue (hp1, 1, &fs))
+			if ( ! getpathvalue ( hp1, 1, &fs ) )
 				break;
 			
-			if (!filehasbundle (&fs, &(*v).data.flvalue))
+			( void ) extendfilespec ( &fs, &fs );
+			
+			if ( ! filehasbundle ( &fs, &( *v ).data.flvalue ) )
 				break;
 			
-			return (true);
+			return ( true );
+			
 			}
 		
 		case filesetbundlefunc: {
@@ -2969,6 +3257,8 @@ static boolean filefunctionvalue (short token, hdltreenode hparam1, tyvaluerecor
 			
 			if (!flfolder) {
 				
+				( void ) extendfilespec ( &fs, &fs );
+			
 				if (!filesetbundle (&fs, flbundle))
 					break;
 				
@@ -2979,12 +3269,15 @@ static boolean filefunctionvalue (short token, hdltreenode hparam1, tyvaluerecor
 			}
 		
 		case fileisaliasfunc: {
+		
 			tyfilespec fs;
 			
 			flnextparamislast = true;
 			
 			if (!getpathvalue (hp1, 1, &fs))
 				break;
+			
+			( void ) extendfilespec ( &fs, &fs );
 			
 			if (!fileisalias (&fs, &(*v).data.flvalue))
 				break;
@@ -2999,6 +3292,8 @@ static boolean filefunctionvalue (short token, hdltreenode hparam1, tyvaluerecor
 			
 			if (!getpathvalue (hp1, 1, &fs))
 				break;
+				
+			( void ) extendfilespec ( &fs, &fs );
 			
 			if (!fileisvisible (&fs, &(*v).data.flvalue))
 				break;
@@ -3017,6 +3312,8 @@ static boolean filefunctionvalue (short token, hdltreenode hparam1, tyvaluerecor
 			
 			if (!getbooleanvalue (hp1, 2, &flvisible))
 				break;
+				
+			( void ) extendfilespec ( &fs, &fs );
 			
 			if (!filesetvisible (&fs, flvisible))
 				break;
@@ -3035,6 +3332,8 @@ static boolean filefunctionvalue (short token, hdltreenode hparam1, tyvaluerecor
 			if (!getpathvalue (hp1, 1, &fs))
 				break;
 			
+			( void ) extendfilespec ( &fs, &fs );
+			
 			if (!filesize (&fs, &size))
 				break;
 			
@@ -3042,6 +3341,7 @@ static boolean filefunctionvalue (short token, hdltreenode hparam1, tyvaluerecor
 			}
 		
 		case filelockfunc: {
+		
 			tyfilespec fs;
 			boolean fl;
 			
@@ -3049,6 +3349,8 @@ static boolean filefunctionvalue (short token, hdltreenode hparam1, tyvaluerecor
 			
 			if (!getpathvalue (hp1, 1, &fs))
 				break;
+			
+			( void ) extendfilespec ( &fs, &fs );
 			
 			if (fileisvolume (&fs))
 				fl = lockvolume (&fs, true);
@@ -3061,9 +3363,11 @@ static boolean filefunctionvalue (short token, hdltreenode hparam1, tyvaluerecor
 			(*v).data.flvalue = true;
 			
 			return (true);
+			
 			}
 			
 		case fileunlockfunc: {
+		
 			tyfilespec fs;
 			boolean fl;
 			
@@ -3071,6 +3375,8 @@ static boolean filefunctionvalue (short token, hdltreenode hparam1, tyvaluerecor
 			
 			if (!getpathvalue (hp1, 1, &fs))
 				break;
+			
+			( void ) extendfilespec ( &fs, &fs );
 			
 			if (fileisvolume (&fs))
 				fl = lockvolume (&fs, false);
@@ -3083,6 +3389,7 @@ static boolean filefunctionvalue (short token, hdltreenode hparam1, tyvaluerecor
 			(*v).data.flvalue = true;
 			
 			return (true);
+			
 			}
 			
 		case filefullpathfunc: {
@@ -3107,21 +3414,8 @@ static boolean filefunctionvalue (short token, hdltreenode hparam1, tyvaluerecor
 		case filecopyresourceforkfunc:
 			return (copyfileverb (false, true, hp1, v));
 			
-		case filedeletefunc: {
-			tyfilespec fs;
-			
-			flnextparamislast = true;
-			
-			if (!getpathvalue (hp1, 1, &fs))
-				break;
-			
-			if (!deletefile (&fs))
-				break;
-			
-			(*v).data.flvalue = true;
-			
-			return (true);
-			}
+		case filedeletefunc:
+			return ( filedeleteverb ( hp1, v ) );
 		
 		case fileexistsfunc: {
 			boolean fl;
@@ -3134,6 +3428,8 @@ static boolean filefunctionvalue (short token, hdltreenode hparam1, tyvaluerecor
 			disablelangerror ();
 			
 			fl = getpathvalue (hp1, 1, &fs);
+			
+			fl = fl && extendfilespec ( &fs, &fs );
 			
 			enablelangerror ();
 			
@@ -3148,7 +3444,7 @@ static boolean filefunctionvalue (short token, hdltreenode hparam1, tyvaluerecor
 		case filegetpathfunc: {
 			tyfilespec fs;
 			
-			if (!langcheckparamcount (hp1, 0)) /*no parameters expected*/
+			if (!langcheckparamcount (hp1, 0)) // no parameters expected
 				break;
 			
 			if (!filegetdefaultpath (&fs))
@@ -3158,6 +3454,7 @@ static boolean filefunctionvalue (short token, hdltreenode hparam1, tyvaluerecor
 			}
 			
 		case filesetpathfunc: {
+		
 			tyfilespec fs;
 			
 			flnextparamislast = true;
@@ -3171,29 +3468,51 @@ static boolean filefunctionvalue (short token, hdltreenode hparam1, tyvaluerecor
 			(*v).data.flvalue = true;
 			
 			return (true);
+			
 			}
 		
 		case newfunc: {
+		
 			tyfilespec fs;
-			boolean flfolder;
+
+			#ifdef WIN95VERSION
 			
+				boolean flfolder;
+			
+			#endif // WIN95VERSION
+
 			flnextparamislast = true;
 			
-			if (!getpathvalue (hp1, 1, &fs))
-				break;
+			if ( ! getfilespecvalue ( hp1, 1, &fs ) )
+			break;
 			
-			if (fileexists (&fs, &flfolder)) { /*8/25/92 dmb*/
-				
-				if (!deletefile (&fs))
+			#ifdef MACVERSION
+			
+				tyfilespec fst;
+			
+				if ( extendfilespec ( &fs, &fst ) )
+					if ( ! deletefile ( &fst ) )
 					break;
-				}
 			
-			if (!newfile (&fs, '\?\?\?\?', '\?\?\?\?'))
+			#endif // MACVERSION
+			
+			#ifdef WIN95VERSION
+			
+				if (fileexists (&fs, &flfolder)) { // 8/25/92 dmb
+				
+					if (!deletefile (&fs))
+						break;
+					}
+			
+			#endif // WIN95VERSION
+				
+			if ( ! newfile ( &fs, '\?\?\?\?', '\?\?\?\?') )
 				break;
 			
 			(*v).data.flvalue = true;
 			
 			return (true);
+			
 			}
 		
 		case newfolderfunc: {
@@ -3230,6 +3549,8 @@ static boolean filefunctionvalue (short token, hdltreenode hparam1, tyvaluerecor
 			else
 			*/
 			
+			( void ) extendfilespec ( &fs, &fs );
+			
 			if (!renamefile (&fs, bs))
 				break;
 			
@@ -3248,6 +3569,8 @@ static boolean filefunctionvalue (short token, hdltreenode hparam1, tyvaluerecor
 			
 			if (!getpathvalue (hp1, 2, &fs2)) /*bs2 holds the new name*/
 				break;
+			
+			( void ) extendfilespec ( &fs1, &fs1 );
 			
 			if (!movefile (&fs1, &fs2))
 				break;
@@ -3292,6 +3615,7 @@ static boolean filefunctionvalue (short token, hdltreenode hparam1, tyvaluerecor
 		*/
 		
 		case volumeisejectablefunc: {
+		
 			tyfilespec fs;
 			
 			flnextparamislast = true;
@@ -3299,13 +3623,14 @@ static boolean filefunctionvalue (short token, hdltreenode hparam1, tyvaluerecor
 			if (!getvolumevalue (hp1, 1, &fs))
 				break;
 			
-			return (isejectable (&fs, &(*v).data.flvalue));	
+			return (isejectable (&fs, &(*v).data.flvalue));
+			
 			}
 
-
 		case volumefreespacefunc: {
-			tyfilespec fs;
+		
 			long ctbytes;
+			tyfilespec fs;
 			
 			flnextparamislast = true;
 			
@@ -3316,12 +3641,13 @@ static boolean filefunctionvalue (short token, hdltreenode hparam1, tyvaluerecor
 				break;
 
 			return (setlongvalue (ctbytes, v));
+			
 			}
 		
-
 		case volumesizefunc: {
-			tyfilespec fs;
+		
 			long ctbytes;
+			tyfilespec fs;
 			
 			flnextparamislast = true;
 			
@@ -3332,12 +3658,13 @@ static boolean filefunctionvalue (short token, hdltreenode hparam1, tyvaluerecor
 				break;
 			
 			return (setlongvalue (ctbytes, v));
+			
 			}
 		
-
-		case volumefreespacedoublefunc: { /*6.1b16 AR*/
+		case volumefreespacedoublefunc: { // 6.1b16 AR
+		
+			double freebytes, totalbytes;
 			tyfilespec fs;
-			double totalbytes, freebytes;
 			
 			flnextparamislast = true;
 			
@@ -3348,12 +3675,13 @@ static boolean filefunctionvalue (short token, hdltreenode hparam1, tyvaluerecor
 				break;
 
 			return (setdoublevalue (freebytes, v));
+			
 			}
 		
-
-		case volumesizedoublefunc: { /*6.1b16 AR*/
+		case volumesizedoublefunc: { // 6.1b16 AR
+		
+			double freebytes, totalbytes;
 			tyfilespec fs;
-			double totalbytes, freebytes;
 			
 			flnextparamislast = true;
 			
@@ -3364,13 +3692,15 @@ static boolean filefunctionvalue (short token, hdltreenode hparam1, tyvaluerecor
 				break;
 
 			return (setdoublevalue (totalbytes, v));
+			
 			}
 
-
+		
 		case volumeblocksizefunc: {
-			tyfilespec fs;
+		
 			long ctbytes;
-			
+			tyfilespec fs;
+
 			flnextparamislast = true;
 			
 			if (!getvolumevalue (hp1, 1, &fs))
@@ -3380,26 +3710,30 @@ static boolean filefunctionvalue (short token, hdltreenode hparam1, tyvaluerecor
 				break;
 			
 			return (setlongvalue (ctbytes, v));
+			
 			}
 		
 		case filesonvolumefunc: {
-			tyfilespec fs;
+		
 			long ctfiles;
+			tyfilespec fs;
 			
 			flnextparamislast = true;
 			
-			if (!getvolumevalue (hp1, 1, &fs))
+			if ( ! getvolumevalue ( hp1, 1, &fs ) )
 				break;
 			
-			if (!filesonvolume (&fs, &ctfiles))
+			if ( ! filesonvolume ( &fs, &ctfiles ) )
 				break;
 			
-			return (setlongvalue (ctfiles, v));
-			}	
+			return ( setlongvalue ( ctfiles, v ) );
+			
+			}
 		
 		case foldersonvolumefunc: {
-			tyfilespec fs;
+		
 			long ctfolders;
+			tyfilespec fs;
 			
 			flnextparamislast = true;
 			
@@ -3410,8 +3744,8 @@ static boolean filefunctionvalue (short token, hdltreenode hparam1, tyvaluerecor
 				break;
 			
 			return (setlongvalue (ctfolders, v));
+			
 			}
-		
 		
 		/* 11/7/91 dmb: now called from shellsysverbs.c
 		case filelaunchfunc:
@@ -3529,6 +3863,8 @@ static boolean filefunctionvalue (short token, hdltreenode hparam1, tyvaluerecor
 			if (!getvolumevalue (hp1, 1, &fs))
 				break;
 			
+			( void ) extendfilespec ( &fs, &fs );
+			
 			if (!unmountvolume (&fs))
 				break;
 			
@@ -3584,11 +3920,13 @@ static boolean filefunctionvalue (short token, hdltreenode hparam1, tyvaluerecor
 			
 			if (!getpathvalue (hp1, 1, &fs))
 				break;
-			
+				
 			flnextparamislast = true;
 			
 			if (!getostypevalue (hp1, 2, &type))
 				break;
+			
+			( void ) extendfilespec ( &fs, &fs );
 			
 			if (!setfiletype (&fs, type))
 				break;
@@ -3610,6 +3948,8 @@ static boolean filefunctionvalue (short token, hdltreenode hparam1, tyvaluerecor
 			if (!getostypevalue (hp1, 2, &creator))
 				break;
 			
+			( void ) extendfilespec ( &fs, &fs );
+			
 			if (!setfilecreator (&fs, creator))
 				break;
 			
@@ -3618,13 +3958,13 @@ static boolean filefunctionvalue (short token, hdltreenode hparam1, tyvaluerecor
 			return (true);
 			}
 			
-		case getlabelindexfunc: /* 2006-04-24 creedon */
+		case getlabelindexfunc: // 2006-04-24 creedon
 			return (getlabelindexverb (hp1, v));
 		
-		case setlabelindexfunc: /* 2006-04-24 creedon */
+		case setlabelindexfunc: // 2006-04-24 creedon
 			return (setlabelindexverb (hp1, v));
 		
-		case getlabelnamesfunc: /* 2006-04-24 creedon */
+		case getlabelnamesfunc: // 2006-04-24 creedon
 			return (getlabelnamesverb (hp1, v));
 	#endif
 
@@ -3633,32 +3973,36 @@ static boolean filefunctionvalue (short token, hdltreenode hparam1, tyvaluerecor
 		
 
 		case getsystempathfunc: {
-			byte bsvol [258];		/*2*/
-			byte bsfolder [258]; /*6*/
+		
+			byte bsvol [258];		// 2
+			byte bsfolder [258];	// 6
 			tyfilespec fs;
 			
 			if (!langcheckparamcount (hp1, 0)) /*no parameters expected*/
 				break;
 			
 			#ifdef flsystem6
+			
 				filegetpath (filegetsystemvnum (), bs);
+				
 				return (setstringvalue (bs, v));
+				
 			#else
 			
-			setemptystring (bsvol);
+				setemptystring (bsvol);
+
+			clearbytes ( &fs, sizeof ( fs ) );
 			
 			#ifdef MACVERSION
 			
-				#if TARGET_API_MAC_CARBON == 1
-					ostypetostring ('pref', bsfolder);
-				#else
-					ostypetostring ('macs', bsfolder);
-				#endif
+				ostypetostring ('pref', bsfolder);
 				
 			#endif
 				
 			#ifdef WIN95VERSION
+			
 				copyctopstring ("SYSTEM", bsfolder);
+				
 			#endif
 			
 			if (!getspecialfolderpath (bsvol, bsfolder, false, &fs))
@@ -3686,6 +4030,8 @@ static boolean filefunctionvalue (short token, hdltreenode hparam1, tyvaluerecor
 			if (!getbooleanvalue (hp1, 3, &flcreate))
 				break;
 			
+			clearbytes ( &fs, sizeof ( fs ) );
+
 			if (!getspecialfolderpath (bsvol, bsfolder, flcreate, &fs))
 				break;
 			
@@ -3700,12 +4046,16 @@ static boolean filefunctionvalue (short token, hdltreenode hparam1, tyvaluerecor
 			
 			if (!langcheckparamcount (hparam1, 6)) /*preflight before changing values*/
 				return (false);
+			
+			clearbytes ( &fs, sizeof ( fs ) );
 
 			if (!getpathvalue (hp1, 1, &fs))
 				return (false);
 			
 			if (!fifopenfile (&fs, (long) currentprocess))
 				return (false);
+			
+			( void ) extendfilespec ( &fs, &fs );
 			
 			fl = getmp3info (&fs, &seconds, &bitrate, &frequency, &offset, &flvariablebitrate);
 
@@ -3733,10 +4083,16 @@ static boolean filefunctionvalue (short token, hdltreenode hparam1, tyvaluerecor
 			return (true);
 			}
 		
-		case readwholefilefunc:	/* 2006-04-11 aradke */
+		case readwholefilefunc: // 2006-04-11 aradke
+		
 			return (readwholefileverb (hparam1, v));
-	
+			
+		case getposixpathfunc: // 2006-10-07 creedon
+		
+			return ( getposixpathverb ( hp1, v ) );
+		
 		#ifdef WIN95VERSION
+		
 			case newaliasfunc:
 			case filefollowaliasfunc:
 			case filegeticonposfunc:
@@ -3751,15 +4107,19 @@ static boolean filefunctionvalue (short token, hdltreenode hparam1, tyvaluerecor
 			case volumeejectfunc:
 			case setfiletypefunc:
 			case setfilecreatorfunc:
+			
 		#endif
+		
 		default:
 			getstringlist (langerrorlist, unimplementedverberror, bserror);
 			
 			break;
-		} /*switch*/
+			
+		} // switch
 	
 	return (false);
-	} /*filefunctionvalue*/
+	
+	} // filefunctionvalue
 
 
 static boolean rezfunctionvalue (short token, hdltreenode hparam1, tyvaluerecord *vreturned, bigstring bserror) {
@@ -3770,60 +4130,66 @@ static boolean rezfunctionvalue (short token, hdltreenode hparam1, tyvaluerecord
 	setbooleanvalue (false, v); /*by default, rez functions return false*/
 	
 	switch (token) {
-#ifdef MACVERSION
-		case rezgetresourcefunc: 
-			return (getresourceverb (hp1, false, v));
-		
-		case rezputresourcefunc: 
-			return (putresourceverb (hp1, false, v));
-		
-		case rezgetnamedresourcefunc: 
-			return (getresourceverb (hp1, true, v));
-		
-		case rezputnamedresourcefunc: 
-			return (putresourceverb (hp1, true, v));
-		
-		case rezcountrestypesfunc:
-			return (countrestypesverb (hp1, v));
-		
-		case rezgetnthrestypefunc:
-			return (getnthrestypeverb (hp1, v));
-		
-		case rezcountresourcesfunc:
-			return (countresourcesverb (hp1, v));
-		
-		case rezgetnthresourcefunc:
-			return (getnthresourceverb (hp1, v));
-		
-		case rezgetnthresinfofunc:
-			return (getnthresinfoverb (hp1, v));
-		
-		case rezresourceexistsfunc:
-			return (resourceexistsverb (hp1, false, v));
-		
-		case reznamedresourceexistsfunc:
-			return (resourceexistsverb (hp1, true, v));
-		
-		case rezdeleteresourcefunc:
-			return (deleteresourceverb (hp1, false, v));
-		
-		case rezdeletenamedresourcefunc:
-			return (deleteresourceverb (hp1, true, v));
-		
-		case rezgetresourceattrsfunc:
-			return (getresourceattrsverb (hp1, false, v));
-		
-		case rezsetresourceattrsfunc:
-			return (setresourceattrsverb (hp1, false, v));
-#endif		
+	
+	#ifdef MACVERSION
+	
+			case rezgetresourcefunc:
+				return (getresourceverb (hp1, false, v));
+			
+			case rezputresourcefunc:
+				return (putresourceverb (hp1, false, v));
+			
+			case rezgetnamedresourcefunc:
+				return (getresourceverb (hp1, true, v));
+			
+			case rezputnamedresourcefunc:
+				return (putresourceverb (hp1, true, v));
+			
+			case rezcountrestypesfunc:
+				return (countrestypesverb (hp1, v));
+			
+			case rezgetnthrestypefunc:
+				return (getnthrestypeverb (hp1, v));
+			
+			case rezcountresourcesfunc:
+				return (countresourcesverb (hp1, v));
+			
+			case rezgetnthresourcefunc:
+				return (getnthresourceverb (hp1, v));
+			
+			case rezgetnthresinfofunc:
+				return (getnthresinfoverb (hp1, v));
+			
+			case rezresourceexistsfunc:
+				return (resourceexistsverb (hp1, false, v));
+			
+			case reznamedresourceexistsfunc:
+				return (resourceexistsverb (hp1, true, v));
+			
+			case rezdeleteresourcefunc:
+				return (deleteresourceverb (hp1, false, v));
+			
+			case rezdeletenamedresourcefunc:
+				return (deleteresourceverb (hp1, true, v));
+			
+			case rezgetresourceattrsfunc:
+				return (getresourceattrsverb (hp1, false, v));
+			
+			case rezsetresourceattrsfunc:
+				return (setresourceattrsverb (hp1, false, v));
+			
+	#endif	
+
 		default:
 			getstringlist (langerrorlist, unimplementedverberror, bserror);
 			
 			break;
-		} /*switch*/
+			
+		} // switch
 	
 	return (false);
-	} /*rezfunctionvalue*/
+	
+	} // rezfunctionvalue
 
 
 boolean fileinitverbs (void) {
@@ -3849,7 +4215,6 @@ boolean fileinitverbs (void) {
 	
 	return (true);
 	} /*fileinitverbs*/
-
 
 
 boolean filestart (void) {
@@ -3888,3 +4253,4 @@ boolean filestart (void) {
 
 	return (true);
 	}/*filestart*/
+

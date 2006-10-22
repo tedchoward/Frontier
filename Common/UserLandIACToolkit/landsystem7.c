@@ -176,140 +176,6 @@ static void suspendcurrentevent(AppleEvent *ev) {
 */
 
 
-#if TARGET_API_MAC_OS8
-
-static void MakePascalStringWLen (StringPtr theDest, int theDestLen, char *theSrc, int theSrcLen) {
-	
-	/*
-	10/22/91 dmb: imported this code from Leonard Rosenthal.  Reformmatted 
-	somewhat, but left variable names as he had them.  comments are his.
-	
-	Given a C string, put it into a pascal storage area.	We also make
-	sure that the length of the pascal string isn't too long (the caller
-	specifiys the longest length possible).	We are passed in the length
-	of the C string... This makes our life simpler...
-	*/
-	
-	theDest [0] = theSrcLen > theDestLen ? theDestLen : theSrcLen;
-	
-	BlockMove (theSrc, &(theDest[1]), theDest [0]);
-	} /*MakePascalStringWLen*/
-
-
-static OSErr HCProgramToPortAndLoc (char *theName, short len, LocationNameRec *theLoc, PortInfoRec *thePort) {
-	
-	/*
-	10/22/91 dmb: imported this code from Leonard Rosenthal.  Reformmatted 
-	somewhat, but left variable names as he had them.  comments are his.
-	
-	Convert a Hypercard program name (<zone>:<mac>:<program>) to a port.
-	If that program has more than one port open, we take the first port 
-	we find!
-	*/
-	
-	char *appleZone = 0;
-	char *macName = 0;
-	char *progName = 0;
-	char *theLastChar = 0;
-	PPCPortRec thePortSearchSpec;
-	IPCListPortsPBRec thePBRec;
-	int theErr;
-	
-	/*
-	Assemble a location.	This is a bit of a pain, as we must
-	carefully unpack the incomming string...
-	*/
-	
-	/*
-	First job -- find the end of the incomming string so we don't
-	run off into memory...
-	*/
-	
-	theLastChar = theName;
-	
-	appleZone = theName; /* First thing there... */
-	
-	while (--len >= 0) {
-		
-		if (*theLastChar == ':') {
-			
-			if (!macName) {
-				
-				macName = theLastChar + 1;
-				}
-			else if (!progName) {
-				
-				progName = theLastChar + 1;
-				}
-			}
-		
-		theLastChar++;
-		}
-	
-	/*
-	Right, make sure that we got everything...
-	*/
-	
-	if ((progName == 0) || (macName == 0))
-		return (1);	/* Random error... */
-	
-	/*
-	Next, assemble a port record that we can use to specify what
-	the hell we are looking for...	Use a roman script (sorry, guys),
-	match only names that have our program, and match all types.
-	That way we will get the first type.
-	*/
-	
-	thePortSearchSpec.nameScript = smRoman;
-	
-	thePortSearchSpec.portKindSelector = ppcByString;
-	
-	MakePascalStringWLen ((StringPtr) thePortSearchSpec.name, 32, progName, (Size)(theLastChar - progName));
-	
-	MakePascalStringWLen ((StringPtr) thePortSearchSpec.u.portTypeStr, 32, "=", 1);
-	
-	/*
-	Next job is to fill in the location record that the guy passed
-	in.	The objString is the mac we wish to connect to.	The zone
-	is the apple zone.	We let the type be random...	so we set it
-	to PPCToolBox as defined by IM VI 6 7-23.
-	*/
-	
-	theLoc -> locationKindSelector = ppcNBPLocation;
-	
-	/*bundle*/ {
-		
-		register EntityName *theE = &(theLoc -> u.nbpEntity);
-	
-		MakePascalStringWLen ((StringPtr) &(theE -> objStr), 32, macName, (int) (progName - macName - 1));
-		
-		MakePascalStringWLen ((StringPtr) &(theE -> typeStr), 32, "PPCToolBox", 10);
-		
-		MakePascalStringWLen ((StringPtr) &(theE -> zoneStr), 32, appleZone, (macName - appleZone - 1));
-		}
-	
-	/*
-	Right.	Finally, we fill in the parameter block we are to pass
-	to IPCListPorts.
-	*/
-	
-	thePBRec.startIndex = 0;
-	thePBRec.requestCount = 1;
-	thePBRec.portName = &thePortSearchSpec;
-	thePBRec.locationName = theLoc;
-	thePBRec.bufferPtr = thePort;
-	
-	/*
-	Call the damm routine and try to get the stupid port back!
-	*/
-	theErr = IPCListPortsSync (&thePBRec);
-		
-	return (theErr);
-	} /*HCProgramToPortAndLoc*/
-
-#endif
-
-
 static boolean isthisprocess (ProcessSerialNumber *targetPSN) {
 	
 	register OSErr err;
@@ -329,105 +195,25 @@ static boolean isthisprocess (ProcessSerialNumber *targetPSN) {
 
 
 static boolean landchecksameprocess (tynetworkaddress *adr) {
-#if TARGET_API_MAC_CARBON == 1
+
 #	pragma unused (adr)
-#endif
+
 	/*
 	3/9/92 dmb: if GetProcessSerialNumberFromPortName returns an error, leave 
 	flsendingtoself false, but return true.  adr may be a valid port that 
 	doesn't have a psn
 	*/
 	
-	#if TARGET_API_MAC_CARBON == 1
 	//what the hell do I do here?
-	return true;
-	#else
+	return  ( true );
 		
-	register OSErr err;
-	ProcessSerialNumber targetPSN;
-	
-	if (!(*adr).target.location.locationKindSelector) { /*might be sending to ourself*/
-		
-		err = GetProcessSerialNumberFromPortName (&(*adr).target.name, &targetPSN);
-		
-		if (err == noErr)
-			return (isthisprocess (&targetPSN));
-		}
-	
 	return (false);
-	#endif
 		
 	} /*landchecksameprocess*/
 
 
-#if TARGET_API_MAC_OS8
-
-static boolean goodstring32 (byte s32 []) {
-	
-	register byte *s = s32;
-	register short len = *s;
-	
-	if ((len == 0) || (len > 32))
-		return (false);
-	
-	while (--len >= 0) {
-		
-		if ((*++s) < ' ') /*non-printing character*/
-			return (false);
-		}
-	
-	return (true);
-	} /*goodstring32*/
-
-
 pascal boolean landstring2networkaddress (ConstStr255Param bsadr, tynetworkaddress *adr) {
-	
-	/*
-	10/27/91 dmb: even when HCProgramToPortAndLoc's IPCListPorts call returns noErr,
-	the network address may be invalid.  so a reality check is done on the port name 
-	to attempt to verify that something has actually been found
-	*/
-	
-	register hdllandglobals hg = landgetglobals ();
-	LocationNameRec loc;
-	PortInfoRec	port;
-	register OSErr err;
-	
-	if ((**hg).transport == macsystem6) /*can't call do networks on System 6*/
-		return (false);
-	
-	err = HCProgramToPortAndLoc ((char *) bsadr + 1, stringlength (bsadr), &loc, &port);
-	
-	if (err != noErr) {
-		
-		landseterror (err);
-		
-		return (false);
-		}
-	
-	if (!goodstring32 (port.name.name)) { /*make sure it actually found something*/
-		
-		landseterror (noResponseErr);
-		
-		return (false);
-		}
-	
-	(*adr).target.sessionID = 0;
-	
-	(*adr).target.location = loc;
-	
-	(*adr).target.name = port.name;
-	
-	/*
-	return (landchecksameprocess (adr));
-	*/
-	
-	return (true);
-	} /*landstring2networkaddress*/
 
-#else
-
-pascal boolean landstring2networkaddress (ConstStr255Param bsadr, tynetworkaddress *adr) {
 #pragma unused (bsadr, adr)
 	/*
 	2004-10-21 aradke: Can't do this on Carbon, send back a bogus error.
@@ -438,63 +224,11 @@ pascal boolean landstring2networkaddress (ConstStr255Param bsadr, tynetworkaddre
 	return (false);
 	} /*landstring2networkaddress*/
 
-#endif
-
-
-#if !TARGET_API_MAC_CARBON
-	//Code change by Timothy Paustian Friday, July 21, 2000 10:40:43 PM
-	//we don't do anything on Carbon because we can't use this anyway.
-
-static pascal Boolean landbrowserfilter (LocationNamePtr ln, PortInfoPtr port) {
-#pragma unused (ln)
-	
-	register hdllandglobals hg;
-	register tyapplicationid id;
-	long type;
-	
-	#ifdef flcomponent
-		long curA5 = SetUpAppA5 ();
-	#endif
-	
-	hg = landgetglobals ();
-	
-	id = (**hg).macnetglobals.idforbrowser;
-	
-	#ifdef flcomponent
-		RestoreA5 (curA5);
-	#endif
-	
-	if (id == 0) /*no filtering, everything qualifies*/
-		return (true);
-		
-	if ((*port).name.portKindSelector != ppcByString) /*MacDTS magic*/
-		return (false);
-		
-	BlockMove ((*port).name.u.portTypeStr + 1, (Ptr) &type, 4); /*MacDTS magic*/
-	
-	return (type == id);
-	} /*landbrowserfilter*/
-
-
-	#if !TARGET_RT_MAC_CFM
-
-		#define landbrowserfilterUPP (&landbrowserfilter)
-
-	#else
-				
-		static RoutineDescriptor landbrowserfilterDesc = BUILD_ROUTINE_DESCRIPTOR (uppPPCFilterProcInfo, landbrowserfilter);
-
-		#define landbrowserfilterUPP (&landbrowserfilterDesc)
-	
-	#endif
-	
-#endif
-
 
 pascal boolean landbrowsenetworkapps (ConstStr255Param bsprompt, tynetworkaddress *adr, tyapplicationid id) {
-#if TARGET_API_MAC_CARBON
+
 #	pragma unused (bsprompt, adr, id)
-#endif
+
 	/*
 	7/15/91 DW: return false on system 6.
 	
@@ -503,65 +237,7 @@ pascal boolean landbrowsenetworkapps (ConstStr255Param bsprompt, tynetworkaddres
 	6/8/92 dmb: use landseterror to communicate error code to caller
 	*/
 	
-	#if !TARGET_API_MAC_CARBON
-	register hdllandglobals hg = landgetglobals ();
-	register OSErr err;
-	register boolean senddirect = false;
-	LocationNameRec loc;
-	PortInfoRec	port;
-	PPCFilterUPP filter = landbrowserfilterUPP;
-	long appA5;
-	
-	if ((**hg).transport == macsystem6) /*can't call PPCBrowser on System 6*/
-		return (false);
-	
-	(**hg).macnetglobals.idforbrowser = id; /*for communication with landbrowserfilter*/
-	
-	shellactivate ();
-	
-	loc = (*adr).target.location;
-	
-	port.name = (*adr).target.name;
-	
-	#ifdef flcomponent
-	
-		appA5 = SetUpCurA5 (); /*for system*/
-	
-	#endif
-	
-	err = PPCBrowser (
-			
-			bsprompt, (ConstStr255Param) nil, true, &loc, &port, filter, nil);
-	
-	#ifdef flcomponent
-	
-		RestoreA5 (appA5);
-	
-	#endif
-	
-	if (err != noErr) { /*user cancelled the browser*/
-		
-		landseterror (err);
-		
-		return (false);
-		}
-	
-	(**hg).macnetglobals.flhavebrowsed = true; /*default to the same port next time*/
-	
-	(*adr).target.sessionID = 0;
-	
-	(*adr).target.location = loc;
-	
-	(*adr).target.name = port.name;
-	
-	/*
-	return (landchecksameprocess (adr));
-	*/
-	
-	return (true);
-	#else
 	return false;
-	#endif
 
 	} /*landbrowsenetworkapps*/
 

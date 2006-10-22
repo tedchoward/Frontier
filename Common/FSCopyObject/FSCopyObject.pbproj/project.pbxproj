@@ -1,0 +1,284 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 38;
+	objects = {
+		014CEA4C0018CE3E11CA2923 = {
+			buildRules = (
+			);
+			buildSettings = {
+				COPY_PHASE_STRIP = NO;
+				OPTIMIZATION_CFLAGS = "-O0";
+			};
+			isa = PBXBuildStyle;
+			name = Development;
+		};
+//010
+//011
+//012
+//013
+//014
+//030
+//031
+//032
+//033
+//034
+		034768E4FF38A6EB11DB9C8B = {
+			isa = PBXExecutableFileReference;
+			path = FSCopyObject_PB_D;
+			refType = 3;
+		};
+//030
+//031
+//032
+//033
+//034
+//080
+//081
+//082
+//083
+//084
+		08FB7793FE84155DC02AAC07 = {
+			buildStyles = (
+				014CEA4C0018CE3E11CA2923,
+			);
+			hasScannedForEncodings = 1;
+			isa = PBXProject;
+			mainGroup = 08FB7794FE84155DC02AAC07;
+			projectDirPath = "";
+			targets = (
+				08FB779FFE84155DC02AAC07,
+			);
+		};
+		08FB7794FE84155DC02AAC07 = {
+			children = (
+				08FB7795FE84155DC02AAC07,
+				08FB779DFE84155DC02AAC07,
+				1A8B4A8EFE9D542A11CA2CBB,
+			);
+			isa = PBXGroup;
+			name = FSCopyObject;
+			refType = 4;
+		};
+		08FB7795FE84155DC02AAC07 = {
+			children = (
+				FBA28BC503EF74A90DC9188A,
+				FB5C175F03EF56350DC9188A,
+				FB5C176103EF56390DC9188A,
+				F5D86944046F9D9601E12ADD,
+				F5D86946046F9D9C01E12ADD,
+			);
+			isa = PBXGroup;
+			name = Source;
+			refType = 4;
+		};
+		08FB779DFE84155DC02AAC07 = {
+			children = (
+				FB5C185003EF56860DC9188A,
+			);
+			isa = PBXGroup;
+			name = "External Frameworks and Libraries";
+			refType = 4;
+		};
+		08FB779FFE84155DC02AAC07 = {
+			buildPhases = (
+				08FB77A0FE84155DC02AAC07,
+				08FB77A1FE84155DC02AAC07,
+				08FB77A3FE84155DC02AAC07,
+				08FB77A5FE84155DC02AAC07,
+				C6859E9E029092A704C91782,
+			);
+			buildSettings = {
+				FRAMEWORK_SEARCH_PATHS = "";
+				HEADER_SEARCH_PATHS = "";
+				INSTALL_PATH = "$(HOME)/bin";
+				LIBRARY_SEARCH_PATHS = "";
+				OTHER_CFLAGS = "";
+				OTHER_LDFLAGS = "";
+				OTHER_REZFLAGS = "";
+				PRODUCT_NAME = FSCopyObject_PB_D;
+				REZ_EXECUTABLE = YES;
+				SECTORDER_FLAGS = "";
+				WARNING_CFLAGS = "-Wmost -Wno-four-char-constants -Wno-unknown-pragmas";
+			};
+			dependencies = (
+			);
+			isa = PBXToolTarget;
+			name = FSCopyObject;
+			productInstallPath = "$(HOME)/bin";
+			productName = FSCopyObject;
+			productReference = 034768E4FF38A6EB11DB9C8B;
+		};
+		08FB77A0FE84155DC02AAC07 = {
+			buildActionMask = 2147483647;
+			files = (
+				FB5C176203EF56390DC9188A,
+				F5D86947046F9D9C01E12ADD,
+			);
+			isa = PBXHeadersBuildPhase;
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		08FB77A1FE84155DC02AAC07 = {
+			buildActionMask = 2147483647;
+			files = (
+				FB5C176003EF56350DC9188A,
+				FBA28BC603EF74A90DC9188A,
+				F5D86945046F9D9601E12ADD,
+			);
+			isa = PBXSourcesBuildPhase;
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		08FB77A3FE84155DC02AAC07 = {
+			buildActionMask = 2147483647;
+			files = (
+				FB5C191E03EF56860DC9188A,
+			);
+			isa = PBXFrameworksBuildPhase;
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		08FB77A5FE84155DC02AAC07 = {
+			buildActionMask = 2147483647;
+			files = (
+			);
+			isa = PBXRezBuildPhase;
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+//080
+//081
+//082
+//083
+//084
+//1A0
+//1A1
+//1A2
+//1A3
+//1A4
+		1A8B4A8EFE9D542A11CA2CBB = {
+			children = (
+				034768E4FF38A6EB11DB9C8B,
+			);
+			isa = PBXGroup;
+			name = Products;
+			refType = 4;
+		};
+//1A0
+//1A1
+//1A2
+//1A3
+//1A4
+//C60
+//C61
+//C62
+//C63
+//C64
+		C6859E9E029092A704C91782 = {
+			buildActionMask = 8;
+			dstPath = /usr/share/man/man1/;
+			dstSubfolderSpec = 0;
+			files = (
+			);
+			isa = PBXCopyFilesBuildPhase;
+			runOnlyForDeploymentPostprocessing = 1;
+		};
+//C60
+//C61
+//C62
+//C63
+//C64
+//F50
+//F51
+//F52
+//F53
+//F54
+		F5D86944046F9D9601E12ADD = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			name = GenLinkedList.c;
+			path = Sources/GenLinkedList.c;
+			refType = 4;
+		};
+		F5D86945046F9D9601E12ADD = {
+			fileRef = F5D86944046F9D9601E12ADD;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		F5D86946046F9D9C01E12ADD = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			name = GenLinkedList.h;
+			path = Sources/GenLinkedList.h;
+			refType = 4;
+		};
+		F5D86947046F9D9C01E12ADD = {
+			fileRef = F5D86946046F9D9C01E12ADD;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+//F50
+//F51
+//F52
+//F53
+//F54
+//FB0
+//FB1
+//FB2
+//FB3
+//FB4
+		FB5C175F03EF56350DC9188A = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			name = FSCopyObject.c;
+			path = Sources/FSCopyObject.c;
+			refType = 4;
+		};
+		FB5C176003EF56350DC9188A = {
+			fileRef = FB5C175F03EF56350DC9188A;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		FB5C176103EF56390DC9188A = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			name = FSCopyObject.h;
+			path = Sources/FSCopyObject.h;
+			refType = 4;
+		};
+		FB5C176203EF56390DC9188A = {
+			fileRef = FB5C176103EF56390DC9188A;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		FB5C185003EF56860DC9188A = {
+			isa = PBXFrameworkReference;
+			name = CoreServices.framework;
+			path = /System/Library/Frameworks/CoreServices.framework;
+			refType = 0;
+		};
+		FB5C191E03EF56860DC9188A = {
+			fileRef = FB5C185003EF56860DC9188A;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		FBA28BC503EF74A90DC9188A = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			name = HelloWorldTool.c;
+			path = Sources/HelloWorldTool.c;
+			refType = 4;
+		};
+		FBA28BC603EF74A90DC9188A = {
+			fileRef = FBA28BC503EF74A90DC9188A;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+	};
+	rootObject = 08FB7793FE84155DC02AAC07;
+}

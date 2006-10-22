@@ -1107,7 +1107,7 @@ extern boolean stripbinarytypeid (Handle);
 
 extern boolean setdoublevalue (double, tyvaluerecord *);
 
-extern boolean setfilespecvalue (tyfilespec *, tyvaluerecord *);
+extern boolean setfilespecvalue (ptrfilespec, tyvaluerecord *);
 
 extern boolean setexternalvalue (Handle, tyvaluerecord *);
 
@@ -1268,7 +1268,7 @@ extern boolean getdatevalue (hdltreenode, short, unsigned long *);
 
 extern boolean getostypevalue (hdltreenode, short, OSType *);
 
-extern boolean getfilespecvalue (hdltreenode, short, tyfilespec *);
+extern boolean getfilespecvalue ( hdltreenode, short, ptrfilespec );
 
 extern boolean getpointvalue (hdltreenode, short, Point *);
 

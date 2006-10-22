@@ -1145,6 +1145,7 @@ static boolean filemenufunctionvalue (short token, hdltreenode hparam1, tyvaluer
 			}
 		
 		case openfunc: {
+		
 			tyfilespec fs;
 			tyvaluerecord vhidden;
 			short ctconsumed = 0;
@@ -1158,13 +1159,15 @@ static boolean filemenufunctionvalue (short token, hdltreenode hparam1, tyvaluer
 			
 			ctpositional = ctconsumed;
 			
-			setbooleanvalue (false, &vhidden); //default value
+			setbooleanvalue (false, &vhidden); // default value
 			
 			if (!getoptionalparamvalue (hparam1, &ctconsumed, &ctpositional, str_hidden, &vhidden))
 				return (false);
 			
-			langsaveglobals (); /*see comment at function head*/
+			langsaveglobals (); // see comment at function head
 			
+			( void ) extendfilespec ( &fs, &fs );
+		
 			fl = shellopenfile (&fs, vhidden.data.flvalue, &w);
 			
 			if (!langrestoreglobals ())

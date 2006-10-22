@@ -508,18 +508,20 @@ boolean getobjectmodeldisplaystring (tyvaluerecord *vitem, bigstring bsdisplay) 
 
 static boolean stringtoalias (tyvaluerecord *val) {
 	
-	/*
-	10/7/91 dmb: make sure we're actually passing a full path to the NewAlias routine
-	
-	7/2/92 dmb: don't call getfullfilepath; makes it impossible to create aliases of 
-	not-yet-existing files, or offline volumes
-	
-	7/23/92 dmb: OK, try to getfullfilepath, but with errors disabled
-	
-	2.1b2 dmb: try converting to a filespec first to ensure that partial path or 
-	drive number if processed properly. also, in the filespec case, the alias isn't 
-	minimal
-	*/
+	//
+	// 2006-06-24 creedon: FSRef-ized
+	//
+	// 2.1b2 dmb: try converting to a filespec first to ensure that partial path or 
+	// drive number if processed properly. also, in the filespec case, the alias isn't 
+	// minimal
+	//
+	// 1992-07-23 dmb: OK, try to getfullfilepath, but with errors disabled
+	//
+	// 1992-07-02 dmb: don't call getfullfilepath; makes it impossible to create aliases of 
+	// not-yet-existing files, or offline volumes
+	//
+	// 1991-10-07 dmb: make sure we're actually passing a full path to the NewAlias routine
+	//
 	
 	register Handle htext;
 	bigstring bspath;
@@ -536,7 +538,7 @@ static boolean stringtoalias (tyvaluerecord *val) {
 	texthandletostring (htext, bspath);
 	
 	if (pathtofilespec (bspath, &fs) && fileexists (&fs, &flfolder))
-		errcode = NewAlias (nil, &fs, &halias);
+		errcode = FSNewAlias (nil, &fs.fsref, &halias);
 	else
 		errcode = NewAliasMinimalFromFullPath (stringlength (bspath), bspath + 1, nil, nil, &halias);
 	
@@ -553,224 +555,270 @@ static boolean stringtoalias (tyvaluerecord *val) {
 
 #endif
 
-boolean filespectoalias (const tyfilespec *fs, boolean flminimal, AliasHandle *halias) {
+
+boolean filespectoalias (const ptrfilespec fs, boolean flminimal, AliasHandle *halias) {
+
+	//
+	// 2006-06-24 creedon: for Mac, FSRef-ized
+	//
 	
-#ifdef MACVERSION
-	bigstring bs;
-	OSErr err;
-	
-	if (flminimal)
-		err = NewAliasMinimal (fs, halias);
-	else
-		err = NewAlias (nil, fs, halias);
-	
-	if (err == fnfErr) { /*alias manager isn't friendly enough to do anything for us here*/
+	#ifdef MACVERSION
+
+		boolean flcreatefrompath = false;
+		// bigstring bs;
+		OSErr err;
 		
-		if (filespectopath (fs, bs))
-			err = NewAliasMinimalFromFullPath (stringlength (bs), bs + 1, nil, nil, halias);
-		}
+		if ( ( *fs ).path == NULL ) {
+		
+			if (flminimal)
+				err = FSNewAliasMinimal ( &( *fs ).fsref, halias);
+			else
+				err = FSNewAlias (nil, &( *fs ).fsref, halias);
+			}
+		else
+			flcreatefrompath = true;
+		
+		if ( ( err == fnfErr ) || flcreatefrompath ) { // alias manager isn't friendly enough to do anything for us here
+			
+				HFSUniStr255 name;
+				
+				CFStringRefToHFSUniStr255 ( ( *fs ).path, &name );
+				
+				err = FSNewAliasMinimalUnicode ( &( *fs ).fsref, name.length, name.unicode, halias, NULL );
+			}
+		
+		if (err == noErr)
+			return (true);
+		
+		if (langerrorenabled ()) {
+			
+			setfserrorparam ( fs );
+			
+			oserror (err);
+			}
+		
+		return (false);
+		
+	#endif
+
+	#ifdef WIN95VERSION
 	
-	if (err == noErr)
+		langparamerror (unimplementedverberror, bsfunctionname);
+		
+		return (false);
+		
+	#endif
+	
+	} // filespectoalias
+
+
+#ifdef MACVERSION
+
+	static boolean filespecvaltoalias (tyvaluerecord *val) {
+
+		//
+		// 2006-06-24 creedon: FSRef-ized
+		//
+		
+		register hdlfilespec hfs;
+		tyfilespec fs;
+		AliasHandle halias;
+		
+		if (!langcanusealiases ())
+			return (false);
+		
+		hfs = (hdlfilespec) (*val).data.filespecvalue;
+		
+		fs = **hfs;
+		
+		if (!filespectoalias (&fs, false, &halias))
+			return (false);
+		
+		if (!setheapvalue ((Handle) halias, aliasvaluetype, val))
+			return (false);
+		
+		releaseheaptmp ((Handle) hfs);
+		
 		return (true);
-	
-	if (langerrorenabled ()) {
 		
-		setoserrorparam ((ptrstring) (*fs).name);
-		
-		oserror (err);
-		}
-	
-	return (false);
-#endif
-
-#ifdef WIN95VERSION
-	langparamerror (unimplementedverberror, bsfunctionname);
-	
-	return (false);
-#endif
-	} /*filespectoalias*/
-
-
-#ifdef MACVERSION
-
-static boolean filespecvaltoalias (tyvaluerecord *val) {
-	
-	register FSSpecHandle hfs;
-	FSSpec fs;
-	AliasHandle halias;
-	
-	if (!langcanusealiases ())
-		return (false);
-	
-	hfs = (FSSpecHandle) (*val).data.filespecvalue;
-	
-	fs = **hfs;
-	
-	if (!filespectoalias (&fs, false, &halias))
-		return (false);
-	
-	if (!setheapvalue ((Handle) halias, aliasvaluetype, val))
-		return (false);
-	
-	releaseheaptmp ((Handle) hfs);
-	
-	return (true);
-	} /*filespecvaltoalias*/
+		} // filespecvaltoalias
 
 #endif
 
 
 boolean aliastostring (Handle halias, bigstring bs) {
 
-#ifdef MACVERSION
-	
-	/*
-	10/4/91 dmb: if alias can't be resolved, just say what volume it's on.
-	
-	4/12/93 dmb: accept fnfErr result from ResolveAlias
-	
-	2.1b9 dmb: use FollowFinderAlias to avoid mounting volumes during 
-	alias resolution
-	
-	4.0b6 4/26/96 dmb: restored FollowFinderAlias code; must use if we get fnfErr.
-	*/
-	
-	register AliasHandle h = (AliasHandle) halias;
-	short flchanged;
-	FSSpec fs;
-	bigstring bsinfo;
-	AliasInfoType ix = asiAliasName;
-	OSErr err;
-	
-	if (!langcanusealiases ())
-		return (false);
-	
-	err = FollowFinderAlias (nil, h, false, &fs, (Boolean *) &flchanged);
-	
-	if ((err == noErr) /*|| (err == fnfErr)*/ ) {
+	#ifdef MACVERSION
 		
-		if (flchanged)
-			UpdateAlias (nil, &fs, h, (Boolean *) &flchanged);
+		//
+		// 2006-07-26 creedon: FSRef-ized
+		//
+		// 1996-04-26 dmb: restored FollowFinderAlias code; must use if we get fnfErr.
+		//
+		// 2.1b9 dmb: use FollowFinderAlias to avoid mounting volumes during alias resolution
+		//
+		// 1993-04-12 dmb: accept fnfErr result from ResolveAlias
+		//
+		// 1991-10-04 dmb: if alias can't be resolved, just say what volume it's on.
+		//
 		
-		return (filespectopath (&fs, bs));
-		}
-	
-	langgettypestring (aliasvaluetype, bs);
-	
-	/*
-	if (GetAliasInfo (h, asiVolumeName, bsinfo) == noErr) { //add the volume name
+		register AliasHandle h = (AliasHandle) halias;
+		short flchanged;
+		tyfilespec fs;
+		bigstring bsinfo;
+		AliasInfoType ix = asiAliasName;
+		OSErr err;
 		
-		bigstring bsaliasondisk;
+		clearbytes ( &fs, sizeof ( fs ) );
 		
-		langgetstringlist (unresolvedaliasstring, bsaliasondisk);
+		if (!langcanusealiases ())
+			return (false);
 		
-		parsedialogstring (bsaliasondisk, bs, bsinfo, nil, nil, bsaliasondisk);
+		err = FSFollowFinderAlias (nil, h, false, &fs.fsref, (Boolean *) &flchanged);
 		
-		copystring (bsaliasondisk, bs);
-		}
-	*/
-	
-	setemptystring (bs);
-	
-	// get each path element out of the alias
-	while (GetAliasInfo (h, ix, bsinfo) == noErr) {
+		if ((err == noErr) /* || (err == fnfErr) */ ) {
+			
+			if (flchanged)
+				FSUpdateAlias (nil, &fs.fsref, h, (Boolean *) &flchanged);
+			
+			return (filespectopath (&fs, bs));
+			}
 		
-		if (isemptystring (bsinfo)) // reached top of path hierarchy
-			break;
+		langgettypestring (aliasvaluetype, bs);
 		
-		if (ix > asiAliasName)
-			pushchar (':', bsinfo);
+		/*
+		if (GetAliasInfo (h, asiVolumeName, bsinfo) == noErr) { //add the volume name
+			
+			bigstring bsaliasondisk;
+			
+			langgetstringlist (unresolvedaliasstring, bsaliasondisk);
+			
+			parsedialogstring (bsaliasondisk, bs, bsinfo, nil, nil, bsaliasondisk);
+			
+			copystring (bsaliasondisk, bs);
+			}
+		*/
 		
-		if (!insertstring (bsinfo, bs))
-			break;
+		setemptystring (bs);
 		
-		++ix;
-		}
-	
-	// add the volume name
-	GetAliasInfo (h, asiVolumeName, bsinfo);
-	
-	pushchar (':', bsinfo);
-	
-	insertstring (bsinfo, bs);
-	
-	return (true);
-#endif
+		// get each path element out of the alias
+		while (GetAliasInfo (h, ix, bsinfo) == noErr) {
+			
+			if (isemptystring (bsinfo)) // reached top of path hierarchy
+				break;
+			
+			if (ix > asiAliasName)
+				pushchar (':', bsinfo);
+			
+			if (!insertstring (bsinfo, bs))
+				break;
+			
+			++ix;
+			}
+		
+		// add the volume name
+		GetAliasInfo (h, asiVolumeName, bsinfo);
+		
+		pushchar (':', bsinfo);
+		
+		insertstring (bsinfo, bs);
+		
+		return (true);
+		
+	#endif
 
-#ifdef WIN95VERSION
-	langparamerror (unimplementedverberror, bsfunctionname);
+	#ifdef WIN95VERSION
+	
+		langparamerror (unimplementedverberror, bsfunctionname);
 
-	return (false);
-#endif
-	} /*aliastostring*/
-
-
-boolean aliastofilespec (AliasHandle halias, tyfilespec *fs) {
-	
-	/*
-	2.1a6 dmb: ignore fnfErr
-	
-	2.1b2 dmb: on error, try to get as much info from the alias as possible, 
-	& just return false to caller
-	
-	2.1b9 dmb: use FollowFinderAlias to avoid mounting volumes during 
-	alias resolution
-	
-	7.0b34 PBS: Can't use ResolveAliasWithMountFlags on pre-Carbon Macs reliably,
-	so fall back to FollowFinderAlias.
-	*/
-	
-#ifdef MACVERSION
-	Boolean flchanged;
-	bigstring bs;
-	OSErr err;
-	
-	if (!langcanusealiases ())
 		return (false);
 		
-	#if TARGET_API_MAC_CARBON == 1
-	
-		err = ResolveAliasWithMountFlags(nil, halias, fs, &flchanged, kARMNoUI);
-		//old stupid code.
-		//Code change by Timothy Paustian Tuesday, May 16, 2000 8:54:03 PM
-		//why was this used. Maybe before there was the other APIs, anyhow, 
-		//it breaks on OS X so use the above, correct routine instead
-	
-	#else /*7.0b32 PBS: fall back to FollowFinderAlias on pre-Carbon Macs*/
-		
-		err = FollowFinderAlias (nil, halias, false, fs, &flchanged);
-	
 	#endif
 	
-	if ((err == noErr) || (err == fnfErr))
-		return (true);
-	
-	(*fs).parID = 0;
-	
-	(*fs).vRefNum = 0;
-	
-	if (GetAliasInfo (halias, asiVolumeName, bs) == noErr) /*try to get vol info*/
-		fileparsevolname (bs, &(*fs).vRefNum, nil);
-	
-	if (GetAliasInfo (halias, asiAliasName, (*fs).name) != noErr) /*try to set file name*/
-		langgetmiscstring (unknownstring, (*fs).name);
-	
-	if (langerrorenabled ()) {
-		
-		setoserrorparam ((*fs).name);
-		
-		oserror (err);
-		}
-	
-	return (false);
-#endif
+	} // aliastostring
 
-#ifdef WIN95VERSION
-	langparamerror (unimplementedverberror, bsfunctionname);
 
-	return (false);
-#endif
-	} /*aliastofilespec*/
+boolean aliastofilespec ( AliasHandle halias, ptrfilespec fs ) {
+	
+	//
+	// 2006-07-29 creedon: for Mac FSRef-ized
+	//
+	// 7.0b34 PBS: Can't use ResolveAliasWithMountFlags on pre-Carbon Macs reliably, so fall back to FollowFinderAlias.
+	//
+	// 2.1b9 dmb: use FollowFinderAlias to avoid mounting volumes during alias resolution
+	//
+	// 2.1b2 dmb: on error, try to get as much info from the alias as possible, & just return false to caller
+	//
+	// 2.1a6 dmb: ignore fnfErr
+	//
+	
+	#ifdef MACVERSION
+	
+		boolean flchanged;
+		bigstring bs;
+		OSErr err;
+		OSStatus status;
+		
+		if ( ! langcanusealiases ( ) )
+			return ( false );
+			
+		err = FSResolveAliasWithMountFlags ( NULL, halias, &( *fs ).fsref, &flchanged, kARMNoUI );
+
+		if ( ( err == noErr ) || ( err == fnfErr ) ) {
+		
+			( void ) getfilespecparent ( fs );
+		
+			return ( true );
+			
+			}
+		
+		FSAliasInfoBitmap whichAliasInfo = kFSAliasInfoNone;
+		HFSUniStr255 targetName;
+		HFSUniStr255 volumeName;
+		
+		status = FSCopyAliasInfo ( halias, NULL, &volumeName, NULL, &whichAliasInfo, NULL );
+		
+		if ( status == noErr ) { // try to get vol info
+		
+			HFSUniStr255ToStr255 ( &volumeName, bs );
+
+			fileparsevolname ( bs, fs );
+			
+			}
+		
+		status = FSCopyAliasInfo ( halias, &targetName, NULL, NULL, &whichAliasInfo, NULL );
+		
+		if ( status == noErr )
+			HFSUniStr255ToStr255 ( &targetName, bs );
+		else {
+		
+			langgetmiscstring ( unknownstring, bs );
+			
+			}
+		
+		( *fs ).path = CFStringCreateWithPascalString ( kCFAllocatorDefault, bs, kCFStringEncodingMacRoman );
+		
+		if ( langerrorenabled ( ) ) {
+			
+			setoserrorparam ( bs );
+			
+			oserror ( err );
+			
+			}
+		
+		return ( false );
+		
+	#endif
+
+	#ifdef WIN95VERSION
+	
+		langparamerror (unimplementedverberror, bsfunctionname);
+
+		return (false);
+		
+	#endif
+	
+	} // aliastofilespec
 
 
 boolean coercetoalias (tyvaluerecord *v) {
@@ -824,173 +872,194 @@ boolean coercetoalias (tyvaluerecord *v) {
 	} /*coercetoalias*/
 
 
-boolean filespecaddvalue (tyvaluerecord *v1, tyvaluerecord *v2, tyvaluerecord *vreturned) {
+boolean filespecaddvalue ( tyvaluerecord *v1, tyvaluerecord *v2, tyvaluerecord *vreturned ) {
 
-	/*
-	add v2 to the filespec v1 by using it as a partial path. if anything bug a valid 
-	fspec results, return a string value that is simple concatenation
+	//
+	// add v2 to the filespec v1 by using it as a partial path. if anything but a valid 
+	// fspec results, return a string value that is simple concatenation
+	//
+	// 2006-10-16 creedon: for Mac, FSRef-ized
+	//
+	// 2.1b6 dmb: if resulting specifier exists, but doesn't agree with bsadd as far as 
+	// whether or not it's a folder, return a string.
+	//
+	// 2.1b3 dmb: if resulting path is to a non-existent folder, don't return a filespec 
+	//
 	
-	2.1b3 dmb: if resulting path is to a non-existent folder, don't return a filespec 
-	
-	2.1b6 dmb: if resulting specifier exists, but doesn't agree with bsadd as far as 
-	whether or not it's a folder, return a string.
-	*/
-	
-#ifdef MACVERSION
-	tyfilespec fs;
-	bigstring bsadd;
-	boolean fl, flfolder;
-	boolean flfolderpath;
-	OSErr err;
+	#ifdef MACVERSION
+
+		OSStatus status;
+		bigstring bs, bsadd, bsv1path;
+		boolean flfolder; // unused
+		tyfilespec fs;
+			
+		fs = **( *v1 ).data.filespecvalue;
 		
-	#if TARGET_API_MAC_CARBON == 1
-	
-		fs.vRefNum = (**(*v1).data.filespecvalue).vRefNum;
+		( void ) extendfilespec ( &fs, &fs );
+			
+		filespectopath ( &fs, bs );
 		
-		fs.parID = (**(*v1).data.filespecvalue).parID;
+		copystring ( bs, bsv1path );
 		
-		copystring ((**(*v1).data.filespecvalue).name, fs.name);
+		if ( ! coercetostring ( v2 ) )
+			return ( false );
 		
-	#else
-	
-		fs = **(*v1).data.filespecvalue;
+		pullstringvalue ( v2, bsadd );
+		
+		/*
+		if (fileexists (&fs, &flfolder)) {
+			
+		//	fileisfolder (&fs, &flfolder);
+			
+			if (flfolder)
+				pushchar (':', bs );
+			}
+		*/
+		
+		insertstring ( bs, bsadd );
+		
+		/*
+		if (stringfindchar (':', bsadd)) // will be interpreted as full path, so make it partial*
+			insertchar (':', bsadd);
+		*/
+		
+		copystring ( bsadd,  bs );
+				
+		insertstring ( BIGSTRING ( "\x09" ":Volumes:" ), bs );
+		
+		stringreplaceall ( ':', '/', bs );
+				
+		/* convert from Mac Roman to UTF-8 */ {
+		
+			CFStringRef csr = CFStringCreateWithPascalString ( kCFAllocatorDefault, bs, kCFStringEncodingMacRoman );
+		
+			CFStringGetCString ( csr, ( char * ) bs, sizeof ( bs ), kCFStringEncodingUTF8 );
+			
+			CFRelease ( csr );
+		
+			}
+		
+		status = FSPathMakeRef ( bs, &fs.fsref, &flfolder );
+				
+		if ( status == noErr ) {
+		
+			HFSUniStr255 name;
+			OSErr err;
+			
+			err = FSGetCatalogInfo ( &fs.fsref, kFSCatInfoNone, NULL, &name, NULL, &fs.fsref );
+			
+			fs.path = CFStringCreateWithCharacters ( kCFAllocatorDefault, name.unicode, name.length );
+			
+			}
+			
+		else { // couldn't extend filespec
+		
+			( void ) extendfilespec ( *( *v1 ).data.filespecvalue, *( *v1 ).data.filespecvalue );
+			
+			if ( ! coercetostring ( v1 ) )
+				return ( false );
+			
+			return ( addvalue ( *v1, *v2, vreturned ) );
+			
+			}
+		
+		return ( setfilespecvalue ( &fs, vreturned ) );
 		
 	#endif
+
+	#ifdef WIN95VERSION
 	
-	if (!coercetostring (v2))
-		return (false);
-	
-//	fs = **(*v1).data.filespecvalue;
-	
-	pullstringvalue (v2, bsadd);
-	
-	if (fileexists (&fs, &flfolder)) {
-		
-	//	fileisfolder (&fs, &flfolder);
-		
-		if (flfolder)
-			pushchar (':', fs.name);
-		}
-	
-	insertstring (fs.name, bsadd);
-	
-	if (stringfindchar (':', bsadd)) /*will be interpreted as full path, so make it partial*/
-		insertchar (':', bsadd);
-	
-	err = FSMakeFSSpec (fs.vRefNum, fs.parID, bsadd, &fs);
-	
-	flfolderpath = lastchar (bsadd) == ':';
-	
-	switch (err) {
-		
-		case noErr: /*valid spec, file exists*/
-			
-			fileisfolder (&fs, &flfolder);
-			
-			fl = flfolder == flfolderpath; /*make sure endings match*/
-			
-			break;
-		
-		case fnfErr: /*valid spec, file doesn't exist*/
-			
-			fl = !flfolderpath;
-			
-			break;
-		
-		default:
-			fl = false;
-			
-			break;
-		}
-	
-	if (!fl) { /*couldn't extend filespec*/
+		if (!coercetostring (v2))
+			return (false);
 		
 		if (!coercetostring (v1))
 			return (false);
 		
 		return (addvalue (*v1, *v2, vreturned));
-		}
+		
+	#endif
 	
-	return (setfilespecvalue (&fs, vreturned));
-#endif
-
-#ifdef WIN95VERSION
-	if (!coercetostring (v2))
-		return (false);
-	
-	if (!coercetostring (v1))
-		return (false);
-	
-	return (addvalue (*v1, *v2, vreturned));
-#endif
-	} /*filespecaddvalue*/
+	} // filespecaddvalue
 
 
 boolean filespecsubtractvalue (tyvaluerecord *v1, tyvaluerecord *v2, tyvaluerecord *vreturned) {
 
-	/*
-	subtract v2 from the filespec v1's file name, iff v2 is a simple string (no 
-	colons). otherwise, return a string value that is simple string subtraction
-	*/
+	//
+	// subtract v2 from the filespec v1's file name, iff v2 is a simple string (no 
+	// colons). otherwise, return a string value that is simple string subtraction
+	//
+	// 2006-06-24 creedon: FSRef-ized
+	//
 	
-#ifdef MACVERSION
-	tyfilespec fs;
-	bigstring bssub;
-	boolean fl;
-	Str63 bsname;
-	OSErr err;
-	
-	if (!coercetostring (v2))
-		return (false);
-	
-	fs = **(*v1).data.filespecvalue;
-	
-	pullstringvalue (v2, bssub);
-	
-	fl = !stringfindchar (':', bssub);
-	
-	if (fl) {
+	#ifdef MACVERSION
+
+		tyfilespec fs;
+		bigstring bssub;
+		boolean fl;
+		Str63 bsname;
+		OSStatus status;
 		
-		subtractstrings (fs.name, bssub, bsname);
+		if (!coercetostring (v2))
+			return (false);
 		
-		err = FSMakeFSSpec (fs.vRefNum, fs.parID, bsname, &fs);
+		fs = **(*v1).data.filespecvalue;
 		
-		fl = (err == noErr) || (err == fnfErr);
-		}
+		pullstringvalue (v2, bssub);
+		
+		fl = !stringfindchar (':', bssub);
+		
+		if (fl) {
+			bigstring bs;
+			
+			getfsfile ( &fs, bs );
+			
+			subtractstrings ( bs, bssub, bsname);
+			
+			status = FSPathMakeRef ( bsname, &fs.fsref, NULL );
+			
+			fl = ( status == noErr ) || ( status == fnfErr );
+			
+			}
+		
+		if (!fl) { // couldn't extend filespec
+		
+			if (!coercetostring (v1))
+				return (false);
+			
+			return (subtractvalue (*v1, *v2, vreturned));
+			
+			}
+		
+		return (setfilespecvalue (&fs, vreturned));
+		
+	#endif
+
+	#ifdef WIN95VERSION
 	
-	if (!fl) { /*couldn't extend filespec*/
-	
+		if (!coercetostring (v2))
+			return (false);
+		
 		if (!coercetostring (v1))
 			return (false);
 		
 		return (subtractvalue (*v1, *v2, vreturned));
-		}
+		
+	#endif
 	
-	return (setfilespecvalue (&fs, vreturned));
-#endif
-
-#ifdef WIN95VERSION
-	if (!coercetostring (v2))
-		return (false);
-	
-	if (!coercetostring (v1))
-		return (false);
-	
-	return (subtractvalue (*v1, *v2, vreturned));
-#endif
-	} /*filespecsubtractvalue*/
+	} // filespecsubtractvalue
 
 
 boolean langpackfileval (const tyvaluerecord *vfile, Handle *hpacked) {
 	
-	/*
-	5.0a24 dmb: new format for storing filespec and alias values 
-	in the odb.
-
-	we create a record containing an alias to the file (Mac only), 
-	the full path to the file (as a URL), and the machine name (for
-	future use).
-	*/
+	//
+	// we create a record containing an alias to the file (Mac only), 
+	// the full path to the file (as a URL), and the machine name (for
+	// future use).
+	//
+	// 2006-06-24 creedon: FSRef-ized
+	//
+	// 5.0a24 dmb: new format for storing filespec and alias values in the odb.
+	//
 	
 	hdllistrecord hlist;
 	bigstring bspath, bsmachine;
@@ -1013,22 +1082,11 @@ boolean langpackfileval (const tyvaluerecord *vfile, Handle *hpacked) {
 		
 		case filespecvaluetype: {
 		
-			#if TARGET_API_MAC_CARBON == 1
-	
-				fs.vRefNum = (**(*vfile).data.filespecvalue).vRefNum;
-				fs.parID = (**(*vfile).data.filespecvalue).parID;
-				
-				copystring ((**(*vfile).data.filespecvalue).name, fs.name);
-	
-			#else
-			
-				fs = **(*vfile).data.filespecvalue;
-			
-			#endif
+			fs = **(*vfile).data.filespecvalue;
 			
 			disablelangerror ();
 			
-			if (!filespectoalias (&fs, true, (AliasHandle *) &halias))
+			if ( ! filespectoalias ( &fs, true, ( AliasHandle * ) &halias ) )
 				halias = nil;
 
 			enablelangerror ();
@@ -1044,7 +1102,7 @@ boolean langpackfileval (const tyvaluerecord *vfile, Handle *hpacked) {
 			goto exit;
 		}
 	
-	// *** should converr path to URL ***
+	// *** should convert path to URL ***
 	
 	if (!oppushstring (hlist, filerecordpath, bspath))
 		goto exit;
@@ -1057,17 +1115,20 @@ boolean langpackfileval (const tyvaluerecord *vfile, Handle *hpacked) {
 	//just indicating what platform the path is specific to.
 
 	#ifdef MACVERSION
+	
 		if (!oppushstring (hlist, filerecordplatform, bsplatformmac))
 			goto exit;
+			
 	#endif
 
 	#ifdef WIN95VERSION
+	
 		if (!oppushstring (hlist, filerecordplatform, bsplatformwin))
 			goto exit;
+			
 	#endif
 
-	// *** could push machine name too
-	if (getmachinename (bsmachine))
+	if (getmachinename (bsmachine)) // *** could push machine name too
 		if (!oppushstring (hlist, filerecordmachine, bsmachine))
 			goto exit;
 	
@@ -1078,20 +1139,25 @@ boolean langpackfileval (const tyvaluerecord *vfile, Handle *hpacked) {
 	opdisposelist (hlist);
 	
 	return (fl);
-	} /*langpackfileval*/
+	
+	} // langpackfileval
 
 
 boolean langunpackfileval (Handle hpacked, tyvaluerecord *vfile) {
 	
-	/*
-	5.0fc2 dmb: unpacking an alias on the pc, go straight for the path string
-	*/
+	//
+	// 2006-07-01 creedon: clearbytes of fs first thing
+	//
+	// 5.0fc2 dmb: unpacking an alias on the pc, go straight for the path string
+	//
 
 	hdllistrecord hlist;
 	Handle halias;
 	bigstring bspath, bsplat;
 	tyfilespec fs;
 	boolean fl = false;
+	
+	clearbytes ( &fs, sizeof ( fs ) );
 
 	if (!opunpacklist (hpacked, &hlist))
 		return (false);
@@ -1099,14 +1165,18 @@ boolean langunpackfileval (Handle hpacked, tyvaluerecord *vfile) {
 	switch ((*vfile).valuetype) {
 		
 		case aliasvaluetype:
+		
 			#ifdef MACVERSION
+			
 				fl = opgetlisthandle (hlist, -1, filerecordalias, &halias);
 
 				if (fl)
 					fl = copyhandle (halias, &(*vfile).data.aliasvalue);
+					
 			#endif
 
 			#ifdef WIN95VERSION
+			
 				fl = opgetliststring (hlist, -1, filerecordpath, bspath);
 				
 				if (fl) {
@@ -1115,6 +1185,7 @@ boolean langunpackfileval (Handle hpacked, tyvaluerecord *vfile) {
 
 					fl = newtexthandle (bspath, &(*vfile).data.stringvalue);
 					}
+					
 			#endif
 			
 			break;
@@ -1136,30 +1207,40 @@ boolean langunpackfileval (Handle hpacked, tyvaluerecord *vfile) {
 				fl = opgetliststring (hlist, -1, filerecordpath, bspath);
 				
 				if (fl) {
+				
 					// here we should check to see if the file path is from the correct platform???
+					
 					if (opgetliststring (hlist, -1, filerecordplatform, bsplat)) {
+					
 						#ifdef MACVERSION
+						
 							if (equalidentifiers (bsplat, bsplatformwin)) {
-								/* ERROR or Conversion HERE! */
+								// ERROR or Conversion HERE!
 								}
+								
 						#endif
 
 						#ifdef WIN95VERSION
+						
 							if (equalidentifiers (bsplat, bsplatformmac)) {
-								/* ERROR or Conversion HERE! */
+								// ERROR or Conversion HERE!
 								}
+								
 						#endif
 						}
 					
 					fl = pathtofilespec (bspath, &fs);
+					
 					}
 				}
 			
 			if (fl)
 				fl = newfilledhandle (&fs, filespecsize (fs), (Handle *) &(*vfile).data.filespecvalue);
 			else {
+			
 				// *** once we make tyfilespec the new record on both platforms, this will be ok
 				// *** but for now, we need to make a string value
+				
 				(*vfile).valuetype = stringvaluetype;
 
 				fl = newtexthandle (bspath, &(*vfile).data.stringvalue);
@@ -1168,14 +1249,17 @@ boolean langunpackfileval (Handle hpacked, tyvaluerecord *vfile) {
 			break;
 		
 		default:
+		
 			assert (false);
+			
 			break;
 		}
 	
 	opdisposelist (hlist);
 
 	return (fl);
-	} /*langunpackfileval*/
+	
+	} // langunpackfileval
 
 
 #ifdef WIN95VERSION
@@ -2431,13 +2515,6 @@ boolean setobjspecverb (hdltreenode hparam1, tyvaluerecord *val) {
 	OSErr errcode = noErr;
 	
 	
-	#ifdef flsystem6
-	
-	if (!langcanuseappleevents ())
-		return (false);
-	
-	#endif
-	
 	if (!getostypevalue (hparam1, 1, &class))
 		return (false);
 	
@@ -3363,5 +3440,4 @@ boolean isobjspectree (hdltreenode htree) {
 	} /*isobjspectree*/
 
 #endif
-
 

@@ -404,6 +404,7 @@ typedef struct tyodblistrecord {
 	boolean flreadonly;
 	
 	odbref odb;
+	
 	} tyodbrecord, *ptrodbrecord, **hdlodbrecord;
 
 
@@ -463,33 +464,47 @@ static boolean odberror (boolean flresult) {
 	
 static boolean getodbparam (hdltreenode hparam1, short pnum, hdlodbrecord *hodbrecord) {
 
+	//
+	// 2006-06-23 creedon: for Mac, FSRef-zed
+	//
+
+	bigstring bs;
 	hdlodbrecord hodb;
 	tyfilespec fs;
-	tyfilespec * ptrfs;
+	ptrfilespec ptrfs;
 	
 	ptrfs = &fs; 
 
 	if (!getfilespecvalue (hparam1, pnum, ptrfs))
 		return (false);
 	
+	( void ) extendfilespec ( ptrfs, ptrfs );
+	
 	for (hodb = hodblist; hodb != nil; hodb = (**hodb).hnext) {
-		
-		if (equalfilespecs (&(**hodb).fs, ptrfs)) {
+	
+		if ( equalfilespecs ( &( **hodb ).fs, ptrfs ) ) {
 			
 			*hodbrecord = hodb;
 			
 			return (true);
 			}
 		}
+		
+	getfsfile ( ptrfs, bs );
 	
-	lang2paramerror (dbnotopenederror, bsfunctionname, fsname(ptrfs));
+	lang2paramerror (dbnotopenederror, bsfunctionname, bs );
 	
 	return (false);
-	} /*getodbparam*/
+	
+	} // getodbparam
 
 
 static boolean getodbvalue (hdltreenode hparam1, short pnum, tyodbrecord *odb, boolean flreadonly) {
 
+	//
+	// 2006-06-23 creedon: for Mac, FSRef-ized
+	//
+	
 	hdlodbrecord hodb;
 	
 	if (!getodbparam (hparam1, pnum, &hodb))
@@ -498,14 +513,19 @@ static boolean getodbvalue (hdltreenode hparam1, short pnum, tyodbrecord *odb, b
 	*odb = **hodb;
 	
 	if ((*odb).flreadonly && !flreadonly) {
+	
+		bigstring bs;
+	
+		getfsfile ( &( *odb ).fs, bs );
 		
-		lang2paramerror (dbopenedreadonlyerror, bsfunctionname, fsname(&(*odb).fs));
+		lang2paramerror (dbopenedreadonlyerror, bsfunctionname, bs );
 		
 		return (false);
 		}
 	
 	return (true);
-	} /*getodbvalue*/
+	
+	} // getodbvalue
 
 
 static boolean dbclosefile (hdlodbrecord hodb) {
@@ -562,21 +582,23 @@ static boolean odbfindfilevisit (WindowPtr w) {
 
 static boolean dbnewverb (hdltreenode hparam1, tyvaluerecord *vreturned) {
 	
-	/*
-	4.1b5 dmb: new verb
-	*/
+	//
+	// 2006-06-20 creedon: for Mac, extend filespec
+	//
+	// 4.1b5 dmb: new verb
+	//
 	
 	tyodbrecord odbrec;
 	boolean fl;
 	
 	flnextparamislast = true;
 	
-	if (!getfilespecvalue (hparam1, 1, &odbrec.fs))
+	if ( ! getfilespecvalue ( hparam1, 1, &odbrec.fs ) )
 		return (false);
+		
+	shellpushdefaultglobals (); // so that config is correct
 	
-	shellpushdefaultglobals (); /*so that config is correct*/
-	
-	fl = opennewfile (&odbrec.fs, config.filecreator, config.filetype, &odbrec.fref);
+	fl = opennewfile ( &odbrec.fs, config.filecreator, config.filetype, &odbrec.fref );
 	
 	shellpopglobals ();
 	
@@ -589,28 +611,30 @@ static boolean dbnewverb (hdltreenode hparam1, tyvaluerecord *vreturned) {
 	
 	if (odberror (fl)) {
 		
-		deletefile (&odbrec.fs);
+		deletefile ( &odbrec.fs );
 		
 		return (false);
 		}
 	
 	return (setbooleanvalue (true, vreturned));
-	} /*dbnewverb*/
+	} // dbnewverb
 
 
 static boolean dbopenverb (hdltreenode hparam1, tyvaluerecord *vreturned) {
 	
-	/*
-	4.1b5 dmb: added ability to access already-open root in Frontier
-	*/
+	//
+	// 2006-06-20 creedon: for Mac, extend filespec
+	//
+	// 4.1b5 dmb: added ability to access already-open root in Frontier
+	//
 	
 	tyodbrecord odbrec;
 	hdlodbrecord hodb;
 	WindowPtr w;
-	
+
 	odbrec.fref = 0;
 	
-	if (!getfilespecvalue (hparam1, 1, &odbrec.fs))
+	if ( ! getfilespecvalue ( hparam1, 1, &odbrec.fs ) )
 		return (false);
 	
 	flnextparamislast = true;
@@ -618,18 +642,20 @@ static boolean dbopenverb (hdltreenode hparam1, tyvaluerecord *vreturned) {
 	if (!getbooleanvalue (hparam1, 2, &odbrec.flreadonly))
 		return (false);
 	
-	w = shellfindfilewindow (&odbrec.fs);
+	( void ) extendfilespec ( &odbrec.fs, &odbrec.fs );
+
+	w = shellfindfilewindow ( &odbrec.fs );
 	
 	if (w != nil) {
 		
 		if (odberror (odbaccesswindow (w, &odbrec.odb)))
 			return (false);
 		
-		/*fref remains zero, so unwanted closefiles aren't a problem*/
+		// fref remains zero, so unwanted closefiles aren't a problem
 		}
 	else {
 		
-		if (!openfile (&odbrec.fs, &odbrec.fref, odbrec.flreadonly))
+		if ( ! openfile ( &odbrec.fs, &odbrec.fref, odbrec.flreadonly))
 			return (false);
 		
 		if (odberror (odbopenfile (odbrec.fref, &odbrec.odb, odbrec.flreadonly))) {
@@ -652,7 +678,8 @@ static boolean dbopenverb (hdltreenode hparam1, tyvaluerecord *vreturned) {
 	listlink ((hdllinkedlist) hodblist, (hdllinkedlist) hodb);
 	
 	return (setbooleanvalue (true, vreturned));
-	} /*dbopenverb*/
+	
+	} // dbopenverb
 
 
 static boolean dbsaveverb (hdltreenode hparam1, tyvaluerecord *vreturned) {
@@ -1001,7 +1028,4 @@ boolean dbinitverbs (void) {
 	
 	return (true);
 	} /*dbinitverbs*/
-
-
-
 

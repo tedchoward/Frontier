@@ -111,7 +111,7 @@ boolean fileexists (ptrfilespec);
 
 boolean filemakespec (short, long, bigstring, ptrfilespec);
 
-boolean filegetfilename (ptrfilespec, bigstring);
+boolean getfsfile (ptrfilespec, bigstring);
 
 boolean equalfilespecs (ptrfilespec, ptrfilespec);
 

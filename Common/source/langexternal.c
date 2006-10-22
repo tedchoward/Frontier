@@ -524,9 +524,11 @@ static boolean langexternalvariablewindowopen (hdlexternalvariable hvariable, hd
 
 boolean langexternalregisterwindow (hdlexternalvariable hv) {
 	
-	/*
-	5.1.5b10 dmb: even if windowgetpath fails, the fspec has the (unsaved) default name
-	*/
+	//
+	// 2006-06-25 creedon: replace copystring with getfsfile
+	//
+	// 5.1.5b10 dmb: even if windowgetpath fails, the fspec has the (unsaved) default name
+	//
 	
 	hdlwindowinfo hinfo;
 	WindowPtr w;
@@ -549,7 +551,7 @@ boolean langexternalregisterwindow (hdlexternalvariable hv) {
 		
 		windowgetfspec (w, &fs);
 		
-		copystring (fsname (&fs), bsname);
+		getfsfile ( &fs, bsname);
 		
 		//shellgetwindowtitle (hinfo, bsname);
 		}
@@ -562,9 +564,11 @@ boolean langexternalregisterwindow (hdlexternalvariable hv) {
 
 boolean langexternalunregisterwindow (hdlwindowinfo hinfo) {
 	
-	/*
-	5.1.5b10 dmb: even if windowgetpath fails, the fspec has the (unsaved) default name
-	*/
+	//
+	// 2006-06-25 creedon: replace copystring with getfsfile
+	//
+	// 5.1.5b10 dmb: even if windowgetpath fails, the fspec has the (unsaved) default name
+	//
 	
 	tyfilespec fs;
 	bigstring bsname;
@@ -580,7 +584,7 @@ boolean langexternalunregisterwindow (hdlwindowinfo hinfo) {
 		
 		windowgetfspec (w, &fs);
 		
-		copystring (fsname (&fs), bsname);
+		getfsfile ( &fs, bsname );
 		
 		//shellgetwindowtitle (hinfo, bsname);
 		}
@@ -1884,7 +1888,7 @@ boolean langexternalgetexternalparam (hdltreenode hfirst, short pnum, short *id,
 	} /*langexternalgetexternalparam*/
 
 
-static boolean langexternaledit (hdlexternalvariable hv, hdlwindowinfo hparent, tyfilespec *fs, bigstring bstitle, const Rect *rzoom) {
+static boolean langexternaledit (hdlexternalvariable hv, hdlwindowinfo hparent, ptrfilespec fs, bigstring bstitle, const Rect *rzoom) {
 	
 	/*
 	6.16.97 dmb: the guts of langexternalzoom[from|filewindow]
@@ -2113,16 +2117,20 @@ boolean langexternalzoom (tyvaluerecord val, hdlhashtable htable, bigstring bsna
 	} /*langexternalzoom*/
 
 
-boolean langexternalzoomfilewindow (const tyvaluerecord *val, tyfilespec *fs, boolean flhidden) {
+boolean langexternalzoomfilewindow (const tyvaluerecord *val, ptrfilespec fs, boolean flhidden) {
 	
-	/*
-	create and open a new window containing the file-based external value in val.
-	val should be in memory
-	*/
+	//
+	//
+	// create and open a new window containing the file-based external value in val. val should be in memory
+	//
+	// 2006-09-16 creedon: add a file extension for when the file is saved
+	//
 	
 	register hdlexternalvariable hv;
-	bigstring bstitle;
+	bigstring bsfileextension, bstitle;
 	Rect rzoom;
+	
+	setemptystring ( bsfileextension );
 	
 	hv = (hdlexternalvariable) (*val).data.externalvalue;
 	
@@ -2135,9 +2143,73 @@ boolean langexternalzoomfilewindow (const tyvaluerecord *val, tyfilespec *fs, bo
 	
 	if (fs != nil)
 		getfsfile (fs, bstitle); //5.0b9 dmb: new routine
-	else
+	else {
 		getuntitledfilename (bstitle);
-	
+		
+		switch ( ( **hv).id ) { /// add an extension
+
+			case idtableprocessor:
+			
+				pushstring ( "\x04" "fttb", bsfileextension );
+				
+				break;
+			
+			case idoutlineprocessor:
+			
+				pushstring ( "\x04" "ftop", bsfileextension );
+				
+				break;
+			
+			case idscriptprocessor:
+			
+				pushstring ( "\x04" "ftsc", bsfileextension );
+				
+				break;
+			
+			case idwordprocessor:
+			
+				pushstring ( "\x04" "ftwp", bsfileextension );
+				
+				break;
+			
+			case idmenuprocessor:
+			
+				pushstring ( "\x04" "ftmb", bsfileextension );
+				
+				break;
+			
+			/* case idpictprocessor:
+				updateconfigsettings (pictvaluetype, idpictconfig);
+				
+				fl = pictverbnew (hdata, &hvariable);
+				
+				break;
+			
+			#ifdef fliowa
+			
+			case idcardprocessor:
+				updateconfigsettings (cardvaluetype, idiowaconfig);
+				
+				fl = cardverbnew (hdata, &hvariable);
+				
+				break;
+			
+			#endif
+			
+			default:
+				fl = false; */
+				
+			} // switch
+		
+		if ( ! isemptystring ( bsfileextension ) ) {
+		
+			insertchar ( '.', bsfileextension );
+			
+			pushstring ( bsfileextension, bstitle );
+			
+			}
+		}
+		
 	if (!langexternaledit (hv, nil, fs, bstitle, &rzoom))
 		return (false);
 	

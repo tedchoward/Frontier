@@ -28,7 +28,7 @@
 #include "frontier.h"
 #include "standard.h"
 
-#ifdef MACVERSION 
+#ifdef MACVERSION
 #include "player.h" /*7.0b4 PBS: QuickTime Player window*/
 #endif
 

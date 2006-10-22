@@ -48,7 +48,7 @@ extern boolean findstringlist (bigstring, short, short *);
 
 extern boolean closeresourcefile (short);
 
-extern boolean openresourcefile (const tyfilespec *, short *, short);
+extern boolean openresourcefile ( const ptrfilespec, short *, short );
 
 extern boolean writeresource (ResType, short, bigstring, long, void *);
 
@@ -66,27 +66,27 @@ extern boolean filereadresource (short, ResType, short, bigstring, long, void *)
 
 extern boolean filewriteresource (short, ResType, short, bigstring, long, void *);
 
-extern boolean saveresource (const tyfilespec *, short, ResType, short, bigstring, long, void *, short);
+extern boolean saveresource (const ptrfilespec , short, ResType, short, bigstring, long, void *, short);
 
-extern boolean saveresourcehandle (const tyfilespec *, ResType, short, bigstring, Handle, short);
+extern boolean saveresourcehandle (const ptrfilespec, ResType, short, bigstring, Handle, short);
 
-extern boolean loadresource (const tyfilespec *, short, ResType, short, bigstring, long, void *, short);
+extern boolean loadresource (const ptrfilespec, short, ResType, short, bigstring, long, void *, short);
 
-extern boolean loadresourcehandle (const tyfilespec *, ResType, short, bigstring, Handle *, short);
+extern boolean loadresourcehandle (const ptrfilespec, ResType, short, bigstring, Handle *, short);
 
-extern boolean deleteresource (const tyfilespec *, ResType, short, bigstring, short);
+extern boolean deleteresource (const ptrfilespec, ResType, short, bigstring, short);
 
-extern boolean getnumresourcetypes (const tyfilespec *, short *, short);
+extern boolean getnumresourcetypes (const ptrfilespec, short *, short);
 
-extern boolean getnthresourcetype (const tyfilespec *, short, ResType *, short);
+extern boolean getnthresourcetype (const ptrfilespec, short, ResType *, short);
 
-extern boolean getnumresources (const tyfilespec *, ResType, short *, short);
+extern boolean getnumresources (const ptrfilespec, ResType, short *, short);
 
-extern boolean getnthresourcehandle (const tyfilespec *, ResType, short, short *, bigstring, Handle *, short);
+extern boolean getnthresourcehandle (const ptrfilespec, ResType, short, short *, bigstring, Handle *, short);
 
-extern boolean getresourceattributes (const tyfilespec *, ResType, short, bigstring, short *, short);
+extern boolean getresourceattributes (const ptrfilespec, ResType, short, bigstring, short *, short);
 
-extern boolean setresourceattributes (const tyfilespec *, ResType, short, bigstring, short, short);
+extern boolean setresourceattributes (const ptrfilespec, ResType, short, bigstring, short, short);
 
 #endif
 

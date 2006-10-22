@@ -27,7 +27,7 @@
 
 #define configinclude /*so other includes can tell if we've been loaded*/
 
-#ifdef MACVERSION 
+#ifdef MACVERSION
 #include <standard.h>
 #endif
 

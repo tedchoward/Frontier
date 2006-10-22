@@ -27,6 +27,8 @@
 
 #ifdef MACVERSION /*Mac-only feature*/
 
+#include "shelltypes.h"
+
 #define playerinclude
 
 
@@ -40,7 +42,7 @@ boolean playerisplaying (void);
 
 boolean isplayerevent (void);
 
-boolean playeropenmovieinwindow (FSSpec *f);
+boolean playeropenmovieinwindow ( ptrfilespec );
 
 boolean playerplaymovie (void);
 

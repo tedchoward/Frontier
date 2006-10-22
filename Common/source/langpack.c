@@ -41,8 +41,13 @@
 #include "langsystem7.h"
 #include "tablestructure.h"
 #include "byteorder.h"	/* 2006-04-08 aradke: endianness conversion macros */
+#include "file.h" // 2006-09-15 creedon
 
+#ifdef MACVERSION
 
+	#include "MoreFilesX.h"
+
+#endif
 
 #define ctsigbytes 19 /*length of string + 1 byte for length*/
 
@@ -215,7 +220,7 @@ boolean langpackvalue (tyvaluerecord val, Handle *h, hdlhashnode hnode) {
 			break;
 			}
 		
-		case rgbvaluetype: {	/* 2006-04-20 sethdill & aradke */
+		case rgbvaluetype: {	// 2006-04-20 sethdill & aradke
 			diskrgb rgbdiskk;
 			 
 			rgbtodiskrgb (*val.data.rgbvalue, &rgbdiskk);
@@ -280,6 +285,7 @@ boolean langpackvalue (tyvaluerecord val, Handle *h, hdlhashnode hnode) {
 	#endif
 	
 	#ifdef version5orgreater
+	
 		case filespecvaluetype:
 		case aliasvaluetype:
 			fl = langpackfileval (&val, &hdata);
@@ -338,7 +344,8 @@ boolean langpackvalue (tyvaluerecord val, Handle *h, hdlhashnode hnode) {
 		disposehandle ((Handle) hpackedvalue);
 	
 	return (fl);
-	} /*langpackvalue*/
+	
+	} // langpackvalue
 
 
 boolean langpackverb (hdltreenode hparam1, tyvaluerecord *vreturned) {
@@ -816,6 +823,10 @@ boolean langunpackverb (hdltreenode hparam1, tyvaluerecord *vreturned) {
 
 boolean langunpackwindowverb (hdltreenode hparam1, tyvaluerecord *vreturned) {
 
+	//
+	// 2006-09-18 creedon: FSRef-ized
+	//
+
 	tyvaluerecord val;
 	tyfilespec fspec;
 	ptrfilespec fs;
@@ -843,11 +854,26 @@ boolean langunpackwindowverb (hdltreenode hparam1, tyvaluerecord *vreturned) {
 	
 	fs = &fspec;
 	
-	if (isemptystring (fsname (fs)))
-		fs = nil;
-	else
-		langexternalsetdirty ((hdlexternalhandle) val.data.externalvalue, false);
+	#ifdef MACVERSION
 	
+		( void ) extendfilespec ( fs, fs );
+	
+		if ( FSRefValid ( &( *fs ).fsref ) )
+			langexternalsetdirty ((hdlexternalhandle) val.data.externalvalue, false);
+		else
+			fs = nil;
+		
+	#endif // MACVERSION
+	
+	#ifdef WIN95VERSION
+	
+		if ( isemptystring ( fsname ( fs ) ) )
+			fs = nil;
+		else
+			langexternalsetdirty ( ( hdlexternalhandle ) val.data.externalvalue, false );
+
+	#endif // WIN95VERSION
+
 	if (!langexternalzoomfilewindow (&val, fs, true)) {
 		
 		disposevaluerecord (val, false);
@@ -858,7 +884,9 @@ boolean langunpackwindowverb (hdltreenode hparam1, tyvaluerecord *vreturned) {
 	(*vreturned).data.flvalue = true;
 	
 	return (true);
-	} /*langunpackwindowverb*/
+	
+	} // langunpackwindowverb
+
 
 #if !flruntime
 

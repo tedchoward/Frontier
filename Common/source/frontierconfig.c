@@ -201,9 +201,11 @@ boolean getprogramname (bigstring bs) {
 	
 boolean getuntitledfilename (bigstring bs) {
 	
-	/*
-	5.0d6 dmb: added numeric sequencing
-	*/
+	//
+	// 2006-09-15 creedon; push space character instead of dash
+	//
+	// 5.0d6 dmb: added numeric sequencing
+	//
 	
 	static long untitledsequencer = 0;
 	
@@ -212,13 +214,14 @@ boolean getuntitledfilename (bigstring bs) {
 	
 	if (++untitledsequencer > 1) {
 	
-		pushchar ('-', bs);
+		pushchar ( ' ', bs );
 		
 		pushlong (untitledsequencer, bs);
 		}
 	
 	return (true);
-	} /*getuntitledfilename*/
+	
+	} // getuntitledfilename
 	
 	
 boolean getdefaultfilename (bigstring bs) {

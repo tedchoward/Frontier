@@ -58,13 +58,22 @@
 #include "scripts.h"
 #include "cancoon.h"
 #include "kernelverbdefs.h"
-#ifdef flcomponent
-	#include "osacomponent.h"
-#endif
-#include "opxml.h" /*7.0b21 PBS*/
+#include "opxml.h" // 7.0b21 PBS
 #include "wpengine.h"
 #include "opbuttons.h"
+#include "file.h" // 2006-09-17 creedon
 
+#ifdef MACVERSION
+
+	#include "MoreFilesX.h" // 2006-09-17 creedon
+
+#endif
+
+#ifdef flcomponent
+
+	#include "osacomponent.h"
+	
+#endif
 
 
 #define opstringlist 159
@@ -1336,15 +1345,16 @@ boolean opverbarrayreference (hdlexternalvariable hvariable, long ix, hdlheadrec
 
 boolean opedit (hdlexternalvariable hvariable, hdlwindowinfo hparent, ptrfilespec fs, bigstring bstitle, rectparam rzoom) {
 	
-	/*
-	4.17.97 dmb: protect against globals smashing under Windows
-
-	5.0b18 dmb: further protection: set flwindowopen bit before 
-	newchildwindow, which will yield
-
-	5.0.2b6 dmb: added flwindowopen loop to handle Windows async overlap
-	*/
-
+	//
+	// 2006-09-16 creedon: on Mac, set window proxy icon
+	//
+	// 5.0.2b6 dmb: added flwindowopen loop to handle Windows async overlap
+	//
+	// 5.0b18 dmb: further protection: set flwindowopen bit before newchildwindow, which will yield
+	//
+	// 1997-04-17 dmb: protect against globals smashing under Windows
+	//
+	
 	register hdloutlinevariable hv = (hdloutlinevariable) hvariable;
 	register hdloutlinerecord ho;
 	Rect rwindow;
@@ -1352,12 +1362,12 @@ boolean opedit (hdlexternalvariable hvariable, hdlwindowinfo hparent, ptrfilespe
 	hdlwindowinfo hi;
 	short id;
 
-	if (!opverbinmemory (hv)) /*couldn't swap it into memory*/
+	if (!opverbinmemory (hv)) // couldn't swap it into memory
 		return (false);
 	
-	ho = (hdloutlinerecord) (**hv).variabledata; /*assume it's in memory*/
+	ho = (hdloutlinerecord) (**hv).variabledata; // assume it's in memory
 	
-	while ((**ho).flwindowopen) { /*bring to front, return true*/
+	while ((**ho).flwindowopen) { // bring to front, return true
 		
 		if (shellfinddatawindow ((Handle) ho, &hi)) {
 			
@@ -1375,7 +1385,7 @@ boolean opedit (hdlexternalvariable hvariable, hdlwindowinfo hparent, ptrfilespe
 		#endif
 		}
 	
-	rwindow = (**ho).windowrect; /*window comes up where it was last time*/
+	rwindow = (**ho).windowrect; // window comes up where it was last time
 	
 	if ((**hv).flscript)
 		id = idscriptconfig;
@@ -1402,8 +1412,48 @@ boolean opedit (hdlexternalvariable hvariable, hdlwindowinfo hparent, ptrfilespe
 
 	(**hi).hdata = (Handle) ho;
 	
-	if (fs != nil)
+	if ( fs != nil ) {
+	
 		(**hi).fspec = *fs;
+		
+		#ifdef MACVERSION
+		
+			if ( FSRefValid ( &( *fs ).fsref ) && ( *fs ).path == NULL ) {
+			
+				OSType type = NULL;
+			
+				if ( ( **hv ).flscript ) {
+				
+					bigstring bs;
+					LSItemInfoRecord iteminfo;
+					OSStatus status;
+					
+					status = LSCopyItemInfoForRef ( &( *fs ).fsref, kLSRequestTypeCreator || kLSRequestExtension,
+						&iteminfo );
+						
+					CFStringRefToStr255 ( iteminfo.extension, bs );
+					
+					alllower ( bs );
+					
+					if ( equalstrings ( bs, "\x04" "ftds" ) )
+						type = 'FTds';
+					
+					if ( iteminfo.filetype == 'FTds' )
+						type = 'FTds';
+					
+					if ( type == NULL )
+						type = 'FTsc';
+						
+					}
+				else
+					type = 'FTop';
+				
+				SetWindowProxyCreatorAndType ( w, 'LAND', type, kOnSystemDisk );
+				
+				}
+		#endif
+		
+		}
 	
 	if (hparent == nil)
 		(**ho).outlinetype = outlineisstandalonescript;
@@ -1416,9 +1466,9 @@ boolean opedit (hdlexternalvariable hvariable, hdlwindowinfo hparent, ptrfilespe
 	
 	opsetdisplaydefaults (ho);
 	
-	opdirtymeasurements (); //6.0a14 dmb: need this too; may have bogus pre-display values
+	opdirtymeasurements (); // 6.0a14 dmb: need this too; may have bogus pre-display values
 	
-	opsetctexpanded (ho); //6.0a12 dmb: now that we set fatheadlines and outlinerect
+	opsetctexpanded (ho); // 6.0a12 dmb: now that we set fatheadlines and outlinerect
 	
 	oprestorescrollposition ();
 	
@@ -1429,7 +1479,7 @@ boolean opedit (hdlexternalvariable hvariable, hdlwindowinfo hparent, ptrfilespe
 	if ((**ho).fldirty)
 		shellsetwindowchanges (hi, true);
 	
-	if ((**ho).outlinetype == outlineisoutline) { /*7.1b18 PBS: hide synthetic buttons*/
+	if ((**ho).outlinetype == outlineisoutline) { // 7.1b18 PBS: hide synthetic buttons
 		
 		(**hi).flhidebuttons = true;
 
@@ -1439,7 +1489,8 @@ boolean opedit (hdlexternalvariable hvariable, hdlwindowinfo hparent, ptrfilespe
 	windowzoom (w);
 
 	return (true);
-	} /*opedit*/
+	
+	} // opedit
 	
 	
 boolean opvaltoscript (tyvaluerecord val, hdloutlinerecord *houtline) {

@@ -54,5 +54,3 @@
 
 boolean MakeAliasFile (const FSSpec* srcFile, const FSSpec* destFile);
 
-
-

@@ -245,7 +245,7 @@ extern boolean langexternalzoomfrom (tyvaluerecord, hdlhashtable, bigstring, rec
 
 extern boolean langexternalzoom (tyvaluerecord, hdlhashtable, bigstring);
 
-extern boolean langexternalzoomfilewindow (const tyvaluerecord *, tyfilespec *, boolean);
+extern boolean langexternalzoomfilewindow (const tyvaluerecord *, ptrfilespec, boolean);
 
 extern boolean langexternalwindowopen (tyvaluerecord, hdlwindowinfo *);
 

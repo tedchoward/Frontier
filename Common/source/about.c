@@ -68,15 +68,17 @@ Not too big, kind of sexy, and certainly better than nothing!
 #include "processinternal.h"
 #include "launch.h"
 
+
+#ifdef MACVERSION
+	#include "MoreFilesX.h"
+	#define idfrontiericon	128
+#endif
+
+
 #ifdef WIN95VERSION
 	#include "Winland.h"
 	#define idfrontiericon	IDB_FRONTIER_BITMAP
 #endif
-
-#ifdef MACVERSION
-	#define idfrontiericon	128
-#endif
-
 
 
 static long aboutopenticks; /*so we can tell how long it's been up*/
@@ -266,31 +268,43 @@ static void getmessagecontentrect (Rect *rcontent) {
 
 
 static void ccdrawfrontiericon (Rect rcicn, boolean flpressed) {
-	
-	#if TARGET_API_MAC_CARBON == 1 /*PBS 7.0b53: draw an OS X style icon*/
-	
+
+	//
+	// 2006-07-12 creedon: FSRef-ized
+	//
+	// 7.0b53 PBS: draw an OS X style icon
+	//
+		
+	#ifdef MACVERSION
+
 		IconRef iconref;
 		tyfilespec programfspec;
 		short label;
-		OSErr ec;
+		OSErr err;
 		Rect r = rcicn;
+		FSSpec fs;
 		
 		getapplicationfilespec (nil, &programfspec);
+		
+		( void ) extendfilespec ( &programfspec, &programfspec );
+		
+		err = FSRefMakeFSSpec ( &programfspec.fsref, &fs );
 
-		if (GetIconRefFromFile (&programfspec, &iconref, &label) == noErr) {
+		if (GetIconRefFromFile (&fs, &iconref, &label) == noErr) {
 			
-			ec = PlotIconRef (&r, kAlignAbsoluteCenter, flpressed? kTransformSelected : 0, kIconServicesNormalUsageFlag, iconref);			
+			err = PlotIconRef (&r, kAlignAbsoluteCenter, flpressed? kTransformSelected : 0, kIconServicesNormalUsageFlag, iconref);			
 			
 			ReleaseIconRef (iconref);
 		
-			if (ec == noErr)
+			if (err == noErr)
 				return;
-			} /*if*/
-	#endif
+			} // if
+
+	#endif // MACVERSION
 	
-	ploticonresource (&rcicn, kAlignAbsoluteCenter, flpressed? kTransformSelected : 0, idfrontiericon);
+	ploticonresource ( &rcicn, kAlignAbsoluteCenter, flpressed ? kTransformSelected : 0, idfrontiericon );
 	
-	} /*ccdrawfrontiericon*/
+	} // ccdrawfrontiericon
 
 
 static boolean ccgettextitemrect (short item, Rect *r) {

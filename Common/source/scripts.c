@@ -3530,14 +3530,15 @@ static boolean scriptkeystroke (void) {
 
 
 static boolean scripttitleclick (Point pt) {
-	
-	if (scriptindatabase ()) /*lives in symbol table -- see scriptinstallable*/
-		return (langexternaltitleclick (pt, (hdlexternalvariable) (**outlinedata).outlinerefcon));
-	
-	if ((**outlinewindowinfo).parentwindow == nil)
-		return (false);
 
-	if (scriptinmenubar ()) { /*do same popup as parent window would*/
+	//
+	// 2006-08-26 creedon:	for Mac, fix command clicking not activating pop-up menu
+	//
+	//				both Mac and Win XP have their own built-in behaviours defined for mouse double clicks,
+	//					disabled code so as not to mess things up
+	//
+	
+	if (scriptinmenubar ()) { // do same popup as parent window would
 		
 		if (cmdkeydown () || ismouserightclick()) {
 		
@@ -3547,7 +3548,7 @@ static boolean scripttitleclick (Point pt) {
 				
 				shellpopglobals ();
 				
-				pt.v += 50; /*hack: this signals special case*/
+				pt.v += 50; // hack: this signals special case
 				
 				tableclienttitlepopuphit (pt, hv);
 				
@@ -3555,6 +3556,16 @@ static boolean scripttitleclick (Point pt) {
 				}
 			}
 		}
+		
+	return (langexternaltitleclick (pt, (hdlexternalvariable) (**outlinedata).outlinerefcon));
+	
+	/* old code, discard after awhile
+
+	if (scriptindatabase ()) // lives in symbol table -- see scriptinstallable
+		return (langexternaltitleclick (pt, (hdlexternalvariable) (**outlinedata).outlinerefcon));
+	
+	if ((**outlinewindowinfo).parentwindow == nil)
+		return (false);
 	
 	if (!mousedoubleclick ())
 		return (false);
@@ -3562,10 +3573,11 @@ static boolean scripttitleclick (Point pt) {
 	shellbringtofront ((**outlinewindowinfo).parentwindow);
 	
 	if (keyboardstatus.floptionkey)
-		shellclosewindow (outlinewindow);
+		shellclosewindow (outlinewindow); */
 	
-	return (true); /*consumed*/
-	} /*scripttitleclick*/
+	return (true); // consumed
+	
+	} // scripttitleclick
 
 
 #ifdef flcomponent

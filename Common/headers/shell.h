@@ -772,9 +772,9 @@ extern void windowsetrnum (WindowPtr, short);
 
 extern short windowgetvnum (WindowPtr);
 
-extern boolean windowsetfspec (WindowPtr, tyfilespec *);
+extern boolean windowsetfspec ( WindowPtr, ptrfilespec );
 
-extern boolean windowgetfspec (WindowPtr, tyfilespec *);
+extern boolean windowgetfspec ( WindowPtr, ptrfilespec );
 
 extern boolean windowgetpath (WindowPtr, bigstring);
 
@@ -782,7 +782,7 @@ extern void windowsetvnum (WindowPtr, short);
 
 extern boolean newchildwindow (short, hdlwindowinfo, Rect *, const Rect *, bigstring, WindowPtr *);
 
-extern boolean newfilewindow (ptrfilespec, hdlfilenum, short, boolean, WindowPtr *);
+extern boolean newfilewindow ( const ptrfilespec, hdlfilenum, short, boolean, WindowPtr * ); // 2009-09-30 creedon: made first param const
 
 extern boolean isfilewindow (WindowPtr);
 

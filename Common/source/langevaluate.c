@@ -37,8 +37,18 @@
 #include "langsystem7.h"
 #include "oplist.h"
 #include "ops.h"
+
 #ifdef flcomponent
+
 	#include "osacomponent.h"
+	
+#endif
+
+#ifdef MACVERSION
+
+	#include <sys/param.h>
+	#include "MoreFilesX.h"
+	
 #endif
 
 #define fltryerrorstackcode false
@@ -518,16 +528,18 @@ static boolean fileloopfilter (bigstring bsfolder, bigstring bsfile) {
 #endif
 
 static boolean fileloopguts (hdltreenode htree, ptrfilespec fsfolder, bigstring bsidentifier, long ctlevels, tyvaluerecord *valtree) {
-	/*
-	the core of fileloop evaluation, now recursive.
-	
-	if ctlevels is -1, do one level and process folders just like files.
-	
-	if ctlevels is not -1, only process files, and recurse for folders 
-	to the specified depth
-	
-	10/8/92 dmb: break & return must kick out of all levels of recursion (whew!)
-	*/
+
+	//
+	// the core of fileloop evaluation, now recursive.
+	//
+	// if ctlevels is -1, do one level and process folders just like files.
+	//
+	// if ctlevels is not -1, only process files, and recurse for folders to the specified depth
+	//
+	// 2006-10-03 creedon: for Mac, minimally FSRef-ized
+	//
+	// 1992-10-08 dmb: break & return must kick out of all levels of recursion (whew!)
+	//
 	
 	register hdltreenode h = htree;
 	register boolean fl;
@@ -536,18 +548,32 @@ static boolean fileloopguts (hdltreenode htree, ptrfilespec fsfolder, bigstring 
 	boolean flfolder;
 	Handle hfileloop;
 	
-#ifdef MACVERSION
-	if (isemptystring ((*fsfolder).name)) /*loop over mounted volumes*/
-		fl = diskinitloop (nil, &hfileloop);
-	else
-#endif
-		fl = fileinitloop (fsfolder, nil, &hfileloop);
+	clearbytes ( &fs, sizeof ( fs ) );
+
+	#ifdef MACVERSION
+	
+		FSSpec fst;
+		tyfilespec fsfoldert;
+		
+		clearbytes ( &fst, sizeof ( fst ) );
+
+		( void ) extendfilespec ( fsfolder, &fsfoldert );
+	
+		FSRefMakeFSSpec ( &fsfoldert.fsref, &fst );
+	
+		if ( isemptystring ( fst.name ) ) // loop over mounted volumes
+			fl = diskinitloop ( nil, &hfileloop );
+		else
+		
+	#endif
+	
+	fl = fileinitloop (fsfolder, nil, &hfileloop);
 	
 	if (!fl)
 		return (false);
 	
-	while (filenextloop (hfileloop, &fs, &flfolder)) { /*get the next file in the directory*/
-		
+	while (filenextloop (hfileloop, &fs, &flfolder)) { // get the next file in the directory
+			
 		if ((ctlevels != -1) && flfolder) {
 			
 			if (ctlevels > 0) {
@@ -561,7 +587,18 @@ static boolean fileloopguts (hdltreenode htree, ptrfilespec fsfolder, bigstring 
 					break;
 				}
 			
+			#ifdef MACVERSION
+			
+				// clear out path
+				
+				CFRelease ( fs.path );
+				
+				fs.path = NULL;
+				
+			#endif // MACVERSION
+			
 			continue;
+			
 			}
 		
 		fl = setfilespecvalue (&fs, &val);
@@ -569,20 +606,20 @@ static boolean fileloopguts (hdltreenode htree, ptrfilespec fsfolder, bigstring 
 		if (!fl)
 			break;
 		
-		fl = langsetsymbolval (bsidentifier, val); /*user program gets the name*/
+		fl = langsetsymbolval (bsidentifier, val); // user program gets the name
 		
 		if (!fl)
 			break;
 		
 		exemptfromtmpstack (&val);
 		
-		cleartmpstack (); /*dealloc all outstanding temporary values*/
+		cleartmpstack (); // dealloc all outstanding temporary values
 		
 		flbreak = false; 
 		
 		flcontinue = false;
 		
-		fl = evaluatelist ((**h).param3, valtree); /*run the body of the loop once*/
+		fl = evaluatelist ((**h).param3, valtree); // run the body of the loop once
 		
 		flcontinue = false;
 		
@@ -596,14 +633,26 @@ static boolean fileloopguts (hdltreenode htree, ptrfilespec fsfolder, bigstring 
 		
 		fl = langdebuggercall (h);
 		
-		if (!fl) /*user killed the script*/
+		if (!fl) // user killed the script
 			break;
-		} /*while*/
+			
+		#ifdef MACVERSION
+		
+			// clear out path
+			
+			CFRelease ( fs.path );
+			
+			fs.path = NULL;
+			
+		#endif // MACVERSION
+		
+		} // while
 	
 	fileendloop (hfileloop);
 	
 	return (fl);
-	} /*fileloopguts*/
+	
+	} // fileloopguts
 
 
 static boolean evaluatefileloop (hdltreenode hloop, tyvaluerecord *valtree) {
@@ -632,18 +681,7 @@ static boolean evaluatefileloop (hdltreenode hloop, tyvaluerecord *valtree) {
 	
 	assert (!leakingmemory (&val));
 	
-	#if TARGET_API_MAC_CARBON == 1 /*PBS 10/03/01: fix crashing bug copying filespecs*/
-	
-		fsfolder.vRefNum = (**val.data.filespecvalue).vRefNum;
-		fsfolder.parID = (**val.data.filespecvalue).parID;
-
-		copystring ((**val.data.filespecvalue).name, fsfolder.name);
-
-	#else
-	
 		fsfolder = **val.data.filespecvalue;
-	
-	#endif
 	
 	if (!langgetidentifier ((**h).param1, bsidentifier))
 		return (false);
@@ -2143,6 +2181,4 @@ boolean evaluatelist (hdltreenode hfirst, tyvaluerecord *val) {
 	
 	return (true); /*fell through the bottom of the list*/
 	} /*evaluatelist*/
-
-
 

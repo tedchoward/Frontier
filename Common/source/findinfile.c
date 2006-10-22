@@ -109,7 +109,7 @@ static void lowercasehandle (Handle h) {
 	} /*lowercasehandle*/
 	
 	
-static boolean findopenfile (const tyfilespec *fs, hdlopenfile *hfile, hdlopenfile *hprev) {
+static boolean findopenfile (const ptrfilespec fs, hdlopenfile *hfile, hdlopenfile *hprev) {
 	
 	register hdlopenfile x = hfirstfile;
 	
@@ -136,7 +136,7 @@ static boolean findopenfile (const tyfilespec *fs, hdlopenfile *hfile, hdlopenfi
 	} /*findopenfile*/
 
 
-static void fifopenfileerror (const tyfilespec *fs) {
+static void fifopenfileerror (const ptrfilespec fs) {
 	
 	/*
 	5.0.1 dmb: new, additional error reporting
@@ -151,7 +151,7 @@ static void fifopenfileerror (const tyfilespec *fs) {
 
 
 #if 0
-static OSErr openforkperm (const tyfilespec *fs, boolean flresource, short perm, hdlfilenum *fnum) {
+static OSErr openforkperm (const ptrfilespec fs, boolean flresource, short perm, hdlfilenum *fnum) {
 	
 	OSErr errcode;
 	
@@ -164,23 +164,25 @@ static OSErr openforkperm (const tyfilespec *fs, boolean flresource, short perm,
 	} /*openforkperm*/
 #endif
 
-static boolean fileopener (const tyfilespec *fs, hdlopenfile *hfile, hdlfilenum *fnum) {
+static boolean fileopener (const ptrfilespec fs, hdlopenfile *hfile, hdlfilenum *fnum) {
 	
-	/*
-	2/13/92 dmb: changed fldontclose logic to something that actually works; 
-	we no longer ignore opWrErr errors.  instead, we try to open read/write, 
-	but settle for read only.
-	
-	1/25/93 dmb: instead of using fldontclose boolean, we return the hdlopenfile 
-	if found. the new filecloser uses this to restore things properly
-	
-	2.1b6 dmb: generate an oserror when a file can't be opened
-	*/
+	//
+	// 2006-06-25 creedon: for Mac, FSRef-ized
+	//
+	// 2.1b6 dmb: generate an oserror when a file can't be opened
+	//
+	// 1993-01-25 dmb: instead of using fldontclose boolean, we return the hdlopenfile 
+	// if found. the new filecloser uses this to restore things properly
+	//
+	// 1992-02-13 dmb: changed fldontclose logic to something that actually works; 
+	// we no longer ignore opWrErr errors.  instead, we try to open read/write, 
+	// but settle for read only.
+	//
 	
 	boolean fl;
 	hdlopenfile hprev;
 	
-	if (findopenfile (fs, hfile, &hprev)) { /*file was already opened by us*/
+	if (findopenfile (fs, hfile, &hprev)) { // file was already opened by us
 		
 		register hdlopenfile hf = *hfile;
 		long position;
@@ -205,14 +207,20 @@ static boolean fileopener (const tyfilespec *fs, hdlopenfile *hfile, hdlfilenum 
 	if (!fl)
 		fl = openfile (fs, fnum, true);
 
-#ifdef NEWFILESPECTYPE
-	setoserrorparam ((ptrstring) (*fs).fullSpecifier);
-#else
-	setoserrorparam ((ptrstring) (*fs).name);
-#endif
+	#ifdef MACVERSION
+	
+		setfserrorparam ( fs );
+		
+	#endif
+	
+	#ifdef WIN95VERSIOBN
+
+		setoserrorparam ((ptrstring) (*fs).fullSpecifier);
+		
+	#endif
 	
 	return (fl);
-	} /*fileopener*/
+	} // fileopener
 
 
 static boolean fileloadbuffer (hdlopenfile hf) {
@@ -251,7 +259,7 @@ static void filecloser (hdlopenfile hfile, hdlfilenum fnum) {
 	} /*filecloser*/
 
 
-boolean fiffindinfile (const tyfilespec *fs, bigstring pattern, long *idx) {
+boolean fiffindinfile (const ptrfilespec fs, bigstring pattern, long *idx) {
 	
 	/*
 	search for the indicated pattern in the file. return the index that the
@@ -379,7 +387,7 @@ boolean fiffindinfile (const tyfilespec *fs, bigstring pattern, long *idx) {
 	} /*fiffindinfile*/
 	
 	
-boolean fifcomparefiles (const tyfilespec *fs1, const tyfilespec *fs2) {
+boolean fifcomparefiles (const ptrfilespec fs1, const ptrfilespec fs2) {
 	
 	/*
 	compare the two files byte-by-byte and return true if they are exactly
@@ -466,7 +474,7 @@ boolean fifcomparefiles (const tyfilespec *fs1, const tyfilespec *fs2) {
 	} /*fifcomparefiles*/
 	
 
-boolean fifcharcounter (const tyfilespec *fs, char chlookfor, long *count) {
+boolean fifcharcounter (const ptrfilespec fs, char chlookfor, long *count) {
 	
 	/*
 	searches the indicated file for the character. count returns with the number 
@@ -539,7 +547,7 @@ boolean fifcharcounter (const tyfilespec *fs, char chlookfor, long *count) {
 	} /*fifcharcounter*/
 	
 
-boolean fifclosefile (const tyfilespec *fs) {
+boolean fifclosefile (const ptrfilespec fs) {
 	
 	/*
 	close the file indicated by fs. deallocate the record and buffer. close
@@ -597,7 +605,7 @@ boolean fifcloseallfiles (long refcon) {
 	} /*fifcloseallfiles*/
 
 
-boolean fifopenfile (const tyfilespec *fs, long refcon) {
+boolean fifopenfile (const ptrfilespec fs, long refcon) {
 	
 	/*
 	open the indicated file, allocating a record and linking it into the list.
@@ -660,7 +668,7 @@ boolean fifopenfile (const tyfilespec *fs, long refcon) {
 	} /*fifopenfile*/
 	
 	
-boolean fifendoffile (const tyfilespec *fs) {
+boolean fifendoffile (const ptrfilespec fs) {
 	
 	/*
 	return true if there's no more info in the file to be read.
@@ -675,7 +683,7 @@ boolean fifendoffile (const tyfilespec *fs) {
 	} /*fifendoffile*/
 
 
-static boolean fifread (const tyfilespec *fs, byte eolmarker, long ctmax, Handle *hdata) {
+static boolean fifread (const ptrfilespec fs, byte eolmarker, long ctmax, Handle *hdata) {
 	
 	/*
 	read a chunk of data from the indicated file to a maximum of ctmax bytes.
@@ -832,7 +840,7 @@ static boolean fifread (const tyfilespec *fs, byte eolmarker, long ctmax, Handle
 
 
 
-boolean fifreadline (const tyfilespec *fs, Handle *linestring) {
+boolean fifreadline (const ptrfilespec fs, Handle *linestring) {
 	
 	/*
 	read a line of text from the indicated file.
@@ -842,7 +850,7 @@ boolean fifreadline (const tyfilespec *fs, Handle *linestring) {
 	} /*fifreadline*/
 
 
-boolean fifreadhandle (const tyfilespec *fs, long ctbytes, Handle *x) {
+boolean fifreadhandle (const ptrfilespec fs, long ctbytes, Handle *x) {
 	
 	/*
 	read a chunk of data from the indicated file.
@@ -852,7 +860,7 @@ boolean fifreadhandle (const tyfilespec *fs, long ctbytes, Handle *x) {
 	} /*fifreadhandle*/
 
 
-boolean fifreadfile (const tyfilespec *fs, Handle *x) {
+boolean fifreadfile (const ptrfilespec fs, Handle *x) {
 	
 	/*
 	read the whole file into memory and return the data to the caller.
@@ -900,7 +908,7 @@ boolean fifreadfile (const tyfilespec *fs, Handle *x) {
 	} /*fifreadfile*/
 
 
-boolean fifwritehandle (const tyfilespec *fs, Handle x) {
+boolean fifwritehandle (const ptrfilespec fs, Handle x) {
 	
 	/*
 	write some data at the end of the indicated file. it may be slow, but it's
@@ -931,7 +939,7 @@ boolean fifwritehandle (const tyfilespec *fs, Handle x) {
 	} /*fifwritehandle*/
 
 
-boolean fifwriteline (const tyfilespec *fs, Handle linestring) {
+boolean fifwriteline (const ptrfilespec fs, Handle linestring) {
 	
 	/*
 	write a line at the end of the indicated file.
@@ -951,7 +959,7 @@ boolean fifwriteline (const tyfilespec *fs, Handle linestring) {
 	} /*fifwriteline*/
 
 
-boolean fifsetposition (const tyfilespec *fs, long pos) {
+boolean fifsetposition (const ptrfilespec fs, long pos) {
 	
 	/*
 	5.0.1 dmb: new function. don't bother optimizing case where we're
@@ -986,7 +994,7 @@ boolean fifsetposition (const tyfilespec *fs, long pos) {
 	} /*fifsetposition*/
 
 
-boolean fifgetposition (const tyfilespec *fs, long *pos) {
+boolean fifgetposition (const ptrfilespec fs, long *pos) {
 	
 	/*
 	5.0.1 dmb: new function
@@ -1015,7 +1023,7 @@ boolean fifgetposition (const tyfilespec *fs, long *pos) {
 	} /*fifgetposition*/
 
 
-boolean fifsetendoffile (const tyfilespec *fs, long eof) {
+boolean fifsetendoffile (const ptrfilespec fs, long eof) {
 	
 	/*
 	set the eof for the file, opening & closing it if necessary
@@ -1050,7 +1058,7 @@ boolean fifsetendoffile (const tyfilespec *fs, long eof) {
 	} /*fifseteof*/
 
 
-boolean fifgetendoffile (const tyfilespec *fs, long *eof) {
+boolean fifgetendoffile (const ptrfilespec fs, long *eof) {
 	
 	/*
 	set the eof for the file, opening & closing it if necessary

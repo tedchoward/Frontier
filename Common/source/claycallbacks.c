@@ -282,8 +282,12 @@ boolean clayemptyfilefolder (tybrowserspec *fsfolder) {
 #if filebrowser
 
 boolean claygetdirid (const tybrowserspec * fsfolder, tybrowserdir *dirid) {
+
+	//
+	// 2006-06-23 creedon: FSRef-ized
+	//
 	
-	CInfoPBRec pb;
+	FSRefParam pb;
 
 	if (!getmacfileinfo (fsfolder, &pb))
 		return (false);
@@ -291,7 +295,7 @@ boolean claygetdirid (const tybrowserspec * fsfolder, tybrowserdir *dirid) {
 	*dirid = pb.dirInfo.ioDrDirID; 
 	
 	return (true);
-	} /*claygetdirid*/
+	} // claygetdirid
 
 #endif
 
@@ -745,21 +749,26 @@ boolean claygetfileinfo (const tybrowserspec *fs, tybrowserinfo *info) {
 
 
 boolean claygetfilename (const tybrowserspec *pfs, bigstring name) {
-	
-#if filebrowser
-	
-	return (filegetfilename (pfs, name));
-	
-#endif
 
-#if odbbrowser
+	//
+	// 2006-06-23 creedon: FSRef-ized
+	//
 	
-	copystring ((*pfs).name, name);
+	#if filebrowser
+		
+		return (getfsfile (pfs, name));
+		
+	#endif
 	
-	return (true);
+	#if odbbrowser
+		
+		copystring ((*pfs).name, name);
+		
+		return (true);
+		
+	#endif
 	
-#endif
-	} /*claygetfilename*/
+	} // claygetfilename
 	
 	
 boolean clayrenamefile (tybrowserspec *fs, hdlheadrecord headnode) {

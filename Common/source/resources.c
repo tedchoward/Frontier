@@ -139,101 +139,76 @@ boolean closeresourcefile (short rnum) {
 	} /*closeresourcefile*/
 
 
-boolean openresourcefile (const tyfilespec *fs, short *rnum, short forktype) {
-#ifdef MACVERSION
+boolean openresourcefile ( const ptrfilespec fs, short *rnum, short forktype ) {
+
 	/*
-	2006-01-30 creedon: added check for non-carbon OS and trying to access the data fork of a file, error message
+	2006-01-30 creedon: on Mac added check for non-carbon OS and trying to access the data fork of a file, error message
 	
-	2005-09-02 creedon: added support for fork parameter, see resources.c: openresourcefile and pushresourcefile
+	2005-09-02 creedon: on Mac added support for fork parameter, see resources.c: openresourcefile and pushresourcefile
 	*/ 
+		
+	#ifdef MACVERSION
 	
-	short resourcerefnum = -1;
-#if TARGET_API_MAC_CARBON == 1
-	HFSUniStr255 fork;
-	FSRef myRef;
-#else
-	if (forktype == datafork) { // if we're not on carbon then trying to use the data fork for resources is an error
-		langerrormessage ("\x4A" "Can't open the data fork for use with resources on this version of the OS.");
-		return (false);
-		}
-#endif
+		short resourcerefnum = -1;
+		HFSUniStr255 fork;
+		OSErr err;
+			
+		SetResLoad (false);
 		
-	SetResLoad (false);
+		switch (forktype) {
+			case resourcefork:
+				FSGetResourceForkName (&fork);
+				break;
+
+			case datafork:
+				FSGetDataForkName (&fork);
+				break;
+			}
+
+		/*
+		2005-09-01 creedon - in my reading about the FSOpenResourceFile function someone mentioned
+		that it might not deal well with corrupted resources and that dropping back to FSpOpenResFile
+		seemed to do the trick.  i've not done that here but could be tried if the problem is real
+		and manifests. 
+		*/
+		
+		err = FSOpenResourceFile ( &( *fs ).fsref, fork.length, fork.unicode, fsRdWrPerm, &resourcerefnum );
+
+		SetResLoad (true);
+
+		if (ResError () == -39 ) { /*eof error, file has no resource fork, create one*/
+
+			err = FSCreateResourceFork (&fs -> fsref, fork.length, fork.unicode, 0);
+		
+			if (err != noErr) /*failed to create resource fork*/
+				goto error;
+			
+			FSOpenResourceFile (&fs -> fsref, fork.length, fork.unicode, fsRdWrPerm, &resourcerefnum);
+			}
+
+		if (resourcerefnum != -1) /*it's open*/ {
+			
+			UseResFile (resourcerefnum); /*in case it was already open*/
+			
+			*rnum = resourcerefnum;
+			
+			return (true);
+			}
+		
+	error:
+
+		setfserrorparam ( fs ); /*in case error message takes a filename parameter*/
+
+		oserror (ResError ());
+
+		closeresourcefile (resourcerefnum); /*checks for -1*/
+
+		*rnum = -1;
+
+	#endif // MACVERSION
 	
-#if TARGET_API_MAC_CARBON == 1
-
-	FSpMakeFSRef (fs, &myRef);
-		
-	switch (forktype) {
-		case resourcefork:
-			FSGetResourceForkName (&fork);
-			break;
-
-		case datafork:
-			FSGetDataForkName (&fork);
-			break;
-		}
-
-	/*
-	2005-09-01 creedon - in my reading about the FSOpenResourceFile function someone mentioned
-	that it might not deal well with corrupted resources and that dropping back to FSpOpenResFile
-	seemed to do the trick.  i've not done that here but could be tried if the problem is real
-	and manifests. 
-	*/
-
-	FSOpenResourceFile (&myRef, fork.length, fork.unicode, fsRdWrPerm, &resourcerefnum);
-
-#else
-
-	resourcerefnum = FSpOpenResFile (fs, fsRdWrPerm);
-
-#endif
-
-	SetResLoad (true);
-
-	if (ResError () == -39) { /*eof error, file has no resource fork, create one*/
-
-#if ((TARGET_API_MAC_CARBON == 1) && !defined(__MWERKS__))
-
-		OSErr errcode = FSCreateResourceFork (&myRef, fork.length, fork.unicode, 0);
-	
-		if (errcode != noErr) /*failed to create resource fork*/
-			goto error;
-		
-		FSOpenResourceFile (&myRef, fork.length, fork.unicode, fsRdWrPerm, &resourcerefnum);
-#else
-		HCreateResFile ((*fs).vRefNum, (*fs).parID, (StringPtr) (*fs).name);
-		
-		if (ResError () != noErr) /*failed to create resource fork*/
-			goto error;
-		
-		resourcerefnum = FSpOpenResFile (fs, fsRdWrPerm);
-
-#endif
-		}
-
-	if (resourcerefnum != -1) /*it's open*/ {
-		
-		UseResFile (resourcerefnum); /*in case it was already open*/
-		
-		*rnum = resourcerefnum;
-		
-		return (true);
-		}
-	
-error:
-
-	setoserrorparam ((ptrstring) (*fs).name); /*in case error message takes a filename parameter*/
-
-	oserror (ResError ());
-
-	closeresourcefile (resourcerefnum); /*checks for -1*/
-
-	*rnum = -1;
-
-#endif // MACVERSION
 	return (false);
-	} /*openresourcefile*/
+	} /* openresourcefile */
 
 
 #ifdef MACVERSION
@@ -541,7 +516,7 @@ boolean filewriteresource (short rnum, ResType type, short id, bigstring bsname,
 #endif
 
 #ifdef MACVERSION
-boolean saveresource (const tyfilespec *fs, short rnum, ResType type, short id, bigstring bsname, long sizedata, void *pdata, short forktype) {
+boolean saveresource (const ptrfilespec fs, short rnum, ResType type, short id, bigstring bsname, long sizedata, void *pdata, short forktype) {
 
 	/*
 	open the file indicated by fname and vnum, and assign pdata to the resource
@@ -586,7 +561,7 @@ boolean saveresource (const tyfilespec *fs, short rnum, ResType type, short id, 
 #endif
 
 #ifdef MACVERSION
-boolean saveresourcehandle (const tyfilespec *fs, ResType type, short id, bigstring bsname, Handle h, short forktype) {
+boolean saveresourcehandle (const ptrfilespec fs, ResType type, short id, bigstring bsname, Handle h, short forktype) {
 	
 	/*
 	2005-09-02 creedon: added support for fork parameter, see resources.c: openresourcefile and pushresourcefile
@@ -607,36 +582,23 @@ boolean saveresourcehandle (const tyfilespec *fs, ResType type, short id, bigstr
 /*
 static for push/popresourcefile
 */
-	private short newrnum, oldrnum;
+
+private short newrnum, oldrnum;
 
 #ifdef MACVERSION
-static boolean pushresourcefile (const tyfilespec *fs, char permission, short forktype) {
-	
-	/*
-	2006-01-30 creedon: added check for non-carbon OS and trying to access the data fork of a file, error message
-	
-	2005-09-02 creedon: added support for fork parameter, allows access to resources in data forks
 
-	2.1b8 dmb: call SetResLoad (false) before opening a resource fork to 
-	prevent all preload resources from being loaded into our heap
-	*/
-	
-	register OSErr errcode;
-#if TARGET_API_MAC_CARBON == 1
-	FSRef	myRef;
-#else
-	if (forktype == datafork) { // if we're not on carbon then trying to use the data fork for resources is an error
-		langerrormessage ("\x4A" "Can't open the data fork for use with resources on this version of the OS.");
-		return (false);
-		}
-#endif
+	static boolean pushresourcefile (const ptrfilespec fs, char permission, short forktype) {
+		
+		/*
+		2006-01-30 creedon: added check for non-carbon OS and trying to access the data fork of a file, error message
+		
+		2005-09-02 creedon: added support for fork parameter, allows access to resources in data forks
 
-#if TARGET_API_MAC_CARBON == 1
-
-	errcode = FSpMakeFSRef (fs, &myRef);
-	
-	if (!errcode) {
-	
+		2.1b8 dmb: call SetResLoad (false) before opening a resource fork to 
+		prevent all preload resources from being loaded into our heap
+		*/
+		
+		register OSErr errcode;
 		HFSUniStr255 fork;
 		
 		switch (forktype) {
@@ -648,7 +610,7 @@ static boolean pushresourcefile (const tyfilespec *fs, char permission, short fo
 				FSGetDataForkName (&fork);
 				break;
 			}
-#endif
+
 		oldrnum = CurResFile ();
 	
 		SetResLoad (false);
@@ -660,75 +622,61 @@ static boolean pushresourcefile (const tyfilespec *fs, char permission, short fo
 		and manifests. 
 		*/
 	
-#if TARGET_API_MAC_CARBON == 1
+		errcode = FSOpenResourceFile (&fs -> fsref, fork.length, fork.unicode, permission, &newrnum);
 
-		errcode = FSOpenResourceFile (&myRef, fork.length, fork.unicode, permission, &newrnum);
-#else
-		// kw 2005-12-17 - OS9 compliance
-		newrnum = FSpOpenResFile (fs, permission);
-
-#endif		
 		SetResLoad (true);
 
-#if TARGET_API_MAC_CARBON == 1
 		if (errcode != -1) /*opened OK*/
 			return (true);
-#else
-		if (newrnum != -1) /*opened OK*/
-			return (true);
-#endif
+
 		errcode = ResError ();
 
-#if TARGET_API_MAC_CARBON == 1
-		}
+		if (errcode != eofErr) { /*don't want an alert if there isn't a resource fork*/
+			
+			setfserrorparam ( fs ); /*in case error message takes a filename parameter*/
+			
+			oserror (errcode);
+			}
+		
+		return (false);
+		} /* pushresourcefile */
+
+	static boolean pushresourcefilereadonly (const ptrfilespec fs, short forktype) {
+		
+		/*
+		2005-09-02 creedon: added support for fork parameter, see resources.c: openresourcefile and pushresourcefile
+		*/ 
+		
+		return (pushresourcefile (fs, fsRdPerm, forktype));
+		} /*pushresourcefilereadonly*/
+
+
+	static boolean pushresourcefilereadwrite (const ptrfilespec fs, short forktype) {
+		
+		/*
+		2005-09-02 creedon: added support for fork parameter, see resources.c: openresourcefile and pushresourcefile
+		*/ 
+		
+		return (pushresourcefile (fs, fsRdWrPerm, forktype));
+		} /*pushresourcefilereadwrite*/
+
+
+	static boolean popresourcefile (void) {
+		
+		if ((newrnum == oldrnum) || (newrnum == filegetapplicationrnum ())) { /*don't close active resource fork!*/
+			
+			UpdateResFile (newrnum);
+			
+			UseResFile (oldrnum);
+			}
+		else
+			closeresourcefile (newrnum);
+		
+		return (true);
+		} /*popresourcefile*/
 #endif
 
-	if (errcode != eofErr) { /*don't want an alert if there isn't a resource fork*/
-		
-		setoserrorparam ((ptrstring) (*fs).name); /*in case error message takes a filename parameter*/
-		
-		oserror (errcode);
-		}
-	
-	return (false);
-	} /*pushresourcefile*/
-
-static boolean pushresourcefilereadonly (const tyfilespec *fs, short forktype) {
-	
-	/*
-	2005-09-02 creedon: added support for fork parameter, see resources.c: openresourcefile and pushresourcefile
-	*/ 
-	
-	return (pushresourcefile (fs, fsRdPerm, forktype));
-	} /*pushresourcefilereadonly*/
-
-
-static boolean pushresourcefilereadwrite (const tyfilespec *fs, short forktype) {
-	
-	/*
-	2005-09-02 creedon: added support for fork parameter, see resources.c: openresourcefile and pushresourcefile
-	*/ 
-	
-	return (pushresourcefile (fs, fsRdWrPerm, forktype));
-	} /*pushresourcefilereadwrite*/
-
-
-static boolean popresourcefile (void) {
-	
-	if ((newrnum == oldrnum) || (newrnum == filegetapplicationrnum ())) { /*don't close active resource fork!*/
-		
-		UpdateResFile (newrnum);
-		
-		UseResFile (oldrnum);
-		}
-	else
-		closeresourcefile (newrnum);
-	
-	return (true);
-	} /*popresourcefile*/
-#endif
-
-boolean loadresource (const tyfilespec *fs, short rnum, ResType type, short id, bigstring bsname, long sizedata, void *pdata, short forktype) {
+boolean loadresource (const ptrfilespec fs, short rnum, ResType type, short id, bigstring bsname, long sizedata, void *pdata, short forktype) {
 	
 	/*
 	the inverse of saveresource.  we load in the indicated type and id from
@@ -772,7 +720,7 @@ boolean loadresource (const tyfilespec *fs, short rnum, ResType type, short id, 
 
 
 #ifdef MACVERSION
-boolean loadresourcehandle (const tyfilespec *fs, ResType type, short id, bigstring bsname, Handle *hresource, short forktype) {
+boolean loadresourcehandle (const ptrfilespec fs, ResType type, short id, bigstring bsname, Handle *hresource, short forktype) {
 	
 	/*
 	load a resource into a handle.
@@ -820,7 +768,7 @@ boolean loadresourcehandle (const tyfilespec *fs, ResType type, short id, bigstr
 
 
 #ifdef MACVERSION
-boolean deleteresource (const tyfilespec *fs, ResType type, short id, bigstring bsname, short forkttype) {
+boolean deleteresource (const ptrfilespec fs, ResType type, short id, bigstring bsname, short forkttype) {
 	
 	/*
 	delete the resource specified by type, id or bsname
@@ -857,7 +805,7 @@ boolean deleteresource (const tyfilespec *fs, ResType type, short id, bigstring 
 
 
 #ifdef MACVERSION
-boolean getnumresourcetypes (const tyfilespec *fs, short *cttypes, short forktype) {
+boolean getnumresourcetypes (const ptrfilespec fs, short *cttypes, short forktype) {
 	
 	/*
 	2005-09-02 creedon: added support for fork parameter, see resources.c: openresourcefile and pushresourcefile
@@ -875,7 +823,7 @@ boolean getnumresourcetypes (const tyfilespec *fs, short *cttypes, short forktyp
 #endif
 
 #ifdef MACVERSION
-boolean getnthresourcetype (const tyfilespec *fs, short n, ResType *type, short forktype) {
+boolean getnthresourcetype (const ptrfilespec fs, short n, ResType *type, short forktype) {
 	
 	/*
 	2005-09-02 creedon: added support for fork parameter, see resources.c: openresourcefile and pushresourcefile
@@ -893,7 +841,7 @@ boolean getnthresourcetype (const tyfilespec *fs, short n, ResType *type, short 
 #endif
 
 #ifdef MACVERSION
-boolean getnumresources (const tyfilespec *fs, ResType type, short *ctresources, short forktype) {
+boolean getnumresources (const ptrfilespec fs, ResType type, short *ctresources, short forktype) {
 	
 	/*
 	2005-09-02 creedon: added support for fork parameter, see resources.c: openresourcefile and pushresourcefile
@@ -911,7 +859,7 @@ boolean getnumresources (const tyfilespec *fs, ResType type, short *ctresources,
 #endif
 
 #ifdef MACVERSION
-boolean getnthresourcehandle (const tyfilespec *fs, ResType type, short n, short *id, bigstring bsname, Handle *hresource, short forktype) {
+boolean getnthresourcehandle (const ptrfilespec fs, ResType type, short n, short *id, bigstring bsname, Handle *hresource, short forktype) {
 	
 	/*
 	load the nth resource of the given type into a handle.  also return the 
@@ -992,7 +940,7 @@ static boolean getemptyresourcehandle (ResType type, short id, bigstring bsname,
 
 
 #ifdef MACVERSION
-boolean getresourceattributes (const tyfilespec *fs, ResType type, short id, bigstring bsname, short *resattrs, short forktype) {
+boolean getresourceattributes (const ptrfilespec fs, ResType type, short id, bigstring bsname, short *resattrs, short forktype) {
 	
 	/*
 	2005-09-02 creedon: added support for fork parameter, see resources.c: openresourcefile and pushresourcefile
@@ -1021,7 +969,7 @@ boolean getresourceattributes (const tyfilespec *fs, ResType type, short id, big
 
 
 #ifdef MACVERSION
-boolean setresourceattributes (const tyfilespec *fs, ResType type, short id, bigstring bsname, short resattrs, short forktype) {
+boolean setresourceattributes (const ptrfilespec fs, ResType type, short id, bigstring bsname, short resattrs, short forktype) {
 	
 	/*
 	2005-09-02 creedon: added support for fork parameter, see resources.c: openresourcefile and pushresourcefile

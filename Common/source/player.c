@@ -68,6 +68,12 @@ PBS 08/08/00
 #include "lang.h"
 #include "langinternal.h"
 
+#ifdef MACVERSION
+
+	#include "MoreFilesX.h"
+	
+#endif
+
 
 #define moviestasktime 30
 
@@ -502,38 +508,32 @@ pascal Boolean playermoviecontrollereventfilter (MovieController mc, short actio
 	} /*playermoviecontrollereventfilter*/
 
 
-boolean playeropenmovieinwindow (FSSpec *f) {
+boolean playeropenmovieinwindow ( ptrfilespec f ) {
 	
-	/*
-	7.0b4 PBS: open a movie in the QuickTime Player window and display it.
-	If the window isn't already open, open it.
-	*/
+	//
+	// 2006-06-23 creedon: FSRef-zed
+	//
+	// 7.0b4 PBS: open a movie in the QuickTime Player window and display it.  If the window isn't already open, open it.
+	//
 	
 	short movieresref;
-	
 	OSErr err;
-	
 	hdlwindowinfo hinfo;
+	FSSpec fs;
+	
+	FSRefMakeFSSpec ( &( *f ).fsref, &fs );
 	
 	if (!findplayerwindow (&hinfo))
 		
-		playeropencommand (); /*If the Player window doesn't exist, create a new one.*/
+		playeropencommand (); // If the Player window doesn't exist, create a new one.
 		
 	getwindowinfo (playerwindow, &playerwindowinfo);
 		
-	playerdisposecurrentmovie (); /*make sure the current movie has been disposed*/
+	playerdisposecurrentmovie (); // make sure the current movie has been disposed
 	
-	#if TARGET_API_MAC_CARBON == 1
+	SetGWorld (GetWindowPort (playerwindow), nil);
 	
-		SetGWorld (GetWindowPort (playerwindow), nil);
-	
-	#else
-	
-		SetGWorld ((CGrafPtr) playerwindow, nil);
-	
-	#endif
-			
-	err = OpenMovieFile (f, &movieresref, fsRdPerm);
+	err = OpenMovieFile ( &fs, &movieresref, fsRdPerm);
 	
 	if (err != noErr)
 		
@@ -543,16 +543,8 @@ boolean playeropenmovieinwindow (FSSpec *f) {
 			
 	CloseMovieFile (movieresref);
 	
-	#if TARGET_API_MAC_CARBON == 1
-
-		SetMovieGWorld (currentmovie, GetWindowPort (playerwindow), nil);
+	SetMovieGWorld (currentmovie, GetWindowPort (playerwindow), nil);
 	
-	#else
-	
-		SetMovieGWorld (currentmovie, (CGrafPtr) playerwindow, nil);
-		
-	#endif
-		
 	GetMovieBox (currentmovie, &currentmovierect);
 	
 	OffsetRect (&currentmovierect, -currentmovierect.left, -currentmovierect.top);
@@ -569,7 +561,7 @@ boolean playeropenmovieinwindow (FSSpec *f) {
 	
 	(**playerwindowinfo).contentrect = currentmovierect;
 	
-	AlignWindow (playerwindow, false, nil, nil); /*position for optimal playback*/
+	AlignWindow (playerwindow, false, nil, nil); // position for optimal playback
 	
 	//MCDoAction (currentcontroller, mcActionSetKeysEnabled, (void *) true); /*enable keyboard input*/ /*No!*/
 	
@@ -578,7 +570,7 @@ boolean playeropenmovieinwindow (FSSpec *f) {
 	MCIdle (currentcontroller);
 		
 	return (true);	
-	} /*playeropenmovieinwindow*/
+	} // playeropenmovieinwindow
 
 
 boolean playerplaymovie (void) {

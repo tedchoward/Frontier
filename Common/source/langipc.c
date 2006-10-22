@@ -1628,52 +1628,50 @@ static boolean langipckillscriptverb (hdlverbrecord hverb) {
 
 static pascal boolean langipchandleverb (hdlverbrecord hverb) {
 	
-	/*
-	10/29/91 dmb: let traps have a chance at runscripttoken before executing 
-	built-in code
-	
-	4.1b7 dmb: allow a specific root file to be targed with the "subject" 
-	event attribute. Bug: right now, langipcfindhandler doesn't have this 
-	logic. So if an event doesn't have a handler in this root, landsystem7
-	will return eventnothandled even if the target root does have a handler.
-	*/
+	//
+	// 2006-07-25 creedon: FSRef-ized
+	//
+	// 4.1b7 dmb: allow a specific root file to be targed with the "subject" 
+	// event attribute. Bug: right now, langipcfindhandler doesn't have this 
+	// logic. So if an event doesn't have a handler in this root, landsystem7
+	// will return eventnothandled even if the target root does have a handler.
+	//
+	// 1991-10-29 dmb: let traps have a chance at runscripttoken before executing built-in code
+	//
 	
 	boolean fl;
 	boolean flfoundhandler;
 	AEDesc subject;
 	WindowPtr wroot = nil;
 	
-	oserror (noErr); /*make sure it's clear*/
+	oserror ( noErr ); // make sure it's clear
 	
-	if (landgetverbattr (hverb, 'subj', typeFSS, &subject) == noErr) { /*4.1b7 dmb*/
+	if ( landgetverbattr ( hverb, 'subj', typeFSS, &subject ) == noErr ) {
 		
-		#if TARGET_API_MAC_CARBON == 1 /*PBS 03/14/02: AE OS X fix.*/
+		FSSpec fs;
+		Handle h;
+		tyfilespec fst;
 		
-			FSSpec fs;
-			
-			Handle h;
-			
-			copydatahandle (&subject, &h);
-			
-			fs = **(FSSpec **) h;
-			
-			disposehandle (h);
+		clearbytes ( &fst, sizeof ( fst ) );
 		
-		#else
+		copydatahandle (&subject, &h);
 		
-			FSSpec fs = **(FSSpec **) subject.dataHandle;
+		fs = **(FSSpec **) h;
 		
-		#endif
+		disposehandle (h);
 		
-		wroot = shellfindfilewindow (&fs);
+		FSpMakeFSRef ( &fs, &fst.fsref );
+		
+		wroot = shellfindfilewindow ( &fst );
 		
 		if (wroot == nil) {
 		
 			// landreturnerror 
+			
 			}
 		else {
 			
-			(**hverb).landrefcon = 0; /*don't use trap script found in other root*/
+			(**hverb).landrefcon = 0; // don't use trap script found in other root
 			
 			shellpushglobals (wroot);
 			
@@ -1684,7 +1682,7 @@ static pascal boolean langipchandleverb (hdlverbrecord hverb) {
 	switch ((**hverb).verbtoken) {
 		
 		case idrunning:
-			fl = landreturnboolean (hverb, true); /*for old IACTK compatibility*/
+			fl = landreturnboolean (hverb, true); // for old IACTK compatibility
 			
 			break;
 		
@@ -1694,48 +1692,22 @@ static pascal boolean langipchandleverb (hdlverbrecord hverb) {
 			break;
 		
 		case runscripttoken:
-			fl = langipchandletrapverb (hverb, &flfoundhandler); /*let traps have a shot at it first*/
+			fl = langipchandletrapverb (hverb, &flfoundhandler); // let traps have a shot at it first
 			
 			if (!flfoundhandler)
 				fl = langipchandlerunscript (hverb);
 			
 			break;
 		
-		/*
-		case schedulescripttoken:
-			fl = langipchandleschedulescript (hverb);
-			
-			break;
-		*/
-		
-#ifndef PIKE
-	#if TARGET_API_MAC_OS8
-		case getmenuarraytoken:
-			fl = langipcgetmenuarrayverb (hverb);
-			
-			break;
-		
-		case getmenuhandletoken:
-			fl = langipcgetmenuhandleverb (hverb);
-			
-			break;
-		
-		case idrunmenuitem:
-			fl = langipcrunmenuitemverb (hverb);
-			
-			break;
-		
-		case killscripttoken:
-			fl = langipckillscriptverb (hverb);
-			
-			break;
-	#endif
-#endif
+		// case schedulescripttoken:
+		// 	fl = langipchandleschedulescript (hverb);
+		//	
+		// 	break;
 		
 		default:
 			fl = langipchandletrapverb (hverb, &flfoundhandler);
 			
-			if (!flfoundhandler) /*getoserror () == noErr*/
+			if (!flfoundhandler) // getoserror () == noErr
 				landreturnerror (hverb, undefinedverberror);
 			
 			break;
@@ -1755,7 +1727,8 @@ static pascal boolean langipchandleverb (hdlverbrecord hverb) {
 		}
 
 	return (fl);
-	} /*langipchandleverb*/
+	
+	} // langipchandleverb
 
 
 static pascal boolean langipcfindhandler (hdlverbrecord hverb) {
@@ -1893,13 +1866,15 @@ boolean langipcbrowsenetwork (hdltreenode hparam1, tyvaluerecord *vreturned) {
 
 static boolean getipcaddressvalue (hdltreenode hparam1, short pnum, tyipcaddress *ipcaddress) {
 	
-	/*
-	2/12/93 dmb: always use landglobals for find our own application id
-	
-	4/9/93 dmb: if the address parameter is zero, send to self
-	
-	5.0d19 dmb: handle 'psn ' binary address values
-	*/
+	//
+	// 2006-06-25 creedon: FSRef-ized
+	//
+	// 5.0d19 dmb: handle 'psn ' binary address values
+	//
+	// 1993-04-09 dmb: if the address parameter is zero, send to self
+	// 
+	// 1993-02-12 dmb: always use landglobals for find our own application id
+	//
 	
 	register tyipcaddress *padr = ipcaddress;
 	tyvaluerecord val;
@@ -2002,11 +1977,15 @@ static boolean getipcaddressvalue (hdltreenode hparam1, short pnum, tyipcaddress
 	
 	if (val.valuetype == filespecvaluetype) { /*4.1b7 dmb: send to another open root*/
 		
-		FSSpec fs = **val.data.filespecvalue;
+		tyfilespec fs = **val.data.filespecvalue;
 		
 		if (shellfindfilewindow (&fs) == nil) {
+		
+			bigstring bs;
 			
-			langparamerror (dbnotopenederror, fs.name);
+			getfsfile ( &fs, bs );
+			
+			langparamerror (dbnotopenederror, bs );
 			
 			return (false);
 			}
@@ -2866,9 +2845,9 @@ static boolean langipcbuildmessage (hdltreenode hparam1, short paramnum, tyipcme
 	
 	if (ipcaddress.flrootval) { /*4.1b7 dmb*/
 	
-		FSSpec fs = **ipcaddress.val.data.filespecvalue;
+		tyfilespec fs = **ipcaddress.val.data.filespecvalue;
 		
-		landsetverbattr (hv, 'subj', typeFSS, &fs, sizeof (fs));
+		landsetverbattr ( hv, 'subj', typeFSRef, &fs, sizeof ( fs ) );
 		}
 	
 	while (true) { /*pop off pairs of key+param combos*/
@@ -4131,13 +4110,24 @@ static pascal OSErr langipcopenapproutine (void) {
 	} /*langipcopenapproutine*/
 
 
-static pascal OSErr langipcopendocroutine (FSSpec *fs) {
+static pascal OSErr langipcopendocroutine ( FSSpec *fs ) {
+
+	//
+	// 2006-07-25 creedon: FSRef=ized
+	//
+
+	tyfilespec fst;
 	
-	if (!shellopenfile (fs, false, nil))
-		return (getoserror ());
+	clearbytes ( &fst, sizeof ( fst ) );
 	
-	return (noErr);
-	} /*langipcopendocroutine*/
+	FSpMakeFSRef ( fs, &fst.fsref );
+	
+	if ( ! shellopenfile ( &fst, false, nil ) )
+		return ( getoserror ( ) );
+	
+	return ( noErr );
+	
+	} // langipcopendocroutine
 
 
 static pascal OSErr langipcquitapproutine (void) {

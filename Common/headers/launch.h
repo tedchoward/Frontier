@@ -48,7 +48,7 @@ extern tylaunchcallbacks launchcallbacks;
 
 /*prototypes*/
 
-extern boolean launchapplication (const tyfilespec *, const tyfilespec *, boolean flbringtofront);
+extern boolean launchapplication (const ptrfilespec, const ptrfilespec, boolean flbringtofront);
 
 extern boolean findrunningapplication (OSType *, bigstring, typrocessid *);
 
@@ -60,7 +60,7 @@ extern short countapplications (void);
 
 extern boolean getnthapplication (short, bigstring);
 
-extern boolean getapplicationfilespec (bigstring, tyfilespec *);
+extern boolean getapplicationfilespec ( bigstring, ptrfilespec );
 
 extern boolean executeresource (ResType, short, bigstring);
 

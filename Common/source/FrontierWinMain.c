@@ -3108,7 +3108,7 @@ int CALLBACK WinMain (
 
 //#endif
 
-	#if (FRONTIERCOM == 1)
+#if (FRONTIERCOM == 1)
 		gcomServerInfo.hInstance = hInstance;
 		gcomServerInfo.hPrevInstance = hPrevInstance;
 		gcomServerInfo.lpCmdLine = lpCmdLine;
@@ -3174,7 +3174,7 @@ int CALLBACK WinMain (
     hInst = hInstance;
 	shellinstance = hInstance;
 
-    /* If this is the first instance of the app. register window classes */
+		/* If this is the first instance of the app. register window classes */
     if (!hPrevInstance) {
         if (!InitializeApplication ())
             return 0;

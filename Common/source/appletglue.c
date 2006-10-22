@@ -188,18 +188,20 @@ boolean emptyrect (Rect r) {
 	
 boolean assureappisrunning (OSType serverid, boolean flbringtofront) {
 	
-	/*
-	if the application whose creator id is serverid is running, return true.
-	
-	if not, we look for the application and try to launch it. we wait until it's 
-	actually running and ready to receive Apple Events.
-	*/
+	//
+	// 2006-06-23 creedon: replaced FSSpec with tyfilespec
+	//
+	// if the application whose creator id is serverid is running, return true.
+	//
+	// if not, we look for the application and try to launch it. we wait until it's actually running and ready to receive Apple
+	// Events.
+	//
 	
 	bigstring appname;
 	typrocessid psn;
-	FSSpec fs;
+	tyfilespec fs;
 	
-	if (findrunningapplication (&serverid, appname, &psn)) /*already running, nothing to do*/
+	if (findrunningapplication (&serverid, appname, &psn)) // already running, nothing to do
 		return (true);
 		
 	if (!findapplication (serverid, &fs))
@@ -209,7 +211,8 @@ boolean assureappisrunning (OSType serverid, boolean flbringtofront) {
 		return (false);
 		
 	return (true);
-	} /*assureappisrunning*/
+	
+	} // assureappisrunning
 	
 	
 boolean pushhandleonhandle (Handle hsource, Handle hdest) {

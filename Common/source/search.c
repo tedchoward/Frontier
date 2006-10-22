@@ -47,7 +47,7 @@ boolean isword (byte *ptext, long lentext, long pos, long len) {
 	boundaries.
 	*/
 	
-	#ifdef MACVERSION 
+	#ifdef MACVERSION
 	
 		OffsetTable offsets;
 		//Code change by Timothy Paustian Sunday, June 25, 2000 12:50:40 PM

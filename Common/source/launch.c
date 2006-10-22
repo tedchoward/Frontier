@@ -29,8 +29,11 @@
 #include "standard.h"
 
 #ifdef MACVERSION
-#include <land.h>
-#include "mac.h"
+
+	#include <land.h>
+	#include "mac.h"
+	#include "MoreFilesX.h"
+
 #endif
 
 #include "error.h"
@@ -52,7 +55,7 @@ typedef struct typrocessvisitinfo { /*2002-11-14 AR: for providing context to vi
 	short nthprocess;
 	ptrstring bsprocess;
 	typrocessid *psnprocess;
-	tyfilespec *fsprocess;
+	ptrfilespec fsprocess;
 	} typrocessvisitinfo;
 	
 typedef struct typrocessvisitinfo *typrocessvisitinfoptr;
@@ -72,25 +75,6 @@ typedef struct typrocessvisitinfo *typrocessvisitinfoptr;
 tylaunchcallbacks launchcallbacks = {nil};
 
 #define maxwait 120 /*never wait more than 2 seconds for a stransition to occur*/
-
-#ifdef flsystem6
-
-typedef struct system6launchparamblock {
-	StringPtr				name;
-	unsigned short			reserved1;
-	unsigned short			launchBlockID;
-	unsigned long			launchEPBLength;
-	unsigned short			launchFileFlags;
-	LaunchFlags				launchControlFlags;
-	unsigned short			launchVRefNum;
-} system6launchparamblock;
-
-#endif
-
-
-#ifdef MACVERSION
-typedef AppParameters **AppParametersHandle;
-#endif
 
 
 #ifdef WIN95VERSION
@@ -892,460 +876,197 @@ static boolean enumWinProcesses (WINPROCESSHEADER * listheader) {
 #endif
 
 #ifdef MACVERSION
-static OSErr getlaunchappparams (const tyfilespec *fsdoc, AppParametersHandle *appparams) {
+
+	static boolean system7apprunning (OSType *, bigstring, typrocessid *);
 	
-	/*
-	2.1a6 dmb: new feature, if bsdoc is the empty string, send ascr/noop event 
-	instead of aevt/odoc. this should result in no empty document / standard file 
-	dialog in most apps
-	*/
-	
-	AEDesc addrdesc;
-	AEDesc launchdesc;
-	AEDescList doclist;
-	AppleEvent event;
-	AEEventID eventid;
-	AEEventClass eventclass;
-	OSErr errcode;
-	AliasHandle halias;
-	AEDesc docdesc;
-	
-	if (!haveheapspace (0x0200)) /*512 bytes should be plenty to avoid lots of error checking*/
-		return (memFullErr);
-	
-	if (isemptystring ((*fsdoc).name)) {
-		
-		eventclass = 'ascr';
-		
-		eventid = 'noop';
-		
-		/*
-		eventid = kAEOpenApplication;
-		*/
+#endif
+
+#ifdef WIN95VERSION
+
+	static boolean systemWinLaunch (const ptrfilespec fsapp, const ptrfilespec fsdoc, boolean flbringtofront) {
+		char appname[258];
+		char commandline [514];
+		STARTUPINFO si;
+	//	PROCESS_INFORMATION pi;
+
+
+		copystring (fsname (fsapp), appname);
+
+		nullterminate (appname);
+
+		if (fsdoc != nil)
+			copystring (fsname (fsdoc), commandline);
+		else
+			setemptystring (commandline);
+
+		nullterminate (commandline);
+
+		si.cb = sizeof(STARTUPINFO);
+		si.lpReserved = NULL;
+		si.lpDesktop = NULL;
+		si.lpTitle = NULL;
+		si.dwFlags = 0;
+		si.cbReserved2 = 0;
+		si.lpReserved2 = NULL;
+	//	return (CreateProcess (stringbaseaddress (appname), stringbaseaddress (commandline), NULL, NULL, false, CREATE_DEFAULT_ERROR_MODE,
+	//					NULL, NULL, &si, &pi));
+
+		return (ShellExecute (NULL, "open", stringbaseaddress (appname), stringbaseaddress (commandline), "", SW_SHOWNORMAL) > (HINSTANCE)32); 
 		}
-	else {
 		
-		eventclass = kCoreEventClass;
+#endif
+
+
+boolean launchapplication ( const ptrfilespec fsapp, const ptrfilespec fsdoc, boolean flbringtofront ) {
+
+	//
+	// 2006-06-24 creedon: for Mac, FSRef-ized
+	//
+	
+	setfserrorparam ( fsapp ); // in case error message takes a filename parameter
+	
+	#ifdef MACVERSION
+	
+		LSLaunchFSRefSpec launchspec;
+		tyfilespec fsappt, fsdoct;
+		OSStatus status;
 		
-		eventid = kAEOpenDocuments;
+		if ( ! extendfilespec ( fsapp, &fsappt ) )
+			return ( false );
 		
-		errcode = NewAliasMinimal (fsdoc, &halias);
+		clearbytes ( &launchspec, longsizeof ( launchspec ) );
 		
-		if (errcode != noErr)
-			return (errcode);
-		}
-	
-	
-	#if TARGET_API_MAC_CARBON == 1 /*PBS 03/14/02: AE OS X fix.*/
-	
-		newdescnull (&addrdesc, typeNull);
-	
-	#else
-	
-		addrdesc.descriptorType = typeNull;
-	
-		addrdesc.dataHandle = nil;
+		launchspec.appRef = &fsappt.fsref;
+
+		if ( fsdoc != NULL ) {
+		
+			( void ) extendfilespec ( fsdoc, &fsdoct );
+
+			if ( FSRefValid ( &fsdoct.fsref ) ) {
+				FSRef fsa [ 1 ];
+				
+				launchspec.numDocs = 1;
+				
+				fsa [ 0 ] = fsdoct.fsref;
+				
+				launchspec.itemRefs = fsa;
+				
+				} // FSRefValid
+				
+			} // fsdoc
+			
+		if ( ! flbringtofront )
+			launchspec.launchFlags |= kLSLaunchDontSwitch;
+			
+		status = LSOpenFromRefSpec ( &launchspec, NULL );
+
+		if ( status == noErr )
+			return ( true );
+		
+		return ( false );
 	
 	#endif
+		
+	#ifdef WIN95VERSION
 	
-	AECreateAppleEvent (eventclass, eventid, &addrdesc, kAutoGenerateReturnID, kAnyTransactionID, &event);
+		return (systemWinLaunch (fsapp, fsdoc, flbringtofront));
+		
+	#endif
 	
-	if (eventid == kAEOpenDocuments) { /*need to add document list parameter*/
+	} // launchapplication
+
+
+#ifdef MACVERSION
+
+	static boolean visitprocesses (boolean (*visitroutine) (typrocessvisitinfoptr, ProcessInfoRec *), typrocessvisitinfoptr visitinfo) {
 		
-		AECreateList (nil, 0, false, &doclist); /*create list for the fsspec*/
+		ProcessInfoRec processinfo;
+		ProcessSerialNumber psn;
+		bigstring bsname;
+		FSSpec fss;
 		
-		//AEPutPtr (&doclist, 0, typeFSS, (Ptr) &fs, sizeof (fs)); /* put filespec on the list%/
-				
-		#if TARGET_API_MAC_CARBON == 1 /*PBS 03/14/02: AE OS X fix.*/
+		processinfo.processInfoLength = sizeof (processinfo);
 		
-			newdescwithhandle (&docdesc, typeAlias, (Handle) halias);
+		processinfo.processName = bsname; /*place to store process name*/
+		
+		processinfo.processAppSpec = &fss; /*place to store process filespec*/
+		
+		psn.highLongOfPSN = kNoProcess;
+		
+		psn.lowLongOfPSN = kNoProcess;
+		
+		while (GetNextProcess (&psn) == noErr) {
 			
-		#else
+			processinfo.processInfoLength = sizeof (ProcessInfoRec);
+			
+			if (GetProcessInformation (&psn, &processinfo) != noErr)
+				continue; /*keep going -- ignore error*/
+			
+			if (!(*visitroutine) (visitinfo, &processinfo))
+				return (false);
+			}
 		
-			docdesc.descriptorType = typeAlias;
+		return (true);
+		} /*visitprocesses*/
+	
+#endif
+
+#ifdef MACVERSION
+
+	static boolean matchprocess (bigstring bsprocess, ProcessInfoRec *processinfo) {
 		
-			docdesc.dataHandle = (Handle) halias;
+		//
+		// 2006-06-24 creedon: FSRef-ized
+		//
+		// 7.1b37 PBS: deal with .app extensions on OS X.
+		//
+		// 1992-10-02 dmb: if bsprocess is a string4, see if it matches the process id
+		//
+		// 1992-09-04 dmb: see if bsprocess is the name or full path of the given process
+		//
+		
+		bigstring bspath;
+		OSType id;
+		
+		if (stringfindchar (':', bsprocess)) { // it's a path
+		
+			tyfilespec fs;
+		
+			FSMakeFSRef ( ( *processinfo ).processAppSpec -> vRefNum, ( *processinfo ).processAppSpec -> parID, ( *processinfo ).processAppSpec -> name, &fs.fsref);
+			
+			if (!filespectopath ( &fs, bspath))
+				return (false);
+			
+			return (equalidentifiers (bsprocess, bspath));
+			}
+		
+		if (equalidentifiers (bsprocess, ( *processinfo ).processName))
+			return (true);
+		
+		#if TARGET_API_MAC_CARBON
+		
+			{
+			bigstring bsprocessminussuffix;
+			bigstring bssuffix;
+			
+			copystring (bsprocess, bsprocessminussuffix);
+			
+			if (pullstringsuffix (bsprocessminussuffix, bssuffix, '.')) // has suffix?
+				
+				if (equalidentifiers (bssuffix, "\papp")) // .app suffix?
+				
+					if (equalidentifiers (bsprocessminussuffix, ( *processinfo ).processName)) // match?
+						return (true);
+			}
 		
 		#endif
 		
-		AEPutDesc (&doclist, 0, &docdesc); /*put alias on the list*/
+		if (stringtoostype (bsprocess, &id))
+			return (id == ( *processinfo ).processSignature);
 		
-		AEDisposeDesc (&docdesc);
-		
-		AEPutParamDesc (&event, keyDirectObject, &doclist); /*put list on the event*/
-		
-		AEDisposeDesc (&doclist); /*dispose list*/
-		}
-	
-	errcode = AECoerceDesc (&event, typeAppParameters, &launchdesc); /*this is what Launch wants*/
-	
-	AEDisposeDesc (&event); /*we're done with it*/
-	
-	if (errcode != noErr) /*shouldn't fail, but...*/
-		return (errcode);
-	
-	#if TARGET_API_MAC_CARBON == 1 /*PBS 03/14/02: AE OS X fix.*/
-		
-		copydatahandle (&launchdesc, (Handle*) appparams);
-
-	#else
-	
-		*appparams = (AppParametersHandle) launchdesc.dataHandle;
-	
-	#endif
-	
-	return (noErr);
-	} /*getlaunchappparams*/
-#endif
-
-
-#ifdef MACVERSION
-static boolean system7apprunning (OSType *, bigstring, typrocessid *);
-#endif
-
-#ifdef MACVERSION
-static boolean system7launch (tyfilespec *fsapp, const tyfilespec *fsdoc, boolean flbringtofront) {
-	
-	/*
-	11/10/90 DW: comment out call to MakeFSSpec, the linker can't find it, wire
-	off routine.
-	
-	3/27/91 dmb: re-enabled routine.  no wonder file.launch didn't work!
-	
-	12/9/91 dmb: check for oserrors
-	
-	3/11/92 dmb: now accept bsdocument and set up launchAppParams
-	
-	8/13/92 dmb: test bsdocument for emptyness as well as nil
-	
-	9/4/92 dmb: wait for launch to happen
-	
-	2002-11-13 AR: Only append ".app" to the filename if there's enough room in the name string
-	*/
-	
-	LaunchParamBlockRec sys7lpb;
-	AppParametersHandle docparams = nil;
-	OSErr errcode;
-	long startticks;
-	
-	clearbytes (&sys7lpb, longsizeof (sys7lpb));
-	
-	#if TARGET_API_MAC_CARBON == 1 /*7.1b19 PBS: append ".app" to the filename if the file can't be found.*/
-		{
-		boolean flfolder = false;
-		
-		if (!fileexists (fsapp, &flfolder)) {
-
-			unsigned char appext[] = ("\x04" ".app");
-			const short oldlength = stringlength ((*fsapp).name);
-			const short newlength = oldlength + stringlength (appext);
-			const short maxlength = sizeof ((*fsapp).name) - 1;	/*minus one for length byte*/
-			
-			if (newlength <= maxlength) {
-
-				pushstring (appext, (*fsapp).name);
-							
-				if (!fileexists (fsapp, &flfolder)) {
-
-					setstringlength ((*fsapp).name, oldlength);	/*pop off the .app suffix*/
-
-					} /*if*/
-				} /*if*/
-			} /*if*/
-		}
-		/*
-		{
-		boolean flfolder = false;
-		short lenname = (*fsapp).name [0];
-		
-		if (!fileexists (fsapp, &flfolder)) {
-		
-			(*fsapp).name [0] = (*fsapp).name [0] + 4;
-			
-			(*fsapp).name [lenname + 1] = '.';
-			(*fsapp).name [lenname + 2] = 'a';
-			(*fsapp).name [lenname + 3] = 'p';
-			(*fsapp).name [lenname + 4] = 'p';
-			
-			if (!fileexists (fsapp, &flfolder)) {
-			
-				(*fsapp).name [0] = lenname; /%pop off the .app suffix%/
-				} /%if%/
-			} /%if%/
-		}
-		*/
-	#endif
-	
-	sys7lpb.launchAppSpec = (FSSpecPtr) fsapp;
-	
-	sys7lpb.launchBlockID = extendedBlock;
-	
-	sys7lpb.launchEPBLength = extendedBlockLen;
-	
-	sys7lpb.launchControlFlags = launchContinue | launchNoFileFlags;
-
-	if (!flbringtofront)
-		sys7lpb.launchControlFlags |= launchDontSwitch;
-	
-	if (fsdoc != nil) { /*set up docparam with launch event*/
-		
-		errcode = getlaunchappparams (fsdoc, &docparams);
-		
-		if (oserror (errcode))
-			return (false);
-		
-		setoserrorparam ((ptrstring) (*fsapp).name); /*restore*/
-		
-		lockhandle ((Handle) docparams);
-		
-		sys7lpb.launchAppParameters = *docparams;
-		}
-	
-	errcode = LaunchApplication (&sys7lpb);
-	
-	disposehandle ((Handle) docparams); /*checks for nil*/
-	
-	if ((fsdoc != nil) && isemptystring ((*fsdoc).name)) /*sent noop event*/
-		if (errcode == errAEEventNotHandled)
-			errcode = noErr;
-	
-	if (oserror (errcode))
 		return (false);
+		} // matchprocess
 	
-	startticks = gettickcount ();
-	
-	while (true) { /*wait for launch to happen*/
-		
-		OSType id = 0;
-		
-		if (!(*launchcallbacks.waitcallback) ())
-			return (false);
-		
-		if (system7apprunning (&id, (ptrstring) (*fsapp).name, nil))
-			return (true);
-		
-		if (gettickcount () - startticks > maxwait)
-			return (false);
-		}
-	} /*system7launch*/
-#endif
-
-#ifdef flsystem6
-
-static boolean system6launch (bigstring bsprogram) {
-	
-	system6launchparamblock sys6lpb;
-	bigstring bsname;
-	bigstring bsfolder;
-	register OSErr errcode;
-	WDPBRec wdpb;
-	CInfoPBRec cipb;
-	short vnum;
-	
-	clearbytes (&sys6lpb, longsizeof (sys6lpb));
-	
-	copystring (bsprogram, bsname);
-	
-	/*get the volume and directory ids of the path*/
-	
-	/*
-	if (!fileparsevolname (bsprogram, &vnum))
-		return (false);
-	*/
-	
-	folderfrompath (bsprogram, bsfolder);
-	
-	cipb.hFileInfo.ioNamePtr = bsfolder;
-	
-	cipb.hFileInfo.ioVRefNum = 0; /*vnum;*/
-	
-	cipb.hFileInfo.ioFDirIndex = 0;
-	
-	errcode = PBGetCatInfo (&cipb, false);
-	
-	if (oserror (errcode))
-		return (false);
-	
-	/*now open a working directory there*/
-	
-	wdpb.ioNamePtr = bsfolder;
-	
-	wdpb.ioVRefNum = 0;
-	
-	wdpb.ioWDProcID = 'ERIK';
-	
-	wdpb.ioWDDirID = cipb.hFileInfo.ioDirID;
-	
-	errcode = PBOpenWD (&wdpb, false);
-	
-	if (oserror (errcode))
-		return (false);
-	
-	vnum = wdpb.ioVRefNum;
-	
-	filefrompath (bsprogram, bsname);
-	
-	sys6lpb.launchFileFlags = cipb.hFileInfo.ioFlFndrInfo.fdFlags;
-	
-	/*make the (new) working directory the current one*/
-	
-	errcode = SetVol (nil, vnum);
-	
-	sys6lpb.name = bsname;
-	
-	sys6lpb.launchVRefNum = vnum;
-	
-	sys6lpb.launchBlockID = extendedBlock;
-	
-	sys6lpb.launchEPBLength = extendedBlockLen;
-	
-	sys6lpb.launchControlFlags = 0xC000;
-	
-	return (!oserror (LaunchApplication ((LaunchPBPtr) &sys6lpb)));
-	} /*system6launch*/
-
-#endif
-
-#ifdef WIN95VERSION
-static boolean systemWinLaunch (const tyfilespec *fsapp, const tyfilespec *fsdoc, boolean flbringtofront) {
-	char appname[258];
-	char commandline [514];
-	STARTUPINFO si;
-//	PROCESS_INFORMATION pi;
-
-
-	copystring (fsname (fsapp), appname);
-
-	nullterminate (appname);
-
-	if (fsdoc != nil)
-		copystring (fsname (fsdoc), commandline);
-	else
-		setemptystring (commandline);
-
-	nullterminate (commandline);
-
-	si.cb = sizeof(STARTUPINFO);
-	si.lpReserved = NULL;
-	si.lpDesktop = NULL;
-	si.lpTitle = NULL;
-	si.dwFlags = 0;
-	si.cbReserved2 = 0;
-	si.lpReserved2 = NULL;
-//	return (CreateProcess (stringbaseaddress (appname), stringbaseaddress (commandline), NULL, NULL, false, CREATE_DEFAULT_ERROR_MODE,
-//					NULL, NULL, &si, &pi));
-
-	return (ShellExecute (NULL, "open", stringbaseaddress (appname), stringbaseaddress (commandline), "", SW_SHOWNORMAL) > (HINSTANCE)32); 
-	}
-#endif
-
-boolean launchapplication (const tyfilespec *fsapp, const tyfilespec *fsdoc, boolean flbringtofront) {
-	
-	setoserrorparam ((ptrstring) fsname(fsapp)); /*in case error message takes a filename parameter*/
-	
-#ifdef MACVERSION
-	#ifdef flsystem6
-	
-	flsystem7 = (gSystemVersion >= 0x0700);
-	
-	if (flsystem7)
-		return (system7launch (bs, bsdocument, flbringtofront));
-	else
-		return (system6launch (bs));
-	
-	#else
-	
-	return (system7launch ((ptrfilespec) fsapp, fsdoc, flbringtofront));
-	
-	#endif
-#endif
-	
-#ifdef WIN95VERSION
-	return (systemWinLaunch (fsapp, fsdoc, flbringtofront));
-#endif
-	} /*launchapplication*/
-
-#ifdef MACVERSION
-static boolean visitprocesses (boolean (*visitroutine) (typrocessvisitinfoptr, ProcessInfoRec *), typrocessvisitinfoptr visitinfo) {
-	
-	ProcessInfoRec processinfo;
-	ProcessSerialNumber psn;
-	bigstring bsname;
-	FSSpec fss;
-	
-	processinfo.processInfoLength = sizeof (processinfo);
-	
-	processinfo.processName = bsname; /*place to store process name*/
-	
-	processinfo.processAppSpec = &fss; /*place to store process filespec*/
-	
-	psn.highLongOfPSN = kNoProcess;
-	
-	psn.lowLongOfPSN = kNoProcess;
-	
-	while (GetNextProcess (&psn) == noErr) {
-		
-	 	processinfo.processInfoLength = sizeof (ProcessInfoRec);
-	 	
-		if (GetProcessInformation (&psn, &processinfo) != noErr)
-			continue; /*keep going -- ignore error*/
-		
-		if (!(*visitroutine) (visitinfo, &processinfo))
-			return (false);
-		}
-	
-	return (true);
-	} /*visitprocesses*/
-#endif
-
-#ifdef MACVERSION
-static boolean matchprocess (bigstring bsprocess, ProcessInfoRec *processinfo) {
-	
-	/*
-	9/4/92 dmb: see if bsprocess is the name or full path of the given process
-	
-	10/2/92 dmb: if bsprocess is a string4, see if it matches the process id
-	
-	7.1b37 PBS: deal with .app extensions on OS X.
-	*/
-	
-	bigstring bspath;
-	OSType id;
-	
-	if (stringfindchar (':', bsprocess)) { /*it's a path*/
-		
-		if (!filespectopath (processinfo->processAppSpec, bspath))
-			return (false);
-		
-		return (equalidentifiers (bsprocess, bspath));
-		}
-	
-	if (equalidentifiers (bsprocess, processinfo->processName))
-		return (true);
-	
-	#if TARGET_API_MAC_CARBON
-	
-		{
-		bigstring bsprocessminussuffix;
-		bigstring bssuffix;
-		
-		copystring (bsprocess, bsprocessminussuffix);
-		
-		if (pullstringsuffix (bsprocessminussuffix, bssuffix, '.')) /*has suffix?*/
-			
-			if (equalidentifiers (bssuffix, "\papp")) /*.app suffix?*/
-			
-				if (equalidentifiers (bsprocessminussuffix, processinfo->processName)) /*match?*/
-					return (true);
-		}
-	
-	#endif
-	
-	if (stringtoostype (bsprocess, &id))
-		return (id == processinfo->processSignature);
-	
-	return (false);
-	} /*matchprocess*/
 #endif
 
 
@@ -1698,68 +1419,54 @@ boolean findrunningapplication (OSType *appid, bigstring appname, typrocessid *p
 
 
 #ifdef MACVERSION
-static boolean system7frontprogram (bigstring bsprogram, boolean flfullpath) {
-	
-	/*
-	10/3/91 dmb: if flfullpath is true, return the full path instead of the 
-	process name
-	*/
-	
-	ProcessInfoRec processinfo;
-	ProcessSerialNumber psn;
-	FSSpec fs;
-	
-	processinfo.processInfoLength = sizeof (processinfo);
-	
-	processinfo.processName = bsprogram; /*place to store process name*/
-	
-	processinfo.processAppSpec = &fs;
-	
-	if (oserror (GetFrontProcess (&psn)))
-		return (false);
-	
-	if (oserror (GetProcessInformation (&psn, &processinfo)))
-		return (false);
-	
-	if (flfullpath)
-		filespectopath (&fs, bsprogram);
-	
-	return (true);
-	} /*system7frontprogram*/
-#endif
 
-
-#ifdef  flsystem6
-
-static boolean system6frontprogram (bigstring bsprogram) {
+	static boolean system7frontprogram (bigstring bsprogram, boolean flfullpath) {
+		
+		//
+		// 2006-06-24 creedon: FSRef-ized
+		//
+		// 1991-10-03 dmb: if flfullpath is true, return the full path instead of the process name
+		//
+		
+		ProcessInfoRec processinfo;
+		ProcessSerialNumber psn;
+		FSSpec fs;
+		
+		processinfo.processInfoLength = sizeof (processinfo);
+		
+		processinfo.processName = bsprogram; // place to store process name
+		
+		processinfo.processAppSpec = &fs;
+		
+		if (oserror (GetFrontProcess (&psn)))
+			return (false);
+		
+		if (oserror (GetProcessInformation (&psn, &processinfo)))
+			return (false);
+		
+		if (flfullpath) {
+		
+			tyfilespec fst = { { { 0 } }, 0 };
+			
+			FSpMakeFSRef ( &fs, &fst.fsref );
+			
+			filespectopath (&fst, bsprogram);
+			
+			}
+		
+		return (true);
+		
+		} // system7frontprogram
 	
-	copystring ((ptrstring) CurApName, bsprogram);
-	
-	return (true);
-	} /*system6frontprogram*/
-
 #endif
 
 
 boolean getfrontapplication (bigstring bsprogram, boolean flfullpath) {
 
 #ifdef MACVERSION	
-	#ifdef flsystem6
-	
-		boolean flsystem7;
-		
-		flsystem7 = (macworld.systemVersion >= 0x0700);
-		
-		if (flsystem7)
-			return (system7frontprogram (bsprogram, flfullpath));
-		else
-			return (system6frontprogram (bsprogram));
-	
-	#else
-	
+
 		return (system7frontprogram (bsprogram, flfullpath));
 	
-	#endif
 #endif
 
 #ifdef WIN95VERSION
@@ -1917,180 +1624,194 @@ boolean getnthapplication (short n, bigstring bsprogram) {
 
 
 #ifdef MACVERSION
-static boolean getprocesspathvisit (typrocessvisitinfoptr visitinfo, ProcessInfoRec *processinfo) {
-	
-	/*
-	7/14/92 dmb: created
-	*/
-	
-	if (matchprocess (visitinfo->bsprocess, processinfo)) { /*found the process*/
+
+	static boolean getprocesspathvisit ( typrocessvisitinfoptr visitinfo, ProcessInfoRec *processinfo ) {
 		
-		*(visitinfo->fsprocess) = *(processinfo->processAppSpec);
+		//
+		// 2006-06-28 creedon: FSRef-ized
+		//
+		// 1992-07-14 dmb: created
+		//
 		
-		return (false); /*stop visiting*/
-		}
-	
-	return (true); /*keep visiting*/
-	} /*getprocesspathvisit*/
-#endif
-
-
-boolean getapplicationfilespec (bigstring bsprogram, tyfilespec *fs) {
-	
-	/*
-	5.0.2b21 dmb: clear unused fields on Win
-	
-	2000-06-09 Timothy Paustian: Changed because using SysEnvisons
-	and SysEnvRec is like Really old style. This was changed to Gestalt calls
-	with two new globals see mac.c initmacintosh.
-	
-	2002-11-14 AR: Switch from using globals to a local struct for providing
-	context to the getprocesspathvisit callback routine
-	
-	2004-10-26 aradke: New Carbon/Mach-O implementation for obtaining
-	a filespec to our application bundle, i.e. the Frontier.app "folder".
-	
-	2006-02-17 aradke: Clear filespec before doing our thing on Mac too,
-	so the caller won't crash if he ignores a false return value and
-	tries to access the filespec anyway. Our only caller with a non-nil
-	bsprogram currently is sys.getAppPath (shellsysverbs.c) and it does
-	exactly that.
-	*/
-
-#ifdef MACVERSION
-	typrocessvisitinfo info;
-	boolean flsystem7;
-	
-	clearbytes (fs, sizeof (*fs));	/* 2006-02-17 aradke */
-
-	flsystem7 = (gSystemVersion >= 0x0700);
-	
-	if (!flsystem7)
-		return (false);
-	
-	if (bsprogram == nil) { /*get path to this process*/
+		if ( matchprocess ( visitinfo -> bsprocess, processinfo ) ) { // found the process
 		
-		#if TARGET_RT_MAC_MACHO
-			CFBundleRef mybundleref;
-			CFURLRef myurlref;
-			FSRef myfsref;
-			boolean res;
-			OSErr err;
+			OSStatus status;
+		
+			status = GetProcessBundleLocation ( &( *processinfo ).processNumber, &( *visitinfo ).fsprocess -> fsref );
+		
+			return ( false ); // stop visiting
 			
-			mybundleref = CFBundleGetMainBundle();
-			
-			if (mybundleref == NULL)
-				return (false);
-			
-			myurlref = CFBundleCopyBundleURL(mybundleref);
-			
-			if (myurlref == NULL)
-				return (false);
-
-			res = CFURLGetFSRef(myurlref, &myfsref);
-			
-			CFRelease(myurlref);
-			
-			if (!res)
-				return (false);
-			
-			err = FSGetCatalogInfo(&myfsref, kFSCatInfoNone, NULL, NULL, fs, NULL);
-			
-			return (err == noErr);
-		#else
-			ProcessInfoRec processinfo;
-			ProcessSerialNumber psn;
-			
-			processinfo.processInfoLength = sizeof (processinfo);
-			
-			processinfo.processName = nil; /*place to store process name*/
-			
-			processinfo.processAppSpec = fs; /*place to store process filespec*/
-			
-			psn.highLongOfPSN = 0;
-			
-			psn.lowLongOfPSN = kCurrentProcess;
-			
-			if (GetProcessInformation (&psn, &processinfo) != noErr)
-				return (false);
-			
-			return (true);
-		#endif
-		}
-	
-	initprocessvisitinfo (&info);
-	
-	info.bsprocess = bsprogram; /*point to caller's storage*/
-	
-	info.fsprocess = fs; /*can be same storage as bsprogram -- or not*/
-	
-	return (!visitprocesses (&getprocesspathvisit, &info));
-#endif
-
-#ifdef WIN95VERSION
-	WINPROCESSHEADER listheader;
-	WINPROCESSINFO ** entry;
-	boolean res;
-	char curpath[256];
-	short len;
-//	OSVERSIONINFO osinfo;
-
-//	osinfo.dwOSVersionInfoSize = sizeof (OSVERSIONINFO);
-
-//	GetVersionEx (&osinfo);
-
-//	if (osinfo.dwPlatformId == VER_PLATFORM_WIN32_NT)
-
-	res = false;
-	
-	clearbytes (fs, sizeof (*fs));
-
-	if ((bsprogram == NULL) || (stringlength (bsprogram) == 0)) {
-
-		len = (short)GetModuleFileName (NULL, curpath, sizeof(curpath));
-
-		if (len > 0) {
-			curpath[len] = 0;  //ensure null termination
-			copyctopstring (curpath, fsname(fs));
-			res = true;
-			return (res);
 			}
-		}
-
-
-	enumWinProcesses (&listheader);
-
-	if ((bsprogram == NULL) || (stringlength (bsprogram) == 0)) {
-		entry = getprocessinfofrompid (&listheader, GetCurrentProcessId());
-		}
-	else
-		{
-		entry = getprocessinfofrommodname (&listheader, bsprogram);
-
-		if (entry == NULL)
-			entry = getprocessinfofromwintitle (&listheader, bsprogram);
-
-		if (entry == NULL)
-			entry = getprocessinfofromexepath (&listheader, bsprogram);
-		}
-
-	setstringlength (fsname(fs), 0);
-
-	if (entry != NULL) {
-		copystring ((**entry).ExeName, fsname(fs));
-		res = true;
-		}
-//	else {
-//		GetCurrentDirectory (256, curpath);
-//		strcat (curpath, "\\Frontier.exe");
-//		copyctopstring (curpath, fsname(fs));
-//		res = true;
-//		}
-
-	cleanProcessHeader (&listheader);
-	return (res);
+		
+		return ( true ); // keep visiting
+		
+		} // getprocesspathvisit
+		
 #endif
-	} /*getapplicationfilespec*/
+
+
+boolean getapplicationfilespec (bigstring bsprogram, ptrfilespec fs) {
+	
+	//
+	// 2006-06-18 creedon: for Mac, FSRef-ized
+	//
+	// 2006-02-17 aradke:	Clear filespec before doing our thing on Mac too, so the caller won't crash if he ignores a false
+	//				return value and tries to access the filespec anyway. Our only caller with a non-nil bsprogram
+	//				currently is sys.getAppPath (shellsysverbs.c) and it does exactly that.
+	//
+	// 5.0.2b21 dmb: clear unused fields on Win
+	//
+	// 2004-10-26 aradke:	New Carbon/Mach-O implementation for obtaining a filespec to our application bundle, i.e. the
+	//				Frontier.app "folder".
+	//
+	// 2002-11-14 AR:	Switch from using globals to a local struct for providing context to the getprocesspathvisit callback
+	//			routine
+	//
+	// 2000-06-09 Timothy Paustian:	Changed because using SysEnvisons and SysEnvRec is like Really old style. This was
+	//						changed to Gestalt calls with two new globals see mac.c initmacintosh.	
+	//
+
+	#ifdef MACVERSION
+	
+		typrocessvisitinfo info;
+		boolean flsystem7;
+		
+		clearbytes ( fs, sizeof ( *fs ) );
+
+		flsystem7 = (gSystemVersion >= 0x0700);
+		
+		if (!flsystem7)
+			return (false);
+		
+		if (bsprogram == nil) { // get path to this process
+			
+			#if TARGET_RT_MAC_MACHO
+			
+				CFBundleRef mybundleref;
+				CFURLRef myurlref;
+				boolean res;
+				
+				mybundleref = CFBundleGetMainBundle();
+				
+				if (mybundleref == NULL)
+					return (false);
+				
+				myurlref = CFBundleCopyBundleURL(mybundleref);
+				
+				if (myurlref == NULL)
+					return (false);
+
+				res = CFURLGetFSRef ( myurlref, &( *fs ).fsref );
+				
+				( void ) getfilespecparent ( fs );
+				
+				CFRelease(myurlref);
+				
+				if (!res)
+					return (false);
+				
+				return ( true );
+				
+			#else
+			
+				ProcessInfoRec processinfo;
+				ProcessSerialNumber psn;
+				
+				processinfo.processInfoLength = sizeof (processinfo);
+				
+				processinfo.processName = nil; // place to store process name
+				
+				processinfo.processAppSpec = fs; // place to store process filespec
+				
+				psn.highLongOfPSN = 0;
+				
+				psn.lowLongOfPSN = kCurrentProcess;
+				
+				if (GetProcessInformation (&psn, &processinfo) != noErr)
+					return (false);
+				
+				return (true);
+				
+			#endif
+			
+			}
+		
+		initprocessvisitinfo (&info);
+		
+		info.bsprocess = bsprogram; // point to caller's storage
+		
+		info.fsprocess = fs; // can be same storage as bsprogram -- or not
+		
+		return (!visitprocesses (&getprocesspathvisit, &info));
+		
+	#endif
+
+	#ifdef WIN95VERSION
+	
+		WINPROCESSHEADER listheader;
+		WINPROCESSINFO ** entry;
+		boolean res;
+		char curpath[256];
+		short len;
+	//	OSVERSIONINFO osinfo;
+
+	//	osinfo.dwOSVersionInfoSize = sizeof (OSVERSIONINFO);
+
+	//	GetVersionEx (&osinfo);
+
+	//	if (osinfo.dwPlatformId == VER_PLATFORM_WIN32_NT)
+
+		res = false;
+		
+		clearbytes (fs, sizeof (*fs));
+
+		if ((bsprogram == NULL) || (stringlength (bsprogram) == 0)) {
+
+			len = (short)GetModuleFileName (NULL, curpath, sizeof(curpath));
+
+			if (len > 0) {
+				curpath[len] = 0;  //ensure null termination
+				copyctopstring (curpath, fsname(fs));
+				res = true;
+				return (res);
+				}
+			}
+		
+		enumWinProcesses (&listheader);
+
+		if ((bsprogram == NULL) || (stringlength (bsprogram) == 0)) {
+			entry = getprocessinfofrompid (&listheader, GetCurrentProcessId());
+			}
+		else
+			{
+			entry = getprocessinfofrommodname (&listheader, bsprogram);
+
+			if (entry == NULL)
+				entry = getprocessinfofromwintitle (&listheader, bsprogram);
+
+			if (entry == NULL)
+				entry = getprocessinfofromexepath (&listheader, bsprogram);
+			}
+
+		setstringlength (fsname(fs), 0);
+
+		if (entry != NULL) {
+			copystring ((**entry).ExeName, fsname(fs));
+			res = true;
+			}
+	//	else {
+	//		GetCurrentDirectory (256, curpath);
+	//		strcat (curpath, "\\Frontier.exe");
+	//		copyctopstring (curpath, fsname(fs));
+	//		res = true;
+	//		}
+
+		cleanProcessHeader (&listheader);
+		return (res);
+		
+	#endif
+	
+	} // getapplicationfilespec
 
 
 boolean executeresource (ResType type, short id, bigstring bsname) {

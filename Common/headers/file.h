@@ -114,71 +114,72 @@ typedef enum tyfolderview {
 	} tyfolderview;
 
 
-typedef struct tyfileinfo { /*flattens interface for getting file information*/
+typedef struct tyfileinfo { // flattens interface for getting file information
 
-	OSErr errcode; /*if there was an error retrieving info about the file, this is the error number*/
+	OSErr errcode; // if there was an error retrieving info about the file, this is the error number
 	
-	short vnum; /*the volume that the file is on*/
+	short vnum; // the volume that the file is on
 	
-	long dirid; /*the folder that contains the file*/
+	long dirid; // the folder that contains the file
 	
-	boolean flfolder; /*true if it's a folder not a file*/
+	boolean flfolder; // true if it's a folder not a file
 	
-	boolean fllocked; /*true if the file is locked*/
+	boolean fllocked; // true if the file is locked
 	
-	boolean flbundle; /*true if the file has a BNDL resource*/
+	boolean flbundle; // true if the file has a BNDL resource
 	
-	boolean flbusy; /*true if the file is open in an application*/
+	boolean flbusy; // true if the file is open in an application
 	
-	boolean flalias; /*true if the file is an alias*/
+	boolean flalias; // true if the file is an alias
 	
-	boolean flinvisible;	/*true if the file is invisible*/
+	boolean flinvisible; // true if the file is invisible
 	
-	boolean flvolume; /*true if it's a disk volume*/
+	boolean flvolume; // true if it's a disk volume
 	
-	boolean flejectable; /*true if it's an ejectable volume*/
+	boolean flejectable; // true if it's an ejectable volume
 	
-	boolean flstationery; /*true if the file is a stationery pad*/
+	boolean flstationery; // true if the file is a stationery pad
 	
-	boolean flshared; /*true if the file can the file be shared*/
+	boolean flshared; // true if the file can the file be shared
 	
-	boolean flnamelocked; /*true if the file's name is locked*/
+	boolean flnamelocked; // true if the file's name is locked
 	
-	boolean flcustomicon; /*true if the file has a custom icon*/
+	boolean flcustomicon; // true if the file has a custom icon
 	
-	boolean flhardwarelock; /*for volumes, if true, the device is readonly*/
+	boolean flhardwarelock; // for volumes, if true, the device is readonly
 	
-	boolean flremotevolume; /*for volumes, if true, it's a remote volume, accessed over the network*/
+	boolean flremotevolume; // for volumes, if true, it's a remote volume, accessed over the network
 	
-	boolean flsystem; /*Windows "system" file attribute*/
+	boolean flsystem; // Windows "system" file attribute
 	
-	boolean flarchive; /*Windows "srchive" file attribute*/
+	boolean flarchive; // Windows "srchive" file attribute
 	
-	boolean flcompressed; /*Windows "compressed" file attribute*/
+	boolean flcompressed; // Windows "compressed" file attribute
 	
-	boolean fltemp; /*Windows "temp" file attribute*/
+	boolean fltemp; // Windows "temp" file attribute
 	
-	OSType filecreator, filetype; /*the creator ID and file type*/
+	OSType filecreator, filetype; // the creator ID and file type
 	
-	long timecreated, timemodified, timeaccessed; /*the creation and modification date for the file*/
+	long timecreated, timemodified, timeaccessed; // the creation and modification date for the file
 	
-	long sizedataforkhigh, sizedatafork, sizeresourcefork; /*the size of the file's two forks*/
+	unsigned long long sizedataforkhigh, sizedatafork, sizeresourcefork; // the size of the file's two forks
 	
-	short ixlabel; /*the file's label, as displayed in the Finder*/
+	short ixlabel; // the file's label, as displayed in the Finder
 	
-	Point iconposition; /*the position of the file's icon, when viewing by icon in Finder*/
+	Point iconposition; // the position of the file's icon, when viewing by icon in Finder
 	
-	unsigned short ctfiles; /*for folders, the number of files in the folder*/
+	unsigned long ctfiles; // for folders, the number of files in the folder
 	
-	unsigned short ctfolders; /*for volumes, the number of folders on the disk*/
+	unsigned long ctfolders; // for volumes, the number of folders on the disk
 	
-	tyfolderview folderview; /*for folders, view by name, by date, etc.*/
+	tyfolderview folderview; // for folders, view by name, by date, etc.
 	
-	unsigned long ctfreebytes; /*for volumes*/
+	unsigned long ctfreebytes; // for volumes
 	
-	unsigned long cttotalbytes; /*for volumes*/
+	unsigned long cttotalbytes; // for volumes
 	
-	unsigned long blocksize;
+	unsigned long blocksize; // for volumes
+	
 	} tyfileinfo;
 
 
@@ -186,17 +187,20 @@ extern boolean flsupportslargevolumes; /*6.1b15 AR: fileverbs.c*/
 
 
 /*prototypes*/
+
 #ifdef WIN95VERSION
+
 	typedef int (WINAPI * tyGetDiskFreeSpaceEx) (unsigned short *, ULARGE_INTEGER *, ULARGE_INTEGER *, ULARGE_INTEGER *);
 
 	extern tyGetDiskFreeSpaceEx adrGetDiskFreeSpaceEx;
 
 	extern void winsetfileinfo (WIN32_FIND_DATA * fileinfo, tyfileinfo *info);
 
-	extern boolean winfileerror (const tyfilespec *);
+	extern boolean winfileerror (const ptrfilespec );
+	
 #endif
 
-extern void setfserrorparam (const tyfilespec *);
+extern void setfserrorparam ( const ptrfilespec );
 
 extern boolean endswithpathsep (bigstring bs);
 
@@ -204,25 +208,19 @@ extern boolean cleanendoffilename (bigstring bs);
 
 extern boolean getmachinename (bigstring bsname);
 
-extern boolean equalfilespecs (const tyfilespec *, const tyfilespec *);
-
-extern boolean filegetinfo (const tyfilespec *fs, tyfileinfo *info); // 1/28/97 dmb for clay
-
-extern void filegetinfofrompb (CInfoPBRec *pb, tyfileinfo *info);
+extern boolean filegetinfo (const ptrfilespec, tyfileinfo *info); // 1/28/97 dmb for clay
 
 extern boolean filegetvolumeinfo (short vnum, tyfileinfo *info);
 
 extern boolean filegetvolumename (short vnum, bigstring volname);
 
-extern boolean getmacfileinfo (const tyfilespec *fs, CInfoPBRec *pb);
-
 extern boolean filemakespec (short vnum, long dirid, bigstring fname, ptrfilespec pfs);
 
-extern boolean filegetfilename (const tyfilespec *pfs, bigstring name); // 1/28/97 dmb end for clay
+extern boolean getfsfile (const ptrfilespec pfs, bigstring name); // 1/28/97 dmb end for clay
 
 extern void filenotfounderror (bigstring);
 
-extern boolean surefile (const tyfilespec *);
+extern boolean surefile (const ptrfilespec );
 
 extern boolean filegeteof (hdlfilenum, long *);
 
@@ -230,11 +228,7 @@ extern boolean fileseteof (hdlfilenum, long);
 
 extern boolean filesetposition (hdlfilenum, long);
 
-extern boolean filegetposition (hdlfilenum, long *);
-
 extern long filegetsize (hdlfilenum);
-
-extern boolean filetruncate (hdlfilenum);
 
 extern boolean filewrite (hdlfilenum, long, void *);
 
@@ -250,97 +244,91 @@ extern boolean filewritehandle (hdlfilenum, Handle);
 
 extern boolean filereadhandle (hdlfilenum, Handle *);
 
-#ifdef NEWFILESPECTYPE
-extern boolean fileparsevolname (bigstring, long *, bigstring);
-#else
-extern boolean fileparsevolname (bigstring, short *, bigstring);
-#endif
+extern boolean fileparsevolname (bigstring, ptrfilespec);
 
-extern boolean fileresolvealias (tyfilespec *);
+extern boolean fileresolvealias ( ptrfilespec );
 
 extern boolean filefrompath (bigstring, bigstring);
 
 extern boolean folderfrompath (bigstring, bigstring);
 
-extern boolean getfileparentfolder (const tyfilespec *, tyfilespec *);
+extern boolean getfileparentfolder (const ptrfilespec , ptrfilespec );
 
-extern boolean deletefile (const tyfilespec *);
+extern boolean deletefile ( const ptrfilespec );
 
-extern boolean renamefile (const tyfilespec *, bigstring);
+extern boolean renamefile (const ptrfilespec , bigstring);
 
-extern boolean movefile (const tyfilespec *, const tyfilespec *);
+extern boolean movefile (const ptrfilespec , const ptrfilespec );
 
-extern boolean lockfile (const tyfilespec *);
+extern boolean lockfile (const ptrfilespec );
 
-extern boolean unlockfile (const tyfilespec *);
+extern boolean unlockfile (const ptrfilespec );
 
-extern boolean newfolder (const tyfilespec *);
+extern boolean newfolder (const ptrfilespec );
 
-extern boolean newfile (const tyfilespec *, OSType, OSType);
+extern boolean newfile ( const ptrfilespec , OSType, OSType );
 
 extern void fileinit (void);
 
 extern void fileshutdown (void);
 
-extern boolean fileopenorcreate (const tyfilespec *, OSType, OSType, hdlfilenum *);
+extern boolean opennewfile ( ptrfilespec , OSType, OSType, hdlfilenum *);
 
-extern boolean opennewfile (const tyfilespec *, OSType, OSType, hdlfilenum *);
-
-extern boolean openfile (const tyfilespec *, hdlfilenum *, boolean);
+extern boolean openfile ( const ptrfilespec , hdlfilenum *, boolean );
 
 extern boolean closefile (hdlfilenum);
 
-extern boolean flushvolumechanges (const tyfilespec * fsspec, hdlfilenum fnum);
+extern boolean flushvolumechanges (const ptrfilespec  fsspec, hdlfilenum fnum);
 
 extern boolean getfullfilepath (bigstring);
 
-extern boolean foldertest (CInfoPBRec *);
+extern boolean foldertest ( FSRefParamPtr );
 
-extern boolean getfiletype (const tyfilespec *, OSType *);
+extern boolean foldertestcipbr ( CInfoPBRec * );
 
-extern boolean getfilecreator (const tyfilespec *, OSType *);
+extern boolean getfiletype (const ptrfilespec , OSType *);
 
-extern boolean fileexists (const tyfilespec *, boolean *);
+extern boolean getfilecreator (const ptrfilespec , OSType *);
 
-extern boolean filesize (const tyfilespec *, long *);
+extern boolean filesize (const ptrfilespec , long *);
 
-extern boolean fileisfolder (const tyfilespec *, boolean *);
+extern boolean fileisfolder ( const ptrfilespec , boolean * );
 
-extern boolean fileisvolume (const tyfilespec *);
+extern boolean fileisvolume (const ptrfilespec );
 
-extern boolean fileislocked (const tyfilespec *, boolean *);
+extern boolean fileislocked (const ptrfilespec , boolean *);
 
-extern boolean fileisbusy (const tyfilespec *, boolean *);
+extern boolean fileisbusy (const ptrfilespec , boolean *);
 
-extern boolean filehasbundle (const tyfilespec *, boolean *);
+extern boolean filehasbundle (const ptrfilespec , boolean *);
 
-extern boolean filesetbundle (const tyfilespec *, boolean);
+extern boolean filesetbundle (const ptrfilespec , boolean);
 
-extern boolean fileisalias (const tyfilespec *, boolean *);
+extern boolean fileisalias (const ptrfilespec , boolean *);
 
-extern boolean fileisvisible (const tyfilespec *, boolean *);
+extern boolean fileisvisible (const ptrfilespec , boolean *);
 
-extern boolean filesetvisible (const tyfilespec *, boolean);
+extern boolean filesetvisible (const ptrfilespec , boolean);
 
-extern boolean getfiledates (const tyfilespec *, unsigned long *, unsigned long *);
+extern boolean getfiledates (const ptrfilespec , unsigned long *, unsigned long *);
 
-extern boolean setfiledates (const tyfilespec *, unsigned long, unsigned long);
+extern boolean setfiledates (const ptrfilespec , unsigned long, unsigned long);
+	
+extern boolean getfilepos (const ptrfilespec , Point *);
 
-extern boolean getfilepos (const tyfilespec *, Point *);
+extern boolean setfilepos (const ptrfilespec , Point);
 
-extern boolean setfilepos (const tyfilespec *, Point);
+extern boolean setfilecreated (const ptrfilespec , long);
+	
+extern boolean setfilemodified (const ptrfilespec , long);
 
-extern boolean setfilecreated (const tyfilespec *, long);
+extern boolean setfiletype (const ptrfilespec , OSType);
 
-extern boolean setfilemodified (const tyfilespec *, long);
-
-extern boolean setfiletype (const tyfilespec *, OSType);
-
-extern boolean setfilecreator (const tyfilespec *, OSType);
+extern boolean setfilecreator (const ptrfilespec , OSType);
 
 extern boolean largefilebuffer (Handle *);
 
-extern boolean copyfile (const tyfilespec *, const tyfilespec *, boolean, boolean);
+extern boolean copyfile (const ptrfilespec , const ptrfilespec , boolean, boolean);
 
 extern short filegetapplicationvnum (void);
 
@@ -348,103 +336,210 @@ extern short filegetapplicationrnum (void);
 
 extern short filegetsystemvnum (void);
 
-extern boolean getspecialfolderpath (bigstring, bigstring, boolean, tyfilespec *);
+extern boolean getspecialfolderpath (bigstring, bigstring, boolean, ptrfilespec );
 
-extern boolean ejectvol (const tyfilespec *);
+extern boolean ejectvol (const ptrfilespec );
 
-extern boolean isejectable (const tyfilespec *, boolean *);
+extern boolean isejectable (const ptrfilespec , boolean *);
 
-extern boolean langgetextendedvolumeinfo (const tyfilespec *, double *, double *);
+extern boolean langgetextendedvolumeinfo (const ptrfilespec , double *, double *);
 
-extern boolean getfreespace (const tyfilespec *, long *);
+extern boolean getfreespace (const ptrfilespec , long *);
 
-extern boolean getvolumesize (const tyfilespec *, long *);
+extern boolean getvolumesize (const ptrfilespec , long *);
 
-extern boolean getvolumeblocksize (const tyfilespec *, long *);
+extern boolean getvolumeblocksize (const ptrfilespec , long *);
 
-extern boolean filesonvolume (const tyfilespec *, long *);
+extern boolean filesonvolume (const ptrfilespec , long *);
 
-extern boolean foldersonvolume (const tyfilespec *, long *);
+extern boolean foldersonvolume (const ptrfilespec , long *);
 
-extern boolean isvolumelocked (const tyfilespec *, boolean *);
+extern boolean isvolumelocked (const ptrfilespec , boolean *);
 
-extern boolean volumecreated (const tyfilespec *, unsigned long *);
+extern boolean volumecreated (const ptrfilespec , unsigned long *);
 
-extern boolean lockvolume (const tyfilespec *, boolean);
+extern boolean lockvolume (const ptrfilespec , boolean);
 
-extern boolean unmountvolume (const tyfilespec *);
+extern boolean unmountvolume (const ptrfilespec );
 
 extern boolean drivenumtovolname (short, bigstring);
 
-extern boolean findapplication (OSType, tyfilespec *);
+extern boolean findapplication (OSType, ptrfilespec );
 
-extern boolean getfilecomment (const tyfilespec *, bigstring);
+extern boolean getfilecomment (const ptrfilespec , bigstring);
 
-extern boolean setfilecomment (const tyfilespec *, bigstring);
+extern boolean setfilecomment (const ptrfilespec , bigstring);
 
-extern boolean getfilelabel (const tyfilespec *, bigstring);
+extern boolean getfilelabel (const ptrfilespec , bigstring);
 
-extern boolean setfilelabel (const tyfilespec *, bigstring);
+extern boolean setfilelabel (const ptrfilespec , bigstring);
 
 extern boolean mountvolume (bigstring, bigstring, bigstring);
 
 extern boolean initfile (void);
 
 
-extern boolean fiffindinfile (const tyfilespec *, bigstring, long *); /*findinfile.c*/
+extern boolean fiffindinfile (const ptrfilespec , bigstring, long *); /*findinfile.c*/
 
-extern boolean fifcomparefiles (const tyfilespec *, const tyfilespec *);
+extern boolean fifcomparefiles (const ptrfilespec , const ptrfilespec );
 
-extern boolean fifcharcounter (const tyfilespec *, char, long *);
+extern boolean fifcharcounter (const ptrfilespec , char, long *);
 
-extern boolean fifclosefile (const tyfilespec *);
+extern boolean fifclosefile (const ptrfilespec );
 
 extern boolean fifcloseallfiles (long);
 
-extern boolean fifopenfile (const tyfilespec *, long);
+extern boolean fifopenfile (const ptrfilespec , long);
 
-extern boolean fifendoffile (const tyfilespec *);
+extern boolean fifendoffile (const ptrfilespec );
 
-extern boolean fifreadline (const tyfilespec *, Handle *);
+extern boolean fifreadline (const ptrfilespec , Handle *);
 
-extern boolean fifwriteline (const tyfilespec *, Handle);
+extern boolean fifwriteline (const ptrfilespec , Handle);
 
-extern boolean fifreadhandle (const tyfilespec *, long, Handle *);
+extern boolean fifreadhandle (const ptrfilespec , long, Handle *);
 
-extern boolean fifreadfile (const tyfilespec *fs, Handle *x);	/* 2006-04-11 aradke */
+extern boolean fifreadfile (const ptrfilespec fs, Handle *x);	/* 2006-04-11 aradke */
 
-extern boolean fifwritehandle (const tyfilespec *, Handle);
+extern boolean fifwritehandle (const ptrfilespec , Handle);
 
-extern boolean fifsetposition (const tyfilespec *, long);
+extern boolean fifsetposition (const ptrfilespec , long);
 
-extern boolean fifgetposition (const tyfilespec *, long *);
+extern boolean fifgetposition (const ptrfilespec , long *);
 
-extern boolean fifsetendoffile (const tyfilespec *fs, long eof);
+extern boolean fifsetendoffile (const ptrfilespec fs, long eof);
 
-extern boolean fifgetendoffile (const tyfilespec *fs, long *eof);
+extern boolean fifgetendoffile (const ptrfilespec fs, long *eof);
+
+
+#pragma mark === file.c ===
+
+extern boolean equalfilespecs ( const ptrfilespec, const ptrfilespec );
+
+extern boolean filegetposition (hdlfilenum, long *);
+
+extern boolean fileexists ( const ptrfilespec , boolean * );
+
+extern boolean filetruncate (hdlfilenum);
+
+#ifdef MACVERSION
+
+	extern boolean CFStringRefToHFSUniStr255 ( CFStringRef, HFSUniStr255 * ); // 2006-06-07 creedon
+	
+	extern boolean CFStringRefToStr255 ( CFStringRef, StringPtr ); // 2006-06-07 creedon
+	
+	extern boolean FSRefGetNameStr255 ( const FSRef *, Str255 ); // 2006-06-07 creedon
+	
+	extern boolean HFSUniStr255ToStr255 ( ConstHFSUniStr255Param, StringPtr ); // 2006-06-07 creedon
+	
+	extern boolean bigstringToHFSUniStr255 ( const bigstring, HFSUniStr255 * ); // 2006-06-07 creedon
+	
+	extern void filegetinfofrompb ( FSRefParam *, tyfileinfo * );
+
+	extern void filegetinfofrompbcipbr ( CInfoPBRec *, tyfileinfo * );
+
+	extern boolean getmacfileinfo ( const ptrfilespec, FSRefParamPtr, FSCatalogInfoPtr );
+
+	extern boolean getmacfileinfocipbr ( const FSSpecPtr, CInfoPBRec * );
+
+/* 2006-08-11 creedon: cribbed from MoreFilesX.c and modded to work with Str255 */
+
+OSErr
+HFSNameGetUnicodeName255 (
+	ConstStr255Param hfsName,
+	TextEncoding textEncodingHint,
+	HFSUniStr255 *unicodeName);
+
+/*
+	The HFSNameGetUnicodeName function converts a Pascal Str255 string to an
+	Unicode HFSUniStr255 string using the same routines as the File Manager.
+	
+	hfsName				--> The Pascal string to convert.
+	textEncodingHint	--> The text encoding hint used for the conversion.
+							You can pass kTextEncodingUnknown to use the
+							"default" textEncodingHint.
+	unicodeName			<-- The Unicode string.
+	
+	__________
+	
+	Also see:	HFSNameGetUnicodeName in MoreFilesX.c
+	
+*/
+
+#endif
+
+
+#pragma mark === filedialog.c ===
+
+extern boolean sfdialog (tysfverb, bigstring, ptrsftypelist, ptrfilespec , OSType); /* 2005-10-06 creedon - added OSType */
+
+extern boolean initfiledialog (void);
+
+#ifdef MACVERSION
+
+	//Code change by Timothy Paustian Tuesday, June 20, 2000 2:22:02 PM
+	//Nav services code for Frontier.
+	
+	extern OSErr	TimsPutFile( bigstring, Str255, StandardFileReply *, OSType );
+
+	extern OSErr	TimsGetFolderOrVolume(bigstring prompt, SInt16 dialogType, StandardFileReply * outReply);
+
+	extern pascal void		NavEventProc(NavEventCallbackMessage callBackSelector, 
+					    NavCBRecPtr callBackParms, 
+					    NavCallBackUserData callBackUD);
+
+	extern OSErr getafile (bigstring prompt, ptrsftypelist filetypes, StandardFileReply * outReply, OSType); /* 2005-09-23 creedon */ 
+
+#endif
+                        
+#endif
+
+
+#pragma mark === filemp3.c ===
+
+boolean getmp3info (const ptrfilespec , long *, long *, long *, long *, boolean *);
+
+
+#pragma mark === fileops.c ===
+
+extern boolean extendfilespec ( const ptrfilespec, ptrfilespec ); // 2006-06-23 creedon
+
+extern boolean getfilespecparent ( ptrfilespec ); // 2006-06-17 creedon
+
+extern boolean setfilelabelindex (const ptrfilespec , short, boolean); // 2006-04-23 creedon */
+
+extern short getfilelabelindex (const ptrfilespec , short *); // 2006-04-23 creedon */
+
+#ifdef MACVERSION
+
+	extern OSStatus GetApplicationIconRef ( const ProcessSerialNumber * , const FSSpec* , IconRef * ); // 2006-06-04 creedon
+
+	extern OSStatus LSIsApplication( const FSRef *, Boolean *, Boolean * ); // 2006-05-25
+
+#endif // MACVERSION
 
 
 #pragma mark === filepath.c ===
  
- extern boolean directorytopath (long, short, bigstring);
+ extern boolean directorytopath ( const ptrfilespec, bigstring);
 
 extern boolean volumerefnumtopath (short, bigstring);
 
-extern boolean filesetdefaultpath (const tyfilespec *);
+extern boolean filesetdefaultpath ( const ptrfilespec );
 
-extern boolean filegetdefaultpath (tyfilespec *);
+extern boolean filegetdefaultpath (ptrfilespec );
 
-extern boolean filespectopath (const tyfilespec *, bigstring);
+extern boolean filespectopath (const ptrfilespec , bigstring);
 
-extern boolean pathtofilespec (bigstring, tyfilespec *);
+extern boolean pathtofilespec ( bigstring, ptrfilespec );
 
-extern boolean filegetpath (const tyfilespec *, bigstring);
+extern boolean filegetpath (const ptrfilespec , bigstring);
 
-extern boolean setfsfile (tyfilespec *, bigstring);
+extern boolean setfsfile (ptrfilespec , bigstring);
 
-extern boolean getfsfile (const tyfilespec *, bigstring);
+extern boolean getfsfile (const ptrfilespec , bigstring);
 
-extern boolean getfsvolume (const tyfilespec *, long *);
+extern boolean getfsvolume (const ptrfilespec, long *);
 
 extern void initfsdefault (void); /* 2005-07-18 creedon */
 
@@ -456,40 +551,4 @@ extern void initfsdefault (void); /* 2005-07-18 creedon */
 extern boolean filegetprogramversion (bigstring);
 
 extern boolean filestart (void); /*6.1b15 AR*/
-
-
-#pragma mark === filedialog.c ===
-
-extern boolean sfdialog (tysfverb, bigstring, ptrsftypelist, tyfilespec *, OSType); /* 2005-10-06 creedon - added OSType */
-
-extern boolean initfiledialog (void);
-
-#ifdef MACVERSION
-	//Code change by Timothy Paustian Tuesday, June 20, 2000 2:22:02 PM
-	//Nav services code for Frontier.
-	extern OSErr	TimsPutFile(bigstring prompt, Str255 fileName, StandardFileReply * outReply);
-
-	extern OSErr	TimsGetFolderOrVolume(bigstring prompt, SInt16 dialogType, StandardFileReply * outReply);
-
-	extern pascal void		NavEventProc(NavEventCallbackMessage callBackSelector, 
-	                        NavCBRecPtr callBackParms, 
-	                        NavCallBackUserData callBackUD);
-
-
-	extern OSErr getafile (bigstring prompt, ptrsftypelist filetypes, StandardFileReply * outReply, OSType); /* 2005-09-23 creedon */ 
-
-#endif
-                        
-#endif
-
-#pragma mark === filemp3.c ===
-
-boolean getmp3info (const tyfilespec *, long *, long *, long *, long *, boolean *);
-
-
-#pragma mark === fileops.c ===
-
-extern short getfilelabelindex (const tyfilespec *, short *); /* 2006-04-23 creedon */
-
-extern boolean setfilelabelindex (const tyfilespec *, short, boolean); /* 2006-04-23 creedon */
 

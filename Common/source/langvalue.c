@@ -58,6 +58,12 @@
 #include "timedate.h"
 #include "byteorder.h"	/* 2006-04-08 aradke: endianness conversion macros */
 
+#ifdef MACVERSION
+
+	#include "MoreFilesX.h"
+
+#endif
+
 
 
 boolean flparamerrorenabled = true;
@@ -86,7 +92,6 @@ typedef struct tyfastflagsvaluerecord {
 	
 	tyvaluedata data;
 	} tyfastflagsvaluerecord;
-
 
 
 boolean langsymbolreference (hdlhashtable htable, bigstring bs, tyvaluerecord *val, hdlhashnode * hnode) {
@@ -224,7 +229,7 @@ boolean setlongvalue (long x, tyvaluerecord *val) {
 
 
 boolean setdatevalue (unsigned long x, tyvaluerecord *val) {
-	
+
 	/*
 	set val to be a the date value x.  can't fail.
 	*/
@@ -653,7 +658,7 @@ boolean setdoublevalue (double x, tyvaluerecord *val) {
 	} /*setdoublevalue*/
 
 
-boolean setfilespecvalue (tyfilespec *x, tyvaluerecord *val) {
+boolean setfilespecvalue (ptrfilespec x, tyvaluerecord *val) {
 	
 	/*
 	turn val into a filespec value, allocated in the heap.
@@ -1906,12 +1911,13 @@ static boolean getbinarynumber (Handle x, long *n) {
 
 boolean coercetoboolean (tyvaluerecord *v) {
 	
-	/*
-	2/7/92 dmb: binary to boolean is now true when non-empty, except when 
-	it's the size of a boolean.
-	
-	2.1b4 dmb: handle filespec values
-	*/
+	//
+	// 2006-06-24 creedon: for Mac, FSRef-ized
+	//
+	// 2.1b4 dmb: handle filespec values
+	//
+	// 1992-02-07 dmb: binary to boolean is now true when non-empty, except when it's the size of a boolean.
+	//
 	
 	register boolean fl;
 	
@@ -1990,16 +1996,17 @@ boolean coercetoboolean (tyvaluerecord *v) {
 			}
 		
 		case filespecvaluetype: {
+		
 			bigstring bs;
 
-			filegetfilename(*(*v).data.filespecvalue, bs); // 3/7/97 dmb
+			getfsfile ( *( *v ).data.filespecvalue, bs ); // 3/7/97 dmb
 
-			fl = !isemptystring (bs);
-			}
-	//		fl = !isemptystring ((**(*v).data.filespecvalue).name);
+			fl = ! isemptystring (bs);
 			
 			break;
 		
+			}
+			
 		case listvaluetype:
 		case recordvaluetype:
 			return (coercelistvalue (v, booleanvaluetype));
@@ -3003,36 +3010,35 @@ static void decode (bigstring bs) {
 
 boolean coercetofilespec (tyvaluerecord *v) {
 	
-	/*
-	2.1b2 dmb: don't enforce any particular size when coercing from binary; 
-	filespecs are now variable-length
-	
-	2.1b3 dmb: coerce zero to nil filespec
-	
-	2.1b12 dmb: changed string->filespec error message to be filenotfounderror
-	*/
+	//
+	// 2006-06-24 creedon: for Mac, FSRef-ized
+	//
+	// 2.1b12 dmb: changed string->filespec error message to be filenotfounderror
+	//
+	// 2.1b3 dmb: coerce zero to nil filespec
+	//
+	// 2.1b2 dmb: don't enforce any particular size when coercing from binary; filespecs are now variable-length
+	//
 	
 	bigstring bs;
 	byte fileurl [] = "\x08" "file:///";
 	tyfilespec fs;
 	
+	clearbytes ( &fs, sizeof ( fs ) );
+	
 	switch ((*v).valuetype) {
 		
 		case filespecvaluetype:
-			return (true);
+			return ( true );
 		
 		case novaluetype:
 			if (flinhibitnilcoercion)
 				return (false);
 			
-			clearbytes (&fs, sizeof (fs));
-			
 			break;
 		
 		case longvaluetype:
-			if ((*v).data.longvalue == 0)
-				clearbytes (&fs, sizeof (fs));
-			else
+			if ( (*v).data.longvalue != 0)
 				langcoerceerror (v, filespecvaluetype);
 			
 			break;
@@ -3128,15 +3134,15 @@ static void  bigvaltostring (tyvaluerecord *v, bigstring bs) {
 
 boolean coercetostring (tyvaluerecord *val) {
 	
-	/*
-	8/10/92 dmb: added flcoerceexternaltostring flag to prevent external-to-string 
-	coercion except when explicitly requested by stringfunc in langverbs.c
-	
-	2.1b3 dmb: don't ignore return value from objspectostring
-	
-	4.1b4 dmb: if flcoerceexternaltostring is not enabled, create a 
-	reasonable display string for externals
-	*/
+	//
+	// 2006-06-24 creedon: for Mac, FSRef-ized
+	//
+	// 4.1b4 dmb: if flcoerceexternaltostring is not enabled, create a reasonable display string for externals
+	//
+	// 2.1b3 dmb: don't ignore return value from objspectostring
+	//
+	// 1992-08-10 dmb: added flcoerceexternaltostring flag to prevent external-to-string coercion except when explicitly requested by stringfunc in langverbs.c
+	//
 	
 	register tyvaluerecord *v = val;
 	bigstring bs;
@@ -3262,25 +3268,12 @@ boolean coercetostring (tyvaluerecord *val) {
 		
 		case filespecvaluetype: {
 
-			tyfilespec fs;
-			
-			#if TARGET_API_MAC_CARBON == 1
-			
-				fs.vRefNum = (**(*v).data.filespecvalue).vRefNum;
-		
-				fs.parID = (**(*v).data.filespecvalue).parID;
-		
-				copystring ((**(*v).data.filespecvalue).name, fs.name);
-				
-			#else
-			
-				fs = **(*v).data.filespecvalue;
-						
-			#endif
-			
-			filespectopath (&fs, bs);
+			tyfilespec fs = **(*v).data.filespecvalue;
+					
+			filespectopath ( &fs, bs );
 			
 			break;
+			
 			}
 		
 		case binaryvaluetype:
@@ -5191,25 +5184,14 @@ boolean getostypevalue (hdltreenode hfirst, short pnum, OSType *typeval) {
 	} /*getostypevalue*/
 
 
-boolean getfilespecvalue (hdltreenode hfirst, short pnum, tyfilespec *fsval) {
+boolean getfilespecvalue ( hdltreenode hfirst, short pnum, ptrfilespec fsval ) {
 	
 	tyvaluerecord val;
 	
 	if (!getfilespecparam (hfirst, pnum, &val))
 		return (false);
 		
-	#if TARGET_API_MAC_CARBON == 1
-	
-		(*fsval).vRefNum = (**val.data.filespecvalue).vRefNum;
-		(*fsval).parID = (**val.data.filespecvalue).parID;
-		
-		copystring ((**val.data.filespecvalue).name, (*fsval).name);
-	
-	#else
-
-		*fsval = **val.data.filespecvalue;
-	
-	#endif
+	*fsval = **val.data.filespecvalue;
 	
 	return (true);
 	} /*getfilespecvalue*/
@@ -8742,19 +8724,23 @@ static boolean builtinvalue (tyfunctype token, hdltreenode hparam1, tyvaluerecor
 		
 		case unpackfunc:
 			return (langunpackverb (hp1, v));
-#if isFrontier && (MACVERSION || RABNOTIMPEMENTED)
-		case appleeventfunc:
-			return (langipcmessage (hp1, normalmsg, v));
-		
-		case findereventfunc:
-			return (langipcmessage (hp1, noreplymsg, v));
-		
-		case complexeventfunc:
-			return (langipccomplexmessage (hp1, v));
-		
-		case tableeventfunc:
-			return (langipctablemessage (hp1, v));
-#endif		
+			
+		#if isFrontier && (MACVERSION || RABNOTIMPEMENTED)
+
+			case appleeventfunc:
+				return (langipcmessage (hp1, normalmsg, v));
+			
+			case findereventfunc:
+				return (langipcmessage (hp1, noreplymsg, v));
+			
+			case complexeventfunc:
+				return (langipccomplexmessage (hp1, v));
+			
+			case tableeventfunc:
+				return (langipctablemessage (hp1, v));
+			
+		#endif	
+
 		case objspecfunc:
 			flnextparamislast = true;
 			
@@ -8763,22 +8749,23 @@ static boolean builtinvalue (tyfunctype token, hdltreenode hparam1, tyvaluerecor
 		case setobjspecfunc:
 			return (setobjspecverb (hp1, v));
 		
-#ifdef MACVERSION
-		case gestaltfunc: {
-			OSType selector;
-			long result;
-			
-			flnextparamislast = true;
-			
-			if (!getostypevalue (hp1, 1, &selector))
-				return (false);
-			
-			if (!gestalt (selector, &result))
-				result = -1;
-			
-			return (setlongvalue (result, v));
-			}
-#endif
+		#ifdef MACVERSION
+
+			case gestaltfunc: {
+				OSType selector;
+				long result;
+				
+				flnextparamislast = true;
+				
+				if (!getostypevalue (hp1, 1, &selector))
+					return (false);
+				
+				if (!gestalt (selector, &result))
+					result = -1;
+				
+				return (setlongvalue (result, v));
+				}
+		#endif
 			
 		case syscrashfunc: {
 			

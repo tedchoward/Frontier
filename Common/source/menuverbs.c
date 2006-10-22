@@ -52,6 +52,11 @@
 #include "cancoon.h"
 #include "kernelverbdefs.h"
 
+#ifdef MACVERSION
+
+	#include "MoreFilesX.h"
+
+#endif
 
 
 #define menustringlist 166
@@ -792,9 +797,11 @@ boolean menuwindowopen (hdlexternalvariable hvariable, hdlwindowinfo *hinfo) {
 
 boolean menuedit (hdlexternalvariable hvariable, hdlwindowinfo hparent, ptrfilespec fs, bigstring bstitle, rectparam rzoom) {
 	
-	/*
-	5.0d19 dmb: set flwindowopen; use locals, not menu globals.
-	*/
+	//
+	// 2006-09-16 creedon: on Mac, set window proxy icon
+	//
+	// 5.0d19 dmb: set flwindowopen; use locals, not menu globals.
+	//
 	
 	register hdlmenuvariable hv = (hdlmenuvariable) hvariable;
 	hdlmenurecord hm;
@@ -813,22 +820,31 @@ boolean menuedit (hdlexternalvariable hvariable, hdlwindowinfo hparent, ptrfiles
 			}
 		}
 		
-	if (!menuverbinmemory (hv)) /*error swapping menurecord into memory*/
+	if (!menuverbinmemory (hv)) // error swapping menurecord into memory
 		return (false);
 		
 	hm = (hdlmenurecord) (**hv).variabledata;
 	
-	rwindow = (**hm).menuwindowrect; /*window comes up where it was last time*/
+	rwindow = (**hm).menuwindowrect; // window comes up where it was last time
 	
 	if (!newchildwindow (idmenueditorconfig, hparent, &rwindow, rzoom, bstitle, &w)) 
 		return (false);
 	
 	getwindowinfo (w, &hi);
 	
-	(**hi).hdata = (Handle) hm; /*link data into shell's structure*/
+	(**hi).hdata = (Handle) hm; // link data into shell's structure
 	
-	if (fs != nil)
+	if ( fs != nil ) {
+	
 		(**hi).fspec = *fs;
+		
+		#ifdef MACVERSION
+		
+			if ( FSRefValid ( &( *fs ).fsref ) && ( *fs ).path == NULL )
+				SetWindowProxyCreatorAndType ( w, 'LAND', 'FTmb', kOnSystemDisk );
+		#endif
+		
+		}
 	
 	shellpushglobals (w);
 	
@@ -841,10 +857,11 @@ boolean menuedit (hdlexternalvariable hvariable, hdlwindowinfo hparent, ptrfiles
 	if ((**hm).fldirty)
 		shellsetwindowchanges (hi, true);
 	
-	windowzoom (w); /*show the window to the user*/
+	windowzoom (w); // show the window to the user
 	
 	return (true);
-	} /*menuedit*/
+	
+	} // menuedit
 
 
 static boolean menudisposevariable (hdlexternalvariable hvariable, boolean fldisk) {

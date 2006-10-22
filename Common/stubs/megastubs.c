@@ -627,10 +627,10 @@ Boolean EmptyRgn (hdlregion rgn) {
 
 
 /*
-extern boolean getfiletype (const tyfilespec *, OSType *);
-extern boolean fileresolvealias (tyfilespec *);
-extern boolean sfdialog (tysfverb, bigstring, ptrsftypelist, tyfilespec *);
-extern boolean getapplicationfilespec (bigstring, tyfilespec *);
+extern boolean getfiletype (const ptrfilespec , OSType *);
+extern boolean fileresolvealias (ptrfilespec );
+extern boolean sfdialog (tysfverb, bigstring, ptrsftypelist, ptrfilespec );
+extern boolean getapplicationfilespec (bigstring, ptrfilespec );
 */
 
 boolean initmacintosh ()

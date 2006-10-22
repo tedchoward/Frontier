@@ -28,7 +28,7 @@
 #include "frontier.h"
 #include "standard.h"
 
-#ifdef MACVERSION 
+#ifdef MACVERSION
 #include <land.h>
 #define wsprintf sprintf
 #endif
@@ -386,20 +386,21 @@ boolean sysos (tyvaluerecord *v) { //6.1d1 AR: needed in langhtml.c
 
 static boolean sysfunctionvalue (short token, hdltreenode hparam1, tyvaluerecord *vreturned, bigstring bserror) {
 	
-	/*
-	2/12/92 dmb: do partialeventloop on systemtask & bringapptofrontfunc
-	
-	5/20/92 dmb: do processyield directly on systemtaskfunc
-	
-	8/11/92 dmb: make apprunningfunc accept a string or an ostype
-	
-	1/18/93 dmb: in systemtaskfunc, don't call processyield directly; use langbackgroundtask
-
-	5.0b12 dmb: in systemtaskfunc, set flresting to false to make sure we don't slow
-	down too much
-	
-	5.0b16 dmb: undo that change. it affect performance adversely if many threads do it.
-	*/
+	//
+	// 2006-06-28 creedon: for Mac, FSRef-ized
+	//
+	// 5.0b16 dmb: undo that change. it affect performance adversely if many threads do it.
+	//
+	// 5.0b12 dmb: in systemtaskfunc, set flresting to false to make sure we don't slow down too much
+	//
+	// 1/18/93 dmb: in systemtaskfunc, don't call processyield directly; use langbackgroundtask
+	//
+	// 8/11/92 dmb: make apprunningfunc accept a string or an ostype
+	//
+	// 5/20/92 dmb: do processyield directly on systemtaskfunc
+	//
+	// 2/12/92 dmb: do partialeventloop on systemtask & bringapptofrontfunc
+	//
 	
 	register tyvaluerecord *v = vreturned;
 	
@@ -437,12 +438,19 @@ static boolean sysfunctionvalue (short token, hdltreenode hparam1, tyvaluerecord
 			return (true);
 		
 		case browsenetworkfunc:
+		
 			#ifdef MACVERSION
+			
 				return (langipcbrowsenetwork (hparam1, v));
+				
 			#endif
+			
 			#ifdef WIN95VERSION
-			#pragma message ("WIN95: browsenetworkfunc - not yet implemented!")
+			
+				#pragma message ("WIN95: browsenetworkfunc - not yet implemented!")
+			
 				break;
+				
 			#endif
 
 		case apprunningfunc: {
@@ -533,13 +541,15 @@ static boolean sysfunctionvalue (short token, hdltreenode hparam1, tyvaluerecord
 			
 			flnextparamislast = true;
 			
-			if (!getstringvalue (hparam1, 1, bs))
-				return (false);
+			if ( ! getstringvalue ( hparam1, 1, bs ) )
+				return ( false );
 			
-			if (!getapplicationfilespec (bs, &fs))	/* 2006-02-17 aradke: initializes fs even if it fails */
+			if ( ! getapplicationfilespec ( bs, &fs ) ) // 2006-02-17 aradke: initializes fs even if it fails
 				setemptystring (bs);
 			
-			return (setfilespecvalue (&fs, v));
+			( void ) getfilespecparent ( &fs );
+				
+			return ( setfilespecvalue ( &fs, v ) );
 			}
 		
 		case memavailfunc:
@@ -904,6 +914,7 @@ static boolean frontierfunctionvalue (short token, hdltreenode hparam1, tyvaluer
 				return (false);
 			
 			return (setfilespecvalue (&programfspec, v));
+			
 			}
 		
 		case filepathfunc: {
@@ -1642,7 +1653,7 @@ static boolean threadfunctionvalue (short token, hdltreenode hparam1, tyvaluerec
 
 
 boolean sysinitverbs (void) {
-	
+
 	getapplicationfilespec (nil, &programfspec);
 	
 	launchcallbacks.waitcallback = &shellsysverbwaitroutine;
@@ -1663,8 +1674,6 @@ boolean sysinitverbs (void) {
 		return (false);
 	
 	return (true);
-	} /*sysinitverbs*/
-
-
-
+	
+	} // sysinitverbs
 

@@ -608,9 +608,10 @@ resource 'EFP#' (idstringverbs, "string") {
 };
 
 
-resource 'EFP#' (idfileverbs, "file") {
+resource 'EFP#' ( idfileverbs, "file" ) {
 	
 	{
+	
 	"file", false, {
 		
 		"created",
@@ -694,10 +695,12 @@ resource 'EFP#' (idfileverbs, "file") {
 		"freespaceonvolumedouble",
 		"volumesizedouble",
 		"getmp3info",
-		"readwholefile",			/* 2006-04-11 aradke */
-		"getLabelIndex",			/* 2006-04-23 creedon */
-		"setLabelIndex",			/* 2006-04-23 creedon */
-		"getLabelNames"			/* 2006-04-23 creedon */
+		"readwholefile",			// 2006-04-11 aradke
+		"getLabelIndex",			// 2006-04-23 creedon
+		"setLabelIndex",			// 2006-04-23 creedon
+		"getLabelNames",			// 2006-04-23 creedon 
+		"getPosixPath"			// 2006-10-07 creedon
+		
 		}
 	}
 };

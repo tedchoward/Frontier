@@ -50,13 +50,10 @@
 
 #ifdef MACVERSION
 
-	#if TARGET_API_MAC_CARBON
-		#include "MoreFilesX.h"
-	#else
-		pascal OSErr XGetVInfo(short volReference, StringPtr volName, short *vRefNum, UInt64 *freeBytes,
-			UInt64 *totalBytes);
-	#endif
-	
+	#include "MoreFilesX.h"
+	#include "FSCopyObject.h"
+	#include <sys/param.h> // 2006-08-11 creedon
+
 	#ifdef flcomponent
 		#include "SetUpA5.h"
 	#endif
@@ -133,19 +130,33 @@ static OSType specialfolders [] = {
 typedef struct tyfileinfo tyvolinfo;
 
 
-void setfserrorparam (const tyfilespec *fs) {
+void setfserrorparam ( const ptrfilespec fs ) {
+
+	//
+	// 2006-07-05 creedon; for Mac, FSRef-ized
+	//
 	
-	/*
-	bigstring bs;
+	#ifdef MACVERSION
 	
-	if (!filespectopath (fs, bs))
-		copystring ((ptrstring) (*fs).name, bs);
+		bigstring bs;
+		
+		if ( ( *fs ).path != NULL )
+			CFStringRefToStr255 ( ( *fs ).path, bs );
+		else
+			if ( FSRefValid ( &( *fs ).fsref ) )
+				FSRefGetNameStr255 ( &( *fs ).fsref, bs );
+		
+		setoserrorparam ( bs );
+		
+	#endif
+
+	#ifdef WIN95VERSION
 	
-	setoserrorparam (bs);
-	*/
+		setoserrorparam ((ptrstring) fsname (fs));
 	
-	setoserrorparam ((ptrstring) fsname (fs));
-	} /*setfserrorparam*/
+	#endif
+	
+	} // setfserrorparam
 
 
 boolean endswithpathsep (bigstring bs) {
@@ -183,14 +194,28 @@ boolean cleanendoffilename (bigstring bs) {
 
 boolean getmachinename (bigstring bsname) {
 
+	//
+	// 2006-05-15 creedon: fix to work on Mac OS X
+	//
+
 	boolean fl;
 	
+	#ifdef MACVERSION
+	
+		fl = CFStringGetPascalString (CSCopyMachineName (), bsname, sizeof (bigstring), kCFStringEncodingMacRoman);
+
+		if (!fl)
+			setemptystring (bsname);
+			
+	#endif
+
 	#ifdef WIN95VERSION
+	
 		DWORD len;
 
-		len = sizeof(bigstring) - 2;
+		len = sizeof (bigstring) - 2;
 
-		fl = GetComputerName (stringbaseaddress(bsname), &len);
+		fl = GetComputerName (stringbaseaddress (bsname), &len);
 
 		if (fl)
 			setstringlength (bsname, len);
@@ -198,107 +223,140 @@ boolean getmachinename (bigstring bsname) {
 			setemptystring (bsname);
 	#endif
 	
-	#ifdef MACVERSION
-		StringHandle hstring = GetString (-16413);
-		
-		fl = hstring != nil;
-		
-		if (fl)
-			texthandletostring ((Handle) hstring, bsname);
-		else
-			setemptystring (bsname);
-	#endif
-
 	return (fl);
-	} /*getmachinename*/
+	
+	} // getmachinename
 
 
 #ifdef MACVERSION
-boolean foldertest (CInfoPBRec *pb) {
-	
+
+	boolean foldertest ( FSRefParamPtr pb ) {
+		
+		//
+		// return true if pb holds info describing a folder.
+		//
+		// 2006-06-25 creedon: FSRef-ized
+		//
+		// 1996-04-26 dmb: use mask, not BitTst (a toolbox call)
+		//
+		
+		// return (BitTst (&pb->dirInfo.ioFlAttrib, 3));
+
+		return ( ( pb -> catInfo -> nodeFlags & kFSNodeIsDirectoryMask ) != 0 );
+		
+		} // foldertest
+
+
+	boolean foldertestcipbr (CInfoPBRec *pb) {
+		
+		/*
+		return true if pb holds info describing a folder.
+		
+		4/26/96 dmb: use mask, not BitTst (a toolbox call)
+		*/
+		
+		return ( ( pb -> dirInfo.ioFlAttrib & kioFlAttribDirMask ) != 0 );
+		
+		} // foldertest
+
+
 	/*
-	return true if pb holds info describing a folder.
-	
-	4/26/96 dmb: use mask, not BitTst (a toolbox call)
+	static void filebeachball (void) {
+		
+		//
+		roll the beachball cursor if there is one.
+		//
+		
+		if (beachballcursor ())
+			rollbeachball ();
+		} // filebeachball
 	*/
-	
-	/*
-	return (BitTst (&pb->dirInfo.ioFlAttrib, 3));
-	*/
-	return ((pb->dirInfo.ioFlAttrib & ioDirMask) != 0);
-	} /*foldertest*/
+
+	boolean getmacfileinfo ( const ptrfilespec fs, FSRefParamPtr pb, FSCatalogInfoPtr catinfo ) {
+		
+		/* 
+		2.1b2 dmb: new fsspec-based version
+		*/
+		
+		OSErr err;
+		
+		setfserrorparam ( fs ); // in case error message takes a filename parameter
+		
+		clearbytes ( pb, sizeof ( *pb ) );
+		clearbytes ( catinfo, sizeof ( *catinfo ) );
+		
+		( *pb ).catInfo = catinfo;
+		
+		( *pb ).ref = &( *fs ).fsref;
+		( *pb ).whichInfo = kFSCatInfoGettableInfo;
+		
+		err = PBGetCatalogInfoSync ( pb );
+		
+		return ( ! oserror ( err ) );
+		} /* getmacfileinfo */
 
 
-static void filebeachball (void) {
-	
-	/*
-	roll the beachball cursor if there is one.
-	*/
-	
-	if (beachballcursor ())
-		rollbeachball ();
-	} /*filebeachball*/
-	
-
-boolean getmacfileinfo (const tyfilespec *fs, CInfoPBRec *pb) {
-	
-	/* 
-	2.1b2 dmb: new fsspec-based version
-	*/
-	
-	setoserrorparam ((ptrstring) (*fs).name); /*in case error message takes a filename parameter*/
-	
-	clearbytes (pb, sizeof (*pb));
-	
-	(*pb).hFileInfo.ioNamePtr = (StringPtr) (*fs).name;
-	
-	(*pb).hFileInfo.ioVRefNum = (*fs).vRefNum;
-	
-	(*pb).hFileInfo.ioDirID = (*fs).parID;
-	
-	return (!oserror (PBGetCatInfoSync (pb)));
-	} /*getmacfileinfo*/
+	boolean getmacfileinfocipbr (const FSSpecPtr fs, CInfoPBRec *pb) {
+		
+		/* 
+		2.1b2 dmb: new fsspec-based version
+		*/
+		
+		setoserrorparam ((ptrstring) (*fs).name); /*in case error message takes a filename parameter*/
+		
+		clearbytes (pb, sizeof (*pb));
+		
+		(*pb).hFileInfo.ioNamePtr = (StringPtr) (*fs).name;
+		
+		(*pb).hFileInfo.ioVRefNum = (*fs).vRefNum;
+		
+		(*pb).hFileInfo.ioDirID = (*fs).parID;
+		
+		return (!oserror (PBGetCatInfoSync (pb)));
+		} /*getmacfileinfo*/
 
 
-static boolean setmacfileinfo (const tyfilespec *fs, CInfoPBRec *pb) {
-	
-	/* 
-	2.1b2 dmb: new fsspec-based version
-	*/
-	
-	setoserrorparam ((ptrstring) (*fs).name); /*in case error message takes a filename parameter*/
-	
-	(*pb).hFileInfo.ioNamePtr = (StringPtr) (*fs).name;
-	
-	(*pb).hFileInfo.ioVRefNum = (*fs).vRefNum;
-	
-	(*pb).hFileInfo.ioDirID = (*fs).parID;
-	
-	return (!oserror (PBSetCatInfoSync (pb)));
-	} /*setmacfileinfo*/
+	static boolean setmacfileinfo ( const ptrfilespec fs, FSRefParam *pb ) {
+		
+		/* 
+		2.1b2 dmb: new fsspec-based version
+		*/
+		
+		setfserrorparam ( fs ); /*in case error message takes a filename parameter*/
+		
+		( *pb ).ref = &( *fs ).fsref;
+		( *pb ).whichInfo = kFSCatInfoSettableInfo;
+
+		return ( ! oserror ( PBSetCatalogInfoSync ( pb ) ) );
+		} /* setmacfileinfo */
 
 
-static boolean touchparentfolder (const tyfilespec *fs) {
-	
-	/*
-	touch the file date of the parent folder of fs
-	*/
-	
-	FSSpec fsfolder;
-	
-	if (FSMakeFSSpec ((*fs).vRefNum, (*fs).parID, nil, &fsfolder) != noErr)
-		return (false);
-	
-	setfilemodified (&fsfolder, timenow ());
-	
-	return (true);
-	} /*touchparentfolder*/
+	static boolean touchparentfolder ( const ptrfilespec fs ) {
+		
+		//
+		// touch the file date of the parent folder of fs
+		//
+		// 2006-06-18 creedon: FSRef-ized
+		//
+		
+		tyfilespec fsfolder = { { { 0 } }, 0 };
+		
+		if ( FSGetCatalogInfo ( &( *fs ).fsref, kFSCatInfoNone, NULL, NULL, NULL, &fsfolder.fsref ) != noErr )
+			return (false);
+		
+		setfilemodified ( &fsfolder, timenow ( ) );
+		
+		return (true);
+		
+		} // touchparentfolder
+
+
 #endif
 
 
 #ifdef WIN95VERSION
 
-boolean winfileerror (const tyfilespec *fs) {
+boolean winfileerror (const ptrfilespec fs) {
 	
 	DWORD err = GetLastError ();
 
@@ -311,301 +369,444 @@ boolean winfileerror (const tyfilespec *fs) {
 
 #ifdef MACVERSION // 1/29/97 dmb: adopt applet toolkit version
 
-static boolean getinfofromvolpb (const HVolumeParam *pb, tyfileinfo *info) {
-	
-	/*
-	dmb 9/21/93: for a volume, dirid should be fsRtParID, not fsRtDirID.
-	*/
-	
-	short drivenum;
-	#if !TARGET_API_MAC_CARBON
-	QHdrPtr dqtop;
-	QElemPtr dqelem;
-	#endif
+	static boolean getinfofromvolpb ( const FSVolumeInfoParamPtr pb, tyfileinfo *info ) {
+		
+		//
+		// 2006-10-17 creedon: FSRef-ized
+		//
+		// 1993-09-21 dmb: for a volume, dirid should be fsRtParID, not fsRtDirID.
+		//
+		
+		short drivenum;
+		
+		clearbytes ( info, sizeof ( tyfileinfo ) );
+		
+		( *info ).vnum = (*pb).ioVRefNum;
+		
+		( *info ).dirid = fsRtParID;
+		
+		( *info ).flvolume = true;
+		
+		( *info ).flfolder = true;
+		
+		/* date time */ {
+		
+			CFAbsoluteTime oCFTime;
+			OSStatus status;
+			
+			 status = UCConvertUTCDateTimeToCFAbsoluteTime ( &( *( *pb ).volumeInfo ).createDate, &oCFTime );
+			 
+			 status = UCConvertCFAbsoluteTimeToSeconds ( oCFTime, &( *info ).timecreated );
 
-	
-	clearbytes (info, sizeof (tyfileinfo));
-	
-	(*info).vnum = (*pb).ioVRefNum;
-	
-	(*info).dirid = fsRtParID; /*fsRtDirID*/
-	
-	(*info).flvolume = true;
-	
-	(*info).flfolder = true;
-	
-	(*info).timecreated = (*pb).ioVCrDate;
-	
-	(*info).timemodified = (*pb).ioVLsMod;
-	
-	(*info).fllocked = ((*pb).ioVAtrb & 0x8000) != 0;
-	
-	(*info).flhardwarelock = ((*pb).ioVAtrb & 0x0080) != 0;
-	
-	if ((*info).flhardwarelock)
-		(*info).fllocked = true;
-	
-	(*info).ctfreebytes = (*pb).ioVAlBlkSiz * (*pb).ioVFrBlk;
-	
-	(*info).cttotalbytes = (*pb).ioVAlBlkSiz * (*pb).ioVNmAlBlks;
-	
-	(*info).blocksize = (*pb).ioVAlBlkSiz;
-	
-	(*info).ctfiles = (*pb).ioVFilCnt;
-	
-	(*info).ctfolders = (*pb).ioVDirCnt;
-	
-	drivenum = (*pb).ioVDrvInfo;
-	
-	//Code change by Timothy Paustian Sunday, June 25, 2000 9:17:36 PM
-	//The below code is to figure out if a volume is ejectable. I don't think
-	//you can do this in carbon, so just set it to false.
-	#if TARGET_API_MAC_CARBON == 1
-	(*info).flejectable = false;
-	#else
+			 status = UCConvertUTCDateTimeToCFAbsoluteTime ( &( *( *pb ).volumeInfo ).modifyDate, &oCFTime );
+			 
+			 status = UCConvertCFAbsoluteTimeToSeconds ( oCFTime, &( *info ).timemodified );
+			 
+			 }
+
+		( *info ).flhardwarelock = BitTst ( &( *( *pb ).volumeInfo ).flags, 7 );
 		
-	dqtop = GetDrvQHdr ();
-	
-	dqelem = (*dqtop).qHead;
-	
-	while (true) {
+		if (( *info ).flhardwarelock)
+			( *info ).fllocked = true;
+		else
+			( *info ).fllocked = BitTst ( &( *( *pb ).volumeInfo ).flags, 15 );
 		
-		if (dqelem == nil) { /*volume is no longer in a drive; it must be ejectable!*/
+		( *info ).ctfreebytes = ( *( *pb ).volumeInfo ).blockSize * ( *( *pb ).volumeInfo ).freeBlocks;
+		
+		( *info ).cttotalbytes = ( *( *pb ).volumeInfo ).blockSize * ( *( *pb ).volumeInfo ).totalBlocks;
+		
+		( *info ).blocksize = ( *( *pb ).volumeInfo ).blockSize;
+		
+		( *info ).ctfiles = ( *( *pb ).volumeInfo ).fileCount;
+		
+		( *info ).ctfolders = ( *( *pb ).volumeInfo ).folderCount;
+		
+		drivenum = ( *( *pb ).volumeInfo ).driveNumber;
+		
+		//Code change by Timothy Paustian Sunday, June 25, 2000 9:17:36 PM
+		//The below code is to figure out if a volume is ejectable. I don't think
+		//you can do this in carbon, so just set it to false.
+
+		( *info ).flejectable = false;
+				
+		return (true);
+		
+		} // getinfofromvolpb
+
+
+	boolean filegetvolumeinfo ( short vnum, tyfileinfo *info ) {
+		
+		//
+		// 1993-09-21 dmb: take vnum as parameter, not volname. otherwise, we can't distinguish between two vols w/the
+		//			  same name.
+		//
+		// 1993-09-07 DW: determine if it's a network volume
+		//
+		
+		FSVolumeInfoParam pb;
+		FSVolumeInfo volinfo;
+		
+		clearbytes ( &pb, sizeof ( pb ) ); // init all fields to zero
+		clearbytes ( &volinfo, sizeof ( volinfo ) ); // init all fields to zero
+		
+		pb.volumeInfo = &volinfo;
+		
+		pb.ioVRefNum = vnum;
+		pb.whichInfo = kFSVolInfoGettableInfo;
+		
+		if ( oserror ( PBGetVolumeInfoSync ( &pb ) ) )
+			return ( false );
+		
+		// clearbytes (info, sizeof (tyfileinfo)); /*init all fields to zero*/
+		
+		getinfofromvolpb ( &pb, info );
+		
+		/* network volume */ {
 			
-			(*info).flejectable = true;
+			HParamBlockRec lpb;
+			GetVolParmsInfoBuffer buffer;
+			OSErr err;
 			
-			break;
+			clearbytes (&lpb, sizeof (lpb)); /*init all fields to zero*/
+			
+			lpb.ioParam.ioVRefNum = (*info).vnum;
+			
+			lpb.ioParam.ioBuffer = ( Ptr ) &buffer;
+			
+			lpb.ioParam.ioReqCount = sizeof (buffer);
+			
+			err = PBHGetVolParmsSync (&lpb);
+		
+			if (err == noErr) 
+				( *info ).flremotevolume = VolIsNetworkVolume ( &buffer );
 			}
 		
-		if ((*(DrvQEl *)dqelem).dQDrive == drivenum) {
+		return (true);
+		} /*filegetvolumeinfo*/
+
+
+	void filegetinfofrompb ( FSRefParam *pb, tyfileinfo *info ) {
+		
+		//
+		// 2006-06-24 creedon: FSRef-ized
+		//
+		// 5.1.4 dmb: set finderbits for folders too.
+		//
+		// 1993-09-24 dmb:	handle volumes here, combining vol info with root directory folder info. I'm not sure if a
+		//				volume lock is always reflected in the root directory, so don't set fllocked false if the
+		//				attribute isn't set in the pb. (it starts out cleared anyway.)
+		//
+		
+		unsigned short finderbits;
+		
+		clearbytes ( info, sizeof ( tyfileinfo ) ); // init all fields to zero
+		
+		( *info ).dirid = ( *pb ).catInfo -> parentDirID;
+		
+		/* date time */ {
+		
+			CFAbsoluteTime oCFTime;
+			OSStatus status;
 			
-			byte driveflag = *((byte *) dqelem - 3);
+			 status = UCConvertUTCDateTimeToCFAbsoluteTime ( &( *pb ).catInfo -> createDate, &oCFTime );
+			 
+			 status = UCConvertCFAbsoluteTimeToSeconds ( oCFTime, &info -> timecreated );
+
+			 status = UCConvertUTCDateTimeToCFAbsoluteTime ( &( *pb ).catInfo -> contentModDate, &oCFTime );
+			 
+			 status = UCConvertCFAbsoluteTimeToSeconds ( oCFTime, &info -> timemodified );
+			 
+			 } // date time
+
+		( *info ).vnum = ( *( *pb ).catInfo ).volume;
+		
+		if ( ( *info ).dirid == fsRtParID )
+			filegetvolumeinfo ( ( *info ).vnum, info );
+		else
+			( *info ).flvolume = false;
 			
-			(*info).flejectable = ((driveflag != 8) && (driveflag != 0x48)); /*IM IV-181*/
+		if ( ( pb -> catInfo -> nodeFlags & kFSNodeForkOpenMask ) != 0 ) // if it's a volume, fllocked may already be set
+			( *info ).fllocked = true;
+		else
+			( *info ).fllocked = ( ( *pb ).catInfo -> nodeFlags & kFSNodeLockedMask ) != 0;
+		
+		( *info ).flfolder = ( ( pb -> catInfo -> nodeFlags & kFSNodeIsDirectoryMask ) != 0 );
+		
+		if ( ( *info ).flfolder ) {
+		
+			boolean flisapplication, flisbundle;
 			
-			break;
+			LSIsApplication ( ( *pb ).ref, &flisapplication, &flisbundle );
+			
+			if ( flisapplication || flisbundle ) { // Mac OS X bundles/packages are not considered folders
+			
+				( *info ).flfolder = false;
+		
+				( *info ).flbundle = true;
+				
+				} // if
+				
+			( *info ).flbusy = pb -> catInfo -> valence > 0; // Folders are considered "busy" if there are any files
+										// within the folder
+			if ( ( *info ).flfolder )
+			
+				( *info ).filecreator = ( *info ).filetype = '    ';
+				
+			else {
+			
+				LSItemInfoRecord iteminfo;
+				OSStatus status;
+				
+				status = LSCopyItemInfoForRef ( ( *pb ).ref, kLSRequestTypeCreator, &iteminfo );
+				
+				( *info ).filecreator = iteminfo.creator;
+				
+				( *info ).filetype = iteminfo.filetype;
+				
+				} // if
+			
+			( *info ).iconposition = ( ( FolderInfo * ) pb -> catInfo -> finderInfo ) -> location;
+			
+			if ( ! ( *info ).flvolume ) { // these aren't the same for a volume & its root dir
+				
+				( *info ).ctfiles = pb -> catInfo -> valence;
+				
+				} // if
+				
+			( *info ).folderview = ( tyfolderview ) 0; // I can't find a way to get this info from FSRefParamPtr, I thought about trying to fake a DInfo structure and getting it from there but it may not even have the right value, I did find a reference to DRMacWindowView // dinfo.frView >> 8;
+			
+			finderbits = ( ( FolderInfo * ) pb -> catInfo -> finderInfo ) -> finderFlags;
+			
 			}
+		else { // fill in fields for a file, somewhat different format than a folder
 		
-		dqelem = (*dqelem).qLink;
-		} /*while*/
-		#endif
+			( *info ).ixlabel = ( ( ( FileInfo * ) pb -> catInfo -> finderInfo ) -> finderFlags & kColor ) >> 1;
 		
-	
-	return (true);
-	} /*getinfofromvolpb*/
-
-
-boolean filegetvolumeinfo (short vnum, tyfileinfo *info) {
-	
-	/*
-	dmb 9/21/93: take vnum as parameter, not volname. otherwise, 
-	we can't distinguish between two vols w/the same name.
-	*/
-	
-	HVolumeParam pb;
-	
-	clearbytes (&pb, sizeof (pb)); /*init all fields to zero*/
-	
-	pb.ioVRefNum = vnum;
-	
-	if (oserror (PBHGetVInfoSync ((HParmBlkPtr) &pb)))
-		return (false);
-	
-	clearbytes (info, sizeof (tyfileinfo)); /*init all fields to zero*/
-	
-	getinfofromvolpb (&pb, info);
-	
-	/*DW 9/7/93: determine if it's a network volume*/ {
-		
-		HParamBlockRec lpb;
-		GetVolParmsInfoBuffer buffer;
-		OSErr ec;
-		
-		clearbytes (&lpb, sizeof (lpb)); /*init all fields to zero*/
-		
-		lpb.ioParam.ioVRefNum = (*info).vnum;
-		
-		lpb.ioParam.ioBuffer = (Ptr) &buffer;
-		
-		lpb.ioParam.ioReqCount = sizeof (buffer);
-		
-		ec = PBHGetVolParmsSync (&lpb); 
-	
-		if (ec == noErr) 
-			(*info).flremotevolume = buffer.vMServerAdr != 0; /*see Apple TN-Files docviewer doc*/
-		}
-	
-	return (true);
-	} /*filegetvolumeinfo*/
-
-
-void filegetinfofrompb (CInfoPBRec *pb, tyfileinfo *info) {
-	
-	/*
-	dmb 9/24/93: handle volumes here, combining vol info with root 
-	directory folder info. I'm not sure if a volume lock is always 
-	reflected in the root directory, so don't set fllocked false 
-	if the attribute isn't set in the pb. (it starts out cleared anyway.)
-	
-	5.1.4 dmb: set finderbits for folders too.
-	*/
-	
-	short finderbits;
-	
-	clearbytes (info, sizeof (tyfileinfo)); /*init all fields to zero*/
-	
-	(*info).vnum = (*pb).hFileInfo.ioVRefNum;
-	
-	(*info).dirid = (*pb).hFileInfo.ioFlParID;
-	
-	if ((*info).dirid == fsRtParID)
-		filegetvolumeinfo ((*info).vnum, info);
-	else
-		(*info).flvolume = false;
-	
-	if (BitTst (&(*pb).dirInfo.ioFlAttrib, 7)) /*if it's a volume, fllocked may already be set*/
-		(*info).fllocked = true;
-	
-//	(*info).flfolder = BitTst (&(*pb).dirInfo.ioFlAttrib, 3);
-	(*info).flfolder = (((*pb).dirInfo.ioFlAttrib & ioDirMask) != 0);
-	
-	(*info).ixlabel = ((*pb).hFileInfo.ioFlFndrInfo.fdFlags & 0x000E) >> 1;
-	
-	if ((*info).flfolder) {
-
-		/*Folders are considered "busy" if there are any files within the folder */
-		
-		(*info).flbusy = (*pb).dirInfo.ioDrNmFls > 0;
-		
-		(*info).filecreator = (*info).filetype = '    ';
-		
-		if (!(*info).flvolume) { /*these aren't the same for a volume & its root dir*/
+			( *info ).flbusy = ( pb -> catInfo -> nodeFlags & kFSNodeForkOpenMask ) != 0;
+				
+			( *info ).filecreator = ( ( FileInfo * ) pb -> catInfo -> finderInfo ) -> fileCreator;
 			
-			(*info).timecreated = (*pb).dirInfo.ioDrCrDat;
+			( *info ).filetype = ( ( FileInfo * ) pb -> catInfo -> finderInfo ) -> fileType;
 			
-			(*info).timemodified = (*pb).dirInfo.ioDrMdDat;
+			( *info ).sizedatafork = pb -> catInfo -> dataLogicalSize;
 			
-			(*info).ctfiles = (*pb).dirInfo.ioDrNmFls;
+			( *info ).sizeresourcefork = pb -> catInfo -> rsrcLogicalSize;
+			
+			( *info ).iconposition = ( ( FileInfo * ) pb -> catInfo -> finderInfo ) -> location;
+			
+			finderbits = ( ( FileInfo * ) pb -> catInfo -> finderInfo ) -> finderFlags;
+			
+			} // if
+
+			 /* copy from the finder bits into the record */ {
+		
+				( *info ).flalias = (finderbits & kIsAlias) != 0;
+				
+				( *info ).flbundle = (finderbits & kHasBundle) != 0;
+				
+				( *info ).flinvisible = (finderbits & kIsInvisible) != 0;
+				
+				( *info ).flstationery = (finderbits & kIsStationery) != 0;
+				
+				( *info ).flshared = (finderbits & kIsShared) != 0;
+				
+				( *info ).flnamelocked = (finderbits & kNameLocked) != 0;
+				
+				( *info ).flcustomicon = (finderbits & kHasCustomIcon) != 0;
+				
+				} // finder bits
+				
+		} // filegetinfofrompb
+
+
+	void filegetinfofrompbcipbr (CInfoPBRec *pb, tyfileinfo *info) {
+		
+		/*
+		dmb 9/24/93: handle volumes here, combining vol info with root 
+		directory folder info. I'm not sure if a volume lock is always 
+		reflected in the root directory, so don't set fllocked false 
+		if the attribute isn't set in the pb. (it starts out cleared anyway.)
+		
+		5.1.4 dmb: set finderbits for folders too.
+		*/
+		
+		short finderbits;
+		
+		clearbytes (info, sizeof (tyfileinfo)); /*init all fields to zero*/
+		
+		(*info).vnum = (*pb).hFileInfo.ioVRefNum;
+		
+		(*info).dirid = (*pb).hFileInfo.ioFlParID;
+		
+		if ((*info).dirid == fsRtParID)
+			filegetvolumeinfo ((*info).vnum, info);
+		else
+			(*info).flvolume = false;
+		
+		if (BitTst (&(*pb).dirInfo.ioFlAttrib, 7)) /*if it's a volume, fllocked may already be set*/
+			(*info).fllocked = true;
+		
+	//	(*info).flfolder = BitTst (&(*pb).dirInfo.ioFlAttrib, 3);
+		(*info).flfolder = (((*pb).dirInfo.ioFlAttrib & ioDirMask) != 0);
+		
+		(*info).ixlabel = ((*pb).hFileInfo.ioFlFndrInfo.fdFlags & 0x000E) >> 1;
+		
+		if ((*info).flfolder) {
+
+			/*Folders are considered "busy" if there are any files within the folder */
+			
+			(*info).flbusy = (*pb).dirInfo.ioDrNmFls > 0;
+			
+			(*info).filecreator = (*info).filetype = '    ';
+			
+			if (!(*info).flvolume) { /*these aren't the same for a volume & its root dir*/
+				
+				(*info).timecreated = (*pb).dirInfo.ioDrCrDat;
+				
+				(*info).timemodified = (*pb).dirInfo.ioDrMdDat;
+				
+				(*info).ctfiles = (*pb).dirInfo.ioDrNmFls;
+				}
+			
+			(*info).iconposition = (*pb).dirInfo.ioDrUsrWds.frLocation;
+			
+			(*info).folderview = (tyfolderview) ((*pb).dirInfo.ioDrUsrWds.frView >> 8);
+			
+			finderbits = (*pb).dirInfo.ioDrUsrWds.frFlags;
 			}
+		else { /*fill in fields for a file, somewhat different format than a folder*/
 		
-		(*info).iconposition = (*pb).dirInfo.ioDrUsrWds.frLocation;
-		
-		(*info).folderview = (tyfolderview) ((*pb).dirInfo.ioDrUsrWds.frView >> 8);
-		
-		finderbits = (*pb).dirInfo.ioDrUsrWds.frFlags;
-		}
-	else { /*fill in fields for a file, somewhat different format than a folder*/
-	
-		(*info).flbusy = BitTst (&(*pb).hFileInfo.ioFlAttrib, 0);
+			(*info).flbusy = BitTst (&(*pb).hFileInfo.ioFlAttrib, 0);
+				
+			(*info).filecreator = (*pb).hFileInfo.ioFlFndrInfo.fdCreator;
 			
-		(*info).filecreator = (*pb).hFileInfo.ioFlFndrInfo.fdCreator;
-		
-		(*info).filetype = (*pb).hFileInfo.ioFlFndrInfo.fdType;
-		
-		(*info).timecreated = (*pb).hFileInfo.ioFlCrDat;
+			(*info).filetype = (*pb).hFileInfo.ioFlFndrInfo.fdType;
+			
+			(*info).timecreated = (*pb).hFileInfo.ioFlCrDat;
 
-		(*info).timemodified = (*pb).hFileInfo.ioFlMdDat;
-		
-		(*info).sizedatafork = (*pb).hFileInfo.ioFlLgLen;
-		
-		(*info).sizeresourcefork = (*pb).hFileInfo.ioFlRLgLen;
-		
-		(*info).iconposition = (*pb).hFileInfo.ioFlFndrInfo.fdLocation;
-		
-		finderbits = (*pb).hFileInfo.ioFlFndrInfo.fdFlags;
-		}
+			(*info).timemodified = (*pb).hFileInfo.ioFlMdDat;
+			
+			(*info).sizedatafork = (*pb).hFileInfo.ioFlLgLen;
+			
+			(*info).sizeresourcefork = (*pb).hFileInfo.ioFlRLgLen;
+			
+			(*info).iconposition = (*pb).hFileInfo.ioFlFndrInfo.fdLocation;
+			
+			finderbits = (*pb).hFileInfo.ioFlFndrInfo.fdFlags;
+			}
 
-	/*copy from the finder bits into the record*/ {
-	
-		(*info).flalias = (finderbits & kIsAlias) != 0;
+		/*copy from the finder bits into the record*/ {
 		
-		(*info).flbundle = (finderbits & kHasBundle) != 0;
-		
-		(*info).flinvisible = (finderbits & kIsInvisible) != 0;
-		
-		(*info).flstationery = (finderbits & kIsStationery) != 0;
-		
-		(*info).flshared = (finderbits & kIsShared) != 0;
-		
-		(*info).flnamelocked = (finderbits & kNameLocked) != 0;
-		
-		(*info).flcustomicon = (finderbits & kHasCustomIcon) != 0;
-		}
-	} /*filegetinfofrompb*/
+			(*info).flalias = (finderbits & kIsAlias) != 0;
+			
+			(*info).flbundle = (finderbits & kHasBundle) != 0;
+			
+			(*info).flinvisible = (finderbits & kIsInvisible) != 0;
+			
+			(*info).flstationery = (finderbits & kIsStationery) != 0;
+			
+			(*info).flshared = (finderbits & kIsShared) != 0;
+			
+			(*info).flnamelocked = (finderbits & kNameLocked) != 0;
+			
+			(*info).flcustomicon = (finderbits & kHasCustomIcon) != 0;
+			}
+		} /* filegetinfofrompbcipbr */
+
 #endif	
 
-#ifdef MACVERSION
-#define filegetfsvolumeinfo(fs, info) filegetvolumeinfo((*fs).vRefNum, info)
-#endif
+static boolean filegetfsvolumeinfo (const ptrfilespec fs, tyfileinfo *info) {
+
+	#ifdef WIN95VERSION
+
+		DWORD sectorsPerCluster, bytesPerSector, numberOfFreeClusters, totalNumberOfClusters;
+		UINT drivetype;
+		bigstring volname;
+		bigstring errmsg;
+
+	#endif // WIN95VERSION
+
+	clearbytes (info, sizeof (tyfileinfo)); // init all fields to zero
+
+	#ifdef MACVERSION
+	
+		long vnum;
+		
+		getfsvolume ( fs, &vnum );
+
+		if ( ! filegetvolumeinfo ( vnum, info ) )
+			return ( false );
+			
+		return ( true );
+		
+	#endif // MACVERSION
+
+	#ifdef WIN95VERSION
+
+		if (fileisvolume (fs)) {
+			info->flvolume = true;
+			info->flbusy = true;
+
+			copystring (fsname(fs), volname);
+			cleanendoffilename (volname);
+			pushchar ('\\', volname);
+			nullterminate (volname);
+
+	//		if (GetVolumeInformation (stringbaseaddress (volname), stringbaseaddress(volnamebuf), 
+	//			sizeof(volnamebuf)-2, &volserial, &maxfilelen, &filesystemflags, 
+	//			stringbaseaddress(filesystemnamebuffer), sizeof (filesystemnamebuffer)) {
+	//				
+	//			}
+
+			if (GetDiskFreeSpace (stringbaseaddress (volname), &sectorsPerCluster, &bytesPerSector,
+				&numberOfFreeClusters, &totalNumberOfClusters)) {
+
+				DWORD bytesPerCluster;
+				DWORD numberOfClustersIn2GB;
+
+				bytesPerCluster = bytesPerSector * sectorsPerCluster;
+
+				numberOfClustersIn2GB = 0x7FFFFFFFL / bytesPerCluster;
+
+				info->ctfreebytes = (numberOfFreeClusters <= numberOfClustersIn2GB)
+					? (numberOfFreeClusters * bytesPerCluster)
+					: (numberOfClustersIn2GB * bytesPerCluster);
+
+				info->cttotalbytes = (totalNumberOfClusters <= numberOfClustersIn2GB)
+					? (totalNumberOfClusters * bytesPerCluster)
+					: (numberOfClustersIn2GB * bytesPerCluster);
+
+				info->blocksize = bytesPerCluster;
+				}
+
+			drivetype = GetDriveType (stringbaseaddress(volname));
+
+			if ((drivetype == DRIVE_REMOVABLE) || (drivetype == DRIVE_CDROM)) {
+				info->flejectable = true;
+				}
+
+			if (drivetype == DRIVE_REMOTE) {
+				info->flremotevolume = true;
+				}
+
+			return (true);
+			}
+
+		wsprintf (stringbaseaddress (errmsg), "Can't complete function because \"%s\" is not a valid volume name.",
+			stringbaseaddress (fsname (fs)));
+
+		setstringlength (errmsg, strlen (stringbaseaddress (errmsg)));
+
+		shellerrormessage (errmsg);
+
+		return (false);
+		
+	#endif
+	
+	} // filegetfsvolumeinfo
+
 
 #ifdef WIN95VERSION
-static boolean filegetfsvolumeinfo (const tyfilespec *fs, tyfileinfo *info) {
-	DWORD sectorsPerCluster, bytesPerSector, numberOfFreeClusters, totalNumberOfClusters;
-	UINT drivetype;
-	bigstring volname;
-	bigstring errmsg;
-
-	clearbytes (info, sizeof (tyfileinfo)); /*init all fields to zero*/
-
-	if (fileisvolume (fs)) {
-		info->flvolume = true;
-		info->flbusy = true;
-
-		copystring (fsname(fs), volname);
-		cleanendoffilename (volname);
-		pushchar ('\\', volname);
-		nullterminate (volname);
-
-//		if (GetVolumeInformation (stringbaseaddress (volname), stringbaseaddress(volnamebuf), 
-//			sizeof(volnamebuf)-2, &volserial, &maxfilelen, &filesystemflags, 
-//			stringbaseaddress(filesystemnamebuffer), sizeof (filesystemnamebuffer)) {
-//				
-//			}
-
-		if (GetDiskFreeSpace (stringbaseaddress (volname), &sectorsPerCluster, &bytesPerSector,
-			&numberOfFreeClusters, &totalNumberOfClusters)) {
-
-			DWORD bytesPerCluster;
-			DWORD numberOfClustersIn2GB;
-
-			bytesPerCluster = bytesPerSector * sectorsPerCluster;
-
-			numberOfClustersIn2GB = 0x7FFFFFFFL / bytesPerCluster;
-
-			info->ctfreebytes = (numberOfFreeClusters <= numberOfClustersIn2GB)
-				? (numberOfFreeClusters * bytesPerCluster)
-				: (numberOfClustersIn2GB * bytesPerCluster);
-
-			info->cttotalbytes = (totalNumberOfClusters <= numberOfClustersIn2GB)
-				? (totalNumberOfClusters * bytesPerCluster)
-				: (numberOfClustersIn2GB * bytesPerCluster);
-
-			info->blocksize = bytesPerCluster;
-			}
-
-		drivetype = GetDriveType (stringbaseaddress(volname));
-
-		if ((drivetype == DRIVE_REMOVABLE) || (drivetype == DRIVE_CDROM)) {
-			info->flejectable = true;
-			}
-
-		if (drivetype == DRIVE_REMOTE) {
-			info->flremotevolume = true;
-			}
-
-		return (true);
-		}
-
-	wsprintf (stringbaseaddress (errmsg), "Can't complete function because \"%s\" is not a valid volume name.",
-		stringbaseaddress (fsname (fs)));
-
-	setstringlength (errmsg, strlen (stringbaseaddress (errmsg)));
-
-	shellerrormessage (errmsg);
-
-	return (false);	
-	} /*filegetfsvolumeinfo*/
-
 
 void winsetfileinfo (WIN32_FIND_DATA * fileinfo, tyfileinfo *info) {
 	
@@ -657,103 +858,122 @@ void winsetfileinfo (WIN32_FIND_DATA * fileinfo, tyfileinfo *info) {
 #endif
 
 
-boolean filegetinfo (const tyfilespec *fs, tyfileinfo *info) {
+boolean filegetinfo ( const ptrfilespec fs, tyfileinfo *info ) {
 
-#ifdef MACVERSION	
-	/*
-	dmb 9/24/93: let filegetinfofrompb take care of volumes
-	*/
+	//
+	// 2006-06-25 creedon: for Mac, FSRef-ized
+	//
+	// 1993-09-24 dmb: for Mac, let filegetinfofrompb take care of volumes
+	//
+
+	#ifdef MACVERSION
 	
-	CInfoPBRec pb;
-	
-	/*
-	if (isvolumefilespec (pfs)) {
+		setfserrorparam ( fs ); // in case error message takes a filename parameter
 		
-		return (filegetfsvolumeinfo (pfs, info));
-		}
-	*/
-	
-	if (!getmacfileinfo (fs, &pb))
-		return (false);
-	
-	filegetinfofrompb (&pb, info);
-#endif
-	
-#ifdef WIN95VERSION
-	HANDLE findHandle;
-	HANDLE fref;
-	WIN32_FIND_DATA	fileinfo;
-	char fn[300];
-	
-	clearbytes (info, sizeof (tyfileinfo)); /*init all fields to zero*/
-	info->filecreator = '    ';		
-	info->filetype = '    ';
-
-	if (fileisvolume (fs)) {
-		return (filegetfsvolumeinfo (fs, info));
-		}
-
-	copystring (fsname (fs), fn);
-	
-	/*if ends with \ get ride of it... and handle the root*/
-
-	cleanendoffilename (fn);
-
-	nullterminate (fn);
-
-
-	findHandle = FindFirstFile (stringbaseaddress(fn), &fileinfo);
-
-	if (findHandle == INVALID_HANDLE_VALUE) {
+		if ( ( *fs ).path != NULL )
+			return ( ! oserror ( fnfErr ) );
 		
-		winfileerror (fs);
+		if ( ! FSRefValid ( &( *fs ).fsref ) )
+			return ( false );
+		
+		FSCatalogInfo catinfo;
+		FSRefParam pb;
+		OSErr err;
+		
+		clearbytes ( &pb, sizeof ( pb ) );
+			
+		pb.catInfo = &catinfo;
+		pb.ref = &( *fs ).fsref;
+		pb.whichInfo = kFSCatInfoGettableInfo;
+		
+		err = PBGetCatalogInfoSync ( &pb );
+		
+		if ( oserror ( err ) )
+			return ( false );
+			
+		filegetinfofrompb ( &pb, info );
+		
+	#endif // MACVERSION
+		
+	#ifdef WIN95VERSION
+	
+		HANDLE findHandle;
+		HANDLE fref;
+		WIN32_FIND_DATA	fileinfo;
+		char fn[300];
+		
+		clearbytes (info, sizeof (tyfileinfo)); // init all fields to zero
+		info->filecreator = '    ';		
+		info->filetype = '    ';
 
-		return (false);
-		}
+		if (fileisvolume (fs)) {
+			return (filegetfsvolumeinfo (fs, info));
+			}
 
-	winsetfileinfo (&fileinfo, info);
+		copystring (fsname (fs), fn);
+		
+		// if ends with \ get ride of it... and handle the root
 
-	FindClose(findHandle);
+		cleanendoffilename (fn);
 
-	//Set the file busy flag (this should be in winsetfileinfo, but we do not have the filename there)
-	if (info->flfolder) {
-		strcat (stringbaseaddress (fn), "\\*");
+		nullterminate (fn);
 
-		info->flbusy = false; //presume empty folder (not busy)
 
 		findHandle = FindFirstFile (stringbaseaddress(fn), &fileinfo);
 
-		if (findHandle != INVALID_HANDLE_VALUE) {
-			info->flbusy = true;				//Found something
+		if (findHandle == INVALID_HANDLE_VALUE) {
+			
+			winfileerror (fs);
 
-			while ((strcmp (fileinfo.cFileName, ".") == 0) || (strcmp (fileinfo.cFileName, "..") == 0)) {
-				info->flbusy = false;			// Just . or ..
-
-				if (FindNextFile (findHandle, &fileinfo))
-					info->flbusy = true;		//Found something else...
-				else
-					break;		//exit while loop if FindNext fails (this is normal)
-				}
-
-			FindClose (findHandle);
+			return (false);
 			}
-		}
-	else {
-		fref = (Handle) CreateFile (stringbaseaddress (fn), GENERIC_READ | GENERIC_WRITE, 0, NULL, OPEN_EXISTING,
-			FILE_ATTRIBUTE_NORMAL, NULL);
 
-		if (fref == INVALID_HANDLE_VALUE) {
-			info->flbusy = true;
+		winsetfileinfo (&fileinfo, info);
+
+		FindClose(findHandle);
+
+		// Set the file busy flag (this should be in winsetfileinfo, but we do not have the filename there)
+		
+		if (info->flfolder) {
+			strcat (stringbaseaddress (fn), "\\*");
+
+			info->flbusy = false; //presume empty folder (not busy)
+
+			findHandle = FindFirstFile (stringbaseaddress(fn), &fileinfo);
+
+			if (findHandle != INVALID_HANDLE_VALUE) {
+				info->flbusy = true;				// Found something
+
+				while ((strcmp (fileinfo.cFileName, ".") == 0) || (strcmp (fileinfo.cFileName, "..") == 0)) {
+					info->flbusy = false;			// Just . or ..
+
+					if (FindNextFile (findHandle, &fileinfo))
+						info->flbusy = true;		// Found something else...
+					else
+						break;		// exit while loop if FindNext fails (this is normal)
+					}
+
+				FindClose (findHandle);
+				}
 			}
 		else {
-			info->flbusy = false;
-			verify (CloseHandle (fref));
-			}
-		}
+			fref = (Handle) CreateFile (stringbaseaddress (fn), GENERIC_READ | GENERIC_WRITE, 0, NULL, OPEN_EXISTING,
+				FILE_ATTRIBUTE_NORMAL, NULL);
 
-#endif
+			if (fref == INVALID_HANDLE_VALUE) {
+				info->flbusy = true;
+				}
+			else {
+				info->flbusy = false;
+				verify (CloseHandle (fref));
+				}
+			}
+
+	#endif // WIN95VERSION
+	
 	return (true);
-	} /*filegetinfo*/
+	
+	} // filegetinfo
 		
 	
 boolean filegetvolumename (short vnum, bigstring volname) {
@@ -804,7 +1024,7 @@ boolean filegetvolumename (short vnum, bigstring volname) {
 	} /*filegetvolumename*/
 	
 	
-boolean fileisbusy (const tyfilespec *fs, boolean *flbusy) {
+boolean fileisbusy (const ptrfilespec fs, boolean *flbusy) {
 	
 	/*
 	6/x/91 mao
@@ -821,7 +1041,7 @@ boolean fileisbusy (const tyfilespec *fs, boolean *flbusy) {
 	} /*fileisbusy*/
 	
 
-boolean filehasbundle (const tyfilespec *fs, boolean *flbundle) {
+boolean filehasbundle (const ptrfilespec fs, boolean *flbundle) {
 	
 	/*
 	6/x/91 mao
@@ -838,32 +1058,59 @@ boolean filehasbundle (const tyfilespec *fs, boolean *flbundle) {
 	} /*filehasbundle*/
 
 
-boolean filesetbundle (const tyfilespec *fs, boolean flbundle) {
-#ifdef MACVERSION
-	/*
-	8/10/92 dmb
-	*/
+boolean filesetbundle (const ptrfilespec fs, boolean flbundle) {
+
+	//
+	// 2006-06-25 creedon: for Mac, FSRef-ized
+	//
+	// 1992-08-10 dmb: for Mac, created
+	//
+		
+	#ifdef MACVERSION
 	
-	CInfoPBRec pb;
+		FSCatalogInfo catinfo;
+		FSRefParam pb;
+		
+		if ( ! getmacfileinfo ( fs, &pb, &catinfo ) ) 
+			return ( false );
+		
+		if ( BitTst ( &pb.catInfo -> nodeFlags, 4 ) ) { // is directory
+		
+			if (flbundle)
+			
+				( ( FolderInfo * ) pb.catInfo -> finderInfo ) -> finderFlags |= kHasBundle; // turn on
+				
+			else
+			
+				( ( FolderInfo * ) pb.catInfo -> finderInfo ) -> finderFlags &= ~kHasBundle; // turn off
+				
+			}
+		else {
+		
+			if (flbundle)
+			
+				( ( FileInfo * ) pb.catInfo -> finderInfo ) -> finderFlags |= kHasBundle; // turn on
+				
+			else
+			
+				( ( FileInfo * ) pb.catInfo -> finderInfo ) -> finderFlags &= ~kHasBundle; // turn off
+		
+			}
+		
+		return (setmacfileinfo (fs, &pb));
+		
+	#endif
+
+	#ifdef WIN95VERSION
 	
-	if (!getmacfileinfo (fs, &pb)) 
 		return (false);
+		
+	#endif
 	
-	if (flbundle) 
-		pb.hFileInfo.ioFlFndrInfo.fdFlags |= kHasBundle; /*turn on*/
-	else
-		pb.hFileInfo.ioFlFndrInfo.fdFlags &= ~kHasBundle; /*turn off*/
-	
-	return (setmacfileinfo (fs, &pb));
-#endif
-
-#ifdef WIN95VERSION
-	return (false);
-#endif
-	} /*filesetbundle*/
+	} // filesetbundle
 
 
-boolean fileisalias (const tyfilespec *fs, boolean *flalias) {
+boolean fileisalias (const ptrfilespec fs, boolean *flalias) {
 	
 	/*
 	6/x/91 mao
@@ -880,7 +1127,7 @@ boolean fileisalias (const tyfilespec *fs, boolean *flalias) {
 	} /*fileisalias*/
 
 
-boolean fileisvisible (const tyfilespec *fs, boolean *flvisible) {
+boolean fileisvisible (const ptrfilespec fs, boolean *flvisible) {
 	
 	/*
 	6/9/92 dmb
@@ -897,55 +1144,67 @@ boolean fileisvisible (const tyfilespec *fs, boolean *flvisible) {
 	} /*fileisvisible*/
 
 
-boolean filesetvisible (const tyfilespec *fs, boolean flvisible) {
-#ifdef MACVERSION
-	/*
-	6/9/92 dmb
-	*/
-	
-	CInfoPBRec pb;
-	
-	if (!getmacfileinfo (fs, &pb)) 
-		return (false);
-	
-	if (flvisible) 
-		pb.hFileInfo.ioFlFndrInfo.fdFlags &= ~kIsInvisible; /*turn off*/
-	else
-		pb.hFileInfo.ioFlFndrInfo.fdFlags |= kIsInvisible; /*turn on*/
-	
-	if (!setmacfileinfo (fs, &pb))
-		return (false);
-	
-	touchparentfolder (fs);
-#endif	
-	
-#ifdef WIN95VERSION
-	tyfileinfo info;
-	DWORD attr;
-	
-	if (!filegetinfo (fs, &info))
-		return (false);
+boolean filesetvisible (const ptrfilespec fs, boolean flvisible) {
 
-	if (info.flinvisible == flvisible) /*check if we need to do anything first*/
-		{
-		attr = GetFileAttributes (stringbaseaddress (fsname (fs)));
-
-		if (attr == 0xFFFFFFFF)
+	//
+	// 2006-06-13 creedon: for Mac, FSRef-ized
+	//
+	// 6/9/92 dmb: for Mac, created
+	//
+	
+	#ifdef MACVERSION
+	
+		OSErr err;
+		
+		if ( flvisible ) {
+		
+			err = FSClearInvisible ( &( *fs ).fsref );
+			
+			if ( err != noErr )
+				return ( true );
+			}
+		else {
+			err = FSSetInvisible ( &( *fs ).fsref );
+		
+			if ( err != noErr )
+				return ( true );
+			}
+		
+		touchparentfolder (fs);
+		
+	#endif	
+		
+	#ifdef WIN95VERSION
+	
+		tyfileinfo info;
+		DWORD attr;
+		
+		if (!filegetinfo (fs, &info))
 			return (false);
 
-		attr = attr & (~FILE_ATTRIBUTE_HIDDEN);
+		if (info.flinvisible == flvisible) // check if we need to do anything first
+			{
+			attr = GetFileAttributes (stringbaseaddress (fsname (fs)));
 
-		if (! flvisible)
-			attr = attr | FILE_ATTRIBUTE_HIDDEN;
+			if (attr == 0xFFFFFFFF)
+				return (false);
 
-		return(SetFileAttributes (stringbaseaddress (fsname (fs)), attr));
-		}
-#endif
+			attr = attr & (~FILE_ATTRIBUTE_HIDDEN);
+
+			if (! flvisible)
+				attr = attr | FILE_ATTRIBUTE_HIDDEN;
+
+			return(SetFileAttributes (stringbaseaddress (fsname (fs)), attr));
+			}
+			
+	#endif
+	
 	return (true);
-	} /*filesetvisible*/
+	
+	} // filesetvisible
 
 
-boolean getfiletype (const tyfilespec *fs, OSType *type) {
+boolean getfiletype (const ptrfilespec fs, OSType *type) {
 	
 	tyfileinfo info;
 	
@@ -960,7 +1219,7 @@ boolean getfiletype (const tyfilespec *fs, OSType *type) {
 	} /*getfiletype*/
 
 	
-boolean getfilecreator (const tyfilespec *fs, OSType *creator) {
+boolean getfilecreator (const ptrfilespec fs, OSType *creator) {
 	
 	tyfileinfo info;
 	
@@ -975,7 +1234,7 @@ boolean getfilecreator (const tyfilespec *fs, OSType *creator) {
 	} /*getfilecreator*/
 
 
-boolean filesize (const tyfilespec *fs, long *size) {
+boolean filesize (const ptrfilespec fs, long *size) {
 	
 	tyfileinfo info;
 	
@@ -988,12 +1247,35 @@ boolean filesize (const tyfilespec *fs, long *size) {
 	} /*filesize*/
 	
 	
-boolean fileisfolder (const tyfilespec *fs, boolean *flfolder) {
+boolean fileisfolder (const ptrfilespec fs, boolean *flfolder) {
+
+	//
+	// 2006-10-01 creedon: Mac OS X bundles/packages are not considered folders
+	//
 	
 	tyfileinfo info;
 
+	#ifdef MACVERSION
+	
+		// Mac OS X bundles/packages are not considered folders
+	
+		boolean flisapplication, flisbundle;
+		
+		LSIsApplication ( &( *fs ).fsref, &flisapplication, &flisbundle );
+
+		if ( flisapplication || flisbundle ) {
+		
+			*flfolder = false;
+			
+			return ( true );
+			
+			}			
+	#endif
+	
 	#ifdef WIN95VERSION
-		/* special case the root directory on Windows */
+	
+		// special case the root directory on Windows
+		
 		char fn[300];
 
 		copystring (fsname (fs), fn);
@@ -1010,63 +1292,84 @@ boolean fileisfolder (const tyfilespec *fs, boolean *flfolder) {
 					}
 				}
 			}
-
 	#endif
 	
 	if (!filegetinfo (fs, &info))
 		return (false);
-	
+		
 	*flfolder = info.flfolder;
 	
-	return (true);
-	} /*fileisfolder*/
-
-
-boolean fileisvolume (const tyfilespec *fs) {
-#ifdef MACVERSION	
-	if (isemptystring ((*fs).name))
-		return (false);
+	return ( true );
 	
-	return ((*fs).parID == fsRtParID);
-#endif
+	} // fileisfolder
 
-#ifdef WIN95VERSION
-	bigstring bsvol;
-	short drivenum;
-	DWORD drivemap, drivemask;
 
-	copystring (fsname(fs), bsvol);
+boolean fileisvolume (const ptrfilespec fs) {
 
-	switch (stringlength (bsvol)) {
+	//
+	// 2006-06-25 creedon: for Mac, FSRef-ized
+	//
+
+	#ifdef MACVERSION
+	
+		bigstring bsname;
 		
-		case 3:
-			if (getstringcharacter(bsvol, 2) != '\\')
-				return (false);
-
-		case 2:
-			if (getstringcharacter(bsvol, 1) != ':')
-				return (false);
-
-			if (! isalpha (getstringcharacter(bsvol, 0)))
-				return (false);
-
-			drivenum = getlower(getstringcharacter(bsvol, 0)) - 'a';
-			break;
-
-		default:
-			return (false);
-		}
-
-	drivemap = GetLogicalDrives();
+		getfsfile ( fs, bsname );
 	
-	drivemask = 1 << drivenum;
+		if ( isemptystring ( bsname ) )
+			return ( false );
+			
+		FSCatalogInfo catalogInfo;
+		OSErr err;
+	
+		clearbytes ( &catalogInfo, longsizeof ( catalogInfo ) );
 
-	return ((drivemap & drivemask) == drivemask);
-#endif
-	} /*fileisvolume*/
+		err = FSGetCatalogInfo ( &( *fs ).fsref, kFSCatInfoGettableInfo, &catalogInfo, NULL, NULL, NULL ); // kFSCatInfoParentDirID
+		
+		return ( catalogInfo.parentDirID == fsRtParID );
+		
+	#endif
+
+	#ifdef WIN95VERSION
+	
+		bigstring bsvol;
+		short drivenum;
+		DWORD drivemap, drivemask;
+
+		copystring (fsname(fs), bsvol);
+
+		switch (stringlength (bsvol)) {
+			
+			case 3:
+				if (getstringcharacter(bsvol, 2) != '\\')
+					return (false);
+
+			case 2:
+				if (getstringcharacter(bsvol, 1) != ':')
+					return (false);
+
+				if (! isalpha (getstringcharacter(bsvol, 0)))
+					return (false);
+
+				drivenum = getlower(getstringcharacter(bsvol, 0)) - 'a';
+				break;
+
+			default:
+				return (false);
+			}
+
+		drivemap = GetLogicalDrives();
+		
+		drivemask = 1 << drivenum;
+
+		return ((drivemap & drivemask) == drivemask);
+		
+	#endif
+	
+	} // fileisvolume
 
 
-boolean fileislocked (const tyfilespec *fs, boolean *fllocked) {
+boolean fileislocked (const ptrfilespec fs, boolean *fllocked) {
 	
 	tyfileinfo info;
 	
@@ -1079,7 +1382,7 @@ boolean fileislocked (const tyfilespec *fs, boolean *fllocked) {
 	} /*fileislocked*/
 	
 	
-boolean getfiledates (const tyfilespec *fs, unsigned long *datecreated, unsigned long *datemodified) {
+boolean getfiledates (const ptrfilespec fs, unsigned long *datecreated, unsigned long *datemodified) {
 	
 	tyfileinfo info;
 	
@@ -1094,120 +1397,85 @@ boolean getfiledates (const tyfilespec *fs, unsigned long *datecreated, unsigned
 	} /*getfiledates*/
 
 
-boolean setfiledates (const tyfilespec *fs, unsigned long datecreated, unsigned long datemodified) {
-#ifdef MACVERSION	
-	/*
-	6/x/91 mao: modified to work with new getmacilfeinfo/setmacfileinfo.
-	*/
+boolean setfiledates (const ptrfilespec fs, unsigned long datecreated, unsigned long datemodified) {
+
+	//
+	// 2006-06-25 creedon: for Mac, work with UTC
+	//
+	// 1991-06 mao: modified to work with new getmacilfeinfo/setmacfileinfo.
+	//
+		
+	#ifdef MACVERSION
+		
+		CFAbsoluteTime oCFTime;
+		FSCatalogInfo catinfo;
+		FSRefParam pb;
+		OSStatus status;
+		
+		if ( ! getmacfileinfo ( fs, &pb, &catinfo ) ) 
+			return ( false );
 	
-	CInfoPBRec pb;
+		status = UCConvertSecondsToCFAbsoluteTime ( datecreated, &oCFTime );
+		
+		status = UCConvertCFAbsoluteTimeToUTCDateTime ( oCFTime, &pb.catInfo -> createDate );
+		
+		status = UCConvertSecondsToCFAbsoluteTime ( datemodified, &oCFTime );
+		
+		status = UCConvertCFAbsoluteTimeToUTCDateTime ( oCFTime, &pb.catInfo -> contentModDate );
+				
+		return ( setmacfileinfo ( fs, &pb ) );
+		
+	#endif
 	
-	if (!getmacfileinfo (fs, &pb)) 
+	#ifdef WIN95VERSION
+	
+		HANDLE h;
+		FILETIME modtime, createtime, temp;
+		char fn[300];
+		DWORD err;
+		boolean fl;
+
+		secondstofiletime (datecreated, &temp);
+		LocalFileTimeToFileTime (&temp, &createtime);
+
+		secondstofiletime (datemodified, &temp);
+		LocalFileTimeToFileTime (&temp, &modtime);
+
+		copystring (fsname (fs), fn);
+		
+		nullterminate (fn);
+		
+		h = CreateFile (stringbaseaddress(fn), GENERIC_READ | GENERIC_WRITE,
+					FILE_SHARE_READ, NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL);
+
+		if (h == INVALID_HANDLE_VALUE) {
+			
+			winfileerror (fs);
+
+			return (false);
+			}
+
+
+		//We do not alter the accessed time.
+		fl = SetFileTime (h, &createtime, NULL, &modtime);
+
+		if (!fl)
+			err = GetLastError();
+
+		verify (CloseHandle (h));
+		
+		if (fl)
+			return (true);
+
+		oserror(err);
 		return (false);
-	
-	if (foldertest (&pb)) {
 		
-		pb.dirInfo.ioDrCrDat = datecreated;
-		
-		pb.dirInfo.ioDrMdDat = datemodified;
-		}
-	else {
-		
-		pb.hFileInfo.ioFlCrDat = datecreated;
-	
-		pb.hFileInfo.ioFlMdDat = datemodified;
-		}
-	
-	return (setmacfileinfo (fs, &pb));
-#endif
+	#endif
 
-#ifdef WIN95VERSION
-	HANDLE h;
-	FILETIME modtime, createtime, temp;
-	char fn[300];
-	DWORD err;
-	boolean fl;
-
-	secondstofiletime (datecreated, &temp);
-	LocalFileTimeToFileTime (&temp, &createtime);
-
-	secondstofiletime (datemodified, &temp);
-	LocalFileTimeToFileTime (&temp, &modtime);
-
-	copystring (fsname (fs), fn);
-	
-	nullterminate (fn);
-	
-	h = CreateFile (stringbaseaddress(fn), GENERIC_READ | GENERIC_WRITE,
-				FILE_SHARE_READ, NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL);
-
-	if (h == INVALID_HANDLE_VALUE) {
-		
-		winfileerror (fs);
-
-		return (false);
-		}
-
-
-	//We do not alter the accessed time.
-	fl = SetFileTime (h, &createtime, NULL, &modtime);
-
-	if (!fl)
-		err = GetLastError();
-
-	verify (CloseHandle (h));
-	
-	if (fl)
-		return (true);
-
-	oserror(err);
-	return (false);
-#endif
 	} /*setfiledates*/
 
 
-#ifdef MACVERSION
-boolean getfilepos (const tyfilespec *fs, Point *pt) {
-	
-	/*
-	mao 6/x/91: modified to work with new getmacilfeinfo/setmacfileinfo.
-	*/
-	
-	CInfoPBRec pb;
-	
-	if (!getmacfileinfo (fs, &pb)) 
-		return (false);
-	
-	if (foldertest (&pb)) 
-		*pt = pb.dirInfo.ioDrUsrWds.frLocation;
-	else	
-		*pt = pb.hFileInfo.ioFlFndrInfo.fdLocation;
-	
-	return (true);
-	} /*getfilepos*/
-
-
-boolean setfilepos (const tyfilespec *fs, Point pt) {
-
-	/*
-	6/x/91 mao: modified to work with new getmacilfeinfo/setmacfileinfo.
-	*/
-	
-	CInfoPBRec pb;
-	
-	if (!getmacfileinfo (fs, &pb)) 
-		return (false);
-	
-	if (foldertest (&pb)) 
-		pb.dirInfo.ioDrUsrWds.frLocation = pt;
-	else
-		pb.hFileInfo.ioFlFndrInfo.fdLocation = pt;
-	
-	return (setmacfileinfo (fs, &pb));
-	} /*setfilepos*/
-#endif
-
-boolean setfilecreated (const tyfilespec *fs, long when) {
+boolean setfilecreated (const ptrfilespec fs, long when) {
 	
 	/*
 	7/31/91 dmb: created
@@ -1222,129 +1490,203 @@ boolean setfilecreated (const tyfilespec *fs, long when) {
 	} /*setfilecreated*/
 
 
-boolean setfilemodified (const tyfilespec *fs, long when) {
-	
-	/*
-	7/31/91 dmb: created
-	*/
-	
-	unsigned long datecreated, datemodified;
-	
-	if (!getfiledates (fs, &datecreated, &datemodified))
-		return (false);
-	
-	return (setfiledates (fs, datecreated, when));
-	} /*setfilemodified*/
+#ifdef WIN95VERSION
 
-
-#ifdef MACVERSION
-boolean setfiletype (const tyfilespec *fs, OSType filetype) {
-	
-	/*
-	6/x/91 mao: modified to work with new getmacilfeinfo/setmacfileinfo.
-	*/
-	
-	CInfoPBRec pb;
-	
-	if (!getmacfileinfo (fs, &pb)) 
-		return (false);
-	
-	if (foldertest (&pb)) 
-		return (false);
-	
-	pb.hFileInfo.ioFlFndrInfo.fdType = filetype;
-	
-	return (setmacfileinfo (fs, &pb));
-	} /*setfiletype*/
-
-
-boolean setfilecreator (const tyfilespec *fs, OSType filecreator) {
-	
-	/*
-	6/x/91 mao: modified to work with new getmacilfeinfo/setmacfileinfo. Also, makes sure
-	folders aren't operated on
-	*/
-	
-	CInfoPBRec pb;
-	
-	if (!getmacfileinfo (fs, &pb)) 
-		return (false);
+	boolean setfilemodified (const ptrfilespec fs, long when) {
 		
-	if (foldertest (&pb)) 
-		return (false);
-	
-	pb.hFileInfo.ioFlFndrInfo.fdCreator = filecreator;
-	
-	return (setmacfileinfo (fs, &pb));
-	} /*setfilecreator*/
-#endif
-
-#ifdef MACVERSION
-static boolean copyfork (hdlfilenum fsource, hdlfilenum fdest, Handle hbuffer) {
-	
-	/*
-	copy either the data fork or resource fork of the indicated file.
-	
-	return true iff the file copy was successful.
-	
-	5/19/92 dmb: call langbackgroundtask when a script is running to make it more 
-	likely that we'll yield the processor to another app.  also, only allow 
-	background tasks if fork is larger than a single buffer.  note that if a script 
-	is copying a bunch of files in a loop, the interpreter is already allowing 
-	backgrounding between files.
-	*/
-
-	register long buffersize = GetHandleSize (hbuffer);
-	long ctbytes;
-	register OSErr errcode;
-	
-	SetFPos (fsource, fsFromStart, 0L); 
-	
-	SetFPos (fdest, fsFromStart, 0L);
-	
-	while (true) { 
+		/*
+		7/31/91 dmb: created
+		*/
 		
-		ctbytes = buffersize;
+		unsigned long datecreated, datemodified;
 		
-		HLock (hbuffer);
-		
-		errcode = FSRead (fsource, &ctbytes, *hbuffer);
-		
-		HUnlock (hbuffer);
-		
-		if ((errcode != noErr) && (errcode != eofErr)) {
-			
-			oserror (errcode);
-			
-			return (false);
-			}
-			
-		if (ctbytes == 0) /*last read got no bytes*/
-			return (true);
-		
-		HLock (hbuffer);
-		
-		errcode = FSWrite (fdest, &ctbytes, *hbuffer);
-		
-		HUnlock (hbuffer);
-		
-		if (oserror (errcode))
+		if (!getfiledates (fs, &datecreated, &datemodified))
 			return (false);
 		
-		if (ctbytes < buffersize) /*copy of fork is finished*/
-			return (true);
+		return (setfiledates (fs, datecreated, when));
+		} /*setfilemodified*/
+
+#endif // WIN95VERSION
+	
+
+#ifdef MACVERSION
+
+	boolean getfilepos (const ptrfilespec fs, Point *pt) {
 		
-		if (flscriptrunning)
-			langbackgroundtask (false);
+		//
+		// 2006-06-25 creedon: FSRef-ized
+		//
+		// 1991-06 mao: modified to work with new getmacilfeinfo/setmacfileinfo.
+		//
+		
+		FSCatalogInfo catinfo;
+		FSRefParam pb;
+		
+		if ( ! getmacfileinfo ( fs, &pb, &catinfo ) ) 
+			return ( false );
+		
+		if (foldertest (&pb)) 
+			*pt = ( ( FolderInfo * ) pb.catInfo -> finderInfo ) -> location;
+		else	
+			*pt = ( ( FileInfo * ) pb.catInfo -> finderInfo ) -> location;
+		
+		return (true);
+		} /*getfilepos*/
+
+
+	boolean setfilepos (const ptrfilespec fs, Point pt) {
+
+		//
+		// 2006-06-25 creedon: FSRef-ized
+		//
+		// 1991-06 mao: modified to work with new getmacilfeinfo/setmacfileinfo.
+		//
+		
+		FSCatalogInfo catinfo;
+		FSRefParam pb;
+		
+		if ( ! getmacfileinfo ( fs, &pb, &catinfo ) ) 
+			return ( false );
+		
+		if (foldertest (&pb)) 
+			( ( FolderInfo * ) pb.catInfo -> finderInfo ) -> location = pt;
 		else
-			shellbackgroundtask (); /*give background processes a chance*/
+			( ( FileInfo * ) pb.catInfo -> finderInfo ) -> location = pt;
 		
-		filebeachball (); /*roll the beachball cursor if there is one*/
-		} /*while*/
-	} /*copyfork*/
+		return (setmacfileinfo (fs, &pb));
+		} /*setfilepos*/
+		
+	
+	boolean setfilemodified (const ptrfilespec fs, const long when) {
+		
+		/*
+		7/31/91 dmb: created
+		*/
+		
+		unsigned long datecreated, datemodified;
+		
+		if (!getfiledates (fs, &datecreated, &datemodified))
+			return (false);
+		
+		return (setfiledates (fs, datecreated, when));
+		} /*setfilemodified*/
 
 
-#endif
+	boolean setfiletype (const ptrfilespec fs, OSType filetype) {
+		
+		/*
+		6/x/91 mao: modified to work with new getmacilfeinfo/setmacfileinfo.
+		*/
+		
+		FSCatalogInfo catinfo;
+		FSRefParam pb;
+		
+		// clearbytes ( &pb, sizeof ( pb ) );
+		// clearbytes ( &catinfo, sizeof ( catinfo ) );
+		
+		// pb.catInfo = &catinfo;
+		
+		if ( ! getmacfileinfo ( fs, &pb, &catinfo ) ) 
+			return ( false );
+		
+		if (foldertest (&pb)) 
+			return (false);
+		
+		( ( FileInfo * ) pb.catInfo -> finderInfo ) -> fileType = filetype;
+		
+		return (setmacfileinfo (fs, &pb));
+		} /*setfiletype*/
+
+
+	boolean setfilecreator (const ptrfilespec fs, OSType filecreator) {
+		
+		/*
+		6/x/91 mao: modified to work with new getmacilfeinfo/setmacfileinfo. Also, makes sure
+		folders aren't operated on
+		*/
+		
+		FSCatalogInfo catinfo;
+		FSRefParam pb;
+		
+		if ( ! getmacfileinfo ( fs, &pb, &catinfo ) ) 
+			return ( false );
+			
+		if (foldertest (&pb)) 
+			return (false);
+		
+		( ( FileInfo * ) pb.catInfo -> finderInfo ) -> fileCreator = filecreator;
+		
+		return (setmacfileinfo (fs, &pb));
+		} /*setfilecreator*/
+
+
+	/*
+	static boolean copyfork (hdlfilenum fsource, hdlfilenum fdest, Handle hbuffer) {
+		
+		//
+		copy either the data fork or resource fork of the indicated file.
+		
+		return true iff the file copy was successful.
+		
+		5/19/92 dmb: call langbackgroundtask when a script is running to make it more 
+		likely that we'll yield the processor to another app.  also, only allow 
+		background tasks if fork is larger than a single buffer.  note that if a script 
+		is copying a bunch of files in a loop, the interpreter is already allowing 
+		backgrounding between files.
+		//
+
+		register long buffersize = GetHandleSize (hbuffer);
+		long ctbytes;
+		register OSErr errcode;
+		
+		SetFPos (fsource, fsFromStart, 0L); 
+		
+		SetFPos (fdest, fsFromStart, 0L);
+		
+		while (true) { 
+			
+			ctbytes = buffersize;
+			
+			HLock (hbuffer);
+			
+			errcode = FSRead (fsource, &ctbytes, *hbuffer);
+			
+			HUnlock (hbuffer);
+			
+			if ((errcode != noErr) && (errcode != eofErr)) {
+				
+				oserror (errcode);
+				
+				return (false);
+				}
+				
+			if (ctbytes == 0) // last read got no bytes
+				return (true);
+			
+			HLock (hbuffer);
+			
+			errcode = FSWrite (fdest, &ctbytes, *hbuffer);
+			
+			HUnlock (hbuffer);
+			
+			if (oserror (errcode))
+				return (false);
+			
+			if (ctbytes < buffersize) // copy of fork is finished
+				return (true);
+			
+			if (flscriptrunning)
+				langbackgroundtask (false);
+			else
+				shellbackgroundtask (); // give background processes a chance
+			
+			filebeachball (); // roll the beachball cursor if there is one
+			} // while
+		} // copyfork
+	*/
+		
+#endif // MACVERSION
+
 
 boolean largefilebuffer (Handle *hbuffer) {
 	
@@ -1412,336 +1754,143 @@ boolean largefilebuffer (Handle *hbuffer) {
 
 #ifdef MACVERSION
 
-static pascal OSErr FSpCreateMinimum (const FSSpec *fs)
+extern OSStatus LSIsApplication( const FSRef *inRef, Boolean *outIsApplication,
+                          Boolean *outIsBundled )
 {
-	HParamBlockRec pb;
-	
-	pb.fileParam.ioNamePtr = (StringPtr)(*fs).name;
-	
-	pb.fileParam.ioVRefNum = (*fs).vRefNum;
-	
-	pb.ioParam.ioVersNum = 0;
-	
-	pb.fileParam.ioDirID = (*fs).parID;
-	
-	return (PBHCreateSync (&pb));
-	} /*FSpCreateMinimum*/
+  LSItemInfoRecord  info;
+  OSStatus  err = LSCopyItemInfoForRef( inRef, kLSRequestBasicFlagsOnly,
+                                        &info );
+  
+  if ( err == noErr )
+  {
+    *outIsApplication = ( kLSItemInfoIsApplication &info.flags ) != 0;
+    *outIsBundled = ( kLSItemInfoIsPackage &info.flags ) != 0;
+  }
+  return( err );
+}
 
+	//
+	// ConvertCStringToHFSUniStr is from HelloWorldTool.c of FSCopyObject with no changes, I didn't want to include
+	// HelloWorldTool.c in this project because there is a whole bunch of code we don't need
+	//
 
-static pascal OSErr FSpOpenAware (const tyfilespec *fs, boolean flresource, short denyModes, hdlfilenum *refNum) {
-	
-	/*
-	3.0.2 dmb: customized version of HOpenAware from MoreFiles 1.1
-	*/
-	
-	HParamBlockRec pb;
-	OSErr err;
-	GetVolParmsInfoBuffer volParmsInfo;
-	long infoSize = sizeof (GetVolParmsInfoBuffer);
-	
-	pb.ioParam.ioNamePtr = (StringPtr) (*fs).name;
-	pb.ioParam.ioVRefNum = (*fs).vRefNum;
-	pb.ioParam.ioVersNum = 0;
-	pb.ioParam.ioMisc = nil;
-	
-	/* 
-	get volume attributes
-	this preflighting is needed because Foreign File Access based file systems don't
-	return the correct error result to the OpenDeny call
-	*/
-	pb.ioParam.ioBuffer = (Ptr) &volParmsInfo;
-	pb.ioParam.ioReqCount = infoSize;
-	
-	err = PBHGetVolParmsSync (&pb);
-	
-	pb.fileParam.ioDirID = (*fs).parID;
-	
-	/*
-	err = HGetVolParms ((StringPtr) (*fs).name, (*fs).vRefNum, &volParmsInfo, &infoSize);
-	*/
-	
-	if (err == noErr) {
-		
-		/* if volume supports OpenDeny, use it and return */
-		if (hasOpenDeny (volParmsInfo)) {
-			
-			pb.accessParam.ioDenyModes = denyModes;
-			
-			if (flresource)
-				err = PBHOpenRFDenySync (&pb);
+	#define kCouldNotCreateCFString	4
+	#define kCouldNotGetStringData	5
+
+	static OSErr ConvertCStringToHFSUniStr(const char* cStr, HFSUniStr255 *uniStr)
+	{
+		OSErr err = noErr;
+		CFStringRef tmpStringRef = CFStringCreateWithCString( kCFAllocatorDefault, cStr, kCFStringEncodingMacRoman );
+		if( tmpStringRef != NULL )
+		{
+			if( CFStringGetCString( tmpStringRef, (char*)uniStr->unicode, sizeof(uniStr->unicode), kCFStringEncodingUnicode ) )
+				uniStr->length = CFStringGetLength( tmpStringRef );
 			else
-				err = PBHOpenDenySync (&pb);
-			
-			*refNum = pb.ioParam.ioRefNum;
-			
-			return (err);
-			}
+				err = kCouldNotGetStringData;
+				
+			CFRelease( tmpStringRef );
 		}
-	else
-		if (err != paramErr)	/* paramErr is OK, it just means this volume doesn't support GetVolParms */
-			return (err);
-	
-	/*
-	OpenDeny isn't supported, so try File Manager Open functions
-	Set File Manager permissions to closest thing possible
-	*/
-	pb.ioParam.ioPermssn = ((denyModes == dmWr) || (denyModes == dmRdWr)) ? (fsRdWrShPerm) : (denyModes % 4);
-	
-	if (flresource)
-		err = PBHOpenRFSync (&pb);
-	
-	else {
+		else
+			err = kCouldNotCreateCFString;
 		
-		err = PBHOpenDFSync (&pb);				/* Try OpenDF */
-		
-		if (err == paramErr)
-			err = PBHOpenSync (&pb);			/* OpenDF not supported, so try Open */
-		}
-	
-	*refNum = pb.ioParam.ioRefNum;
-	
-	return (err);
-	} /*FSpOpenAware*/
+		return err;
+	}
 
-
-static boolean copyfileattrs (const tyfilespec *fsource, const tyfilespec *fdest, boolean flcopylockbit) {
-	
-	CInfoPBRec pb;
-	OSErr err;
-	boolean flfolder;
-	
-	pb.hFileInfo.ioVRefNum = (*fsource).vRefNum;
-	pb.hFileInfo.ioDirID = (*fsource).parID;
-	pb.hFileInfo.ioNamePtr = (StringPtr) (*fsource).name;
-	pb.hFileInfo.ioFDirIndex = 0;
-	
-	err = PBGetCatInfoSync(&pb);
-	
-	if (err == noErr) {
-		
-		flfolder = (pb.hFileInfo.ioFlAttrib & 0x10);
-		
-		pb.hFileInfo.ioVRefNum = (*fdest).vRefNum;
-		pb.hFileInfo.ioDirID = (*fdest).parID;
-		pb.hFileInfo.ioNamePtr = (StringPtr) (*fdest).name;
-		
-		/* don't copy the hasBeenInited bit */
-		pb.hFileInfo.ioFlFndrInfo.fdFlags = (pb.hFileInfo.ioFlFndrInfo.fdFlags & 0xfeff);
-		
-		err = PBSetCatInfoSync(&pb);
-		
-		if ((err == noErr) && (flcopylockbit) && (pb.hFileInfo.ioFlAttrib & 0x01)) {
-			
-			err = PBHSetFLockSync ((HParmBlkPtr) &pb);
-			
-			if ((err != noErr) && (flfolder))
-				err = noErr; /* ignore lock errors if destination is directory */
-			}
-		}
-	
-	return (err);
-	} /*copyfileattrs*/
-
-
-boolean copyfile (const tyfilespec *fsource, const tyfilespec *fdest, boolean fldata, boolean flresources) {
-
-	/*
-	create a copy of the indicated file in the destination volume, with the indicated
-	name.  
-	
-	we allocate a good-sized buffer in the heap, then open and copy the data fork then
-	open and copy the resource fork of the source file.
-	
-	return true if the operation was successful, false otherwise.
-	
-	7/27/90 DW: add fldata, flresources -- allows selective copying of the two
-	forks of each file.  we assume one of these two booleans is true.
-	
-	3/16/92 dmb: maintain all public Finder flags, not just creator/type & dates
-	
-	3.0.2 dmb: use CreateMinimum and do things in special order for drop-box copies.
-	For details, see MoreFiles:FileCopy.c on the Reference Library CD. note that 
-	there are more details handled by the sample code that we're ignoring here. one 
-	is using CopyFile if src and dst are on the same server and the server supports 
-	that function. another is to open forks with deny modes set. maybe next time...
-	also, we now handle folders, so file.copy can retain folder attributes.
-	*/
-	
-	Handle hbuffer = nil;
-	short sourcefnum = 0, sourcernum = 0;
-	short destfnum = 0, destrnum = 0;
-	boolean fldestcreated = false;
-	boolean flsourcefolder, fldestfolder;
-	
-	if (!fileisfolder (fsource, &flsourcefolder))
-		return (false);
-	
-	if (flsourcefolder)
-		fldata = flresources = false;
-	
-	else {
-		
-		if (!largefilebuffer (&hbuffer)) 
-			return (false);
-		}
-	
-	if (fldata) {
-		
-		if (oserror (FSpOpenAware (fsource, false, dmRdDenyWr, &sourcefnum)))
-			goto error;
-		}
-	
-	if (flresources) {
-		
-		if (oserror (FSpOpenAware (fsource, true, dmRdDenyWr, &sourcernum)))
-			goto error;
-		}
-	
-	if (fileexists (fdest, &fldestfolder)) { /*file exists, delete it*/
-		
-		if (!deletefile (fdest))
-			goto error;
-		}
-	
-	setfserrorparam (fdest); /*in case error message takes a filename parameter*/
-	
-	if (flsourcefolder) {
-		
-		if (!newfolder (fdest))
-			goto error;
-		}
-	else {
-		
-		if (oserror (FSpCreateMinimum (fdest)))
-			goto error;
-		}
-	
-	fldestcreated = true;
-	
-	if (oserror (copyfileattrs (fsource, fdest, false)))
-		goto error;
-	
-	if (fldata) {
-		
-		if (oserror (FSpOpenAware (fdest, false, dmWrDenyRdWr, &destfnum)))
-			goto error;
-		}
-	
-	if (flresources) {
-		
-		if (oserror (FSpOpenAware (fdest, true, dmWrDenyRdWr, &destrnum)))
-			goto error;
-		}
-	
-	if (fldata) {
-		
-		if (!copyfork (sourcefnum, destfnum, hbuffer)) /*copy data fork*/
-			goto error;
-		
-		closefile (sourcefnum); 
-		
-		closefile (destfnum); 
-		
-		sourcefnum = 0;
-		
-		destfnum = 0;
-		}
-	
-	if (flresources) {
-		
-		if (!copyfork (sourcernum, destrnum, hbuffer)) /*copy resource fork*/
-			goto error;
-		
-		closefile (sourcernum);
-			
-		closefile (destrnum); 
-		
-		sourcernum = 0;
-		
-		destrnum = 0;
-		}
-	
-	disposehandle (hbuffer);
-	
-	hbuffer = nil; /*if error don't dispose of it again*/
-	
-	copyfileattrs (fsource, fdest, true); /*ignore error*/
-	
-	return (true); /*the file copy was successful*/
-	
-	error: /*goto here to release the buffer, close files and return false*/
-	
-	if (hbuffer != nil)
-		disposehandle (hbuffer);
-	
-	if (sourcefnum != 0)
-		closefile (sourcefnum);
-	
-	if (sourcernum != 0)
-		closefile (sourcernum);
-	
-	if (destfnum != 0)
-		closefile (destfnum);
-	
-	if (destrnum != 0)
-		closefile (destrnum);
-	
-	if (fldestcreated)
-		deletefile (fdest); /*no file created on error*/
-	
-	return (false);
-	} /*copyfile*/
 #endif
 
+boolean copyfile ( const ptrfilespec fsource, const ptrfilespec fdest, boolean fldata, boolean flresources ) {
 
-#ifdef WIN95VERSION
-boolean copyfile (const tyfilespec *fsource, const tyfilespec *fdest, boolean fldata, boolean flresources) {
+	//
+	// create a copy of the indicated file in the destination folder or volume, with the indicated name.
+	//
+	// 2006-06-18 creedon:	for Mac, FSRef-ized
+	//
+	//				combined the two definitions (Mac and Win) of this function into one deleted old code, see
+	//				revision 1329 use FSCopyObject code
+	//
+	// 5.0.1 dmb: for Windows, if the file exists, overwrite it.
+	//
 	
-	/*
-	5.0.1 dmb: if the file exists, overwrite it.
-	*/
-
-	char fn[300];
-	char fn2[300];
-	boolean flcreatefolder;
-	boolean fldestfolder;
-
-	copystring (fsname (fsource), fn);
-	copystring (fsname (fdest), fn2);
-
-	cleanendoffilename (fn);
-	cleanendoffilename (fn2);
-
-	nullterminate (fn);
-	nullterminate (fn2);
-
-	if (!fileisfolder (fsource, &flcreatefolder))
-		return (false);
-
-	if (flcreatefolder) {
+	#ifdef MACVERSION
+	
+		bigstring bs;
+		boolean flsourcefolder;
+		HFSUniStr255 name;
 		
-		if (fileexists (fdest, &fldestfolder)) { /*file exists, delete it*/
+		if ( ! fileisfolder ( fsource, &flsourcefolder ) )
+			return ( false );
+		
+		if ( flsourcefolder ) {
+		
+			setfserrorparam ( fdest ); // in case error message takes a filename parameter		
+
+			if ( ! newfolder ( fdest ) )
+				return ( false );
+				
+			return ( true );
+			}
+				
+		getfsfile ( fdest, bs );
+		
+		convertpstring ( bs );
+		
+		if ( oserror ( ConvertCStringToHFSUniStr ( bs , &name ) ) )
+			return ( false );
+		
+		if ( oserror ( FSCopyObject ( &( *fsource ).fsref, &( *fdest ).fsref, 0, kFSCatInfoNone, kDupeActionReplace, &name,
+							false, false, NULL, NULL, NULL, NULL ) ) )
+			return ( false );
 			
-			if (!deletefile (fdest))
-				return (false);
+		return ( true ); // the file copy was successful
+	
+	#endif // MACVERSION
+
+	#ifdef WIN95VERSION
+	
+		char fn[300];
+		char fn2[300];
+		boolean flcreatefolder;
+		boolean fldestfolder;
+
+		copystring (fsname (fsource), fn);
+		copystring (fsname (fdest), fn2);
+
+		cleanendoffilename (fn);
+		cleanendoffilename (fn2);
+
+		nullterminate (fn);
+		nullterminate (fn2);
+
+		if (!fileisfolder (fsource, &flcreatefolder))
+			return (false);
+
+		if (flcreatefolder) {
+			
+			if (fileexists (fdest, &fldestfolder)) { /*file exists, delete it*/
+				
+				if (!deletefile (fdest))
+					return (false);
+				}
+			
+			if (CreateDirectoryEx (stringbaseaddress(fn), stringbaseaddress(fn2), NULL))
+				return (true);
+
+			winfileerror (fdest);
+
+			return (false);
 			}
 		
-		if (CreateDirectoryEx (stringbaseaddress(fn), stringbaseaddress(fn2), NULL))
+		if (CopyFile (stringbaseaddress (fn), stringbaseaddress(fn2), false))
 			return (true);
 
 		winfileerror (fdest);
 
 		return (false);
-		}
 	
-	if (CopyFile (stringbaseaddress (fn), stringbaseaddress(fn2), false))
-		return (true);
+	#endif // WIN95VERSION
+	
+	} // copyfile
 
-	winfileerror (fdest);
-
-	return (false);
-	} /*copyfile*/
-#endif
 
 short filegetapplicationrnum (void) {
 
@@ -1769,234 +1918,244 @@ short filegetsystemvnum (void) {
 #endif
 
 #ifdef MACVERSION
-static boolean pathtovolume (bigstring bspath, short *vnum) {
+
+	static boolean pathtovolume (bigstring bspath, short *vnum) {
 	
-	if (countwords (bspath, chpathseparator) > 1) {
+		//
+		// 2006-06-25 creedon: FSRef-ized
+		//
 		
-		oserror (errorVolume); /*no such volume*/
+		if (countwords (bspath, chpathseparator) > 1) {
+			
+			oserror (errorVolume); // no such volume
+			
+			return (false);
+			}
 		
-		return (false);
-		}
+		tyfilespec fs;
+		
+		if (!fileparsevolname (bspath, &fs )) {
+			
+			oserror (errorVolume); // no such volume
+			
+			return (false);
+			}
+		
+		getfsvolume ( &fs, ( long * ) vnum );
+		
+		
+		return (true);
+		
+		} // pathtovolume
 	
-	if (!fileparsevolname (bspath, vnum, nil)) {
-		
-		oserror (errorVolume); /*no such volume*/
-		
-		return (false);
-		}
-	
-	return (true);
-	} /*pathtovolume*/
 #endif
 
 //Timothy Paustian's comments
 //warning the values returned by getspecialfolderpath on OS X are very different
 //than classic Mac OS
 
-boolean getspecialfolderpath (bigstring bsvol, bigstring bsfolder, boolean flcreate, tyfilespec *fs) {
-	/*
-	2006-04-11 creedon: windows now honors flcreate
-				   for windows added; CSIDL_PROGRAM_FILES, CSIDL_MYDOCUMENTS, CSIDL_MYMUSIC,
-						CSIDL_MYPICTURES, CSIDL_MYVIDEO;
-				   for windows replaced more complex code with CSIDL_SYSTEM, CSIDL_WINDOWS
-	*/
+boolean getspecialfolderpath ( bigstring bsvol, bigstring bsfolder, boolean flcreate, ptrfilespec fs ) {
 
-#ifdef MACVERSION
-	/*
-	9/1/92 dmb: last new verb for 2.0.  (?)
-	*/
-	
-	short vnum;
-	short ixlist;
-	long dirid;
-	OSType foldertype;
-	long attrs;
-	OSErr errcode = errorNone;
-	bigstring bsfirst;
-	
-	if (!(gestalt (gestaltFindFolderAttr, &attrs) && (attrs & (1 << gestaltFindFolderPresent))))
-		return (false);
-	
-	if (isemptystring (bsvol))
+	//
+	// 2006-08-24 creedon: for Mac, FSRef-ized
+	//
+	// 2006-04-11 creedon: windows now honors flcreate
+	//
+	//			       for windows added; CSIDL_PROGRAM_FILES, CSIDL_MYDOCUMENTS, CSIDL_MYMUSIC,
+	//			       CSIDL_MYPICTURES, CSIDL_MYVIDEO
+	//
+	//			       for windows replaced more complex code with CSIDL_SYSTEM, CSIDL_WINDOWS
+	//
+	// 1992-09-01 dmb: last new verb for 2.0.  (?)
+	//
 
-		#if TARGET_API_MAC_CARBON
-		vnum = kUserDomain;
-		#else
-		vnum = kOnSystemDisk;
-		#endif
-	else {
-		if (!pathtovolume (bsvol, &vnum))
+	#ifdef MACVERSION
+	
+		short vnum;
+		short ixlist;
+		OSType foldertype;
+		long attrs;
+		OSErr err = errorNone;
+		bigstring bsfirst;
+		
+		if (!(gestalt (gestaltFindFolderAttr, &attrs) && (attrs & (1 << gestaltFindFolderPresent))))
 			return (false);
-		}
-	
-	setoserrorparam (bsfolder);
-	
-	if (stringlength (bsfolder) == sizeof (OSType)) /*received folder type code*/
-		stringtoostype (bsfolder, &foldertype);
-	
-	else {
-		firstword (bsfolder, chspace, bsfirst);
 		
-		if (findstringlist (bsfirst, specialfolderlistnumber, &ixlist))
-		{
-			foldertype = specialfolders [ixlist];
-			#if TARGET_API_MAC_CARBON
-			//temp items, we want to redirect to the users domain.
-			//if we don't do this then it is a read only directory at the root.
-			if (ixlist == 11)
-				vnum = kUserDomain;
-			#endif
-		}
-		else
-			errcode = dirNFErr;
-	}
-	
-	if (errcode == noErr)
-		errcode = FindFolder (vnum, foldertype, flcreate, &vnum, &dirid);
+		if (isemptystring (bsvol))
 
-	
-	if (errcode == noErr) {
-		
-		errcode = FSMakeFSSpec (vnum, dirid, nil, fs);
-		
-		/*
-		if (!directorytopath (dirid, vnum, bspath)) /%shouldn't fail%/
-			errcode = dirNFErr;
-		*/
-		}
-	
-	return (!oserror (errcode));
-#endif
+			vnum = kUserDomain;
 
-#ifdef WIN95VERSION
-	int nFolder = -1;
-	// int res;
-	ITEMIDLIST * il;
-	// Global pointer to the shell's IMalloc interface.  
-	LPMALLOC g_pMalloc = NULL;  
-
-	/* if (equalidentifiers ("\x6" "system", bsfolder)) {
-		unsigned char str[MAX_PATH];
-
-		res = GetSystemDirectory (str, MAX_PATH);
-		if (res == 0) {
-			return (! oserror(GetLastError()));
+		else {
+			if (!pathtovolume (bsvol, &vnum))
+				return (false);
 			}
 		
-		if (res > 255)
-			res = 255;
+		setoserrorparam (bsfolder);
+		
+		if (stringlength (bsfolder) == sizeof (OSType)) /*received folder type code*/
+			stringtoostype (bsfolder, &foldertype);
+		
+		else {
+			firstword (bsfolder, chspace, bsfirst);
+			
+			if (findstringlist (bsfirst, specialfolderlistnumber, &ixlist))
+			{
+				foldertype = specialfolders [ixlist];
 
-		memmove (stringbaseaddress(fsname(fs)), str, res);
-		setstringlength(fsname(fs), res);
-		pushchar ('\\', fsname(fs));
-		nullterminate (fsname(fs));
-		return (true);
+				//temp items, we want to redirect to the users domain.
+				//if we don't do this then it is a read only directory at the root.
+				if (ixlist == 11)
+					vnum = kUserDomain;
+
+			}
+			else
+				err = dirNFErr;
 		}
+		
+		if ( err == noErr ) {
+		
+			err = FSFindFolder ( vnum, foldertype, flcreate, &( *fs ).fsref );
 
-	if (equalidentifiers ("\x7" "windows", bsfolder)) {
-		unsigned char str[MAX_PATH];
-
-		res = GetWindowsDirectory (str, MAX_PATH);
-		if (res == 0) {
-			return (! oserror(GetLastError()));
+			( void ) getfilespecparent ( fs );
+			
 			}
+		
+		return ( ! oserror ( err ) );
+		
+	#endif
 
-		if (res > 255)
-			res = 255;
+	#ifdef WIN95VERSION
+	
+		int nFolder = -1;
+		// int res;
+		ITEMIDLIST * il;
+		// Global pointer to the shell's IMalloc interface.  
+		LPMALLOC g_pMalloc = NULL;  
 
-		memmove (stringbaseaddress(fsname(fs)), str, res);
-		setstringlength(fsname(fs), res);
-		pushchar ('\\', fsname(fs));
-		nullterminate (fsname(fs));
-		return (true);
-		} */
+		/* if (equalidentifiers ("\x6" "system", bsfolder)) {
+			unsigned char str[MAX_PATH];
 
-	if (equalidentifiers ("\x9" "bitbucket", bsfolder))
-		nFolder = CSIDL_BITBUCKET;
-	else if (equalidentifiers ("\x8" "controls", bsfolder))
-		nFolder = CSIDL_CONTROLS;
-	else if (equalidentifiers ("\x7" "desktop", bsfolder))
-		nFolder = CSIDL_DESKTOP;
-	else if (equalidentifiers ("\x10" "desktopdirectory", bsfolder))
-		nFolder = CSIDL_DESKTOPDIRECTORY;
-	else if (equalidentifiers ("\x6" "drives", bsfolder))
-		nFolder = CSIDL_DRIVES;
-	else if (equalidentifiers ("\x5" "fonts", bsfolder))
-		nFolder = CSIDL_FONTS;
-	else if (equalidentifiers ("\x7" "nethood", bsfolder))
-		nFolder = CSIDL_NETHOOD;
-	else if (equalidentifiers ("\x7" "network", bsfolder))
-		nFolder = CSIDL_NETWORK;
-	else if (equalidentifiers ("\x8" "personal", bsfolder))
-		nFolder = CSIDL_PERSONAL;
-	else if (equalidentifiers ("\x8" "printers", bsfolder))
-		nFolder = CSIDL_PRINTERS;
-	else if (equalidentifiers ("\x8" "programs", bsfolder))
-		nFolder = CSIDL_PROGRAMS;
-	else if (equalidentifiers ("\x6" "recent", bsfolder))
-		nFolder = CSIDL_RECENT;
-	else if (equalidentifiers ("\x6" "sendto", bsfolder))
-		nFolder = CSIDL_SENDTO;
-	else if (equalidentifiers ("\x9" "startmenu", bsfolder))
-		nFolder = CSIDL_STARTMENU;
-	else if (equalidentifiers ("\x7" "startup", bsfolder))
-		nFolder = CSIDL_STARTUP;
-	else if (equalidentifiers ("\x9" "templates", bsfolder))
-		nFolder = CSIDL_TEMPLATES;
-	else if (equalidentifiers ("\xD" "program files", bsfolder))
-		nFolder = CSIDL_PROGRAM_FILES;
-	else if (equalidentifiers ("\x6" "system", bsfolder))
-		nFolder = CSIDL_SYSTEM;
-	else if (equalidentifiers ("\x7" "windows", bsfolder))
-		nFolder = CSIDL_WINDOWS;
-	else if (equalidentifiers ("\xC" "my documents", bsfolder))
-		nFolder = CSIDL_MYDOCUMENTS;
-	else if (equalidentifiers ("\x8" "my music", bsfolder))
-		nFolder = CSIDL_MYMUSIC;
-	else if (equalidentifiers ("\xB" "my pictures", bsfolder))
-		nFolder = CSIDL_MYPICTURES;
-	else if (equalidentifiers ("\x8" "my video", bsfolder))
-		nFolder = CSIDL_MYVIDEO;
-
-	if (flcreate)
-		nFolder += CSIDL_FLAG_CREATE;
-
-if (nFolder != -1) {
-		// Get the shell's allocator. 
-		if (!SUCCEEDED(SHGetMalloc(&g_pMalloc))) {
-			oserror (ERROR_INVALID_FUNCTION);
-			return (false); 
-			}
-
-		if (SHGetSpecialFolderLocation (NULL, nFolder, &il) == NOERROR) {
-			/*process itemlist */
-			if (SHGetPathFromIDList (il, stringbaseaddress(fsname(fs)))) {
-				setstringlength (fsname(fs), strlen(stringbaseaddress(fsname(fs))));
-				pushchar ('\\', fsname(fs));
-				nullterminate (fsname(fs));
-
-				// Free the PIDL 
-				g_pMalloc->lpVtbl->Free(g_pMalloc, il); 
-
-				// Release the shell's allocator. 
-				g_pMalloc->lpVtbl->Release(g_pMalloc); 
-				return (true);
+			res = GetSystemDirectory (str, MAX_PATH);
+			if (res == 0) {
+				return (! oserror(GetLastError()));
 				}
+			
+			if (res > 255)
+				res = 255;
+
+			memmove (stringbaseaddress(fsname(fs)), str, res);
+			setstringlength(fsname(fs), res);
+			pushchar ('\\', fsname(fs));
+			nullterminate (fsname(fs));
+			return (true);
 			}
-		}
 
-    // Release the shell's allocator. mnbmj
-	if (g_pMalloc != NULL)
-		g_pMalloc->lpVtbl->Release(g_pMalloc); 
+		if (equalidentifiers ("\x7" "windows", bsfolder)) {
+			unsigned char str[MAX_PATH];
 
-	oserror (ERROR_INVALID_FUNCTION);
-	return (false);
-#endif
-	} /*getspecialfolderpath*/
+			res = GetWindowsDirectory (str, MAX_PATH);
+			if (res == 0) {
+				return (! oserror(GetLastError()));
+				}
+
+			if (res > 255)
+				res = 255;
+
+			memmove (stringbaseaddress(fsname(fs)), str, res);
+			setstringlength(fsname(fs), res);
+			pushchar ('\\', fsname(fs));
+			nullterminate (fsname(fs));
+			return (true);
+			} */
+
+		if (equalidentifiers ("\x9" "bitbucket", bsfolder))
+			nFolder = CSIDL_BITBUCKET;
+		else if (equalidentifiers ("\x8" "controls", bsfolder))
+			nFolder = CSIDL_CONTROLS;
+		else if (equalidentifiers ("\x7" "desktop", bsfolder))
+			nFolder = CSIDL_DESKTOP;
+		else if (equalidentifiers ("\x10" "desktopdirectory", bsfolder))
+			nFolder = CSIDL_DESKTOPDIRECTORY;
+		else if (equalidentifiers ("\x6" "drives", bsfolder))
+			nFolder = CSIDL_DRIVES;
+		else if (equalidentifiers ("\x5" "fonts", bsfolder))
+			nFolder = CSIDL_FONTS;
+		else if (equalidentifiers ("\x7" "nethood", bsfolder))
+			nFolder = CSIDL_NETHOOD;
+		else if (equalidentifiers ("\x7" "network", bsfolder))
+			nFolder = CSIDL_NETWORK;
+		else if (equalidentifiers ("\x8" "personal", bsfolder))
+			nFolder = CSIDL_PERSONAL;
+		else if (equalidentifiers ("\x8" "printers", bsfolder))
+			nFolder = CSIDL_PRINTERS;
+		else if (equalidentifiers ("\x8" "programs", bsfolder))
+			nFolder = CSIDL_PROGRAMS;
+		else if (equalidentifiers ("\x6" "recent", bsfolder))
+			nFolder = CSIDL_RECENT;
+		else if (equalidentifiers ("\x6" "sendto", bsfolder))
+			nFolder = CSIDL_SENDTO;
+		else if (equalidentifiers ("\x9" "startmenu", bsfolder))
+			nFolder = CSIDL_STARTMENU;
+		else if (equalidentifiers ("\x7" "startup", bsfolder))
+			nFolder = CSIDL_STARTUP;
+		else if (equalidentifiers ("\x9" "templates", bsfolder))
+			nFolder = CSIDL_TEMPLATES;
+		else if (equalidentifiers ("\xD" "program files", bsfolder))
+			nFolder = CSIDL_PROGRAM_FILES;
+		else if (equalidentifiers ("\x6" "system", bsfolder))
+			nFolder = CSIDL_SYSTEM;
+		else if (equalidentifiers ("\x7" "windows", bsfolder))
+			nFolder = CSIDL_WINDOWS;
+		else if (equalidentifiers ("\xC" "my documents", bsfolder))
+			nFolder = CSIDL_MYDOCUMENTS;
+		else if (equalidentifiers ("\x8" "my music", bsfolder))
+			nFolder = CSIDL_MYMUSIC;
+		else if (equalidentifiers ("\xB" "my pictures", bsfolder))
+			nFolder = CSIDL_MYPICTURES;
+		else if (equalidentifiers ("\x8" "my video", bsfolder))
+			nFolder = CSIDL_MYVIDEO;
+
+		if (flcreate)
+			nFolder += CSIDL_FLAG_CREATE;
+
+		if (nFolder != -1) {
+				// Get the shell's allocator. 
+				if (!SUCCEEDED(SHGetMalloc(&g_pMalloc))) {
+					oserror (ERROR_INVALID_FUNCTION);
+					return (false); 
+					}
+
+				if (SHGetSpecialFolderLocation (NULL, nFolder, &il) == NOERROR) {
+					/*process itemlist */
+					if (SHGetPathFromIDList (il, stringbaseaddress(fsname(fs)))) {
+						setstringlength (fsname(fs), strlen(stringbaseaddress(fsname(fs))));
+						pushchar ('\\', fsname(fs));
+						nullterminate (fsname(fs));
+
+						// Free the PIDL 
+						g_pMalloc->lpVtbl->Free(g_pMalloc, il); 
+
+						// Release the shell's allocator. 
+						g_pMalloc->lpVtbl->Release(g_pMalloc); 
+						return (true);
+						}
+					}
+				}
+
+		// Release the shell's allocator. mnbmj
+		if (g_pMalloc != NULL)
+			g_pMalloc->lpVtbl->Release(g_pMalloc); 
+
+		oserror (ERROR_INVALID_FUNCTION);
+		return (false);
+		
+	#endif
+	
+	} // getspecialfolderpath
 
 
 #ifdef MACVERSION
-boolean ejectvol (const tyfilespec *fs) {
+boolean ejectvol (const ptrfilespec fs) {
 #if TARGET_API_MAC_CARBON
 #pragma unused (fs)
 	return false;
@@ -2020,7 +2179,7 @@ boolean ejectvol (const tyfilespec *fs) {
 #endif
 	
 	
-boolean isejectable (const tyfilespec *fs, boolean *flejectable) {
+boolean isejectable (const ptrfilespec fs, boolean *flejectable) {
 	
 	tyvolinfo volinfo;
 	
@@ -2033,7 +2192,7 @@ boolean isejectable (const tyfilespec *fs, boolean *flejectable) {
 	} /*isejectable*/
 
 	
-boolean getfreespace (const tyfilespec *fs, long *ctfreebytes) {
+boolean getfreespace (const ptrfilespec fs, long *ctfreebytes) {
 
 	/*
 	6/x/91 mao
@@ -2064,123 +2223,112 @@ static void volumeinfoerror (OSErr errnum) {
 	}/*volumeinfoerror*/
 
 
-boolean langgetextendedvolumeinfo (const tyfilespec *fs, double *totalbytes, double *freebytes) {
+boolean langgetextendedvolumeinfo (const ptrfilespec fs, double *totalbytes, double *freebytes) {
 
-	/*
-	6.1b16 AR: Return number of free bytes and total number of bytes for the volume.
-	This code is supposed to work flawlessly with volumes over 2 GB.
-	
-	For the Mac version, we delegate the actual work to XGetVInfo in MoreFilesExtras.h.
-	
-	For the Windows version, we use GetFreeDiskSpaceEx if available. Otherwise we fall
-	back to GetFreeDiskSpace. According to MSDN info that's probably neccessary if we
-	run on Win95 Release 1 which didn't support volume sizes over 2 GB.
-	
-	flsupportslargevolumes is initialized in filestartup in fileverbs.c. (Win32 only)
-	*/
+	//
+	// This code is supposed to work flawlessly with volumes over 2 GB.
+	// 
+	// For the Mac version, we delegate the actual work to XGetVInfo in
+	// MoreFilesExtras.h.
+	// 
+	// For the Windows version, we use GetFreeDiskSpaceEx if available. Otherwise
+	// we fall back to GetFreeDiskSpace. According to MSDN info that's probably
+	// neccessary if we run on Win95 Release 1 which didn't support volume sizes
+	// over 2 GB.
+	//
+	// flsupportslargevolumes is initialized in filestartup in fileverbs.c. (Win32 only)
+	//
+	// 2006-06-25 creedon: for Mac, FSRef-ized
+	//
+	// 6.1b16 AR: Return number of free bytes and total number of bytes for the volume.
+	//
 
-	OSErr errnum = noErr;
-	bigstring volname;
-#ifdef MACVERSION
-	UInt64 ui64totalbytes, ui64freebytes;
-	#if !TARGET_API_MAC_CARBON
-		short vrefnum;
-	#endif
-#endif
+	#ifdef WIN95VERSION
+
+		bigstring volname;
+
+	#endif // WIN95VERSION
 
 	*totalbytes = 0.0;
 
 	*freebytes = 0.0;
 
-	copystring (fsname(fs), volname);
+	#ifdef MACVERSION
 
-
-/*	JES 12/09/2002 -- 9.1b2 -- Don't do this test, since it fails on builds made with CW8
-
-	if (!fileisvolume (fs)) {
-	
-		bigstring bserr;
-
-		copystring ("\x45" "Can't get volume information because \"^0\" is not a valid volume name.", bserr);
-
-		parsedialogstring (bserr, volname, nil, nil, nil, bserr);
-
-		shellerrormessage (bserr);
+		 /*
+		 2005-01-24 creedon - reversed free and total parameters to match FSGetVInfo and XGetVInfo functions
+			< http://groups.yahoo.com/group/frontierkernel/message/846 >
+		*/
 		
-		return (false);
-		}
-*/
+		OSErr err = noErr;
+		FSVolumeInfo volinfo;
+		long vnum;
+		
+		getfsvolume ( fs, &vnum );
+		
+		err = FSGetVolumeInfo ( vnum, 0, NULL, kFSVolInfoSizes, &volinfo, NULL, NULL );
 
-#ifdef MACVERSION
-
-	 /*
-	 2005-01-24 creedon - reversed free and total parameters to match FSGetVInfo and XGetVInfo functions
-		< http://groups.yahoo.com/group/frontierkernel/message/846 >
-	*/
-	
-	#if TARGET_API_MAC_CARBON
-		errnum = FSGetVInfo (fs->vRefNum, nil, &ui64freebytes, &ui64totalbytes);
-	#else
-		errnum = XGetVInfo (fs->vRefNum, nil, &vrefnum, &ui64freebytes, &ui64totalbytes);
-	#endif
-
-	if (errnum != noErr) {
-		volumeinfoerror (errnum);
-		return (false);
-		}
-
-	*totalbytes = (double) ui64totalbytes;
-	*freebytes = (double) ui64freebytes;
-
-#endif
-
-
-#ifdef WIN95VERSION
-
-	cleanendoffilename (volname);
-	
-	pushchar ('\\', volname);
-	
-	nullterminate (volname);
-
-	if (flsupportslargevolumes) {
-
-		ULARGE_INTEGER freeBytesAvailableToCaller, totalNumberOfBytes, totalNumberOfFreeBytes;
-
-		if ((*adrGetDiskFreeSpaceEx) ((unsigned short *) stringbaseaddress (volname), &freeBytesAvailableToCaller,
-				&totalNumberOfBytes, &totalNumberOfFreeBytes)) {
-
-			*totalbytes = (double) (LONGLONG) totalNumberOfBytes.QuadPart;
+		if ( err != noErr ) {
+		
+			volumeinfoerror ( err );
 			
-			*freebytes = (double) (LONGLONG) freeBytesAvailableToCaller.QuadPart;
+			return ( false );
 			}
 
-		else
-			if (GetLastError () == ERROR_CALL_NOT_IMPLEMENTED)
-				flsupportslargevolumes = false;
-		}
+		*totalbytes = (double) volinfo.totalBytes;
+		*freebytes = (double) volinfo.freeBytes;
 
-	if (!flsupportslargevolumes) {
+	#endif // MACVERSION
 
-		DWORD sectorsPerCluster, bytesPerSector, numberOfFreeClusters, totalNumberOfClusters;
+	#ifdef WIN95VERSION
+
+		getfsfile ( fs, volname);
+
+		cleanendoffilename (volname);
 		
-		if (GetDiskFreeSpace (stringbaseaddress (volname), &sectorsPerCluster, &bytesPerSector,
-				&numberOfFreeClusters, &totalNumberOfClusters)) {
+		pushchar ('\\', volname);
+		
+		nullterminate (volname);
 
-			double bytespercluster = (double) sectorsPerCluster * (double) bytesPerSector;
+		if (flsupportslargevolumes) {
 
-			*totalbytes = bytespercluster * (double) totalNumberOfClusters;
+			ULARGE_INTEGER freeBytesAvailableToCaller, totalNumberOfBytes, totalNumberOfFreeBytes;
 
-			*freebytes = bytespercluster * (double) numberOfFreeClusters;
+			if ((*adrGetDiskFreeSpaceEx) ((unsigned short *) stringbaseaddress (volname), &freeBytesAvailableToCaller,
+					&totalNumberOfBytes, &totalNumberOfFreeBytes)) {
+
+				*totalbytes = (double) (LONGLONG) totalNumberOfBytes.QuadPart;
+				
+				*freebytes = (double) (LONGLONG) freeBytesAvailableToCaller.QuadPart;
+				}
+
+			else
+				if (GetLastError () == ERROR_CALL_NOT_IMPLEMENTED)
+					flsupportslargevolumes = false;
 			}
-		}
-#endif
+
+		if (!flsupportslargevolumes) {
+
+			DWORD sectorsPerCluster, bytesPerSector, numberOfFreeClusters, totalNumberOfClusters;
+			
+			if (GetDiskFreeSpace (stringbaseaddress (volname), &sectorsPerCluster, &bytesPerSector,
+					&numberOfFreeClusters, &totalNumberOfClusters)) {
+
+				double bytespercluster = (double) sectorsPerCluster * (double) bytesPerSector;
+
+				*totalbytes = bytespercluster * (double) totalNumberOfClusters;
+
+				*freebytes = bytespercluster * (double) numberOfFreeClusters;
+				}
+			}
+			
+	#endif
 
 	return (true);
 	}/*getextendedvolumeinfo*/
 
 
-boolean getvolumesize (const tyfilespec *fs, long *ctbytes) {
+boolean getvolumesize (const ptrfilespec fs, long *ctbytes) {
 	
 	tyvolinfo volinfo;
 	
@@ -2193,7 +2341,7 @@ boolean getvolumesize (const tyfilespec *fs, long *ctbytes) {
 	} /*getvolumesize*/
 
 
-boolean getvolumeblocksize (const tyfilespec *fs, long *ctbytes) {
+boolean getvolumeblocksize (const ptrfilespec fs, long *ctbytes) {
 	
 	tyvolinfo volinfo;
 	
@@ -2206,24 +2354,25 @@ boolean getvolumeblocksize (const tyfilespec *fs, long *ctbytes) {
 	} /*getvolumeblocksize*/
 	
  	
-boolean filesonvolume (const tyfilespec *fs, long *ctfiles) {
+boolean filesonvolume ( const ptrfilespec fs, long *ctfiles ) {
 
-	/*
-	6/x/91 mao
-	*/
+	//
+	// 6/x/91 mao
+	//
 
 	tyvolinfo volinfo;
 	
-	if (!filegetfsvolumeinfo (fs, &volinfo))
-		return (false);
+	if ( ! filegetfsvolumeinfo ( fs, &volinfo ) )
+		return ( false );
 	
 	*ctfiles = volinfo.ctfiles;
 	
-	return (true);
-	} /*filesonvolume*/
+	return ( true );
+	
+	} // filesonvolume
 
 
-boolean foldersonvolume (const tyfilespec *fs, long *ctfolders) {
+boolean foldersonvolume (const ptrfilespec fs, long *ctfolders) {
 	
 	tyvolinfo volinfo;
 		
@@ -2236,7 +2385,7 @@ boolean foldersonvolume (const tyfilespec *fs, long *ctfolders) {
 	} /*foldersonvolume*/
 
 
-boolean isvolumelocked (const tyfilespec *fs, boolean *fllocked) {
+boolean isvolumelocked (const ptrfilespec fs, boolean *fllocked) {
 	
 	/*
 	6/x/91 mao
@@ -2253,7 +2402,7 @@ boolean isvolumelocked (const tyfilespec *fs, boolean *fllocked) {
 	} /*isvolumelocked*/
 
 
-boolean volumecreated (const tyfilespec *fs, unsigned long *createdate) {
+boolean volumecreated (const ptrfilespec fs, unsigned long *createdate) {
 	
 	tyvolinfo volinfo;
 	
@@ -2266,7 +2415,7 @@ boolean volumecreated (const tyfilespec *fs, unsigned long *createdate) {
 	} /*volumecreated*/
 
 
-boolean lockvolume (const tyfilespec *fs, boolean fllock) {
+boolean lockvolume (const ptrfilespec fs, boolean fllock) {
 #ifdef MACVERSION
 #if TARGET_API_MAC_CARBON == 1
 #pragma unused (fs, fllock)
@@ -2316,14 +2465,23 @@ boolean lockvolume (const tyfilespec *fs, boolean fllock) {
 
 #ifdef MACVERSION
 
-boolean unmountvolume (const tyfilespec *fs) {
+boolean unmountvolume (const ptrfilespec fs) {
 	
-	/*
-	12/5/91 dmb
-	*/
+	//
+	// 2006-06-25 creedon: replace UnmountVol with FSEjectVolumeSync
+	//
+	// 1991-12-05 dmb: created
+	//
 	
-	return (!oserror (UnmountVol (nil, (*fs).vRefNum)));
-	} /*unmountvolume*/
+	long vnum;
+	OptionBits flags = NULL;
+	pid_t dissenter;
+	
+	getfsvolume ( fs, &vnum );
+	
+	return ( ! oserror ( FSEjectVolumeSync ( vnum, flags, &dissenter ) ) );
+	
+	} // unmountvolume
 
 
 boolean drivenumtovolname (short drivenum, bigstring bsvol) {
@@ -2380,34 +2538,39 @@ static boolean getdesktopdatabasepath (short vnum, DTPBRec *dt) {
 #endif
 
 
-boolean getfilecomment (const tyfilespec *fs, bigstring bscomment) {
+boolean getfilecomment (const ptrfilespec fs, bigstring bscomment) {
 	
-	/*
-	12/5/91 dmb
-	
-	2.1b1 dmb: set reqCount; w/out it, works locally but not remotely
-	*/
+	//
+	// 2006-06-25 creedon: minimally FSRef-ized
+	//
+	// 2.1b1 dmb: set reqCount; w/out it, works locally but not remotely
+	//
+	// 1991-12-05 dmb: created
+	//	
 	
 	DTPBRec dt;
+	FSSpec fss;
+	
+	FSGetCatalogInfo ( &( *fs ).fsref, kFSCatInfoNone, NULL, NULL, &fss, NULL );
 	
 	clearbytes (&dt, sizeof (dt));
 	
 	setemptystring (bscomment); /*default return*/
 	
-	if (!surefile (fs))
+	if ( ! surefile ( fs ) )
 		return (false);
 	
-	if (!hasdesktopmanager ((*fs).vRefNum))
+	if ( ! hasdesktopmanager ( fss.vRefNum ) )
 		return (false);
 	
-	dt.ioVRefNum = (*fs).vRefNum;
+	dt.ioVRefNum = fss.vRefNum;
 	
 	if (PBDTGetPath (&dt) != noErr)
 		return (false);
 	
-	dt.ioNamePtr = (StringPtr) (*fs).name;
+	dt.ioNamePtr = (StringPtr) fss.name;
 	
-	dt.ioDirID = (*fs).parID;
+	dt.ioDirID = fss.parID;
 	
 	dt.ioDTBuffer = (Ptr) bscomment + 1;
 	
@@ -2419,33 +2582,41 @@ boolean getfilecomment (const tyfilespec *fs, bigstring bscomment) {
 	setstringlength (bscomment, dt.ioDTActCount);
 	
 	return (true);
-	} /*getfilecomment*/
-
-
-boolean setfilecomment (const tyfilespec *fs, bigstring bscomment) {
 	
-	/*
-	12/5/91 dmb
-	*/
+	} // getfilecomment
+
+
+boolean setfilecomment (const ptrfilespec fs, bigstring bscomment) {
+	
+	//
+	// 2006-06-25 creedon: minimally FSRef-ized
+	//
+	// 2.1b1 dmb: set reqCount; w/out it, works locally but not remotely
+	//
+	// 1991-12-05 dmb: created
+	//	
 	
 	DTPBRec dt;
+	FSSpec fss;
+	
+	FSGetCatalogInfo ( &( *fs ).fsref, kFSCatInfoNone, NULL, NULL, &fss, NULL );
 	
 	clearbytes (&dt, sizeof (dt));
 	
 	if (!surefile (fs))
 		return (false);
 	
-	if (!hasdesktopmanager ((*fs).vRefNum))
+	if (!hasdesktopmanager (fss.vRefNum))
 		return (false);
 	
-	dt.ioVRefNum = (*fs).vRefNum;
+	dt.ioVRefNum = fss.vRefNum;
 	
 	if (PBDTGetPath (&dt) != noErr)
 		return (false);
 	
-	dt.ioNamePtr = (StringPtr) (*fs).name;
+	dt.ioNamePtr = (StringPtr) fss.name;
 	
-	dt.ioDirID = (*fs).parID;
+	dt.ioDirID = fss.parID;
 	
 	dt.ioDTBuffer = (Ptr) bscomment + 1;
 	
@@ -2457,7 +2628,8 @@ boolean setfilecomment (const tyfilespec *fs, bigstring bscomment) {
 	PBDTFlushSync (&dt);
 	
 	return (true);
-	} /*setfilecomment*/
+	
+	} // setfilecomment
 
 
 static boolean index2label (short ixlabel, bigstring bslabel) {
@@ -2508,7 +2680,7 @@ static boolean label2index (bigstring bslabel, short *ixlabel) {
 	} /* label2index */
 
 
-boolean getfilelabel (const tyfilespec *fs, bigstring bslabel) {
+boolean getfilelabel (const ptrfilespec fs, bigstring bslabel) {
 	
 	tyfileinfo info;
 	
@@ -2519,7 +2691,7 @@ boolean getfilelabel (const tyfilespec *fs, bigstring bslabel) {
 	} /*getfilelabel*/
 
 
-boolean setfilelabel (const tyfilespec *fs, bigstring bslabel) {
+boolean setfilelabel (const ptrfilespec fs, bigstring bslabel) {
 	
 	/*
 	2006-04-24 creedon: factored most of the code into setfilelabelindex function
@@ -2622,7 +2794,7 @@ boolean mountvolume (bigstring volumepath, bigstring username, bigstring passwor
 	} /*mountvolume*/
 
 
-short getfilelabelindex (const tyfilespec *fs, short *ixlabel) {
+short getfilelabelindex (const ptrfilespec fs, short *ixlabel) {
 
 	/*
 	2006-04-23 creedon: created, cribbed from getfilelabel function
@@ -2640,22 +2812,23 @@ short getfilelabelindex (const tyfilespec *fs, short *ixlabel) {
 	} /* getfilelabelindex */
 
 
-boolean setfilelabelindex (const tyfilespec *fs, short ixlabel, boolean flmapfromuserinterfaceindex) {
+boolean setfilelabelindex (const ptrfilespec fs, short ixlabel, boolean flmapfromuserinterfaceindex) {
 
 	/*
 	2006-04-24 creedon: created, cribbed from setfilelabel function
 	*/
 	
-	CInfoPBRec pb;
+	FSCatalogInfo catinfo;
+	FSRefParam pb;
 	register short flags;
 
 	if ((ixlabel < 0) || (ixlabel > 7))
 		return (false);
 	
-	if (!getmacfileinfo (fs, &pb)) 
-		return (false);
+	if ( ! getmacfileinfo ( fs, &pb, &catinfo ) ) 
+		return ( false );
 	
-	flags = pb.hFileInfo.ioFlFndrInfo.fdFlags;
+	flags = ( ( FileInfo * ) pb.catInfo -> finderInfo ) -> finderFlags;
 	
 	flags &= 0xFFF1; // clear out old index
 	
@@ -2667,7 +2840,7 @@ boolean setfilelabelindex (const tyfilespec *fs, short ixlabel, boolean flmapfro
 	
 	flags |= ixlabel << 1; // slam in new index
 	
-	pb.hFileInfo.ioFlFndrInfo.fdFlags = flags;
+	( ( FileInfo * ) pb.catInfo -> finderInfo ) -> finderFlags = flags;
 	
 	return (setmacfileinfo (fs, &pb));
 	} /* setfilelabelindex */
@@ -2675,136 +2848,108 @@ boolean setfilelabelindex (const tyfilespec *fs, short ixlabel, boolean flmapfro
 #endif
 
 
-#ifdef NEWFILESPECTYPE
-boolean fileparsevolname (bigstring bspath, long *vnum, bigstring bsvol)
-#else
-boolean fileparsevolname (bigstring bspath, short *vnum, bigstring bsvol)
-#endif
-	{
-	/*
-	convert a full path, which might contain a volume name at the beginning
-	to a path with no volume name, and it's associated volume number in vnum.
-	
-	example: "Roverª:MORE Work" will return with bspath = "MORE Work" and
-	vnum = -2 (the Macintosh vrefnum for the second mounted drive).  
-	
-	this combination of information plugs nicely into a lot of the file 
-	manager routines.
-	
-	2.1b8 dmb: handle drive numbers
-	
-	2.1b11 dmb: return the vol name in bsvol if non-nil, along with the vnum
+boolean fileparsevolname ( bigstring bspath, ptrfilespec fs ) {
 
-	5.0.2 rab: initialize ix to zero
-	*/
+	//
+	// convert a full path, which might contain a volume name at the beginning
+	// to a path with no volume name, and it's associated volume number in vnum.
+	//
+	// example: "Roverª:MORE Work" will return with bspath = "MORE Work" and
+	// vnum = -2 (the Macintosh vrefnum for the second mounted drive).  
+	//
+	// this combination of information plugs nicely into a lot of the file
+	// manager routines.
+	//
+	// 2006-10-16 creedon: for Mac, FSRef-ized
+	//
+	// 5.0.2 rab: initialize ix to zero
+	//
+	// 2.1b11 dmb: return the vol name in bsvol if non-nil, along with the vnum
+	//
+	// 2.1b8 dmb: handle drive numbers
+	//
 	
-#ifdef MACVERSION
-	
-	short ix = 1;
-	bigstring bsvolname;
-	HParamBlockRec pb;
-	short drivenum;
-	bigstring bs;
-	OSErr err;
-	
-	copystring (bspath, bs); /*work on a copy*/
-	
-	if (isemptystring (bs))
-		return (false);
-	
-	if (!scanstring (chpathseparator, bs, &ix)) { /*no colon, the whole thing is a volname*/
+	#ifdef MACVERSION
 		
-		copystring (bs, bsvolname);
+		OSStatus status;
+		bigstring bs, bsvolname;
+		short ix = 1;
 		
-		pushchar (chpathseparator, bsvolname);
+		clearbytes ( fs, sizeof ( *fs ) );
 		
-		setemptystring (bs);
-		}
-	else {
-		midstring (bs, 1, ix, bsvolname); /*pick off the vol name and the colon*/
+		copystring (bspath, bs); // work on a copy
 		
-		deletestring (bs, 1, ix);
-		}
-	
-	clearbytes (&pb, sizeof (pb));
-	
-	pb.volumeParam.ioNamePtr = bsvolname;
-	
-	pb.volumeParam.ioVolIndex = -1; /*force him to use the name pointer only*/
-	//Code change by Timothy Paustian Sunday, June 25, 2000 9:21:59 PM
-	//Updated call for carbon
-	err = PBHGetVInfoSync (&pb);
-	
-	if (err != noErr) {
+		if (isemptystring (bs))
+			return (false);
 		
-		setstringlength (bsvolname, stringlength (bsvolname) - 1); /*pop last char -- the colon*/
-		
-		if (isallnumeric (bsvolname) && stringtoshort (bsvolname, &drivenum)) { /*it's a number*/
+		if (!scanstring (chpathseparator, bs, &ix)) { // no colon, the whole thing is a volname
 			
-			/*
-			pb.volumeParam.ioNamePtr = nil;
-			*/
+			copystring (bs, bsvolname);
 			
-			pb.volumeParam.ioVRefNum = drivenum;
-			//Code change by Timothy Paustian Sunday, June 25, 2000 9:24:35 PM
-			//updated for carbon
-			err = PBHGetVInfoSync (&pb);
+			pushchar (chpathseparator, bsvolname);
+			
+			setemptystring (bs);
+			}
+		else {
+			midstring (bs, 1, ix, bsvolname); // pick off the vol name and the colon
+			
+			deletestring (bs, 1, ix);
 			}
 		
-		if (err != noErr)
-			return (false);
-		}
-	
-	*vnum = pb.volumeParam.ioVRefNum;
-	
-	if (bsvol != nil)
-		copystring (bsvolname, bsvol);
-#endif
-	
-#ifdef WIN95VERSION
-	bigstring bsvolname, bs;
-	short ix = 0;
-
-	*vnum = 0;
-	copystring (bspath, bs); /*work on a copy*/
-	
-	if (isemptystring (bs))
-		return (false);
-	
-	if (!scanstring (':', bs, &ix)) { /*no colon, No volume?*/
-		return (false);		
-		}
-	else {
-		midstring (bs, 1, ix, bsvolname); /*pick off the vol name and the colon*/
+		stringreplaceall ( ':', '/', bsvolname );
 		
-		deletestring (bs, 1, ix);
-		}
-	
-	if (bsvol != nil)
-		{
-		copystring (bsvolname, bsvol);
+		insertstring ( BIGSTRING ( "\x09" "/Volumes/" ), bsvolname );
 		
-		nullterminate (bsvol);
-		}
+		/* convert from Mac Roman to UTF-8 */ {
+		
+			CFStringRef csr = CFStringCreateWithPascalString ( kCFAllocatorDefault, bsvolname,
+				kCFStringEncodingMacRoman );
+		
+			CFStringGetCString ( csr, ( char * ) bsvolname, sizeof ( bsvolname ), kCFStringEncodingUTF8 );
+			
+			CFRelease ( csr );
+	
+			}
+		
+		status = FSPathMakeRef ( bsvolname, &( *fs ).fsref, NULL );
+		
+	#endif
+	
+	#ifdef WIN95VERSION
+	
+		short ix = 0;
 
-#endif
-	return (true);
-	} /*fileparsevolname*/
+		if ( isemptystring ( bspath ) )
+			return ( false );
+		
+		if ( ! scanstring ( ':', bspath, &ix ) ) // no colon, No volume?
+			return ( false );
+		else
+			midstring ( bspath, 1, ix, ( *fs ).fullSpecifier ); // pick off the vol name and the colon
+		
+	#endif
+	
+	return ( true );
+
+	} // fileparsevolname
 
 
 #ifdef MACVERSION
 
-boolean fileresolvealias (tyfilespec *fs) {
+	boolean fileresolvealias ( ptrfilespec fs ) {
 	
-	Boolean flfolder, flalias;
-	OSErr err;
+		//
+		// 2006-09-18 creedon: FSRef-ized
+		//
+		
+		boolean flfolder, flalias;
+		
+		setfserrorparam ( fs );
+		
+		return ( ! oserror ( FSResolveAliasFile ( &( *fs ).fsref, true, &flfolder, &flalias ) ) );
+
+		} // fileresolvealias
 	
-	setoserrorparam ((ptrstring) (*fs).name);
-	
-	err = ResolveAliasFile (fs, true, &flfolder, &flalias);
-	
-	return (!oserror (err));
-	} /*fileresolvealias*/
 #endif
 
 
@@ -2884,112 +3029,133 @@ boolean folderfrompath (bigstring path, bigstring folder) {
 
 
 #ifdef MACVERSION
-boolean getfileparentfolder (const tyfilespec *fs, tyfilespec *fsparent) {
-	
-	long dirid = (*fs).parID;
-	
-	if (isemptystring ((*fs).name) || (dirid == fsRtParID)) { /*null or disk spec*/
+
+	boolean getfileparentfolder ( const ptrfilespec fs, ptrfilespec fsparent ) {
+
+		//
+		// 2006-08-24 creedon: FSRef-ized
+		//
 		
-		clearbytes (fsparent, sizeof (tyfilespec));
+		// this function used to use oserror but I don't think oserror can handle osstatus properly
 		
-		return (true);
-		}
-	
-	return (!oserror (FSMakeFSSpec ((*fs).vRefNum, dirid, nil, fsparent)));
-	} /*getfileparentfolder*/
+		HFSUniStr255 name;
+		OSErr err = FSGetCatalogInfo ( &( *fs ).fsref, kFSCatInfoNone, NULL, &name, NULL, &( *fsparent ).fsref );				
 
-
-#if 0
-
-boolean getdefaultpath (bigstring bs) {
-
-	ParamBlockRec pb;
-	OSErr errcode;
-	
-	setstringlength (bs, 0);
-	
-	clearbytes (&pb, sizeof (pb));
+		if ( err != noErr )
+			return ( false );
 		
-	errcode = PBGetVolSync (&pb);
-	
-	if (oserror (errcode))
-		return (false);
-	
-	return (filegetpath (pb.fileParam.ioVRefNum, bs));
-	} /*getdefaultpath*/
+		if ( ( *fs ).path == NULL ) {
+		
+			err = FSGetCatalogInfo ( &( *fsparent ).fsref, kFSCatInfoNone, NULL, &name, NULL, &( *fsparent ).fsref );				
+
+			if ( err != noErr )
+				return ( false );
+			}
+		
+		( *fsparent ).path = CFStringCreateWithCharacters ( kCFAllocatorDefault, name.unicode, name.length );
+		
+		return ( true );
+		
+		} // getfileparentfolder
+
+
+	#if 0
+
+		boolean getdefaultpath (bigstring bs) {
+
+			ParamBlockRec pb;
+			OSErr errcode;
+			
+			setstringlength (bs, 0);
+			
+			clearbytes (&pb, sizeof (pb));
+				
+			errcode = PBGetVolSync (&pb);
+			
+			if (oserror (errcode))
+				return (false);
+			
+			return (filegetpath (pb.fileParam.ioVRefNum, bs));
+			} /*getdefaultpath*/
+
+	#endif
 
 #endif
 
+boolean movefile (const ptrfilespec fs, const ptrfilespec fsto) {
 
-#endif
+	#ifdef MACVERSION
+	
+		/*
+		moves a file or folder speied in fs to the fcifolder specified by fsto.
+		make sure that the new path is really a folder.
+		
+		8/2/91 dmb: corrected error message params
+		
+		3.0.2 dmb: setoserrorparam to source file before catmove
+		*/
+		
+		FSCatalogInfo catinfo;
+		FSRefParam pb; 
+		
+		setfserrorparam (fsto); /*in case error message takes a filename parameter*/
+		
+		if ( ! getmacfileinfo ( fsto, &pb, &catinfo ) )
+			return ( false );
+		
+		if (! BitTst ( &pb.catInfo -> nodeFlags, 4 ) ) { /*if newpath isn't a folder, get out*/
+			
+			oserror (errorParam); /*not the best error message, but...*/
+			
+			return (false);
+			}
+		
+		setfserrorparam (fs); /*3.0.2*/
+		
+		return ( ! oserror ( FSMoveObject ( &( *fs ).fsref, &( *fsto ).fsref, NULL ) ) );
+		
+	#endif
+		
+	#ifdef WIN95VERSION
+	
+		char fn1[300];
+		char fn2[300];
+		boolean fl;
+		bigstring filename;
 
-boolean movefile (const tyfilespec *fs, const tyfilespec *fsto) {
-#ifdef MACVERSION
-	/*
-	moves a file or folder speied in fs to the fcifolder specified by fsto.
-	make sure that the new path is really a folder.
-	
-	8/2/91 dmb: corrected error message params
-	
-	3.0.2 dmb: setoserrorparam to source file before catmove
-	*/
+		copystring (fsname (fs), fn1);
+		copystring (fsname (fsto), fn2);
 
-	CInfoPBRec pb; 
-	
-	setfserrorparam (fsto); /*in case error message takes a filename parameter*/
-	
-	if (!getmacfileinfo (fsto, &pb))
-		return (false);
-	
-	if (!pb.dirInfo.ioFlAttrib & ioDirMask) { /*if newpath isn't a folder, get out*/
-		
-		oserror (errorParam); /*not the best error message, but...*/
-		
-		return (false);
-		}
-	
-	setfserrorparam (fs); /*3.0.2*/
-	
-	return (!oserror (FSpCatMove (fs, fsto)));
-#endif
-	
-#ifdef WIN95VERSION
-	char fn1[300];
-	char fn2[300];
-	boolean fl;
-	bigstring filename;
+		if (endswithpathsep (fn1))
+			setstringlength (fn1, stringlength (fn1) - 1);
 
-	copystring (fsname (fs), fn1);
-	copystring (fsname (fsto), fn2);
-
-	if (endswithpathsep (fn1))
-		setstringlength (fn1, stringlength (fn1) - 1);
-
-	nullterminate (fn1);
-	nullterminate (fn2);
-	
-    if (!fileisfolder (fsto, &fl))
-		return (false);
-	
-	if (fl) {
-		filefrompath (fn1, filename);
-		
-		cleanendoffilename(fn2);
-		
-		appendcstring (fn2, "\\");
-		
-		pushstring (filename, fn2);
-		
+		nullterminate (fn1);
 		nullterminate (fn2);
-		}
+		
+	    if (!fileisfolder (fsto, &fl))
+			return (false);
+		
+		if (fl) {
+			filefrompath (fn1, filename);
+			
+			cleanendoffilename(fn2);
+			
+			appendcstring (fn2, "\\");
+			
+			pushstring (filename, fn2);
+			
+			nullterminate (fn2);
+			}
 
-	if (MoveFile (stringbaseaddress (fn1), stringbaseaddress(fn2)))
-		return (true);
+		if (MoveFile (stringbaseaddress (fn1), stringbaseaddress(fn2)))
+			return (true);
 
-	winfileerror (fs);
+		winfileerror (fs);
 
-	return (false);
-#endif
+		return (false);
+		
+	#endif
+	
 	} /*movefile*/
 
 
@@ -3002,33 +3168,52 @@ void filenotfounderror (bigstring bs) {
 	OSErr errcode;
 	
 	setoserrorparam (bs);
-#ifdef MACVERSION	
-	if (lastchar (bs) == chpathseparator)
-		errcode = errorDirNotFound;
-	else
+	
+	#ifdef MACVERSION
+	
+		if (lastchar (bs) == chpathseparator)
+			errcode = errorDirNotFound;
+		else
+			errcode = errorFileNotFound;
+			
+	#endif
+	
+	#ifdef WIN95VERSION
+	
 		errcode = errorFileNotFound;
-#endif
-#ifdef WIN95VERSION
-	errcode = errorFileNotFound;
-#endif
+		
+	#endif
+	
 	oserror (errcode);
 	} /*filenotfounderror*/
 
 
-boolean surefile (const tyfilespec *fs) {
+boolean surefile (const ptrfilespec fs) {
+
+	//
+	// 2006-06-25 creedon: for Mac, FSRef-ized
+	//
 	
 	boolean flfolder;
+	bigstring bs;
 	
 	if (fileexists (fs, &flfolder))
 		return (true);
 	
-	filenotfounderror ((ptrstring) fsname (fs));
+	getfsfile ( fs, bs );
+	
+	filenotfounderror ( bs );
 	
 	return (false);
-	} /*surefile*/
+	
+	} // surefile
 
 
-boolean renamefile (const tyfilespec *fs, bigstring bsnew) {
+boolean renamefile (const ptrfilespec fs, bigstring bsnew) {
+
+	//
+	// 2006-06-25 creedon: for Mac, FSRef-ized
+	//
 
 	#ifdef MACVERSION	
 		/*
@@ -3054,7 +3239,11 @@ boolean renamefile (const tyfilespec *fs, bigstring bsnew) {
 		
 		setoserrorparam (bsnew); /*only likely errors from here on relate to new name*/
 		
-		if (oserror (FSpRename (fs, bsnew)))
+		HFSUniStr255 name;
+
+		bigstringToHFSUniStr255 ( bsnew, &name );
+		
+		if ( oserror ( FSRenameUnicode ( &fs -> fsref, name.length, name.unicode, kTextEncodingUnknown, NULL ) ) )
 			return (false);
 		
 		touchparentfolder (fs);
@@ -3091,15 +3280,33 @@ boolean renamefile (const tyfilespec *fs, bigstring bsnew) {
 	} /*renamefile*/
 
 
-boolean lockfile (const tyfilespec *fs) {
+boolean lockfile ( const ptrfilespec fs ) {
 
-	#ifdef MACVERSION	
-		setfserrorparam (fs); /*in case error message takes a filename parameter*/
+	//
+	// 2006-06-13 creedon: for Mac, FSRef-ized
+	//
+
+	#ifdef MACVERSION
+	
+		FSCatalogInfo catinfo;
+		OSErr err;
 		
-		return (!oserror (FSpSetFLock (fs)));
+		clearbytes ( &catinfo, sizeof ( catinfo ) );
+	
+		setfserrorparam ( fs ); // in case error message takes a filename parameter
+		
+		err = FSGetCatalogInfo ( &( *fs ).fsref, kFSCatInfoNodeFlags, &catinfo, NULL, NULL, NULL );
+		
+		catinfo.nodeFlags |= kFSNodeLockedMask;
+		
+		err = FSSetCatalogInfo ( &( *fs ).fsref, kFSCatInfoNodeFlags, &catinfo );
+		
+		return ( ! oserror ( err ) );
+	
 	#endif
 
 	#ifdef WIN95VERSION
+	
 		DWORD attr;
 		
 		attr = GetFileAttributes (stringbaseaddress (fsname (fs)));
@@ -3117,119 +3324,188 @@ boolean lockfile (const tyfilespec *fs) {
 		winfileerror (fs);
 
 		return (false);
+		
 	#endif
-	} /*lockfile*/
-
-
-boolean unlockfile (const tyfilespec *fs) {
-#ifdef MACVERSION	
-	setfserrorparam (fs);
 	
-	return (!oserror (FSpRstFLock (fs)));
-#endif
+	} // lockfile
 
-#ifdef WIN95VERSION
-	DWORD attr;
+
+boolean unlockfile (const ptrfilespec fs) {
+
+	//
+	// 2006-06-13 creedon: for Mac, FSRef-ized
+	//
+
+	#ifdef MACVERSION
 	
-	attr = GetFileAttributes (stringbaseaddress (fsname (fs)));
-
-	if (attr == 0xFFFFFFFF)
-		goto error;
-
-	attr = attr & ~FILE_ATTRIBUTE_READONLY;
-
-	if (SetFileAttributes (stringbaseaddress(fsname (fs)), attr))
-		return (true);
-
-	error:
-
-	winfileerror (fs);
+		FSCatalogInfo catinfo;
+		OSErr err;
+		
+		clearbytes ( &catinfo, sizeof ( catinfo ) );
 	
-	return (false);
-#endif
-	} /*unlockfile*/
+		setfserrorparam ( fs ); // in case error message takes a filename parameter
+		
+		err = FSGetCatalogInfo ( &( *fs ).fsref, kFSCatInfoNodeFlags, &catinfo, NULL, NULL, NULL );
+		
+		catinfo.nodeFlags &= ~kFSNodeLockedMask;
+		
+		err = FSSetCatalogInfo ( &( *fs ).fsref, kFSCatInfoNodeFlags, &catinfo );
+		
+		return ( ! oserror ( err ) );
+		
+	#endif
 
-
-boolean newfolder (const tyfilespec *fs) {
-#ifdef MACVERSION	
-	/*
-	2.1b2 dmb: use filespecs.
-	*/
+	#ifdef WIN95VERSION
 	
-	long dirid;
+		DWORD attr;
+		
+		attr = GetFileAttributes (stringbaseaddress (fsname (fs)));
+
+		if (attr == 0xFFFFFFFF)
+			goto error;
+
+		attr = attr & ~FILE_ATTRIBUTE_READONLY;
+
+		if (SetFileAttributes (stringbaseaddress(fsname (fs)), attr))
+			return (true);
+
+		error:
+
+		winfileerror (fs);
+		
+		return (false);
+		
+	#endif
 	
-	setfserrorparam (fs);
+	} // unlockfile
+
+
+boolean newfolder ( const ptrfilespec fs ) {
+
+	//
+	// 2006-06-18 creedon: for Mac, FSRef-ized
+	//
+	// 2.1b2 dmb: for Mac use filespecs.
+	//
+		
+	#ifdef MACVERSION
 	
-	return (!oserror (FSpDirCreate (fs, smSystemScript, &dirid)));
-#endif
+		HFSUniStr255 name;
+		long dirid;
+		
+		setfserrorparam ( fs );
+		
+		if ( ! CFStringRefToHFSUniStr255 ( ( *fs ).path, &name ) )
+			return ( false );
+		
+		return ( ! oserror ( FSCreateDirectoryUnicode ( &( *fs ).fsref, name.length, name.unicode, kFSCatInfoNone, NULL,
+			NULL, NULL, &dirid ) ) );
+		
+	#endif
 
-#ifdef WIN95VERSION
-	if (CreateDirectory (stringbaseaddress (fsname (fs)), NULL))
-		return (true);
+	#ifdef WIN95VERSION
 	
-	winfileerror (fs);
-
-	return (false);
-#endif
-	} /*newfolder*/
-
-
-boolean newfile (const tyfilespec *fs, OSType creator, OSType filetype) {
-#ifdef MACVERSION	
-	setfserrorparam (fs);
-	
-	return (!oserror (FSpCreate (fs, creator, filetype, smSystemScript)));
-#endif
-
-#ifdef WIN95VERSION
-	HANDLE f;
-	char fn[300];
-
-	copystring (fsname (fs), fn);
-	
-	nullterminate (fn);
-	
-	f = CreateFile (stringbaseaddress(fn), GENERIC_READ | GENERIC_WRITE, FILE_SHARE_READ, NULL, CREATE_NEW,
-		FILE_ATTRIBUTE_NORMAL, NULL);
-
-	if (f == INVALID_HANDLE_VALUE) {
+		if (CreateDirectory (stringbaseaddress (fsname (fs)), NULL))
+			return (true);
 		
 		winfileerror (fs);
 
 		return (false);
-		}
+		
+	#endif
+	
+	} // newfolder
 
-	verify (CloseHandle (f));
-	return (true);
-#endif
-	} /*newfile*/
+
+boolean newfile ( const ptrfilespec fs, OSType creator, OSType filetype ) {
+
+	//
+	// 2006-06-18 creedon: for Mac, FSRef-ized
+	//
+
+	#ifdef MACVERSION
+	
+		HFSUniStr255 name;
+		OSErr err;
+		
+		setfserrorparam ( fs );
+		
+		CFStringRefToHFSUniStr255 ( ( *fs ).path, &name );
+		
+		err = FSCreateFileUnicode ( &( *fs ).fsref, name.length, name.unicode, kFSCatInfoNone, NULL, &( *fs ).fsref, NULL );
+		
+		return ( ! oserror ( err ) );
+		
+	#endif
+
+	#ifdef WIN95VERSION
+	
+		HANDLE f;
+		char fn[300];
+
+		copystring (fsname (fs), fn);
+		
+		nullterminate (fn);
+		
+		f = CreateFile (stringbaseaddress(fn), GENERIC_READ | GENERIC_WRITE, FILE_SHARE_READ, NULL, CREATE_NEW,
+			FILE_ATTRIBUTE_NORMAL, NULL);
+
+		if (f == INVALID_HANDLE_VALUE) {
+			
+			winfileerror (fs);
+
+			return (false);
+			}
+
+		verify (CloseHandle (f));
+		return (true);
+		
+	#endif
+	
+	} // newfile
 
 
 #ifdef MACVERSION
 
-boolean getfullfilepath (bigstring bspath) {
+	boolean getfullfilepath (bigstring bspath) {
 	
-	FSSpec fs;
-	
-	setoserrorparam (bspath); /*in case error message takes a filename parameter*/
-	
-	if (oserror (FSMakeFSSpec (0, 0, bspath, &fs)))
-		return (false);
-	
-	return (filespectopath (&fs, bspath));
-	} /*getfullfilepath*/
+		//
+		// 2006-06-25 creedon: FSRef-ized
+		//
+		
+		tyfilespec fs;
+		
+		setoserrorparam (bspath); /*in case error message takes a filename parameter*/
+		
+		insertstring ( BIGSTRING ( "\x09" "/Volumes/" ), bspath );
+		
+		stringreplaceall ( ':', '/', bspath );
+			
+		convertpstring ( bspath );
+			
+		if ( oserror ( FSPathMakeRef ( bspath, &fs.fsref, NULL ) ) )
+			return ( false );
+		
+		return ( filespectopath ( &fs, bspath ) );
+		
+		} // getfullfilepath
 
 
-boolean filemakespec (short vnum, long dirid, bigstring fname, ptrfilespec pfs) {
-
-	OSErr ec;
+	boolean filemakespec (short vnum, long dirid, bigstring fname, ptrfilespec pfs) {
 	
-	ec = FSMakeFSSpec (vnum, dirid, fname, pfs);
-	
-	return ((ec == noErr) || (ec == fnfErr));
-	} /*filemakespec*/
+		//
+		// 2006-06-25 creedon: FSRef-ized
+		//
 
-#endif /*MACVERSION*/
+		OSErr err;
+		
+		err = FSMakeFSRef (vnum, dirid, fname, &( *pfs ).fsref);
+		
+		return ( ( err == noErr ) || ( err == fnfErr ) );
+		
+		} // filemakespec
+		
+#endif // MACVERSION
 
 
 boolean initfile (void) {
@@ -3272,9 +3548,11 @@ boolean initfile (void) {
 	} /*initfile*/
 
 
-boolean findapplication (OSType creator, tyfilespec *fsapp) {
+boolean findapplication (OSType creator, ptrfilespec fsapp) {
 	
 	/*
+	2006-06-25 creedon: for Mac, FSRef-ized
+	
 	2006-04-10 creedon: deleted old code, see revision 1246 for old code
 	
 	2006-04-09 creedon: use LSFindApplicationForInfo if available
@@ -3300,12 +3578,7 @@ boolean findapplication (OSType creator, tyfilespec *fsapp) {
 		 if ((UInt32) LSFindApplicationForInfo == (UInt32) kUnresolvedCFragSymbolAddress)
 			return (false);
 		
-		FSRef myRef;
-		
-		if (LSFindApplicationForInfo (creator, NULL, NULL, &myRef, NULL) != noErr)
-			return (false);
-				
-		if (FSRefMakeFSSpec (&myRef, fsapp) != noErr)
+		if (LSFindApplicationForInfo (creator, NULL, NULL, &( *fsapp ).fsref, NULL) != noErr)
 			return (false);
 				
 		return (true);
@@ -3354,4 +3627,64 @@ boolean findapplication (OSType creator, tyfilespec *fsapp) {
 	#endif /* WIN95VERSION */
 
 	} /* findapplication */
+
+
+boolean extendfilespec ( const ptrfilespec fsin, ptrfilespec fsout ) {
+
+	//
+	// 2006-06-23 creedon: created
+	//
+	
+	#ifdef MACVERSION
+	
+		tyfilespec fst;
+	
+		clearbytes ( &fst, sizeof ( fst ) );
+	
+		if ( ! FSRefValid ( &( *fsin ).fsref ) )
+			return ( false );
+		
+		if ( ( *fsin ).path == NULL )
+			return ( false );
+		
+		HFSUniStr255 name;
+		OSErr err;
+		
+		CFStringRefToHFSUniStr255 ( ( *fsin ).path, &name );
+		
+		err = FSMakeFSRefUnicode ( &( *fsin ).fsref, name.length, name.unicode, kTextEncodingUnknown, &fst.fsref ); // kTextEncodingUnicodeDefault
+		
+		if ( err != noErr )
+			return ( false );
+		
+		*fsout = fst;
+		
+	#endif // MACVERSION
+	
+	return ( true );
+	
+	} // extendfilespec
+
+
+boolean getfilespecparent ( ptrfilespec fs ) {
+
+	//
+	// 2006-06-17 creedon: created
+	//
+	
+	#ifdef MACVERSION
+	
+		HFSUniStr255 name;
+		OSErr err = FSGetCatalogInfo ( &( *fs ).fsref, kFSCatInfoNone, NULL, &name, NULL, &( *fs ).fsref );				
+
+		if ( err != noErr )
+			return ( false );
+		
+		( *fs ).path = CFStringCreateWithCharacters ( kCFAllocatorDefault, name.unicode, name.length );
+		
+	#endif // MACVERSION
+	
+	return ( true );
+	
+	} // getfilespecparent
 

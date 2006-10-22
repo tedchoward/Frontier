@@ -55,6 +55,11 @@
 #include "wpverbs.h"
 #include "kernelverbdefs.h"
 
+#ifdef MACVERSION
+
+	#include "MoreFilesX.h"
+
+#endif
 
 
 #define wperrorlist 264 
@@ -876,14 +881,15 @@ boolean wpwindowopen (hdlexternalvariable hvariable, hdlwindowinfo *hinfo) {
 
 boolean wpedit (hdlexternalvariable hvariable, hdlwindowinfo hparent, ptrfilespec fs, bigstring bstitle, rectparam rzoom) {
 
-	/*
-	4.17.97 dmb: protect against globals smashing under Windows
-
-	5.0b18 dmb: further protection: set flwindowopen bit before 
-	newchildwindow, which will yield
-
-	5.0.2b6 dmb: added flwindowopen loop to handle Windows async overlap
-	*/
+	//
+	// 2006-09-16 creedon: on Mac, set window proxy icon
+	//
+	// 5.0b18 dmb: further protection: set flwindowopen bit before newchildwindow, which will yield
+	//
+	// 1997-04-17 dmb: protect against globals smashing under Windows
+	//
+	// 5.0.2b6 dmb: added flwindowopen loop to handle Windows async overlap
+	//
 	
 	register hdlwpvariable hv = (hdlwpvariable) hvariable;
 	register hdlwprecord hwp;
@@ -891,12 +897,12 @@ boolean wpedit (hdlexternalvariable hvariable, hdlwindowinfo hparent, ptrfilespe
 	WindowPtr w;
 	hdlwindowinfo hi;
 	
-	if (!wpverbinmemory ((hdlexternalvariable) hv)) /*couldn't swap it into memory*/
+	if (!wpverbinmemory ((hdlexternalvariable) hv)) // couldn't swap it into memory
 		return (false);
 	
-	hwp = (hdlwprecord) (**hv).variabledata; /*it's in memory*/
+	hwp = (hdlwprecord) (**hv).variabledata; // it's in memory
 	
-	while ((**hwp).flwindowopen) { /*bring to front, return true*/
+	while ((**hwp).flwindowopen) { // bring to front, return true
 		
 		if (shellfinddatawindow ((Handle) hwp, &hi)) {
 			
@@ -914,7 +920,7 @@ boolean wpedit (hdlexternalvariable hvariable, hdlwindowinfo hparent, ptrfilespe
 		#endif
 		}
 	
-	rwindow = (**hwp).windowrect; /*window comes up where it was last time*/
+	rwindow = (**hwp).windowrect; // window comes up where it was last time
 	
 	(**hwp).flwindowopen = true;
 
@@ -925,14 +931,24 @@ boolean wpedit (hdlexternalvariable hvariable, hdlwindowinfo hparent, ptrfilespe
 		return (false);
 		}
 	
-	wpdata = hwp; /*copy into global*/
+	wpdata = hwp; // copy into global
 	
 	getwindowinfo (w, &hi);
 	
 	(**hi).hdata = (Handle) hwp;
 	
-	if (fs != nil)
+	if ( fs != nil ) {
+	
 		(**hi).fspec = *fs;
+		
+		#ifdef MACVERSION
+		
+			if ( FSRefValid ( &( *fs ).fsref ) && ( *fs ).path == NULL )
+				SetWindowProxyCreatorAndType ( w, 'LAND', 'FTwp', kOnSystemDisk );
+				
+		#endif
+		
+		}
 	
 	shellpushglobals (w);
 
@@ -940,15 +956,16 @@ boolean wpedit (hdlexternalvariable hvariable, hdlwindowinfo hparent, ptrfilespe
 	
 	shellpopglobals ();
 	
-	//(**hwp).flwindowopen = true;
+	// (**hwp).flwindowopen = true;
 	
 	if ((**hwp).fldirty)
 		shellsetwindowchanges (hi, true);
 
-	windowzoom (w); /*show the window to the user. do last, or we'd have to push globals*/
+	windowzoom (w); // show the window to the user. do last, or we'd have to push globals
 	
 	return (true);
-	} /*wpedit*/
+	
+	} // wpedit
 
 
 static boolean wpfunctionvalue (short token, hdltreenode hparam1, tyvaluerecord *vreturned, bigstring bserror) {

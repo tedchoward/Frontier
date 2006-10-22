@@ -56,29 +56,6 @@ typedef struct diskrgb {
 	short blue;
 	} diskrgb;
 
-#ifdef NEWFILESPECTYPE
-	typedef struct newtyfilespec {
-	
-		short fileTypeID;
-		
-		short lengthOfFileSpecifier;
-		
-		long volumeID;
-		
-		char fullSpecifier[258];
-		
-		Handle fileSpecifier;
-		
-		long macSpecifier;	
-		} tyfilespec, *ptrfilespec, **hdlfilespec;
-	
-	#define fsname(fs) (fs)->fullSpecifier
-	
-#else
-	typedef FSSpec tyfilespec, *ptrfilespec, **hdlfilespec;
-	
-	#define fsname(fs) (fs)->name
-#endif
 
 #ifdef MACVERSION
 typedef ControlHandle hdlscrollbar;
@@ -183,4 +160,32 @@ typedef struct tybuttonstatus {
 	boolean flbold; /*if displayed, should text style be bold?*/
 	} tybuttonstatus;
 
+
+#ifdef MACVERSION
+
+	typedef struct ExtFSRef {
+
+		FSRef fsref;
+		CFStringRef path;
+		
+		} ExtFSRef, *ExtFSRefPtr, **ExtFSRefHandle;
+		
+	typedef ExtFSRef tyfilespec, *ptrfilespec, **hdlfilespec;
+		
+	#endif // MACVERSION
+
+
+#ifdef WIN95VERSION
+	
+	typedef struct tyfilespec {
+
+			char fullSpecifier [258];
+			
+			} tyfilespec, *ptrfilespec, **hdlfilespec;
+
+	#define fsname( fs ) ( fs ) -> fullSpecifier
+
+	#endif // WIN95VERSION
+
 #endif
+

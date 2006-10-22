@@ -204,120 +204,111 @@ boolean ploticonresource (const Rect *r, short align, short transform, short res
 
 #ifdef MACVERSION
 
+	struct tycustomicontypeinfo icontypes [maxcustomicontypes]; /*array*/
 
-struct tycustomicontypeinfo icontypes [maxcustomicontypes]; /*array*/
-
-static short ixnexticon = 0; /*keep track of which is next to load*/
+	static short ixnexticon = 0; /*keep track of which is next to load*/
 
 
-boolean customicongetrnum (bigstring bstype, short *rnum) {
-	
-	/*
-	7.0b9 PBS: get the rnum of a file containing custom icon.
-	*/
-	
-	short i = 0;
-	
-	alllower (bstype);
-	
-	while (i < ixnexticon) {
+	boolean customicongetrnum (bigstring bstype, short *rnum) {
 		
-		if (equalstrings (bstype, icontypes [i].bstype)) {
+		/*
+		7.0b9 PBS: get the rnum of a file containing custom icon.
+		*/
 		
-			*rnum = icontypes [i].rnum;
+		short i = 0;
+		
+		alllower (bstype);
+		
+		while (i < ixnexticon) {
 			
-			return (true);
-			} /*if*/
+			if (equalstrings (bstype, icontypes [i].bstype)) {
+			
+				*rnum = icontypes [i].rnum;
+				
+				return (true);
+				} /*if*/
+			
+			i++;
+			
+			if (i == maxcustomicontypes)
+			
+				break;		
+			} /*while*/
 		
-		i++;
-		
-		if (i == maxcustomicontypes)
-		
-			break;		
-		} /*while*/
-	
-	return (false);	
-	} /*customicongetresid*/
+		return (false);	
+		} /*customicongetresid*/
 
 
-static boolean customiconload (bigstring bsiconname, short *rnum) {
-	
-	/*
-	7.0b9 PBS: Open a resource file just once, store info about it,
-	so it doesn't have to be opened for each rendering.
-	*/
-	
-	bigstring bsappearancefolder = "\pAppearance";
-	bigstring bsiconsfolder = "\pIcons";
-	OSErr err;
-	CInfoPBRec pb;
-	long dirid;
-	FSSpec programfilespec;
-	FSSpec appearancefolder, iconsfolder, iconfilespec;
-	short r, ixcurricon;
-	
-	if (ixnexticon >= maxcustomicontypes)
-	
-		return (false); /*limit reached*/
-	
-	/*Get app file spec*/
-	
-	getapplicationfilespec (nil, &programfilespec);
-	
-	dirid = programfilespec.parID;
-	
-	/*Get Appearances folder*/
-	
-	err = FSMakeFSSpec (programfilespec.vRefNum, dirid, bsappearancefolder, &appearancefolder);
-	
-	if (!getmacfileinfo (&appearancefolder, &pb))
-	
-		return (false);
-
-	dirid = pb.dirInfo.ioDrDirID;
-	
-	/*Get Icons folder*/
-	
-	err = FSMakeFSSpec (appearancefolder.vRefNum, dirid, bsiconsfolder, &iconsfolder);
-	
-	if (err != noErr)
-	
-		return (false);
-	
-	if (!getmacfileinfo (&iconsfolder, &pb))
-	
-		return (false);
+	static boolean customiconload (bigstring bsiconname, short *rnum) {
 		
-	dirid = pb.dirInfo.ioDrDirID;
+		//
+		// 2006-06-18 creedon: FSRef-ized
+		//
+		// 7.0b9 PBS: Open a resource file just once, store info about it, so it doesn't have to be opened for each rendering.
+		//
+		
+		bigstring bsappearancefolder = "\pAppearance";
+		bigstring bsiconsfolder = "\pIcons";
+		tyfilespec programfilespec, appearancefolder, iconsfolder, iconfilespec;
+		short r, ixcurricon;
+		
+		if (ixnexticon >= maxcustomicontypes)
+		
+			return (false); // limit reached
+		
+		HFSUniStr255 name;
+		
+		// get app filespec
+			 
+		getapplicationfilespec ( nil, &programfilespec );
+		
+		( void ) extendfilespec ( &programfilespec, &programfilespec );
+		
+		 // get Appearances folder
+		 
+		bigstringToHFSUniStr255 ( bsappearancefolder, &name );
+		
+		if ( FSMakeFSRefUnicode ( &programfilespec.fsref, name.length, name.unicode, kTextEncodingUnknown,
+							&appearancefolder.fsref) != noErr)
+			return (false);
+			
+		// get Icons folder
+		
+		bigstringToHFSUniStr255 ( bsiconsfolder, &name );
+		
+		if ( FSMakeFSRefUnicode ( &appearancefolder.fsref, name.length, name.unicode, kTextEncodingUnknown,
+							&iconsfolder.fsref ) != noErr)
+			return (false);
+		
+		// get icon file
+		
+		bigstringToHFSUniStr255 ( bsiconname, &name );
+		
+		if ( FSMakeFSRefUnicode ( &iconsfolder.fsref, name.length, name.unicode, kTextEncodingUnknown,
+							&iconfilespec.fsref ) != noErr)
+			return (false);
+		
+		if ( ! openresourcefile ( &iconfilespec, &r, resourcefork ) )
+			return ( false );
 
-	/*Get icon file*/
-	
-	err = FSMakeFSSpec (iconsfolder.vRefNum, dirid, bsiconname, &iconfilespec);
-	
-	if (err != noErr)
-	
-		return (false);
-	
-	r = FSpOpenResFile (&iconfilespec, fsRdPerm);
-	
-	if (r == -1)
-	
-		return (false);
-	
-	*rnum = r;
-	
-	ixcurricon = ixnexticon;
-	
-	ixnexticon++;
-	
-	alllower (bsiconname);
-	
-	copystring (bsiconname, icontypes [ixcurricon].bstype);
-	
-	icontypes [ixcurricon].rnum = r;
-	
-	return (true);	
-	} /*customiconload*/
+		if (r == -1)
+			return (false);
+		
+		*rnum = r;
+		
+		ixcurricon = ixnexticon;
+		
+		ixnexticon++;
+		
+		alllower (bsiconname);
+		
+		copystring (bsiconname, icontypes [ixcurricon].bstype);
+		
+		icontypes [ixcurricon].rnum = r;
+		
+		return (true);	
+		
+		} // customiconload
 
 #endif
 

@@ -489,6 +489,3 @@ boolean initerror (void) {
 	return (getsafetycushion ());
 	} /*initerror*/
 
-
-
-
