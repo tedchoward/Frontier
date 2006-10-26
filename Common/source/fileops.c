@@ -3082,35 +3082,33 @@ boolean folderfrompath (bigstring path, bigstring folder) {
 
 #endif
 
-boolean movefile (const ptrfilespec fs, const ptrfilespec fsto) {
+boolean movefile ( const ptrfilespec fs, const ptrfilespec fsto ) {
 
 	#ifdef MACVERSION
 	
-		/*
-		moves a file or folder speied in fs to the fcifolder specified by fsto.
-		make sure that the new path is really a folder.
+		//
+		// moves a file or folder speied in fs to the fcifolder specified by fsto.  make sure that the new path is really a folder.
+		//
+		// 2006-10-23 creedon: use fileisfolder function to determine if fs is folder
+		//
+		// 3.0.2 dmb: setoserrorparam to source file before catmove
+		//
+		// 1991-08-02 dmb: corrected error message params
+		//
 		
-		8/2/91 dmb: corrected error message params
+		boolean fl;
 		
-		3.0.2 dmb: setoserrorparam to source file before catmove
-		*/
+		( void ) fileisfolder ( fs, &fl );
 		
-		FSCatalogInfo catinfo;
-		FSRefParam pb; 
-		
-		setfserrorparam (fsto); /*in case error message takes a filename parameter*/
-		
-		if ( ! getmacfileinfo ( fsto, &pb, &catinfo ) )
+		if ( fl ) {
+					
+			oserror ( errorParam ); // not the best error message, but...
+			
 			return ( false );
-		
-		if (! BitTst ( &pb.catInfo -> nodeFlags, 4 ) ) { /*if newpath isn't a folder, get out*/
 			
-			oserror (errorParam); /*not the best error message, but...*/
-			
-			return (false);
 			}
 		
-		setfserrorparam (fs); /*3.0.2*/
+		setfserrorparam ( fs );
 		
 		return ( ! oserror ( FSMoveObject ( &( *fs ).fsref, &( *fsto ).fsref, NULL ) ) );
 		
