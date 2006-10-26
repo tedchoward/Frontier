@@ -563,6 +563,7 @@ static boolean filecreateandopen ( ptrfilespec fs, OSType creator, OSType filety
 			deletefile (fs);
 			
 			return (false); // failed to open the file for writing
+			
 			}
 		
 		FSSetNameLocked ( &( *fs ).fsref );
@@ -1011,7 +1012,7 @@ boolean fileexists ( const ptrfilespec fs, boolean *flfolder ) {
 		// 2006-08-11 creedon: created, cribbed from < http://developer.apple.com/carbon/tipsandtricks.html#CFStringFromUnicode >
 		//
 		
-		( *output ).length = CFStringGetBytes ( input, CFRangeMake (0, MIN ( CFStringGetLength ( input ), 255 ) ), 
+		( *output ).length = CFStringGetBytes ( input, CFRangeMake ( 0, MIN ( CFStringGetLength ( input ), 255 ) ), 
 			kCFStringEncodingUnicode, 0, false, ( UInt8 * ) ( *output ).unicode, 255, NULL );
 
 		if ( ( *output ).length == 0 ) 
