@@ -2988,6 +2988,8 @@ static boolean filefunctionvalue (short token, hdltreenode hparam1, tyvaluerecor
 	// if we return false, we try to provide a descriptive error message in the 
 	// returned string bserror.
 	//
+	// 2006-10-23 creedon: for Mac, extend filespec for fs2 in case filemovefunc
+	//
 	// 2006-06-25 creedon: FSRef-ized
 	//
 	// 2006-04-11 aradke: added readwholefilefunc
@@ -3418,10 +3420,10 @@ static boolean filefunctionvalue (short token, hdltreenode hparam1, tyvaluerecor
 			return ( filedeleteverb ( hp1, v ) );
 		
 		case fileexistsfunc: {
-			boolean fl;
+		
+			boolean fl, flfolder;
 			tyfilespec fs;
-			boolean flfolder;
-			
+
 			if (!langcheckparamcount (hp1, 1))
 				break;
 			
@@ -3560,24 +3562,27 @@ static boolean filefunctionvalue (short token, hdltreenode hparam1, tyvaluerecor
 			}
 		
 		case filemovefunc: {
+		
 			tyfilespec fs1, fs2;
 			
-			if (!getpathvalue (hp1, 1, &fs1)) /*bs1 holds the path*/
+			if ( ! getpathvalue ( hp1, 1, &fs1 ) ) // bs1 holds the path
 				break;
 			
 			flnextparamislast = true;
 			
-			if (!getpathvalue (hp1, 2, &fs2)) /*bs2 holds the new name*/
+			if ( ! getpathvalue ( hp1, 2, &fs2 ) ) // bs2 holds the new name
 				break;
 			
 			( void ) extendfilespec ( &fs1, &fs1 );
+			( void ) extendfilespec ( &fs2, &fs2 );
 			
-			if (!movefile (&fs1, &fs2))
+			if ( ! movefile ( &fs1, &fs2 ) )
 				break;
 			
-			(*v).data.flvalue = true;
+			( *v ).data.flvalue = true;
 			
-			return (true);
+			return ( true );
+			
 			}
 		
 		/*
