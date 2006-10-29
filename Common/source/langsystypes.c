@@ -41,6 +41,12 @@
 #include "tableinternal.h" /*for hdltablevariable; so we can avoid loading unloaded tables*/
 #include "tablestructure.h"
 
+#ifdef MACVERSION
+
+	#include "MoreFilesX.h" // 2006-10-25 creedon
+	
+#endif // MACVERSION
+
 #if TARGET_API_MAC_CARBON == 1 /*PBS 03/14/02: AE OS X fix.*/
 	#include "aeutils.h"
 #endif
@@ -559,14 +565,18 @@ static boolean stringtoalias (tyvaluerecord *val) {
 boolean filespectoalias (const ptrfilespec fs, boolean flminimal, AliasHandle *halias) {
 
 	//
+	// 2006-10-26 creedon: on Mac, check that fs.fsref is valid
+	//
 	// 2006-06-24 creedon: for Mac, FSRef-ized
 	//
 	
 	#ifdef MACVERSION
+	
+		if ( ! FSRefValid ( &( *fs ).fsref ) )
+			return ( false ) ;
 
 		boolean flcreatefrompath = false;
-		// bigstring bs;
-		OSErr err;
+		OSErr err = noErr;
 		
 		if ( ( *fs ).path == NULL ) {
 		
@@ -878,6 +888,8 @@ boolean filespecaddvalue ( tyvaluerecord *v1, tyvaluerecord *v2, tyvaluerecord *
 	// add v2 to the filespec v1 by using it as a partial path. if anything but a valid 
 	// fspec results, return a string value that is simple concatenation
 	//
+	// 2006-10-29 creedon: for Mac, if bs ends with ':', pop leading ':' from bsadd
+	//
 	// 2006-10-16 creedon: for Mac, FSRef-ized
 	//
 	// 2.1b6 dmb: if resulting specifier exists, but doesn't agree with bsadd as far as 
@@ -906,22 +918,10 @@ boolean filespecaddvalue ( tyvaluerecord *v1, tyvaluerecord *v2, tyvaluerecord *
 		
 		pullstringvalue ( v2, bsadd );
 		
-		/*
-		if (fileexists (&fs, &flfolder)) {
-			
-		//	fileisfolder (&fs, &flfolder);
-			
-			if (flfolder)
-				pushchar (':', bs );
-			}
-		*/
+		if ( lastchar ( bs ) == ':' )
+			popleadingchars ( bsadd, ':' );
 		
 		insertstring ( bs, bsadd );
-		
-		/*
-		if (stringfindchar (':', bsadd)) // will be interpreted as full path, so make it partial*
-			insertchar (':', bsadd);
-		*/
 		
 		copystring ( bsadd,  bs );
 				
