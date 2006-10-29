@@ -536,6 +536,8 @@ static boolean fileloopguts (hdltreenode htree, ptrfilespec fsfolder, bigstring 
 	//
 	// if ctlevels is not -1, only process files, and recurse for folders to the specified depth
 	//
+	// 2006-10-26 creedon: on Mac, fix a problem with CFRelease releasing data that needed to hang around
+	//
 	// 2006-10-03 creedon: for Mac, minimally FSRef-ized
 	//
 	// 1992-10-08 dmb: break & return must kick out of all levels of recursion (whew!)
@@ -603,6 +605,17 @@ static boolean fileloopguts (hdltreenode htree, ptrfilespec fsfolder, bigstring 
 		
 		fl = setfilespecvalue (&fs, &val);
 		
+		#ifdef MACVERSION
+		
+			// clear out path
+			
+			if ( ! fl ) // don't release path if setfilespecvalue is true because val.data.filespecvalue.path needs the address
+				CFRelease ( fs.path );
+			
+			fs.path = NULL;
+			
+		#endif // MACVERSION
+		
 		if (!fl)
 			break;
 		
@@ -636,16 +649,6 @@ static boolean fileloopguts (hdltreenode htree, ptrfilespec fsfolder, bigstring 
 		if (!fl) // user killed the script
 			break;
 			
-		#ifdef MACVERSION
-		
-			// clear out path
-			
-			CFRelease ( fs.path );
-			
-			fs.path = NULL;
-			
-		#endif // MACVERSION
-		
 		} // while
 	
 	fileendloop (hfileloop);
