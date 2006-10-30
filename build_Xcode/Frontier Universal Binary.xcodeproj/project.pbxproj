@@ -69,6 +69,8 @@
 		5D18A84B0AD3AD9900613FDB /* vdbeInt.h in Headers */ = {isa = PBXBuildFile; fileRef = 5D18A83E0AD3AD9900613FDB /* vdbeInt.h */; };
 		5D4E1E490AAA17E900DF6890 /* langsqlite.c in Sources */ = {isa = PBXBuildFile; fileRef = 5D4E1E470AAA17E900DF6890 /* langsqlite.c */; };
 		5D4E1E4A0AAA17E900DF6890 /* langsqlite.h in Headers */ = {isa = PBXBuildFile; fileRef = 5D4E1E480AAA17E900DF6890 /* langsqlite.h */; };
+		5DCA3B0C0AF552C700D6155D /* libpaigefat.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 5DCA3B0B0AF552C700D6155D /* libpaigefat.a */; };
+		5DCA3B0D0AF552C700D6155D /* libpaigefat.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 5DCA3B0B0AF552C700D6155D /* libpaigefat.a */; };
 		6505996409968C1400410571 /* ioascrollbar.h in Headers */ = {isa = PBXBuildFile; fileRef = 651525AB072BFC6700411831 /* ioascrollbar.h */; };
 		6505996509968C1400410571 /* ioapopup.h in Headers */ = {isa = PBXBuildFile; fileRef = 651525A7072BFC6700411831 /* ioapopup.h */; };
 		6505996609968C1400410571 /* ioaicon.h in Headers */ = {isa = PBXBuildFile; fileRef = 651525A4072BFC6700411831 /* ioaicon.h */; };
@@ -1027,8 +1029,6 @@
 		65152951072C001700411831 /* PGERRORS.H in Headers */ = {isa = PBXBuildFile; fileRef = 65152950072C001700411831 /* PGERRORS.H */; };
 		655A983609E929CC009EFFEA /* byteorder.h in Headers */ = {isa = PBXBuildFile; fileRef = 655A983509E929CC009EFFEA /* byteorder.h */; };
 		655A983709E929CC009EFFEA /* byteorder.h in Headers */ = {isa = PBXBuildFile; fileRef = 655A983509E929CC009EFFEA /* byteorder.h */; };
-		6591D9F609D853E8008365FA /* libpaigemacho.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 6591D9F509D853E8008365FA /* libpaigemacho.a */; };
-		6591D9F709D853E8008365FA /* libpaigemacho.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 6591D9F509D853E8008365FA /* libpaigemacho.a */; };
 		6599180709C494EA00F6F58C /* whirlpool.c in Sources */ = {isa = PBXBuildFile; fileRef = 6599180609C494EA00F6F58C /* whirlpool.c */; };
 		6599180809C494EA00F6F58C /* whirlpool.c in Sources */ = {isa = PBXBuildFile; fileRef = 6599180609C494EA00F6F58C /* whirlpool.c */; };
 		6599181409C4950300F6F58C /* langcrypt.c in Sources */ = {isa = PBXBuildFile; fileRef = 6599181309C4950200F6F58C /* langcrypt.c */; };
@@ -1149,6 +1149,7 @@
 		5D18A83E0AD3AD9900613FDB /* vdbeInt.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = vdbeInt.h; path = ../Common/sqlite3/vdbeInt.h; sourceTree = SOURCE_ROOT; };
 		5D4E1E470AAA17E900DF6890 /* langsqlite.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = langsqlite.c; path = ../Common/source/langsqlite.c; sourceTree = SOURCE_ROOT; };
 		5D4E1E480AAA17E900DF6890 /* langsqlite.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = langsqlite.h; path = ../Common/headers/langsqlite.h; sourceTree = SOURCE_ROOT; };
+		5DCA3B0B0AF552C700D6155D /* libpaigefat.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libpaigefat.a; path = tools/libpaigefat.a; sourceTree = SOURCE_ROOT; };
 		65059B4E09968C1400410571 /* OPML.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = OPML.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		65059B760996945100410571 /* OPML.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; name = OPML.icns; path = ../resources/OPML/OPML.icns; sourceTree = SOURCE_ROOT; };
 		65059B770996945100410571 /* OPMLdoc.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; name = OPMLdoc.icns; path = ../resources/OPML/OPMLdoc.icns; sourceTree = SOURCE_ROOT; };
@@ -1632,7 +1633,6 @@
 		6515294E072C000D00411831 /* pgMTraps.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = pgMTraps.h; path = ../Common/Paige/headers/pgMTraps.h; sourceTree = SOURCE_ROOT; };
 		65152950072C001700411831 /* PGERRORS.H */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.h; name = PGERRORS.H; path = ../Common/Paige/headers/PGERRORS.H; sourceTree = SOURCE_ROOT; };
 		655A983509E929CC009EFFEA /* byteorder.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = byteorder.h; path = ../Common/headers/byteorder.h; sourceTree = SOURCE_ROOT; };
-		6591D9F509D853E8008365FA /* libpaigemacho.a */ = {isa = PBXFileReference; comments = "A special shell script build phase copies this file from Common/Paige/libpaigemacho.a and runs ranlib on it. The linker then uses the copy instead of the original of the file."; explicitFileType = file; name = libpaigemacho.a; path = tools/libpaigemacho.a; sourceTree = "<group>"; };
 		6599180609C494EA00F6F58C /* whirlpool.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = whirlpool.c; path = ../Common/source/whirlpool.c; sourceTree = SOURCE_ROOT; };
 		6599181309C4950200F6F58C /* langcrypt.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = langcrypt.c; path = ../Common/source/langcrypt.c; sourceTree = SOURCE_ROOT; };
 		6599181809C4952A00F6F58C /* langcrypt.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = langcrypt.h; path = ../Common/headers/langcrypt.h; sourceTree = SOURCE_ROOT; };
@@ -1663,7 +1663,7 @@
 				65059B3809968C1400410571 /* Carbon.framework in Frameworks */,
 				65059B3909968C1400410571 /* ApplicationServices.framework in Frameworks */,
 				65059B3A09968C1400410571 /* QuickTime.framework in Frameworks */,
-				6591D9F709D853E8008365FA /* libpaigemacho.a in Frameworks */,
+				5DCA3B0D0AF552C700D6155D /* libpaigefat.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1674,8 +1674,8 @@
 				651527B9072BFE0E00411831 /* Carbon.framework in Frameworks */,
 				6515294B072C000500411831 /* ApplicationServices.framework in Frameworks */,
 				6515294D072C000900411831 /* QuickTime.framework in Frameworks */,
-				6591D9F609D853E8008365FA /* libpaigemacho.a in Frameworks */,
 				BB37A31B0AB828010077C6A1 /* libSQLite3.a in Frameworks */,
+				5DCA3B0C0AF552C700D6155D /* libpaigefat.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -2336,7 +2336,7 @@
 			children = (
 				6515294A072C000500411831 /* ApplicationServices.framework */,
 				651527B8072BFE0E00411831 /* Carbon.framework */,
-				6591D9F509D853E8008365FA /* libpaigemacho.a */,
+				5DCA3B0B0AF552C700D6155D /* libpaigefat.a */,
 				BB37A29C0AB826540077C6A1 /* libSQLite3.a */,
 				6515294C072C000900411831 /* QuickTime.framework */,
 			);
@@ -3240,33 +3240,34 @@
 		6591D9EE09D850C9008365FA /* ShellScript */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
-			comments = "The linker complains if the file modification date of a static library like libpaigemacho.a is newer than the time stamp stored inside the library.\n\nThe Subversion client can be configured to preserve file modification dates, but a more reliable way which does not require a certain client configuration is to make a copy of the library file, run ranlib on the copy to update the filestamp in the file, and then link the copy of the library into the application.\n";
+			comments = "The linker complains if the file modification date of a static library like libpaigefat.a is newer than the time stamp stored inside the library.\n\nThe Subversion client can be configured to preserve file modification dates, but a more reliable way which does not require a certain client configuration is to make a copy of the library file, run ranlib on the copy to update the filestamp in the file, and then link the copy of the library into the application.";
 			files = (
 			);
 			inputPaths = (
-				"${SRCROOT}/../Common/Paige/libpaigemacho.a",
+				"${SRCROOT}/../Common/Paige/libpaigefat.a",
 			);
 			outputPaths = (
-				"${SRCROOT}/tools/libpaigemacho.a",
+				"${SRCROOT}/tools/libpaigefat.a",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "#set -x\ncp -f \"${SRCROOT}/../Common/Paige/libpaigemacho.a\" \"${SRCROOT}/tools/libpaigemacho.a\"\nranlib \"${SRCROOT}/tools/libpaigemacho.a\"";
+			shellScript = "#set -x\ncp -f \"${SRCROOT}/../Common/Paige/libpaigefat.a\" \"${SRCROOT}/tools/libpaigefat.a\"\nranlib \"${SRCROOT}/tools/libpaigefat.a\"";
 		};
 		65ED46B809D85D3F00BEB9D3 /* ShellScript */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
+			comments = "The linker complains if the file modification date of a static library like libpaigefat.a is newer than the time stamp stored inside the library.\n\nThe Subversion client can be configured to preserve file modification dates, but a more reliable way which does not require a certain client configuration is to make a copy of the library file, run ranlib on the copy to update the filestamp in the file, and then link the copy of the library into the application.";
 			files = (
 			);
 			inputPaths = (
-				"${SRCROOT}/../Common/Paige/libpaigemacho.a",
+				"${SRCROOT}/../Common/Paige/libpaigefat.a",
 			);
 			outputPaths = (
-				"${SRCROOT}/tools/libpaigemacho.a",
+				"${SRCROOT}/tools/libpaigefat.a",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "#set -x\ncp -f \"${SRCROOT}/../Common/Paige/libpaigemacho.a\" \"${SRCROOT}/tools/libpaigemacho.a\"\nranlib \"${SRCROOT}/tools/libpaigemacho.a\"";
+			shellScript = "#set -x\ncp -f \"${SRCROOT}/../Common/Paige/libpaigefat.a\" \"${SRCROOT}/tools/libpaigefat.a\"\nranlib \"${SRCROOT}/tools/libpaigemacho.a\"";
 		};
 		DEA58A9E074359BA00BAB271 /* ShellScript */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -4065,7 +4066,10 @@
 				GCC_WARN_UNUSED_VALUE = NO;
 				GCC_WARN_UNUSED_VARIABLE = NO;
 				INFOPLIST_FILE = Info_OPML.plist;
-				LIBRARY_SEARCH_PATHS = "\"tools\"";
+				LIBRARY_SEARCH_PATHS = (
+					tools,
+					"$(SRCROOT)/tools",
+				);
 				OTHER_CFLAGS = (
 					"-fno-inline",
 					"-malign-mac68k",
@@ -4117,7 +4121,10 @@
 				GCC_WARN_UNUSED_VALUE = NO;
 				GCC_WARN_UNUSED_VARIABLE = NO;
 				INFOPLIST_FILE = Info_OPML.plist;
-				LIBRARY_SEARCH_PATHS = "\"tools\"";
+				LIBRARY_SEARCH_PATHS = (
+					tools,
+					"$(SRCROOT)/tools",
+				);
 				OTHER_CFLAGS = (
 					"-fno-inline",
 					"-malign-mac68k",
@@ -4169,7 +4176,10 @@
 				GCC_WARN_UNUSED_VALUE = NO;
 				GCC_WARN_UNUSED_VARIABLE = NO;
 				INFOPLIST_FILE = Info_OPML.plist;
-				LIBRARY_SEARCH_PATHS = "\"tools\"";
+				LIBRARY_SEARCH_PATHS = (
+					tools,
+					"$(SRCROOT)/tools",
+				);
 				OTHER_CFLAGS = (
 					"-fno-inline",
 					"-malign-mac68k",
@@ -4197,6 +4207,10 @@
 		5D4E1D470AAA0B1400DF6890 /* Development */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ARCHS = (
+					ppc,
+					i386,
+				);
 				OTHER_CFLAGS = "";
 				SDKROOT = /Developer/SDKs/MacOSX10.4u.sdk;
 			};
@@ -4205,6 +4219,10 @@
 		5D4E1D480AAA0B1400DF6890 /* Deployment */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ARCHS = (
+					ppc,
+					i386,
+				);
 				OTHER_CFLAGS = "";
 				SDKROOT = /Developer/SDKs/MacOSX10.4u.sdk;
 			};
@@ -4213,6 +4231,10 @@
 		5D4E1D490AAA0B1400DF6890 /* Default */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ARCHS = (
+					ppc,
+					i386,
+				);
 				OTHER_CFLAGS = "";
 				SDKROOT = /Developer/SDKs/MacOSX10.4u.sdk;
 			};
