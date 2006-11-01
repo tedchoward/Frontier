@@ -2722,6 +2722,9 @@ static boolean filedeleteverb ( hdltreenode hp1, tyvaluerecord *vreturned ) {
 static boolean getposixpathverb ( hdltreenode hp1, tyvaluerecord *vreturned ) {
 
 	//
+	// 2006-11-01 creedon: for Mac, replace convertcstring function with code to convert from c string in UTF-8 to bigstring in
+	//			       Mac Roman
+	//
 	// 2006-10-07 creedon: created
 	//
 	
@@ -2765,7 +2768,15 @@ static boolean getposixpathverb ( hdltreenode hp1, tyvaluerecord *vreturned ) {
 				
 				status = FSRefMakePath ( &fs.fsref, ( UInt8 * ) bs, 256 ); // bs is now a c string
 				
-				convertcstring ( bs ); // bs is now a bigstring
+				/* convert from c string to bigstring */ {
+				
+					CFStringRef csr = CFStringCreateWithCString ( kCFAllocatorDefault, bs, kCFStringEncodingUTF8 );
+					
+					CFStringRefToStr255 ( csr, bs );
+					
+					CFRelease ( csr );
+					
+					}
 				
 				if ( fl ) {
 				
