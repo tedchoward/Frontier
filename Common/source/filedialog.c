@@ -485,15 +485,15 @@
 boolean sfdialog ( tysfverb sfverb, bigstring bsprompt, ptrsftypelist filetypes, ptrfilespec fspec, OSType filecreator ) {
 
 	//
-	// return true if the user selected a file with one of the SF routines,
-	// return false otherwise.
+	// return true if the user selected a file with one of the SF routines, return false otherwise.
 	//
-	// as a bonus, we return the full path for the selected file in the path
-	// string.
+	// as a bonus, we return the full path for the selected file in the path string.
 	// 
 
 	#ifdef MACVERSION
 
+		//
+		// 2006-11-04 creedon: fix a problem with returning gibberish if fs was pointing to a volume
 		//
 		// 2006-09-15 creedon: minimally FSRef-ized
 		//
@@ -620,9 +620,9 @@ boolean sfdialog ( tysfverb sfverb, bigstring bsprompt, ptrsftypelist filetypes,
 				break;
 			}
 
-		//if the user canceled return false
-		//I know that oserror can handle this, but lets make it
-		//obvious that we are checking.
+		// if the user canceled return false, I know that oserror can handle this, but lets make it obvious that we are
+		// checking.
+		
 		if (userCanceledErr == err) 
 			return false;
 
@@ -631,15 +631,27 @@ boolean sfdialog ( tysfverb sfverb, bigstring bsprompt, ptrsftypelist filetypes,
 
 		if ( sfdata.sfreply.sfGood ) { // canonize
 		
+			bigstring bs;
+			boolean fl = ( *fs ).parID == fsRtParID;
 			HFSUniStr255 name;
 			
-			FSMakeFSRef ( ( *fs ).vRefNum, ( *fs ).parID, NULL, &( *fspec ).fsref );
+			setemptystring ( bs );
+		
+			if ( fl )
+				copystring ( ( *fs ).name, bs );
+		
+			err = FSMakeFSRef ( ( *fs ).vRefNum, ( *fs ).parID, bs, &( *fspec ).fsref );
 			
-			err = HFSNameGetUnicodeName ( ( *fs ).name, kTextEncodingUnknown, &name );
-						
-			( *fspec ).path = CFStringCreateWithCharacters ( kCFAllocatorDefault, name.unicode, name.length );
+			if ( ! fl ) {
+			
+				err = HFSNameGetUnicodeName ( ( *fs ).name, kTextEncodingUnknown, &name );
+							
+				( *fspec ).path = CFStringCreateWithCharacters ( kCFAllocatorDefault, name.unicode, name.length );
+				
+				}
 			
 			return ( true );
+			
 			}
 
 		return (false);
