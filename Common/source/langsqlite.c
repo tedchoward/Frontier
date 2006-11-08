@@ -46,6 +46,21 @@
 #include "langsqlite.h"
 #include <sqlite3.h>
 
+#ifdef MACVERSION
+
+	#include <sys/param.h>
+
+#endif // MACVERSION
+
+#include "file.h"
+
+#ifdef WIN95VERSION
+
+	#define MAXPATHLEN 1024
+
+#endif // WIN95VERSION
+
+
 /* Building SQLite into Frontier
 
 The SQLite source distribution is compiled into the Frontier code as part of this
@@ -193,6 +208,7 @@ boolean sqliteinitverbs (void) {
 	return (loadfunctionprocessor (idsqliteverbs, &sqlitefunctionvalue));
 	} /* sqliteinitverbs */
 
+
 static void sqliteOpenError (const char *errmsg, bigstring bserror) {
 	bigstring bserrmsg;
 
@@ -203,6 +219,7 @@ static void sqliteOpenError (const char *errmsg, bigstring bserror) {
 	return;
 	} /*sqliteOpenError*/
 
+
 static void sqliteDatabaseError (const char *errmsg, bigstring bserror) {
 	bigstring bserrmsg;
 
@@ -212,6 +229,7 @@ static void sqliteDatabaseError (const char *errmsg, bigstring bserror) {
 
 	return;
 	} /*sqliteDatabaseError*/
+
 
 static void sqliteScriptError (const char *errmsg, bigstring bserror) {
 	bigstring bserrmsg;
@@ -224,44 +242,105 @@ static void sqliteScriptError (const char *errmsg, bigstring bserror) {
 	} /*sqliteScriptError*/
 
 
-boolean sqliteopenverb (hdltreenode hparam1, tyvaluerecord *vreturned, bigstring bserror) {
-	Handle dbfile;	/* path to database file		*/
-	sqlite3 *dbid;	/* the SQLite database handle	*/
-	int returnCode;	/* return code from SQLite call */
+boolean sqliteopenverb ( hdltreenode hparam1, tyvaluerecord *vreturned, bigstring bserror ) {
 
-	/*	
-		sqlite.open(dbfile)
+	Handle dbfile;	// path to database file
+	sqlite3 *dbid;		// the SQLite database handle
+	int returnCode;	// return code from SQLite call
+	tyfilespec fs;		// file specification
+	
+	//
+	// 2006-11-06 creedon: use filespec as parameter, convert dbfile to UTF-8 for sqlite3_open
+	//
+	// 2006-10-08 DG: created
+	//
+	
+	#ifdef WIN95VERSION
+	
+		bigstring bs;
+		Handle handletext;
+	
+	#endif // WIN95VERSION
+	
+	//
+	// sqlite.open ( dbfile )
+	// 
+	// Action:	opens a SQLite database
+	// Params:	a file path to the database file
+	// Returns:	a value that corresponds to the opened database ID
+	// Usage:	call in a try statement
+	// Notes:	do not pass the opened database ID across threads
+	// 
+	// SQLite docs: http://www.sqlite.org/capi3ref.html#sqlite3_open
+	//
+	
+	newhandle ( MAXPATHLEN, &dbfile );
+	
+	flnextparamislast = true; // makes sure Frontier throws an error if more than one param is passed
+	
+	if ( ! getfilespecvalue ( hparam1, 1, &fs ) ) // fs holds the file path
+		return ( false );
+	
+	#ifdef MACVERSION
+	
+		boolean fl;
+		OSStatus status;
+		long len;
+				
+		fl = extendfilespec ( &fs, &fs );
+		
+		status = FSRefMakePath ( &fs.fsref, *dbfile, MAXPATHLEN ); // dbfile encoded in UTF-8
+		
+		len = strlen ( *dbfile );
+		
+		sethandlesize ( dbfile, len );
+		
+		if ( fs.path != NULL ) {
+		
+			Handle path;
+			
+			len = CFStringGetMaximumSizeForEncoding ( CFStringGetLength ( fs.path ), kCFStringEncodingUTF8 );
+			
+			newhandle ( ++len, &path );
+			
+			fl = CFStringGetCString ( fs.path, *path, len, kCFStringEncodingUTF8 );
+			
+			pushcharhandle ( '/', dbfile );
+			
+			pushhandle ( path, dbfile );
+			
+			}
+	
+	#endif // MACVERSION
+	
+	#ifdef WIN95VERSION
 
-		Action:  opens a SQLite database
-		Params:  a file path to the database file
-		Returns: a value that corresponds to the opened database ID
-		Usage:   call in a try statement
-		Notes:   do not pass the opened database ID across threads
-
-		SQLite docs: http://www.sqlite.org/capi3ref.html#sqlite3_open.
-	*/
-
-	flnextparamislast = true; /* makes sure Frontier throws an error if more than one param is passed */
-
-	if (!gettextvalue (hparam1, 1, &dbfile)) /* get the param */
-		return (false);
-
-	pushcharhandle (0x00, dbfile); /* convert *dbfile to a string */
-
-	/* Process the SQLite sequence */
-	returnCode = sqlite3_open(*dbfile, &dbid);
+		filespectopath ( &fs, bs );
+		
+		newtexthandle ( bs, &handletext );
+		
+		convertCharset ( handletext, dbfile, BIGSTRING ( "\x0C" "Windows-1252" ), BIGSTRING ( "\x05" "utf-8" ) );
+	
+	#endif // WIN95VERSION
+	
+	// Process the SQLite sequence
+	
+	returnCode = sqlite3_open ( *dbfile, &dbid );
+	
 	if(returnCode) {
-		sqliteOpenError(sqlite3_errmsg(dbid), bserror); /* send database open error */
+		sqliteOpenError(sqlite3_errmsg(dbid), bserror); // send database open error
 		sqlite3_close(dbid);
 		return (false);
 	}
-
-	/* return the db address to the scripter */
-//	return (setheapvalue ((Handle) dbid, longvaluetype, vreturned));
+	
+	// return the db address to the scripter
+	// return (setheapvalue ((Handle) dbid, longvaluetype, vreturned));
 	// 2006-09-06 - kw - simply return a long
+	
 	return (setlongvalue ((long) dbid, vreturned));
+	
+	} // sqliteopenverb
 
-} /* sqliteopenverb */
 
 boolean sqlitecloseverb (hdltreenode hparam1, tyvaluerecord *vreturned, bigstring bserror) {
 	sqlite3 *dbid;			/* the SQLite database handle */
@@ -290,6 +369,7 @@ boolean sqlitecloseverb (hdltreenode hparam1, tyvaluerecord *vreturned, bigstrin
 	return setlongvalue (returnCode, vreturned);
 
 } /* sqlitecloseverb */
+
 
 boolean sqlitecompilequeryverb (hdltreenode hparam1, tyvaluerecord *vreturned, bigstring bserror) {
 	Handle query;				/* the SQL query passed to the SQLite engine */
@@ -329,6 +409,7 @@ boolean sqlitecompilequeryverb (hdltreenode hparam1, tyvaluerecord *vreturned, b
 
 	return (setlongvalue ((long) queryid, vreturned)); /* return the db address to the scripter */
 
+
 } /* sqlitecompilequeryverb */
 
 boolean sqliteclearqueryverb (hdltreenode hparam1, tyvaluerecord *vreturned, bigstring bserror) {
@@ -358,6 +439,7 @@ boolean sqliteclearqueryverb (hdltreenode hparam1, tyvaluerecord *vreturned, big
 
 } /* sqliteclearqueryverb */
 
+
 boolean sqliteresetqueryverb (hdltreenode hparam1, tyvaluerecord *vreturned, bigstring bserror) {
 	sqlite3_stmt *queryid;	/* query id */
 	int returnCode;			/* return code from SQLite call */
@@ -385,6 +467,7 @@ boolean sqliteresetqueryverb (hdltreenode hparam1, tyvaluerecord *vreturned, big
 
 } /* sqliteresetqueryverb */
 
+
 boolean sqlitestepqueryverb (hdltreenode hparam1, tyvaluerecord *vreturned, bigstring bserror) {
 	sqlite3_stmt *queryid;	/* query id */
 	int returnCode;			/* return code from SQLite call */
@@ -411,6 +494,7 @@ boolean sqlitestepqueryverb (hdltreenode hparam1, tyvaluerecord *vreturned, bigs
 	return setlongvalue (returnCode, vreturned);
 
 } /* sqlitestepqueryverb */
+
 
 boolean sqlitegetcolumntypeverb (hdltreenode hparam1, tyvaluerecord *vreturned, bigstring bserror) {
 	long columnNumber;			/* column number */
@@ -481,6 +565,7 @@ boolean sqlitegetcolumntypeverb (hdltreenode hparam1, tyvaluerecord *vreturned, 
 
 } /* sqlitegetcolumntypeverb */
 
+
 boolean sqlitegetcolumnnameverb (hdltreenode hparam1, tyvaluerecord *vreturned, bigstring bserror) {
 	long columnNumber;			/* column number */
 	Handle returnH;
@@ -531,6 +616,7 @@ boolean sqlitegetcolumnnameverb (hdltreenode hparam1, tyvaluerecord *vreturned, 
 
 } /* sqlitegetcolumnnameverb */
 
+
 boolean sqlitegetcolumncountverb (hdltreenode hparam1, tyvaluerecord *vreturned, bigstring bserror) {
 	sqlite3_stmt *queryid;
 	int returnCode;			/* return code from SQLite call */
@@ -557,6 +643,7 @@ boolean sqlitegetcolumncountverb (hdltreenode hparam1, tyvaluerecord *vreturned,
 	return setlongvalue (returnCode, vreturned);
 
 } /* sqlitegetcolumncountverb */
+
 
 boolean sqlitegetcolumnintverb (hdltreenode hparam1, tyvaluerecord *vreturned, bigstring bserror) {
 	long columnNumber;
@@ -603,6 +690,7 @@ boolean sqlitegetcolumnintverb (hdltreenode hparam1, tyvaluerecord *vreturned, b
 
 } /* sqlitegetcolumnintverb */
 
+
 boolean sqlitegetcolumndoubleverb (hdltreenode hparam1, tyvaluerecord *vreturned, bigstring bserror) {
 	long columnNumber;
 	sqlite3_stmt *queryid;
@@ -647,6 +735,7 @@ boolean sqlitegetcolumndoubleverb (hdltreenode hparam1, tyvaluerecord *vreturned
 	return (setdoublevalue (returnDouble, vreturned));
 
 } /* sqlitegetcolumndoubleverb */
+
 
 boolean sqlitegetcolumntextverb (hdltreenode hparam1, tyvaluerecord *vreturned, bigstring bserror) {
 	long columnNumber;
@@ -697,6 +786,7 @@ boolean sqlitegetcolumntextverb (hdltreenode hparam1, tyvaluerecord *vreturned, 
 	return (setheapvalue (returnH, stringvaluetype, vreturned)); 
 
 } /* sqlitegetcolumntextverb */
+
 
 boolean sqlitegetcolumnverb (hdltreenode hparam1, tyvaluerecord *vreturned, bigstring bserror) {
 	long columnNumber;			/* column number */
@@ -788,6 +878,7 @@ boolean sqlitegetcolumnverb (hdltreenode hparam1, tyvaluerecord *vreturned, bigs
 	} /* switch */
 
 } /* sqlitegetcolumn */
+
 
 boolean sqlitegetrowverb (hdltreenode hparam1, tyvaluerecord *vreturned, bigstring bserror) {
 	long columnNumber;			/* column number */
@@ -887,6 +978,7 @@ boolean sqlitegetrowverb (hdltreenode hparam1, tyvaluerecord *vreturned, bigstri
 
 } /* sqlitegetrow */
 
+
 boolean sqlitegeterrormessageverb (hdltreenode hparam1, tyvaluerecord *vreturned, bigstring bserror) {
 	const char *sqliteError;	/* pointer to the error message */
 	sqlite3 *db;				/* the SQLite database handle	*/
@@ -918,3 +1010,4 @@ boolean sqlitegeterrormessageverb (hdltreenode hparam1, tyvaluerecord *vreturned
 	return (setheapvalue (returnH, stringvaluetype, vreturned)); 
 
 } /* sqlitegeterrormessageverb */
+
