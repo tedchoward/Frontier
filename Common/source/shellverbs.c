@@ -425,28 +425,33 @@ static boolean pushsearchparamstable (void) {
 
 boolean getsearchparams (void) {
 	
-	/*
-	9/20/91 dmb: load up the searchparam record from the database params 
-	table.  temporarily change the search and replace strings to a special 
-	value so that they won't be found during the search.
-	
-	this call should be paired with a call to setsearchparams so that 
-	the search and replace strings are restored.
-	
-	2003-05-17 AR: extended to handle regular expression find and replace strings
-	*/
+	//
+	// this call should be paired with a call to setsearchparams so that the search and replace strings are restored.
+	//
+	// 2006-11-10 creedon: fix bug where if the search string hadn't changed but flunicase had, search would look for old
+	//			       search string.  now, a change in flunicase triggers the it changed code
+	//
+	// 2003-05-17 AR: extended to handle regular expression find and replace strings
+	//
+	// 1991-09-20 dmb: load up the searchparam record from the database params table.  temporarily change the search and
+	// replace strings to a special value so that they won't be found during the search.
+	//
 	
 	bigstring bs;
-	boolean fl;
-	boolean flupdateregexp = false;
-	boolean flresult = false;
+	boolean fl, flcasechanged = false, flresult = false, flupdateregexp = false;
 		
 	if (!pushsearchparamstable ())
 		return (false);
 	
-	if (getbooleansearchparam (ixcasesensitive, &fl)) {
-		flupdateregexp = flupdateregexp || (fl != searchparams.flunicase);
-		searchparams.flunicase = !fl;
+	if ( getbooleansearchparam ( ixcasesensitive, &fl ) ) {
+	
+		flcasechanged = ( ! fl != searchparams.flunicase );
+		
+		if ( flcasechanged )
+			flupdateregexp = true;
+		
+		searchparams.flunicase = ! fl;
+		
 		}
 	
 	if (getbooleansearchparam (ixwholewords, &fl))
@@ -470,25 +475,26 @@ boolean getsearchparams (void) {
 		}
 	
 	if (getstringsearchparam (ixsearchfor, bs)) {
-		
-		if (!equalstrings (bs, searchparams.bsorigfind)) { /*it changed*/
+	
+		if ( ( ! equalstrings ( bs, searchparams.bsorigfind ) ) || flcasechanged ) { // it changed
 			
 			endcurrentsearch ();
-
+			
 			copystring (bs, searchparams.bsorigfind);
-
+			
 			copystring (bs, searchparams.bsfind);
-
+			
 			if (searchparams.flunicase)
 				alllower (searchparams.bsfind);
-					
+			
 			flupdateregexp = true;
+			
 			}
 		}
 	
 	if (getstringsearchparam (ixreplacewith, bs)) {
 
-		if (!equalstrings (bs, searchparams.bsorigreplace)) { /*it changed*/
+		if (!equalstrings (bs, searchparams.bsorigreplace)) { // it changed
 			
 			copystring (bs, searchparams.bsorigreplace);
 			
@@ -552,7 +558,8 @@ exit:
 	pophashtable ();
 	
 	return (flresult);
-	} /*getsearchparams*/
+	
+	} // getsearchparams
 
 
 boolean setsearchparams (void) {
