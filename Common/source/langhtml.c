@@ -3185,55 +3185,71 @@ static boolean ScanJPEGHeader(hdlfilenum file_ref, unsigned short * height, unsi
 	} /*ScanJPEGHeader*/
 
 
-boolean getjpegheightwidthverb (hdltreenode hparam1, tyvaluerecord *vreturned) {
+boolean getjpegheightwidthverb ( hdltreenode hparam1, tyvaluerecord *vreturned ) {
 
-	tyfilespec fs;
-	hdlfilenum fnum;
+	//
+	// 2006-11-16 creedon: added call to extendfilespec
+	//
+
 	boolean fl;
-	unsigned short height, width;
+	hdlfilenum fnum;
 	hdllistrecord list = nil;
+	tyfilespec fs;
+	unsigned short height, width;
 
 	flnextparamislast = true;
 	
-	if (!getfilespecvalue (hparam1, 1, &fs))
-		return (false);
+	if ( ! getfilespecvalue ( hparam1, 1, &fs ) )
+		return ( false );
+	
+	( void ) extendfilespec ( &fs, &fs );
 
-	fl = openfile (&fs, &fnum, true);
+	fl = openfile ( &fs, &fnum, true );
 
-	if (fl) {
+	if ( fl ) {
 		
-		fl = ScanJPEGHeader (fnum, &height, &width);
+		fl = ScanJPEGHeader ( fnum, &height, &width );
 		
-		closefile (fnum);
+		closefile ( fnum );
 		
-		if (fl) {	
+		if ( fl ) {
+		
 			#ifdef xxxoplanglists
-				if (opnewlist (&list, false)) {
-					if (langpushlistlong (list, (long) height)) {
-						if (langpushlistlong (list, (long) width)) {
-							return (setheapvalue ((Handle) list, listvaluetype, vreturned));
-							}
+			
+				if ( opnewlist ( &list, false ) ) {
+				
+					if ( langpushlistlong ( list, ( long ) height ) ) {
+					
+						if ( langpushlistlong ( list, ( long ) width ) )
+						
+							return ( setheapvalue ( ( Handle ) list, listvaluetype, vreturned ) );
+							
 						}
 					}
 			#else
 				Point pt;
+				
 				pt.v = width;
 				pt.h = height;
-				return (setpointvalue (pt, vreturned) && coercetolist (vreturned, listvaluetype));
+				
+				return ( setpointvalue ( pt, vreturned ) && coercetolist ( vreturned, listvaluetype ) );
+				
 			#endif
+			
 			}
 		}
 	
-	if (list != nil)
-		opdisposelist (list);
+	if ( list != nil )
+		opdisposelist ( list );
 	
-	/* JES: 10/28/2002, 9.1b1 -- ScriptError if the file couldn't be parsed for JPEG height/width instead of a silent failure */
-	if (!fl) {
-		langerrormessage (BIGSTRING ("\x49""Can't get JPEG height and width because the file isn't a valid JPEG file."));
-		}
 	
-	return (false);
-	} /*getjpegheightwidthverb*/
+	if ( ! fl ) // JES: 10/28/2002, 9.1b1 -- ScriptError if the file couldn't be parsed for JPEG height/width instead of a silent failure
+	
+		langerrormessage ( BIGSTRING ( "\x49""Can't get JPEG height and width because the file isn't a valid JPEG file." ) );
+	
+	return ( false );
+	
+	} // getjpegheightwidthverb
 
 
 #ifdef MACVERSION
