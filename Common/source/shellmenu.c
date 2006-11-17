@@ -1711,33 +1711,27 @@ boolean shellhandlemenu (long menucode) {
 			}
 		
 		case editmenu:
-			#if MACVERSION
+		
+			#ifdef MACVERSION
 			
-			if (iditem <= clearitem) { /*standard edit menu command*/
-				//Code change by Timothy Paustian Friday, June 16, 2000 3:02:01 PM
-				//Changed to Opaque call for Carbon
-				//we don't need this for carbon.
-				#if !TARGET_API_MAC_CARBON
-				if (SystemEdit (iditem - 1)) /*consumed by desk accessory*/
-					break;
-				#endif
-
-				if (uisEdit (iditem - 1)) /*consumed by shared window*/
-					break;
-				}
-
-			#endif
+				if ( iditem <= clearitem ) // standard edit menu command
+				
+					if ( uisEdit ( iditem - 1 ) ) // consumed by shared window
+						break;
+						
+			#endif // MACVERSION
 			
-			if (iditem <= selectallitem) {
+			if ( iditem <= selectallitem ) {
 
-				shelleditcommand ((tyeditcommand) (iditem - undoitem));
+				shelleditcommand ( ( tyeditcommand ) ( iditem - undoitem ) );
 				
 				break;
+				
 				}
 			
-			runeditmenuscript (editmenu, iditem); /*7.0b27 PBS */
+			runeditmenuscript ( editmenu, iditem ); // 7.0b27 PBS
 			
-			break; /*edit menu*/
+			break; // edit menu
 			
 		case fontmenu: {
 		
