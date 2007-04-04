@@ -1045,26 +1045,36 @@ static boolean settitleverb (hdltreenode hparam1, tyvaluerecord *vreturned) {
 	} /*settitleverb*/
 
 
-static boolean getfileverb (hdltreenode hparam1, tyvaluerecord *vreturned) {
-	
-	/*
-	6/24/92 dmb: get the title of the object or window indicated in hparam1.
-	if it's  not an external value or a window, always return the empty string
-	*/
+static boolean getfileverb ( hdltreenode hparam1, tyvaluerecord *vreturned ) {
+
+	//
+	// 2007-04-03 creedon: use getfilespecparent to return an unextended
+	//				   filespec
+	//
+	// 1992-06-24 dmb: get the title of the object or window indicated in
+	//			    hparam1. if it's  not an external value or a window,
+	//			    always return the empty string
+	//
 	
 	hdlwindowinfo hinfo;
 	tyfilespec fs;
 	
 	flnextparamislast = true;
 	
-	if (!getwinparam (hparam1, 1, &hinfo))
-		return (false);
+	if ( ! getwinparam ( hparam1, 1, &hinfo ) )
+		return ( false );
+		
+	if ( ( hinfo != nil ) && windowgetfspec ( ( **hinfo ).macwindow, &fs ) ) {
 	
-	if ((hinfo != nil) && windowgetfspec ((**hinfo).macwindow, &fs))
-		return (setfilespecvalue (&fs, vreturned));
+		getfilespecparent ( &fs );
+		
+		return ( setfilespecvalue ( &fs, vreturned ) );
+		
+		}
+		
+	return ( setstringvalue ( zerostring, vreturned ) );
 	
-	return (setstringvalue (zerostring, vreturned));
-	} /*getfileverb*/
+	} // getfileverb
 
 
 static boolean windowfunctionvalue (short token, hdltreenode hparam1, tyvaluerecord *vreturned, bigstring bserror) {
