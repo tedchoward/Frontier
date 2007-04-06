@@ -76,7 +76,7 @@ Move all the SQLite source files into the \Common\sqlite3 folder. If you need to
 include new files in the SQLite project, be sure that shell.c and tclsqlite.c are
 NOT included in the Frontier project. 
 
-That's it. For further tips, see the Frontier Lab Notebook article at:
+That's it. For further tips, see the Frontier Lab Notebook article:
 
 http://manila.zatz.com/frontierkernel/stories/storyReader$29
 
