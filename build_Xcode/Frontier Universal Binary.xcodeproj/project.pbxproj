@@ -1055,28 +1055,25 @@
 		65F9C22309C4CD9800DCC29E /* sha.h in Headers */ = {isa = PBXBuildFile; fileRef = 65F9C21F09C4CD9700DCC29E /* sha.h */; };
 		65F9C22709C4CDDE00DCC29E /* sha1dgst.c in Sources */ = {isa = PBXBuildFile; fileRef = 65F9C22609C4CDDE00DCC29E /* sha1dgst.c */; };
 		65F9C22809C4CDDE00DCC29E /* sha1dgst.c in Sources */ = {isa = PBXBuildFile; fileRef = 65F9C22609C4CDDE00DCC29E /* sha1dgst.c */; };
+		839E50AA0BCBD3C2005C9D69 /* FSCopyObject.c in Sources */ = {isa = PBXBuildFile; fileRef = 5D0D91000ADEDFA80000E67B /* FSCopyObject.c */; };
+		839E50AB0BCBD3C3005C9D69 /* FSCopyObject.h in Headers */ = {isa = PBXBuildFile; fileRef = 5D0D91010ADEDFA80000E67B /* FSCopyObject.h */; };
+		839E50AC0BCBD3C4005C9D69 /* GenLinkedList.c in Sources */ = {isa = PBXBuildFile; fileRef = 5D0D91020ADEDFA80000E67B /* GenLinkedList.c */; };
+		839E50AD0BCBD3C4005C9D69 /* GenLinkedList.h in Headers */ = {isa = PBXBuildFile; fileRef = 5D0D91030ADEDFA80000E67B /* GenLinkedList.h */; };
+		839E50B50BCBD5D0005C9D69 /* langsqlite.c in Sources */ = {isa = PBXBuildFile; fileRef = 5D4E1E470AAA17E900DF6890 /* langsqlite.c */; };
+		839E50E50BCBD774005C9D69 /* libSQLite3.a in Frameworks */ = {isa = PBXBuildFile; fileRef = BB37A29C0AB826540077C6A1 /* libSQLite3.a */; };
+		839E50EC0BCBD881005C9D69 /* langsqlite.h in Headers */ = {isa = PBXBuildFile; fileRef = 5D4E1E480AAA17E900DF6890 /* langsqlite.h */; };
 		BB37A31B0AB828010077C6A1 /* libSQLite3.a in Frameworks */ = {isa = PBXBuildFile; fileRef = BB37A29C0AB826540077C6A1 /* libSQLite3.a */; };
 		DEA58AB407435A9500BAB271 /* Frontier.icns in Resources */ = {isa = PBXBuildFile; fileRef = DEA58AB307435A9500BAB271 /* Frontier.icns */; };
 /* End PBXBuildFile section */
 
-/* Begin PBXBuildStyle section */
-		5D18A7BB0AD3AB5B00613FDB /* Development */ = {
-			isa = PBXBuildStyle;
-			buildSettings = {
-				COPY_PHASE_STRIP = NO;
-			};
-			name = Development;
-		};
-		5D18A7BC0AD3AB5B00613FDB /* Deployment */ = {
-			isa = PBXBuildStyle;
-			buildSettings = {
-				COPY_PHASE_STRIP = YES;
-			};
-			name = Deployment;
-		};
-/* End PBXBuildStyle section */
-
 /* Begin PBXContainerItemProxy section */
+		839E50B10BCBD3F3005C9D69 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 65152560072BFC6500411831 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = BB37A29B0AB826540077C6A1;
+			remoteInfo = SQLite3;
+		};
 		BB37A3170AB827EA0077C6A1 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 65152560072BFC6500411831 /* Project object */;
@@ -1664,6 +1661,7 @@
 				65059B3909968C1400410571 /* ApplicationServices.framework in Frameworks */,
 				65059B3A09968C1400410571 /* QuickTime.framework in Frameworks */,
 				5DCA3B0D0AF552C700D6155D /* libpaigefat.a in Frameworks */,
+				839E50E50BCBD774005C9D69 /* libSQLite3.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -2809,6 +2807,9 @@
 				65F9C22209C4CD9800DCC29E /* sha_locl.h in Headers */,
 				65F9C22309C4CD9800DCC29E /* sha.h in Headers */,
 				655A983709E929CC009EFFEA /* byteorder.h in Headers */,
+				839E50AB0BCBD3C3005C9D69 /* FSCopyObject.h in Headers */,
+				839E50AD0BCBD3C4005C9D69 /* GenLinkedList.h in Headers */,
+				839E50EC0BCBD881005C9D69 /* langsqlite.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -3080,6 +3081,7 @@
 			buildRules = (
 			);
 			dependencies = (
+				839E50B20BCBD3F3005C9D69 /* PBXTargetDependency */,
 			);
 			name = OPML;
 			productName = "Frontier OSX MachO Debug";
@@ -3131,12 +3133,6 @@
 		65152560072BFC6500411831 /* Project object */ = {
 			isa = PBXProject;
 			buildConfigurationList = 5D4E1D460AAA0B1400DF6890 /* Build configuration list for PBXProject "Frontier Universal Binary" */;
-			buildSettings = {
-			};
-			buildStyles = (
-				5D18A7BB0AD3AB5B00613FDB /* Development */,
-				5D18A7BC0AD3AB5B00613FDB /* Deployment */,
-			);
 			hasScannedForEncodings = 1;
 			mainGroup = 6515255C072BFC6500411831;
 			productRefGroup = 6515255C072BFC6500411831;
@@ -3267,7 +3263,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "#set -x\ncp -f \"${SRCROOT}/../Common/Paige/libpaigefat.a\" \"${SRCROOT}/tools/libpaigefat.a\"\nranlib \"${SRCROOT}/tools/libpaigemacho.a\"";
+			shellScript = "#set -x\ncp -f \"${SRCROOT}/../Common/Paige/libpaigefat.a\" \"${SRCROOT}/tools/libpaigefat.a\"\nranlib \"${SRCROOT}/tools/libpaigefat.a\"";
 		};
 		DEA58A9E074359BA00BAB271 /* ShellScript */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -3543,6 +3539,9 @@
 				6599180809C494EA00F6F58C /* whirlpool.c in Sources */,
 				6599181509C4950300F6F58C /* langcrypt.c in Sources */,
 				65F9C22809C4CDDE00DCC29E /* sha1dgst.c in Sources */,
+				839E50AA0BCBD3C2005C9D69 /* FSCopyObject.c in Sources */,
+				839E50AC0BCBD3C4005C9D69 /* GenLinkedList.c in Sources */,
+				839E50B50BCBD5D0005C9D69 /* langsqlite.c in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -3860,6 +3859,11 @@
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
+		839E50B20BCBD3F3005C9D69 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = BB37A29B0AB826540077C6A1 /* SQLite3 */;
+			targetProxy = 839E50B10BCBD3F3005C9D69 /* PBXContainerItemProxy */;
+		};
 		BB37A3180AB827EA0077C6A1 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			target = BB37A29B0AB826540077C6A1 /* SQLite3 */;
