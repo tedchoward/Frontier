@@ -74,7 +74,7 @@ extern boolean sysos (tyvaluerecord *v); //implemted in shellsysverbs.c
 
 #define fldebugwebsite false
 
-#define str_separatorline BIGSTRING ("\x17<hr size=2 width=100% />\r")/* 2005-12-18 creedon - end tag with space slash for compatibility with post HTML 4.01 standards */
+#define str_separatorline BIGSTRING ("\x17<hr size=\"2\" width=\"100%\" />\r")/* 2005-12-18 creedon - end tag with space slash for compatibility with post HTML 4.01 standards */
 #define str_macroerror BIGSTRING ("\x20<b>[</b>Macro error: ^0<b>]</b>\r")
 #define str_mailto	BIGSTRING ("\x1A<a href=\"mailto:^0\">^0</a>")
 #define str_hotlink	BIGSTRING ("\x13<a href=\"^0\">^1</a>")
@@ -205,7 +205,7 @@ extern boolean sysos (tyvaluerecord *v); //implemted in shellsysverbs.c
 #define STR_P_CONDITION					BIGSTRING ("\x09" "condition")
 #define STR_P_RESPONDER					BIGSTRING ("\x09" "responder")
 #define STR_P_PATHARGS					BIGSTRING ("\x08" "pathArgs")
-#define	STR_P_ADRTABLE					BIGSTRING ("\x08" "adrTable")
+#define STR_P_ADRTABLE					BIGSTRING ("\x08" "adrTable")
 #define STR_P_FLPARAMS					BIGSTRING ("\x08" "flParams")
 #define STR_P_ENABLED					BIGSTRING ("\x07" "enabled")
 #define STR_P_REQUEST					BIGSTRING ("\x07" "request")
@@ -245,6 +245,7 @@ extern boolean sysos (tyvaluerecord *v); //implemted in shellsysverbs.c
 #define STR_P_DOLLAR					BIGSTRING ("\x01" "$")
 #define STR_P_SPACE						BIGSTRING ("\x01" " ")
 #define STR_P_EMPTY						BIGSTRING ("\x00")
+#define STR_P_USERWEBSERVERSTRING			BIGSTRING ( "\x11" "headerFieldServer" )
 
 #define STR_STATUSCONTINUE				"HTTP/1.1 100 CONTINUE\r\n\r\n"
 #define sizestatuscontinue				25
@@ -5507,38 +5508,82 @@ static boolean webserverparsecookies (hdlhashtable hparamtable, tyvaluerecord *v
 	}/*webserverparsecookies*/
 
 
-
-static boolean webservergetserverstring (tyvaluerecord *vreturn) {
-
+static boolean webservergetpref (bigstring bsprefname, tyvaluerecord *vreturn) {
+	
 	/*
-	6.1d2 AR: Return a string identifying the server software, i.e. UserLand Frontier/6.1d2-WinNT
+	6.1d2 AR: A utility function for getting a pref from user.webserver.prefs.
+	If no value is found in that table, we return false in vreturn.
 	
 	6.1d4 AR: Reviewed for proper error handling and reporting.
+	
+	2007-06-02 aradke: Don't set *vreturn to false if the requested pref doesn't exist.
+	return false instead. This makes it possible for the caller to differentiate
+	between a non-existant pref and one that is actually set to false.
 	*/
+	
+	hdlhashtable hprefstable;
+	tyvaluerecord val;
+	boolean fl;
+	hdlhashnode hnode;
+	
+	disablelangerror ();
+	
+	fl = langfastaddresstotable (roottable, STR_P_USERWEBSERVERPREFS, &hprefstable)
+	     && langhashtablelookup (hprefstable, bsprefname, &val, &hnode);
+	
+	if (fl)
+		fl = copyvaluerecord (val, vreturn);
+	
+	if (fl)	
+		if ((*vreturn).valuetype == externalvaluetype)
+			if (langexternalgettype (*vreturn) == idwordprocessor)
+				fl = coercetostring (vreturn);
+		
+	enablelangerror ();
+	
+	return (fl);
+	} /*webservergetpref*/
 
+
+static boolean webservergetserverstring ( tyvaluerecord *vreturn ) {
+
+	//
+	// 2007-06-02 creedon: call webservergetpref to grab value at
+	//				   user.webserver.prefs.headerFieldServer if defined
+	//
+	// 6.1d2 AR: Return a string identifying the server software, i.e.
+	//		   Frontier/6.1d2-WinNT
+	//
+	// 6.1d4 AR: Reviewed for proper error handling and reporting.
+	//
+	
 	Handle h = nil;
 	tyvaluerecord vversion, vos;
 
-	if (!newtexthandle (STR_P_SERVERSTRING, &h))
-		return (false);
+	if ( webservergetpref ( STR_P_USERWEBSERVERSTRING, vreturn ) )
+		return ( true );
+	
+	if ( ! newtexthandle ( STR_P_SERVERSTRING, &h ) )
+		return ( false );
 
-	if (!frontierversion (&vversion))
+	if ( ! frontierversion ( &vversion ) )
 		goto exit;
 
-	if (!sysos (&vos))
+	if ( ! sysos ( &vos ) )
 		goto exit;
 
-	if (!parsedialoghandle (h, vversion.data.stringvalue, vos.data.stringvalue, nil, nil))
+	if ( ! parsedialoghandle ( h, vversion.data.stringvalue, vos.data.stringvalue, nil, nil ) )
 		goto exit;
 		
-	return (setheapvalue (h, stringvaluetype, vreturn));
+	return ( setheapvalue ( h, stringvaluetype, vreturn ) );
 
-exit:
+	exit:
 
-	disposehandle (h);
+		disposehandle ( h );
 
-	return (false);
-	}/*webservergetserverstring*/
+		return ( false );
+		
+	} // webservergetserverstring
 
 
 static boolean webserverbuilderrorpage (Handle hshort, Handle hlong, Handle *hpage) {
@@ -5749,7 +5794,7 @@ static boolean webserverbuildresponse (bigstring bscode, hdlhashtable hheadersta
 
 	exemptfromtmpstack (&val);
 
-	/* add Server: UserLand Frontier/6.1d1-NT to header table */
+	/* add Server: Frontier/6.1d1-NT to header table */
 	
 	if (!webservergetserverstring (&val))
 		goto exit;
@@ -5919,46 +5964,6 @@ static boolean webservercallfilters (tyaddress *pta, bigstring bstable, bigstrin
 		504 Gateway Timeout
 		505 HTTP Version Not Supported
 */
-
-#if 0
-
-static boolean webservergetpref (bigstring bsprefname, tyvaluerecord *vreturn) {
-	
-	/*
-	6.1d2 AR: A utility function for getting a pref from user.webserver.prefs.
-	If no value is found in that table, we return false in vreturn.
-	
-	6.1d4 AR: Reviewed for proper error handling and reporting.
-	
-	2007-06-02 aradke: Don't set *vreturn to false if the requested pref doesn't exist.
-	return false instead. This makes it possible for the caller to differentiate
-	between a non-existant pref and one that is actually set to false.
-	*/
-	
-	hdlhashtable hprefstable;
-	tyvaluerecord val;
-	boolean fl;
-	hdlhashnode hnode;
-	
-	disablelangerror ();
-	
-	fl = langfastaddresstotable (roottable, STR_P_USERWEBSERVERPREFS, &hprefstable)
-	     && langhashtablelookup (hprefstable, bsprefname, &val, &hnode);
-	
-	if (fl)
-		fl = copyvaluerecord (val, vreturn);
-	
-	if (fl)	
-		if ((*vreturn).valuetype == externalvaluetype)
-			if (langexternalgettype (*vreturn) == idwordprocessor)
-				fl = coercetostring (vreturn);
-		
-	enablelangerror ();
-	
-	return (fl);
-	} /*webservergetpref*/
-
-#endif
 
 
 static boolean webservergetrespondertableaddress (bigstring bsname, tyaddress *adr) {
