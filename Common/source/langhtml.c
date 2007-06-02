@@ -5929,6 +5929,10 @@ static boolean webservergetpref (bigstring bsprefname, tyvaluerecord *vreturn) {
 	If no value is found in that table, we return false in vreturn.
 	
 	6.1d4 AR: Reviewed for proper error handling and reporting.
+	
+	2007-06-02 aradke: Don't set *vreturn to false if the requested pref doesn't exist.
+	return false instead. This makes it possible for the caller to differentiate
+	between a non-existant pref and one that is actually set to false.
 	*/
 	
 	hdlhashtable hprefstable;
@@ -5941,19 +5945,17 @@ static boolean webservergetpref (bigstring bsprefname, tyvaluerecord *vreturn) {
 	fl = langfastaddresstotable (roottable, STR_P_USERWEBSERVERPREFS, &hprefstable)
 	     && langhashtablelookup (hprefstable, bsprefname, &val, &hnode);
 	
+	if (fl)
+		fl = copyvaluerecord (val, vreturn);
+	
+	if (fl)	
+		if ((*vreturn).valuetype == externalvaluetype)
+			if (langexternalgettype (*vreturn) == idwordprocessor)
+				fl = coercetostring (vreturn);
+		
 	enablelangerror ();
 	
-	if (!fl)
-		return (setbooleanvalue (false, vreturn));
-	
-	if (!copyvaluerecord (val, vreturn))
-		return (false);
-		
-	if ((*vreturn).valuetype == externalvaluetype)
-		if (langexternalgettype (*vreturn) == idwordprocessor)
-			coercetostring (vreturn);
-	
-	return (true);
+	return (fl);
 	} /*webservergetpref*/
 
 #endif
@@ -6429,38 +6431,38 @@ static boolean webservercallresponder (tyaddress *pta, tyaddress *adrresponder, 
 			
 			tyvaluerecord vserve;
 			
-			if (!webservergetpref (BIGSTRING ("\x19" "flEnableDirectFileServing"), &vserve))
-				goto internal_error;
+			if (webservergetpref (BIGSTRING ("\x19" "flEnableDirectFileServing"), &vserve)) {
 			
-			if (!coercetoboolean (&vserve))
-				goto internal_error;
-			
-			if (vserve.data.flvalue) {
-				
-				unsigned long stream;
-				unsigned long fsize;
-				tyvaluerecord vheader;
-				tyfilespec fs = **val.data.filespecvalue;
-				
-				if (!filesize (&fs, &fsize))
-					goto internal_error;	
-
-				if (!langassignlongvalue (hresponseheaderstable, STR_P_CONTENT_LENGTH, fsize))
-					goto internal_error;	
-
-				if (!webserverbuildresponse (bscode, hresponseheaderstable, nil, &vheader))
-					goto internal_error;	
-
-				if (!langlookuplongvalue (hparamtable, STR_P_STREAM, &stream))
-					goto internal_error;	
-				
-				if (!fwsNetEventWriteFileToStream (stream, vheader.data.stringvalue, nil, &fs))
-					goto internal_error;	
-				
-				if (!setbooleanvalue (true, vreturn))
+				if (!coercetoboolean (&vserve))
 					goto internal_error;
 				
-				goto done;
+				if (vserve.data.flvalue) {
+					
+					unsigned long stream;
+					unsigned long fsize;
+					tyvaluerecord vheader;
+					tyfilespec fs = **val.data.filespecvalue;
+					
+					if (!filesize (&fs, &fsize))
+						goto internal_error;	
+
+					if (!langassignlongvalue (hresponseheaderstable, STR_P_CONTENT_LENGTH, fsize))
+						goto internal_error;	
+
+					if (!webserverbuildresponse (bscode, hresponseheaderstable, nil, &vheader))
+						goto internal_error;	
+
+					if (!langlookuplongvalue (hparamtable, STR_P_STREAM, &stream))
+						goto internal_error;	
+					
+					if (!fwsNetEventWriteFileToStream (stream, vheader.data.stringvalue, nil, &fs))
+						goto internal_error;	
+					
+					if (!setbooleanvalue (true, vreturn))
+						goto internal_error;
+					
+					goto done;
+					}
 				}
 			}
 #endif
