@@ -512,53 +512,60 @@ boolean getobjectmodeldisplaystring (tyvaluerecord *vitem, bigstring bsdisplay) 
 
 #ifdef MACVERSION
 
-static boolean stringtoalias (tyvaluerecord *val) {
+	static boolean stringtoalias ( tyvaluerecord *val ) {
 	
-	//
-	// 2006-06-24 creedon: FSRef-ized
-	//
-	// 2.1b2 dmb: try converting to a filespec first to ensure that partial path or 
-	// drive number if processed properly. also, in the filespec case, the alias isn't 
-	// minimal
-	//
-	// 1992-07-23 dmb: OK, try to getfullfilepath, but with errors disabled
-	//
-	// 1992-07-02 dmb: don't call getfullfilepath; makes it impossible to create aliases of 
-	// not-yet-existing files, or offline volumes
-	//
-	// 1991-10-07 dmb: make sure we're actually passing a full path to the NewAlias routine
-	//
-	
-	register Handle htext;
-	bigstring bspath;
-	tyfilespec fs;
-	AliasHandle halias;
-	boolean flfolder;
-	OSErr errcode;
-	
-	if (!langcanusealiases ())
-		return (false);
-	
-	htext = (*val).data.stringvalue;
-	
-	texthandletostring (htext, bspath);
-	
-	if (pathtofilespec (bspath, &fs) && fileexists (&fs, &flfolder))
-		errcode = FSNewAlias (nil, &fs.fsref, &halias);
-	else
-		errcode = NewAliasMinimalFromFullPath (stringlength (bspath), bspath + 1, nil, nil, &halias);
-	
-	if (oserror (errcode))
-		return (false);
-	
-	if (!setheapvalue ((Handle) halias, aliasvaluetype, val))
-		return (false);
-	
-	releaseheaptmp ((Handle) htext);
-	
-	return (true);
-	} /*stringtoalias*/
-
+		//
+		// 2007-06-11 creedon: fileexists wasn't working, need to extend the
+		//				   filespec, if successful then file exists
+		//
+		// 2006-06-24 creedon: FSRef-ized
+		//
+		// 2.1b2 dmb: try converting to a filespec first to ensure that
+		//		    partial path or drive number if processed properly.
+		//		    also, in the filespec case, the alias isn't minimal
+		//
+		// 1992-07-23 dmb: OK, try to getfullfilepath, but with errors
+		//			    disabled
+		//
+		// 1992-07-02 dmb: don't call getfullfilepath; makes it impossible to
+		//			    create aliases of not-yet-existing files, or
+		//			    offline volumes
+		//
+		// 1991-10-07 dmb: make sure we're actually passing a full path to the
+		//			    NewAlias routine
+		//
+		
+		register Handle htext;
+		
+		AliasHandle halias;
+		OSErr errcode;
+		bigstring bspath;
+		tyfilespec fs;
+		
+		if ( ! langcanusealiases ( ) )
+			return ( false );
+		
+		htext = ( *val ).data.stringvalue;
+		
+		texthandletostring ( htext, bspath );
+		
+		if ( pathtofilespec ( bspath, &fs ) && extendfilespec ( &fs, &fs ) )
+			errcode = FSNewAlias ( NULL, &fs.fsref, &halias );
+		else
+			errcode = NewAliasMinimalFromFullPath ( stringlength ( bspath), bspath + 1, NULL, NULL, &halias );
+		
+		if ( oserror ( errcode ) )
+			return ( false );
+		
+		if ( ! setheapvalue ( ( Handle ) halias, aliasvaluetype, val ) )
+			return (false);
+		
+		releaseheaptmp ( ( Handle ) htext );
+		
+		return ( true );
+		
+		} // stringtoalias
+		
 #endif
 
 
