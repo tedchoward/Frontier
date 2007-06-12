@@ -2035,21 +2035,22 @@ static boolean getlabelnamesverb (hdltreenode hparam1, tyvaluerecord *v) {
 #endif
 
 
-static boolean findapplicationverb (hdltreenode hparam1, tyvaluerecord *v) {
-	
+static boolean findapplicationverb ( hdltreenode hparam1, tyvaluerecord *v ) {
+
 	OSType creator;
 	tyfilespec fsapp;
 	
 	flnextparamislast = true;
 	
-	if (!getostypevalue (hparam1, 1, &creator)) 
-		return (false);
+	if ( ! getostypevalue ( hparam1, 1, &creator ) ) 
+		return ( false );
+		
+	if ( ! findapplication ( creator, &fsapp ) )
+		clearbytes ( &fsapp, sizeof ( fsapp ) );
+		
+	return ( setfilespecvalue ( &fsapp, v ) );
 	
-	if (!findapplication (creator, &fsapp))
-		clearbytes (&fsapp, sizeof (fsapp));
-	
-	return (setfilespecvalue (&fsapp, v));
-	} /*findapplicationverb*/
+	} // findapplicationverb
 
 
 #ifdef WIN95VERSION
