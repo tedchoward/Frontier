@@ -3133,37 +3133,48 @@ static void  bigvaltostring (tyvaluerecord *v, bigstring bs) {
 
 
 boolean coercetostring (tyvaluerecord *val) {
-	
+
+	//
+	// 2007-06-12 creedon: empty bs at start of function, fix for problem
+	//				   w/filespecvaluetype case returning gibberish for
+	//				   invalid fs
 	//
 	// 2006-06-24 creedon: for Mac, FSRef-ized
 	//
-	// 4.1b4 dmb: if flcoerceexternaltostring is not enabled, create a reasonable display string for externals
+	// 4.1b4 dmb: if flcoerceexternaltostring is not enabled, create a
+	//		    reasonable display string for externals
 	//
 	// 2.1b3 dmb: don't ignore return value from objspectostring
 	//
-	// 1992-08-10 dmb: added flcoerceexternaltostring flag to prevent external-to-string coercion except when explicitly requested by stringfunc in langverbs.c
+	// 1992-08-10 dmb: added flcoerceexternaltostring flag to prevent
+	//			    external-to-string coercion except when explicitly
+	//			    requested by stringfunc in langverbs.c
 	//
 	
 	register tyvaluerecord *v = val;
-	bigstring bs;
+	
 	Handle h;
+	bigstring bs;
+	
+	setemptystring ( bs );
 	
 	if (!langheapallocated (v, &h))
 		h = nil;
-	
-	switch ((*v).valuetype) {
 		
+	switch ((*v).valuetype) {
+	
 		case stringvaluetype:
 			return (true);
+			
+		case novaluetype: {
 		
-		case novaluetype:
-			if (flinhibitnilcoercion)
-				return (false);
-			
-			setemptystring (bs);
-			
+			if ( flinhibitnilcoercion )
+				return ( false );
+				
 			break;
-		
+			
+			}
+			
 		/*
 		case passwordvaluetype:
 			(*v).valuetype = stringvaluetype;
@@ -3173,46 +3184,46 @@ boolean coercetostring (tyvaluerecord *val) {
 		
 		case addressvaluetype:
 			return (addresstostring (v));
-		
+			
 		case booleanvaluetype:
 			if ((*v).data.flvalue)
 				copystring (bstrue, bs);
 			else
 				copystring (bsfalse, bs);
-			
+				
 			break;
 			
 		case charvaluetype:
 			setstringwithchar ((*v).data.chvalue, bs);
 			
 			break;
-		
+			
 		case intvaluetype:
 			shorttostring ((*v).data.intvalue, bs);
 			
 			break;
-		
+			
 		case longvaluetype:
 			numbertostring ((*v).data.longvalue, bs);
 			
 			break;
-		
+			
 		case ostypevaluetype:
 		case enumvaluetype:
 			ostypetostring ((*v).data.ostypevalue, bs);
 			
 			break;
-		
+			
 		case directionvaluetype:
 			dirtostring ((*v).data.dirvalue, bs);
 			
 			break;
-		
+			
 		case datevaluetype:
 			timedatestring ((*v).data.datevalue, bs);
 			
 			break;
-		
+			
 		case fixedvaluetype: {
 			double x = (double) (*v).data.longvalue / 65536;
 			
@@ -3224,72 +3235,72 @@ boolean coercetostring (tyvaluerecord *val) {
 			
 			break;
 			}
-		
+			
 		case singlevaluetype:
 			floattostring ((*v).data.singlevalue, bs);
 			
 			break;
-		
+			
 		case doublevaluetype:
 			floattostring (**(*v).data.doublevalue, bs);
 			
 			break;
-		
+			
 		case pointvaluetype:
 			pointtostring ((*v).data.pointvalue, bs);
 			
 			break;
-		
+			
 		case rectvaluetype:
 			recttostring (**(*v).data.rectvalue, bs);
 			
 			break;
-		
+			
 		case rgbvaluetype:
 			rgbtostring (**(*v).data.rgbvalue, bs);
 			
 			break;
-		
+			
 		case patternvaluetype:
 			patterntostring (**(*v).data.patternvalue, bs);
 			
 			break;
-		
+			
 		case objspecvaluetype:
 			if (!objspectostring ((*v).data.objspecvalue, bs))
 				return (false);
-			
+				
 			break;
-		
+			
 		case aliasvaluetype:
 			aliastostring ((*v).data.aliasvalue, bs);
 			
 			break;
-		
+			
 		case filespecvaluetype: {
-
-			tyfilespec fs = **(*v).data.filespecvalue;
-					
+		
+			tyfilespec fs = **( *v ).data.filespecvalue;
+			
 			filespectopath ( &fs, bs );
 			
 			break;
 			
 			}
-		
+			
 		case binaryvaluetype:
 			if (!copyvaluedata (v))
 				return (false);
-			
+				
 			stripbinarytypeid ((*v).data.binaryvalue);
 			
 			(*v).valuetype = stringvaluetype;
 			
 			return (true);
-		
+			
 		case listvaluetype:
 		case recordvaluetype:
 			return (coercelistvalue (v, stringvaluetype));
-		
+			
 		case codevaluetype:
 			bigvaltostring (v, bs);
 			
@@ -3297,7 +3308,7 @@ boolean coercetostring (tyvaluerecord *val) {
 			
 		case externalvaluetype:
 			if (!flcoerceexternaltostring) {
-				
+			
 				/* 4.1b4 dmb*/
 				/*
 				langbadexternaloperror (badexternaloperationerror, *v);
@@ -3307,27 +3318,27 @@ boolean coercetostring (tyvaluerecord *val) {
 				
 				break;
 				}
-			
+				
 			if (!newemptyhandle (&h))
 				return (false);
-			
-			if (!langexternalpacktotext ((hdlexternalhandle) (*v).data.externalvalue, h)) {
 				
+			if (!langexternalpacktotext ((hdlexternalhandle) (*v).data.externalvalue, h)) {
+			
 				disposehandle (h);
 				
 				return (false);
 				}
-			
+				
 			disposevaluerecord (*v, true);
 			
 			return (setheapvalue (h, stringvaluetype, v));
-		
+			
 		default:
 			langerror (stringcoerceerror);
 			
 			return (false);
 		} /*switch*/
-	
+		
 	disposevaluerecord (*v, true);
 	
 	return (setstringvalue (bs, v));
