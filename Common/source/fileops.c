@@ -438,7 +438,7 @@ boolean winfileerror (const ptrfilespec fs) {
 		
 		//
 		// 1993-09-21 dmb: take vnum as parameter, not volname. otherwise, we can't distinguish between two vols w/the
-		//			  same name.
+		//			    same name.
 		//
 		// 1993-09-07 DW: determine if it's a network volume
 		//
@@ -488,13 +488,23 @@ boolean winfileerror (const ptrfilespec fs) {
 	void filegetinfofrompb ( FSRefParam *pb, tyfileinfo *info ) {
 		
 		//
+		// 2007-06-11 creedon: fix for Mac OS X bundles/packages that are
+		//				   applications not setting creator/type
+		//
+		//				   fix for flbundle not being set to true for Mac
+		//				   OS X bundles/packages
+		//
+		//				   fix for file names that don't have extensions
+		//
 		// 2006-06-24 creedon: FSRef-ized
 		//
 		// 5.1.4 dmb: set finderbits for folders too.
 		//
-		// 1993-09-24 dmb:	handle volumes here, combining vol info with root directory folder info. I'm not sure if a
-		//				volume lock is always reflected in the root directory, so don't set fllocked false if the
-		//				attribute isn't set in the pb. (it starts out cleared anyway.)
+		// 1993-09-24 dmb: handle volumes here, combining vol info with root
+		//			    directory folder info. I'm not sure if a volume
+		//			    lock is always reflected in the root directory, so
+		//			    don't set fllocked false if the attribute isn't set
+		//			    in the pb. (it starts out cleared anyway.)
 		//
 		
 		unsigned short finderbits;
@@ -534,56 +544,32 @@ boolean winfileerror (const ptrfilespec fs) {
 		
 		if ( ( *info ).flfolder ) {
 		
-			boolean flisapplication, flisbundle;
-			
-			LSIsApplication ( ( *pb ).ref, &flisapplication, &flisbundle );
-			
-			if ( flisapplication || flisbundle ) { // Mac OS X bundles/packages are not considered folders
-			
-				( *info ).flfolder = false;
-		
-				( *info ).flbundle = true;
-				
-				} // if
-				
-			( *info ).flbusy = pb -> catInfo -> valence > 0; // Folders are considered "busy" if there are any files
-										// within the folder
-			if ( ( *info ).flfolder )
-			
-				( *info ).filecreator = ( *info ).filetype = '    ';
-				
-			else {
-			
-				LSItemInfoRecord iteminfo;
-				OSStatus status;
-				
-				status = LSCopyItemInfoForRef ( ( *pb ).ref, kLSRequestTypeCreator, &iteminfo );
-				
-				( *info ).filecreator = iteminfo.creator;
-				
-				( *info ).filetype = iteminfo.filetype;
-				
-				} // if
+			( *info ).flbusy = pb -> catInfo -> valence > 0; // folders are considered "busy" if there are any files within
+												    // the folder
 			
 			( *info ).iconposition = ( ( FolderInfo * ) pb -> catInfo -> finderInfo ) -> location;
 			
 			if ( ! ( *info ).flvolume ) { // these aren't the same for a volume & its root dir
-				
+			
 				( *info ).ctfiles = pb -> catInfo -> valence;
 				
 				} // if
 				
-			( *info ).folderview = ( tyfolderview ) 0; // I can't find a way to get this info from FSRefParamPtr, I thought about trying to fake a DInfo structure and getting it from there but it may not even have the right value, I did find a reference to DRMacWindowView // dinfo.frView >> 8;
+			( *info ).folderview = ( tyfolderview ) 0; // I can't find a way to get this info from FSRefParamPtr, I thought
+											   // about trying to fake a DInfo structure and getting it from there
+											   // but it may not even have the right value, I did find a reference
+											   // to DRMacWindowView // dinfo.frView >> 8;
 			
 			finderbits = ( ( FolderInfo * ) pb -> catInfo -> finderInfo ) -> finderFlags;
 			
 			}
+			
 		else { // fill in fields for a file, somewhat different format than a folder
 		
 			( *info ).ixlabel = ( ( ( FileInfo * ) pb -> catInfo -> finderInfo ) -> finderFlags & kColor ) >> 1;
-		
+			
 			( *info ).flbusy = ( pb -> catInfo -> nodeFlags & kFSNodeForkOpenMask ) != 0;
-				
+			
 			( *info ).filecreator = ( ( FileInfo * ) pb -> catInfo -> finderInfo ) -> fileCreator;
 			
 			( *info ).filetype = ( ( FileInfo * ) pb -> catInfo -> finderInfo ) -> fileType;
@@ -597,25 +583,79 @@ boolean winfileerror (const ptrfilespec fs) {
 			finderbits = ( ( FileInfo * ) pb -> catInfo -> finderInfo ) -> finderFlags;
 			
 			} // if
-
-			 /* copy from the finder bits into the record */ {
+			
+		 /* copy many of the finder bits into the record */ {
+	
+			( *info ).flalias = ( finderbits & kIsAlias ) != 0;
+			
+			( *info ).flbundle = ( finderbits & kHasBundle ) != 0;
+			
+			( *info ).flinvisible = ( finderbits & kIsInvisible ) != 0;
+			
+			( *info ).flstationery = ( finderbits & kIsStationery ) != 0;
+			
+			( *info ).flshared = ( finderbits & kIsShared ) != 0;
+			
+			( *info ).flnamelocked = ( finderbits & kNameLocked ) != 0;
+			
+			( *info ).flcustomicon = ( finderbits & kHasCustomIcon ) != 0;
+			
+			} // finder bits
+			
+		if ( ( *info ).flfolder ) {
 		
-				( *info ).flalias = (finderbits & kIsAlias) != 0;
+			boolean flIsApplication, flIsBundle;
+			
+			LSIsApplication ( ( *pb ).ref, &flIsApplication, &flIsBundle );
+			
+			if ( flIsApplication || flIsBundle ) { // Mac OS X bundles/packages are not considered folders
+			
+				( *info ).flfolder = false;
 				
-				( *info ).flbundle = (finderbits & kHasBundle) != 0;
+				( *info ).flbundle = true;
 				
-				( *info ).flinvisible = (finderbits & kIsInvisible) != 0;
+				} // if
 				
-				( *info ).flstationery = (finderbits & kIsStationery) != 0;
+			if ( flIsApplication ) { // for Mac OS X bundles/packages that are applications we need to grab creator/type
+			
+				OSStatus status;
+				LSItemInfoRecord itemInfo;
 				
-				( *info ).flshared = (finderbits & kIsShared) != 0;
+				status = LSCopyItemInfoForRef ( ( *pb ).ref, kLSRequestTypeCreator, &itemInfo );
 				
-				( *info ).flnamelocked = (finderbits & kNameLocked) != 0;
+				( *info ).filecreator = itemInfo.creator;
 				
-				( *info ).flcustomicon = (finderbits & kHasCustomIcon) != 0;
+				( *info ).filetype = itemInfo.filetype;
+			
+				} // if
 				
-				} // finder bits
+			}
+			
+		else {
+		
+			if ( ! ( *info ).filetype ) { // try to get from file extension
+			
+				bigstring bsext;
+				LSItemInfoRecord iteminfo;
+				OSStatus status;
 				
+				clearbytes ( &iteminfo, sizeof ( iteminfo ) );
+				
+				status = LSCopyItemInfoForRef ( ( *pb ).ref, kLSRequestExtension, &iteminfo );
+				
+				if ( iteminfo.extension != NULL )
+					CFStringRefToStr255 ( iteminfo.extension, bsext );
+					
+				if ( isemptystring ( bsext ) || ( stringlength ( bsext ) > 4 ) ) // no extension
+				
+					stringtoostype ( "\x04" "????", &( *info ).filetype );
+				else
+					stringtoostype ( bsext, &( *info ).filetype );
+					
+				} // if
+				
+			} // if
+			
 		} // filegetinfofrompb
 
 
@@ -3546,85 +3586,98 @@ boolean initfile (void) {
 	} /*initfile*/
 
 
-boolean findapplication (OSType creator, ptrfilespec fsapp) {
-	
-	/*
-	2006-06-25 creedon: for Mac, FSRef-ized
-	
-	2006-04-10 creedon: deleted old code, see revision 1246 for old code
-	
-	2006-04-09 creedon: use LSFindApplicationForInfo if available
-	
-	5.0.1 dmb: implemented for Win using the registry
+boolean findapplication ( OSType creator, ptrfilespec fsapp ) {
 
-	2.1b11 dmb: loop through all files in each db if necessary to find one that's actually an application
-
-	9/7/92 dmb: make two passes, skipping volumes mounted with a foreign 
-	file system the first time through. note: if this turns out not to be 
-	the best criteria, we could check for shared volumes instead by testing  
-	vMLocalHand in hasdesktopmanager.
-	
-	also: since we don't maintain the desktop DB when we delete files, we 
-	need to verify that the file we locate still exists. added fileexists 
-	call before returning true.
-	
-	12/5/91 dmb
-	*/
+	//
+	// 2007-06-12 creedon: for Mac, use getfilespecparent
+	//
+	// 2006-06-25 creedon: for Mac, FSRef-ized
+	//
+	// 2006-04-10 creedon: deleted old code, see revision 1246 for old code
+	//
+	// 2006-04-09 creedon: use LSFindApplicationForInfo if available
+	//
+	// 5.0.1 dmb: implemented for Win using the registry
+	//
+	// 2.1b11 dmb: loop through all files in each db if necessary to find one
+	//			that's actually an application
+	//
+	// 1992-09-07 dmb: make two passes, skipping volumes mounted with a foreign 
+	//			    file system the first time through. note: if this turns
+	//			    out not to be the best criteria, we could check for
+	//			    shared volumes instead by testing vMLocalHand in
+	//			    hasdesktopmanager.
+	//
+	//			    also: since we don't maintain the desktop DB when we
+	//			    delete files, we need to verify that the file we locate
+	//			    still exists. added fileexists call before returning
+	//			    true.
+	//
+	// 1991-12-05 dmb: created
+	//
 	
 	#ifdef MACVERSION
-
-		 if ((UInt32) LSFindApplicationForInfo == (UInt32) kUnresolvedCFragSymbolAddress)
-			return (false);
-		
-		if (LSFindApplicationForInfo (creator, NULL, NULL, &( *fsapp ).fsref, NULL) != noErr)
-			return (false);
-				
-		return (true);
 	
-	#endif /* MACVERSION */
-
+		OSStatus status;
+		
+		 if ( ( UInt32 ) LSFindApplicationForInfo == ( UInt32 ) kUnresolvedCFragSymbolAddress )
+			return ( false );
+			
+		status = LSFindApplicationForInfo ( creator, NULL, NULL, &( *fsapp ).fsref, NULL);
+		
+		if ( status != noErr )
+			return ( false );
+			
+		getfilespecparent ( fsapp );
+		
+		return ( true );
+		
+	#endif // MACVERSION
+	
 	#ifdef WIN95VERSION
-
+	
 		byte bsextension [8];
 		bigstring bsregpath, bsoptions;
-
+		
 		ostypetostring (creator, bsextension);
-
+		
 		poptrailingwhitespace (bsextension);
-
+		
 		insertchar ('.', bsextension);
 		
 		pushchar (chnul, bsextension);
 		
 		// copyctopstring ("software\\Microsoft\\Windows\\CurrentVersion", bsregpath);
-
+		
 		if (!getRegKeyString ((Handle) HKEY_CLASSES_ROOT, bsextension, NULL, bsregpath))
 			return (false);
-		
+			
 		pushstring ("\x13\\shell\\open\\command", bsregpath);
-
+		
 		if (!getRegKeyString ((Handle) HKEY_CLASSES_ROOT, bsregpath, NULL, bsregpath))
 			return (false);
-		
+			
 		if (getstringcharacter (bsregpath, 0) == '"') {
-			
+		
 			popleadingchars (bsregpath, '"');
-
-			firstword (bsregpath, '"', bsregpath);
-			}
-		else {
 			
+			firstword (bsregpath, '"', bsregpath);
+			
+			}
+			
+		else {
+		
 			lastword (bsregpath, ' ', bsoptions);
-
+			
 			if (stringlength (bsoptions) < stringlength (bsregpath))
 				deletestring (bsregpath, stringlength (bsregpath) - stringlength (bsoptions) + 1, stringlength (bsoptions));
 			}
-		
+			
 		return (pathtofilespec (bsregpath, fsapp));
-
-	#endif /* WIN95VERSION */
-
-	} /* findapplication */
+		
+	#endif // WIN95VERSION
+	
+	} // findapplication
 
 
 boolean extendfilespec ( const ptrfilespec fsin, ptrfilespec fsout ) {
