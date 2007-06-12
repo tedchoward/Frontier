@@ -1314,7 +1314,7 @@ boolean shellinit (void) {
 	
 	htmlinitverbs ();
 
-	 sqliteinitverbs (); /* 2006-03-15 gewirtz: langsqlite.c */
+	sqliteinitverbs (); /* 2006-03-15 gewirtz: langsqlite.c */
 
 #ifdef flregexpverbs
 	regexpinitverbs (); /* 2003-04-23 AR: langregexp.c */
