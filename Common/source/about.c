@@ -85,7 +85,7 @@ static long aboutopenticks; /*so we can tell how long it's been up*/
 
 
 typedef struct tyaboutrecord {
-	
+
 	Rect messagearea;
 	
 	Rect aboutarea;
@@ -95,8 +95,9 @@ typedef struct tyaboutrecord {
 	boolean flbigwindow;
 	
 	boolean flextrastats;
-
+	
 	long refcon;
+	
 	} tyaboutrecord, *ptraboutrecord, **hdlaboutrecord;
 
 
@@ -187,16 +188,17 @@ static byte * aboutstrings [] = {
 	#ifdef WIN95VERSION
 		BIGSTRING ("\x14" "Handles Allocated:  "),
 	#endif
-
+	
 	BIGSTRING (""),
-
+	
 	BIGSTRING ("\x10" "Visible Agent:  "),
 	
 	BIGSTRING ("\x0f" "Current Time:  "),
 	
 	bs_APP_NAME,		/* 2006-02-06 aradke: see versions.h */
 	
-	BIGSTRING ("\x02" "^0"),
+	BIGSTRING ("\x02" "^0")
+	
 	};
 
 
