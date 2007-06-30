@@ -226,121 +226,128 @@ boolean loadfunctionprocessor (short id, langvaluecallback valuecallback) {
 	} /*loadfunctionprocessor*/
 
 
-static boolean initenvironment (hdlhashtable ht) {
+static boolean initenvironment ( hdlhashtable ht ) {
 
+	//
+	// 2007-06-29 creedon: isMacOsClassic is always false now that we don't
+	//				   support the Mac Classic envrionment any longer
+	//
+	//				   for Mac, bug fix for OS version numbers like 10.4.10
+	//
+	// 2004-11-19 creedon: added isServer
+	//
+	//				   for Mac, added osBuildNumber, osFullNameForDisplay
+	//				   ( now a calculated value )
+	//
+	
+	bigstring bsos, bsversion;
+	boolean isServer;
+	
 	#ifdef MACVERSION
 	
-		bigstring bsversion, bsos; /* 2004-11-19 creedon - added bsos*/
-		boolean isMacOsClassic, isServer; /* 2004-11-19 creedon */
+		Handle hcommand, hreturn;
+		bigstring bs;
 		unsigned long x;
 		
-		#if TARGET_API_MAC_CARBON == 1 /*PBS 7.028: system.environment.isCarbon*/
+		newemptyhandle ( &hreturn );
 		
-			/* 2004-11-19 creedon - added hcommand, hreturn, bs, response */
-			Handle hcommand, hreturn;
-			bigstring bs;
-			UInt32 response;
-			OSErr err;
+		bundle { // system version
 		
-		#endif
-		
-		gestalt (gestaltSystemVersion, (long *)(&x));
-		
+			getsystemversionstring ( bsversion, NULL );
+			
+			bundle { // major
+			
+				bigstring bsSystemVersionMajor;
+				
+				nthfield ( bsversion, 1, '.', bsSystemVersionMajor );
+				
+				stringtonumber ( bsSystemVersionMajor, &x );
+				
+				langassignlongvalue ( ht, str_osMajorVersion, x );
+				
+				}
+					
+			bundle { // minor
+			
+				bigstring bsSystemVersionMinor;
+				
+				nthfield ( bsversion, 2, '.', bsSystemVersionMinor );
+				
+				stringtonumber ( bsSystemVersionMinor, &x );
+				
+				langassignlongvalue ( ht, str_osMinorVersion, x );
+				
+				}
+					
+			bundle { // bug fix
+			
+				bigstring bsSystemVersionBugFix;
+				
+				nthfield ( bsversion, 3, '.', bsSystemVersionBugFix );
+				
+				stringtonumber ( bsSystemVersionBugFix, &x );
+				
+				langassignlongvalue ( ht, str_osPointVersion, x );
+				
+				}
+					
+			}
+			
 		langassignbooleanvalue (ht, str_isMac, true);
 		
 		langassignbooleanvalue (ht, str_isWindows, false);
 		
-		//langassignstringvalue (ht, str_osFlavor, zerostring);
+		// langassignstringvalue (ht, str_osFlavor, zerostring);
 		
-		langassignlongvalue (ht, str_osMajorVersion, bcdtolong (x >> 8)); /* 2004-11-19 creedon - convert from bcd for correct display on Mac OS X */ 
+		langassignbooleanvalue (ht, str_isCarbon, true);
 		
-		langassignlongvalue (ht, str_osMinorVersion, (x & 0x00f0) >> 4);
-
-		langassignlongvalue (ht, str_osPointVersion, x & 0x0f); /* 2004-11-19 creedon */		
-		getsystemversionstring (bsversion, nil);
+		bundle { // get mac os build number
 		
-		langassignstringvalue (ht, str_osVersionString, bsversion);
-
-		/* langassignstringvalue (ht, str_osFullNameForDisplay, "\x09" "Macintosh"); 2004-11-19 creedon - moved to later in code*/
+			newtexthandle ( "\psw_vers -buildVersion", &hcommand );
+			
+			unixshellcall ( hcommand, hreturn );
+			
+			texthandletostring ( hreturn, bs );
+			
+			sethandlesize ( hreturn, 0 );
+			
+			setstringlength ( bs, stringlength ( bs ) - 1 );
+			
+			langassignstringvalue ( ht, str_osBuildNumber, bs );
+			
+			}
+			
+		bundle { // get os full display name
 		
-		#if TARGET_API_MAC_CARBON == 1 /*PBS 7.028: system.environment.isCarbon*/
-
-			langassignbooleanvalue (ht, str_isCarbon, true);
+			copystring ( "\psw_vers -productName", bs ); 
 			
-			/* 2004-11-19 creedon - get mac os build number, full display name, is server*/
-
-			/* get mac os build number */
- 
-			newtexthandle ("\psw_vers -buildVersion", &hcommand);
+			sethandlecontents ( stringbaseaddress ( bs ), stringlength ( bs ), hcommand );
 			
-			newemptyhandle (&hreturn);
+			unixshellcall ( hcommand, hreturn );
 			
-			unixshellcall (hcommand, hreturn);
+			texthandletostring ( hreturn, bsos );
 			
-			texthandletostring (hreturn, bs);
+			setstringlength ( bsos, stringlength ( bsos ) - 1 );
 			
-			sethandlesize (hreturn, 0);
+			}
 			
-			setstringlength (bs, stringlength (bs) - 1);
-			
-			langassignstringvalue (ht, str_osBuildNumber, bs); /* get mac os build number */
-
-			/* get os full display name */
-
-			copystring ((unsigned char *)"sw_vers -productName", bs); 
-
-			sethandlecontents (bs, stringsize (bs), hcommand);
-
-			unixshellcall (hcommand, hreturn);
-
-			texthandletostring (hreturn, bsos);
-
-			setstringlength (bsos, stringlength (bsos) - 1); /* get os full display name */
-			
-			disposehandle (hcommand);
-			disposehandle (hreturn); /* get mac os build number and full display name*/
-			
-			/* 2004-11-19 creedon - is mac os classic */
-			/* This needs to be checked on Mac OS Classic as well as Mac OS 9 proper. */
-			
-			err = gestalt (gestaltMacOSCompatibilityBoxAttr, (long *)(&response));
-			
-			if ((err == noErr) && ((response & (1 << gestaltMacOSCompatibilityBoxPresent)) != 0))
-				isMacOsClassic = true;
-			else
-				isMacOsClassic = false;
-			
-			/* 2004-11-19 creedon - is server */
-			
-			if (equalstrings (bsos, "\pMac OS X Server"))
+		disposehandle ( hcommand );
+		
+		disposehandle ( hreturn );
+		
+		bundle { // is server
+		
+			if ( equalstrings ( bsos, "\pMac OS X Server" ) )
 				isServer = true;
 			else
-				isServer = false; /* is server */
-
-		#else
+				isServer = false;
+			}
 			
-			langassignbooleanvalue (ht, str_isCarbon, false);
-
-			copystring (BIGSTRING ("\x06" "Mac OS"), bsos); /* 2004-11-19 creedon - Mac OS, used to be Macintosh*/ 
-			
-			isMacOsClassic = true; /* 2004-11-19 creedon */
-			
-			isServer = false; /* 2004-11-19 creedon */
-			
-		#endif
-		
-		langassignbooleanvalue (ht, str_isMacOsClassic, isMacOsClassic); /* 2004-11-19 creedon */
-		
-		langassignstringvalue (ht, str_osFullNameForDisplay, bsos); /* 2004-11-19 creedon - changed "\x06" "Mac OS" to bsos. a calculated value */
-		
-		langassignbooleanvalue (ht, str_isServer, isServer); /* 2004-11-19 creedon */
-		
 	#endif
 
 	#ifdef WIN95VERSION
 	
-		bigstring bsversion, bsservicepack, bsos;
-		boolean isServer; /* 2004-11-19 creedon */
+		bigstring bsservicepack;
 		byte bsflavor [4];
 		OSVERSIONINFO osinfo;
 
@@ -355,9 +362,11 @@ static boolean initenvironment (hdlhashtable ht) {
 		langassignbooleanvalue (ht, str_isWindows, true);
 		
 		if (osinfo.dwPlatformId == VER_PLATFORM_WIN32_NT) {
+		
 			copystring (BIGSTRING ("\x02" "NT"), bsflavor);
 			
-			isServer = true; /* 2004-11-19 creedon */
+			isServer = true;
+			
 			}
 		else {
 			
@@ -366,9 +375,10 @@ static boolean initenvironment (hdlhashtable ht) {
 			else
 				copystring (BIGSTRING ("\x02" "98"), bsflavor);
 			
-			isServer = false; /* 2004-11-19 creedon */
+			isServer = false;
+			
 			}
-		
+			
 		pushstring (bsflavor, bsos);
 		
 		langassignstringvalue (ht, str_osFlavor, bsflavor);
@@ -381,47 +391,52 @@ static boolean initenvironment (hdlhashtable ht) {
 		
 		getsystemversionstring (bsversion, bsservicepack);
 		
-		langassignstringvalue (ht, str_osVersionString, bsversion);
-		
 		langassignstringvalue (ht, str_winServicePackNumber, bsservicepack);
 		
-		langassignstringvalue (ht, str_osFullNameForDisplay, bsos);
+		langassignbooleanvalue (ht, str_isCarbon, false); // 7.0b28: isCarbon is false on Windows.
 		
-		langassignbooleanvalue (ht, str_isCarbon, false); /*7.0b28: isCarbon is false on Windows.*/
-		
-		langassignbooleanvalue (ht, str_isMacOsClassic, false); /* 2006-02-18 aradke */
-		
-		langassignbooleanvalue (ht, str_isServer, isServer); /* 2004-11-19 creedon */
-
 	#endif
-
-	langassignlongvalue (ht, str_maxTcpConnections, maxconnections); /*7.0b37 PBS: max TCP connections*/
+	
+	langassignbooleanvalue ( ht, str_isMacOsClassic, false );
+	
+	langassignbooleanvalue ( ht, str_isServer, isServer );
+		
+	langassignlongvalue ( ht, str_maxTcpConnections, maxconnections ); // 7.0b37 PBS: max TCP connections
+	
+	langassignstringvalue ( ht, str_osFullNameForDisplay, bsos );
+	
+	langassignstringvalue ( ht, str_osVersionString, bsversion );
 	
 	#ifdef PIKE
-	#ifndef OPMLEDITOR
-		langassignbooleanvalue (ht, str_isPike, true);
-
-		langassignbooleanvalue (ht, str_isRadio, true); /*7.0b37 PBS: system.environment.isRadio*/
-		langassignbooleanvalue (ht, str_isOpmlEditor, false); /*2005-04-06 dluebbert: system.environment.isOPML*/
-		langassignbooleanvalue (ht, str_isFrontier, false); /*2005-04-06 dluebbert: system.environment.isFrontier*/
-	#else // OPMLEDITOR
-		langassignbooleanvalue (ht, str_isPike, false);
-
-		langassignbooleanvalue (ht, str_isRadio, false); /*7.0b37 PBS: system.environment.isRadio*/
-		langassignbooleanvalue (ht, str_isOpmlEditor, true); /*2005-04-06 dluebbert: system.environment.isOPML*/
-		langassignbooleanvalue (ht, str_isFrontier, false); /*2005-04-06 dluebbert: system.environment.isFrontier*/
-	#endif // OPMLEDITOR
+	
+		#ifndef OPMLEDITOR
+		
+			langassignbooleanvalue (ht, str_isPike, true);
+			langassignbooleanvalue (ht, str_isRadio, true); /*7.0b37 PBS: system.environment.isRadio*/
+			langassignbooleanvalue (ht, str_isOpmlEditor, false); /*2005-04-06 dluebbert: system.environment.isOPML*/
+			langassignbooleanvalue (ht, str_isFrontier, false); /*2005-04-06 dluebbert: system.environment.isFrontier*/
+			
+		#else // OPMLEDITOR
+		
+			langassignbooleanvalue (ht, str_isPike, false);
+			langassignbooleanvalue (ht, str_isRadio, false); /*7.0b37 PBS: system.environment.isRadio*/
+			langassignbooleanvalue (ht, str_isOpmlEditor, true); /*2005-04-06 dluebbert: system.environment.isOPML*/
+			langassignbooleanvalue (ht, str_isFrontier, false); /*2005-04-06 dluebbert: system.environment.isFrontier*/
+			
+		#endif // OPMLEDITOR
 		
 	#else //!PIKE
+	
 		langassignbooleanvalue (ht, str_isPike, false);
-
 		langassignbooleanvalue (ht, str_isRadio, false); /*7.0b37 PBS: system.environment.isRadio*/
 		langassignbooleanvalue (ht, str_isOpmlEditor, false); /*2005-04-06 dluebbert: system.environment.isOPML*/
 		langassignbooleanvalue (ht, str_isFrontier, true); /*2005-04-06 dluebbert: system.environment.isFrontier*/
+		
 	#endif //!PIKE
 
-		return (true);
-	} /*initenvironment*/
+	return ( true );
+		
+	} // initenvironment
 
 
 static boolean initCharsetsTable (hdlhashtable cSetsTable)
