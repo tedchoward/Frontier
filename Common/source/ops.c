@@ -38,6 +38,7 @@
 #include "ops.h"
 #include "langinternal.h"
 #include "shell.h"
+#include "sysshellcall.h" // 2007-06-30 creedon
 
 
 static tydirection directions [ctdirections] = {
@@ -857,34 +858,40 @@ void safeldtox80 ( const long double *x, extended80 *x80 ) {
 #endif
 
 
-void getsystemversionstring (bigstring bs, bigstring bsextrainfo) {
+void getsystemversionstring ( bigstring bs, bigstring bsextrainfo ) {
 
 	#ifdef MACVERSION
-		long x;
+	
+		//
+		// 2007-06-29 creedon: bug fix for os version numbers like 10.4.10,
+		//				   old method of using gestaltSystemVersion
+		//				   doesn't work, in future could use
+		//				   gestaltSystemVersionMajor, etc on 10.4 or later
+		//
 		
-		gestalt (gestaltSystemVersion, &x);
+		Handle handleCommand, handleReturn;
 		
-		numbertostring (bcdtolong (x >> 8), bs); /* high byte is major rev., 2004-11-16 creedon - convert from bcd for correct display on Mac OS X */
+		newtexthandle ( "\psw_vers -productVersion", &handleCommand );
 		
-		pushchar ('.', bs);
+		newemptyhandle ( &handleReturn );
 		
-		pushint ((x & 0x00f0) >> 4, bs); /*high nibble of low byte is minor rev*/
+		unixshellcall ( handleCommand, handleReturn );
 		
-		x &= 0x0f; /*lowest nibble is minor decimal rev*/
+		disposehandle ( handleCommand );
 		
-		if (x) {
-			
-			pushchar ('.', bs);
-			
-			pushint (x, bs);
-			}
+		texthandletostring ( handleReturn, bs );
 		
-		if (bsextrainfo != nil)
-			setemptystring (bsextrainfo);
+		setstringlength ( bs, stringlength ( bs ) - 1 );
 		
-	#endif
+		disposehandle ( handleReturn );
+		
+		if ( bsextrainfo != NULL )
+			setemptystring ( bsextrainfo );
+		
+	#endif // MACVERSION
 	
 	#ifdef WIN95VERSION
+	
 		OSVERSIONINFO osinfo;
 
 		osinfo.dwOSVersionInfoSize = sizeof (OSVERSIONINFO);
@@ -902,12 +909,15 @@ void getsystemversionstring (bigstring bs, bigstring bsextrainfo) {
 			pushchar ('.', bs);
 			
 			pushint (LOWORD (osinfo.dwBuildNumber), bs);
+			
 			}
 		
-		if (bsextrainfo != nil)
-			copyctopstring (osinfo.szCSDVersion, bsextrainfo);
-	#endif
-	} /*getsystemversionstring*/
+		if ( bsextrainfo != NULL )
+			copyctopstring ( osinfo.szCSDVersion, bsextrainfo );
+			
+	#endif // WIN95VERSION
+	
+	} // getsystemversionstring
 
 
 void getsizestring (unsigned long size, bigstring bs) {
