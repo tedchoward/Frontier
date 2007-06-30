@@ -777,11 +777,11 @@ boolean mysqlgethostinfoverb (hdltreenode hparam1, tyvaluerecord *vreturned, big
 
 
 boolean mysqlgetserverversionverb (hdltreenode hparam1, tyvaluerecord *vreturned, bigstring bserror) {
+
 	MYSQL *dbid;				// the MySQL object handle
 	unsigned long returnCode;	// the return code
-	Handle returnH = nil;		// The handle being returned back to Frontier
 
-	/*	
+	/*
 		mysql.getServerVersion(dbid)
 
 		Action:  get information about connection to the MySQL server
@@ -823,11 +823,11 @@ boolean mysqlgetserverversionverb (hdltreenode hparam1, tyvaluerecord *vreturned
 
 
 boolean mysqlgetprotocolinfoverb (hdltreenode hparam1, tyvaluerecord *vreturned, bigstring bserror) {
-	MYSQL *dbid;				// the MySQL object handle
-	unsigned int returnCode;	// the return code
-	Handle returnH = nil;		// The handle being returned back to Frontier
 
-	/*	
+	MYSQL *dbid;			// the MySQL object handle
+	unsigned int returnCode;	// the return code
+
+	/*
 		mysql.getProtocolInfo(dbid)
 
 		Action:  get information about the MySQL protocol version
