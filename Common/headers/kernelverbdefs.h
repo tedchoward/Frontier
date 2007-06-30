@@ -26,12 +26,12 @@
 ******************************************************************************/
 
 #define idopverbs			1000
-#define idtableverbs			1001
+#define idtableverbs		1001
 #define idmenuverbs			1002
 #define idwpverbs			1003
 #define idpictverbs			1004
 #define idlangverbs			1005
-#define idstringverbs			1006
+#define idstringverbs		1006
 #define idfileverbs			1007
 #define idrezverbs			1008
 #define idwindowverbs		1009
@@ -47,8 +47,10 @@
 #define iddbverbs			1019
 #define idxmlverbs			1020
 #define idhtmlverbs			1021
-#define idquicktimeverbs		1022 /*7.0b4 PBS: QuickTime Player window verbs*/
-#define idregexpverbs		1023 /*2003-04-22 AR: regular expression verbs*/
-#define idmathverbs			1024 /*2004-12-29 SMD: extended math verbs*/
-#define idcryptverbs			1025 /* 2006-03-07 creedon: crypt verbs */
-#define idsqliteverbs  1026 /* 2006-03-15 gewirtz sqlite verbs */
+#define idquicktimeverbs		1022 // 7.0b4 PBS: QuickTime Player window verbs
+#define idregexpverbs		1023 // 2003-04-22 AR: regular expression verbs
+#define idmathverbs			1024 // 2004-12-29 SMD: extended math verbs
+#define idcryptverbs		1025 // 2006-03-07 creedon: crypt verbs
+#define idsqliteverbs		1026 // 2006-03-15 gewirtz sqlite verbs
+#define idmysqlverbs		1027 // 2007-04-08 gewirtz mysql verbs
+

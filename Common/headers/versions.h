@@ -69,10 +69,10 @@
 	#define	APP_SUBMINOR_VERSION_BCD		0x10	/* sub and minor version in BCD notation */
 	
 	#define	APP_STAGE_CODE				0x40	/* dev = 0x20, alpha = 0x40, beta = 0x60, final = 0x80 */
-	#define	APP_REVISION_LEVEL			14	/* for non-final releases only */
-	#define	APP_BUILD_NUMBER			14	/* increment by one for every release, final or not */
+	#define	APP_REVISION_LEVEL			15	/* for non-final releases only */
+	#define	APP_BUILD_NUMBER			15	/* increment by one for every release, final or not */
 	
-	#define	APP_VERSION_STRING			"10.1a14"
+	#define	APP_VERSION_STRING			"10.1a15"
 
 #else
 
@@ -95,10 +95,10 @@
 	#define	APP_SUBMINOR_VERSION_BCD		0x10	/* sub and minor version in BCD notation */
 	
 	#define	APP_STAGE_CODE				0x40	/* dev = 0x20, alpha = 0x40, beta = 0x60, final = 0x80 */
-	#define	APP_REVISION_LEVEL			14	/* for non-final releases only */
-	#define	APP_BUILD_NUMBER			14	/* increment by one for every release, final or not */
+	#define	APP_REVISION_LEVEL			15	/* for non-final releases only */
+	#define	APP_BUILD_NUMBER			15	/* increment by one for every release, final or not */
 	
-	#define	APP_VERSION_STRING			"10.1a14"
+	#define	APP_VERSION_STRING			"10.1a15"
 	
 #endif
 #else
@@ -121,10 +121,10 @@
 	#define	APP_SUBMINOR_VERSION_BCD		0x10	/* sub and minor version in BCD notation */
 	
 	#define	APP_STAGE_CODE				0x40	/* dev = 0x20, alpha = 0x40, beta = 0x60, final = 0x80 */
-	#define	APP_REVISION_LEVEL			14	/* for non-final releases only */
-	#define	APP_BUILD_NUMBER			14	/* increment by one for every release, final or not */
+	#define	APP_REVISION_LEVEL			15	/* for non-final releases only */
+	#define	APP_BUILD_NUMBER			15	/* increment by one for every release, final or not */
 	
-	#define	APP_VERSION_STRING			"10.1a14"
+	#define	APP_VERSION_STRING			"10.1a15"
 	
 #endif
 

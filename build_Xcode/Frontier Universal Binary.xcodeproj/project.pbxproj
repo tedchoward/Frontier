@@ -69,6 +69,17 @@
 		5D18A84B0AD3AD9900613FDB /* vdbeInt.h in Headers */ = {isa = PBXBuildFile; fileRef = 5D18A83E0AD3AD9900613FDB /* vdbeInt.h */; };
 		5D4E1E490AAA17E900DF6890 /* langsqlite.c in Sources */ = {isa = PBXBuildFile; fileRef = 5D4E1E470AAA17E900DF6890 /* langsqlite.c */; };
 		5D4E1E4A0AAA17E900DF6890 /* langsqlite.h in Headers */ = {isa = PBXBuildFile; fileRef = 5D4E1E480AAA17E900DF6890 /* langsqlite.h */; };
+		5D8F1E110C25AFC500927B97 /* my_alloc.h in Headers */ = {isa = PBXBuildFile; fileRef = 5D8F1E0A0C25AFC500927B97 /* my_alloc.h */; };
+		5D8F1E120C25AFC500927B97 /* my_list.h in Headers */ = {isa = PBXBuildFile; fileRef = 5D8F1E0B0C25AFC500927B97 /* my_list.h */; };
+		5D8F1E130C25AFC500927B97 /* mysql.h in Headers */ = {isa = PBXBuildFile; fileRef = 5D8F1E0C0C25AFC500927B97 /* mysql.h */; };
+		5D8F1E140C25AFC500927B97 /* mysql_com.h in Headers */ = {isa = PBXBuildFile; fileRef = 5D8F1E0D0C25AFC500927B97 /* mysql_com.h */; };
+		5D8F1E150C25AFC600927B97 /* mysql_time.h in Headers */ = {isa = PBXBuildFile; fileRef = 5D8F1E0E0C25AFC500927B97 /* mysql_time.h */; };
+		5D8F1E160C25AFC600927B97 /* mysql_version.h in Headers */ = {isa = PBXBuildFile; fileRef = 5D8F1E0F0C25AFC500927B97 /* mysql_version.h */; };
+		5D8F1E170C25AFC600927B97 /* typelib.h in Headers */ = {isa = PBXBuildFile; fileRef = 5D8F1E100C25AFC500927B97 /* typelib.h */; };
+		5D8F1EF00C25B4AB00927B97 /* libmysqlclient.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 5D8F1EEE0C25B4AB00927B97 /* libmysqlclient.a */; };
+		5D8F1EF10C25B4AB00927B97 /* libz.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 5D8F1EEF0C25B4AB00927B97 /* libz.a */; };
+		5D8F1EF40C25B51A00927B97 /* langmysql.c in Sources */ = {isa = PBXBuildFile; fileRef = 5D8F1EF30C25B51A00927B97 /* langmysql.c */; };
+		5D8F1EF70C25B56600927B97 /* langmysql.h in Headers */ = {isa = PBXBuildFile; fileRef = 5D8F1EF60C25B56600927B97 /* langmysql.h */; };
 		5DCA3B0C0AF552C700D6155D /* libpaigefat.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 5DCA3B0B0AF552C700D6155D /* libpaigefat.a */; };
 		5DCA3B0D0AF552C700D6155D /* libpaigefat.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 5DCA3B0B0AF552C700D6155D /* libpaigefat.a */; };
 		6505996409968C1400410571 /* ioascrollbar.h in Headers */ = {isa = PBXBuildFile; fileRef = 651525AB072BFC6700411831 /* ioascrollbar.h */; };
@@ -1055,25 +1066,11 @@
 		65F9C22309C4CD9800DCC29E /* sha.h in Headers */ = {isa = PBXBuildFile; fileRef = 65F9C21F09C4CD9700DCC29E /* sha.h */; };
 		65F9C22709C4CDDE00DCC29E /* sha1dgst.c in Sources */ = {isa = PBXBuildFile; fileRef = 65F9C22609C4CDDE00DCC29E /* sha1dgst.c */; };
 		65F9C22809C4CDDE00DCC29E /* sha1dgst.c in Sources */ = {isa = PBXBuildFile; fileRef = 65F9C22609C4CDDE00DCC29E /* sha1dgst.c */; };
-		839E50AA0BCBD3C2005C9D69 /* FSCopyObject.c in Sources */ = {isa = PBXBuildFile; fileRef = 5D0D91000ADEDFA80000E67B /* FSCopyObject.c */; };
-		839E50AB0BCBD3C3005C9D69 /* FSCopyObject.h in Headers */ = {isa = PBXBuildFile; fileRef = 5D0D91010ADEDFA80000E67B /* FSCopyObject.h */; };
-		839E50AC0BCBD3C4005C9D69 /* GenLinkedList.c in Sources */ = {isa = PBXBuildFile; fileRef = 5D0D91020ADEDFA80000E67B /* GenLinkedList.c */; };
-		839E50AD0BCBD3C4005C9D69 /* GenLinkedList.h in Headers */ = {isa = PBXBuildFile; fileRef = 5D0D91030ADEDFA80000E67B /* GenLinkedList.h */; };
-		839E50B50BCBD5D0005C9D69 /* langsqlite.c in Sources */ = {isa = PBXBuildFile; fileRef = 5D4E1E470AAA17E900DF6890 /* langsqlite.c */; };
-		839E50E50BCBD774005C9D69 /* libSQLite3.a in Frameworks */ = {isa = PBXBuildFile; fileRef = BB37A29C0AB826540077C6A1 /* libSQLite3.a */; };
-		839E50EC0BCBD881005C9D69 /* langsqlite.h in Headers */ = {isa = PBXBuildFile; fileRef = 5D4E1E480AAA17E900DF6890 /* langsqlite.h */; };
 		BB37A31B0AB828010077C6A1 /* libSQLite3.a in Frameworks */ = {isa = PBXBuildFile; fileRef = BB37A29C0AB826540077C6A1 /* libSQLite3.a */; };
 		DEA58AB407435A9500BAB271 /* Frontier.icns in Resources */ = {isa = PBXBuildFile; fileRef = DEA58AB307435A9500BAB271 /* Frontier.icns */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
-		839E50B10BCBD3F3005C9D69 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 65152560072BFC6500411831 /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = BB37A29B0AB826540077C6A1;
-			remoteInfo = SQLite3;
-		};
 		BB37A3170AB827EA0077C6A1 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 65152560072BFC6500411831 /* Project object */;
@@ -1146,6 +1143,17 @@
 		5D18A83E0AD3AD9900613FDB /* vdbeInt.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = vdbeInt.h; path = ../Common/sqlite3/vdbeInt.h; sourceTree = SOURCE_ROOT; };
 		5D4E1E470AAA17E900DF6890 /* langsqlite.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = langsqlite.c; path = ../Common/source/langsqlite.c; sourceTree = SOURCE_ROOT; };
 		5D4E1E480AAA17E900DF6890 /* langsqlite.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = langsqlite.h; path = ../Common/headers/langsqlite.h; sourceTree = SOURCE_ROOT; };
+		5D8F1E0A0C25AFC500927B97 /* my_alloc.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = my_alloc.h; path = "../Common/MySQL/osx10.3-powerpc/include/my_alloc.h"; sourceTree = SOURCE_ROOT; };
+		5D8F1E0B0C25AFC500927B97 /* my_list.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = my_list.h; path = "../Common/MySQL/osx10.3-powerpc/include/my_list.h"; sourceTree = SOURCE_ROOT; };
+		5D8F1E0C0C25AFC500927B97 /* mysql.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = mysql.h; path = "../Common/MySQL/osx10.3-powerpc/include/mysql.h"; sourceTree = SOURCE_ROOT; };
+		5D8F1E0D0C25AFC500927B97 /* mysql_com.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = mysql_com.h; path = "../Common/MySQL/osx10.3-powerpc/include/mysql_com.h"; sourceTree = SOURCE_ROOT; };
+		5D8F1E0E0C25AFC500927B97 /* mysql_time.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = mysql_time.h; path = "../Common/MySQL/osx10.3-powerpc/include/mysql_time.h"; sourceTree = SOURCE_ROOT; };
+		5D8F1E0F0C25AFC500927B97 /* mysql_version.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = mysql_version.h; path = "../Common/MySQL/osx10.3-powerpc/include/mysql_version.h"; sourceTree = SOURCE_ROOT; };
+		5D8F1E100C25AFC500927B97 /* typelib.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = typelib.h; path = "../Common/MySQL/osx10.3-powerpc/include/typelib.h"; sourceTree = SOURCE_ROOT; };
+		5D8F1EEE0C25B4AB00927B97 /* libmysqlclient.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libmysqlclient.a; path = tools/libmysqlclient.a; sourceTree = SOURCE_ROOT; };
+		5D8F1EEF0C25B4AB00927B97 /* libz.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libz.a; path = tools/libz.a; sourceTree = SOURCE_ROOT; };
+		5D8F1EF30C25B51A00927B97 /* langmysql.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = langmysql.c; path = ../Common/source/langmysql.c; sourceTree = SOURCE_ROOT; };
+		5D8F1EF60C25B56600927B97 /* langmysql.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = langmysql.h; path = ../Common/headers/langmysql.h; sourceTree = SOURCE_ROOT; };
 		5DCA3B0B0AF552C700D6155D /* libpaigefat.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libpaigefat.a; path = tools/libpaigefat.a; sourceTree = SOURCE_ROOT; };
 		65059B4E09968C1400410571 /* OPML.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = OPML.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		65059B760996945100410571 /* OPML.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; name = OPML.icns; path = ../resources/OPML/OPML.icns; sourceTree = SOURCE_ROOT; };
@@ -1661,7 +1669,6 @@
 				65059B3909968C1400410571 /* ApplicationServices.framework in Frameworks */,
 				65059B3A09968C1400410571 /* QuickTime.framework in Frameworks */,
 				5DCA3B0D0AF552C700D6155D /* libpaigefat.a in Frameworks */,
-				839E50E50BCBD774005C9D69 /* libSQLite3.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1674,6 +1681,8 @@
 				6515294D072C000900411831 /* QuickTime.framework in Frameworks */,
 				BB37A31B0AB828010077C6A1 /* libSQLite3.a in Frameworks */,
 				5DCA3B0C0AF552C700D6155D /* libpaigefat.a in Frameworks */,
+				5D8F1EF00C25B4AB00927B97 /* libmysqlclient.a in Frameworks */,
+				5D8F1EF10C25B4AB00927B97 /* libz.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1775,6 +1784,20 @@
 			);
 			name = SQLite;
 			sourceTree = "<group>";
+		};
+		5D8F1E090C25AFC500927B97 /* MySQL */ = {
+			isa = PBXGroup;
+			children = (
+				5D8F1E0A0C25AFC500927B97 /* my_alloc.h */,
+				5D8F1E0B0C25AFC500927B97 /* my_list.h */,
+				5D8F1E0C0C25AFC500927B97 /* mysql.h */,
+				5D8F1E0D0C25AFC500927B97 /* mysql_com.h */,
+				5D8F1E0E0C25AFC500927B97 /* mysql_time.h */,
+				5D8F1E0F0C25AFC500927B97 /* mysql_version.h */,
+				5D8F1E100C25AFC500927B97 /* typelib.h */,
+			);
+			name = MySQL;
+			sourceTree = SOURCE_ROOT;
 		};
 		5DAE70AF0AD423000068EA39 /* Products */ = {
 			isa = PBXGroup;
@@ -2151,6 +2174,7 @@
 				65152633072BFC6700411831 /* langhtml.c */,
 				65152634072BFC6800411831 /* langlist.c */,
 				65B70CDB0797CE4A008C2F1A /* langmath.c */,
+				5D8F1EF30C25B51A00927B97 /* langmysql.c */,
 				65152635072BFC6800411831 /* langops.c */,
 				65152636072BFC6800411831 /* langpack.c */,
 				65152637072BFC6800411831 /* langparser.c */,
@@ -2334,8 +2358,10 @@
 			children = (
 				6515294A072C000500411831 /* ApplicationServices.framework */,
 				651527B8072BFE0E00411831 /* Carbon.framework */,
+				5D8F1EEE0C25B4AB00927B97 /* libmysqlclient.a */,
 				5DCA3B0B0AF552C700D6155D /* libpaigefat.a */,
 				BB37A29C0AB826540077C6A1 /* libSQLite3.a */,
+				5D8F1EEF0C25B4AB00927B97 /* libz.a */,
 				6515294C072C000900411831 /* QuickTime.framework */,
 			);
 			name = "External Frameworks and Libraries";
@@ -2447,6 +2473,7 @@
 				651527E8072BFE3F00411831 /* langinternal.h */,
 				651528BA072BFF0900411831 /* langipc.h */,
 				65B70CDF0797CEAD008C2F1A /* langmath.h */,
+				5D8F1EF60C25B56600927B97 /* langmysql.h */,
 				651528E8072BFF3E00411831 /* langparser.h */,
 				651528E2072BFF3300411831 /* langpython.h */,
 				651528A6072BFEF200411831 /* langregexp.h */,
@@ -2472,6 +2499,7 @@
 				65152814072BFE6300411831 /* MoreFilesExtras.h */,
 				651525C2072BFC6700411831 /* MoreFilesX.h */,
 				65152850072BFE9E00411831 /* mouse.h */,
+				5D8F1E090C25AFC500927B97 /* MySQL */,
 				6515289E072BFEEA00411831 /* notify.h */,
 				651528D0072BFF1F00411831 /* odbinternal.h */,
 				651528AA072BFEF600411831 /* op.h */,
@@ -2807,9 +2835,6 @@
 				65F9C22209C4CD9800DCC29E /* sha_locl.h in Headers */,
 				65F9C22309C4CD9800DCC29E /* sha.h in Headers */,
 				655A983709E929CC009EFFEA /* byteorder.h in Headers */,
-				839E50AB0BCBD3C3005C9D69 /* FSCopyObject.h in Headers */,
-				839E50AD0BCBD3C4005C9D69 /* GenLinkedList.h in Headers */,
-				839E50EC0BCBD881005C9D69 /* langsqlite.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -3040,6 +3065,14 @@
 				5D4E1E4A0AAA17E900DF6890 /* langsqlite.h in Headers */,
 				5D0D91050ADEDFA80000E67B /* FSCopyObject.h in Headers */,
 				5D0D91070ADEDFA80000E67B /* GenLinkedList.h in Headers */,
+				5D8F1E110C25AFC500927B97 /* my_alloc.h in Headers */,
+				5D8F1E120C25AFC500927B97 /* my_list.h in Headers */,
+				5D8F1E130C25AFC500927B97 /* mysql.h in Headers */,
+				5D8F1E140C25AFC500927B97 /* mysql_com.h in Headers */,
+				5D8F1E150C25AFC600927B97 /* mysql_time.h in Headers */,
+				5D8F1E160C25AFC600927B97 /* mysql_version.h in Headers */,
+				5D8F1E170C25AFC600927B97 /* typelib.h in Headers */,
+				5D8F1EF70C25B56600927B97 /* langmysql.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -3081,7 +3114,6 @@
 			buildRules = (
 			);
 			dependencies = (
-				839E50B20BCBD3F3005C9D69 /* PBXTargetDependency */,
 			);
 			name = OPML;
 			productName = "Frontier OSX MachO Debug";
@@ -3241,13 +3273,17 @@
 			);
 			inputPaths = (
 				"${SRCROOT}/../Common/Paige/libpaigefat.a",
+				"${SRCROOT}/../Common/MySQL/osx10.3-powerpc/lib/libmysqlclient.a",
+				"${SRCROOT}/../Common/MySQL/osx10.4-i686/lib/libmysqlclient.a",
 			);
 			outputPaths = (
 				"${SRCROOT}/tools/libpaigefat.a",
+				"${SRCROOT}/tools/libmysqlclient.a",
+				"${SRCROOT}/tools/libz.a",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "#set -x\ncp -f \"${SRCROOT}/../Common/Paige/libpaigefat.a\" \"${SRCROOT}/tools/libpaigefat.a\"\nranlib \"${SRCROOT}/tools/libpaigefat.a\"";
+			shellScript = "#set -x\n\n#\n# paige\n#\n\ncp -f \"${SRCROOT}/../Common/Paige/libpaigefat.a\" \"${SRCROOT}/tools/libpaigefat.a\"\n\nranlib \"${SRCROOT}/tools/libpaigefat.a\"\n\n#\n# build Universal Binary MySQL libraries\n#\n\nlipo -create \"${SRCROOT}/../Common/MySQL/osx10.3-powerpc/lib/libmysqlclient.a\" \"${SRCROOT}/../Common/MySQL/osx10.4-i686/lib/libmysqlclient.a\" -output \"${SRCROOT}/tools/libmysqlclient.a\"\n\nlipo -create \"${SRCROOT}/../Common/MySQL/osx10.3-powerpc/lib/libz.a\" \"${SRCROOT}/../Common/MySQL/osx10.4-i686/lib/libz.a\" -output \"${SRCROOT}/tools/libz.a\"";
 		};
 		65ED46B809D85D3F00BEB9D3 /* ShellScript */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -3263,7 +3299,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "#set -x\ncp -f \"${SRCROOT}/../Common/Paige/libpaigefat.a\" \"${SRCROOT}/tools/libpaigefat.a\"\nranlib \"${SRCROOT}/tools/libpaigefat.a\"";
+			shellScript = "#set -x\ncp -f \"${SRCROOT}/../Common/Paige/libpaigefat.a\" \"${SRCROOT}/tools/libpaigefat.a\"\nranlib \"${SRCROOT}/tools/libpaigemacho.a\"";
 		};
 		DEA58A9E074359BA00BAB271 /* ShellScript */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -3279,7 +3315,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = ". \"${SRCROOT}/tools/postlinking.sh\"\n";
+			shellScript = ". \"${SRCROOT}/tools/postlinking.sh\"";
 		};
 /* End PBXShellScriptBuildPhase section */
 
@@ -3539,9 +3575,6 @@
 				6599180809C494EA00F6F58C /* whirlpool.c in Sources */,
 				6599181509C4950300F6F58C /* langcrypt.c in Sources */,
 				65F9C22809C4CDDE00DCC29E /* sha1dgst.c in Sources */,
-				839E50AA0BCBD3C2005C9D69 /* FSCopyObject.c in Sources */,
-				839E50AC0BCBD3C4005C9D69 /* GenLinkedList.c in Sources */,
-				839E50B50BCBD5D0005C9D69 /* langsqlite.c in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -3803,6 +3836,7 @@
 				5D4E1E490AAA17E900DF6890 /* langsqlite.c in Sources */,
 				5D0D91040ADEDFA80000E67B /* FSCopyObject.c in Sources */,
 				5D0D91060ADEDFA80000E67B /* GenLinkedList.c in Sources */,
+				5D8F1EF40C25B51A00927B97 /* langmysql.c in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -3859,11 +3893,6 @@
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
-		839E50B20BCBD3F3005C9D69 /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = BB37A29B0AB826540077C6A1 /* SQLite3 */;
-			targetProxy = 839E50B10BCBD3F3005C9D69 /* PBXContainerItemProxy */;
-		};
 		BB37A3180AB827EA0077C6A1 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			target = BB37A29B0AB826540077C6A1 /* SQLite3 */;

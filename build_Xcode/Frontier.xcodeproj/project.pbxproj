@@ -67,8 +67,22 @@
 		5D18A8490AD3AD9900613FDB /* sqliteInt.h in Headers */ = {isa = PBXBuildFile; fileRef = 5D18A83C0AD3AD9900613FDB /* sqliteInt.h */; };
 		5D18A84A0AD3AD9900613FDB /* vdbe.h in Headers */ = {isa = PBXBuildFile; fileRef = 5D18A83D0AD3AD9900613FDB /* vdbe.h */; };
 		5D18A84B0AD3AD9900613FDB /* vdbeInt.h in Headers */ = {isa = PBXBuildFile; fileRef = 5D18A83E0AD3AD9900613FDB /* vdbeInt.h */; };
+		5D4832630C17729E009E897D /* mysql.h in Headers */ = {isa = PBXBuildFile; fileRef = 5D4832620C17729E009E897D /* mysql.h */; };
 		5D4E1E490AAA17E900DF6890 /* langsqlite.c in Sources */ = {isa = PBXBuildFile; fileRef = 5D4E1E470AAA17E900DF6890 /* langsqlite.c */; };
 		5D4E1E4A0AAA17E900DF6890 /* langsqlite.h in Headers */ = {isa = PBXBuildFile; fileRef = 5D4E1E480AAA17E900DF6890 /* langsqlite.h */; };
+		5D5837F10C0E02FA00DB769C /* langmysql.c in Sources */ = {isa = PBXBuildFile; fileRef = 5D5837F00C0E02FA00DB769C /* langmysql.c */; };
+		5D5837F30C0E035D00DB769C /* langmysql.h in Headers */ = {isa = PBXBuildFile; fileRef = 5D5837F20C0E035D00DB769C /* langmysql.h */; };
+		5D8F017F0C247FE700927B97 /* libmysqlclient.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 5D8F017D0C247FE700927B97 /* libmysqlclient.a */; };
+		5D8F01800C247FE700927B97 /* libz.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 5D8F017E0C247FE700927B97 /* libz.a */; };
+		5D8F026D0C2483F500927B97 /* libpaigemacho.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 5D8F026C0C2483F500927B97 /* libpaigemacho.a */; };
+		5D8F026E0C2483F500927B97 /* libpaigemacho.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 5D8F026C0C2483F500927B97 /* libpaigemacho.a */; };
+		5D8F02BA0C24924C00927B97 /* my_list.h in Headers */ = {isa = PBXBuildFile; fileRef = 5D8F02B60C24924C00927B97 /* my_list.h */; };
+		5D8F02BB0C24924C00927B97 /* mysql_time.h in Headers */ = {isa = PBXBuildFile; fileRef = 5D8F02B70C24924C00927B97 /* mysql_time.h */; };
+		5D8F02BC0C24924C00927B97 /* mysql_version.h in Headers */ = {isa = PBXBuildFile; fileRef = 5D8F02B80C24924C00927B97 /* mysql_version.h */; };
+		5D8F02BD0C24924C00927B97 /* typelib.h in Headers */ = {isa = PBXBuildFile; fileRef = 5D8F02B90C24924C00927B97 /* typelib.h */; };
+		5D8F02C10C2492A800927B97 /* my_alloc.h in Headers */ = {isa = PBXBuildFile; fileRef = 5D8F02BF0C2492A800927B97 /* my_alloc.h */; };
+		5D8F02C20C2492A800927B97 /* mysql_com.h in Headers */ = {isa = PBXBuildFile; fileRef = 5D8F02C00C2492A800927B97 /* mysql_com.h */; };
+		5D8F1DAC0C25AA5400927B97 /* libSQLite3.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 5D8F1DAB0C25AA5300927B97 /* libSQLite3.a */; };
 		6505996409968C1400410571 /* ioascrollbar.h in Headers */ = {isa = PBXBuildFile; fileRef = 651525AB072BFC6700411831 /* ioascrollbar.h */; };
 		6505996509968C1400410571 /* ioapopup.h in Headers */ = {isa = PBXBuildFile; fileRef = 651525A7072BFC6700411831 /* ioapopup.h */; };
 		6505996609968C1400410571 /* ioaicon.h in Headers */ = {isa = PBXBuildFile; fileRef = 651525A4072BFC6700411831 /* ioaicon.h */; };
@@ -1025,8 +1039,6 @@
 		65152951072C001700411831 /* PGERRORS.H in Headers */ = {isa = PBXBuildFile; fileRef = 65152950072C001700411831 /* PGERRORS.H */; };
 		655A983609E929CC009EFFEA /* byteorder.h in Headers */ = {isa = PBXBuildFile; fileRef = 655A983509E929CC009EFFEA /* byteorder.h */; };
 		655A983709E929CC009EFFEA /* byteorder.h in Headers */ = {isa = PBXBuildFile; fileRef = 655A983509E929CC009EFFEA /* byteorder.h */; };
-		6591D9F609D853E8008365FA /* libpaigemacho.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 6591D9F509D853E8008365FA /* libpaigemacho.a */; };
-		6591D9F709D853E8008365FA /* libpaigemacho.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 6591D9F509D853E8008365FA /* libpaigemacho.a */; };
 		6599180709C494EA00F6F58C /* whirlpool.c in Sources */ = {isa = PBXBuildFile; fileRef = 6599180609C494EA00F6F58C /* whirlpool.c */; };
 		6599180809C494EA00F6F58C /* whirlpool.c in Sources */ = {isa = PBXBuildFile; fileRef = 6599180609C494EA00F6F58C /* whirlpool.c */; };
 		6599181409C4950300F6F58C /* langcrypt.c in Sources */ = {isa = PBXBuildFile; fileRef = 6599181309C4950200F6F58C /* langcrypt.c */; };
@@ -1053,7 +1065,6 @@
 		65F9C22309C4CD9800DCC29E /* sha.h in Headers */ = {isa = PBXBuildFile; fileRef = 65F9C21F09C4CD9700DCC29E /* sha.h */; };
 		65F9C22709C4CDDE00DCC29E /* sha1dgst.c in Sources */ = {isa = PBXBuildFile; fileRef = 65F9C22609C4CDDE00DCC29E /* sha1dgst.c */; };
 		65F9C22809C4CDDE00DCC29E /* sha1dgst.c in Sources */ = {isa = PBXBuildFile; fileRef = 65F9C22609C4CDDE00DCC29E /* sha1dgst.c */; };
-		BB37A31B0AB828010077C6A1 /* libSQLite3.a in Frameworks */ = {isa = PBXBuildFile; fileRef = BB37A29C0AB826540077C6A1 /* libSQLite3.a */; };
 		DEA58AB407435A9500BAB271 /* Frontier.icns in Resources */ = {isa = PBXBuildFile; fileRef = DEA58AB307435A9500BAB271 /* Frontier.icns */; };
 /* End PBXBuildFile section */
 
@@ -1107,23 +1118,6 @@
 			);
 		};
 /* End PBXBuildRule section */
-
-/* Begin PBXBuildStyle section */
-		5D18A7BB0AD3AB5B00613FDB /* Development */ = {
-			isa = PBXBuildStyle;
-			buildSettings = {
-				COPY_PHASE_STRIP = NO;
-			};
-			name = Development;
-		};
-		5D18A7BC0AD3AB5B00613FDB /* Deployment */ = {
-			isa = PBXBuildStyle;
-			buildSettings = {
-				COPY_PHASE_STRIP = YES;
-			};
-			name = Deployment;
-		};
-/* End PBXBuildStyle section */
 
 /* Begin PBXContainerItemProxy section */
 		BB37A3170AB827EA0077C6A1 /* PBXContainerItemProxy */ = {
@@ -1196,8 +1190,21 @@
 		5D18A83C0AD3AD9900613FDB /* sqliteInt.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = sqliteInt.h; path = ../Common/sqlite3/sqliteInt.h; sourceTree = SOURCE_ROOT; };
 		5D18A83D0AD3AD9900613FDB /* vdbe.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = vdbe.h; path = ../Common/sqlite3/vdbe.h; sourceTree = SOURCE_ROOT; };
 		5D18A83E0AD3AD9900613FDB /* vdbeInt.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = vdbeInt.h; path = ../Common/sqlite3/vdbeInt.h; sourceTree = SOURCE_ROOT; };
+		5D4832620C17729E009E897D /* mysql.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = mysql.h; path = "../Common/MySQL/osx10.3-powerpc/include/mysql.h"; sourceTree = SOURCE_ROOT; };
 		5D4E1E470AAA17E900DF6890 /* langsqlite.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = langsqlite.c; path = ../Common/source/langsqlite.c; sourceTree = SOURCE_ROOT; };
 		5D4E1E480AAA17E900DF6890 /* langsqlite.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = langsqlite.h; path = ../Common/headers/langsqlite.h; sourceTree = SOURCE_ROOT; };
+		5D5837F00C0E02FA00DB769C /* langmysql.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = langmysql.c; path = ../Common/source/langmysql.c; sourceTree = SOURCE_ROOT; };
+		5D5837F20C0E035D00DB769C /* langmysql.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = langmysql.h; path = ../Common/headers/langmysql.h; sourceTree = SOURCE_ROOT; };
+		5D8F017D0C247FE700927B97 /* libmysqlclient.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; name = libmysqlclient.a; path = tools/libmysqlclient.a; sourceTree = SOURCE_ROOT; };
+		5D8F017E0C247FE700927B97 /* libz.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libz.a; path = tools/libz.a; sourceTree = SOURCE_ROOT; };
+		5D8F026C0C2483F500927B97 /* libpaigemacho.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libpaigemacho.a; path = tools/libpaigemacho.a; sourceTree = SOURCE_ROOT; };
+		5D8F02B60C24924C00927B97 /* my_list.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = my_list.h; path = "../Common/MySQL/osx10.3-powerpc/include/my_list.h"; sourceTree = SOURCE_ROOT; };
+		5D8F02B70C24924C00927B97 /* mysql_time.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = mysql_time.h; path = "../Common/MySQL/osx10.3-powerpc/include/mysql_time.h"; sourceTree = SOURCE_ROOT; };
+		5D8F02B80C24924C00927B97 /* mysql_version.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = mysql_version.h; path = "../Common/MySQL/osx10.3-powerpc/include/mysql_version.h"; sourceTree = SOURCE_ROOT; };
+		5D8F02B90C24924C00927B97 /* typelib.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = typelib.h; path = "../Common/MySQL/osx10.3-powerpc/include/typelib.h"; sourceTree = SOURCE_ROOT; };
+		5D8F02BF0C2492A800927B97 /* my_alloc.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = my_alloc.h; path = "../Common/MySQL/osx10.3-powerpc/include/my_alloc.h"; sourceTree = SOURCE_ROOT; };
+		5D8F02C00C2492A800927B97 /* mysql_com.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = mysql_com.h; path = "../Common/MySQL/osx10.3-powerpc/include/mysql_com.h"; sourceTree = SOURCE_ROOT; };
+		5D8F1DAB0C25AA5300927B97 /* libSQLite3.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libSQLite3.a; path = build/Development/libSQLite3.a; sourceTree = SOURCE_ROOT; };
 		65059B4E09968C1400410571 /* OPML.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = OPML.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		65059B760996945100410571 /* OPML.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; name = OPML.icns; path = ../resources/OPML/OPML.icns; sourceTree = SOURCE_ROOT; };
 		65059B770996945100410571 /* OPMLdoc.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; name = OPMLdoc.icns; path = ../resources/OPML/OPMLdoc.icns; sourceTree = SOURCE_ROOT; };
@@ -1681,7 +1688,6 @@
 		6515294E072C000D00411831 /* pgMTraps.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = pgMTraps.h; path = ../Common/Paige/headers/pgMTraps.h; sourceTree = SOURCE_ROOT; };
 		65152950072C001700411831 /* PGERRORS.H */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.h; name = PGERRORS.H; path = ../Common/Paige/headers/PGERRORS.H; sourceTree = SOURCE_ROOT; };
 		655A983509E929CC009EFFEA /* byteorder.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = byteorder.h; path = ../Common/headers/byteorder.h; sourceTree = SOURCE_ROOT; };
-		6591D9F509D853E8008365FA /* libpaigemacho.a */ = {isa = PBXFileReference; comments = "A special shell script build phase copies this file from Common/Paige/libpaigemacho.a and runs ranlib on it. The linker then uses the copy instead of the original of the file."; explicitFileType = file; name = libpaigemacho.a; path = tools/libpaigemacho.a; sourceTree = "<group>"; };
 		6599180609C494EA00F6F58C /* whirlpool.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = whirlpool.c; path = ../Common/source/whirlpool.c; sourceTree = SOURCE_ROOT; };
 		6599181309C4950200F6F58C /* langcrypt.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = langcrypt.c; path = ../Common/source/langcrypt.c; sourceTree = SOURCE_ROOT; };
 		6599181809C4952A00F6F58C /* langcrypt.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = langcrypt.h; path = ../Common/headers/langcrypt.h; sourceTree = SOURCE_ROOT; };
@@ -1700,7 +1706,6 @@
 		65F9C21E09C4CD9700DCC29E /* sha_locl.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = sha_locl.h; path = ../Common/headers/sha_locl.h; sourceTree = SOURCE_ROOT; };
 		65F9C21F09C4CD9700DCC29E /* sha.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = sha.h; path = ../Common/headers/sha.h; sourceTree = SOURCE_ROOT; };
 		65F9C22609C4CDDE00DCC29E /* sha1dgst.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = sha1dgst.c; path = ../Common/source/sha1dgst.c; sourceTree = SOURCE_ROOT; };
-		BB37A29C0AB826540077C6A1 /* libSQLite3.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libSQLite3.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		DEA58AB307435A9500BAB271 /* Frontier.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; name = Frontier.icns; path = ../resources/Frontier/Frontier.icns; sourceTree = SOURCE_ROOT; };
 /* End PBXFileReference section */
 
@@ -1712,7 +1717,7 @@
 				65059B3809968C1400410571 /* Carbon.framework in Frameworks */,
 				65059B3909968C1400410571 /* ApplicationServices.framework in Frameworks */,
 				65059B3A09968C1400410571 /* QuickTime.framework in Frameworks */,
-				6591D9F709D853E8008365FA /* libpaigemacho.a in Frameworks */,
+				5D8F026E0C2483F500927B97 /* libpaigemacho.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1723,8 +1728,10 @@
 				651527B9072BFE0E00411831 /* Carbon.framework in Frameworks */,
 				6515294B072C000500411831 /* ApplicationServices.framework in Frameworks */,
 				6515294D072C000900411831 /* QuickTime.framework in Frameworks */,
-				6591D9F609D853E8008365FA /* libpaigemacho.a in Frameworks */,
-				BB37A31B0AB828010077C6A1 /* libSQLite3.a in Frameworks */,
+				5D8F017F0C247FE700927B97 /* libmysqlclient.a in Frameworks */,
+				5D8F01800C247FE700927B97 /* libz.a in Frameworks */,
+				5D8F026D0C2483F500927B97 /* libpaigemacho.a in Frameworks */,
+				5D8F1DAC0C25AA5400927B97 /* libSQLite3.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1820,11 +1827,18 @@
 			name = Headers;
 			sourceTree = "<group>";
 		};
-		5D3FD67A0AAB68060086E977 /* SQLite */ = {
+		5D8F02B10C24919C00927B97 /* MySQL */ = {
 			isa = PBXGroup;
 			children = (
+				5D8F02BF0C2492A800927B97 /* my_alloc.h */,
+				5D8F02B60C24924C00927B97 /* my_list.h */,
+				5D4832620C17729E009E897D /* mysql.h */,
+				5D8F02C00C2492A800927B97 /* mysql_com.h */,
+				5D8F02B70C24924C00927B97 /* mysql_time.h */,
+				5D8F02B80C24924C00927B97 /* mysql_version.h */,
+				5D8F02B90C24924C00927B97 /* typelib.h */,
 			);
-			name = SQLite;
+			name = MySQL;
 			sourceTree = "<group>";
 		};
 		5DAE70AF0AD423000068EA39 /* Products */ = {
@@ -2203,6 +2217,7 @@
 				65152633072BFC6700411831 /* langhtml.c */,
 				65152634072BFC6800411831 /* langlist.c */,
 				65B70CDB0797CE4A008C2F1A /* langmath.c */,
+				5D5837F00C0E02FA00DB769C /* langmysql.c */,
 				65152635072BFC6800411831 /* langops.c */,
 				65152636072BFC6800411831 /* langpack.c */,
 				65152637072BFC6800411831 /* langparser.c */,
@@ -2386,8 +2401,10 @@
 			children = (
 				6515294A072C000500411831 /* ApplicationServices.framework */,
 				651527B8072BFE0E00411831 /* Carbon.framework */,
-				6591D9F509D853E8008365FA /* libpaigemacho.a */,
-				BB37A29C0AB826540077C6A1 /* libSQLite3.a */,
+				5D8F017D0C247FE700927B97 /* libmysqlclient.a */,
+				5D8F026C0C2483F500927B97 /* libpaigemacho.a */,
+				5D8F1DAB0C25AA5300927B97 /* libSQLite3.a */,
+				5D8F017E0C247FE700927B97 /* libz.a */,
 				6515294C072C000900411831 /* QuickTime.framework */,
 			);
 			name = "External Frameworks and Libraries";
@@ -2499,6 +2516,7 @@
 				651527E8072BFE3F00411831 /* langinternal.h */,
 				651528BA072BFF0900411831 /* langipc.h */,
 				65B70CDF0797CEAD008C2F1A /* langmath.h */,
+				5D5837F20C0E035D00DB769C /* langmysql.h */,
 				651528E8072BFF3E00411831 /* langparser.h */,
 				651528E2072BFF3300411831 /* langpython.h */,
 				651528A6072BFEF200411831 /* langregexp.h */,
@@ -2523,6 +2541,7 @@
 				65152814072BFE6300411831 /* MoreFilesExtras.h */,
 				651525C2072BFC6700411831 /* MoreFilesX.h */,
 				65152850072BFE9E00411831 /* mouse.h */,
+				5D8F02B10C24919C00927B97 /* MySQL */,
 				6515289E072BFEEA00411831 /* notify.h */,
 				651528D0072BFF1F00411831 /* odbinternal.h */,
 				651528AA072BFEF600411831 /* op.h */,
@@ -2587,7 +2606,6 @@
 				65152846072BFE9500411831 /* shellundo.h */,
 				65152870072BFEC300411831 /* smallicon.h */,
 				651528B0072BFEFD00411831 /* sounds.h */,
-				5D3FD67A0AAB68060086E977 /* SQLite */,
 				651527BA072BFE1000411831 /* standard.h */,
 				65152924072BFFD200411831 /* stringdefs.h */,
 				651527E0072BFE3900411831 /* strings.h */,
@@ -3086,6 +3104,14 @@
 				5D4E1E4A0AAA17E900DF6890 /* langsqlite.h in Headers */,
 				5D0D91050ADEDFA80000E67B /* FSCopyObject.h in Headers */,
 				5D0D91070ADEDFA80000E67B /* GenLinkedList.h in Headers */,
+				5D5837F30C0E035D00DB769C /* langmysql.h in Headers */,
+				5D4832630C17729E009E897D /* mysql.h in Headers */,
+				5D8F02BA0C24924C00927B97 /* my_list.h in Headers */,
+				5D8F02BB0C24924C00927B97 /* mysql_time.h in Headers */,
+				5D8F02BC0C24924C00927B97 /* mysql_version.h in Headers */,
+				5D8F02BD0C24924C00927B97 /* typelib.h in Headers */,
+				5D8F02C10C2492A800927B97 /* my_alloc.h in Headers */,
+				5D8F02C20C2492A800927B97 /* mysql_com.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -3139,7 +3165,7 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 5D4E1D3E0AAA0B1400DF6890 /* Build configuration list for PBXNativeTarget "Frontier" */;
 			buildPhases = (
-				6591D9EE09D850C9008365FA /* ShellScript */,
+				6591D9EE09D850C9008365FA /* Run Script */,
 				65152563072BFC6500411831 /* Headers */,
 				65152564072BFC6500411831 /* Sources */,
 				65152565072BFC6500411831 /* Resources */,
@@ -3175,7 +3201,6 @@
 			);
 			name = SQLite3;
 			productName = sqlite3_static;
-			productReference = BB37A29C0AB826540077C6A1 /* libSQLite3.a */;
 			productType = "com.apple.product-type.library.static";
 		};
 /* End PBXNativeTarget section */
@@ -3184,12 +3209,6 @@
 		65152560072BFC6500411831 /* Project object */ = {
 			isa = PBXProject;
 			buildConfigurationList = 5D4E1D460AAA0B1400DF6890 /* Build configuration list for PBXProject "Frontier" */;
-			buildSettings = {
-			};
-			buildStyles = (
-				5D18A7BB0AD3AB5B00613FDB /* Development */,
-				5D18A7BC0AD3AB5B00613FDB /* Deployment */,
-			);
 			hasScannedForEncodings = 1;
 			mainGroup = 6515255C072BFC6500411831;
 			productRefGroup = 6515255C072BFC6500411831;
@@ -3290,7 +3309,7 @@
 			shellPath = /bin/sh;
 			shellScript = ". \"${SRCROOT}/tools/postlinking.sh\"\n";
 		};
-		6591D9EE09D850C9008365FA /* ShellScript */ = {
+		6591D9EE09D850C9008365FA /* Run Script */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			comments = "The linker complains if the file modification date of a static library like libpaigemacho.a is newer than the time stamp stored inside the library.\n\nThe Subversion client can be configured to preserve file modification dates, but a more reliable way which does not require a certain client configuration is to make a copy of the library file, run ranlib on the copy to update the filestamp in the file, and then link the copy of the library into the application.\n";
@@ -3298,13 +3317,18 @@
 			);
 			inputPaths = (
 				"${SRCROOT}/../Common/Paige/libpaigemacho.a",
+				"${SRCROOT}/../Common/MySQL/osx10.3-powerpc/lib/libmysqlclient.a",
+				"${SRCROOT}/../Common/MySQL/osx10.4-i686/lib/libmysqlclient.a",
 			);
+			name = "Run Script";
 			outputPaths = (
 				"${SRCROOT}/tools/libpaigemacho.a",
+				"${SRCROOT}/tools/libmysqlclient.a",
+				"${SRCROOT}/tools/libz.a",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "#set -x\ncp -f \"${SRCROOT}/../Common/Paige/libpaigemacho.a\" \"${SRCROOT}/tools/libpaigemacho.a\"\nranlib \"${SRCROOT}/tools/libpaigemacho.a\"";
+			shellScript = "set -x\n\n#\n# paige\n#\n\ncp -f \"${SRCROOT}/../Common/Paige/libpaigemacho.a\" \"${SRCROOT}/tools/libpaigemacho.a\"\n\nranlib \"${SRCROOT}/tools/libpaigemacho.a\"\n\n#\n# build Universal Binary MySQL libraries\n#\n\nlipo -create \"${SRCROOT}/../Common/MySQL/osx10.3-powerpc/lib/libmysqlclient.a\" \"${SRCROOT}/../Common/MySQL/osx10.4-i686/lib/libmysqlclient.a\" -output \"${SRCROOT}/tools/libmysqlclient.a\"\n\nlipo -create \"${SRCROOT}/../Common/MySQL/osx10.3-powerpc/lib/libz.a\" \"${SRCROOT}/../Common/MySQL/osx10.4-i686/lib/libz.a\" -output \"${SRCROOT}/tools/libz.a\"";
 		};
 		65ED46B809D85D3F00BEB9D3 /* ShellScript */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -3856,6 +3880,7 @@
 				5D4E1E490AAA17E900DF6890 /* langsqlite.c in Sources */,
 				5D0D91040ADEDFA80000E67B /* FSCopyObject.c in Sources */,
 				5D0D91060ADEDFA80000E67B /* GenLinkedList.c in Sources */,
+				5D5837F10C0E02FA00DB769C /* langmysql.c in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -3952,7 +3977,18 @@
 					"$(SRCROOT)",
 					"$(SRCROOT)/tools",
 					"$(SRCROOT)/../Common/sqlite3",
+					/usr/local/lib/mysql/lib,
+					"$(LIBRARY_SEARCH_PATHS_QUOTED_1)",
+					"$(LIBRARY_SEARCH_PATHS_QUOTED_2)",
+					"$(LIBRARY_SEARCH_PATHS_QUOTED_3)",
+					"$(LIBRARY_SEARCH_PATHS_QUOTED_4)",
+					"$(LIBRARY_SEARCH_PATHS_QUOTED_5)",
 				);
+				LIBRARY_SEARCH_PATHS_QUOTED_1 = "\"$(SRCROOT)/build/Development\"";
+				LIBRARY_SEARCH_PATHS_QUOTED_2 = "\"$(SRCROOT)/build/Development\"";
+				LIBRARY_SEARCH_PATHS_QUOTED_3 = "\"$(SRCROOT)/build/Development\"";
+				LIBRARY_SEARCH_PATHS_QUOTED_4 = "\"$(SRCROOT)/build/Development\"";
+				LIBRARY_SEARCH_PATHS_QUOTED_5 = "\"$(SRCROOT)/build/Development\"";
 				OTHER_CFLAGS = (
 					"-fno-inline",
 					"-malign-mac68k",
@@ -4009,7 +4045,18 @@
 					"$(SRCROOT)",
 					"$(SRCROOT)/tools",
 					"$(SRCROOT)/../Common/sqlite3",
+					/usr/local/lib/mysql/lib,
+					"$(LIBRARY_SEARCH_PATHS_QUOTED_1)",
+					"$(LIBRARY_SEARCH_PATHS_QUOTED_2)",
+					"$(LIBRARY_SEARCH_PATHS_QUOTED_3)",
+					"$(LIBRARY_SEARCH_PATHS_QUOTED_4)",
+					"$(LIBRARY_SEARCH_PATHS_QUOTED_5)",
 				);
+				LIBRARY_SEARCH_PATHS_QUOTED_1 = "\"$(SRCROOT)/build/Development\"";
+				LIBRARY_SEARCH_PATHS_QUOTED_2 = "\"$(SRCROOT)/build/Development\"";
+				LIBRARY_SEARCH_PATHS_QUOTED_3 = "\"$(SRCROOT)/build/Development\"";
+				LIBRARY_SEARCH_PATHS_QUOTED_4 = "\"$(SRCROOT)/build/Development\"";
+				LIBRARY_SEARCH_PATHS_QUOTED_5 = "\"$(SRCROOT)/build/Development\"";
 				OTHER_CFLAGS = (
 					"-fno-inline",
 					"-malign-mac68k",
@@ -4062,7 +4109,18 @@
 					"$(SRCROOT)",
 					"$(SRCROOT)/tools",
 					"$(SRCROOT)/../Common/sqlite3",
+					/usr/local/lib/mysql/lib,
+					"$(LIBRARY_SEARCH_PATHS_QUOTED_1)",
+					"$(LIBRARY_SEARCH_PATHS_QUOTED_2)",
+					"$(LIBRARY_SEARCH_PATHS_QUOTED_3)",
+					"$(LIBRARY_SEARCH_PATHS_QUOTED_4)",
+					"$(LIBRARY_SEARCH_PATHS_QUOTED_5)",
 				);
+				LIBRARY_SEARCH_PATHS_QUOTED_1 = "\"$(SRCROOT)/build/Development\"";
+				LIBRARY_SEARCH_PATHS_QUOTED_2 = "\"$(SRCROOT)/build/Development\"";
+				LIBRARY_SEARCH_PATHS_QUOTED_3 = "\"$(SRCROOT)/build/Development\"";
+				LIBRARY_SEARCH_PATHS_QUOTED_4 = "\"$(SRCROOT)/build/Development\"";
+				LIBRARY_SEARCH_PATHS_QUOTED_5 = "\"$(SRCROOT)/build/Development\"";
 				OTHER_CFLAGS = (
 					"-fno-inline",
 					"-malign-mac68k",
@@ -4118,7 +4176,12 @@
 				GCC_WARN_UNUSED_VALUE = NO;
 				GCC_WARN_UNUSED_VARIABLE = NO;
 				INFOPLIST_FILE = Info_OPML.plist;
-				LIBRARY_SEARCH_PATHS = "\"tools\"";
+				LIBRARY_SEARCH_PATHS = (
+					"$(LIBRARY_SEARCH_PATHS_QUOTED_1)",
+					"$(LIBRARY_SEARCH_PATHS_QUOTED_2)",
+				);
+				LIBRARY_SEARCH_PATHS_QUOTED_1 = "\"tools\"";
+				LIBRARY_SEARCH_PATHS_QUOTED_2 = "\"$(SRCROOT)/tools\"";
 				OTHER_CFLAGS = (
 					"-fno-inline",
 					"-malign-mac68k",
@@ -4170,7 +4233,12 @@
 				GCC_WARN_UNUSED_VALUE = NO;
 				GCC_WARN_UNUSED_VARIABLE = NO;
 				INFOPLIST_FILE = Info_OPML.plist;
-				LIBRARY_SEARCH_PATHS = "\"tools\"";
+				LIBRARY_SEARCH_PATHS = (
+					"$(LIBRARY_SEARCH_PATHS_QUOTED_1)",
+					"$(LIBRARY_SEARCH_PATHS_QUOTED_2)",
+				);
+				LIBRARY_SEARCH_PATHS_QUOTED_1 = "\"tools\"";
+				LIBRARY_SEARCH_PATHS_QUOTED_2 = "\"$(SRCROOT)/tools\"";
 				OTHER_CFLAGS = (
 					"-fno-inline",
 					"-malign-mac68k",
@@ -4222,7 +4290,12 @@
 				GCC_WARN_UNUSED_VALUE = NO;
 				GCC_WARN_UNUSED_VARIABLE = NO;
 				INFOPLIST_FILE = Info_OPML.plist;
-				LIBRARY_SEARCH_PATHS = "\"tools\"";
+				LIBRARY_SEARCH_PATHS = (
+					"$(LIBRARY_SEARCH_PATHS_QUOTED_1)",
+					"$(LIBRARY_SEARCH_PATHS_QUOTED_2)",
+				);
+				LIBRARY_SEARCH_PATHS_QUOTED_1 = "\"tools\"";
+				LIBRARY_SEARCH_PATHS_QUOTED_2 = "\"$(SRCROOT)/tools\"";
 				OTHER_CFLAGS = (
 					"-fno-inline",
 					"-malign-mac68k",
@@ -4251,7 +4324,8 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				OTHER_CFLAGS = "";
-				SDKROOT = /Developer/SDKs/MacOSX10.2.8.sdk;
+				OTHER_LDFLAGS = "$(inherited)";
+				SDKROOT = /Developer/SDKs/MacOSX10.3.9.sdk;
 			};
 			name = Development;
 		};
@@ -4259,7 +4333,8 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				OTHER_CFLAGS = "";
-				SDKROOT = /Developer/SDKs/MacOSX10.2.8.sdk;
+				OTHER_LDFLAGS = "$(inherited)";
+				SDKROOT = /Developer/SDKs/MacOSX10.3.9.sdk;
 			};
 			name = Deployment;
 		};
@@ -4267,7 +4342,8 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				OTHER_CFLAGS = "";
-				SDKROOT = /Developer/SDKs/MacOSX10.2.8.sdk;
+				OTHER_LDFLAGS = "$(inherited)";
+				SDKROOT = /Developer/SDKs/MacOSX10.3.9.sdk;
 			};
 			name = Default;
 		};

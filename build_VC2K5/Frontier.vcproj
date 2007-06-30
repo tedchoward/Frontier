@@ -245,7 +245,7 @@
 				Name="VCCLCompilerTool"
 				Optimization="4"
 				InlineFunctionExpansion="2"
-				AdditionalIncludeDirectories="..\Common\headers;..\Common\SystemHeaders;..\Common\Paige\headers;..\Common\PCRE;..\Common\sqlite3"
+				AdditionalIncludeDirectories="..\Common\headers;..\Common\SystemHeaders;..\Common\Paige\headers;..\Common\PCRE;..\Common\sqlite3;..\Common\MySQL\win32\include"
 				PreprocessorDefinitions="NDEBUG;FRONTIERCOM=1;WIN95VERSION;_WINDOWS;WIN32;FRONTIERWEB=0;WIN32_COMPILE"
 				RuntimeLibrary="0"
 				StructMemberAlignment="2"
@@ -273,11 +273,11 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="PaigeWinVC8CRT.lib winmm.lib libcmt.lib oldnames.lib comctl32.lib wininet.lib wsock32.lib version.lib"
+				AdditionalDependencies="PaigeWinVC8CRT.lib winmm.lib libcmt.lib oldnames.lib comctl32.lib wininet.lib wsock32.lib version.lib mysqlclient.lib"
 				OutputFile=".\Release/Frontier.exe"
 				LinkIncremental="1"
 				SuppressStartupBanner="true"
-				AdditionalLibraryDirectories="..\Common\Paige"
+				AdditionalLibraryDirectories="..\Common\Paige;..\Common\MySQL\win32\lib\opt"
 				IgnoreAllDefaultLibraries="true"
 				GenerateDebugInformation="true"
 				ProgramDatabaseFile=".\Release/Frontier.pdb"
@@ -345,7 +345,7 @@
 				Name="VCCLCompilerTool"
 				Optimization="0"
 				InlineFunctionExpansion="2"
-				AdditionalIncludeDirectories="..\Common\headers;..\Common\SystemHeaders;..\Common\Paige\headers;..\Common\PCRE;..\Common\sqlite3"
+				AdditionalIncludeDirectories="..\Common\headers;..\Common\SystemHeaders;..\Common\Paige\headers;..\Common\PCRE;..\Common\sqlite3;..\Common\MySQL\win32\include"
 				PreprocessorDefinitions="_DEBUG;FRONTIERCOM=1;WIN95VERSION;_WINDOWS;WIN32;WIN32_COMPILE"
 				RuntimeLibrary="1"
 				StructMemberAlignment="2"
@@ -373,11 +373,11 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="PaigeWinVC8CRT.lib winmm.lib libcmtd.lib oldnames.lib comctl32.lib wininet.lib wsock32.lib version.lib"
+				AdditionalDependencies="PaigeWinVC8CRT.lib winmm.lib libcmtd.lib oldnames.lib comctl32.lib wininet.lib wsock32.lib version.lib mysqlclient.lib"
 				OutputFile=".\Debug/Frontier.exe"
 				LinkIncremental="1"
 				SuppressStartupBanner="true"
-				AdditionalLibraryDirectories="..\Common\Paige"
+				AdditionalLibraryDirectories="..\Common\Paige;..\Common\MySQL\win32\lib\debug"
 				IgnoreAllDefaultLibraries="true"
 				GenerateDebugInformation="true"
 				ProgramDatabaseFile=".\Debug/Frontier.pdb"
@@ -4331,6 +4331,10 @@
 							BrowseInformation="1"
 						/>
 					</FileConfiguration>
+				</File>
+				<File
+					RelativePath="..\Common\source\langmysql.c"
+					>
 				</File>
 				<File
 					RelativePath="..\Common\source\langops.c"
@@ -8551,7 +8555,7 @@
 				</File>
 			</Filter>
 			<Filter
-				Name="sqlite"
+				Name="SQLite3"
 				>
 				<File
 					RelativePath="..\Common\sqlite3\alter.c"
@@ -8997,6 +9001,10 @@
 				>
 			</File>
 			<File
+				RelativePath="..\Common\headers\langmysql.h"
+				>
+			</File>
+			<File
 				RelativePath="..\Common\headers\langparser.h"
 				>
 			</File>
@@ -9373,7 +9381,7 @@
 				>
 			</File>
 			<Filter
-				Name="sqlite"
+				Name="SQLite3"
 				>
 				<File
 					RelativePath="..\Common\sqlite3\btree.h"
@@ -9425,6 +9433,50 @@
 				</File>
 				<File
 					RelativePath="..\Common\sqlite3\vdbeInt.h"
+					>
+				</File>
+			</Filter>
+			<Filter
+				Name="MySQL"
+				>
+				<File
+					RelativePath="..\Common\MySQL\win32\include\config-win.h"
+					>
+				</File>
+				<File
+					RelativePath="..\Common\MySQL\win32\include\my_alloc.h"
+					>
+				</File>
+				<File
+					RelativePath="..\Common\MySQL\win32\include\my_dbug.h"
+					>
+				</File>
+				<File
+					RelativePath="..\Common\MySQL\win32\include\my_global.h"
+					>
+				</File>
+				<File
+					RelativePath="..\Common\MySQL\win32\include\my_list.h"
+					>
+				</File>
+				<File
+					RelativePath="..\Common\MySQL\win32\include\mysql.h"
+					>
+				</File>
+				<File
+					RelativePath="..\Common\MySQL\win32\include\mysql_com.h"
+					>
+				</File>
+				<File
+					RelativePath="..\Common\MySQL\win32\include\mysql_time.h"
+					>
+				</File>
+				<File
+					RelativePath="..\Common\MySQL\win32\include\mysql_version.h"
+					>
+				</File>
+				<File
+					RelativePath="..\Common\MySQL\win32\include\typelib.h"
 					>
 				</File>
 			</Filter>

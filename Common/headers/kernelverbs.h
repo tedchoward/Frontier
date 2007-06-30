@@ -57,3 +57,6 @@ extern boolean mathinitverbs (void); /* langmath.c */
 extern boolean cryptinitverbs (void); /* langcrypt.c */
 
 extern boolean sqliteinitverbs (void); /* langsqlite.c */
+
+extern boolean mysqlinitverbs (void); /* langmysql.c */
+

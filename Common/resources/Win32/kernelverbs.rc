@@ -1101,3 +1101,38 @@
    "close\0"
  END
 
+1027 /* mysqlverbs */ EFP DISCARDABLE
+ BEGIN
+ 1,      // Number of "blocks" in this resource
+  "mysql\0",    // Function Processor name
+  false,     // Window required
+   27,   // Count of verbs
+		"init\0",
+		"end\0",
+		"connect\0",
+		"compileQuery\0",
+		"clearQuery\0",
+		"getRow\0",
+		"getErrorNumber\0",
+		"getErrorMessage\0",
+		"getClientInfo\0",
+		"getClientVersion\0",
+		"getHostInfo\0",
+		"getServerVersion\0",
+		"getProtocolInfo\0",
+		"getServerInfo\0",
+		"getQueryInfo\0",
+		"getAffectedRowCount\0",
+		"getSelectedRowCount\0",
+		"getColumnCount\0",
+		"getServerStatus\0",
+		"getQueryWarningCount\0",
+		"pingServer\0",
+		"seekRow\0",
+		"selectDatabase\0",
+		"getSQLSTATE\0",
+		"escapeString\0",
+		"isThreadSafe\0",
+		"close\0"
+ END
+

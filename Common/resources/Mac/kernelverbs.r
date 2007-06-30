@@ -1166,3 +1166,37 @@ resource 'EFP#' (idsqliteverbs, "sqlite") { /* 2006-08-31 gewirtz sqlite verbs *
  }
 };
 
+resource 'EFP#' (idmysqlverbs, "mysql") { /* 2007-04-09 gewirtz mysql verbs */
+ {
+ "mysql", false, {
+		"init",
+		"end",
+		"connect",
+		"compileQuery",
+		"clearQuery",
+		"getRow",
+		"getErrorNumber",
+		"getErrorMessage",
+		"getClientInfo",
+		"getClientVersion",
+		"getHostInfo",
+		"getServerVersion",
+		"getProtocolInfo",
+		"getServerInfo",
+		"getQueryInfo",
+		"getAffectedRowCount",
+		"getSelectedRowCount",
+		"getColumnCount",
+		"getServerStatus",
+		"getQueryWarningCount",
+		"pingServer",
+		"seekRow",
+		"selectDatabase",
+		"getSQLSTATE",
+		"escapeString",
+		"isThreadSafe",
+		"close"
+  }
+ }
+};
+
