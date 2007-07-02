@@ -803,46 +803,52 @@ static boolean opnodeistable (hdlheadrecord hnode, hdlhashtable htable) {
 	} /*opnodeistable*/
 
 
-static boolean tableupdatewindowtitles (hdlhashnode hnode, hdlhashtable intable) {
+static boolean tableupdatewindowtitles ( hdlhashnode hnode, hdlhashtable intable ) {
 	
-	/*
-	the indicated table value used to have a different name.  if it's 
-	an external value, update any window titles that depend on its path
-
-	5.0b16 dmb: don't change the titles of file windows, or they'll become
-	full paths. later, it would be better to add a fltitlelocked to 
-	hdlwindowinfo, set after a window.settitle we wouldn't do anything either
-	*/
+	//
+	// the indicated table value used to have a different name.  if it's an
+	// external value, update any window titles that depend on its path
+	//
+	// 2007-07-01 creedon: bug fix, external value window titles would show
+	//				   path of parent as title, now shows full path, added
+	//				   bsName
+	//
+	// 5.0b16 dmb: don't change the titles of file windows, or they'll become
+	//			full paths. later, it would be better to add a fltitlelocked
+	//			to hdlwindowinfo, set after a window.settitle we wouldn't do
+	//			anything either
+	//
 	
+	bigstring bsName, bsPath;
 	hdlhashtable htable;
-	tyvaluerecord val;
-	bigstring bspath;
 	hdlwindowinfo hinfo;
+	tyvaluerecord val;
 	
-	val = (**hnode).val;
+	val = ( **hnode ).val;
 	
-	if (val.valuetype != externalvaluetype) /*can't be in a window -- unwind recursion*/
-		return (true);
+	if ( val.valuetype != externalvaluetype ) // can't be in a window -- unwind
+									  // recursion
+		return ( true );
 	
-	if (intable == filewindowtable) //5.0b16
-		return (true);
+	if ( intable == filewindowtable )
+		return ( true );
 
-	if (langexternalwindowopen (val, &hinfo)) {
+	if ( langexternalwindowopen ( val, &hinfo ) ) {
 		
-		gethashkey (hnode, bspath);
+		gethashkey ( hnode, bsName );
 		
-		langexternalgetfullpath (intable, bspath, bspath, nil);
+		langexternalgetfullpath ( intable, bsName, bsPath, nil );
 		
-		shellsetwindowtitle (hinfo, bspath);
+		shellsetwindowtitle ( hinfo, bsPath );
+		
 		}
 	
-	if (langexternalvaltotable (val, &htable, hnode)) {
-		
-		hashtablevisit (htable, (langtablevisitcallback) &tableupdatewindowtitles, htable); /*daisy chain recursion*/
-		}
+	if ( langexternalvaltotable ( val, &htable, hnode ) )
+		hashtablevisit ( htable, ( langtablevisitcallback ) &tableupdatewindowtitles, htable ); // daisy chain recursion
 	
-	return (true);
-	} /*tableupdatewindowtitles*/
+	return ( true );
+	
+	} // tableupdatewindowtitles
 
 
 static boolean tableupdateoutlinesort (hdlheadrecord hfirst, hdlhashtable htable) {
