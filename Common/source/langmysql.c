@@ -42,11 +42,11 @@
 #include "oplist.h"
 #include "langsystem7.h"
 
-#ifdef WIN95VERSION
+// #ifdef WIN95VERSION
 
-	#include "my_global.h"
+//	#include "my_global.h"
 
-#endif // WIN95VERSION
+// #endif // WIN95VERSION
 
 #include "mysql.h"
 #include "langmysql.h"
@@ -98,110 +98,147 @@ typedef enum tymysqlverbtoken { /* verbs that are processed by langmysql.c */
 	} tymysqlverbtoken;
 
 
-static boolean mysqlfunctionvalue (short token, hdltreenode hparam1, tyvaluerecord *vreturned, bigstring bserror) {
+static boolean mysqlfunctionvalue ( short token, hdltreenode hparam1, tyvaluerecord *vreturned, bigstring bserror ) {
+
+	//
+	// 2007-04-11 gewirtz: created
+	//
 	
 	hdltreenode hp1 = hparam1;
 	tyvaluerecord *v = vreturned;
 	
-	setbooleanvalue (false, v);			/* by default, sqlite functions return false */
+	setbooleanvalue ( false, v ); // by default, sqlite functions return false
 	
-	switch (token) {
+	switch ( token ) {
 		
-		case initfunc: {					/* 2007-04-08 gewirtz: initialize MySQL */
-			return (mysqlinitverb (hp1, v, bserror));
-			} /* initfunc */
-		case endfunc: {					/* 2007-04-08 gewirtz: initialize MySQL */
-			return (mysqlendverb (hp1, v, bserror));
-			} /* endfunc */
-		case connectfunc: {					/* 2007-04-08 gewirtz: initialize MySQL */
-			return (mysqlconnectverb (hp1, v, bserror));
-			} /* connectfunc */
-		case compilequeryfunc: {			/* 2007-04-09 gewirtz: prepare a MySQL query */
-			return (mysqlcompilequeryverb (hp1, v, bserror));		
-			} /* compilequeryfunc */
-		case clearqueryfunc: {				/* 2007-04-09 gewirtz: clear a MySQL query from memory */
-			return (mysqlclearqueryverb (hp1, v, bserror));		
-			} /* clearqueryfunc */
-		case getrowfunc: {					/* 2007-04-09 gewirtz: get a full row from a query */
-			return (mysqlgetrowverb (hp1, v, bserror));		
-			} /* getrowfunc */
- 		case geterrornumberfunc: {			/* 2007-04-10 gewirtz: get the error number from the most recent call */
-			return (mysqlgeterrornumberverb (hp1, v, bserror));		
-			} /* geterrornumberfunc */
-		case geterrormessagefunc: {			/* 2007-04-10 gewirtz: get the error message from the most recent call */
-			return (mysqlgeterrormessageverb (hp1, v, bserror));		
-			} /* geterrormessagefunc */
-		case getclientinfofunc: {			/* 2007-04-10 gewirtz: get the MySQL client info */
-			return (mysqlgetclientinfoverb (hp1, v, bserror));		
-			} /* getclientinfofunc */
-		case getclientversionfunc: {		/* 2007-04-10 gewirtz: get the MySQL client version */
-			return (mysqlgetclientversionverb (hp1, v, bserror));		
-			} /* getclientversionfunc */
-		case gethostinfofunc: {				/* 2007-04-10 gewirtz: get the MySQL host info */
-			return (mysqlgethostinfoverb (hp1, v, bserror));		
-			} /* gethostinfofunc */
-		case getserverversionfunc: {		/* 2007-04-10 gewirtz: get the MySQL server version */
-			return (mysqlgetserverversionverb (hp1, v, bserror));		
-			} /* getserverversionfunc */
-		case getprotocolinfofunc: {			/* 2007-04-10 gewirtz: get the MySQL protocol info */
-			return (mysqlgetprotocolinfoverb (hp1, v, bserror));		
-			} /* getprotocolinfofunc */
-		case getserverinfofunc: {			/* 2007-04-10 gewirtz: get the MySQL server info */
-			return (mysqlgetserverinfoverb (hp1, v, bserror));		
-			} /* getserverinfofunc */
-		case getqueryinfofunc: {			/* 2007-04-10 gewirtz: get the results messages from the last query */
-			return (mysqlgetqueryinfoverb (hp1, v, bserror));		
-			} /* getqueryinfofunc */
-		case getaffectedrowcountfunc: {			/* 2007-04-11 gewirtz: get the rows added, deleted, updated */
-			return (mysqlgetaffectedrowcountverb (hp1, v, bserror));		
-			} /* getaffectedrowcountfunc */
-		case getselectedrowcountfunc: {			/* 2007-04-11 gewirtz: get the rows selected in last query */
-			return (mysqlgetselectedrowcountverb (hp1, v, bserror));		
-			} /* getselectedrowcountfunc */
-		case getcolumncountfunc: {			/* 2007-04-11 gewirtz: get the columns returned in last query */
-			return (mysqlgetcolumncountverb (hp1, v, bserror));		
-			} /* getcolumncountfunc */
-		case getserverstatusfunc: {			/* 2007-04-11 gewirtz: get the MySQL server status */
-			return (mysqlgetserverstatusverb (hp1, v, bserror));		
-			} /* getserverstatusfunc */
-		case getquerywarningcountfunc: {	/* 2007-04-11 gewirtz: get the number of warnings returned by the last query */
-			return (mysqlgetquerywarningcountverb (hp1, v, bserror));		
-			} /* getquerywarningcountfunc */
-		case pingserverfunc: {				/* 2007-04-11 gewirtz: check to see if there's still a connection with the server */
-			return (mysqlpingserververb (hp1, v, bserror));		
-			} /* pingserverfunc */
-		case seekrowfunc: {					/* 2007-04-11 gewirtz: move to specific row in query result set */
-			return (mysqlseekrowverb (hp1, v, bserror));		
-			} /* seekrowfunc */
-		case selectdatabasefunc: {					/* 2007-04-11 gewirtz: choose a MySQL database as current */
-			return (mysqlselectdatabaseverb (hp1, v, bserror));		
-			} /* selectdatabasefunc */
- 		case getsqlstatefunc: {					/* 2007-04-11 gewirtz: choose a MySQL database as current */
-			return (mysqlgetsqlstateverb (hp1, v, bserror));		
-			} /* getsqlstatefunc */
- 		case escapestringfunc: {					/* 2007-04-11 gewirtz: choose a MySQL database as current */
-			return (mysqlescapestringverb (hp1, v, bserror));		
-			} /* escapestringfunc */
- 		case isthreadsafefunc: {					/* 2007-04-11 gewirtz: choose a MySQL database as current */
-			return (mysqlisthreadsafeverb (hp1, v, bserror));		
-			} /* isthreadsafefunc */
-		case closefunc: {					/* 2007-04-08 gewirtz: close a MySQL db */
-			return (mysqlcloseverb (hp1, v, bserror));
-			} /* closefunc */
+		case initfunc: // initialize MySQL
+		
+			return ( mysqlinitverb ( hp1, v, bserror ) );
+			
+		case endfunc:
+		
+			return ( mysqlendverb ( hp1, v, bserror ) );
+			
+		case connectfunc:
+		
+			return ( mysqlconnectverb ( hp1, v, bserror ) );
+			
+		case compilequeryfunc: // prepare a MySQL query
+		
+			return ( mysqlcompilequeryverb ( hp1, v, bserror ) );		
+			
+		case clearqueryfunc: // clear a MySQL query from memory
+		
+			return ( mysqlclearqueryverb ( hp1, v, bserror ) );		
+			
+		case getrowfunc: // get a full row from a query
+		
+			return ( mysqlgetrowverb ( hp1, v, bserror ) );		
+			
+ 		case geterrornumberfunc: // get the error number from the most recent call
+		
+			return ( mysqlgeterrornumberverb ( hp1, v, bserror ) );		
+			
+		case geterrormessagefunc: // get the error message from the most recent call
+		
+			return ( mysqlgeterrormessageverb ( hp1, v, bserror ) );		
+			
+		case getclientinfofunc: // get the MySQL client info
+		
+			return ( mysqlgetclientinfoverb ( hp1, v, bserror ) );		
+			
+		case getclientversionfunc: // get the MySQL client version
+		
+			return ( mysqlgetclientversionverb ( hp1, v, bserror ) );		
+			
+		case gethostinfofunc: // get the MySQL host info
+		
+			return ( mysqlgethostinfoverb ( hp1, v, bserror ) );		
+			
+		case getserverversionfunc: // get the MySQL server version
+		
+			return ( mysqlgetserverversionverb ( hp1, v, bserror ) );		
+			
+		case getprotocolinfofunc: // get the MySQL protocol info
+		
+			return ( mysqlgetprotocolinfoverb ( hp1, v, bserror ) );		
+			
+		case getserverinfofunc: // get the MySQL server info
+		
+			return ( mysqlgetserverinfoverb ( hp1, v, bserror ) );		
+			
+		case getqueryinfofunc: // get the results messages from the last query
+		
+			return ( mysqlgetqueryinfoverb ( hp1, v, bserror ) );		
+			
+		case getaffectedrowcountfunc: // get the rows added, deleted, updated
+		
+			return ( mysqlgetaffectedrowcountverb ( hp1, v, bserror ) );		
+			
+		case getselectedrowcountfunc: // get the rows selected in last query
+		
+			return ( mysqlgetselectedrowcountverb ( hp1, v, bserror ) );		
+			
+		case getcolumncountfunc: // get the columns returned in last query
+		
+			return ( mysqlgetcolumncountverb ( hp1, v, bserror ) );		
+			
+		case getserverstatusfunc: // get the MySQL server status
+		
+			return ( mysqlgetserverstatusverb ( hp1, v, bserror ) );		
+			
+		case getquerywarningcountfunc: // get the number of warnings returned by the last query
+		
+			return ( mysqlgetquerywarningcountverb ( hp1, v, bserror ) );		
+			
+		case pingserverfunc: // check to see if there's still a connection with the server
+		
+			return ( mysqlpingserververb ( hp1, v, bserror ) );		
+			
+		case seekrowfunc: // move to specific row in query result set
+		
+			return ( mysqlseekrowverb ( hp1, v, bserror ) );		
+			
+		case selectdatabasefunc: // choose a MySQL database as current
+		
+			return ( mysqlselectdatabaseverb ( hp1, v, bserror ) );		
+			
+ 		case getsqlstatefunc:
+		
+			return ( mysqlgetsqlstateverb ( hp1, v, bserror ) );		
+			
+ 		case escapestringfunc:
+		
+			return ( mysqlescapestringverb ( hp1, v, bserror ) );		
+			
+ 		case isthreadsafefunc:
+		
+			return ( mysqlisthreadsafeverb ( hp1, v, bserror ) );		
+			
+		case closefunc: // close a MySQL db
+		
+			return ( mysqlcloseverb ( hp1, v, bserror ) );
+			
 		default:
-			getstringlist (langerrorlist, unimplementedverberror, bserror);
-			return (false);
-		} /* switch */
-	} /* mysqlfunctionvalue */
+		
+			getstringlist ( langerrorlist, unimplementedverberror, bserror );
+			
+			return ( false );
+			
+		} // switch
+		
+	} // mysqlfunctionvalue
 
 
 boolean mysqlinitverbs (void) {
 	
 	return (loadfunctionprocessor (idmysqlverbs, &mysqlfunctionvalue));
+	
 	} /* mysqlinitverbs */
 
 
 boolean mysqlinitverb ( hdltreenode hparam1, tyvaluerecord *vreturned, bigstring bserror ) {
+
 	int resultCode;
 	static char *server_args[] = {
 		"this_program"				// this string is not used
@@ -250,25 +287,22 @@ boolean mysqlendverb ( hdltreenode hparam1, tyvaluerecord *vreturned, bigstring 
 
 	return(setbooleanvalue (true, vreturned));
 	
-} // mysqlendverb
+	} // mysqlendverb
 
 
 boolean mysqlconnectverb ( hdltreenode hparam1, tyvaluerecord *vreturned, bigstring bserror ) {
 
-	MYSQL *dbid;	// the MySQL object handle
-	Handle host;	// hostname of the MySQL server
-	Handle user;	// valid username on the MySQL server
-	Handle passwd;	// password for user on MySQL server
-	Handle dbname;	// existing database on MySQL server
-	long port;		// TCP/IP port for the connection
-
+	//
+	// 2007-05-29 gewirtz: created
+	//
+	
 	/*
 		mysql.connect (host, user, password, database, port)
 
-		Action:		connects to a MySQL server and database, initializing the mySQL connection object
-		Params:		the hostname, user id, password, existing database name, and port
-		Returns:	a MySQL object handle or an error
-		Usage:		call in a try statement
+		Action:  connects to a MySQL server and database, initializing the mySQL connection object
+		Params:  the hostname, user id, password, existing database name, and port
+		Returns: a MySQL object handle or an error
+		Usage:   call in a try statement
 
 		MySQL docs: http://dev.mysql.com/doc/refman/5.1/en/mysql-init.html
 		            http://dev.mysql.com/doc/refman/5.1/en/mysql-real-connect.html
@@ -277,51 +311,75 @@ boolean mysqlconnectverb ( hdltreenode hparam1, tyvaluerecord *vreturned, bigstr
 		http://dev.mysql.com/doc/refman/5.1/en/can-not-connect-to-server.html#can-not-connect-to-server-on-windows
 	*/
 	
-	if (!gettextvalue (hparam1, 1, &host)) // get the host param
-		return (false);
+	MYSQL *dbid;	// the MySQL object handle
+	Handle host;	// hostname of the MySQL server
+	Handle user;	// valid username on the MySQL server
+	Handle passwd; // password for user on MySQL server
+	Handle dbname; // existing database on MySQL server
+	long port;	// TCP/IP port for the connection
 
-	if (!gettextvalue (hparam1, 2, &user)) // get the user param
-		return (false);
+	if ( ! gettextvalue ( hparam1, 1, &host ) ) // get the host param
+		return ( false );
 
-	if (!gettextvalue (hparam1, 3, &passwd)) // get the passwd param
-		return (false);
+	if ( ! gettextvalue ( hparam1, 2, &user ) ) // get the user param
+		return ( false );
 
-	if (!gettextvalue (hparam1, 4, &dbname)) // get the dbname param
-		return (false);
+	if ( ! gettextvalue ( hparam1, 3, &passwd ) ) // get the passwd param
+		return ( false );
 
-	flnextparamislast = true;	// makes sure Frontier throws an error if more than one param is passed
+	if ( ! gettextvalue ( hparam1, 4, &dbname ) ) // get the dbname param
+		return ( false );
 
-	if (!getlongvalue (hparam1, 5, &port))  // get the port param
-		return (false);
+	flnextparamislast = true; // makes sure Frontier throws an error if more than one param is passed
 
-	// Null terminate strings
-	if (!pushcharhandle (0x00, host))   return (false);
-	if (!pushcharhandle (0x00, user))   return (false);
-	if (!pushcharhandle (0x00, passwd)) return (false);
-	if (!pushcharhandle (0x00, dbname)) return (false);
+	if ( ! getlongvalue ( hparam1, 5, &port ) ) // get the port param
+		return ( false );
 
-	// Initialize the MySQL object
-	dbid = mysql_init((MYSQL*) 0);
-	if (dbid == NULL) {
-		langerrormessage ("\x2D""MySQL could not allocate a connection object.");	
-		return (false);
-	}
-	// Attempt the connection
-	dbid = mysql_real_connect(dbid, *host, *user, *passwd, *dbname, (unsigned int) port, NULL, 0 );
-	if (dbid == NULL) {
-		langerrormessage ("\x22""Could not connect to MySQL server.");	
-		return (false);
-	}
+	if ( ! pushcharhandle ( 0x00, host ) ) // Null terminate strings
+		return ( false );
+		
+	if ( ! pushcharhandle ( 0x00, user ) )
+		return ( false );
+		
+	if ( ! pushcharhandle ( 0x00, passwd ) )
+		return ( false );
+		
+	if ( ! pushcharhandle ( 0x00, dbname ) )
+		return ( false );
+		
+	dbid = mysql_init ( ( MYSQL* ) 0 ); // Initialize the MySQL object
 	
-	return (setlongvalue ((long) dbid, vreturned));
+	if ( dbid == NULL ) {
 	
-} // mysqlconnectverb
+		langerrormessage ( "\pMySQL could not allocate a connection object." );
+		
+		return ( false );
+		
+		}
+		
+	dbid = mysql_real_connect ( dbid, *host, *user, *passwd, *dbname, ( unsigned int ) port, NULL, 0 ); // Attempt the connection
+	
+	if ( dbid == NULL ) {
+	
+		langerrormessage ( "\pCould not connect to MySQL server." );
+		
+		return ( false );
+		
+		}
+		
+	return ( setlongvalue ( ( long ) dbid, vreturned ) );
+	
+	} // mysqlconnectverb
 
 
 boolean mysqlcloseverb (hdltreenode hparam1, tyvaluerecord *vreturned, bigstring bserror) {
-	MYSQL *dbid;	// the MySQL object handle
-	int returnCode;	// return code from close call
 
+	//
+	// 2007-07-02 creedon: if dbid is NULL script error
+	//
+	// 2007-05-29 gewirtz: created
+	//
+	
 	/*	
 		mysql.close(dbid)
 
@@ -333,11 +391,22 @@ boolean mysqlcloseverb (hdltreenode hparam1, tyvaluerecord *vreturned, bigstring
 		MySQL docs: http://dev.mysql.com/doc/refman/5.1/en/mysql-close.html
 	*/
 
+	MYSQL *dbid;	// the MySQL object handle
+	int returnCode;	// return code from close call
+
 	flnextparamislast = true;	// makes sure Frontier throws an error if more than one param is passed
 
 	if (!getlongvalue (hparam1, 1, (long *) &dbid)) // Get the long value, which becomes the db pointer
 		return (false);
-
+		
+	if ( dbid == NULL ) {
+	
+		langerrormessage ( "\pInvalid MySQL database connection ID." );
+		
+		return ( false );
+		
+		}
+		
 	// Check that server's still alive
 	if (mysql_ping(dbid) != 0) {
 		langerrormessage ("\x20""Lost connection to MySQL server.");	
@@ -350,15 +419,17 @@ boolean mysqlcloseverb (hdltreenode hparam1, tyvaluerecord *vreturned, bigstring
 
 	return setlongvalue (returnCode, vreturned);
 
-} /* mysqlcloseverb */
+	} /* mysqlcloseverb */
 
 
 boolean mysqlcompilequeryverb (hdltreenode hparam1, tyvaluerecord *vreturned, bigstring bserror) {
-	Handle query;				// the SQL query passed to the MySQL server
-	MYSQL *dbid;				// the MySQL object handle
-	MYSQL_RES *queryid;			// the returned MySQL query id
-	int returnCode;				// return code from MySQL query
 
+	//
+	// 2007-07-02 creedon: if dbid is NULL script error
+	//
+	// 2007-05-29 gewirtz: created
+	//
+	
 	/*	
 		mysql.compileQuery(dbid, query)
 
@@ -373,10 +444,23 @@ boolean mysqlcompilequeryverb (hdltreenode hparam1, tyvaluerecord *vreturned, bi
 		MySQL docs: http://dev.mysql.com/doc/refman/5.1/en/mysql-query.html
 		            http://dev.mysql.com/doc/refman/5.1/en/mysql-store-result.html
 	*/
-
+	
+	Handle query;				// the SQL query passed to the MySQL server
+	MYSQL *dbid;				// the MySQL object handle
+	MYSQL_RES *queryid;			// the returned MySQL query id
+	int returnCode;				// return code from MySQL query
+	
 	if (!getlongvalue (hparam1, 1, (long *) &dbid)) /* Get the long value, which becomes the db pointer */
 		return (false);
-
+		
+	if ( dbid == NULL ) {
+	
+		langerrormessage ( "\pInvalid MySQL database connection ID." );
+		
+		return ( false );
+		
+		}
+		
 	flnextparamislast = true;	/* makes sure Frontier throws an error if more than one param is passed */
 	
 	if (!gettextvalue (hparam1, 2, &query)) // get the query param
@@ -409,10 +493,12 @@ boolean mysqlcompilequeryverb (hdltreenode hparam1, tyvaluerecord *vreturned, bi
 		return (setlongvalue ((long) 0, vreturned)); // return 0 to the scripter
 	else
 		return (setlongvalue ((long) queryid, vreturned)); // return the db address to the scripter
-} /* mysqlcompilequeryverb */
+		
+	} /* mysqlcompilequeryverb */
 
 
 boolean mysqlclearqueryverb (hdltreenode hparam1, tyvaluerecord *vreturned, bigstring bserror) {
+
 	MYSQL_RES *queryid;			// the returned MySQL query id
 	int returnCode;
 
@@ -437,14 +523,16 @@ boolean mysqlclearqueryverb (hdltreenode hparam1, tyvaluerecord *vreturned, bigs
 	returnCode = 0; // placeholder. mysql_free_result doesn't return anything.
 	return setlongvalue (returnCode, vreturned);
 
-} /* mysqlclearqueryverb */
+	} /* mysqlclearqueryverb */
 
 
 boolean mysqlgetrowverb (hdltreenode hparam1, tyvaluerecord *vreturned, bigstring bserror) {
 
 	//
 	// 2007-06-04 gewirtz: fix for returning TEXT type variant of BLOB
+	//
 	// 2007-05-31 creedon, asseily: fix for crash when column_text is NULL, return nil
+	//
 	// 2007-05-29 gewirtz: created
 	//
 	
@@ -476,76 +564,81 @@ boolean mysqlgetrowverb (hdltreenode hparam1, tyvaluerecord *vreturned, bigstrin
 	
 	The only formats we explicitly don't support are:
 	
-	MYSQL_TYPE_BIT
-	MYSQL_TYPE_BLOB (although we do return TEXT, which is a BLOB variant)
-	MYSQL_TYPE_SET
-	MYSQL_TYPE_ENUM
-	MYSQL_TYPE_GEOMETRY
-	MYSQL_TYPE_NULL
-	
+		MYSQL_TYPE_BIT
+		MYSQL_TYPE_BLOB (although we do return TEXT, which is a BLOB variant)
+		MYSQL_TYPE_ENUM
+		MYSQL_TYPE_GEOMETRY
+		MYSQL_TYPE_NULL
+		MYSQL_TYPE_SET
+		
 	Formats supported and returned as string:
 	
-	MYSQL_TYPE_TINY
-	MYSQL_TYPE_SHORT
-	MYSQL_TYPE_LONG
-	MYSQL_TYPE_INT24
-	MYSQL_TYPE_LONGLONG
-	MYSQL_TYPE_DECIMAL
-	MYSQL_TYPE_NEWDECIMAL
-	MYSQL_TYPE_FLOAT
-	MYSQL_TYPE_DOUBLE
-	MYSQL_TYPE_TIMESTAMP
-	MYSQL_TYPE_DATE
-	MYSQL_TYPE_TIME
-	MYSQL_TYPE_DATETIME
-	MYSQL_TYPE_YEAR
-	MYSQL_TYPE_STRING
-	MYSQL_TYPE_VAR_STRING
-	
+		MYSQL_TYPE_DATE
+		MYSQL_TYPE_DATETIME
+		MYSQL_TYPE_DECIMAL
+		MYSQL_TYPE_DOUBLE
+		MYSQL_TYPE_FLOAT
+		MYSQL_TYPE_INT24
+		MYSQL_TYPE_LONG
+		MYSQL_TYPE_LONGLONG
+		MYSQL_TYPE_NEWDECIMAL
+		MYSQL_TYPE_SHORT
+		MYSQL_TYPE_STRING
+		MYSQL_TYPE_TIME
+		MYSQL_TYPE_TIMESTAMP
+		MYSQL_TYPE_TINY
+		MYSQL_TYPE_VAR_STRING
+		MYSQL_TYPE_YEAR
+		
 	More info: http://dev.mysql.com/doc/refman/5.1/en/c-api-datatypes.html
 	
 	*/
 	
-	unsigned int fieldNumber;	/* field number */
-	unsigned int fieldCount;	/* number of fields */
-	MYSQL_RES *queryid;			/* query id */
+	unsigned int fieldNumber; // field number
+	unsigned int fieldCount;	 // number of fields
+	MYSQL_RES *queryid;		 // query id
 	MYSQL_ROW row;
 	MYSQL_FIELD *field;
 	hdllistrecord hlist;
-	Handle returnH;
+	Handle h = NULL;
 	const unsigned char *column_text;
 	tyvaluerecord val;
-
-
-	flnextparamislast = true;	/* makes sure Frontier throws an error if more than one param is passed */
-
-	if (!getlongvalue (hparam1, 1, (long *) &queryid)) /* Get the long value, which becomes the queryid pointer */
+	
+	flnextparamislast = true; // makes sure Frontier throws an error if more than one param is passed
+	
+	if (!getlongvalue (hparam1, 1, (long *) &queryid)) // Get the long value, which becomes the queryid pointer
 		return (false);
-
+		
 	row = mysql_fetch_row(queryid);
+	
 	if (row == NULL) {
 		// return 0, meaning no more rows
 		// **** NOTE THIS COULD ALSO MEAN AN ERROR, MIGHT BE GOOD TO CHECK
 		return (setlongvalue ((long) 0, vreturned));
-	}
-
+		
+		}
+		
 	fieldCount = mysql_num_fields(queryid);
-
+	
 	if (fieldCount == 0) {
-		langerrormessage ("\x2D""MySQL.getRow requires a minimum of one field.");		
+	
+		langerrormessage ("\x2D""MySQL.getRow requires a minimum of one field.");
+			
 		return (false);
-	}
-
+		
+		}
+	
 	mysql_field_seek(queryid, 0); // restart gathering field data from the first field
-
+	
 	if (!opnewlist (&hlist, false)) // fail out if we can't create the list
 		return (false);
-
+		
 	for (fieldNumber=0; fieldNumber<fieldCount; ++fieldNumber) {
-
+	
 		field = mysql_fetch_field(queryid);
-
-		switch(field->type) {
+		
+		switch ( field->type ) {
+		
 			case MYSQL_TYPE_TINY:
 			case MYSQL_TYPE_SHORT:
 			case MYSQL_TYPE_LONG:
@@ -562,17 +655,19 @@ boolean mysqlgetrowverb (hdltreenode hparam1, tyvaluerecord *vreturned, bigstrin
 			case MYSQL_TYPE_YEAR:
 			case MYSQL_TYPE_STRING:
 			case MYSQL_TYPE_VAR_STRING:
-			case MYSQL_TYPE_BLOB:
-			{
+			case MYSQL_TYPE_BLOB: {
+			
 				if (field->type == MYSQL_TYPE_BLOB) {
 					// This is a special case, to see if the type is really TEXT
 					if (field->charsetnr == 63) {
 						// binary data, see http://dev.mysql.com/doc/refman/5.0/en/c-api-datatypes.html
 						if (!langpushlistlong (hlist, (long) 0))
 							goto error;
+							
 						return (setheapvalue ((Handle) hlist, listvaluetype, vreturned));
 					}
 				}
+				
 				column_text = row[fieldNumber];
 				
 				if ( column_text == NULL )
@@ -582,38 +677,51 @@ boolean mysqlgetrowverb (hdltreenode hparam1, tyvaluerecord *vreturned, bigstrin
 				else {
 
 					// Exit the verb, converting column_name back to Frontier handle
-					if (!newfilledhandle ((ptrvoid) column_text, strlen (column_text), &returnH))
-						return false; /* Allocation failed */
-					if (!setheapvalue (returnH, stringvaluetype, &val)) // convert handle to value
+					
+					if ( ! newfilledhandle ( ( ptrvoid ) column_text, strlen ( column_text ), &h ) )
+						return ( false ); // Allocation failed
+						
+					if ( ! setheapvalue ( h, stringvaluetype, &val ) ) // convert handle to value
 						goto error;
 						
-					}
+					} // if
 					
-				if (!langpushlistval (hlist, nil, &val))
+				if (!langpushlistval (hlist, NULL, &val))
 					goto error;
+					
 				break;
-			} 
+				
+				}
+				
 			default: {
+			
 				if (!langpushlistlong (hlist, (long) 0))
 					goto error;
-			}
-		} /* switch */
-	} /* for */
+				}
+				
+			} // switch
+		
+		} // for
 
 	return (setheapvalue ((Handle) hlist, listvaluetype, vreturned));
 
-	error: {
-		opdisposelist (hlist);
-		return (false);
-	}
+	error:
+	
+		opdisposelist ( hlist );
+		
+		return ( false );
 
-} /* mysqlgetrow */
+	} // mysqlgetrow
 
 
 boolean mysqlgeterrornumberverb (hdltreenode hparam1, tyvaluerecord *vreturned, bigstring bserror) {
-	MYSQL *dbid;				// the MySQL object handle
-	unsigned int returnCode;		// return code from MySQL call
 
+	//
+	// 2007-07-02 creedon: if dbid is NULL script error
+	//
+	// 2007-05-29 gewirtz: created
+	//
+	
 	/*	
 		mysql.getErrorNumber(dbid)
 
@@ -625,11 +733,22 @@ boolean mysqlgeterrornumberverb (hdltreenode hparam1, tyvaluerecord *vreturned, 
 					http://dev.mysql.com/doc/refman/5.1/en/errors-handling.html
 	*/
 
+	MYSQL *dbid;				// the MySQL object handle
+	unsigned int returnCode;		// return code from MySQL call
+
 	flnextparamislast = true;	/* makes sure Frontier throws an error if more than one param is passed */
 
 	if (!getlongvalue (hparam1, 1, (long *) &dbid)) /* Get the long value, which becomes the pline pointer */
 		return (false);
-
+		
+	if ( dbid == NULL ) {
+	
+		langerrormessage ( "\pInvalid MySQL database connection ID." );
+		
+		return ( false );
+		
+		}
+		
 	// Check that server's still alive
 	if (mysql_ping(dbid) != 0) {
 		langerrormessage ("\x20""Lost connection to MySQL server.");	
@@ -641,14 +760,19 @@ boolean mysqlgeterrornumberverb (hdltreenode hparam1, tyvaluerecord *vreturned, 
 
 	return (setlongvalue ((long) returnCode, vreturned));
 
-} /* mysqlgeterrornumberverb */
+	} /* mysqlgeterrornumberverb */
 
 
-boolean mysqlgeterrormessageverb (hdltreenode hparam1, tyvaluerecord *vreturned, bigstring bserror) {
-	MYSQL *dbid;				// the MySQL object handle
-	const char *mysqlError;		// pointer to the error message
-	Handle returnH = nil;		// The handle being returned back to Frontier
+boolean mysqlgeterrormessageverb ( hdltreenode hparam1, tyvaluerecord *vreturned, bigstring bserror ) {
 
+	//
+	// 2007-07-02 creedon: if dbid is NULL script error
+	//
+	//				   formatting tweaks
+	//
+	// 2007-05-29 gewirtz: created
+	//
+	
 	/*	
 		mysql.getErrorMessage(dbid)
 
@@ -657,35 +781,50 @@ boolean mysqlgeterrormessageverb (hdltreenode hparam1, tyvaluerecord *vreturned,
 		Returns: a string containing the error message
 
 		MySQL docs: http://dev.mysql.com/doc/refman/5.1/en/mysql-error.html
-					http://dev.mysql.com/doc/refman/5.1/en/errors-handling.html
+				  http://dev.mysql.com/doc/refman/5.1/en/errors-handling.html
 	*/
-
-	flnextparamislast = true; /* makes sure Frontier throws an error if more than one param is passed */
-
-	if (!getlongvalue (hparam1, 1, (long *) &dbid)) /* Get the long value, which becomes the db pointer */
-		return (false);
-
-	// Check that server's still alive
-	if (mysql_ping(dbid) != 0) {
-		langerrormessage ("\x20""Lost connection to MySQL server.");	
-		return (false);
-	}
-
-	// Process the MySQL sequence
-	mysqlError = mysql_error(dbid);
-
+	
+	MYSQL *dbid;		    // the MySQL object handle
+	const char *mysqlError; // pointer to the error message
+	Handle h = NULL;	    // The handle being returned back to Frontier
+	
+	flnextparamislast = true; // makes sure Frontier throws an error if more than one param is passed
+	
+	if ( ! getlongvalue ( hparam1, 1, ( long * ) &dbid ) ) // Get the long value, which becomes the db pointer
+		return ( false );
+		
+	if ( dbid == NULL ) {
+	
+		langerrormessage ( "\pInvalid MySQL database connection ID." );
+		
+		return ( false );
+		
+		}
+		
+	if ( mysql_ping ( dbid ) != 0 ) { // Check that server's still alive
+	
+		langerrormessage ( "\pLost connection to MySQL server." );
+		
+		return ( false );
+		
+		}
+		
+	mysqlError = mysql_error ( dbid ); // Process the MySQL sequence
+	
 	// Exit the verb, converting errMsg back to Frontier handle
-	if(!newfilledhandle ((ptrvoid) mysqlError, strlen (mysqlError), &returnH))
-		return false; // Allocation failed
-
-	return (setheapvalue (returnH, stringvaluetype, vreturned)); 
-
-} /* mysqlgeterrormessageverb */
+	
+	if ( ! newfilledhandle ( ( ptrvoid ) mysqlError, strlen ( mysqlError ), &h ) )
+		return ( false ); // Allocation failed
+		
+	return ( setheapvalue ( h, stringvaluetype, vreturned ) ); 
+	
+	} // mysqlgeterrormessageverb
 
 
 boolean mysqlgetclientinfoverb (hdltreenode hparam1, tyvaluerecord *vreturned, bigstring bserror) {
+
 	const char *mysqlMsg;		// pointer to the message
-	Handle returnH = nil;		// The handle being returned back to Frontier
+	Handle h = nil;		// The handle being returned back to Frontier
 
 	/*	
 		mysql.getClientInfo()
@@ -701,15 +840,16 @@ boolean mysqlgetclientinfoverb (hdltreenode hparam1, tyvaluerecord *vreturned, b
 	mysqlMsg = mysql_get_client_info();
 
 	// Exit the verb, converting errMsg back to Frontier handle
-	if(!newfilledhandle ((ptrvoid) mysqlMsg, strlen (mysqlMsg), &returnH))
+	if(!newfilledhandle ((ptrvoid) mysqlMsg, strlen (mysqlMsg), &h))
 		return false; // Allocation failed
 
-	return (setheapvalue (returnH, stringvaluetype, vreturned)); 
+	return (setheapvalue (h, stringvaluetype, vreturned)); 
 
-} /* mysqlgetclientinfoverb */
+	} /* mysqlgetclientinfoverb */
 
 
 boolean mysqlgetclientversionverb (hdltreenode hparam1, tyvaluerecord *vreturned, bigstring bserror) {
+
 	unsigned long returnCode;	// The number being returned back to Frontier
 
 
@@ -735,14 +875,17 @@ boolean mysqlgetclientversionverb (hdltreenode hparam1, tyvaluerecord *vreturned
 
 	return (setlongvalue ((long) returnCode, vreturned));
 
-} /* mysqlgetclientversionverb */
+	} /* mysqlgetclientversionverb */
 
 
 boolean mysqlgethostinfoverb (hdltreenode hparam1, tyvaluerecord *vreturned, bigstring bserror) {
-	MYSQL *dbid;				// the MySQL object handle
-	const char *mysqlMsg;		// pointer to the message
-	Handle returnH = nil;		// The handle being returned back to Frontier
 
+	//
+	// 2007-07-02 creedon: if dbid is NULL script error
+	//
+	// 2007-05-29 gewirtz: created
+	//
+	
 	/*	
 		mysql.getHostInfo(dbid)
 
@@ -753,11 +896,23 @@ boolean mysqlgethostinfoverb (hdltreenode hparam1, tyvaluerecord *vreturned, big
 		MySQL docs: http://dev.mysql.com/doc/refman/5.1/en/mysql-get-host-info.html
 	*/
 
+	MYSQL *dbid;				// the MySQL object handle
+	const char *mysqlMsg;		// pointer to the message
+	Handle h = nil;		// The handle being returned back to Frontier
+
 	flnextparamislast = true; /* makes sure Frontier throws an error if more than one param is passed */
 
 	if (!getlongvalue (hparam1, 1, (long *) &dbid)) /* Get the long value, which becomes the db pointer */
 		return (false);
-
+		
+	if ( dbid == NULL ) {
+	
+		langerrormessage ( "\pInvalid MySQL database connection ID." );
+		
+		return ( false );
+		
+		}
+		
 	// Check that server's still alive
 	if (mysql_ping(dbid) != 0) {
 		langerrormessage ("\x20""Lost connection to MySQL server.");	
@@ -768,19 +923,22 @@ boolean mysqlgethostinfoverb (hdltreenode hparam1, tyvaluerecord *vreturned, big
 	mysqlMsg = mysql_get_host_info(dbid);
 
 	// Exit the verb, converting errMsg back to Frontier handle
-	if(!newfilledhandle ((ptrvoid) mysqlMsg, strlen (mysqlMsg), &returnH))
+	if(!newfilledhandle ((ptrvoid) mysqlMsg, strlen (mysqlMsg), &h))
 		return false; // Allocation failed
 
-	return (setheapvalue (returnH, stringvaluetype, vreturned)); 
+	return (setheapvalue (h, stringvaluetype, vreturned)); 
 
-} /* mysqlgethostinfoverb */
+	} /* mysqlgethostinfoverb */
 
 
 boolean mysqlgetserverversionverb (hdltreenode hparam1, tyvaluerecord *vreturned, bigstring bserror) {
 
-	MYSQL *dbid;				// the MySQL object handle
-	unsigned long returnCode;	// the return code
-
+	//
+	// 2007-07-02 creedon: if dbid is NULL script error
+	//
+	// 2007-05-29 gewirtz: created
+	//
+	
 	/*
 		mysql.getServerVersion(dbid)
 
@@ -801,12 +959,23 @@ boolean mysqlgetserverversionverb (hdltreenode hparam1, tyvaluerecord *vreturned
 		programs for quickly determining whether some version-specific
 		server capability exists. 
 	*/
-
+	
+	MYSQL *dbid;				// the MySQL object handle
+	unsigned long returnCode;	// the return code
+	
 	flnextparamislast = true; /* makes sure Frontier throws an error if more than one param is passed */
 
 	if (!getlongvalue (hparam1, 1, (long *) &dbid)) /* Get the long value, which becomes the db pointer */
 		return (false);
-
+		
+	if ( dbid == NULL ) {
+	
+		langerrormessage ( "\pInvalid MySQL database connection ID." );
+		
+		return ( false );
+		
+		}
+		
 	// Check that server's still alive
 	if (mysql_ping(dbid) != 0) {
 		langerrormessage ("\x20""Lost connection to MySQL server.");	
@@ -819,14 +988,17 @@ boolean mysqlgetserverversionverb (hdltreenode hparam1, tyvaluerecord *vreturned
 	// Exit the verb, converting errMsg back to Frontier handle
 	return (setlongvalue ((long) returnCode, vreturned));
 
-} /* mysqlgetserverversionverb */
+	} /* mysqlgetserverversionverb */
 
 
 boolean mysqlgetprotocolinfoverb (hdltreenode hparam1, tyvaluerecord *vreturned, bigstring bserror) {
 
-	MYSQL *dbid;			// the MySQL object handle
-	unsigned int returnCode;	// the return code
-
+	//
+	// 2007-07-02 creedon: if dbid is NULL script error
+	//
+	// 2007-05-29 gewirtz: created
+	//
+	
 	/*
 		mysql.getProtocolInfo(dbid)
 
@@ -844,12 +1016,23 @@ boolean mysqlgetprotocolinfoverb (hdltreenode hparam1, tyvaluerecord *vreturned,
 
 		http://www.redferni.uklinux.net/mysql/MySQL-Protocol.html
 	*/
-
+	
+	MYSQL *dbid;			// the MySQL object handle
+	unsigned int returnCode;	// the return code
+	
 	flnextparamislast = true; // makes sure Frontier throws an error if more than one param is passed
 
 	if (!getlongvalue (hparam1, 1, (long *) &dbid)) // Get the long value, which becomes the db pointer
 		return (false);
 
+	if ( dbid == NULL ) {
+	
+		langerrormessage ( "\pInvalid MySQL database connection ID." );
+		
+		return ( false );
+		
+		}
+		
 	// Check that server's still alive
 	if (mysql_ping(dbid) != 0) {
 		langerrormessage ("\x20""Lost connection to MySQL server.");	
@@ -862,15 +1045,17 @@ boolean mysqlgetprotocolinfoverb (hdltreenode hparam1, tyvaluerecord *vreturned,
 	// Exit the verb, converting errMsg back to Frontier handle
 	return (setlongvalue ((long) returnCode, vreturned));
 
-} /* mysqlgetprotocolinfoverb */
+	} /* mysqlgetprotocolinfoverb */
 
 
 boolean mysqlgetserverinfoverb (hdltreenode hparam1, tyvaluerecord *vreturned, bigstring bserror) {
-	MYSQL *dbid;				// the MySQL object handle
-	const char *mysqlMsg;		// pointer to the message
-	Handle returnH = nil;		// The handle being returned back to Frontier
 
-
+	//
+	// 2007-07-02 creedon: if dbid is NULL script error
+	//
+	// 2007-05-29 gewirtz: created
+	//
+	
 	/*	
 		mysql.getServerInfo(dbid)
 
@@ -882,12 +1067,24 @@ boolean mysqlgetserverinfoverb (hdltreenode hparam1, tyvaluerecord *vreturned, b
 		MySQL docs: http://dev.mysql.com/doc/refman/5.1/en/mysql-get-server-info.html
 
 	*/
-
+	
+	MYSQL *dbid;				// the MySQL object handle
+	const char *mysqlMsg;		// pointer to the message
+	Handle h = nil;		// The handle being returned back to Frontier
+	
 	flnextparamislast = true; // makes sure Frontier throws an error if more than one param is passed
 
 	if (!getlongvalue (hparam1, 1, (long *) &dbid)) // Get the long value, which becomes the db pointer
 		return (false);
-
+		
+	if ( dbid == NULL ) {
+	
+		langerrormessage ( "\pInvalid MySQL database connection ID." );
+		
+		return ( false );
+		
+		}
+		
 	// Check that server's still alive
 	if (mysql_ping(dbid) != 0) {
 		langerrormessage ("\x20""Lost connection to MySQL server.");	
@@ -898,19 +1095,22 @@ boolean mysqlgetserverinfoverb (hdltreenode hparam1, tyvaluerecord *vreturned, b
 	mysqlMsg = mysql_get_server_info(dbid);
 
 	// Exit the verb, converting errMsg back to Frontier handle
-	if(!newfilledhandle ((ptrvoid) mysqlMsg, strlen (mysqlMsg), &returnH))
+	if(!newfilledhandle ((ptrvoid) mysqlMsg, strlen (mysqlMsg), &h))
 		return false; // Allocation failed
 
-	return (setheapvalue (returnH, stringvaluetype, vreturned)); 
+	return (setheapvalue (h, stringvaluetype, vreturned)); 
 
-} /* mysqlgetserverinfoverb */
+	} /* mysqlgetserverinfoverb */
 
 
 boolean mysqlgetqueryinfoverb (hdltreenode hparam1, tyvaluerecord *vreturned, bigstring bserror) {
-	MYSQL *dbid;				// the MySQL object handle
-	const char *mysqlMsg;		// pointer to the message
-	Handle returnH = nil;		// The handle being returned back to Frontier
 
+	//
+	// 2007-07-02 creedon: if dbid is NULL script error
+	//
+	// 2007-05-29 gewirtz: created
+	//
+	
 	/*	
 		mysql.getQueryInfo(dbid)
 
@@ -934,12 +1134,24 @@ boolean mysqlgetqueryinfoverb (hdltreenode hparam1, tyvaluerecord *vreturned, bi
 		For all other, the routine returns ""
 
 	*/
-
+	
+	MYSQL *dbid;				// the MySQL object handle
+	const char *mysqlMsg;		// pointer to the message
+	Handle h = nil;		// The handle being returned back to Frontier
+	
 	flnextparamislast = true; // makes sure Frontier throws an error if more than one param is passed
 
 	if (!getlongvalue (hparam1, 1, (long *) &dbid)) // Get the long value, which becomes the db pointer
 		return (false);
-
+		
+	if ( dbid == NULL ) {
+	
+		langerrormessage ( "\pInvalid MySQL database connection ID." );
+		
+		return ( false );
+		
+		}
+		
 	// Check that server's still alive
 	if (mysql_ping(dbid) != 0) {
 		langerrormessage ("\x20""Lost connection to MySQL server.");	
@@ -951,23 +1163,27 @@ boolean mysqlgetqueryinfoverb (hdltreenode hparam1, tyvaluerecord *vreturned, bi
 
 	if (mysqlMsg == NULL) {
 		// Exit the verb, converting errMsg back to Frontier handle 
-		if(!newfilledhandle ((ptrvoid) "", 0, &returnH))
+		if(!newfilledhandle ((ptrvoid) "", 0, &h))
 			return false; // Allocation failed
 	} else {
 	// Exit the verb, converting errMsg back to Frontier handle
-		if(!newfilledhandle ((ptrvoid) mysqlMsg, strlen (mysqlMsg), &returnH))
+		if(!newfilledhandle ((ptrvoid) mysqlMsg, strlen (mysqlMsg), &h))
 			return false; // Allocation failed
 	}
 
-	return (setheapvalue (returnH, stringvaluetype, vreturned)); 
+	return (setheapvalue (h, stringvaluetype, vreturned)); 
 
-} /* mysqlgetqueryinfoverb */
+	} /* mysqlgetqueryinfoverb */
 
 
 boolean mysqlgetaffectedrowcountverb (hdltreenode hparam1, tyvaluerecord *vreturned, bigstring bserror) {
-	MYSQL *dbid;				// the MySQL object handle
-	my_ulonglong rowCount;		// this datastructure is too big for Frontier
 
+	//
+	// 2007-07-02 creedon: if dbid is NULL script error
+	//
+	// 2007-05-29 gewirtz: created
+	//
+	
 	/*	
 		mysql.getAffectedRowCount(dbid)
 
@@ -984,11 +1200,22 @@ boolean mysqlgetaffectedrowcountverb (hdltreenode hparam1, tyvaluerecord *vretur
 
 	*/
 
+	MYSQL *dbid;				// the MySQL object handle
+	my_ulonglong rowCount;		// this datastructure is too big for Frontier
+
 	flnextparamislast = true;	// makes sure Frontier throws an error if more than one param is passed
 
 	if (!getlongvalue (hparam1, 1, (long *) &dbid)) // Get the long value, which becomes the pointer
 		return (false);
-
+		
+	if ( dbid == NULL ) {
+	
+		langerrormessage ( "\pInvalid MySQL database connection ID." );
+		
+		return ( false );
+		
+		}
+		
 	// Check that server's still alive
 	if (mysql_ping(dbid) != 0) {
 		langerrormessage ("\x20""Lost connection to MySQL server.");	
@@ -1000,10 +1227,11 @@ boolean mysqlgetaffectedrowcountverb (hdltreenode hparam1, tyvaluerecord *vretur
 
 	return (setdoublevalue ((double) rowCount, vreturned));
 
-} /* mysqlgetaffectedrowcountverb */
+	} /* mysqlgetaffectedrowcountverb */
 
 
 boolean mysqlgetselectedrowcountverb (hdltreenode hparam1, tyvaluerecord *vreturned, bigstring bserror) {
+
 	MYSQL_RES *queryid;			// query id
 	my_ulonglong rowCount;		// this datastructure is too big for Frontier
 
@@ -1027,13 +1255,17 @@ boolean mysqlgetselectedrowcountverb (hdltreenode hparam1, tyvaluerecord *vretur
 
 	return (setdoublevalue ((double) rowCount, vreturned));
 
-} /* mysqlgetselectedrowcountverb */
+	} /* mysqlgetselectedrowcountverb */
 
 
 boolean mysqlgetcolumncountverb (hdltreenode hparam1, tyvaluerecord *vreturned, bigstring bserror) {
-	MYSQL *dbid;				// the MySQL object handle
-	unsigned int returnCode;		// return code from MySQL call
 
+	//
+	// 2007-07-02 creedon: if dbid is NULL script error
+	//
+	// 2007-05-29 gewirtz: created
+	//
+	
 	/*	
 		mysql.getColumnCount(dbid)
 
@@ -1044,11 +1276,22 @@ boolean mysqlgetcolumncountverb (hdltreenode hparam1, tyvaluerecord *vreturned, 
 		MySQL docs: http://dev.mysql.com/doc/refman/5.1/en/mysql-field-count.html
 	*/
 
+	MYSQL *dbid;				// the MySQL object handle
+	unsigned int returnCode;		// return code from MySQL call
+
 	flnextparamislast = true;	// makes sure Frontier throws an error if more than one param is passed
 
 	if (!getlongvalue (hparam1, 1, (long *) &dbid)) // Get the long value, which becomes the pline pointer
 		return (false);
-
+		
+	if ( dbid == NULL ) {
+	
+		langerrormessage ( "\pInvalid MySQL database connection ID." );
+		
+		return ( false );
+		
+		}
+		
 	// Check that server's still alive
 	if (mysql_ping(dbid) != 0) {
 		langerrormessage ("\x20""Lost connection to MySQL server.");	
@@ -1060,14 +1303,17 @@ boolean mysqlgetcolumncountverb (hdltreenode hparam1, tyvaluerecord *vreturned, 
 
 	return (setlongvalue ((long) returnCode, vreturned));
 
-} /* mysqlgetcolumncountverb */
+	} /* mysqlgetcolumncountverb */
 
 
 boolean mysqlgetserverstatusverb (hdltreenode hparam1, tyvaluerecord *vreturned, bigstring bserror) {
-	MYSQL *dbid;				// the MySQL object handle
-	const char *mysqlStatus;	// pointer to the status message
-	Handle returnH = nil;		// The handle being returned back to Frontier
 
+	//
+	// 2007-07-02 creedon: if dbid is NULL script error
+	//
+	// 2007-05-29 gewirtz: created
+	//
+	
 	/*	
 		mysql.getServerStatus(dbid)
 
@@ -1082,12 +1328,24 @@ boolean mysqlgetserverstatusverb (hdltreenode hparam1, tyvaluerecord *vreturned,
 		Status will fail/crash if mysql.connect() hasn't previously succeeded. It'll
 		be messy, so check your result codes.
 	*/
-
+	
+	MYSQL *dbid;				// the MySQL object handle
+	const char *mysqlStatus;	// pointer to the status message
+	Handle h = nil;		// The handle being returned back to Frontier
+	
 	flnextparamislast = true; /* makes sure Frontier throws an error if more than one param is passed */
 
 	if (!getlongvalue (hparam1, 1, (long *) &dbid)) /* Get the long value, which becomes the db pointer */
 		return (false);
-
+		
+	if ( dbid == NULL ) {
+	
+		langerrormessage ( "\pInvalid MySQL database connection ID." );
+		
+		return ( false );
+		
+		}
+		
 	// Check that server's still alive
 	if (mysql_ping(dbid) != 0) {
 		langerrormessage ("\x20""Lost connection to MySQL server.");	
@@ -1102,19 +1360,23 @@ boolean mysqlgetserverstatusverb (hdltreenode hparam1, tyvaluerecord *vreturned,
 		}
 	else {
 		// Exit the verb, converting errMsg back to Frontier handle
-		if(!newfilledhandle ((ptrvoid) mysqlStatus, strlen (mysqlStatus), &returnH))
+		if(!newfilledhandle ((ptrvoid) mysqlStatus, strlen (mysqlStatus), &h))
 			return false; // Allocation failed
 		}
 
-	return (setheapvalue (returnH, stringvaluetype, vreturned)); 
+	return (setheapvalue (h, stringvaluetype, vreturned)); 
 
-} /* mysqlgetserverstatusverb */
+	} /* mysqlgetserverstatusverb */
 
 
 boolean mysqlgetquerywarningcountverb (hdltreenode hparam1, tyvaluerecord *vreturned, bigstring bserror) {
-	MYSQL *dbid;				// the MySQL object handle
-	unsigned int returnCode;	// return code from MySQL call
 
+	//
+	// 2007-07-02 creedon: if dbid is NULL script error
+	//
+	// 2007-05-29 gewirtz: created
+	//
+	
 	/*	
 		mysql.getQueryWarningCount(dbid)
 
@@ -1129,11 +1391,22 @@ boolean mysqlgetquerywarningcountverb (hdltreenode hparam1, tyvaluerecord *vretu
 		Obviously, you should check this when performing queries.
 	*/
 
+	MYSQL *dbid;				// the MySQL object handle
+	unsigned int returnCode;	// return code from MySQL call
+
 	flnextparamislast = true;	// makes sure Frontier throws an error if more than one param is passed
 
 	if (!getlongvalue (hparam1, 1, (long *) &dbid)) // Get the long value, which becomes the pline pointer
 		return (false);
-
+		
+	if ( dbid == NULL ) {
+	
+		langerrormessage ( "\pInvalid MySQL database connection ID." );
+		
+		return ( false );
+		
+		}
+		
 	// Check that server's still alive
 	if (mysql_ping(dbid) != 0) {
 		langerrormessage ("\x20""Lost connection to MySQL server.");	
@@ -1145,13 +1418,17 @@ boolean mysqlgetquerywarningcountverb (hdltreenode hparam1, tyvaluerecord *vretu
 
 	return (setlongvalue ((long) returnCode, vreturned));
 
-} /* mysqlgetquerywarningcountverb */
+	} /* mysqlgetquerywarningcountverb */
 
 
 boolean mysqlpingserververb (hdltreenode hparam1, tyvaluerecord *vreturned, bigstring bserror) {
-	MYSQL *dbid;				// the MySQL object handle
-	unsigned int returnCode;	// return code from MySQL call
 
+	//
+	// 2007-07-02 creedon: if dbid is NULL script error
+	//
+	// 2007-05-29 gewirtz: created
+	//
+	
 	/*	
 		mysql.pingServer(dbid)
 
@@ -1166,20 +1443,32 @@ boolean mysqlpingserververb (hdltreenode hparam1, tyvaluerecord *vreturned, bigs
 		mysql.pingServer() attempts to reconnect if the connection went down.
 	*/
 
-	flnextparamislast = true;	// makes sure Frontier throws an error if more than one param is passed
+	MYSQL *dbid;				// the MySQL object handle
+	unsigned int returnCode;	// return code from MySQL call
 
+	flnextparamislast = true;	// makes sure Frontier throws an error if more than one param is passed
+	
 	if (!getlongvalue (hparam1, 1, (long *) &dbid)) // Get the long value, which becomes the pline pointer
 		return (false);
-
+		
+	if ( dbid == NULL ) {
+	
+		langerrormessage ( "\pInvalid MySQL database connection ID." );
+		
+		return ( false );
+		
+		}
+		
 	// Process the MySQL call
 	returnCode = mysql_ping(dbid);
 
 	return (setlongvalue ((long) returnCode, vreturned));
 
-} /* mysqlpingserververb */
+	} /* mysqlpingserververb */
 
 
 boolean mysqlseekrowverb (hdltreenode hparam1, tyvaluerecord *vreturned, bigstring bserror) {
+
 	MYSQL_RES *queryid;			// the returned MySQL query id
 	tyvaluerecord v1;
 	double row;					// row to seek
@@ -1225,15 +1514,17 @@ boolean mysqlseekrowverb (hdltreenode hparam1, tyvaluerecord *vreturned, bigstri
 
 	return (setlongvalue ((long) 0, vreturned));
 
-} /* mysqlseekrowverb */
+	} /* mysqlseekrowverb */
 
 
 boolean mysqlselectdatabaseverb ( hdltreenode hparam1, tyvaluerecord *vreturned, bigstring bserror ) {
 
-	MYSQL *dbid;	// the MySQL object handle
-	int resultCode;	// result code
-	Handle dbname;	// existing database on MySQL server
-
+	//
+	// 2007-07-02 creedon: if dbid is NULL script error
+	//
+	// 2007-05-29 gewirtz: created
+	//
+	
 	/*
 		mysql.selectDatabase(dbid, database)
 
@@ -1244,9 +1535,21 @@ boolean mysqlselectdatabaseverb ( hdltreenode hparam1, tyvaluerecord *vreturned,
 		MySQL docs: http://dev.mysql.com/doc/refman/5.1/en/mysql-select-db.html
 	*/
 	
+	MYSQL *dbid;	// the MySQL object handle
+	int resultCode;	// result code
+	Handle dbname;	// existing database on MySQL server
+
 	if (!getlongvalue (hparam1, 1, (long *) &dbid)) // Get the long value, which becomes the db pointer
 		return (false);
-
+		
+	if ( dbid == NULL ) {
+	
+		langerrormessage ( "\pInvalid MySQL database connection ID." );
+		
+		return ( false );
+		
+		}
+		
 	flnextparamislast = true;	// makes sure Frontier throws an error if more than one param is passed
 
 	if (!gettextvalue (hparam1, 2, &dbname)) // get the dbname param
@@ -1271,14 +1574,17 @@ boolean mysqlselectdatabaseverb ( hdltreenode hparam1, tyvaluerecord *vreturned,
 	
 	return (setlongvalue ((long) 0, vreturned));
 	
-} /* mysqlselectdatabaseverb */
+	} /* mysqlselectdatabaseverb */
 
 
 boolean mysqlgetsqlstateverb (hdltreenode hparam1, tyvaluerecord *vreturned, bigstring bserror) {
-	MYSQL *dbid;				// the MySQL object handle
-	const char *mysqlStatus;	// pointer to the status message
-	Handle returnH = nil;		// The handle being returned back to Frontier
 
+	//
+	// 2007-07-02 creedon: if dbid is NULL script error
+	//
+	// 2007-05-29 gewirtz: created
+	//
+	
 	/*
 		mysql.getSQLState(dbid)
 
@@ -1294,11 +1600,23 @@ boolean mysqlgetsqlstateverb (hdltreenode hparam1, tyvaluerecord *vreturned, big
 			   so lucky?
 	*/
 
+	MYSQL *dbid;				// the MySQL object handle
+	const char *mysqlStatus;	// pointer to the status message
+	Handle h = nil;		// The handle being returned back to Frontier
+
 	flnextparamislast = true; // makes sure Frontier throws an error if more than one param is passed
 
 	if (!getlongvalue (hparam1, 1, (long *) &dbid)) // Get the long value, which becomes the db pointer
 		return (false);
-
+		
+	if ( dbid == NULL ) {
+	
+		langerrormessage ( "\pInvalid MySQL database connection ID." );
+		
+		return ( false );
+		
+		}
+		
 	// Check that server's still alive
 	if (mysql_ping(dbid) != 0) {
 		langerrormessage ("\x20""Lost connection to MySQL server.");	
@@ -1309,22 +1627,22 @@ boolean mysqlgetsqlstateverb (hdltreenode hparam1, tyvaluerecord *vreturned, big
 	mysqlStatus = mysql_sqlstate(dbid);
 
 	// Exit the verb, converting errMsg back to Frontier handle
-	if(!newfilledhandle ((ptrvoid) mysqlStatus, strlen (mysqlStatus), &returnH))
+	if(!newfilledhandle ((ptrvoid) mysqlStatus, strlen (mysqlStatus), &h))
 		return false; // Allocation failed
 
-	return (setheapvalue (returnH, stringvaluetype, vreturned)); 
+	return (setheapvalue (h, stringvaluetype, vreturned)); 
 
-} /* mysqlgetsqlstateverb */
+	} /* mysqlgetsqlstateverb */
 
 
 boolean mysqlescapestringverb (hdltreenode hparam1, tyvaluerecord *vreturned, bigstring bserror) {
-	MYSQL *dbid;				// the MySQL object handle
-	Handle fromstring;
-	Handle tostring;
-	unsigned long size;
-	unsigned long encodedSize;
-	Handle returnH = nil;		// The handle being returned back to Frontier
 
+	//
+	// 2007-07-02 creedon: if dbid is NULL script error
+	//
+	// 2007-05-29 gewirtz: created
+	//
+	
 	/*
 		mysql.escapeString(dbid, string)
 
@@ -1338,9 +1656,24 @@ boolean mysqlescapestringverb (hdltreenode hparam1, tyvaluerecord *vreturned, bi
 		use by the server
 	*/
 
+	MYSQL *dbid;				// the MySQL object handle
+	Handle fromstring;
+	Handle tostring;
+	unsigned long size;
+	unsigned long encodedSize;
+	Handle h = nil;		// The handle being returned back to Frontier
+
 	if (!getlongvalue (hparam1, 1, (long *) &dbid)) // Get the long value, which becomes the pline pointer
 		return (false);
 
+	if ( dbid == NULL ) {
+	
+		langerrormessage ( "\pInvalid MySQL database connection ID." );
+		
+		return ( false );
+		
+		}
+		
 	flnextparamislast = true;	// makes sure Frontier throws an error
 
 	if (!gettextvalue (hparam1, 2, &fromstring)) // get the from param
@@ -1359,18 +1692,19 @@ boolean mysqlescapestringverb (hdltreenode hparam1, tyvaluerecord *vreturned, bi
 	encodedSize = mysql_real_escape_string(dbid, *tostring, *fromstring, size);
 
 	// Exit the verb, converting the allocated string back to Frontier handle
-	if(!newfilledhandle ((ptrvoid) *tostring, encodedSize, &returnH)) {
+	if(!newfilledhandle ((ptrvoid) *tostring, encodedSize, &h)) {
 		return false; // Allocation failed
 	}
 
 	disposehandle(tostring);
 
-	return (setheapvalue (returnH, stringvaluetype, vreturned)); 
+	return (setheapvalue (h, stringvaluetype, vreturned)); 
 
-} /* mysqlescapestringverb */
+	} /* mysqlescapestringverb */
 
 
 boolean mysqlisthreadsafeverb (hdltreenode hparam1, tyvaluerecord *vreturned, bigstring bserror) {
+
 	unsigned long returnCode;	// The number being returned back to Frontier
 
 	/*
@@ -1396,5 +1730,5 @@ boolean mysqlisthreadsafeverb (hdltreenode hparam1, tyvaluerecord *vreturned, bi
 	else
 		return(setbooleanvalue (false, vreturned));
 
-} /* mysqlisthreadsafeverb */
+	} /* mysqlisthreadsafeverb */
 
