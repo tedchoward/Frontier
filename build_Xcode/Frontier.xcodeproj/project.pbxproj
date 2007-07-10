@@ -70,7 +70,7 @@
 		5D4832630C17729E009E897D /* mysql.h in Headers */ = {isa = PBXBuildFile; fileRef = 5D4832620C17729E009E897D /* mysql.h */; };
 		5D4E1E490AAA17E900DF6890 /* langsqlite.c in Sources */ = {isa = PBXBuildFile; fileRef = 5D4E1E470AAA17E900DF6890 /* langsqlite.c */; };
 		5D4E1E4A0AAA17E900DF6890 /* langsqlite.h in Headers */ = {isa = PBXBuildFile; fileRef = 5D4E1E480AAA17E900DF6890 /* langsqlite.h */; };
-		5D5837F10C0E02FA00DB769C /* langmysql.c in Sources */ = {isa = PBXBuildFile; fileRef = 5D5837F00C0E02FA00DB769C /* langmysql.c */; };
+		5D5837F10C0E02FA00DB769C /* langmysql.c in Sources */ = {isa = PBXBuildFile; fileRef = 5D5837F00C0E02FA00DB769C /* langmysql.c */; settings = {COMPILER_FLAGS = "-fno-short-enums"; }; };
 		5D5837F30C0E035D00DB769C /* langmysql.h in Headers */ = {isa = PBXBuildFile; fileRef = 5D5837F20C0E035D00DB769C /* langmysql.h */; };
 		5D8F017F0C247FE700927B97 /* libmysqlclient.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 5D8F017D0C247FE700927B97 /* libmysqlclient.a */; };
 		5D8F01800C247FE700927B97 /* libz.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 5D8F017E0C247FE700927B97 /* libz.a */; };
@@ -4166,7 +4166,7 @@
 					"OPMLEDITOR=1",
 				);
 				GCC_REUSE_STRINGS = NO;
-				GCC_SHORT_ENUMS = YES;
+				GCC_SHORT_ENUMS = NO;
 				GCC_WARN_ABOUT_MISSING_PROTOTYPES = YES;
 				GCC_WARN_HIDDEN_VIRTUAL_FUNCTIONS = NO;
 				GCC_WARN_UNKNOWN_PRAGMAS = YES;
@@ -4223,7 +4223,7 @@
 				GCC_PREFIX_HEADER = frontier.xcode.h;
 				GCC_PREPROCESSOR_DEFINITIONS = NDEBUG;
 				GCC_REUSE_STRINGS = NO;
-				GCC_SHORT_ENUMS = YES;
+				GCC_SHORT_ENUMS = NO;
 				GCC_WARN_ABOUT_MISSING_PROTOTYPES = YES;
 				GCC_WARN_HIDDEN_VIRTUAL_FUNCTIONS = NO;
 				GCC_WARN_UNKNOWN_PRAGMAS = YES;
@@ -4280,7 +4280,7 @@
 					"OPMLEDITOR=1",
 				);
 				GCC_REUSE_STRINGS = NO;
-				GCC_SHORT_ENUMS = YES;
+				GCC_SHORT_ENUMS = NO;
 				GCC_WARN_ABOUT_MISSING_PROTOTYPES = YES;
 				GCC_WARN_HIDDEN_VIRTUAL_FUNCTIONS = NO;
 				GCC_WARN_UNKNOWN_PRAGMAS = YES;
