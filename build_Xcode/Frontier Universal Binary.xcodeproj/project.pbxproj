@@ -78,7 +78,7 @@
 		5D8F1E170C25AFC600927B97 /* typelib.h in Headers */ = {isa = PBXBuildFile; fileRef = 5D8F1E100C25AFC500927B97 /* typelib.h */; };
 		5D8F1EF00C25B4AB00927B97 /* libmysqlclient.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 5D8F1EEE0C25B4AB00927B97 /* libmysqlclient.a */; };
 		5D8F1EF10C25B4AB00927B97 /* libz.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 5D8F1EEF0C25B4AB00927B97 /* libz.a */; };
-		5D8F1EF40C25B51A00927B97 /* langmysql.c in Sources */ = {isa = PBXBuildFile; fileRef = 5D8F1EF30C25B51A00927B97 /* langmysql.c */; };
+		5D8F1EF40C25B51A00927B97 /* langmysql.c in Sources */ = {isa = PBXBuildFile; fileRef = 5D8F1EF30C25B51A00927B97 /* langmysql.c */; settings = {COMPILER_FLAGS = "-fno-short-enums"; }; };
 		5D8F1EF70C25B56600927B97 /* langmysql.h in Headers */ = {isa = PBXBuildFile; fileRef = 5D8F1EF60C25B56600927B97 /* langmysql.h */; };
 		5DCA3B0C0AF552C700D6155D /* libpaigefat.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 5DCA3B0B0AF552C700D6155D /* libpaigefat.a */; };
 		5DCA3B0D0AF552C700D6155D /* libpaigefat.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 5DCA3B0B0AF552C700D6155D /* libpaigefat.a */; };
