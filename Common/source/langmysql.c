@@ -718,11 +718,11 @@ boolean mysqlgetrowverb (hdltreenode hparam1, tyvaluerecord *vreturned, bigstrin
 								
 							default:
 							
-								type = NULL;
+								type = novaluetype;
 								
 							} // switch
 						
-						if ( type != NULL )
+						if ( type != novaluetype )
 							if ( ! coercevalue ( &val, type ) )
 								goto error;
 								
