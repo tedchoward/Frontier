@@ -351,7 +351,7 @@ boolean mysqlconnectverb ( hdltreenode hparam1, tyvaluerecord *vreturned, bigstr
 	
 	if ( dbid == NULL ) {
 	
-		langerrormessage ( "\pMySQL could not allocate a connection object." );
+		langerrormessage ( "\x2D" "MySQL could not allocate a connection object." );
 		
 		return ( false );
 		
@@ -361,7 +361,7 @@ boolean mysqlconnectverb ( hdltreenode hparam1, tyvaluerecord *vreturned, bigstr
 	
 	if ( dbid == NULL ) {
 	
-		langerrormessage ( "\pCould not connect to MySQL server." );
+		langerrormessage ( "\x22" "Could not connect to MySQL server." );
 		
 		return ( false );
 		
@@ -401,7 +401,7 @@ boolean mysqlcloseverb (hdltreenode hparam1, tyvaluerecord *vreturned, bigstring
 		
 	if ( dbid == NULL ) {
 	
-		langerrormessage ( "\pInvalid MySQL database connection ID." );
+		langerrormessage ( "\x25" "Invalid MySQL database connection ID." );
 		
 		return ( false );
 		
@@ -455,7 +455,7 @@ boolean mysqlcompilequeryverb (hdltreenode hparam1, tyvaluerecord *vreturned, bi
 		
 	if ( dbid == NULL ) {
 	
-		langerrormessage ( "\pInvalid MySQL database connection ID." );
+		langerrormessage ( "\x25" "Invalid MySQL database connection ID." );
 		
 		return ( false );
 		
@@ -485,7 +485,7 @@ boolean mysqlcompilequeryverb (hdltreenode hparam1, tyvaluerecord *vreturned, bi
 
 	queryid = mysql_store_result(dbid);
 	if(mysql_errno(dbid) != 0) {
-		langerrormessage ("\x21""Could initialize MySQL query.");	
+		langerrormessage ("\x21""Could not initialize MySQL query.");	
 		return (false);
 	}
 
@@ -528,6 +528,9 @@ boolean mysqlclearqueryverb (hdltreenode hparam1, tyvaluerecord *vreturned, bigs
 
 boolean mysqlgetrowverb (hdltreenode hparam1, tyvaluerecord *vreturned, bigstring bserror) {
 
+	//
+	// 2007-07-10 creedon: convert some numeric MYSQL_TYPE to numbers, see
+	//				   "Formats supported and returned as number"
 	//
 	// 2007-06-04 gewirtz: fix for returning TEXT type variant of BLOB
 	//
@@ -578,17 +581,20 @@ boolean mysqlgetrowverb (hdltreenode hparam1, tyvaluerecord *vreturned, bigstrin
 		MYSQL_TYPE_DECIMAL
 		MYSQL_TYPE_DOUBLE
 		MYSQL_TYPE_FLOAT
-		MYSQL_TYPE_INT24
-		MYSQL_TYPE_LONG
-		MYSQL_TYPE_LONGLONG
 		MYSQL_TYPE_NEWDECIMAL
-		MYSQL_TYPE_SHORT
 		MYSQL_TYPE_STRING
 		MYSQL_TYPE_TIME
 		MYSQL_TYPE_TIMESTAMP
-		MYSQL_TYPE_TINY
 		MYSQL_TYPE_VAR_STRING
 		MYSQL_TYPE_YEAR
+		
+	Formats supported and returned as number:
+	
+		MYSQL_TYPE_INT24
+		MYSQL_TYPE_LONG
+		MYSQL_TYPE_LONGLONG
+		MYSQL_TYPE_SHORT
+		MYSQL_TYPE_TINY
 		
 	More info: http://dev.mysql.com/doc/refman/5.1/en/c-api-datatypes.html
 	
@@ -684,6 +690,44 @@ boolean mysqlgetrowverb (hdltreenode hparam1, tyvaluerecord *vreturned, bigstrin
 					if ( ! setheapvalue ( h, stringvaluetype, &val ) ) // convert handle to value
 						goto error;
 						
+					bundle { // coerce certain numeric MYSQL_TYPE_ to kernel number types
+					
+						tyvaluetype type;
+						
+						switch ( field -> type ) {
+						
+							case MYSQL_TYPE_LONG:
+							case MYSQL_TYPE_LONGLONG:
+							
+								type = doublevaluetype;
+								
+								break;
+								
+							case MYSQL_TYPE_INT24:
+							case MYSQL_TYPE_SHORT:
+							
+								type = longvaluetype;
+								
+								break;
+								
+							case MYSQL_TYPE_TINY:
+							
+								type = intvaluetype;
+								
+								break;
+								
+							default:
+							
+								type = NULL;
+								
+							} // switch
+						
+						if ( type != NULL )
+							if ( ! coercevalue ( &val, type ) )
+								goto error;
+								
+						} // bundle
+						
 					} // if
 					
 				if (!langpushlistval (hlist, NULL, &val))
@@ -743,7 +787,7 @@ boolean mysqlgeterrornumberverb (hdltreenode hparam1, tyvaluerecord *vreturned, 
 		
 	if ( dbid == NULL ) {
 	
-		langerrormessage ( "\pInvalid MySQL database connection ID." );
+		langerrormessage ( "\x25" "Invalid MySQL database connection ID." );
 		
 		return ( false );
 		
@@ -795,7 +839,7 @@ boolean mysqlgeterrormessageverb ( hdltreenode hparam1, tyvaluerecord *vreturned
 		
 	if ( dbid == NULL ) {
 	
-		langerrormessage ( "\pInvalid MySQL database connection ID." );
+		langerrormessage ( "\x25" "Invalid MySQL database connection ID." );
 		
 		return ( false );
 		
@@ -803,7 +847,7 @@ boolean mysqlgeterrormessageverb ( hdltreenode hparam1, tyvaluerecord *vreturned
 		
 	if ( mysql_ping ( dbid ) != 0 ) { // Check that server's still alive
 	
-		langerrormessage ( "\pLost connection to MySQL server." );
+		langerrormessage ( "\x20" "Lost connection to MySQL server." );
 		
 		return ( false );
 		
@@ -907,7 +951,7 @@ boolean mysqlgethostinfoverb (hdltreenode hparam1, tyvaluerecord *vreturned, big
 		
 	if ( dbid == NULL ) {
 	
-		langerrormessage ( "\pInvalid MySQL database connection ID." );
+		langerrormessage ( "\x25" "Invalid MySQL database connection ID." );
 		
 		return ( false );
 		
@@ -970,7 +1014,7 @@ boolean mysqlgetserverversionverb (hdltreenode hparam1, tyvaluerecord *vreturned
 		
 	if ( dbid == NULL ) {
 	
-		langerrormessage ( "\pInvalid MySQL database connection ID." );
+		langerrormessage ( "\x25" "Invalid MySQL database connection ID." );
 		
 		return ( false );
 		
@@ -1027,7 +1071,7 @@ boolean mysqlgetprotocolinfoverb (hdltreenode hparam1, tyvaluerecord *vreturned,
 
 	if ( dbid == NULL ) {
 	
-		langerrormessage ( "\pInvalid MySQL database connection ID." );
+		langerrormessage ( "\x25" "Invalid MySQL database connection ID." );
 		
 		return ( false );
 		
@@ -1079,7 +1123,7 @@ boolean mysqlgetserverinfoverb (hdltreenode hparam1, tyvaluerecord *vreturned, b
 		
 	if ( dbid == NULL ) {
 	
-		langerrormessage ( "\pInvalid MySQL database connection ID." );
+		langerrormessage ( "\x25" "Invalid MySQL database connection ID." );
 		
 		return ( false );
 		
@@ -1146,7 +1190,7 @@ boolean mysqlgetqueryinfoverb (hdltreenode hparam1, tyvaluerecord *vreturned, bi
 		
 	if ( dbid == NULL ) {
 	
-		langerrormessage ( "\pInvalid MySQL database connection ID." );
+		langerrormessage ( "\x25" "Invalid MySQL database connection ID." );
 		
 		return ( false );
 		
@@ -1210,7 +1254,7 @@ boolean mysqlgetaffectedrowcountverb (hdltreenode hparam1, tyvaluerecord *vretur
 		
 	if ( dbid == NULL ) {
 	
-		langerrormessage ( "\pInvalid MySQL database connection ID." );
+		langerrormessage ( "\x25" "Invalid MySQL database connection ID." );
 		
 		return ( false );
 		
@@ -1286,7 +1330,7 @@ boolean mysqlgetcolumncountverb (hdltreenode hparam1, tyvaluerecord *vreturned, 
 		
 	if ( dbid == NULL ) {
 	
-		langerrormessage ( "\pInvalid MySQL database connection ID." );
+		langerrormessage ( "\x25" "Invalid MySQL database connection ID." );
 		
 		return ( false );
 		
@@ -1340,7 +1384,7 @@ boolean mysqlgetserverstatusverb (hdltreenode hparam1, tyvaluerecord *vreturned,
 		
 	if ( dbid == NULL ) {
 	
-		langerrormessage ( "\pInvalid MySQL database connection ID." );
+		langerrormessage ( "\x25" "Invalid MySQL database connection ID." );
 		
 		return ( false );
 		
@@ -1401,7 +1445,7 @@ boolean mysqlgetquerywarningcountverb (hdltreenode hparam1, tyvaluerecord *vretu
 		
 	if ( dbid == NULL ) {
 	
-		langerrormessage ( "\pInvalid MySQL database connection ID." );
+		langerrormessage ( "\x25" "Invalid MySQL database connection ID." );
 		
 		return ( false );
 		
@@ -1453,7 +1497,7 @@ boolean mysqlpingserververb (hdltreenode hparam1, tyvaluerecord *vreturned, bigs
 		
 	if ( dbid == NULL ) {
 	
-		langerrormessage ( "\pInvalid MySQL database connection ID." );
+		langerrormessage ( "\x25" "Invalid MySQL database connection ID." );
 		
 		return ( false );
 		
@@ -1544,7 +1588,7 @@ boolean mysqlselectdatabaseverb ( hdltreenode hparam1, tyvaluerecord *vreturned,
 		
 	if ( dbid == NULL ) {
 	
-		langerrormessage ( "\pInvalid MySQL database connection ID." );
+		langerrormessage ( "\x25" "Invalid MySQL database connection ID." );
 		
 		return ( false );
 		
@@ -1611,7 +1655,7 @@ boolean mysqlgetsqlstateverb (hdltreenode hparam1, tyvaluerecord *vreturned, big
 		
 	if ( dbid == NULL ) {
 	
-		langerrormessage ( "\pInvalid MySQL database connection ID." );
+		langerrormessage ( "\x25" "Invalid MySQL database connection ID." );
 		
 		return ( false );
 		
@@ -1668,7 +1712,7 @@ boolean mysqlescapestringverb (hdltreenode hparam1, tyvaluerecord *vreturned, bi
 
 	if ( dbid == NULL ) {
 	
-		langerrormessage ( "\pInvalid MySQL database connection ID." );
+		langerrormessage ( "\x25" "Invalid MySQL database connection ID." );
 		
 		return ( false );
 		
