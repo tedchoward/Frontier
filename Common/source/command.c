@@ -43,53 +43,59 @@
 #include "command.h"
 
 
-
 #define cmdtextitem 1
-
 
 
 static hdlprocessrecord quickscriptprocess = nil;
 
 
+static boolean cmdsavestring ( short stringnumber, Handle htext ) {
 
-static boolean cmdsavestring (short stringnumber, Handle htext) {
-#pragma unused(stringnumber)
-
-	/*
-	the cmd dialog only has one string, so we ignore the stringnumber param.
+	#pragma unused(stringnumber)
 	
-	set the script string in the cancoondata record, for saving -- so we have 
-	a permanent copy of the last script he wrote across invocations of the
-	program.
+	//
+	// the cmd dialog only has one string, so we ignore the stringnumber param.
+	//
+	// set the script string in the cancoondata record, for saving -- so we
+	// have a permanent copy of the last script he wrote across invocations of
+	// the program.
+	//
+	// 2004-12-03 creedon, aradke: bug fix for hscriptstring being NULL
+	//
+	// 5.0d14 dmb: hscriptstring is now a text handle, not a hdlstring.
+	//
+	// 1993-01-21 dmb: don't set superglobals manually anymore
+	//
 	
-	1/21/93 dmb: don't set superglobals manually anymore
-	
-	5.0d14 dmb: hscriptstring is now a text handle, not a hdlstring.
-	*/
-	
-	Handle h; /* 2004-12-03 creedon - temporary handle */ 
 	register hdlcancoonrecord hc;
 	
-	assert (cancoonglobals != nil);
+	Handle h;
 	
-	hc = cancoonglobals; /*copy into register*/
+	assert ( cancoonglobals != nil );
 	
-	if (!equalhandles (htext, (**hc).hscriptstring)) {
+	hc = cancoonglobals; // copy into register
 	
-		if ((**hc).hscriptstring == nil) { /* 2004-12-03 creedon, aradke */
-			copyhandle (htext, &h);
-			(**hc).hscriptstring = h;
+	if ( ! equalhandles ( htext, ( **hc ).hscriptstring ) ) {
+	
+		if ( ( **hc ).hscriptstring == NULL ) {
+		
+			copyhandle ( htext, &h );
+			
+			( **hc ).hscriptstring = h;
+			
 			}
 		else
-			copyhandlecontents (htext, (**hc).hscriptstring);
+			copyhandlecontents ( htext, ( **hc ).hscriptstring );
+			
+		( **hc ).fldirty = true;
 		
-		(**hc).fldirty = true;
 		}
 	
-	return (true);
-	} /*cmdsavestring*/
+	return ( true );
 	
-	
+	} // cmdsavestring
+
+
 static boolean cmdloadstring (short stringnumber, Handle *h) {
 #pragma unused(stringnumber)
 
@@ -424,5 +430,18 @@ boolean cmdstart (void) {
 	} /*cmdstart*/
 
 
+boolean cmdsetstring ( Handle h ) {
 
+	//
+	// 2007-07-25 creedon: created
+	//
+	
+	if ( ! cmdsavestring ( NULL, h ) )
+		return ( false );
+		
+	minireloadstrings ( idcommandconfig );
+	
+	return ( true );
+	
+	}
 

@@ -129,7 +129,7 @@ typedef struct tyminirecord {
 	} tyminirecord, *ptrminirecord, **hdlminirecord;
 
 
-/*globals*/
+// globals
 
 extern WindowPtr miniwindow;
 
@@ -138,7 +138,7 @@ extern hdlwindowinfo miniwindowinfo;
 extern hdlminirecord minidata;
 
 
-/*prototypes*/
+// prototypes
 
 extern boolean minisetstring (short, Handle);
 
@@ -158,6 +158,5 @@ extern boolean startminidialog (short, callback);
 
 extern boolean ministart (short);
 
-
-
+extern boolean minireloadstrings ( short ); // 2007-07-27 creedon
 

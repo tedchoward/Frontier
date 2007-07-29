@@ -51,7 +51,6 @@
 #include "wpengine.h"
 
 
-
 #define flmsgactive flmassiveupdate
 
 WindowPtr miniwindow = nil;
@@ -59,7 +58,6 @@ WindowPtr miniwindow = nil;
 hdlwindowinfo miniwindowinfo = nil;
 
 hdlminirecord minidata = nil;
-
 
 
 /*
@@ -1111,11 +1109,9 @@ boolean startminidialog (short idconfig, callback setuproutine) {
 		
 		shellbringtofront (hinfo);
 		
-		/*
-		minisetvalue ();
+		// minisetvalue ();
 		
-		miniloadstrings ();
-		*/
+		// miniloadstrings ();
 		
 		shellpushwindowglobals (hinfo);
 
@@ -1367,4 +1363,31 @@ boolean ministart (short idconfig) {
 	} /*ministart*/
 
 
+boolean minireloadstrings ( short idconfig ) {
+
+	//
+	// reload the strings if the window is around
+	//
+	// 2007-07-27 creedon: created
+	//
+	
+	hdlwindowinfo hinfo;
+	
+	if ( minifindwindow ( idconfig, &hinfo ) ) {
+	
+		shellpushwindowglobals ( hinfo );
+		
+		miniloadstrings ( );
+		
+		( **minidata ).flselectallpending = true; // select all on idle
+		
+		shellpopglobals ( );
+		
+		return ( true );
+		
+		}
+	
+	return ( false );
+	
+	} // minireloadstrings
 

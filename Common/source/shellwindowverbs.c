@@ -59,7 +59,7 @@
 
 
 typedef enum tywindowtoken { 
-	
+
 	isopenfunc,
 	
 	openfunc,
@@ -118,18 +118,19 @@ typedef enum tywindowtoken {
 	
 	#ifdef MACVERSION
 	
-		playerfunc, /*7.0b4 PBS: QuickTime Player window*/
-	
+		playerfunc, // 7.0b4 PBS: QuickTime Player window
+		
 	#endif
 	
 	getfilefunc,
 	
-	isreadonlyfunc, /*7.0b6 PBS: return true if window is read-only*/
+	isreadonlyfunc, // 7.0b6 PBS: return true if window is read-only
+	
+	setquickscriptfunc, // 2007-07-25 creedon: window.setQuickScript
 	
 	ctwindowverbs
+	
 	} tywindowtoken;
-
-
 
 
 static boolean getwinaddressparam (hdltreenode hfirst, short pnum, hdlwindowinfo *hinfo) {
@@ -1078,18 +1079,21 @@ static boolean getfileverb ( hdltreenode hparam1, tyvaluerecord *vreturned ) {
 
 
 static boolean windowfunctionvalue (short token, hdltreenode hparam1, tyvaluerecord *vreturned, bigstring bserror) {
-	
-	/*
-	10/3/91 dmb: moved a couple of verbs in from shellverbs.c -- they're the 
-	odd ones out following zoomfunc.
-	
-	6/24/92 dmb: added gettitle, settitle verbs
-	
-	6/1/93 dmb: when vreturned is nil, return whether or not verb token must 
-	be run in the Frontier process
 
-	6.2a8 AR: systemstatsfunc now works for GDBs (at least partly)
-	*/
+	//
+	// 2007-07-28 creedon: added setquickscriptfunc case, set the Quick Script
+	//				   window script
+	//
+	// 6.2a8 AR: systemstatsfunc now works for GDBs (at least partly)
+	//
+	// 1993-06-01 dmb: when vreturned is nil, return whether or not verb token
+	//			    must be run in the Frontier process
+	//
+	// 1992-06-24 dmb: added gettitle, settitle verbs
+	//
+	// 1991-10-03 dmb: moved a couple of verbs in from shellverbs.c -- they're
+	//			    the odd ones out following zoomfunc.
+	//
 	
 	register hdltreenode hp = hparam1;
 	register tyvaluerecord *v = vreturned;
@@ -1275,12 +1279,29 @@ static boolean windowfunctionvalue (short token, hdltreenode hparam1, tyvaluerec
 		
 		case isreadonlyfunc: /*7.0b6 PBS: return true if a window is read-only*/
 			return (isreadonlyverb (hparam1, v));
+			
+		case setquickscriptfunc: {
+		
+			Handle h;
+			
+			flnextparamislast = true;
+				
+			if ( ! getreadonlytextvalue ( hparam1, 1, &h ) )
+				return (false);
+
+			( *v ).data.flvalue = cmdsetstring ( h );
+			
+			return ( true );
+			
+			}
 		
 		default:
+		
 			errornum = notimplementederror;
 			
 			goto error;
-		} /*switch*/
+			
+		} // switch
 	
 	error:
 	

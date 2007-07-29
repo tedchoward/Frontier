@@ -764,9 +764,11 @@ resource 'EFP#' (idwindowverbs, "window") {
 		"gettitle",
 		"settitle",
 		"about",
-		"quicktime", /*7.0b4 PBS: QuickTime Player window*/
+		"quicktime", // 7.0b4 PBS: QuickTime Player window
 		"getfile",
-		"isreadonly", /*7.0b6 PBS: is a window read-only*/
+		"isreadonly", // 7.0b6 PBS: is a window read-only
+		"setquickscript" // 2007-07-25 creedon
+		
 		}
 	}
 };

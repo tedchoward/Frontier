@@ -25,15 +25,19 @@
 
 ******************************************************************************/
 
+
 #define commandinclude
 
 
-/*prototypes*/
+// prototypes
 
-//extern cmdprocessstarted (void) ;
+// extern cmdprocessstarted (void) ;
 
-//extern cmdprocesskilled (void);
+// extern cmdprocesskilled (void);
 
 extern boolean startcmddialog (void);
 
 extern boolean cmdstart (void);
+
+extern boolean cmdsetstring ( Handle ); // 2007-07-25 creedon
+

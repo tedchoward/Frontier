@@ -701,7 +701,7 @@
 	1,					// Number of "blocks" in this resource
 		"window\0",		// Function Processor Name
 		true,				// Window required
-			30,			// Count of verbs
+			31,			// Count of verbs
 			"isopen\0", 
 			"open\0",
 			"isfront\0",
@@ -732,6 +732,7 @@
 			"about\0",
 			"getfile\0",
 			"isreadonly\0",
+			"setquickscript\0" // 2007-07-27 creedon
 	END
 
 
@@ -1075,7 +1076,7 @@
 			"hmacMD5\0",
 			"MD5\0",
 			"SHA1\0",
-			"hmacSHA1\0",
+			"hmacSHA1\0"
 	END
 
 1026 /* sqliteverbs */ EFP DISCARDABLE
