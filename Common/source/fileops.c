@@ -148,7 +148,7 @@ void setfserrorparam ( const ptrfilespec fs ) {
 		
 		setoserrorparam ( bs );
 		
-	#endif
+	#endif // MACVERSION
 
 	#ifdef WIN95VERSION
 	
@@ -3458,44 +3458,54 @@ boolean newfolder ( const ptrfilespec fs ) {
 boolean newfile ( const ptrfilespec fs, OSType creator, OSType filetype ) {
 
 	//
+	// 2007-08-01 creedon: if path is NULL oserror
+	//
+	//				   set err to bdNamErr by default
+	//
 	// 2006-06-18 creedon: for Mac, FSRef-ized
 	//
-
+	
 	#ifdef MACVERSION
 	
 		HFSUniStr255 name;
-		OSErr err;
+		OSErr err = bdNamErr;
 		
 		setfserrorparam ( fs );
 		
-		CFStringRefToHFSUniStr255 ( ( *fs ).path, &name );
+		if ( ( *fs ).path != NULL ) {
 		
-		err = FSCreateFileUnicode ( &( *fs ).fsref, name.length, name.unicode, kFSCatInfoNone, NULL, &( *fs ).fsref, NULL );
-		
+			CFStringRefToHFSUniStr255 ( ( *fs ).path, &name );
+			
+			err = FSCreateFileUnicode ( &( *fs ).fsref, name.length,
+				name.unicode, kFSCatInfoNone, NULL, &( *fs ).fsref, NULL );
+			}
+			
 		return ( ! oserror ( err ) );
 		
 	#endif
-
+	
 	#ifdef WIN95VERSION
 	
 		HANDLE f;
 		char fn[300];
-
+		
 		copystring (fsname (fs), fn);
 		
 		nullterminate (fn);
 		
-		f = CreateFile (stringbaseaddress(fn), GENERIC_READ | GENERIC_WRITE, FILE_SHARE_READ, NULL, CREATE_NEW,
-			FILE_ATTRIBUTE_NORMAL, NULL);
-
+		f = CreateFile (stringbaseaddress(fn), GENERIC_READ | GENERIC_WRITE,
+			FILE_SHARE_READ, NULL, CREATE_NEW, FILE_ATTRIBUTE_NORMAL, NULL);
+		
 		if (f == INVALID_HANDLE_VALUE) {
-			
+		
 			winfileerror (fs);
-
+			
 			return (false);
+			
 			}
-
+			
 		verify (CloseHandle (f));
+		
 		return (true);
 		
 	#endif

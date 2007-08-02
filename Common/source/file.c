@@ -904,24 +904,30 @@ boolean fileexists ( const ptrfilespec fs, boolean *flfolder ) {
 
 #ifdef MACVERSION
 
-	static OSErr FSRefGetName ( const FSRef *fsRef, CFStringRef *name ) {
+	static OSErr FSRefGetName ( const FSRef *fsr, CFStringRef *name ) {
 	
 		//
 		// the caller must dispose of the CFString
 		//
+		// 2007-08-01 creedon: changed variable fsRef to fsr to reduce
+		//				   confusion with FSRef definition
+		//
 		// 2006-07-06 creedon: created
 		//
-	
+		
 		HFSUniStr255 hname;
-		OSErr err = FSGetCatalogInfo ( fsRef, kFSCatInfoNone, NULL, &hname, NULL, NULL );
-
-		*name = CFStringCreateWithCharacters ( kCFAllocatorDefault, hname.unicode, hname.length );
-
+		OSErr err = FSGetCatalogInfo ( fsr, kFSCatInfoNone, NULL, &hname,
+			NULL, NULL );
+		
+		if ( err == noErr )
+			*name = CFStringCreateWithCharacters ( kCFAllocatorDefault,
+				hname.unicode, hname.length );
+		
 		return ( err );
 		
 		} // FSRefGetName
-
-
+	
+	
 	boolean CFStringRefToStr255 ( CFStringRef input, StringPtr output ) {
 	
 		//
@@ -960,14 +966,14 @@ boolean fileexists ( const ptrfilespec fs, boolean *flfolder ) {
 		return ( true );
 
 		} // HFSUniStr255ToStr255
-
-
+	
+	
 	boolean FSRefGetNameStr255 ( const FSRef *fsRef, Str255 bsname ) {
-
+	
 		//
 		// 2006-07-06 creedon; created
 		//
-
+		
 		CFStringRef csr;
 		OSErr err = FSRefGetName ( fsRef, &csr );
 		
@@ -976,12 +982,12 @@ boolean fileexists ( const ptrfilespec fs, boolean *flfolder ) {
 			
 		if ( csr == NULL )
 			return ( false );
-
+			
 		if ( ! CFStringGetPascalString ( csr, bsname, 256, kCFStringEncodingMacRoman ) )
 			return ( false );
-
+			
 		CFRelease ( csr );
-
+		
 		return ( true );
 		
 		} // FSRefGetNameStr255

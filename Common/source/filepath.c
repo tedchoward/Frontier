@@ -590,34 +590,38 @@ boolean setfsfile ( ptrfilespec fs, bigstring bsfile ) {
 	} // setfsfile
 
 
-boolean getfsfile (const ptrfilespec fs, bigstring bsfile) {
+boolean getfsfile ( const ptrfilespec fs, bigstring bsfile ) {
 
+	//
+	// 2007-08-01 creedon: check FSRefGetNameStr255 return false if not true
 	//
 	// 2006-06-18 creedon: for Mac, FSRef-ized
 	//
-
+	
 	#ifdef MACVERSION
 	
 		if ( ( *fs ).path != NULL ) {
-		
+
 			if ( CFStringRefToStr255 ( ( *fs ).path, bsfile ) )
 				return ( true );
 			}
 		else {
-			FSRefGetNameStr255 ( &( *fs ).fsref, bsfile );
+		
+			if ( ! FSRefGetNameStr255 ( &( *fs ).fsref, bsfile ) )
+				return ( false );
 			}
-	
-		if (stringlength ( bsfile ) > 0)
-			return (true);
+				
+		if ( stringlength ( bsfile ) > 0 )
+			return ( true );
 			
 		long vnum;
 		
 		getfsvolume ( fs, &vnum );
-			
+		
 		return ( filegetvolumename ( vnum, bsfile ) );
 		
 	#endif
-
+	
 	#ifdef WIN95VERSION
 	
 		lastword ((ptrstring) fs -> fullSpecifier, '\\', bsfile);
