@@ -101,15 +101,23 @@ typedef enum tysqliteverbtoken { /* verbs that are processed by langsqlite.c */
 	getrowfunc,
 	geterrormessagefunc,
 	closefunc,
+	setcolumnblobfunc,
+	getlastinsertrowidfunc,
 	ctsqliteverbs
 	} tysqliteverbtoken;
 
 
-static boolean sqlitefunctionvalue (short token, hdltreenode hparam1, tyvaluerecord *vreturned, bigstring bserror) {
-	
-	/*
-	2006-03-15 gewirtz: created, cribbed from langcrypt, itself cribbed from htmlfunctionvalue
-	*/
+static boolean sqlitefunctionvalue ( short token, hdltreenode hparam1,
+	tyvaluerecord *vreturned, bigstring bserror ) {
+
+	//
+	// 2007-08-28 creedon: added setcolumnblobfunc case
+	//
+	//				   added getlastinsertrowidfunc case
+	//
+	// 2006-03-15 gewirtz: created, cribbed from langcrypt, itself cribbed from
+	//				   htmlfunctionvalue
+	//
 	
 	hdltreenode hp1 = hparam1;
 	tyvaluerecord *v = vreturned;
@@ -192,13 +200,24 @@ static boolean sqlitefunctionvalue (short token, hdltreenode hparam1, tyvaluerec
 			
 			return (sqlitecloseverb (hp1, v, bserror));
 			} /* closefunc */
-
+			
+		case setcolumnblobfunc:
+		
+			return ( sqlitesetcolumnblobverb ( hp1, v, bserror ) );		
+			
+		case getlastinsertrowidfunc:
+		
+			return ( getlastinsertrowidverb ( hp1, v, bserror ) );		
+			
 		default:
+		
 			getstringlist (langerrorlist, unimplementedverberror, bserror);
 			
 			return (false);
-		} /* switch */
-	} /* sqlitefunctionvalue */
+			
+		} // switch
+		
+	} // sqlitefunctionvalue
 
 
 boolean sqliteinitverbs (void) {
@@ -642,6 +661,7 @@ boolean sqlitegetcolumncountverb (hdltreenode hparam1, tyvaluerecord *vreturned,
 
 	return setlongvalue (returnCode, vreturned);
 
+
 } /* sqlitegetcolumncountverb */
 
 
@@ -738,54 +758,68 @@ boolean sqlitegetcolumndoubleverb (hdltreenode hparam1, tyvaluerecord *vreturned
 
 
 boolean sqlitegetcolumntextverb (hdltreenode hparam1, tyvaluerecord *vreturned, bigstring bserror) {
+
+	//
+	// 2007-09-07 creedon: added column_text NULL check
+	//
+	
+	//
+	// sqlite.getColumnText(queryid, columnNumber)
+	//
+	// Action:  Retrieve the value of the specified text-type column
+	// Params:  a query id and the number of the column (1 base)
+	// Returns: an SQLite result code
+	// Notes:   do not pass the opened database ID across threads.
+	//
+	// SQLite docs: http://www.sqlite.org/capi3ref.html#sqlite3_column_text.
+	//
+	
 	long columnNumber;
 	sqlite3_stmt *queryid;
 	Handle returnH;
 	const unsigned char *column_text;
 	int columnCount;
-
-	/*	
-		sqlite.getColumnText(queryid, columnNumber)
-
-		Action:  Retrieve the value of the specified text-type column
-		Params:  a query id and the number of the column (1 base)
-		Returns: an SQLite result code
-		Notes:   do not pass the opened database ID across threads.
-
-		SQLite docs: http://www.sqlite.org/capi3ref.html#sqlite3_column_text.
-	*/
-
+	
 	if (!getlongvalue (hparam1, 1, (long *) &queryid)) /* Get the long value, which becomes the pline pointer */
 		return (false);
-
+		
 	flnextparamislast = true;	/* makes sure Frontier throws an error if more than one param is passed */
-
+	
 	/* Enter the verb, convert the param to null-terminated string */
 	if (!getlongvalue (hparam1, 2, &columnNumber))
 		return (false);
-
+		
 	/* Validate the column number */
 	if (columnNumber < 1) {
 		langerrormessage (SQLITE_COLUMN_ERROR_0);		
 		return (false);
-	}
+		}
+		
 	columnCount = sqlite3_column_count(queryid);
 	if (columnNumber > columnCount) {
 		langerrormessage (SQLITE_COLUMN_ERROR_MAX);		
 		return (false);
-	}
-
+		}
+		
 	/* Process the SQLite sequence */
 	--columnNumber; /* Frontier uses base 1, but SQLite uses a base of 0 for its column numbering */
 	column_text = sqlite3_column_text(queryid, (int) columnNumber);
-
+	
+	if ( column_text == NULL ) {
+	
+		langerrormessage ( SQLITE_COLUMN_ERROR_ROW_OR_COLUMN );		
+	
+		return ( false );
+		
+		}
+		
 	/* Exit the verb, converting column_name back to Frontier handle */
 	if (!newfilledhandle ((ptrvoid) column_text, strlen (column_text), &returnH))
 		return false; /* Allocation failed */
-
+		
 	return (setheapvalue (returnH, stringvaluetype, vreturned)); 
-
-} /* sqlitegetcolumntextverb */
+	
+	} // sqlitegetcolumntextverb
 
 
 boolean sqlitegetcolumnverb (hdltreenode hparam1, tyvaluerecord *vreturned, bigstring bserror) {
@@ -881,6 +915,22 @@ boolean sqlitegetcolumnverb (hdltreenode hparam1, tyvaluerecord *vreturned, bigs
 
 
 boolean sqlitegetrowverb (hdltreenode hparam1, tyvaluerecord *vreturned, bigstring bserror) {
+
+	//
+	// 2007-09-07 creedon: SQLITE_BLOB case now returns a binary value
+	//
+	//				   SQLITE_NULL case now returns nil value instead of 0
+	//
+	
+	//
+	// sqlite.getRow(queryid)
+	//
+	// Action:  Retrieve a row as a list
+	// Params:  a query id
+	// Returns: an SQLite result code
+	// Notes:   do not pass the opened database ID across threads.
+	//
+	
 	long columnNumber;			/* column number */
 	int columnCount;			/* number of columns */
 	sqlite3_stmt *queryid;		/* query id */
@@ -890,93 +940,132 @@ boolean sqlitegetrowverb (hdltreenode hparam1, tyvaluerecord *vreturned, bigstri
 	const unsigned char *column_text;
 	hdllistrecord hlist;
 	tyvaluerecord val;
-
-	/*	
-		sqlite.getRow(queryid)
-
-		Action:  Retrieve a row as a list
-		Params:  a query id
-		Returns: an SQLite result code
-		Notes:   do not pass the opened database ID across threads.
-		         this implementation does not support blobs. If a blob column is requested, 0 is returned.
-	*/
-
+	
 	flnextparamislast = true;	/* makes sure Frontier throws an error if more than one param is passed */
-
+	
 	if (!getlongvalue (hparam1, 1, (long *) &queryid)) /* Get the long value, which becomes the queryid pointer */
 		return (false);
-
+		
 	/* Process the SQLite sequence */
 	columnCount = sqlite3_column_count(queryid); /* first, figure out how many columns we've got */
-
+	
 	if (columnCount == 0) {
-			langerrormessage ("\x2F""SQLite.getRow requires a minimum of one column.");		
+	
+			langerrormessage ("\x2F""SQLite.getRow requires a minimum of one column.");
+					
 			return (false);
-	}
+		}
 
 	if (!opnewlist (&hlist, false)) /* fail out if we can't create the list */
 		return (false);
-
+		
 	for (columnNumber = 0 ; columnNumber < columnCount ; ++columnNumber) {
-
+	
 		returnCode = sqlite3_column_type(queryid, (int) columnNumber);
-
+		
 		switch(returnCode) {
-
+		
 			case SQLITE_INTEGER: {
+			
 				returnCode = sqlite3_column_int(queryid, (int) columnNumber);
+				
 				if (!langpushlistlong (hlist, (long) returnCode))
 					goto error;
+					
 				break;
-			}
+				
+				}
+				
 			case SQLITE_FLOAT: {
+			
 				returnDouble = sqlite3_column_double(queryid, (int) columnNumber);
+				
 				if (!setdoublevalue (returnDouble, &val))
 					goto error;
+					
 				if (!langpushlistval (hlist, nil, &val))
 					goto error;
+					
 				break;
-			} 
+				
+				}
+				
 			case SQLITE_TEXT: {
+			
 				column_text = sqlite3_column_text(queryid, (int) columnNumber);
 
 				/* Exit the verb, converting column_name back to Frontier handle */
 				if (!newfilledhandle ((ptrvoid) column_text, strlen (column_text), &returnH))
 					return false; /* Allocation failed */
+					
 				if (!setheapvalue (returnH, stringvaluetype, &val)) /* convert handle to value */
 					goto error;
+					
 				if (!langpushlistval (hlist, nil, &val))
 					goto error;
+					
 				break;
-			} 
+				
+				}
+				
 			case SQLITE_BLOB: {
-				if (!langpushlistlong (hlist, (long) 0))
+			
+				Handle h;
+				OSType type;
+				
+				if ( ! newfilledhandle ( ( ptrvoid ) sqlite3_column_blob (
+					queryid, columnNumber ), sqlite3_column_bytes (
+					queryid, columnNumber ), &h ) )
+					return ( false );
+				
+				pullfromhandle ( h, 0L, sizeof ( type ), &type );
+	
+				setbinaryvalue ( h, type, &val );
+				
+				if ( ! langpushlistval ( hlist, NULL, &val ) )
 					goto error;
+					
 				break;
-			} 
+				
+				}
+				
 			case SQLITE_NULL: {
-				if (!langpushlistlong (hlist, (long) 0))
+			
+				initvalue ( &val, novaluetype );
+				
+				if ( ! langpushlistval ( hlist, NULL, &val ) )
 					goto error;
+					
 				break;
-			} 
+				
+				}
+				
 			default: {
+			
 				/* SQLite spec says sqlite3_column_type only returns the above 5 types. But,
 				   just in case it lied, this time we return a 0, so the rest of the fields
 				   can be read properly. */
+				   
 				if (!langpushlistlong (hlist, (long) 0))
 					goto error;
-			}
-		} /* switch */
-	} /* for */
-
+					
+				}
+				
+			} // switch
+			
+		} // for
+		
 	return (setheapvalue ((Handle) hlist, listvaluetype, vreturned));
-
+	
 	error: {
+	
 		opdisposelist (hlist);
+		
 		return (false);
-	}
+		
+		}
 
-} /* sqlitegetrow */
+	} // sqlitegetrow
 
 
 boolean sqlitegeterrormessageverb (hdltreenode hparam1, tyvaluerecord *vreturned, bigstring bserror) {
@@ -1010,4 +1099,95 @@ boolean sqlitegeterrormessageverb (hdltreenode hparam1, tyvaluerecord *vreturned
 	return (setheapvalue (returnH, stringvaluetype, vreturned)); 
 
 } /* sqlitegeterrormessageverb */
+
+
+boolean sqlitesetcolumnblobverb ( hdltreenode hparam1, tyvaluerecord *vreturned, bigstring bserror ) {
+
+	//
+	// 2007-08-25 creedon: created, cribbed from sqlitegetcolumntextverb
+	//
+	
+	//
+	// sqlite.setColumnBlob ( queryId, parameterIndex, binaryAddress )
+	//
+	// Action:	Set the value of the specified blob-type column
+	// Params:	a query id and the number of the column (1 base)
+	// Returns:	an SQLite result code
+	// Notes:		do not pass the opened database ID across threads.
+	//
+	// SQLite docs: < http://www.sqlite.org/capi3ref.html#sqlite3_bind_blob >
+	//
+	
+	Handle h;
+	int parameterCount, returnCode;
+	long parameterIndex;
+	sqlite3_stmt *queryid;
+	
+	if ( ! getlongvalue ( hparam1, 1, ( long * ) &queryid ) ) // Get the long value, which becomes the pline pointer
+		return ( false );
+		
+	if ( ! getlongvalue ( hparam1, 2, &parameterIndex ) )
+		return ( false );
+		
+	if ( parameterIndex < 1 ) { // validate the parameter index
+	
+		langerrormessage ( SQLITE_PARAMETER_ERROR_COUNT );
+		
+		return ( false );
+		
+		}
+		
+	parameterCount = sqlite3_bind_parameter_count ( queryid );
+	
+	if ( parameterCount > parameterIndex ) {
+	
+		langerrormessage ( SQLITE_PARAMETER_ERROR_COUNT );
+		
+		return ( false );
+		
+		}
+		
+	flnextparamislast = true;
+	
+	if ( ! getbinaryvalue ( hparam1, 3, true, &h ) )
+		return ( false );
+		
+	returnCode = sqlite3_bind_blob ( queryid, parameterIndex, *h,
+		gethandlesize ( h ), SQLITE_STATIC );
+	
+	return ( setlongvalue ( returnCode, vreturned ) );
+	
+	} // sqlitegetcolumntextverb
+
+
+boolean getlastinsertrowidverb ( hdltreenode hparam1, tyvaluerecord *vreturned, bigstring bserror ) {
+
+	//
+	// 2007-08-28 creedon: created, cribbed from sqlitegetcolumntextverb
+	//
+	
+	//
+	// sqlite.getLastInsertRowId ( queryId )
+	//
+	// Action:	Get row id for the most recent insert operation
+	// Params:	a query id
+	// Returns:	a row id number
+	// Notes:		do not pass the opened database ID across threads.
+	//
+	// SQLite docs: < http://www.sqlite.org/capi3ref.html#sqlite3_last_insert_rowid >
+	//
+	
+	sqlite3 *db; // the SQLite database handle
+	sqlite_int64 rowid;
+	
+	flnextparamislast = true;
+	
+	if ( ! getlongvalue ( hparam1, 1, ( long * ) &db ) ) // Get the long value, which becomes the db pointer
+		return ( false );
+		
+	rowid = sqlite3_last_insert_rowid ( db );
+	
+	return ( setlongvalue ( rowid, vreturned ) );
+	
+	} // getlastinsertrowidverb
 

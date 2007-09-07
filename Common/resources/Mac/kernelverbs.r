@@ -1132,41 +1132,45 @@ resource 'EFP#' (idmathverbs, "math") { /*2004-12-29 SMD: math verbs*/
 	}
 };
 
-resource 'EFP#' (idcryptverbs, "crypt") { /* 2006-03-07 creedon: crypt verbs */
+resource 'EFP#' (idcryptverbs, "crypt") { // 2006-03-07 creedon: crypt verbs
 	{
-	"crypt", false, {
-	
-		"whirlpool",
-		"hmacMD5",
-		"MD5",
-		"SHA1",
-		"hmacSHA1",
+		"crypt", false, {
+		
+			"whirlpool",
+			"hmacMD5",
+			"MD5",
+			"SHA1",
+			"hmacSHA1"
+			
+			}
 		}
-	}
-};
+	};
 
-resource 'EFP#' (idsqliteverbs, "sqlite") { /* 2006-08-31 gewirtz sqlite verbs */
- {
- "sqlite", false, {
- 
-  "open",
-  "compileQuery",
-  "clearQuery",
-  "resetQuery",
-  "stepQuery",
-  "getColumnCount",
-  "getColumnType",
-  "getColumnInt",
-  "getColumnDouble",
-  "getColumnText",
-  "getColumnName",
-  "getColumn",
-  "getRow",
-  "getErrorMessage",
-  "close"	// 2006-09-07 - kw - renamed from getClose
-  }
- }
-};
+resource 'EFP#' (idsqliteverbs, "sqlite") { // 2006-08-31 gewirtz sqlite verbs
+	 {
+		 "sqlite", false, {
+		 
+			"open",
+			"compileQuery",
+			"clearQuery",
+			"resetQuery",
+			"stepQuery",
+			"getColumnCount",
+			"getColumnType",
+			"getColumnInt",
+			"getColumnDouble",
+			"getColumnText",
+			"getColumnName",
+			"getColumn",
+			"getRow",
+			"getErrorMessage",
+			"close", // 2006-09-07 - kw - renamed from getClose
+			"setColumnBlob", // 2007-08-25 creedon
+			"getLastInsertRowId" // 2007-08-28 creedon
+			
+			}
+		 }
+	};
 
 resource 'EFP#' (idmysqlverbs, "mysql") { /* 2007-04-09 gewirtz mysql verbs */
  {

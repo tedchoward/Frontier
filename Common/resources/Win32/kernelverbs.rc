@@ -1066,11 +1066,11 @@
 			"sqrt\0"
 	END
 
-1025 /* cryptverbs */ EFP DISCARDABLE
+1025 /* cryptverbs */ EFP DISCARDABLE // 2006-03-07 creedon: crypt verbs
 	BEGIN
 	1,						// Number of "blocks" in this resource
-		"crypt\0",				// Function Processor name
-		false,					// Window required
+		"crypt\0",			// Function Processor name
+		false,				// Window required
 			5,				// Count of verbs
 			"whirlpool\0",
 			"hmacMD5\0",
@@ -1084,22 +1084,24 @@
  1,      // Number of "blocks" in this resource
   "sqlite\0",    // Function Processor name
   false,     // Window required
-   15,   // Count of verbs
-   "open\0",
-   "compileQuery\0",
-   "clearQuery\0",
-   "resetQuery\0",
-   "stepQuery\0",
-   "getColumnCount\0",
-   "getColumnType\0",
-   "getColumnInt\0",
-   "getColumnDouble\0",
-   "getColumnText\0",
-   "getColumnName\0",
-   "getColumn\0",
-   "getRow\0",
-   "getErrorMessage\0",
-   "close\0"
+   17,   // Count of verbs
+	"open\0",
+	"compileQuery\0",
+	"clearQuery\0",
+	"resetQuery\0",
+	"stepQuery\0",
+	"getColumnCount\0",
+	"getColumnType\0",
+	"getColumnInt\0",
+	"getColumnDouble\0",
+	"getColumnText\0",
+	"getColumnName\0",
+	"getColumn\0",
+	"getRow\0",
+	"getErrorMessage\0",
+	"close\0",
+	"setColumnBlob\0", // 2007-08-25 creedon
+	"getLastInsertRowId\0" // 2007-08-28 creedon
  END
 
 1027 /* mysqlverbs */ EFP DISCARDABLE
