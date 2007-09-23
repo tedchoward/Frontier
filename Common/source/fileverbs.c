@@ -1466,573 +1466,598 @@ static boolean seticonposverb (hdltreenode hparam1, tyvaluerecord *v) {
 	} /*seticonposverb*/
 
 #ifdef MACVERSION
-/*
-11/17/92 dmb: this definition of the version resourcemakes it easier to 
-pick apart the BCD
-*/
 
-typedef struct lNumVersion {
-#ifdef SWAP_REZ_BYTE_ORDER
-	unsigned short nonRelRev2: 4;		/*  2nd nibble of revision level*/
-	unsigned short nonRelRev1 : 4;		/*revision level of non-released version*/
-	unsigned short stage : 8;			/*stage code: dev, alpha, beta, final*/
-	unsigned short bugFixRev : 4; 		/*3rd part is 1 nibble in BCD*/
-	unsigned short minorRev : 4;		/*2nd part is 1 nibble in BCD*/
-	unsigned short majorRev2: 4; 		/*  2nd nibble of 1st part*/
-	unsigned short majorRev1: 4; 		/*1st part of version number in BCD*/
-#else
-	unsigned short majorRev1: 4; 		/*1st part of version number in BCD*/
-	unsigned short majorRev2: 4; 		/*  2nd nibble of 1st part*/
-	unsigned short minorRev : 4;		/*2nd part is 1 nibble in BCD*/
-	unsigned short bugFixRev : 4; 		/*3rd part is 1 nibble in BCD*/
-	unsigned short stage : 8;			/*stage code: dev, alpha, beta, final*/
-	unsigned short nonRelRev1 : 4;		/*revision level of non-released version*/
-	unsigned short nonRelRev2: 4;		/*  2nd nibble of revision level*/
-#endif
-	} lNumVersion;
-
-typedef struct lVersRec {
-	lNumVersion numericVersion;		/*encoded version number*/
-	short countryCode;				/*country code from intl utilities*/
-	Str255 shortVersion;			/*version number string - worst case*/
-	Str255 reserved;				/*longMessage string packed after shortVersion*/
-	} lVersRec, *lVersRecPtr, **lVersRecHndl;
-
-
-static byte bsstages [] = "\pdab";	/*dev, alpha, beta*/
-
-
-#define emptyversionsize ((long) sizeof (lNumVersion) + sizeof (short) + 2)
-
-
-static boolean versionnumtostring (lNumVersion numvers, bigstring bs) {
+	typedef struct lNumVersion {
 	
-	/*
-	return the packed version number as a string, e.g. "1.0b2".  need 
-	definitions above, which is mis-defined in the Think C headers
-	*/
+		//
+		// 2007-09-22 creedon: the nonRelRev is not a BCD number, see < http://developer.apple.com/technotes/tn/tn1132.html >
+		//
+		// 1992-11-17 dmb: this definition of the version resource makes it easier
+		//			    to pick apart
+		
+		#ifdef SWAP_REZ_BYTE_ORDER
+		
+			/* unsigned short nonRelRev2: 4; // 2nd nibble of revision level
+			unsigned short nonRelRev1: 4; // revision level of non-released version */
+			
+			unsigned short nonRelRev:  8; // revision level of non-released version
+			unsigned short stage:	  8; // stage code: dev, alpha, beta, final
+			unsigned short bugFixRev:  4; // 3rd part is 1 nibble in BCD
+			unsigned short minorRev:   4; // 2nd part is 1 nibble in BCD
+			unsigned short majorRev2:  4; // 2nd nibble of 1st part
+			unsigned short majorRev1:  4; // 1st part of version number in BCD
+			
+		#else
+		
+			unsigned short majorRev1:  4; // 1st part of version number in BCD
+			unsigned short majorRev2:  4; // 2nd nibble of 1st part
+			unsigned short minorRev:	  4; // 2nd part is 1 nibble in BCD
+			unsigned short bugFixRev:  4; // 3rd part is 1 nibble in BCD
+			unsigned short stage:	  8; // stage code: dev, alpha, beta, final
+			unsigned short nonRelRev:  8; // revision level of non-released version
+			
+			/* unsigned short nonRelRev1:  4; // revision level of non-released version
+			unsigned short nonRelRev2: 4; // 2nd nibble of revision level */
+			
+		#endif
+		
+		} lNumVersion;
+		
 	
-	/*
-	lNumVersion numvers;
+	typedef struct lVersRec {
+		lNumVersion numericVersion;		/*encoded version number*/
+		short countryCode;				/*country code from intl utilities*/
+		Str255 shortVersion;			/*version number string - worst case*/
+		Str255 reserved;				/*longMessage string packed after shortVersion*/
+		} lVersRec, *lVersRecPtr, **lVersRecHndl;
+		
 	
-	numvers = *(lNumVersion *) &versionnum;
-	*/
+	static byte bsstages [] = "\pdab";	/*dev, alpha, beta*/
 	
-	setemptystring (bs);
 	
-	if (numvers.majorRev1 != 0)
-		shorttostring (numvers.majorRev1, bs);
+	#define emptyversionsize ((long) sizeof (lNumVersion) + sizeof (short) + 2)
 	
-	pushint (numvers.majorRev2, bs);
 	
-	pushchar ('.', bs);
+	static boolean versionnumtostring (lNumVersion numvers, bigstring bs) {
 	
-	pushint (numvers.minorRev, bs);
-	
-	if (numvers.bugFixRev > 0) {
+		//
+		// 2007-09-22 creedon: bug fix, when 10.1a16 was entered into
+		//				   versions.h, function would return 10.1a10,
+		//				   problem, non-released revision was being
+		//				   treated as BCD instead of number as specified
+		//				   in < http://developer.apple.com/technotes/tn/tn1132.html >,
+		//				   had to change lNumVersion struct
+		//
+		// return the packed version number as a string, e.g. "1.0b2". need 
+		// definitions above, which is mis-defined in the Think C headers
+		//
+		
+		/*
+		lNumVersion numvers;
+		
+		numvers = *(lNumVersion *) &versionnum;
+		*/
+		
+		setemptystring (bs);
+		
+		if (numvers.majorRev1 != 0)
+			shorttostring (numvers.majorRev1, bs);
+			
+		pushint (numvers.majorRev2, bs);
 		
 		pushchar ('.', bs);
 		
-		pushint (numvers.bugFixRev, bs);
-		}
-	
-	if (numvers.stage < finalStage) {
+		pushint (numvers.minorRev, bs);
 		
-		pushchar (bsstages [numvers.stage / developStage], bs);
+		if (numvers.bugFixRev > 0) {
 		
-		if (numvers.nonRelRev1 > 0)
-			pushint (numvers.nonRelRev1, bs);
-		
-		pushint (numvers.nonRelRev2, bs);
-		}
-	
-	return (true);
-	} /*versionnumtostring*/
-
-
-typedef byte shortstring [16];
-
-static short stringtobcd (bigstring bs) {
-	
-	register short i;
-	register short n = 0;
-	
-	for (i = 1; i <= stringlength (bs); ++i)
-		n = (n << 4) + (bs [i] - '0');
-	
-	return (n);
-	} /*stringtobcd*/
-
-
-static boolean stringtoversionnum (bigstring bs, NumVersion *versionnum) {
-	
-	/*
-	convert the string to a packed version number.  see above.
-	*/
-	
-	NumVersion numvers;
-	register short i;
-	register byte ch;
-	shortstring bsnumber [4]; /*the three rev numbers, as strings*/
-	short number [4]; /*the rev numbers*/
-	short ixnumber = 0;
-	
-	numvers.stage = finalStage;
-	
-	for (i = 0; i < 4; ++i)
-		setemptystring (bsnumber [i]);
-	
-	for (i = 1; i <= stringlength (bs); ++i) {
-		
-		ch = bs [i];
-		
-		if (isnumeric (ch)) { /*digit: add to current number string*/
+			pushchar ('.', bs);
 			
-			pushchar (ch, bsnumber [ixnumber]);
+			pushint (numvers.bugFixRev, bs);
 			
-			continue;
 			}
-		
-		if (ixnumber == 3) /*we're full: take what we've got so far*/
-			goto exit;
-		
-		if (ch == '.') { /*decimal point: move on to next number*/
 			
-			++ixnumber;
+		if (numvers.stage < finalStage) {
 			
-			continue;
+			pushchar (bsstages [numvers.stage / developStage], bs);
+			
+			/* if (numvers.nonRelRev1 > 0)
+				pushint (numvers.nonRelRev1, bs);
+			
+			pushint (numvers.nonRelRev2, bs); */
+			
+			pushint (numvers.nonRelRev, bs);
+			
 			}
+			
+		return (true);
 		
-		ixnumber = 3; /*only valid data would be stage character & number*/
+		} // versionnumtostring
 		
-		switch (lowercasechar (ch)) {
+	
+	typedef byte shortstring [16];
+	
+	static short stringtobcd (bigstring bs) {
+	
+		register short i;
+		register short n = 0;
+		
+		for (i = 1; i <= stringlength (bs); ++i)
+			n = (n << 4) + (bs [i] - '0');
 			
-			case 'a':
-				numvers.stage = alphaStage;
+		return (n);
+		} /*stringtobcd*/
+
+
+	static boolean stringtoversionnum (bigstring bs, NumVersion *versionnum) {
+		
+		/*
+		convert the string to a packed version number.  see above.
+		*/
+		
+		NumVersion numvers;
+		register short i;
+		register byte ch;
+		shortstring bsnumber [4]; /*the three rev numbers, as strings*/
+		short number [4]; /*the rev numbers*/
+		short ixnumber = 0;
+		
+		numvers.stage = finalStage;
+		
+		for (i = 0; i < 4; ++i)
+			setemptystring (bsnumber [i]);
+		
+		for (i = 1; i <= stringlength (bs); ++i) {
+			
+			ch = bs [i];
+			
+			if (isnumeric (ch)) { /*digit: add to current number string*/
 				
-				break;
-			
-			case 'b':
-				numvers.stage = betaStage;
+				pushchar (ch, bsnumber [ixnumber]);
 				
-				break;
+				continue;
+				}
 			
-			case 'd':
-				numvers.stage = developStage;
-				
-				break;
-			
-			default:
+			if (ixnumber == 3) /*we're full: take what we've got so far*/
 				goto exit;
+			
+			if (ch == '.') { /*decimal point: move on to next number*/
+				
+				++ixnumber;
+				
+				continue;
+				}
+			
+			ixnumber = 3; /*only valid data would be stage character & number*/
+			
+			switch (lowercasechar (ch)) {
+				
+				case 'a':
+					numvers.stage = alphaStage;
+					
+					break;
+				
+				case 'b':
+					numvers.stage = betaStage;
+					
+					break;
+				
+				case 'd':
+					numvers.stage = developStage;
+					
+					break;
+				
+				default:
+					goto exit;
+				}
 			}
-		}
-	
-	exit:
-	
-	for (i = 0; i < 4; ++i)
-		number [i] = stringtobcd (bsnumber [i]);
-	
-	numvers.majorRev = number [0];
-	
-	numvers.minorAndBugRev = (number [1] << 4) + number [2];
-	
-	numvers.nonRelRev = number [3];
-	
-	*versionnum = numvers;
-	
-	return (true);
-	} /*stringtoversionnum*/
+		
+		exit:
+		
+		for (i = 0; i < 4; ++i)
+			number [i] = stringtobcd (bsnumber [i]);
+		
+		numvers.majorRev = number [0];
+		
+		numvers.minorAndBugRev = (number [1] << 4) + number [2];
+		
+		numvers.nonRelRev = number [3];
+		
+		*versionnum = numvers;
+		
+		return (true);
+		} /*stringtoversionnum*/
 
 
-boolean filegetprogramversion (bigstring bsversion) {
-	
-	/*
-	12/19/91 dmb: this routine is here because this is the only file that currently 
-	knows the format of a 'vers' resource.  it would more logically be in file.c
-	*/
-	
-	lNumVersion versionnumber;
-	
-	if (filereadresource (filegetapplicationrnum (), 'vers', 1, nil, sizeof (versionnumber), &versionnumber))
-		return (versionnumtostring (versionnumber, bsversion));
-	
-	setemptystring (bsversion);
-	
-	return (false);
-	} /*filegetprogramversion*/
-
-
-static boolean getshortversionverb (hdltreenode hparam1, tyvaluerecord *v) {
-	
-	/*
-	file.getversion (path): string; return the version number as a string, e.g. "1.0b2".
-	
-	2005-09-02 creedon: added support for fork parameter, see resources.c: openresourcefile and pushresourcefile
-	*/
-	
-	tyfilespec fs;
-	lNumVersion versionnumber;
-	bigstring bs;
-	short forktype;
-	short ctconsumed = 1;
-	short ctpositional = 1;
-	tyvaluerecord val;
-	
-	if (!getpathvalue (hparam1, 1, &fs)) 
+	boolean filegetprogramversion (bigstring bsversion) {
+		
+		/*
+		12/19/91 dmb: this routine is here because this is the only file that currently 
+		knows the format of a 'vers' resource.  it would more logically be in file.c
+		*/
+		
+		lNumVersion versionnumber;
+		
+		if (filereadresource (filegetapplicationrnum (), 'vers', 1, nil, sizeof (versionnumber), &versionnumber))
+			return (versionnumtostring (versionnumber, bsversion));
+		
+		setemptystring (bsversion);
+		
 		return (false);
-	
-	flnextparamislast = true;
-	
-	setintvalue (resourcefork, &val); /* defaults to 1 */
-
-	if (!getoptionalparamvalue (hparam1, &ctconsumed, &ctpositional, BIGSTRING ("\x04""fork"), &val))
-		return (false);
-	
-	forktype = val.data.intvalue;
-
-	if (loadresource (&fs, -1, 'vers', 1, nil, sizeof (versionnumber), &versionnumber, forktype))
-		versionnumtostring (versionnumber, bs);
-	else
-		setemptystring (bs);
-	
-	return (setstringvalue (bs, v));
-	} /*getshortversionverb*/
+		} /*filegetprogramversion*/
 
 
-static boolean mungeversionstring (VersRecHndl hvers, bigstring bsversion, boolean fllongvers) {
-	
-	register byte *p;
-	long ixvers;
-	long ctvers;
-	
-	p = (**hvers).shortVersion;
-	
-	if (fllongvers)
-		p += stringlength (p) + 1; /*skip to next contiguous string -- the long version*/
-	
-	ixvers = p - (byte *) *hvers;
-	
-	ctvers = stringsize (p);
-	
-	return (mungehandle ((Handle) hvers, ixvers, ctvers, bsversion, stringsize (bsversion)));
-	} /*mungeversionstring*/
-
-
-static boolean setshortversionverb (hdltreenode hparam1, tyvaluerecord *v) {
-	
-	/*
-	file.setversion (path): boolean; set the short version string.  if a valid version number is specified, set the numeric fields as well
-	
-	2005-09-02 creedon: added support for fork parameter, see resources.c: openresourcefile and pushresourcefile
-	*/
-	
-	tyfilespec fs;
-	bigstring bsversion;
-	NumVersion versionnumber;
-	VersRecHndl hvers;
-	short forktype;
-	short ctconsumed = 2;
-	short ctpositional = 2;
-	tyvaluerecord val;
-	
-	if (!getpathvalue (hparam1, 1, &fs)) 
-		return (false);
-	
-	if (!getstringvalue (hparam1, 2, bsversion)) 
-		return (false);
-	
-	flnextparamislast = true;
-	
-	setintvalue (resourcefork, &val); /* defaults to 1 */
-
-	if (!getoptionalparamvalue (hparam1, &ctconsumed, &ctpositional, BIGSTRING ("\x04""fork"), &val))
-		return (false);
-	
-	forktype = val.data.intvalue;
-
-	if (!loadresourcehandle (&fs, 'vers', 1, nil, (Handle *) &hvers, forktype))
-		if (!newclearhandle (emptyversionsize, (Handle *) &hvers))
+	static boolean getshortversionverb (hdltreenode hparam1, tyvaluerecord *v) {
+		
+		/*
+		file.getversion (path): string; return the version number as a string, e.g. "1.0b2".
+		
+		2005-09-02 creedon: added support for fork parameter, see resources.c: openresourcefile and pushresourcefile
+		*/
+		
+		tyfilespec fs;
+		lNumVersion versionnumber;
+		bigstring bs;
+		short forktype;
+		short ctconsumed = 1;
+		short ctpositional = 1;
+		tyvaluerecord val;
+		
+		if (!getpathvalue (hparam1, 1, &fs)) 
 			return (false);
-	
-	if (stringtoversionnum (bsversion, &versionnumber)) /*convert to BCD if possible*/
-		(**hvers).numericVersion = versionnumber;
-	
-	if (mungeversionstring (hvers, bsversion, false))
-		if (saveresourcehandle (&fs, 'vers', 1, nil, (Handle) hvers, forktype))
-			(*v).data.flvalue = true;
-	
-	disposehandle ((Handle) hvers);
-	
-	return (true);
-	} /*setshortversionverb*/
+		
+		flnextparamislast = true;
+		
+		setintvalue (resourcefork, &val); /* defaults to 1 */
+
+		if (!getoptionalparamvalue (hparam1, &ctconsumed, &ctpositional, BIGSTRING ("\x04""fork"), &val))
+			return (false);
+		
+		forktype = val.data.intvalue;
+
+		if (loadresource (&fs, -1, 'vers', 1, nil, sizeof (versionnumber), &versionnumber, forktype))
+			versionnumtostring (versionnumber, bs);
+		else
+			setemptystring (bs);
+		
+		return (setstringvalue (bs, v));
+		} /*getshortversionverb*/
 
 
-static boolean getlongversionverb (hdltreenode hparam1, tyvaluerecord *v) {
-
-	/*
-	file.getfullversion (path): string; return the long version string "1.0b2 © Copyright 1991 UserLand Software.".  need definitions above, 
-	which don't appear in the Think C headers anywhere
-	
-	2005-09-02 creedon: added support for fork parameter, see resources.c: openresourcefile and pushresourcefile
-	*/
-	
-	tyfilespec fs;
-	lVersRecHndl hvers;
-	bigstring bs;
-	short forktype;
-	short ctconsumed = 1;
-	short ctpositional = 1;
-	tyvaluerecord val;
-	
-	if (!getpathvalue (hparam1, 1, &fs)) 
-		return (false);
-	
-	flnextparamislast = true;
-	
-	setintvalue (resourcefork, &val); /* defaults to 1 */
-
-	if (!getoptionalparamvalue (hparam1, &ctconsumed, &ctpositional, BIGSTRING ("\x04""fork"), &val))
-		return (false);
-	
-	forktype = val.data.intvalue;
-
-	setemptystring (bs);
-	
-	if (loadresourcehandle (&fs, 'vers', 1, nil, (Handle *) &hvers, forktype)) {
+	static boolean mungeversionstring (VersRecHndl hvers, bigstring bsversion, boolean fllongvers) {
 		
 		register byte *p;
+		long ixvers;
+		long ctvers;
 		
 		p = (**hvers).shortVersion;
 		
-		p += stringlength (p) + 1; /*skip to next contiguous string -- the long version*/
+		if (fllongvers)
+			p += stringlength (p) + 1; /*skip to next contiguous string -- the long version*/
 		
-		copystring (p, bs);
+		ixvers = p - (byte *) *hvers;
+		
+		ctvers = stringsize (p);
+		
+		return (mungehandle ((Handle) hvers, ixvers, ctvers, bsversion, stringsize (bsversion)));
+		} /*mungeversionstring*/
+
+
+	static boolean setshortversionverb (hdltreenode hparam1, tyvaluerecord *v) {
+		
+		/*
+		file.setversion (path): boolean; set the short version string.  if a valid version number is specified, set the numeric fields as well
+		
+		2005-09-02 creedon: added support for fork parameter, see resources.c: openresourcefile and pushresourcefile
+		*/
+		
+		tyfilespec fs;
+		bigstring bsversion;
+		NumVersion versionnumber;
+		VersRecHndl hvers;
+		short forktype;
+		short ctconsumed = 2;
+		short ctpositional = 2;
+		tyvaluerecord val;
+		
+		if (!getpathvalue (hparam1, 1, &fs)) 
+			return (false);
+		
+		if (!getstringvalue (hparam1, 2, bsversion)) 
+			return (false);
+		
+		flnextparamislast = true;
+		
+		setintvalue (resourcefork, &val); /* defaults to 1 */
+
+		if (!getoptionalparamvalue (hparam1, &ctconsumed, &ctpositional, BIGSTRING ("\x04""fork"), &val))
+			return (false);
+		
+		forktype = val.data.intvalue;
+
+		if (!loadresourcehandle (&fs, 'vers', 1, nil, (Handle *) &hvers, forktype))
+			if (!newclearhandle (emptyversionsize, (Handle *) &hvers))
+				return (false);
+		
+		if (stringtoversionnum (bsversion, &versionnumber)) /*convert to BCD if possible*/
+			(**hvers).numericVersion = versionnumber;
+		
+		if (mungeversionstring (hvers, bsversion, false))
+			if (saveresourcehandle (&fs, 'vers', 1, nil, (Handle) hvers, forktype))
+				(*v).data.flvalue = true;
 		
 		disposehandle ((Handle) hvers);
-		}
-	
-	return (setstringvalue (bs, v));
-	} /*getlongversionverb*/
+		
+		return (true);
+		} /*setshortversionverb*/
 
 
-static boolean setlongversionverb (hdltreenode hparam1, tyvaluerecord *v) {
-	
-	/*
-	file.setversion (path): boolean; set the long version string.
-	
-	2005-09-02 creedon: added support for fork parameter, see resources.c: openresourcefile and pushresourcefile
-	*/
-	
-	tyfilespec fs;
-	bigstring bsversion;
-	VersRecHndl hvers;
-	short forktype;
-	short ctconsumed = 2;
-	short ctpositional = 2;
-	tyvaluerecord val;
-	
-	if (!getpathvalue (hparam1, 1, &fs)) 
-		return (false);
-	
-	if (!getstringvalue (hparam1, 2, bsversion)) 
-		return (false);
-	
-	flnextparamislast = true;
-	
-	setintvalue (resourcefork, &val); /* defaults to 1 */
+	static boolean getlongversionverb (hdltreenode hparam1, tyvaluerecord *v) {
 
-	if (!getoptionalparamvalue (hparam1, &ctconsumed, &ctpositional, BIGSTRING ("\x04""fork"), &val))
-		return (false);
-	
-	forktype = val.data.intvalue;
-
-	if (!loadresourcehandle (&fs, 'vers', 1, nil, (Handle *) &hvers, forktype))
-		if (!newclearhandle (emptyversionsize, (Handle *) &hvers))
+		/*
+		file.getfullversion (path): string; return the long version string "1.0b2 © Copyright 1991 UserLand Software.".  need definitions above, 
+		which don't appear in the Think C headers anywhere
+		
+		2005-09-02 creedon: added support for fork parameter, see resources.c: openresourcefile and pushresourcefile
+		*/
+		
+		tyfilespec fs;
+		lVersRecHndl hvers;
+		bigstring bs;
+		short forktype;
+		short ctconsumed = 1;
+		short ctpositional = 1;
+		tyvaluerecord val;
+		
+		if (!getpathvalue (hparam1, 1, &fs)) 
 			return (false);
-	
-	if (mungeversionstring (hvers, bsversion, true))
-		if (saveresourcehandle (&fs, 'vers', 1, nil, (Handle) hvers, forktype))
-			(*v).data.flvalue = true;
-	
-	disposehandle ((Handle) hvers);
-	
-	return (true);
-	} /*setlongversionverb*/
-
-
-static boolean getcommentverb (hdltreenode hparam1, tyvaluerecord *v) {
-	
-	tyfilespec fs;
-	bigstring bscomment;
-	
-	flnextparamislast = true;
-	
-	if (!getpathvalue (hparam1, 1, &fs)) 
-		return (false);
-	
-	if (!getfilecomment (&fs, bscomment))
-		setemptystring (bscomment);
-	
-	return (setstringvalue (bscomment, v));
-	} /*getcommentverb*/
-
-
-static boolean setcommentverb (hdltreenode hparam1, tyvaluerecord *v) {
-	
-	tyfilespec fs;
-	bigstring bscomment;
-	
-	if (!getpathvalue (hparam1, 1, &fs)) 
-		return (false);
-	
-	flnextparamislast = true;
-	
-	if (!getstringvalue (hparam1, 2, bscomment)) 
-		return (false);
-	
-	return (setbooleanvalue (setfilecomment (&fs, bscomment), v));
-	} /*setcommentverb*/
-
-
-static boolean getlabelverb (hdltreenode hparam1, tyvaluerecord *v) {
-	
-	//
-	// 2006-06-18 creedon: FSRef-ized
-	//
-	
-	tyfilespec fs;
-	bigstring bslabel;
-	
-	flnextparamislast = true;
-	
-	if (!getpathvalue (hparam1, 1, &fs)) 
-		return (false);
-	
-	( void ) extendfilespec ( &fs, &fs );
-	
-	if (!getfilelabel (&fs, bslabel))
-		setemptystring (bslabel);
-	
-	return (setstringvalue (bslabel, v));
-	
-	} // getlabelverb
-
-
-static boolean setlabelverb (hdltreenode hparam1, tyvaluerecord *v) {
-
-	//
-	// 2006-06-18 creedon: FSRef-ized
-	//
-	
-	tyfilespec fs;
-	bigstring bslabel;
-	
-	if (!getpathvalue (hparam1, 1, &fs)) 
-		return (false);
-	
-	flnextparamislast = true;
-	
-	if (!getstringvalue (hparam1, 2, bslabel)) 
-		return (false);
-	
-	( void ) extendfilespec ( &fs, &fs );
-	
-	return (setbooleanvalue (setfilelabel (&fs, bslabel), v));
-	
-	} // setlabelverb
-
-
-static boolean getlabelindexverb (hdltreenode hparam1, tyvaluerecord *v) {
-
-	//
-	// 2006-06-18 creedon: FSRef-ized
-	//
-	// 2006-04-24 creedon: created, cribbed from getlabelverb function
-	//
-	
-	tyfilespec fs;
-	short ixlabel;
-	
-	flnextparamislast = true;
-
-	if (!getpathvalue (hparam1, 1, &fs)) 
-		return (false);
-
-	( void ) extendfilespec ( &fs, &fs );
-	
-	if (!getfilelabelindex (&fs, &ixlabel))
-		return (false);
-	
-	return (setintvalue (ixlabel, v));
-	
-	} // getlabelindexverb
-
-
-static boolean setlabelindexverb (hdltreenode hparam1, tyvaluerecord *v) {
-
-	//
-	// 2006-06-18 creedon: FSRef-ized
-	//
-	// 2006-04-24 creedon: created, cribbed from setlabelverb function
-	//
-	
-	tyfilespec fs;
-	short index;
-	
-	if (!getpathvalue (hparam1, 1, &fs)) 
-		return (false);
-	
-	flnextparamislast = true;
-	
-	if (!getintvalue (hparam1, 2, &index)) 
-		return (false);
 		
-	( void ) extendfilespec ( &fs, &fs );
-	
-	return (setbooleanvalue (setfilelabelindex (&fs, index, true), v));
-	
-	} // setlabelindexverb
-
-
-static boolean getlabelnamesverb (hdltreenode hparam1, tyvaluerecord *v) {
-	#pragma unused (hparam1)
-
-	/*
-	2006-04-24 creedon: created, cribbed from statusbargetsectionsfunc case of langfunctionvalue function
-	*/
-
-	bigstring bsarray [8];
-	hdllistrecord hlist;
-	int ix;
-	RGBColor labelcolor;
-	short mapfromuserinterfaceindex [8] = {0, 6, 7, 5, 2, 4, 3, 1};
-
-	for (ix = 0; ix < 8; ++ix)
-	
-		if (GetLabel (ix, &labelcolor, bsarray [ix]) != noErr)
+		flnextparamislast = true;
 		
+		setintvalue (resourcefork, &val); /* defaults to 1 */
+
+		if (!getoptionalparamvalue (hparam1, &ctconsumed, &ctpositional, BIGSTRING ("\x04""fork"), &val))
+			return (false);
+		
+		forktype = val.data.intvalue;
+
+		setemptystring (bs);
+		
+		if (loadresourcehandle (&fs, 'vers', 1, nil, (Handle *) &hvers, forktype)) {
+			
+			register byte *p;
+			
+			p = (**hvers).shortVersion;
+			
+			p += stringlength (p) + 1; /*skip to next contiguous string -- the long version*/
+			
+			copystring (p, bs);
+			
+			disposehandle ((Handle) hvers);
+			}
+		
+		return (setstringvalue (bs, v));
+		} /*getlongversionverb*/
+
+
+	static boolean setlongversionverb (hdltreenode hparam1, tyvaluerecord *v) {
+		
+		/*
+		file.setversion (path): boolean; set the long version string.
+		
+		2005-09-02 creedon: added support for fork parameter, see resources.c: openresourcefile and pushresourcefile
+		*/
+		
+		tyfilespec fs;
+		bigstring bsversion;
+		VersRecHndl hvers;
+		short forktype;
+		short ctconsumed = 2;
+		short ctpositional = 2;
+		tyvaluerecord val;
+		
+		if (!getpathvalue (hparam1, 1, &fs)) 
+			return (false);
+		
+		if (!getstringvalue (hparam1, 2, bsversion)) 
+			return (false);
+		
+		flnextparamislast = true;
+		
+		setintvalue (resourcefork, &val); /* defaults to 1 */
+
+		if (!getoptionalparamvalue (hparam1, &ctconsumed, &ctpositional, BIGSTRING ("\x04""fork"), &val))
+			return (false);
+		
+		forktype = val.data.intvalue;
+
+		if (!loadresourcehandle (&fs, 'vers', 1, nil, (Handle *) &hvers, forktype))
+			if (!newclearhandle (emptyversionsize, (Handle *) &hvers))
+				return (false);
+		
+		if (mungeversionstring (hvers, bsversion, true))
+			if (saveresourcehandle (&fs, 'vers', 1, nil, (Handle) hvers, forktype))
+				(*v).data.flvalue = true;
+		
+		disposehandle ((Handle) hvers);
+		
+		return (true);
+		} /*setlongversionverb*/
+
+
+	static boolean getcommentverb (hdltreenode hparam1, tyvaluerecord *v) {
+		
+		tyfilespec fs;
+		bigstring bscomment;
+		
+		flnextparamislast = true;
+		
+		if (!getpathvalue (hparam1, 1, &fs)) 
+			return (false);
+		
+		if (!getfilecomment (&fs, bscomment))
+			setemptystring (bscomment);
+		
+		return (setstringvalue (bscomment, v));
+		} /*getcommentverb*/
+
+
+	static boolean setcommentverb (hdltreenode hparam1, tyvaluerecord *v) {
+		
+		tyfilespec fs;
+		bigstring bscomment;
+		
+		if (!getpathvalue (hparam1, 1, &fs)) 
+			return (false);
+		
+		flnextparamislast = true;
+		
+		if (!getstringvalue (hparam1, 2, bscomment)) 
+			return (false);
+		
+		return (setbooleanvalue (setfilecomment (&fs, bscomment), v));
+		} /*setcommentverb*/
+
+
+	static boolean getlabelverb (hdltreenode hparam1, tyvaluerecord *v) {
+		
+		//
+		// 2006-06-18 creedon: FSRef-ized
+		//
+		
+		tyfilespec fs;
+		bigstring bslabel;
+		
+		flnextparamislast = true;
+		
+		if (!getpathvalue (hparam1, 1, &fs)) 
+			return (false);
+		
+		( void ) extendfilespec ( &fs, &fs );
+		
+		if (!getfilelabel (&fs, bslabel))
+			setemptystring (bslabel);
+		
+		return (setstringvalue (bslabel, v));
+		
+		} // getlabelverb
+
+
+	static boolean setlabelverb (hdltreenode hparam1, tyvaluerecord *v) {
+
+		//
+		// 2006-06-18 creedon: FSRef-ized
+		//
+		
+		tyfilespec fs;
+		bigstring bslabel;
+		
+		if (!getpathvalue (hparam1, 1, &fs)) 
+			return (false);
+		
+		flnextparamislast = true;
+		
+		if (!getstringvalue (hparam1, 2, bslabel)) 
+			return (false);
+		
+		( void ) extendfilespec ( &fs, &fs );
+		
+		return (setbooleanvalue (setfilelabel (&fs, bslabel), v));
+		
+		} // setlabelverb
+
+
+	static boolean getlabelindexverb (hdltreenode hparam1, tyvaluerecord *v) {
+
+		//
+		// 2006-06-18 creedon: FSRef-ized
+		//
+		// 2006-04-24 creedon: created, cribbed from getlabelverb function
+		//
+		
+		tyfilespec fs;
+		short ixlabel;
+		
+		flnextparamislast = true;
+
+		if (!getpathvalue (hparam1, 1, &fs)) 
+			return (false);
+
+		( void ) extendfilespec ( &fs, &fs );
+		
+		if (!getfilelabelindex (&fs, &ixlabel))
+			return (false);
+		
+		return (setintvalue (ixlabel, v));
+		
+		} // getlabelindexverb
+
+
+	static boolean setlabelindexverb (hdltreenode hparam1, tyvaluerecord *v) {
+
+		//
+		// 2006-06-18 creedon: FSRef-ized
+		//
+		// 2006-04-24 creedon: created, cribbed from setlabelverb function
+		//
+		
+		tyfilespec fs;
+		short index;
+		
+		if (!getpathvalue (hparam1, 1, &fs)) 
+			return (false);
+		
+		flnextparamislast = true;
+		
+		if (!getintvalue (hparam1, 2, &index)) 
 			return (false);
 			
-	if (!opnewlist (&hlist, false))
+		( void ) extendfilespec ( &fs, &fs );
+		
+		return (setbooleanvalue (setfilelabelindex (&fs, index, true), v));
+		
+		} // setlabelindexverb
+
+
+	static boolean getlabelnamesverb (hdltreenode hparam1, tyvaluerecord *v) {
+		#pragma unused (hparam1)
+
+		/*
+		2006-04-24 creedon: created, cribbed from statusbargetsectionsfunc case of langfunctionvalue function
+		*/
+
+		bigstring bsarray [8];
+		hdllistrecord hlist;
+		int ix;
+		RGBColor labelcolor;
+		short mapfromuserinterfaceindex [8] = {0, 6, 7, 5, 2, 4, 3, 1};
+
+		for (ix = 0; ix < 8; ++ix)
+		
+			if (GetLabel (ix, &labelcolor, bsarray [ix]) != noErr)
+			
+				return (false);
+				
+		if (!opnewlist (&hlist, false))
+			return (false);
+
+		for (ix = 0; ix < 8; ++ix)
+
+			if (!langpushliststring (hlist, bsarray [mapfromuserinterfaceindex [ix]]))
+			
+				goto getlabelnamesverberror;
+
+		return (setheapvalue ((Handle) hlist, listvaluetype, v));
+		
+		getlabelnamesverberror:
+
+		opdisposelist (hlist);
+		
 		return (false);
 
-	for (ix = 0; ix < 8; ++ix)
-
-		if (!langpushliststring (hlist, bsarray [mapfromuserinterfaceindex [ix]]))
-		
-			goto getlabelnamesverberror;
-
-	return (setheapvalue ((Handle) hlist, listvaluetype, v));
-	
-	getlabelnamesverberror:
-
-	opdisposelist (hlist);
-	
-	return (false);
-
-	} /* getlabelnamesverb */
-		
-#endif
+		} /* getlabelnamesverb */
+			
+#endif // MACVERSION
 
 
 static boolean findapplicationverb ( hdltreenode hparam1, tyvaluerecord *v ) {
@@ -2243,7 +2268,8 @@ static boolean findapplicationverb ( hdltreenode hparam1, tyvaluerecord *v ) {
 		return (setstringvalue (bs, v));
 		} /*getcommentverb*/
 
-#endif
+#endif // WIN95VERSION
+
 
 /*start of new verbs added by DW, 7/27/91*/
 
