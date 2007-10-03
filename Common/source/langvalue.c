@@ -992,12 +992,13 @@ boolean copyvaluerecord (tyvaluerecord v, tyvaluerecord *vreturned) {
 		
 			case filespecvaluetype: {
 			
-				tyfilespec fs;
+				tyfilespec fs = { { { 0 } }, 0 };
 				
 				fs.fsref = ( *( ( ( v ).data ).filespecvalue ) ) -> fsref;
-			
-				fs.path = CFStringCreateCopy ( kCFAllocatorDefault, ( *( ( ( v ).data ).filespecvalue ) ) -> path );
 				
+				if ( ( *( ( ( v ).data ).filespecvalue ) ) -> path != NULL )
+					fs.path = CFStringCreateCopy ( kCFAllocatorDefault, ( *( ( ( v ).data ).filespecvalue ) ) -> path );
+					
 				return ( setfilespecvalue ( &fs, vreturned ) );
 				
 				}
