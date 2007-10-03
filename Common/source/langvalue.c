@@ -831,117 +831,91 @@ static boolean findheaptmp (tyvaluerecord *v) {
 
 
 boolean copyvaluerecord (tyvaluerecord v, tyvaluerecord *vreturned) {
+	
+	/*
+	create a copy of v in vreturned.  for strings and passwords and other
+	relatively small heap-allocated objects, we create a copy of the data.
+	
+	for other types, externals and binaries, we create another reference
+	to the heap-allocated object.  it's important that values copied for
+	externals and binaries not be stored in the symbol table structure.
+	
+	2/15/91 dmb: no longer treat binary values like externals.  since we 
+	now support passing values by reference (i.e. address values), the 
+	script writer can avoid the overhead of large objects when desired. 
+	binary values can now be used like any other automatic type.
+	
+	8/16/91 dmb: going even further, we'll now use the new fl.tmpdata 
+	mechanism to avoid copying binary values when we don't need to.
+	
+	12/26/91 dmb: make sure that if an allocation failure occurs, we return 
+	an empty value.
+	
+	4.0.2b1 dmb: handle fldiskvals
+	
+	5.0.2b12 dmb: use new opcopylist for lists
 
-	//
-	// 2007-10-03 creedon: for Mac, use CFStringCreateCopy to copy path member
-	//				   of filespecvalue, CFStrings don't copy like other
-	//				   simple assignments, e.g. fs = val.data.filespecvalue
-	//
-	// 5.1.4 dmb: don't do anything special for addresses; just copy the
-	//		    current binary state.
-	//
-	// 5.0.2b12 dmb: use new opcopylist for lists
-	//
-	// 4.0.2b1 dmb: handle fldiskvals
-	//
-	// 1991-12-26 dmb: make sure that if an allocation failure occurs, we
-	//			    return an empty value.
-	//
-	// 1991-08-16 dmb: going even further, we'll now use the new fl.tmpdata 
-	//			    mechanism to avoid copying binary values when we don't
-	//			    need to.
-	//
-	// 1991-02-15 dmb: no longer treat binary values like externals.  since we 
-	//			    now support passing values by reference (i.e. address
-	//			    values), the script writer can avoid the overhead of
-	//			    large objects when desired.  binary values can now be
-	//			    used like any other automatic type.
-	//
-	// create a copy of v in vreturned.  for strings and passwords and other
-	// relatively small heap-allocated objects, we create a copy of the data.
-	//
-	// for other types, externals and binaries, we create another reference
-	// to the heap-allocated object.  it's important that values copied for
-	// externals and binaries not be stored in the symbol table structure.
-	//
+	5.1.4 dmb: don't do anything special for addresses; just copy the current
+	binary state.
+	*/
 	
 	Handle x;
 	hdllistrecord hlist;
+#ifndef version5orgreater
+	bigstring bs;
+	hdlhashtable htable;
+#endif
 	
-	#ifndef version5orgreater
+#ifdef tmpcopydebug
+	static long ctdups = 0;
+	static long cttmps = 0;
+	static long cthits = 0;
 	
-		bigstring bs;
-		hdlhashtable htable;
-		
-	#endif
+	++ctdups;
 	
-	#ifdef tmpcopydebug
-	
-		static long ctdups = 0;
-		static long cttmps = 0;
-		static long cthits = 0;
+	if (v.fltmpstack) {
 		
-		++ctdups;
+		++cttmps;
 		
-		if (v.fltmpstack) {
-		
-			++cttmps;
+		if (findheaptmp (&v)) {
+			++cthits;
 			
-			if (findheaptmp (&v)) {
-			
-				++cthits;
-				
-				*vreturned = v;
-				(*vreturned).fltmpdata = true;		
-				return (true);
-				
-				}
+			*vreturned = v;
+			(*vreturned).fltmpdata = true;		
+			return (true);
 			}
-	#endif
-	
+		}
+#endif
+
 	switch (v.valuetype) {
-	
+		
 		case addressvaluetype:
-		
 		#ifndef version5orgreater
-		
 			initvalue (vreturned, novaluetype);
 			
 			if (!getaddressvalue (v, &htable, bs))
 				return (false);
-				
-			return (setaddressvalue (htable, bs, vreturned));
 			
+			return (setaddressvalue (htable, bs, vreturned));
 		#endif
-		
 		case stringvaluetype:
 		case passwordvaluetype:
 		case rectvaluetype:
 		case patternvaluetype:
 		case rgbvaluetype:
 		case objspecvaluetype:
-		
-		#ifndef MACVERSION
-		
-			case filespecvaluetype:
-			
-		#endif
-		
+		case filespecvaluetype:
 		case aliasvaluetype:
 		case doublevaluetype:
 		case binaryvaluetype:
-		
-		#ifndef oplanglists
-		
-			case listvaluetype:
-			case recordvaluetype:
-			
-		#endif
-		
+	#ifndef oplanglists
+		case listvaluetype:
+		case recordvaluetype:
+	#endif
 			initvalue (vreturned, novaluetype);
 			
 			#ifdef flnewfeatures
-			
+				
 				if (v.fldiskval) {
 					/*
 					4.0.2b1 dmb: for disk-based scalars, the copy will be the actual 
@@ -951,7 +925,6 @@ boolean copyvaluerecord (tyvaluerecord v, tyvaluerecord *vreturned) {
 					
 					if (!dbrefhandle (v.data.diskvalue, &x))
 						return (false);
-						
 					}
 				else {
 					if (!copyhandle (v.data.binaryvalue, &x))
@@ -961,62 +934,38 @@ boolean copyvaluerecord (tyvaluerecord v, tyvaluerecord *vreturned) {
 			
 				if (!copyhandle (v.data.binaryvalue, &x))
 					return (false);
-					
+			
 			#endif
-			
+
 			return (setheapvalue (x, v.valuetype, vreturned));
-			
-		#ifdef oplanglists
 		
-			case listvaluetype:
-			case recordvaluetype:
+	#ifdef oplanglists
+		case listvaluetype:
+		case recordvaluetype:
+			initvalue (vreturned, v.valuetype);
 			
-				initvalue (vreturned, v.valuetype);
-				
-				if (!opcopylist (v.data.listvalue, &hlist))
-					return (false);
-					
-				return (setheapvalue ((Handle) hlist, v.valuetype, vreturned));
-		#endif
-		
+			if (!opcopylist (v.data.listvalue, &hlist))
+				return (false);
+			
+			return (setheapvalue ((Handle) hlist, v.valuetype, vreturned));
+	#endif
+
 		case codevaluetype:
 		case externalvaluetype:
-		
 			*vreturned = v;
 			
 			(*vreturned).fltmpdata = true; /*see hashassign, disposevaluerecord*/
 			
 			break;
-			
-		#ifdef MACVERSION
-		
-			case filespecvaluetype: {
-			
-				tyfilespec fs = { { { 0 } }, 0 };
-				
-				fs.fsref = ( *( ( ( v ).data ).filespecvalue ) ) -> fsref;
-				
-				if ( ( *( ( ( v ).data ).filespecvalue ) ) -> path != NULL )
-					fs.path = CFStringCreateCopy ( kCFAllocatorDefault, ( *( ( ( v ).data ).filespecvalue ) ) -> path );
-					
-				return ( setfilespecvalue ( &fs, vreturned ) );
-				
-				}
-				
-		#endif
 		
 		default:
-		
 			*vreturned = v;
 			
 			break;
-			
-		} // switch
-		
-	return (true); 
+		} /*switch*/
 	
-	} // copyvaluerecord
-
+	return (true); 
+	} /*copyvaluerecord*/
 
 #ifdef DATABASE_DEBUG
 
@@ -1077,11 +1026,10 @@ void disposevaluerecord (tyvaluerecord val, boolean fldisk)
 				exemptfromtmpstack (&val);
 				
 				disposehandle (val.data.binaryvalue);
-				
 				}
-				
-			break;
 			
+			break;
+		
 	#ifdef oplanglists
 		case listvaluetype:
 		case recordvaluetype:
@@ -8907,7 +8855,4 @@ boolean functionvalue (hdltreenode htree, hdltreenode hparam1, tyvaluerecord *vr
 	else
 		return (builtinvalue ((tyfunctype) val.data.tokenvalue, hparam1, vreturned));
 	} /*functionvalue*/
-
-
-
 
