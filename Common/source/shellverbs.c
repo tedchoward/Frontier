@@ -1056,39 +1056,59 @@ boolean shellprocessfindmessage (FINDREPLACE * fr) {
 
 
 static boolean filemenufunctionvalue (short token, hdltreenode hparam1, tyvaluerecord *vreturned, bigstring bserror) {
+
+	//
+	// 2007-10-03 creedon: in newfunc case use copyvaluerecord so we don't
+	//				   alter the value record grabbed by getparamvalue
+	//
+	// 2006-02-05 aradke: re-enabled savecopyfunc case to avoid breakage. verb
+	//				  tokens that have previously been referenced from glue
+	//				  scripts should never be disabled again, like
+	//				  fileMenu.saveCopy in this case.  also kept
+	//				  kernelverbs.r and kernelverbs.rc in sync.
+	// 
+	// 2005-10-26 creedon: disabled savecopyfunc case, saveasfunc can do it all
+	//				   added saveasfunc case, it wasn't possible to do a
+	//				   save as for a file-object
+	//
+	// 2005-09-14 creedon: in closefunc case added fldialog parameter, this
+	//				   might be improved as I only dealt with the situation
+	//				   with one or more parameters are defined
+	//
+	// 5.1.4 dmb: closefunc takes optional win parameter; savefunc checks hinfo
+	//		    for nil
+	//
+	// 5.0d18 dmb: closefunc respects the target
+	//
+	// 5.0d16 dmb: savefunc, newfunc need new (optional) parameters
+	//
+	// 3.0b15 dmb: quitfunc should just return false and let everything flow
+	//			normally, instead of yielding here. this could problems
+	//			calling filemenu.quit from a component menusharing (osa)
+	//			client...  however it doesn't, so this change is disabled
+	//			for the time being.
+	//
+	// 1993-06-01 dmb: when vreturned is nil, return whether or not verb token
+	//			    must be run in the Frontier process
+	//
+	// 1993-05-19 dmb: closefunc uses getfrontwindow, not shellwindow
+	//
+	// 1991-10-23 dmb: must try to restore globals after revert, so new globals
+	//			    aren't in effect when deferred disposal takes place.
+	//
+	// 1991-10-03 dmb: split off fileMenu verbs from shell verbs
+	//
+	// 1991-02-07 dmb: functions that change the current file (closeall, new,
+	//			    open, revert) have to save & restore the language
+	//			    globals.  we don't want the language to have to do this
+	//			    on every external call, so we do it selectively here
+	//
+	//			    added parameters to new, open & save; added boolean to
+	//			    avoid dialog in various shell routines.
+	//
 	
-	/*
-	2/7/91 dmb: added parameters to new, open & save; added boolean to avoid 
-	dialog in various shell routines.
-	
-	2/7/91 dmb: functions that change the current file (closeall, new, open, revert) have 
-	to save & restore the language globals.  we don't want the language to have 
-	to do this on every external call, so we do it selectively here
-	
-	10/3/91 dmb: split off fileMenu verbs from shell verbs
-	
-	10/23/91 dmb: must try to restore globals after revert, so new globals aren't 
-	in effect when deferred disposal takes place.
-	
-	5/19/93 dmb: closefunc uses getfrontwindow, not shellwindow
-	
-	6/1/93 dmb: when vreturned is nil, return whether or not verb token must 
-	be run in the Frontier process
-	
-	3.0b15 dmb: quitfunc should just return false and let everything flow normally, 
-	instead of yielding here. this could problems calling filemenu.quit from a 
-	component menusharing (osa) client...  however it doesn't, so this change is 
-	disabled for the time being.
-	
-	5.0d16 dmb: savefunc, newfunc need new (optional) parameters
-	
-	5.0d18 dmb: closefunc respects the target
-	
-	5.1.4 dmb: closefunc takes optional win parameter; savefunc checks hinfo for nil
-	*/
-	
-	register tyvaluerecord *v = vreturned;
 	register boolean fl;
+	register tyvaluerecord *v = vreturned;
 	
 	if (v == nil) /*need Frontier process?*/
 		return (true);
@@ -1098,26 +1118,25 @@ static boolean filemenufunctionvalue (short token, hdltreenode hparam1, tyvaluer
 	switch (token) { /*these verbs don't need any special globals pushed*/
 		
 		case newfunc: {
-			tyvaluerecord val;
-			tyfilespec fs;
-			tyexternalid id;
-			tyvaluerecord vhidden;
-			short ctconsumed = 0;
-			short ctpositional;
+		
 			WindowPtr w;
+			short ctconsumed = 0, ctpositional;
+			tyexternalid id;
+			tyfilespec fs;
+			tyvaluerecord val, vhidden;
 			
 			if (!getparamvalue (hparam1, ++ctconsumed, &val))
 				return (false);
-			
+				
 			flnextparamislast = true;
 			
 			ctpositional = ctconsumed;
 			
-			setbooleanvalue (false, &vhidden); //default value
+			setbooleanvalue (false, &vhidden); // default value
 			
 			if (!getoptionalparamvalue (hparam1, &ctconsumed, &ctpositional, str_hidden, &vhidden))
 				return (false);
-			
+				
 			disablelangerror ();
 			
 			fl = coercetoostype (&val);
@@ -1126,31 +1145,36 @@ static boolean filemenufunctionvalue (short token, hdltreenode hparam1, tyvaluer
 			
 			if (!fl) { // old style, new database
 			
+				if (!copyvaluerecord (val, &val))
+					return (false);
+					
 				if (!coercetofilespec (&val))
 					return (false);
+					
+				fs = **val.data.filespecvalue;
 				
-				fs = (**val.data.filespecvalue);
-				
-				langsaveglobals (); /*see comment at function head*/
+				langsaveglobals (); // see comment at function head
 				
 				fl = shellnewfile (&fs, vhidden.data.flvalue, &w);
 				
 				if (!langrestoreglobals ())
 					fl = false;
-				
+					
 				if (!fl)
 					return (false);
 				}
 			else {
+			
 				id = (tyexternalid) (langgetvaluetype (val.data.ostypevalue) - outlinevaluetype);
 				
 				if (!ccnewfilewindow (id, &w, vhidden.data.flvalue))
 					return (false);
 				}
-			
+				
 			return (setwinvalue (w, v));
+			
 			}
-		
+			
 		case openfunc: {
 		
 			tyfilespec fs;
@@ -1181,22 +1205,18 @@ static boolean filemenufunctionvalue (short token, hdltreenode hparam1, tyvaluer
 				return (false);
 			
 			return (fl && setwinvalue (w, v));
+			
 			}
+			
+		case closefunc: { // close the frontmost window
 		
-		case closefunc: {
-			/*
-			close the frontmost window
-			
-			2005-09-14 creedon: added fldialog parameter, this might be improved as I only dealt with the situation with one or more parameters are defined
-			*/
-			
 			hdlwindowinfo hinfo;
 			WindowPtr targetwindow = nil;
 			tyvaluerecord val;
 			boolean fldialog;
-
+			
 			setbooleanvalue (false, &val); /* defaults to false */
-
+			
 			if (langgetparamcount (hparam1) == 0) { // old style, use the target
 			
 				if (!langfindtargetwindow (-1, &targetwindow))
@@ -1227,19 +1247,22 @@ static boolean filemenufunctionvalue (short token, hdltreenode hparam1, tyvaluer
 			//return (langrestoreglobals ());
 			
 			return (true);
+			
 			}
 		
 		case closeallfunc:
+		
 			if (!langcheckparamcount (hparam1, 0)) /*shouldn't have any parameters*/
 				return (false);
-			
+				
 			langsaveglobals (); /*see comment at function head*/
 			
 			(*v).data.flvalue = shellcloseall (nil, false);
 			
 			return (langrestoreglobals ());
-		
+			
 		case quitfunc:
+		
 			if (!langcheckparamcount (hparam1, 0)) /*shouldn't have any parameters*/
 				return (false);
 			
@@ -1247,37 +1270,29 @@ static boolean filemenufunctionvalue (short token, hdltreenode hparam1, tyvaluer
 			
 			#if 0  /*maybe try this out after 3.0*/
 			
-			return (false); /*kill the script*/
+				return (false); /*kill the script*/
 			
 			#else
 			
-			processyield (); /*give it a chance to happen*/
-			
-			(*v).data.flvalue = false; /*we didn't quit -- we're got here, didn't we?*/
-			
-			return (true);
-			
+				processyield (); /*give it a chance to happen*/
+				
+				(*v).data.flvalue = false; /*we didn't quit -- we got here, didn't we?*/
+				
+				return (true);
+				
 			#endif
-		} /*switch*/
-	
+			
+		} // switch
+		
 	if (!shellpushtargetglobals ())
 		return (false);
-	
+		
 	fl = false; /*default return value for this function*/
 	
 	switch (token) { /*these verbs assume that the frontmost window's globals are pushed*/
 	
-		/*
-		2005-10-26 creedon: disabled savecopyfunc case, saveasfunc can do it all
-						 added saveasfunc case, it wasn't possible to do a save as for a file-object
-		
-		2006-02-05 aradke: re-enabled savecopyfunc case to avoid breakage.
-				verb tokens that have previously been referenced from glue scripts
-				should never be disabled again, like fileMenu.saveCopy in this case.
-				also kept kernelverbs.r and kernelverbs.rc in sync.
-		*/ 
-		
 		case savefunc: { /*save the frontmost window*/
+		
 			hdlwindowinfo hinfo;
 			
 			if (langgetparamcount (hparam1) == 0) { // old style, save the root
@@ -1286,6 +1301,7 @@ static boolean filemenufunctionvalue (short token, hdltreenode hparam1, tyvaluer
 					break;
 				}
 			else {
+			
 				flnextparamislast = true;
 				
 				if (!getwinparam (hparam1, 1, &hinfo))
@@ -1298,15 +1314,17 @@ static boolean filemenufunctionvalue (short token, hdltreenode hparam1, tyvaluer
 					break;
 					}
 				}
-			
+				
 			(*v).data.flvalue = shellsave ((**hinfo).macwindow);
 			
 			fl = true;
 			
 			break;
+			
 			}
+			
+		case savecopyfunc: {
 		
-		case savecopyfunc: {	/* 2006-02-05 aradke: re-enabled */
 			tyfilespec fs;
 			
 			flnextparamislast = true;
@@ -1319,12 +1337,14 @@ static boolean filemenufunctionvalue (short token, hdltreenode hparam1, tyvaluer
 			fl = true;
 			
 			break;
-			} 
-		
+			
+			}
+			
 		case revertfunc:
+		
 			if (!langcheckparamcount (hparam1, 0))
 				break;
-			
+				
 			langsaveglobals (); /*see comment at function head*/
 			
 			(*v).data.flvalue = shellrevert (shellwindow, false);
@@ -1332,8 +1352,9 @@ static boolean filemenufunctionvalue (short token, hdltreenode hparam1, tyvaluer
 			fl = langrestoreglobals (); /*should return false; script can't continue after a revert*/
 			
 			break;
-		
+			
 		case printfunc:
+		
 			if (!langcheckparamcount (hparam1, 0))
 				break;
 			
@@ -1342,8 +1363,9 @@ static boolean filemenufunctionvalue (short token, hdltreenode hparam1, tyvaluer
 			fl = true;
 			
 			break;
-
+			
 		case saveasfunc: {
+		
 			tyfilespec fs;
 			short ctconsumed = 0;
 			short ctpositional = 0;
@@ -1355,13 +1377,15 @@ static boolean filemenufunctionvalue (short token, hdltreenode hparam1, tyvaluer
 			
 			if (!getoptionalparamvalue (hparam1, &ctconsumed, &ctpositional, BIGSTRING ("\x04""path"), &val))
 				return (false);
-			
+				
 			if (val.data.stringvalue) {
+			
 				bigstring bs;
 				
 				texthandletostring (val.data.stringvalue, bs);
 				pathtofilespec (bs, &fs);
 				(*v).data.flvalue = shellsaveas (shellwindow, &fs, false);
+				
 				}
 			else
 				(*v).data.flvalue = shellsaveas (shellwindow, nil, false);
@@ -1369,14 +1393,16 @@ static boolean filemenufunctionvalue (short token, hdltreenode hparam1, tyvaluer
 			fl = true;
 			
 			break;
+			
 			}
 		
-		} /*switch -- funcs with front globals pushed*/
-	
+		} // switch -- funcs with front globals pushed
+		
 	shellpopglobals ();
 	
 	return (fl);
-	} /*filemenufunctionvalue*/
+	
+	} // filemenufunctionvalue
 
 
 static boolean editmenufunctionvalue (short token, hdltreenode hparam1, tyvaluerecord *vreturned, bigstring bserror) {
