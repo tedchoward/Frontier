@@ -254,11 +254,30 @@ static void sqliteScriptError (const char *errmsg, bigstring bserror) {
 	bigstring bserrmsg;
 
 	copyctopstring (errmsg, bserrmsg); /* This creates a pstring at bserrmsg */
-	getstringlist (langerrorlist, notfunctionerror, bserror); 
+	getstringlist (langerrorlist, notfunctionerror, bserror);
 	parsedialogstring (bserror, bserrmsg, nil, nil, nil, bserror);
 
 	return;
 	} /*sqliteScriptError*/
+
+
+static void sqliteCompileError ( const char *errmsg, bigstring bserror ) {
+
+	//
+	// 2007-10-11 creedon: created, cribbed from sqliteDatabaseError function
+	//
+	
+	bigstring bserrmsg;
+
+	copyctopstring ( errmsg, bserrmsg );
+	
+	getstringlist ( langerrorlist, sqlitecompileerror, bserror );
+	
+	parsedialogstring ( bserror, bserrmsg, nil, nil, nil, bserror );
+
+	return;
+	
+	} // sqliteCompileError
 
 
 boolean sqliteopenverb ( hdltreenode hparam1, tyvaluerecord *vreturned, bigstring bserror ) {
@@ -391,45 +410,53 @@ boolean sqlitecloseverb (hdltreenode hparam1, tyvaluerecord *vreturned, bigstrin
 
 
 boolean sqlitecompilequeryverb (hdltreenode hparam1, tyvaluerecord *vreturned, bigstring bserror) {
+
+	//
+	// 2007-10-12 creedon: replaced call to sqliteDatabaseError with new
+	//				   sqliteCompileError function
+	
+	// sqlite.compileQuery ( dbid, query )
+	//
+	// Action:  compile an SQLite query
+	// Params:  a database id and a query string
+	// Returns: a query id
+	// Usage:   call in a try statement
+	// Notes:   do not pass the opened database ID across threads.
+	//
+	// SQLite docs: http://www.sqlite.org/capi3ref.html#sqlite3_prepare.
+	//
+	// Code that is a good example of prepare in use: http://souptonuts.sourceforge.net/code/eatblob.c.html
+	//
+	
 	Handle query;				/* the SQL query passed to the SQLite engine */
 	sqlite3 *dbid;				/* the SQLite database handle */
 	sqlite3_stmt *queryid = 0;	/* the compiled query */
-	int returnCode;				/* return code from SQLite call */
-
-	/*	
-		sqlite.compileQuery(dbid, query)
-
-		Action:  compile an SQLite query
-		Params:  a database id and a query string
-		Returns: a query id
-		Usage:   call in a try statement
-		Notes:   do not pass the opened database ID across threads.
-
-		SQLite docs: http://www.sqlite.org/capi3ref.html#sqlite3_prepare.
-
-		Code that is a good example of prepare in use:
-		http://souptonuts.sourceforge.net/code/eatblob.c.html
-	*/
-
+	int returnCode;			/* return code from SQLite call */
+	
 	if (!getlongvalue (hparam1, 1, (long *) &dbid)) /* Get the long value, which becomes the db pointer */
 		return (false);
-
+		
 	flnextparamislast = true;	/* makes sure Frontier throws an error if more than one param is passed */
 	
 	if (!getreadonlytextvalue (hparam1, 2, &query)) /* get the query param */
 		return (false);
-
+		
 	/* Process the SQLite sequence */
 	returnCode = sqlite3_prepare(dbid, *query, gethandlesize(query), &queryid, 0);
-	if(returnCode != SQLITE_OK || queryid == NULL) {
-		sqliteDatabaseError(sqlite3_errmsg(dbid), bserror); /* send database error */
-		return (false);
-	}
-
+	
+	if ( returnCode != SQLITE_OK || queryid == NULL ) {
+	
+		sqliteCompileError ( sqlite3_errmsg ( dbid ), bserror ); // send database error
+		
+		return ( false );
+		
+		}
+		
 	return (setlongvalue ((long) queryid, vreturned)); /* return the db address to the scripter */
 
 
-} /* sqlitecompilequeryverb */
+	} // sqlitecompilequeryverb
+
 
 boolean sqliteclearqueryverb (hdltreenode hparam1, tyvaluerecord *vreturned, bigstring bserror) {
 	sqlite3_stmt *queryid;	/* query id */
