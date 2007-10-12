@@ -393,7 +393,7 @@ resource 'STR#' (256, "DB errors", purgeable) {
 
 
 resource 'STR#' (257, "Lang Errors", purgeable) {
-	{	/* array StringArray: 98 elements */
+	{	/* array StringArray: 165 elements */
 		/* [1] */
 		"Unknown error.",
 		/* [2] */
@@ -715,11 +715,21 @@ resource 'STR#' (257, "Lang Errors", purgeable) {
 		/* [160] */
 		"Can't execute command because the replacement string contains a non-existant group name at character #^0.",
 		/* [161] */
-		"An item named Ò^0Ó already exists." // Replace it or create a duplicate?", /* 2005-09-26 creedon */
+		"An item named Ò^0Ó already exists.", // Replace it or create a duplicate?", // 2005-09-26 creedon
 		/* [162] */
-		"Can't run shell command because the shell \042^0\042 was not found.", /* 2006-03-10 aradke */
-	}
-};
+		"Can't run shell command because the shell \042^0\042 was not found.", // 2006-03-10 aradke
+		
+		// [163]
+		"Can't open database: ^0.", // 2007-10-11 creedon: cribbed from WinLand.rc
+		
+		// [164]
+		"Database error: ^0.", // 2007-10-11 creedon: cribbed from WinLand.rc
+		
+		// [165]
+		"Can't compile query ^0." // 2007-10-11 creedon
+		
+		}
+	};
 
 resource 'STR#' (258, "Mac Errors", purgeable) {
 	{	/* array StringArray: 92 elements */
