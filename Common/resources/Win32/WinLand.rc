@@ -1531,10 +1531,11 @@ END
 	158 Lang_Errors DISCARDABLE BEGIN "Can't execute command because the replacement string contains a bad group name at character #^0.\0" END
 	159 Lang_Errors DISCARDABLE BEGIN "Can't execute command because the replacement string contains a non-existant group number at character #^0.\0" END
 	160 Lang_Errors DISCARDABLE BEGIN "Can't execute command because the replacement string contains a non-existant group name at character #^0.\0" END
-	161 Lang_Errors DISCARDABLE BEGIN "An item named \042^0\042 already exists.\0" END // Replace it or create a duplicate?" /* 2005-09-26 creedon */
-	162 Lang_Errors DISCARDABLE BEGIN "Can't run shell command because the shell \042^0\042 was not found.\0" END /* 2006-03-10 aradke */
-	163 Lang_Errors DISCARDABLE BEGIN "Can't open database: ^0.\0" END /* 2006-03-17 gewirtz */
-	164 Lang_Errors DISCARDABLE BEGIN "Database error: ^0.\0" END /* 2006-03-17 gewirtz */
+	161 Lang_Errors DISCARDABLE BEGIN "An item named \042^0\042 already exists.\0" END // Replace it or create a duplicate?" // 2005-09-26 creedon
+	162 Lang_Errors DISCARDABLE BEGIN "Can't run shell command because the shell \042^0\042 was not found.\0" END // 2006-03-10 aradke
+	163 Lang_Errors DISCARDABLE BEGIN "Can't open database: ^0.\0" END // 2006-03-17 gewirtz
+	164 Lang_Errors DISCARDABLE BEGIN "Database error: ^0.\0" END // 2006-03-17 gewirtz
+	165 Lang_Errors DISCARDABLE BEGIN "Can't compile query ^0.\0" END // 2007-10-11 creedon
 	
 	1 Mac_Errors DISCARDABLE BEGIN "The \042^0\042 folder is full.\0" END
 	2 Mac_Errors DISCARDABLE BEGIN "The disk is full.\0" END
