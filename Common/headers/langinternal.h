@@ -200,15 +200,18 @@
 #define frbadgroupnameerror 158
 #define frnonexistantgroupnumbererror 159
 #define frnonexistantgroupnameerror 160
-#define replaceitemerror 161 /* 2005-09-26 creedon */
-#define cmdshellnotfounderror 162 /* 2006-03-10 aradke */
-#define sqliteopenerror 163 /* 2006-03-17 gewirtz */
-#define sqlitedberror 164 /* 2006-03-17 gewirtz */
+#define replaceitemerror 161 // 2005-09-26 creedon
+#define cmdshellnotfounderror 162 // 2006-03-10 aradke
+#define sqliteopenerror 163 // 2006-03-17 gewirtz
+#define sqlitedberror 164 // 2006-03-17 gewirtz
+#define sqlitecompileerror 165 // 2007-10-11 creedon
+
 
 #define langstacklist 137
 
-typedef enum tystackid { /*stack names*/
-	
+
+typedef enum tystackid { // stack names
+
 	idtablestack = 1,
 	
 	iderrorcallbackstack,
@@ -218,6 +221,7 @@ typedef enum tystackid { /*stack names*/
 	idlocalsstack,
 	
 	idprogramstack
+	
 	} tystackid;
 
 
