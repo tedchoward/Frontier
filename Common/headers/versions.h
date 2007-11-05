@@ -46,64 +46,98 @@
 #define	APP_COPYRIGHT_TILL	"2007"
 
 
-/* target-specific strings and version info */
+// target-specific strings and version info
 
 #ifdef PIKE
-#ifndef OPMLEDITOR
 
-	/* version info for RADIO targets (formerly known as PIKE) */
-	
-	#define	APPNAME					"Radio"
-	#define	APP_COPYRIGHT_HOLDER		"UserLand Software, Inc"
-	
-	#define	bs_APP_NAME				BIGSTRING ("\x05" "Radio")
-	#define	bs_APP_SLOGAN				BIGSTRING ("\x2b" "The power of Web publishing on your desktop")
-	#define	bs_APP_COPYRIGHT			BIGSTRING ("\x23" "© " APP_COPYRIGHT_FROM "-" APP_COPYRIGHT_TILL " UserLand Software, Inc.")
-	#define	bs_APP_URL				BIGSTRING ("\x26" "http://frontierkernel.sourceforge.net/")
-	
-	#define	APP_MAJOR_VERSION			10
-	#define	APP_MAJOR_VERSION_BCD		0x10	/* major version in BCD notation */
-	
-	#define	APP_SUB_VERSION			1
-	#define	APP_MINOR_VERSION			0
-	#define	APP_SUBMINOR_VERSION_BCD		0x10	/* sub and minor version in BCD notation */
-	
-	#define	APP_STAGE_CODE				0x40	/* dev = 0x20, alpha = 0x40, beta = 0x60, final = 0x80 */
-	#define	APP_REVISION_LEVEL			15	/* for non-final releases only */
-	#define	APP_BUILD_NUMBER			15	/* increment by one for every release, final or not */
-	
-	#define	APP_VERSION_STRING			"10.1a15"
+	#if defined ( IUDADESKTOP ) || defined ( OPMLEDITOR )
 
-#else
+		#ifdef IUDADESKTOP
+		
+			// version info for IUDADESKTOP targets
+			
+			#define	APPNAME					"IUDA Desktop"
+			
+			#define	APP_COPYRIGHT_HOLDER		"Thomas A. Creedon"
+			
+			#define	bs_APP_NAME				BIGSTRING ( "\x0c" "IUDA Desktop" )
+			#define	bs_APP_SLOGAN				BIGSTRING ( "\x2b" "IMZ-Ural Dicsussion Archive on your desktop" )
+			#define	bs_APP_COPYRIGHT			BIGSTRING ( "\x19" "© " APP_COPYRIGHT_TILL " Thomas A. Creedon." )
+			#define	bs_APP_URL				BIGSTRING ( "\x26" "http://discussionArchive.imzUral.info/" )
+			
+			#define	APP_MAJOR_VERSION			10
+			#define	APP_MAJOR_VERSION_BCD		0x10	// major version in BCD notation
+			
+			#define	APP_SUB_VERSION			1
+			#define	APP_MINOR_VERSION			0
+			#define	APP_SUBMINOR_VERSION_BCD		0x10	// sub and minor version in BCD notation
+			
+			#define	APP_STAGE_CODE				0x40	// dev = 0x20, alpha = 0x40, beta = 0x60, final = 0x80
+			#define	APP_REVISION_LEVEL			16	// for non-final releases only
+			#define	APP_BUILD_NUMBER			16	// increment by one for every release, final or not
+			
+			#define	APP_VERSION_STRING			"10.1a16"
+			
+		#endif // IUDADESKTOP
+		
+		#ifdef OPMLEDITOR
+		
+			// version info for OPMLEDITOR targets
+			
+			#define	APPNAME					"OPML"
+			
+			#define	APP_COPYRIGHT_HOLDER		"Scripting News, Inc"
+			
+			#define	bs_APP_NAME				BIGSTRING ("\x04" "OPML")
+			#define	bs_APP_SLOGAN				BIGSTRING ("\x25" "Powerful OPML editing on your desktop")
+			#define	bs_APP_COPYRIGHT			BIGSTRING ("\x20" "© " APP_COPYRIGHT_FROM "-" APP_COPYRIGHT_TILL " Scripting News, Inc.")
+			#define	bs_APP_URL				BIGSTRING ("\x18" "http://support.opml.org/")
+			
+			#define	APP_MAJOR_VERSION			10
+			#define	APP_MAJOR_VERSION_BCD		0x10	/* major version in BCD notation */
+			
+			#define	APP_SUB_VERSION			1
+			#define	APP_MINOR_VERSION			0
+			#define	APP_SUBMINOR_VERSION_BCD		0x10	/* sub and minor version in BCD notation */
+			
+			#define	APP_STAGE_CODE				0x40	/* dev = 0x20, alpha = 0x40, beta = 0x60, final = 0x80 */
+			#define	APP_REVISION_LEVEL			15	/* for non-final releases only */
+			#define	APP_BUILD_NUMBER			15	/* increment by one for every release, final or not */
+			
+			#define	APP_VERSION_STRING			"10.1a15"
+			
+		#endif // OPMLEDITOR
+		
+	#else
+	
+		// version info for RADIO targets (formerly known as PIKE)
+		
+		#define	APPNAME					"Radio"
+		#define	APP_COPYRIGHT_HOLDER		"UserLand Software, Inc"
+		
+		#define	bs_APP_NAME				BIGSTRING ("\x05" "Radio")
+		#define	bs_APP_SLOGAN				BIGSTRING ("\x2b" "The power of Web publishing on your desktop")
+		#define	bs_APP_COPYRIGHT			BIGSTRING ("\x23" "© " APP_COPYRIGHT_FROM "-" APP_COPYRIGHT_TILL " UserLand Software, Inc.")
+		#define	bs_APP_URL				BIGSTRING ("\x26" "http://frontierkernel.sourceforge.net/")
+		
+		#define	APP_MAJOR_VERSION			10
+		#define	APP_MAJOR_VERSION_BCD		0x10	/* major version in BCD notation */
+		
+		#define	APP_SUB_VERSION			1
+		#define	APP_MINOR_VERSION			0
+		#define	APP_SUBMINOR_VERSION_BCD		0x10	/* sub and minor version in BCD notation */
+		
+		#define	APP_STAGE_CODE				0x40	/* dev = 0x20, alpha = 0x40, beta = 0x60, final = 0x80 */
+		#define	APP_REVISION_LEVEL			00	/* for non-final releases only */
+		#define	APP_BUILD_NUMBER			00	/* increment by one for every release, final or not */
+		
+		#define	APP_VERSION_STRING			"10.1a15"
 
-	/* version info for OPMLEDITOR targets */
+	#endif
 	
-	#define	APPNAME					"OPML"
-	
-	#define	APP_COPYRIGHT_HOLDER		"Scripting News, Inc"
-	
-	#define	bs_APP_NAME				BIGSTRING ("\x04" "OPML")
-	#define	bs_APP_SLOGAN				BIGSTRING ("\x25" "Powerful OPML editing on your desktop")
-	#define	bs_APP_COPYRIGHT			BIGSTRING ("\x20" "© " APP_COPYRIGHT_FROM "-" APP_COPYRIGHT_TILL " Scripting News, Inc.")
-	#define	bs_APP_URL				BIGSTRING ("\x18" "http://support.opml.org/")
-	
-	#define	APP_MAJOR_VERSION			10
-	#define	APP_MAJOR_VERSION_BCD		0x10	/* major version in BCD notation */
-	
-	#define	APP_SUB_VERSION			1
-	#define	APP_MINOR_VERSION			0
-	#define	APP_SUBMINOR_VERSION_BCD		0x10	/* sub and minor version in BCD notation */
-	
-	#define	APP_STAGE_CODE				0x40	/* dev = 0x20, alpha = 0x40, beta = 0x60, final = 0x80 */
-	#define	APP_REVISION_LEVEL			15	/* for non-final releases only */
-	#define	APP_BUILD_NUMBER			15	/* increment by one for every release, final or not */
-	
-	#define	APP_VERSION_STRING			"10.1a15"
-	
-#endif
-#else
+ #else
 
-	/* version info for FRONTIER targets */
+	// version info for FRONTIER targets
 	
 	#define	APPNAME					"Frontier"
 	#define	APP_COPYRIGHT_HOLDER		"Frontier Kernel Project"
@@ -114,17 +148,17 @@
 	#define	bs_APP_URL				BIGSTRING ("\x26" "http://frontierkernel.sourceforge.net/")
 	
 	#define	APP_MAJOR_VERSION			10
-	#define	APP_MAJOR_VERSION_BCD		0x10	/* major version in BCD notation */
+	#define	APP_MAJOR_VERSION_BCD		0x10	// major version in BCD notation
 	
 	#define	APP_SUB_VERSION			1
 	#define	APP_MINOR_VERSION			0
-	#define	APP_SUBMINOR_VERSION_BCD		0x10	/* sub and minor version in BCD notation */
+	#define	APP_SUBMINOR_VERSION_BCD		0x10	// sub and minor version in BCD notation
 	
-	#define	APP_STAGE_CODE				0x40	/* dev = 0x20, alpha = 0x40, beta = 0x60, final = 0x80 */
-	#define	APP_REVISION_LEVEL			15	/* for non-final releases only */
-	#define	APP_BUILD_NUMBER			15	/* increment by one for every release, final or not */
+	#define	APP_STAGE_CODE				0x40	// dev = 0x20, alpha = 0x40, beta = 0x60, final = 0x80
+	#define	APP_REVISION_LEVEL			15	// for non-final releases only
+	#define	APP_BUILD_NUMBER			15	// increment by one for every release, final or not
 	
-	#define	APP_VERSION_STRING			"10.1a15"
+	#define	APP_VERSION_STRING			"10.1a15" */
 	
 #endif
 
