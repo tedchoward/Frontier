@@ -34,24 +34,31 @@
 
 
 #ifdef WIN95VERSION
+
 	#define FRONTIERCOM 1
 
-	#ifndef OPMLEDITOR
+	#ifdef OPMLEDITOR
+
+		#define FRONTIERWEB 1	// 2006-02-05 aradke: enable HTML display in main window background
+
+	#else
+
 		#define FRONTIERWEB 0
-	#else //OPMLEDITOR
-		#define FRONTIERWEB 1	/* 2006-02-05 aradke: enable HTML display in main window background */
-	#endif // OPMLEDITOR
+
+	#endif
 
 	#undef winhybrid
 	#define fljustpacking 0
 	#undef flcomponent
 	#define gray3Dlook 1
 	#define noextended 1
-	#define NEWFILESPECTYPE 1	
-#endif /* WIN95VERSION */
+	#define NEWFILESPECTYPE 1
+
+#endif // WIN95VERSION
 
 
 #ifdef MACVERSION
+
 	#define flcomponent 1
 	#ifdef __powerc
 		#define noextended 1
@@ -60,6 +67,7 @@
 	#else
 		#define noextended 0
 	#endif
+
 #endif /* MACVERSION */
 
 
@@ -87,6 +95,7 @@
 
 
 #ifdef MACVERSION
+
 	#define macBirdRuntime	1
 	#undef appRunsCards			/*for Applet Toolkit, Iowa Runtime is baked in*/
 	#define iowaRuntimeInApp	/*iowa code knows it's in an app*/
@@ -94,9 +103,11 @@
 	#define cmdPeriodKillsCard
 	#define IOAinsideApp		/*all the IOA's are baked into the app*/
 	#undef coderesource			/*we're not running inside a code resource*/
+
 #endif
 
 #ifdef WIN95VERSION
+
 	#undef macBirdRuntime
 	#undef appRunsCards			/*for Applet Toolkit, Iowa Runtime is baked in*/
 	#undef iowaRuntimeInApp		/*iowa code knows it's in an app*/
@@ -104,6 +115,7 @@
 	#undef cmdPeriodKillsCard
 	#undef IOAinsideApp			/*all the IOA's are baked into the app*/
 	#undef coderesource			/*we're not running inside a code resource*/
+
 #endif
 
 
@@ -115,3 +127,5 @@
 
 
 #endif /*__FRONTIERDEFS_H__*/
+
+
