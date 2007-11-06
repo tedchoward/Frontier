@@ -65,40 +65,21 @@ LANGUAGE LANG_ENGLISH, SUBLANG_ENGLISH_US
 259                     CURSOR  DISCARDABLE     beachball_3.cur
 260                     CURSOR  DISCARDABLE     beachball_4.cur
 
-
 /////////////////////////////////////////////////////////////////////////////
 //
 // Bitmap
 //
 
-#ifdef PIKE
-
-	#if defined ( IUDADESKTOP ) || defined ( OPMLEDITOR )
-
-		#ifdef IUDADESKTOP // 2007-10-27 creedon
-			
-			IDB_FRONTIER_BITMAP	BITMAP	DISCARDABLE	black32x32.bmp
-
-		#endif
-		
-		#ifdef OPMLEDITOR
-		
-			IDB_FRONTIER_BITMAP		BITMAP  DISCARDABLE     opmlapp.bmp
-			
-		#endif
-		
-	#else // Radio UserLand
-	
-		IDB_FRONTIER_BITMAP		BITMAP  DISCARDABLE     radiobluedot.bmp // 7.0d8 PBS: new icon for Radio UserLand
-
-	#endif
-	
-#else // Frontier
-
-	IDB_FRONTIER_BITMAP		BITMAP  DISCARDABLE     FrontierCactus.bmp
-
-#endif // #ifdef PIKE
-
+#ifdef PIKE /*7.0d8 PBS: new icon for Radio UserLand*/
+#ifndef OPMLEDITOR
+IDB_FRONTIER_BITMAP		BITMAP  DISCARDABLE     radiobluedot.bmp
+#else
+IDB_FRONTIER_BITMAP		BITMAP  DISCARDABLE     opmlapp.bmp
+#endif
+#else
+//IDB_FRONTIER_BITMAP		BITMAP  DISCARDABLE     frontier.bmp
+IDB_FRONTIER_BITMAP		BITMAP  DISCARDABLE     FrontierCactus.bmp
+#endif
 IDB_BITMAP1             BITMAP  DISCARDABLE     bitmap1.bmp
 IDB_BITMAP2             BITMAP  DISCARDABLE     bitmap2.bmp
 IDB_BITMAP3             BITMAP  DISCARDABLE     bitmap3.bmp
@@ -148,7 +129,6 @@ IDB_BITMAP46            BITMAP  DISCARDABLE     bitmap46.bmp
 IDB_BITMAP47            BITMAP  DISCARDABLE     bitmap47.bmp
 IDB_BITMAP48            BITMAP  DISCARDABLE     bitmap48.bmp
 
-
 /////////////////////////////////////////////////////////////////////////////
 //
 // Icon
@@ -158,38 +138,19 @@ IDB_BITMAP48            BITMAP  DISCARDABLE     bitmap48.bmp
 // remains consistent on all systems.
 
 #ifdef PIKE
-
-	#if defined ( IUDADESKTOP ) || defined ( OPMLEDITOR )
-
-		#ifdef IUDADESKTOP // 2007-10-24 creedon
-			
-			ID_FRONTIER_ICON		ICON	DISCARDABLE		Black16x16Tray.ico
-			ID_FRONTIERTRAY_ICON    ICON	DISCARDABLE		Black16x16Tray.ico
-
-		#endif // IUDADESKTOP
-		
-		#ifdef OPMLEDITOR
-		
-			ID_FRONTIER_ICON        ICON    DISCARDABLE     OPMLapp.ico /*2006-02-05 aradke*/
-			ID_FRONTIERTRAY_ICON    ICON    DISCARDABLE     OPMLapp.ico /*2006-02-05 aradke*/
-			
-		#endif // OPMLEDITOR
-		
-	#else // Radio UserLand
-	
-		//ID_FRONTIER_ICON		ICON    DISCARDABLE     radio.ico
-		ID_FRONTIER_ICON        ICON    DISCARDABLE     radiobluedot.ico
-		ID_FRONTIERTRAY_ICON    ICON    DISCARDABLE     RadioTrayIcon.ico
-
-	#endif // Radio UserLand
-	
-#else // Frontier
-
-	/* // ID_FRONTIER_ICON		ICON    DISCARDABLE     Frontier.ico
+#ifndef OPMLEDITOR
+//	ID_FRONTIER_ICON        ICON    DISCARDABLE     radio.ico
+	ID_FRONTIER_ICON        ICON    DISCARDABLE     radiobluedot.ico
+	ID_FRONTIERTRAY_ICON    ICON    DISCARDABLE     RadioTrayIcon.ico
+#else // OPMLEDITOR
+	ID_FRONTIER_ICON        ICON    DISCARDABLE     OPMLapp.ico /*2006-02-05 aradke*/
+	ID_FRONTIERTRAY_ICON    ICON    DISCARDABLE     OPMLapp.ico /*2006-02-05 aradke*/
+#endif // OPMLEDITOR
+#else
+//	ID_FRONTIER_ICON        ICON    DISCARDABLE     Frontier.ico
 	ID_FRONTIER_ICON        ICON    DISCARDABLE     FrontierCactus.ico
-	ID_FRONTIERTRAY_ICON    ICON    DISCARDABLE     FrontierCactusTray.ico */
-
-#endif  // Frontier
+	ID_FRONTIERTRAY_ICON    ICON    DISCARDABLE     FrontierCactusTray.ico
+#endif
 
 ID_FATPAGE_ICON         ICON    DISCARDABLE     fatp.ico
 ID_ROOT_ICON            ICON    DISCARDABLE     root.ico
@@ -246,208 +207,136 @@ BEGIN
 END
 #endif
 
-
 #ifdef PIKE
 
-	#if defined ( IUDADESKTOP ) || defined ( OPMLEDITOR )
+/* PBS 07/22/00: Pike's File menu has been revised. It's more
+like a standard File menu now that we're creating outlines
+and saving them to disk. No more What Is This? command.
+Now there's an Open command.
 
-		#ifdef IUDADESKTOP
-		
-			filemenu MENU DISCARDABLE
-			BEGIN
-				POPUP "&File"
-				BEGIN
-					MENUITEM "&New\tCtrl+N",                 filemenu+newitem
-					MENUITEM "&Open...\tCtrl+O",             filemenu+openitem
-					MENUITEM "Open Recent",                	 openrecentmenu
-					MENUITEM "&Close\tCtrl+W",               filemenu+closeitem
-					MENUITEM SEPARATOR
-					MENUITEM "&Save\tCtrl+S",                filemenu+saveitem
-					MENUITEM "Save As...",                   filemenu+saveasitem
-					MENUITEM SEPARATOR
-					MENUITEM "E&xit\tCtrl+Q",                filemenu+quititem
-				END
-			END
-			
-		#endif // IUDADESKTOP
-		
-		#ifdef OPMLEDITOR
-		
-			filemenu MENU DISCARDABLE
-			BEGIN
-				POPUP "&File"
-				BEGIN
-					MENUITEM "&New\tCtrl+N",                 filemenu+newitem
-					MENUITEM "&Open...\tCtrl+O",             filemenu+openitem
-					MENUITEM "Open URL...",                  filemenu+openurlitem /*7.0b17 PBS*/
-					MENUITEM "&Close\tCtrl+W",               filemenu+closeitem
-					MENUITEM SEPARATOR
-					MENUITEM "&Save\tCtrl+S",                filemenu+saveitem
-					MENUITEM "Save As...",                   filemenu+saveasitem
-					MENUITEM "&Revert",                      filemenu+revertitem
-					MENUITEM SEPARATOR
-					MENUITEM "&View in Browser\tCtrl+P",     filemenu+viewinbrowseritem
-					MENUITEM SEPARATOR
-					MENUITEM "Update Opml.root...",         filemenu+updateradiorootitem
-					MENUITEM "Work Offline",                 filemenu+workofflineitem /*7.0b25 PBS*/
-					MENUITEM SEPARATOR
-					MENUITEM "E&xit\tCtrl+Q",                filemenu+quititem
-				END
-			END
-			
-		#endif // OPMLEDITOR
-		
-	#else // Radio UserLand
-	
-		/* PBS 07/22/00: Pike's File menu has been revised. It's more
-		like a standard File menu now that we're creating outlines
-		and saving them to disk. No more What Is This? command.
-		Now there's an Open command.
+7.0d10 PBS: Update Radio.root... is now part of the File menu.*/
 
-		7.0d10 PBS: Update Radio.root... is now part of the File menu.*/
+filemenu MENU DISCARDABLE
+BEGIN
+    POPUP "&File"
+    BEGIN
+        MENUITEM "&New\tCtrl+N",                 filemenu+newitem
+		MENUITEM "&Open...\tCtrl+O",             filemenu+openitem
+		MENUITEM "Open URL...",                  filemenu+openurlitem /*7.0b17 PBS*/
+#ifndef OPMLEDITOR
+		MENUITEM "Open Manila Site...",          filemenu+openmanilasiteitem /*7.0b27 PBS*/
+#endif // !OPMLEDITOR
+        MENUITEM "&Close\tCtrl+W",               filemenu+closeitem
+        MENUITEM SEPARATOR
+        MENUITEM "&Save\tCtrl+S",                filemenu+saveitem
+		MENUITEM "Save As...",                   filemenu+saveasitem
+#ifndef OPMLEDITOR
+		MENUITEM "Save As HTML...",              filemenu+saveashtmlitem /*7.0b32 PBS*/
+		MENUITEM "Save As Plain Text...",        filemenu+saveasplaintextitem /*7.0b32 PBS*/
+#endif // OPMLEDITOR
+        MENUITEM "&Revert",                      filemenu+revertitem
+        MENUITEM SEPARATOR
+        MENUITEM "&View in Browser\tCtrl+P",     filemenu+viewinbrowseritem
+		MENUITEM SEPARATOR
+#ifndef OPMLEDITOR
+		MENUITEM "Update Radio.root...",         filemenu+updateradiorootitem
+#else
+		MENUITEM "Update Opml.root...",         filemenu+updateradiorootitem
+#endif // OPMLEDITOR
 
-		filemenu MENU DISCARDABLE
-		BEGIN
-			POPUP "&File"
-			BEGIN
-				MENUITEM "&New\tCtrl+N",                 filemenu+newitem
-				MENUITEM "&Open...\tCtrl+O",             filemenu+openitem
-				MENUITEM "Open URL...",                  filemenu+openurlitem // 7.0b17 PBS
-				MENUITEM "Open Manila Site...",          filemenu+openmanilasiteitem // 7.0b27 PBS
-				MENUITEM "&Close\tCtrl+W",               filemenu+closeitem
-				MENUITEM SEPARATOR
-				MENUITEM "&Save\tCtrl+S",                filemenu+saveitem
-				MENUITEM "Save As...",                   filemenu+saveasitem
-				MENUITEM "Save As HTML...",              filemenu+saveashtmlitem // 7.0b32 PBS
-				MENUITEM "Save As Plain Text...",        filemenu+saveasplaintextitem // 7.0b32 PBS
-				MENUITEM "&Revert",                      filemenu+revertitem
-				MENUITEM SEPARATOR
-				MENUITEM "&View in Browser\tCtrl+P",     filemenu+viewinbrowseritem
-				MENUITEM SEPARATOR
-				MENUITEM "Update Radio.root...",         filemenu+updateradiorootitem
-				MENUITEM "Work Offline",                 filemenu+workofflineitem // 7.0b25 PBS
-				MENUITEM SEPARATOR
-				MENUITEM "E&xit\tCtrl+Q",                filemenu+quititem
-			END
-		END
+		MENUITEM "Work Offline",                 filemenu+workofflineitem /*7.0b25 PBS*/
+        MENUITEM SEPARATOR
+        MENUITEM "E&xit\tCtrl+Q",                filemenu+quititem
+    END
+END
 
-	#endif // Radio UserLand
-	
-#else // Frontier
+#else
 
-	filemenu MENU DISCARDABLE
-	BEGIN
-		POPUP "&File"
-		BEGIN
-			MENUITEM "&New",						 newobjectmenu
-			MENUITEM "&Open... \tCtrl+O",            filemenu+openitem
-			MENUITEM "Open Recent",                	 openrecentmenu // 2006-02-11 aradke
-			MENUITEM SEPARATOR
-			MENUITEM "&Close\tCtrl+W",               filemenu+closeitem
-			MENUITEM "&Save\tCtrl+S",                filemenu+saveitem
-			MENUITEM "Save as Runnable...",			 filemenu+saverunnableitem
-			MENUITEM "Save &As...",              filemenu+saveasitem // 2005-10-26 creedon - changed to Save As
-			MENUITEM "&Revert",                      filemenu+revertitem
-			MENUITEM SEPARATOR
-	   //   MENUITEM "Expert Mode",                 filemenu+expertitem
-	   //   MENUITEM SEPARATOR
-			MENUITEM "Page Set&up...",                 filemenu+pagesetupitem
-			MENUITEM "&Print...\tCtrl+P",              filemenu+printitem
-			MENUITEM SEPARATOR
-			MENUITEM "E&xit\tCtrl+Q",                filemenu+quititem
-		END
-	END
+filemenu MENU DISCARDABLE
+BEGIN
+    POPUP "&File"
+    BEGIN
+        MENUITEM "&New",						 newobjectmenu
+        MENUITEM "&Open... \tCtrl+O",            filemenu+openitem
+        MENUITEM "Open Recent",                	 openrecentmenu /* 2006-02-11 aradke */
+        MENUITEM SEPARATOR
+        MENUITEM "&Close\tCtrl+W",               filemenu+closeitem
+        MENUITEM "&Save\tCtrl+S",                filemenu+saveitem
+        MENUITEM "Save as Runnable...",			 filemenu+saverunnableitem
+        MENUITEM "Save &As...",              filemenu+saveasitem /* 2005-10-26 creedon - changed to Save As*/
+        MENUITEM "&Revert",                      filemenu+revertitem
+        MENUITEM SEPARATOR
+   //   MENUITEM "Expert Mode",                 filemenu+expertitem
+   //   MENUITEM SEPARATOR
+        MENUITEM "Page Set&up...",                 filemenu+pagesetupitem
+        MENUITEM "&Print...\tCtrl+P",              filemenu+printitem
+        MENUITEM SEPARATOR
+        MENUITEM "E&xit\tCtrl+Q",                filemenu+quititem
+    END
+END
 
-#endif  // Frontier
+#endif
 
+#ifdef PIKE /*7.0b26 PBS: Edit menu differs from Frontier's.*/
 
-#ifdef PIKE // 7.0b26 PBS: Edit menu differs from Frontier's
+editmenu MENU DISCARDABLE
+BEGIN
+    POPUP "&Edit"
+    BEGIN
+        MENUITEM "&Undo\tCtrl+Z",				editmenu+undoitem
+        MENUITEM SEPARATOR
+        MENUITEM "Cu&t\tCtrl+X",				editmenu+cutitem
+        MENUITEM "&Copy\tCtrl+C",				editmenu+copyitem
+        MENUITEM "&Paste\tCtrl+V",				editmenu+pasteitem
+        MENUITEM "Clear",						editmenu+clearitem
+        MENUITEM SEPARATOR
+        MENUITEM "Select A&ll\tCtrl+A",			editmenu+selectallitem
+        MENUITEM SEPARATOR
+        MENUITEM "Find and Replace",			findandreplacemenu
+        MENUITEM "Common Styles",				commonstylesmenu
+        MENUITEM SEPARATOR
+        MENUITEM "&Font",						fontmenu
+        MENUITEM "&Size",						sizemenu
+        MENUITEM SEPARATOR
+#ifndef OPMLEDITOR
+        MENUITEM "Open Notepad\tCtrl+Y",		opennotepaditem
+#endif // OPMLEDITOR
+        MENUITEM "Insert Date/Time\tCtrl+4",	insertdatetimeitem
+    END
+END
 
-	#if defined ( IUDADESKTOP ) || defined ( OPMLEDITOR )
+#else
 
-		editmenu MENU DISCARDABLE
-		BEGIN
-			POPUP "&Edit"
-			BEGIN
-				MENUITEM "&Undo\tCtrl+Z",				editmenu+undoitem
-				MENUITEM SEPARATOR
-				MENUITEM "Cu&t\tCtrl+X",				editmenu+cutitem
-				MENUITEM "&Copy\tCtrl+C",				editmenu+copyitem
-				MENUITEM "&Paste\tCtrl+V",				editmenu+pasteitem
-				MENUITEM "Clear",						editmenu+clearitem
-				MENUITEM SEPARATOR
-				MENUITEM "Select A&ll\tCtrl+A",			editmenu+selectallitem
-				MENUITEM SEPARATOR
-				MENUITEM "Find and Replace",			findandreplacemenu
-				MENUITEM "Common Styles",				commonstylesmenu
-				MENUITEM SEPARATOR
-				MENUITEM "&Font",						fontmenu
-				MENUITEM "&Size",						sizemenu
-				MENUITEM SEPARATOR
-				MENUITEM "Insert Date/Time\tCtrl+4",	insertdatetimeitem
-			END
-		END
+editmenu MENU DISCARDABLE
 
-	#else // Radio UserLand
-	
-		editmenu MENU DISCARDABLE
-		BEGIN
-			POPUP "&Edit"
-			BEGIN
-				MENUITEM "&Undo\tCtrl+Z",				editmenu+undoitem
-				MENUITEM SEPARATOR
-				MENUITEM "Cu&t\tCtrl+X",				editmenu+cutitem
-				MENUITEM "&Copy\tCtrl+C",				editmenu+copyitem
-				MENUITEM "&Paste\tCtrl+V",				editmenu+pasteitem
-				MENUITEM "Clear",						editmenu+clearitem
-				MENUITEM SEPARATOR
-				MENUITEM "Select A&ll\tCtrl+A",			editmenu+selectallitem
-				MENUITEM SEPARATOR
-				MENUITEM "Find and Replace",			findandreplacemenu
-				MENUITEM "Common Styles",				commonstylesmenu
-				MENUITEM SEPARATOR
-				MENUITEM "&Font",						fontmenu
-				MENUITEM "&Size",						sizemenu
-				MENUITEM SEPARATOR
-				MENUITEM "Open Notepad\tCtrl+Y",		opennotepaditem
-				MENUITEM "Insert Date/Time\tCtrl+4",	insertdatetimeitem
-			END
-		END
+/* 2005-09-25 creedon: changed for edit menu items calling scripts */
 
-	#endif // Radio UserLand
-	
-#else // Frontier
+BEGIN
+    POPUP "&Edit"
+    BEGIN
+        MENUITEM "&Undo\tCtrl+Z",                   editmenu+undoitem
+        MENUITEM SEPARATOR
+        MENUITEM "Cu&t\tCtrl+X",                     editmenu+cutitem
+        MENUITEM "&Copy\tCtrl+C",                   editmenu+copyitem
+        MENUITEM "&Paste\tCtrl+V",                  editmenu+pasteitem
+        MENUITEM "Clear",                                editmenu+clearitem
+        MENUITEM SEPARATOR
+        MENUITEM "Select A&ll\tCtrl+A",             editmenu+selectallitem
+        MENUITEM SEPARATOR
+	 MENUITEM "Find and Replace",                findandreplacemenu
+        MENUITEM SEPARATOR
+        MENUITEM "&Font",                               fontmenu
+        MENUITEM "&Size",                               sizemenu
+        MENUITEM "St&yle",                              stylemenu
+        MENUITEM "Leading",                            leadingmenu
+        MENUITEM "Justify",                             justifymenu
+	 MENUITEM "Common Styles",                 commonstylesmenu
+        MENUITEM SEPARATOR
+        MENUITEM "Insert Date/Time\tCtrl+4",    insertdatetimeitem
+    END
+END
 
-	// 2005-09-25 creedon: changed for edit menu items calling scripts
-
-	editmenu MENU DISCARDABLE
-	BEGIN
-		POPUP "&Edit"
-		BEGIN
-			MENUITEM "&Undo\tCtrl+Z",                   editmenu+undoitem
-			MENUITEM SEPARATOR
-			MENUITEM "Cu&t\tCtrl+X",                    editmenu+cutitem
-			MENUITEM "&Copy\tCtrl+C",                   editmenu+copyitem
-			MENUITEM "&Paste\tCtrl+V",                  editmenu+pasteitem
-			MENUITEM "Clear",                                editmenu+clearitem
-			MENUITEM SEPARATOR
-			MENUITEM "Select A&ll\tCtrl+A"			editmenu+selectallitem
-			MENUITEM SEPARATOR
-			MENUITEM "Find and Replace",                findandreplacemenu
-			MENUITEM SEPARATOR
-			MENUITEM "&Font",                               fontmenu
-			MENUITEM "&Size",                               sizemenu
-			MENUITEM "St&yle",                              stylemenu
-			MENUITEM "Leading",                            leadingmenu
-			MENUITEM "Justify",						justifymenu
-			MENUITEM "Common Styles",				commonstylesmenu
-			MENUITEM SEPARATOR
-			MENUITEM "Insert Date/Time\tCtrl+4",	insertdatetimeitem
-		END
-	END
-
-#endif  // Frontier
-
+#endif
 
 windowsmenu MENU DISCARDABLE
 BEGIN
@@ -463,36 +352,16 @@ helpmenu MENU DISCARDABLE
 BEGIN
     POPUP "&Help"
     BEGIN
-
-#ifdef PIKE // 7.0b26 PBS: Edit menu differs from Frontier's
-
-	#if defined ( IUDADESKTOP ) || defined ( OPMLEDITOR )
-
-		#ifdef IUDADESKTOP
-
-			MENUITEM "About IUDA Desktop",				helpmenu+1
-
-		#endif
-
-		#ifdef OPMLEDITOR
-
-			MENUITEM "OPML Editor Website",				helpmenu+1
-
-		#endif
-
-	#else // Radio UserLand
-	
+#ifdef PIKE
+#ifndef OPMLEDITOR
 		MENUITEM "Radio Website",				helpmenu+1 /*7.0d8 PBS: name change*/
-
-	#endif // Radio UserLand
-	
-#else // Frontier
-
-	MENUITEM "About Frontier",				helpmenu+1
-
-#endif  // Frontier
-
-END
+#else
+		MENUITEM "OPML Editor Website",				helpmenu+1 /*7.0d8 PBS: name change*/
+#endif // OPMLEDITOR
+#else
+		MENUITEM "About Frontier",				helpmenu+1
+#endif
+		END
 END
 #endif
 
@@ -649,24 +518,13 @@ BEGIN
 	"O",			filemenu+openitem,			VIRTKEY, CONTROL, NOINVERT
 	"W",			filemenu+closeitem,			VIRTKEY, CONTROL, NOINVERT
 	"S",			filemenu+saveitem,			VIRTKEY, CONTROL, NOINVERT
-
-	#ifdef PIKE
-
-		#ifndef IUDADESKTOP
-
-			"P",			filemenu+viewinbrowseritem,	VIRTKEY, CONTROL, NOINVERT
-
-		#endif
-
-		"N",			filemenu+newitem,			VIRTKEY, CONTROL, NOINVERT
-
-	#else
-
-		"P",			filemenu+printitem,			VIRTKEY, CONTROL, NOINVERT
-		"N",			newobjectmenu+1,			VIRTKEY, CONTROL, NOINVERT
-
-	#endif
-
+#ifdef PIKE
+	"P",			filemenu+viewinbrowseritem,	VIRTKEY, CONTROL, NOINVERT
+	"N",			filemenu+newitem,			VIRTKEY, CONTROL, NOINVERT
+#else
+	"P",			filemenu+printitem,			VIRTKEY, CONTROL, NOINVERT
+	"N",			newobjectmenu+1,			VIRTKEY, CONTROL, NOINVERT
+#endif
 	"Q",			filemenu+quititem,			VIRTKEY, CONTROL, NOINVERT
 	"Z",			editmenu+undoitem,			VIRTKEY, CONTROL, NOINVERT
 	"X",			editmenu+cutitem,			VIRTKEY, CONTROL, NOINVERT
@@ -686,6 +544,7 @@ BEGIN
     VK_INSERT,      editmenu+copyitem,          VIRTKEY, CONTROL, NOINVERT
     VK_INSERT,      editmenu+pasteitem,         VIRTKEY, SHIFT, NOINVERT
 END
+
 
 
 /////////////////////////////////////////////////////////////////////////////
@@ -1021,82 +880,38 @@ BEGIN
         BLOCK "040904e4"
         BEGIN
             VALUE "CompanyName", APP_COPYRIGHT_HOLDER "\0"
-
-			#ifdef PIKE
-
-				#if defined ( IUDADESKTOP ) || defined ( OPMLEDITOR )
-
-					#ifdef IUDADESKTOP
-
-						VALUE "FileDescription", "IUDA Desktop\0" // 2007-10-23: creedon
-
-					#endif  // IUDADESKTOP
-
-					#ifdef OPMLEDITOR
-
-						VALUE "FileDescription", "OPML\0" // 2005-04-06 dluebbert: name change
-
-					#endif  // OPMLEDITOR
-
-				#else
-
-					VALUE "FileDescription", "Radio AserLand\0" // 7.0d8 PBS: name change
-
-				#endif
-
-			#else
-
-				VALUE "FileDescription", "Frontier\0"
-
-			#endif
-
+#ifdef PIKE
+#ifndef OPMLEDITOR
+            VALUE "FileDescription", "Radio UserLand\0" /*7.0d8 PBS: name change*/
+#else   // OPMLEDITOR
+			 VALUE "FileDescription", "OPML\0" /*2005-04-06 dluebbert: name change*/
+#endif  // OPMLEDITOR
+#else
+            VALUE "FileDescription", "Frontier\0"
+#endif
 #ifdef fltrialsize
           	VALUE "FileVersion", "Trial " APP_VERSION_STRING "\0"
 #else
           	VALUE "FileVersion", APP_VERSION_STRING "\0"
 #endif
-
             VALUE "InternalName", APPNAME "\0"
       //    VALUE "Language", "English (United States)\0"
             VALUE "LegalCopyright", "© " APP_COPYRIGHT "\0"
-
-#ifdef PIKE // 7.0d8 PBS: name change
-
-	#if defined ( IUDADESKTOP ) || defined ( OPMLEDITOR )
-
-		#ifdef IUDADESKTOP
-
-            VALUE "OriginalFilename", APPNAME ".exe\0"
-            VALUE "ProductName", APPNAME "\0"
-            VALUE "Full Copyright", "© Copyright " APP_COPYRIGHT_HOLDER ". Released under the GNU General Public License.\0"
-
-		#endif  // IUDADESKTOP
-
-		#ifdef OPMLEDITOR
-
+#ifdef PIKE /*7.0d8 PBS: name change*/
+#ifndef OPMLEDITOR
+            VALUE "OriginalFilename", "Radio.exe\0"
+            VALUE "ProductName", "Radio UserLand\0"
+            VALUE "Full Copyright", "© Copyright " APP_COPYRIGHT_HOLDER ". All rights reserved. Permission and Use is Granted Subject to the UserLand End-User License Agreement.\0"
+#else  // OPMLEDITOR
             VALUE "OriginalFilename", "opml.exe\0"
-            VALUE "ProductName", APPNAME "\0"
+            VALUE "ProductName", "OPML\0"
             VALUE "Full Copyright", "© Copyright " APP_COPYRIGHT_HOLDER ". Released under the GNU General Public License.\0"
-
-		#endif  // OPMLEDITOR
-
-	#else
-
-        VALUE "OriginalFilename", APPNAME ".exe\0"
-        VALUE "ProductName", APPNAME " BserLand\0"
-        VALUE "Full Copyright", "© Copyright " APP_COPYRIGHT_HOLDER ". All rights reserved. Permission and Use is Granted Subject to the UserLand End-User License Agreement.\0"
-
-	#endif
-
-#else
-
-    VALUE "OriginalFilename", APPNAME ".exe\0"
-    VALUE "ProductName", APPNAME "\0"
-    VALUE "Full Copyright", "© Copyright " APP_COPYRIGHT_HOLDER ". Released under the GNU General Public License.\0"
-
-#endif
-
-
+#endif // OPMLEDITOR
+#else  // !PIKE
+            VALUE "OriginalFilename", "Frontier.exe\0"
+            VALUE "ProductName", "Frontier\0"
+            VALUE "Full Copyright", "© Copyright " APP_COPYRIGHT_HOLDER ". Released under the GNU General Public License.\0"
+#endif  // !PIKE
 #ifdef fltrialsize
             VALUE "ProductVersion", "Trial " APP_VERSION_STRING "\0"
 #else
@@ -1132,61 +947,37 @@ BEGIN
 END
 
 #ifdef PIKE
-
-	#if defined ( IUDADESKTOP ) || defined ( OPMLEDITOR )
-
-		#ifdef IUDADESKTOP
-
-			STRINGTABLE DISCARDABLE
-			BEGIN
-				IDS_CLIENTTITLE         "IUDA Desktop" // iudadesktop_version_string // 2007-10-24 creedon
-				IDS_UNTITLED            "Untitled"
-				IDS_APPNAME             "IUDA Desktop"
-				IDS_PRINTJOB            "IUDA Desktop - "
-				IDS_PRINTERROR          "Cannot print %s!"
-			END
-
-		#endif  // IUDADESKTOP
-
-		#ifdef OPMLEDITOR
-
-			STRINGTABLE DISCARDABLE
-			BEGIN
-				IDS_CLIENTTITLE         "OPML" //radio_version_string /*2005-04-06 dluebbert: name change*/
-				IDS_UNTITLED            "Untitled"
-				IDS_APPNAME             "OPML"
-				IDS_PRINTJOB            "OPML - "
-				IDS_PRINTERROR          "Cannot print %s!"
-			END
-
-		#endif  // OPMLEDITOR
-
-	#else
-
-		STRINGTABLE DISCARDABLE
-		BEGIN
-			IDS_CLIENTTITLE         "Radio UserLand" // radio_version_string // 7.0d8 PBS: name change
-			IDS_UNTITLED            "Untitled"
-			IDS_APPNAME             "Radio UserLand"
-			IDS_PRINTJOB            "Radio UserLand - "
-			IDS_PRINTERROR          "Cannot print %s!"
-		END
-
-	#endif
-
-#else
-
+#ifndef OPMLEDITOR
+STRINGTABLE DISCARDABLE
+BEGIN
+    IDS_CLIENTTITLE         "Radio UserLand" //radio_version_string /*7.0d8 PBS: name change*/
+    IDS_UNTITLED            "Untitled"
+    IDS_APPNAME             "Radio UserLand"
+    IDS_PRINTJOB            "Radio UserLand - "
+    IDS_PRINTERROR          "Cannot print %s!"
+END
+#else // OPMLEDITOR
 	STRINGTABLE DISCARDABLE
-	BEGIN
-		IDS_CLIENTTITLE         "Frontier" // frontier_version_string
-		IDS_UNTITLED            "Untitled"
-		IDS_APPNAME             "Frontier"
-		IDS_PRINTJOB            "Frontier - "
-		IDS_PRINTERROR          "Cannot print %s!"
-	END
+BEGIN
+    IDS_CLIENTTITLE         "OPML" //radio_version_string /*2005-04-06 dluebbert: name change*/
+    IDS_UNTITLED            "Untitled"
+    IDS_APPNAME             "OPML"
+    IDS_PRINTJOB            "OPML - "
+    IDS_PRINTERROR          "Cannot print %s!"
+END
+#endif // OPMLEDITOR
+#else  // !PIKE
 
-#endif
+STRINGTABLE DISCARDABLE
+BEGIN
+    IDS_CLIENTTITLE         "Frontier" //frontier_version_string
+    IDS_UNTITLED            "Untitled"
+    IDS_APPNAME             "Frontier"
+    IDS_PRINTJOB            "Frontier - "
+    IDS_PRINTERROR          "Cannot print %s!"
+END
 
+#endif  //!PIKE
 
 #endif    // English (U.S.) resources
 /////////////////////////////////////////////////////////////////////////////
@@ -1248,65 +1039,26 @@ END
 #define configres				cnfg
 
 #ifdef PIKE
-
-	#if defined ( IUDADESKTOP ) || defined ( OPMLEDITOR )
-
-		#ifdef IUDADESKTOP
-
-			1 Defaults DISCARDABLE BEGIN "IUDA Desktop\0" END // 2007-10-23: creedon
-
-		#endif
-
-		#ifdef OPMLEDITOR
-
-			1 Defaults DISCARDABLE BEGIN "OPML\0" END // 7.0d8 PBS
-
-		#endif
-
-	#else
-
-		1 Defaults DISCARDABLE BEGIN "Radio UserLand®\0" END // 7.0d8 PBS
-
-	#endif
-
+#ifndef OPMLEDITOR
+	1 Defaults DISCARDABLE BEGIN "Radio UserLand®\0" END /*7.0d8 PBS*/
+#else   //OPMLEDITOR
+	1 Defaults DISCARDABLE BEGIN "OPML\0" END /*7.0d8 PBS*/
+#endif  //OPMLEDITOR
 #else
-
 	1 Defaults DISCARDABLE BEGIN "Frontier\0" END
-
 #endif
-
 	2 Defaults DISCARDABLE BEGIN "Untitled\0" END
 	3 Defaults DISCARDABLE BEGIN "Untitled\0" END
 	4 Defaults DISCARDABLE BEGIN "Select a database file:\0" END
-
 #ifdef PIKE
-
-	#if defined ( IUDADESKTOP ) || defined ( OPMLEDITOR )
-
-		#ifdef IUDADESKTOP
-
-			6 Defaults DISCARDABLE BEGIN "IUDA Desktop.root\0" END
-
-		#endif
-
-		#ifdef OPMLEDITOR
-
-			6 Defaults DISCARDABLE BEGIN "opml.root\0" END
-
-		#endif
-
-	#else
-
-		6 Defaults DISCARDABLE BEGIN "Radio.root\0" END
-
-	#endif
-
+#ifndef OPMLEDITOR
+	6 Defaults DISCARDABLE BEGIN "Radio.root\0" END
+#else  // OPMLEDITOR
+	6 Defaults DISCARDABLE BEGIN "opml.root\0" END
+#endif // OPMLEDITOR 
 #else  // !PIKE
-
 	6 Defaults DISCARDABLE BEGIN "Frontier.root\0" END
-
 #endif  //!PIKE
-
 	7 Defaults DISCARDABLE BEGIN "Open a file:\0" END
 
 	8 Defaults DISCARDABLE BEGIN APP_VERSION_STRING "\0" END
@@ -1317,27 +1069,11 @@ END
 	4 Interface DISCARDABLE BEGIN "Ctrl\0" END
 	5 Interface DISCARDABLE BEGIN "Set Command Key \0" END
 	6 Interface DISCARDABLE BEGIN "Command Key:\0" END
-
-	#if defined ( IUDADESKTOP ) || defined ( OPMLEDITOR )
-
-		#ifdef IUDADESKTOP
-
-			7 Interface DISCARDABLE BEGIN "Internal error#^0.  Please report to discussionArchive.imzUral.info support\0" END
-
-		#endif
-
-		#ifdef OPMLEDITOR
-
-			7 Interface DISCARDABLE BEGIN "Internal error#^0.  Please report to Scripting.com support\0" END
-
-		#endif
-
-	#else
-
-		7 Interface DISCARDABLE BEGIN "Internal error#^0.  Please report to UserLand Technical Support\0" END
-
-	#endif
-
+#ifndef OPMLEDITOR
+	7 Interface DISCARDABLE BEGIN "Internal error#^0.  Please report to UserLand Technical Support\0" END
+#else
+	7 Interface DISCARDABLE BEGIN "Internal error#^0.  Please report to Scripting.com support\0" END
+#endif //OPMLEDITOR
 	8 Interface DISCARDABLE BEGIN "; \0" END
 	9 Interface DISCARDABLE BEGIN "Cancel\0" END
 	10 Interface DISCARDABLE BEGIN "Script for \042^0\042\0" END
@@ -1350,27 +1086,11 @@ END
 	17 Interface DISCARDABLE BEGIN "&Save Database\tCtrl+S\0" END
 	18 Interface DISCARDABLE BEGIN "Save As...\0" END
 	19 Interface DISCARDABLE BEGIN "Save a Copy...\0" END
-
-	#if defined ( IUDADESKTOP ) || defined ( OPMLEDITOR )
-
-		#ifdef IUDADESKTOP
-
-			20 Interface DISCARDABLE BEGIN "This database was created by an older version of IUDA Desktop and must be converted. Proceed?\0" END
-
-		#endif
-
-		#ifdef OPMLEDITOR
-
-		20 Interface DISCARDABLE BEGIN "This database was created by an older version of OPML and must be converted. Proceed?\0" END
-
-		#endif
-
-	#else
-
-		20 Interface DISCARDABLE BEGIN "This database was created by an older version of Frontier and must be converted. Proceed?\0" END
-
-	#endif
-
+#ifndef OPMLEDITOR
+	20 Interface DISCARDABLE BEGIN "This database was created by an older version of Frontier and must be converted. Proceed?\0" END
+#else  //OPMLEDITOR
+	20 Interface DISCARDABLE BEGIN "This database was created by an older version of OPML and must be converted. Proceed?\0" END
+#endif  //OPMLEDITOR
 	21 Interface DISCARDABLE BEGIN "Discard all changes made to \042^0\042?\0" END
 
 #ifndef OPMLEDITOR
@@ -1516,71 +1236,31 @@ END
 	22 DB_Stats DISCARDABLE BEGIN "header/trailer info disagrees\0" END
 	23 DB_Stats DISCARDABLE BEGIN "free list shadow out of synch\0" END
 
-	#ifdef PIKE
-
-		#if defined ( IUDADESKTOP ) || defined ( OPMLEDITOR )
-
-			#ifdef IUDADESKTOP
-
-				1 alerts DISCARDABLE BEGIN "The version number of this database file is not recognized by this version of IUDA Desktop.\0" END // 2007-10-23: creedon
-
-			#endif
-
-			#ifdef OPMLEDITOR
-
-				1 alerts DISCARDABLE BEGIN "The version number of this database file is not recognized by this version of OPML.\0" END // 2005-04-06: dluebbert name change
-
-			#endif
-
-		#else
-
-			1 alerts DISCARDABLE BEGIN "The version number of this database file is not recognized by this version of Pike.\0" END
-
-		#endif
-
-	#else
-
-		1 alerts DISCARDABLE BEGIN "The version number of this database file is not recognized by this version of Frontier.\0" END
-
-	#endif
-
+#ifdef PIKE
+#ifndef OPMLEDITOR
+	1 alerts DISCARDABLE BEGIN "The version number of this database file is not recognized by this version of Pike.\0" END
+#else // OPMLEDITOR
+	1 alerts DISCARDABLE BEGIN "The version number of this database file is not recognized by this version of OPML.\0" END /*2005-04-06: dluebbert name change*/ 
+#endif // OPMLEDITOR
+#else
+	1 alerts DISCARDABLE BEGIN "The version number of this database file is not recognized by this version of Frontier.\0" END
+#endif
 	2 alerts DISCARDABLE BEGIN "That name is too long.  Item names can have up to 255 characters\0" END
 	3 alerts DISCARDABLE BEGIN "That name is already in use.  Please use a different name\0" END
 	4 alerts DISCARDABLE BEGIN "A fresh copy of the file could not be opened.\0" END
 	5 alerts DISCARDABLE BEGIN "Can't paste this Clipboard type here.\0" END
-
-	#ifdef PIKE
-
-		#if defined ( IUDADESKTOP ) || defined ( OPMLEDITOR )
-
-			#ifdef IUDADESKTOP
-
-				6 alerts DISCARDABLE BEGIN "Not enough memory available to run IUDA Desktop.\0" END
-				7 alerts DISCARDABLE BEGIN "IUDA Desktop cannot run on systems older than System 7.0.\0" END // this is a ref to Mac OS, what is it doing on Windows?
-
-			#endif
-
-			#ifdef OPMLEDITOR
-
-				6 alerts DISCARDABLE BEGIN "Not enough memory available to run OPML.\0" END
-				7 alerts DISCARDABLE BEGIN "OPML cannot run on systems older than System 7.0.\0" END /*7.0d8 PBS*/
-
-			#endif
-
-		#else
-
-			6 alerts DISCARDABLE BEGIN "Not enough memory available to run Pike.\0" END
-			7 alerts DISCARDABLE BEGIN "Radio UserLand cannot run on systems older than System 7.0.\0" END /*7.0d8 PBS*/
-
-		#endif
-
-	#else
-
-		6 alerts DISCARDABLE BEGIN "Not enough memory available to run Frontier.\0" END
-		7 alerts DISCARDABLE BEGIN "Frontier cannot run on systems older than System 7.0.\0" END
-
-	#endif
-
+#ifdef PIKE
+#ifndef OPMLEDITOR
+	6 alerts DISCARDABLE BEGIN "Not enough memory available to run Pike.\0" END
+	7 alerts DISCARDABLE BEGIN "Radio UserLand cannot run on systems older than System 7.0.\0" END /*7.0d8 PBS*/
+#else   // OPMLEDITOR
+	6 alerts DISCARDABLE BEGIN "Not enough memory available to run OPML.\0" END
+	7 alerts DISCARDABLE BEGIN "OPML cannot run on systems older than System 7.0.\0" END /*7.0d8 PBS*/
+#endif  // OPMLEDITOR
+#else
+	6 alerts DISCARDABLE BEGIN "Not enough memory available to run Frontier.\0" END
+	7 alerts DISCARDABLE BEGIN "Frontier cannot run on systems older than System 7.0.\0" END
+#endif
 	8 alerts DISCARDABLE BEGIN "The Thread Manager is not installed.  Some features will be unavailable.\0" END
 
 	1 special_folder DISCARDABLE BEGIN "system\0" END
@@ -2544,5 +2224,6 @@ BEGIN
 	0,
 	75L, 75L, 300L, 200L
 	END
+
 
 

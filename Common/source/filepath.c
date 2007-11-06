@@ -270,8 +270,6 @@ boolean filespectopath (const ptrfilespec fs, bigstring bspath) {
 boolean pathtofilespec ( bigstring bspath, ptrfilespec fs ) {
 	
 	//
-	// 2007-11-05 creedon: for Windows, call GetLongPathName to always store long path name
-	//
 	// 2006-10-16 creedon: for Mac, FSRef-ized
 	//
 	// 5.0d8 dmb: clear fs first thing
@@ -290,13 +288,7 @@ boolean pathtofilespec ( bigstring bspath, ptrfilespec fs ) {
 	//
 	
 	bigstring bsfolder;
-	
-	#ifdef WIN95VERSION
-	
-		char fn [ 300 ];
-		
-	#endif
-	
+
 	clearbytes ( fs, sizeof ( *fs ) );
 
 	if ( isemptystring ( bspath ) )
@@ -534,11 +526,6 @@ boolean pathtofilespec ( bigstring bspath, ptrfilespec fs ) {
 
 	#ifdef WIN95VERSION
 	
-		nullterminate ( bspath );
-		
-		if ( GetLongPathName ( stringbaseaddress ( bspath ), fn, 298 ) )	
-			copyctopstring ( fn, bspath );
-		
 		copystring (bspath, fsname (fs));
 
 		folderfrompath (bspath, bsfolder);

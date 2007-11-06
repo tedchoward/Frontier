@@ -85,42 +85,21 @@
 	#define lastmainmenu		helpmenu
 
 	#ifdef PIKE
-
 		#undef stylemenu
 		#undef leadingmenu
 		#undef justifymenu
 		#undef newobjectmenu
+		#undef openrecentmenu
 
-		#define virtualmenu			5100	// 2006-02-25 aradke: never actually displayed
+		#define virtualmenu			5100	/* 2006-02-25 aradke: never actually displayed */
 		#define fontmenu			5200
 		#define sizemenu			5300
 		#define findandreplacemenu	5400
-		#define commonstylesmenu	5500	// 7.0b26 PBS
-		
-		#ifdef IUDADESKTOP
-		
-			#define openrecentmenu	5600	// 2007-10-22 creedon
-		
-		#else
-		
-			#undef openrecentmenu
+		#define commonstylesmenu	5500	/*7.0b26 PBS*/
 
-		#endif
-		
 		#define firsthiermenu		fontmenu
-
-		#ifdef IUDADESKTOP
-		
-			#define lasthiermenu	openrecentmenu	// 2007-10-22 creedon
-		
-		#else
-		
-			#define lasthiermenu	commonstylesmenu
-
-		#endif
-		
+		#define lasthiermenu		commonstylesmenu
 	#else //!PIKE
-
 		#define virtualmenu			5100	/* 2006-02-25 aradke: never actually displayed */
 		#define fontmenu			5200
 		#define stylemenu			5300
@@ -143,82 +122,57 @@
 #define aboutitem 1
 
 #ifdef PIKE
+#ifndef OPMLEDITOR
+	// #define filemenu (applemenu + mainmenuincrement)
 
-	#if defined ( IUDADESKTOP ) || defined ( OPMLEDITOR )
-	
-		#ifdef IUDADESKTOP
-		
-			#define newitem		   1
-			#define openitem		   2
-			#define openrecentitem	   3
-			#define closeitem		   4
-			#define saveitem		   6
-			#define saveasitem		   7
-			// #define updateradiorootitem 9
-			#define quititem		   9
-			
-		#endif // IUDADESKTOP
-		
-		#ifdef OPMLEDITOR // OPMLEDITOR 2005-04-06 dluebbert
-		
-			#define newitem		    1
-			#define openitem		    2
-			#define openurlitem		    3 // 7.0b17 PBS: Open URL... command
-		//	#define openmanilasiteitem 4
-			#define closeitem		    4
-			#define saveitem		    6
-			#define saveasitem		    7
-		//	#define saveashtmlitem 9 /*7.0b32 PBS: Save As HTML... command*/
-		//	#define saveasplaintextitem 10 /*7.0b32 PBS: Save As Plain Text... command*/
-			#define revertitem		    8
-			#define changetitleitem	    5
-			#define viewinbrowseritem   10
-			#define updateradiorootitem 12
-			#define workofflineitem	   13 // 7.0b25 PBS: Work Offline
-			#define quititem		   15
-					
-		#endif // OPMLEDITOR
-		
-	#else // Radio UserLand
-	
-		//
-		// 7.0d10 PBS: Radio UserLand has an Update Radio.root... command in the
-		//			File menu.
-		//
-		// PBS 07/22/00: Pike's File menu has been revised -- the number, order,
-		//			  and names of items have changed.
-		//
-		
-		// #define filemenu (applemenu + mainmenuincrement)
+	/*PBS 07/22/00: Pike's File menu has been revised --
+	the number, order, and names of items have changed.
 
-		#define newitem		    1
-		#define openitem		    2
-		#define openurlitem		    3 // 7.0b17 PBS: Open URL... command
-		#define openmanilasiteitem   4
-		#define closeitem		    5
-		#define saveitem		    7
-		#define saveasitem		    8
-		#define saveashtmlitem	    9 // 7.0b32 PBS: Save As HTML... command
-		#define saveasplaintextitem 10 // 7.0b32 PBS: Save As Plain Text... command
-		#define revertitem		   11
-		#define changetitleitem	    8
-		#define viewinbrowseritem   13
-		#define updateradiorootitem 15
-		#define workofflineitem     16 // 7.0b25 PBS: Work Offline
-		#define quititem		   18
+	7.0d10 PBS: Radio UserLand has an Update Radio.root...
+	command in the File menu.*/
 
-	#endif // Radio UserLand
-	
-#else // Frontier
+	#define newitem 1
+	#define openitem 2
+	#define openurlitem 3 /*7.0b17 PBS: Open URL... command*/
+	#define openmanilasiteitem 4
+	#define closeitem 5
+	#define saveitem 7
+	#define	saveasitem 8
+	#define saveashtmlitem 9 /*7.0b32 PBS: Save As HTML... command*/
+	#define saveasplaintextitem 10 /*7.0b32 PBS: Save As Plain Text... command*/
+	#define revertitem 11
+	#define changetitleitem 8
+	#define viewinbrowseritem 13
+	#define updateradiorootitem 15
+	#define workofflineitem 16 /*7.0b25 PBS: Work Offline*/
+	#define quititem 18
+#else //OPMLEDITOR
+	#define newitem 1
+	#define openitem 2
+	#define openurlitem 3 /*7.0b17 PBS: Open URL... command*/
+//	#define openmanilasiteitem 4
+	#define closeitem 4
+	#define saveitem 6
+	#define	saveasitem 7
+//	#define saveashtmlitem 9 /*7.0b32 PBS: Save As HTML... command*/
+//	#define saveasplaintextitem 10 /*7.0b32 PBS: Save As Plain Text... command*/
+	#define revertitem 8
+	#define changetitleitem 5
+	#define viewinbrowseritem 10
+	#define updateradiorootitem 12
+	#define workofflineitem 13 /*7.0b25 PBS: Work Offline*/
+	#define quititem 15
+#endif // OPMLEDITOR
+
+#else
 
 	// #define filemenu (applemenu + mainmenuincrement)
-	
 	#define newitem		1
 	#define openitem		2
 	#define openrecentitem	3
 	#define closeitem		5
 	#define saveitem		6
-	#define saverunnableitem 7
+	#define saverunnableitem	7
 	#define saveasitem		8
 	#define revertitem		9
 
@@ -227,8 +181,8 @@
 	#define pagesetupitem	11
 	#define printitem		12
 	#define quititem		14
-	
-#endif // Frontier
+
+#endif
 
 // #define editmenu (filemenu + mainmenuincrement)
 
@@ -236,83 +190,46 @@
 
 #ifdef PIKE
 
-	#if defined ( IUDADESKTOP ) || defined ( OPMLEDITOR )
-	
-		#ifdef IUDADESKTOP
-		
-			#define undoitem		  1
-			#define cutitem		  3
-			#define copyitem		  4
-			#define pasteitem		  5
-			#define clearitem		  6
-			#define selectallitem	  8
-			#define findandreplaceitem 10
-			#define fontitem		  12
-			#define sizeitem		  13
-			#define commonstylesitem	  14
-			#define insertdatetimeitem 16
-			
-		#endif // IUDADESKTOP
-		
-		#ifdef OPMLEDITOR
-		
-			#define undoitem		  1
-			#define cutitem		  3
-			#define copyitem		  4
-			#define pasteitem		  5
-			#define clearitem		  6
-			#define selectallitem	  8
-			#define findandreplaceitem 10
-			#define commonstylesitem	  11
-			#define fontitem		  13
-			#define sizeitem		  14
-			#define insertdatetimeitem 16
-			
-			#define styleitem		  -1
-			#define leadingitem		  -1
-			#define justifyitem		  -1
-					
-		#endif // OPMLEDITOR
-		
-	#else // Radio UserLand
-	
-		#define undoitem		  1
-		#define cutitem		  3
-		#define copyitem		  4
-		#define pasteitem		  5
-		#define clearitem		  6
-		#define selectallitem	  8
-		#define findandreplaceitem 10
-		#define commonstylesitem	  11
-		#define fontitem		  13
-		#define sizeitem		  14
-		#define opennotepaditem	  16
-		#define insertdatetimeitem 17
-		
-		#define styleitem		  -1
-		#define leadingitem		  -1
-		#define justifyitem		  -1
-		
-	#endif // Radio UserLand
-	
-#else // Frontier
+	#define undoitem			1
+	#define cutitem				3
+	#define copyitem			4
+	#define pasteitem			5
+	#define clearitem			6
+	#define selectallitem			8
+	#define findandreplaceitem	10
+	#define commonstylesitem	11
+	#define fontitem			13
+	#define sizeitem			14
+#ifndef OPMLEDITOR
+	#define opennotepaditem		16
+	#define insertdatetimeitem	17
+#else // OPMLEDITOR
+	#define insertdatetimeitem	16
+#endif //OPMLEDITOR
 
-	#define undoitem		  1
-	#define cutitem		  3
-	#define copyitem		  4
-	#define pasteitem		  5
-	#define clearitem		  6
-	#define selectallitem	  8
-	#define findandreplaceitem 10
-	#define fontitem		  12
-	#define sizeitem		  13
-	#define styleitem		  14
-	#define leadingitem		  15
-	#define justifyitem		  16
-	#define commonstylesitem	  17
-	#define insertdatetimeitem 19
-	
-#endif // Frontier
+	#define styleitem			-1
+	#define leadingitem			-1
+	#define justifyitem			-1
+
+#else
+
+	#define undoitem			1
+	#define cutitem				3
+	#define copyitem			4
+	#define pasteitem			5
+	#define clearitem			6
+	#define selectallitem			8
+	#define findandreplaceitem	10
+	#define fontitem			12
+	#define sizeitem			13
+	#define styleitem			14
+	#define leadingitem			15
+	#define justifyitem			16
+	#define commonstylesitem	17
+	#define insertdatetimeitem	19
+
+#endif
+
 
 // #define windowsmenu (editmenu + mainmenuincrement)
 #define hidewindowitem 1
@@ -452,5 +369,3 @@ extern void shellupdateopenrecentmenu (void); /* 2005-09-25 creedon */
 #endif //!defined(REZ) && !defined(RC_INVOKED)
 
 #endif //shellmenuinclude
-
-

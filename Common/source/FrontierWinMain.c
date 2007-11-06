@@ -1467,13 +1467,9 @@ BOOL InitializeInstance(LPSTR lpCmdLine, INT nCmdShow)
 		style = 0;
 
 //#ifdef PIKE
-
-	#ifndef OPMLEDITOR           /*2005-04-17 dluebbert*/
-
-		// nCmdShow = SW_HIDE;		/* 9/24/01 RAB */
-
-	#endif // OPMLEDITOR
-
+#ifndef OPMLEDITOR           /*2005-04-17 dluebbert*/
+	nCmdShow = SW_HIDE;		/* 9/24/01 RAB */
+#endif // OPMLEDITOR
 //#endif
 
 	style = style | WS_OVERLAPPEDWINDOW | WS_CLIPCHILDREN;
@@ -3129,33 +3125,15 @@ int CALLBACK WinMain (
 		InitCommonControls();
 	#endif
 
-	#ifdef PIKE // 7.0b26 PBS
-
-		#if defined ( IUDADESKTOP ) || defined ( OPMLEDITOR )
-
-			#ifdef IUDADESKTOP  // 2007-10-22 creedon
-
-				wm_frontieropenfile = RegisterWindowMessage ("IudaDesktopOpenFile");
-
-			#endif // IUDADESKTOP
-
-			#ifdef OPMLEDITOR  // 2005-04-06 dluebbert
-
-				wm_frontieropenfile = RegisterWindowMessage ("OpmlOpenFile");
-
-			#endif // OPMLEDITOR
-
-		#else
-
-			wm_frontieropenfile = RegisterWindowMessage ("PikeOpenFile");
-
-		#endif
-
-	#else
-
-		wm_frontieropenfile = RegisterWindowMessage ("FrontierOpenFile");
-
-	#endif // PIKE
+#ifdef PIKE /*7.0b26 PBS*/
+#ifndef OPMLEDITOR  // 2005-04-06 dluebbert
+	wm_frontieropenfile = RegisterWindowMessage ("PikeOpenFile");
+#else // OPMLEDITOR
+	wm_frontieropenfile = RegisterWindowMessage ("OpmlOpenFile");
+#endif // OPMLEDITOR
+#else
+	wm_frontieropenfile = RegisterWindowMessage ("FrontierOpenFile");
+#endif
 
 	wm_findmsgstring = RegisterWindowMessage (FINDMSGSTRING);
 	
@@ -3163,33 +3141,17 @@ int CALLBACK WinMain (
 	
 	wm_startsearch = RegisterWindowMessage (sz_frontierstartsearch);
 
-	#ifdef PIKE	
+#ifdef PIKE	
+	
+#ifndef OPMLEDITOR
+	frontiermutex = CreateMutex (NULL, true, "PikeInstance");
+#else //OPMLEDITOR
+	frontiermutex = CreateMutex (NULL, true, "OpmlInstance");
+#endif // OPMLEDITOR
 
-		#if defined ( IUDADESKTOP ) || defined ( OPMLEDITOR )
-
-			#ifdef IUDADESKTOP  // 2007-10-22 creedon
-
-				frontiermutex = CreateMutex (NULL, true, "IudaDesktopInstance");
-
-			#endif // IUDADESKTOP
-
-			#ifdef OPMLEDITOR  // 2005-04-06 dluebbert
-
-				frontiermutex = CreateMutex (NULL, true, "OpmlInstance");
-
-			#endif // OPMLEDITOR
-
-		#else
-
-			frontiermutex = CreateMutex (NULL, true, "PikeInstance");
-
-		#endif
-
-	#else
-
-		frontiermutex = CreateMutex (NULL, true, "FrontierInstance");
-
-	#endif
+#else
+	frontiermutex = CreateMutex (NULL, true, "FrontierInstance");
+#endif
 
 	if (GetLastError () == ERROR_ALREADY_EXISTS) {
 		bigstring inputFile;
@@ -3239,33 +3201,15 @@ int CALLBACK WinMain (
 	statusIconData.hWnd = shellframewindow;
 	statusIconData.uCallbackMessage = FWM_SYSTRAYICON;
 
-	#ifdef PIKE
-
-		#if defined ( IUDADESKTOP ) || defined ( OPMLEDITOR )
-
-			#ifdef IUDADESKTOP  // 2007-10-22 creedon
-
-				strcpy ( statusIconData.szTip, "IUDA Desktop" );
-
-			#endif // IUDADESKTOP
-
-			#ifdef OPMLEDITOR  // 2005-04-06 dluebbert
-
-				strcpy (statusIconData.szTip, "OPML");
-
-			#endif // OPMLEDITOR
-
-		#else
-
-			strcpy (statusIconData.szTip, "Radio UserLand");
-
-		#endif
-
-	#else
-
-		strcpy (statusIconData.szTip, "Frontier"); // 2005-04-02 creedon: removed UserLand
-
-	#endif
+#ifdef PIKE
+#ifndef OPMLEDITOR
+	strcpy (statusIconData.szTip, "Radio UserLand");
+#else  // OPMLEDITOR
+	strcpy (statusIconData.szTip, "OPML");
+#endif // OPMLEDITOR
+#else
+	strcpy (statusIconData.szTip, "Frontier"); // 2005-04-02 creedon: removed UserLand
+#endif
 
 	Shell_NotifyIcon (NIM_ADD, &statusIconData);
 

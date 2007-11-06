@@ -313,5 +313,3 @@ BOOL            RealSlowCompare (PSTR, PSTR);
 #define IDB_BITMAP46                     46
 #define IDB_BITMAP47                     47
 #define IDB_BITMAP48                     48
-
-

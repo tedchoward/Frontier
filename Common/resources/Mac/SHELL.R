@@ -44,406 +44,418 @@ resource 'MENU' (1, "Apple") {
 	}
 };
 
-#ifdef PIKE // IUDA Desktop, OPML Editor, or Radio UserLand
+#ifdef PIKE
 
-	//
-	// PBS 7.0b1: File menu changes for Radio UserLand. It's a standard File
-	//		    menu now.
-	//
-	
-	#if defined ( IUDADESKTOP ) || defined ( OPMLEDITOR )
-	
-		#ifdef IUDADESKTOP
-		
-			resource 'MENU' (412, "File") { // Carbon File menu
-				2,
-				textMenuProc,
-				0x7FFFFE77,
-				enabled,
-				"File",
-				{	// array: 7 elements
-				
-					// [1]
-					"New", noIcon, "N", noMark, plain,
-					
-					// [2]
-					"Open…", noIcon, "O", noMark, plain,
-					
-					// [3]
-					"Open Recent", noIcon, hierarchicalMenu, "\0d137", plain,
-					
-					// [4]
-					"Close", noIcon, "W", noMark, plain,
-					
-					// [5]
-					"-", noIcon, noKey, noMark, plain,
-					
-					// [6]
-					"Save", noIcon, "S", noMark, plain,
-					
-					// [7]
-					"Save As…", noIcon, noKey, noMark, plain,
-					
-					/* // [8]
-					"-", noIcon, noKey, noMark, plain,
-					
-					// [9]
-					"Update IUDA Desktop.root…", noIcon, noKey, noMark, plain, */
-				}
-			};
-			
-		#endif // IUDADESKTOP
-		
-		#ifdef OPMLEDITOR
-		
-			resource 'MENU' (412, "File") { // Carbon File menu
-				2,
-				textMenuProc,
-				0x7FFFFE77,
-				enabled,
-				"File",
-				{	// array: 13 elements
-					/* [1] */
-					"New", noIcon, "N", noMark, plain,
-					/* [2] */
-					"Open…", noIcon, "O", noMark, plain,
-					/* [3] */
-					"Open URL…", noIcon, noKey, noMark, plain, // 7.0b17 PBS
-					/* [4] */
-					"Close", noIcon, "W", noMark, plain,
-					/* [5] */
-					"-", noIcon, noKey, noMark, plain,
-					/* [6] */
-					"Save", noIcon, "S", noMark, plain,
-					/* [7] */
-					"Save As…", noIcon, noKey, noMark, plain,
-					/* [8] */
-					"Revert", noIcon, noKey, noMark, plain,
-					/* [9] */
-					"-", noIcon, noKey, noMark, plain,
-					/* [10] */
-					"View in Browser", noIcon, "P", noMark, plain,
-					/* [11] */
-					"-", noIcon, noKey, noMark, plain,
-					/* [12] */
-					"Update opml.root…", noIcon, noKey, noMark, plain,
-					/* [13] */
-					"Work Offline", noIcon, noKey, noMark, plain
-				}
-			};
-			
-		#endif // OPMLEDITOR
-		
-	#else // Radio UserLand
-	
-		resource 'MENU' (412, "File") { // Carbon File menu
-			2,
-			textMenuProc,
-			0x7FFFFE77,
-			enabled,
-			"File",
-			{	/* array: 16 elements */
-				/* [1] */
-				"New", noIcon, "N", noMark, plain,
-				/* [2] */
-				"Open…", noIcon, "O", noMark, plain,
-				/* [3] */
-				"Open URL…", noIcon, noKey, noMark, plain, /*7.0b17 PBS*/
-				/* [4] */
-				"Open Manila Site…", noIcon, noKey, noMark, plain, /*7.0b27 PBS*/
-				/* [5] */
-				"Close", noIcon, "W", noMark, plain,
-				/* [6] */
-				"-", noIcon, noKey, noMark, plain,
-				/* [7] */
-				"Save", noIcon, "S", noMark, plain,
-				/* [8] */
-				"Save As…", noIcon, noKey, noMark, plain,
-				/* [9] */
-				"Save As HTML…", noIcon, noKey, noMark, plain,
-				/* [10] */
-				"Save As Plain Text…", noIcon, noKey, noMark, plain,
-				/* [11] */
-				"Revert", noIcon, noKey, noMark, plain,
-				/* [12] */
-				"-", noIcon, noKey, noMark, plain,
-				/* [13] */
-				"View in Browser", noIcon, "P", noMark, plain,
-				/* [14] */
-				"-", noIcon, noKey, noMark, plain,
-				/* [15] */
-				"Update Radio.root…", noIcon, noKey, noMark, plain,
-				/* [16] */
-				"Work Offline", noIcon, noKey, noMark, plain
-			}
-		};
-		
-	#endif // Radio UserLand
-	
-#else // Frontier
+/*PBS 7.0b1: File menu changes for Radio UserLand.
+It's a standard File menu now.*/
+#ifndef OPMLEDITOR
+resource 'MENU' (2, "File") {
+	2,
+	textMenuProc,
+	0x7FFFFE77,
+	enabled,
+	"File",
+	{	/* array: 9 elements */
+		/* [1] */
+		"New", noIcon, "N", noMark, plain,
+		/* [2] */
+		"Open…", noIcon, "O", noMark, plain,
+		/* [3] */
+		"Open URL…", noIcon, noKey, noMark, plain, /*7.0b17 PBS*/
+		/* [4] */
+		"Open Manila Site…", noIcon, noKey, noMark, plain, /*7.0b27 PBS*/
+		/* [5] */
+		"Close", noIcon, "W", noMark, plain,
+		/* [6] */
+		"-", noIcon, noKey, noMark, plain,
+		/* [7] */
+		"Save", noIcon, "S", noMark, plain,
+		/* [8] */
+		"Save As…", noIcon, noKey, noMark, plain,
+		/* [9] */
+		"Save As HTML…", noIcon, noKey, noMark, plain,
+		/* [10] */
+		"Save As Plain Text…", noIcon, noKey, noMark, plain,
+		/* [11] */
+		"Revert", noIcon, noKey, noMark, plain,
+		/* [12] */
+		"-", noIcon, noKey, noMark, plain,
+		/* [13] */
+		"View in Browser", noIcon, "P", noMark, plain,
+		/* [14] */
+		"-", noIcon, noKey, noMark, plain,
+		/* [15] */
+		"Update Radio.root…", noIcon, noKey, noMark, plain,
+		/* [16] */
+		"Work Offline", noIcon, noKey, noMark, plain,
+		/* [17] */
+		"-", noIcon, noKey, noMark, plain,
+		/* [18] */
+		"Quit", noIcon, "Q", noMark, plain
+	}
+};
 
-	// Code change by Timothy Paustian Saturday, July 22, 2000 10:22:52 PM
-	// This is the conditional menu for carbon. You do not need a quit item in
-	// carbon
-	
-	resource 'MENU' (412, "File") {
-		2,
-		textMenuProc,
-		0x7FFFFE77,
-		enabled,
-		"File",
-		{	/* array: 12 elements */
-		
-			#ifdef version42orgreater
-					/* [1] */
-					"New", noIcon, hierarchicalMenu, "\0d135", plain,
-			#else
-					/* [1] */
-					"New", noIcon, noKey, noMark, plain,
-			#endif
-			
-			/* [2] */
-			"Open…", noIcon, "O", noMark, plain,
-			/* [3] */
-			"Open Recent", noIcon, hierarchicalMenu, "\0d137", plain,
-			/* [4] */
-			"-", noIcon, noKey, noMark, plain,
-			/* [5] */
-			"Close", noIcon, "W", noMark, plain,
-			/* [6] */
-			"Save", noIcon, "S", noMark, plain,
-			/* [7] */
-			"Save as Runnable…", noIcon, noKey, noMark, plain,
-			/* [8] */
-			"Save As…", noIcon, noKey, noMark, plain, // 2005-11-01 creedon
-			/* [9] */
-			"Revert", noIcon, noKey, noMark, plain,
-			/* [10] */
-			"-", noIcon, noKey, noMark, plain,
-			/* [11] */
-			"Page Setup…", noIcon, noKey, noMark, plain,
-			/* [12] */
-			"Print…", noIcon, "P", noMark, plain
-		}
-	};
-		
-#endif  // Frontier
+/*Carbon File menu*/
 
-#ifdef PIKE // IUDA Desktop, OPML Editor, or Radio UserLand
+resource 'MENU' (412, "File") {
+	2,
+	textMenuProc,
+	0x7FFFFE77,
+	enabled,
+	"File",
+	{	/* array: 9 elements */
+		/* [1] */
+		"New", noIcon, "N", noMark, plain,
+		/* [2] */
+		"Open…", noIcon, "O", noMark, plain,
+		/* [3] */
+		"Open URL…", noIcon, noKey, noMark, plain, /*7.0b17 PBS*/
+		/* [4] */
+		"Open Manila Site…", noIcon, noKey, noMark, plain, /*7.0b27 PBS*/
+		/* [5] */
+		"Close", noIcon, "W", noMark, plain,
+		/* [6] */
+		"-", noIcon, noKey, noMark, plain,
+		/* [7] */
+		"Save", noIcon, "S", noMark, plain,
+		/* [8] */
+		"Save As…", noIcon, noKey, noMark, plain,
+		/* [9] */
+		"Save As HTML…", noIcon, noKey, noMark, plain,
+		/* [10] */
+		"Save As Plain Text…", noIcon, noKey, noMark, plain,
+		/* [11] */
+		"Revert", noIcon, noKey, noMark, plain,
+		/* [12] */
+		"-", noIcon, noKey, noMark, plain,
+		/* [13] */
+		"View in Browser", noIcon, "P", noMark, plain,
+		/* [14] */
+		"-", noIcon, noKey, noMark, plain,
+		/* [15] */
+		"Update Radio.root…", noIcon, noKey, noMark, plain,
+		/* [16] */
+		"Work Offline", noIcon, noKey, noMark, plain
+	}
+};
+#else // OPMLEDITOR
 
-	//
-	// 7.0b26 PBS: Radio UserLand has a different Edit menu.
-	//
- 
-	#if defined ( IUDADESKTOP ) || defined ( OPMLEDITOR )
-	
-		#ifdef IUDADESKTOP
+resource 'MENU' (2, "File") {
+	2,
+	textMenuProc,
+	0x7FFFFE77,
+	enabled,
+	"File",
+	{	/* array: 9 elements */
+		/* [1] */
+		"New", noIcon, "N", noMark, plain,
+		/* [2] */
+		"Open…", noIcon, "O", noMark, plain,
+		/* [3] */
+		"Open URL…", noIcon, noKey, noMark, plain, /*7.0b17 PBS*/
 		
-			resource 'MENU' (3, "Edit") {
-				3,
-				textMenuProc,
-				0x7FFFFF5D,
-				enabled,
-				"Edit",
-				{	// array: 16 elements
-				
-					// [1]
-					"Undo", noIcon, "Z", noMark, plain,
-					
-					// [2]
-					"-", noIcon, noKey, noMark, plain,
-					
-					// [3]
-					"Cut", noIcon, "X", noMark, plain,
-					
-					// [4]
-					"Copy", noIcon, "C", noMark, plain,
-					
-					// [5]
-					"Paste", noIcon, "V", noMark, plain,
-					
-					// [6]
-					"Clear", noIcon, noKey, noMark, plain,
-					
-					// [7]
-					"-", noIcon, noKey, noMark, plain,
-					
-					// [8]
-					"Select All", noIcon, "A", noMark, plain,
-					
-					// [9]
-					"-", noIcon, noKey, noMark, plain,
-					
-					// [10]
-					"Find and Replace", noIcon, hierarchicalMenu, "\0d133", plain,
-					
-					// [11]
-					"-", noIcon, noKey, noMark, plain,
-					
-					// [12]
-					"Font", noIcon, hierarchicalMenu, "\0d128", plain,
-					
-					// [13]
-					"Size", noIcon, hierarchicalMenu, "\0d130", plain,
-					
-					// [14]
-					"Common Styles", noIcon, hierarchicalMenu, "\0d134", plain,
-					
-					// [15]
-					"-", noIcon, noKey, noMark, plain,
-					
-					// [16]
-					"Insert Date/Time", noIcon, "4", noMark, plain,
-				}
-			};
-			
-		#endif // IUDADESKTOP
-		
-		#ifdef OPMLEDITOR
-		
-			resource 'MENU' (3, "Edit") {
-				3,
-				textMenuProc,
-				0x7FFFFF5D,
-				enabled,
-				"Edit",
-				{	/* array: 14 elements */
-					/* [1] */
-					"Undo", noIcon, "Z", noMark, plain,
-					/* [2] */
-					"-", noIcon, noKey, noMark, plain,
-					/* [3] */
-					"Cut", noIcon, "X", noMark, plain,
-					/* [4] */
-					"Copy", noIcon, "C", noMark, plain,
-					/* [5] */
-					"Paste", noIcon, "V", noMark, plain,
-					/* [6] */
-					"Clear", noIcon, noKey, noMark, plain,
-					/* [7] */
-					"-", noIcon, noKey, noMark, plain,
-					/* [8] */
-					"Select All", noIcon, "A", noMark, plain,
-					/* [9] */
-					"-", noIcon, noKey, noMark, plain,
-					/* [10] */
-					"Find and Replace", noIcon, hierarchicalMenu, "\0d133", plain,
-					/* [11] */
-					"Common Styles", noIcon, hierarchicalMenu, "\0d134", plain,
-					/* [12] */
-					"-", noIcon, noKey, noMark, plain,
-					/* [13] */
-					"Font", noIcon, hierarchicalMenu, "\0d128", plain,
-					/* [14] */
-					"Size", noIcon, hierarchicalMenu, "\0d130", plain,
-					/* [15] */
-					"-", noIcon, noKey, noMark, plain,
-					/* [16] */
-					"Insert Date/Time", noIcon, "4", noMark, plain,
-				}
-			};
-			
-		#endif // OPMLEDITOR
-		
-	#else // Radio UserLand
-	
-		resource 'MENU' (3, "Edit") {
-			3,
-			textMenuProc,
-			0x7FFFFF5D,
-			enabled,
-			"Edit",
-			{	/* array: 17 elements */
-				/* [1] */
-				"Undo", noIcon, "Z", noMark, plain,
-				/* [2] */
-				"-", noIcon, noKey, noMark, plain,
-				/* [3] */
-				"Cut", noIcon, "X", noMark, plain,
-				/* [4] */
-				"Copy", noIcon, "C", noMark, plain,
-				/* [5] */
-				"Paste", noIcon, "V", noMark, plain,
-				/* [6] */
-				"Clear", noIcon, noKey, noMark, plain,
-				/* [7] */
-				"-", noIcon, noKey, noMark, plain,
-				/* [8] */
-				"Select All", noIcon, "A", noMark, plain,
-				/* [9] */
-				"-", noIcon, noKey, noMark, plain,
-				/* [10] */
-				"Find and Replace", noIcon, hierarchicalMenu, "\0d133", plain,
-				/* [11] */
-				"Common Styles", noIcon, hierarchicalMenu, "\0d134", plain,
-				/* [12] */
-				"-", noIcon, noKey, noMark, plain,
-				/* [13] */
-				"Font", noIcon, hierarchicalMenu, "\0d128", plain,
-				/* [14] */
-				"Size", noIcon, hierarchicalMenu, "\0d130", plain,
-				/* [15] */
-				"-", noIcon, noKey, noMark, plain,
-				/* [16] */
-				"Open Notepad", noIcon, "Y", noMark, plain,
-				/* [17] */
-				"Insert Date/Time", noIcon, "4", noMark, plain,
-			}
-		};
-		
-	#endif // Radio UserLand
-	
-#else // Frontier
+		/* [4] */
+		"Close", noIcon, "W", noMark, plain,
+		/* [5] */
+		"-", noIcon, noKey, noMark, plain,
+		/* [6] */
+		"Save", noIcon, "S", noMark, plain,
+		/* [7] */
+		"Save As…", noIcon, noKey, noMark, plain,
+		/* [9] */
+		"Revert", noIcon, noKey, noMark, plain,
+		/* [9] */
+		"-", noIcon, noKey, noMark, plain,
+		/* [10] */
+		"View in Browser", noIcon, "P", noMark, plain,
+		/* [11] */
+		"-", noIcon, noKey, noMark, plain,
+		/* [12] */
+		"Update opml.root…", noIcon, noKey, noMark, plain,
+		/* [13] */
+		"Work Offline", noIcon, noKey, noMark, plain,
+		/* [14] */
+		"-", noIcon, noKey, noMark, plain,
+		/* [15] */
+		"Quit", noIcon, "Q", noMark, plain
+	}
+};
 
-	resource 'MENU' (3, "Edit") {
-		3,
-		textMenuProc,
-		0x7FFFFF5D,
-		enabled,
-		"Edit",
-		{	/* array: 19 elements */
-			/* [1] */
-			"Undo", noIcon, "Z", noMark, plain,
-			/* [2] */
-			"-", noIcon, noKey, noMark, plain,
-			/* [3] */
-			"Cut", noIcon, "X", noMark, plain,
-			/* [4] */
-			"Copy", noIcon, "C", noMark, plain,
-			/* [5] */
-			"Paste", noIcon, "V", noMark, plain,
-			/* [6] */
-			"Clear", noIcon, noKey, noMark, plain,
-			/* [7] */
-			"-", noIcon, noKey, noMark, plain,
-			/* [8] */
-			"Select All", noIcon, "A", noMark, plain,
-			/* [9] */
-			"-", noIcon, noKey, noMark, plain,
-			/* [10] */
-			"Find and Replace", noIcon, hierarchicalMenu, "\0d133", plain,
-			/* [11] */
-			"-", noIcon, noKey, noMark, plain,
-			/* [12] */
-			"Font", noIcon, hierarchicalMenu, "\0d128", plain,
-			/* [13] */
-			"Size", noIcon, hierarchicalMenu, "\0d130", plain,
-			/* [14] */
-			"Style", noIcon, hierarchicalMenu, "\0d129", plain,
-			/* [15] */
-			"Leading", noIcon, hierarchicalMenu, "\0d131", plain,
-			/* [16] */
-			"Justify", noIcon, hierarchicalMenu, "\0d132", plain,
-			/* [17] */
-			"Common Styles", noIcon, hierarchicalMenu, "\0d134", plain,
-			/* [18] */
-			"-", noIcon, noKey, noMark, plain,
-			/* [19] */
-			"Insert Date/Time", noIcon, "4", noMark, plain
-		}
-	};
+/*Carbon File menu*/
+
+resource 'MENU' (412, "File") {
+	2,
+	textMenuProc,
+	0x7FFFFE77,
+	enabled,
+	"File",
+	{	/* array: 9 elements */
+		/* [1] */
+		"New", noIcon, "N", noMark, plain,
+		/* [2] */
+		"Open…", noIcon, "O", noMark, plain,
+		/* [3] */
+		"Open URL…", noIcon, noKey, noMark, plain, /*7.0b17 PBS*/
+		/* [4] */
+		"Close", noIcon, "W", noMark, plain,
+		/* [5] */
+		"-", noIcon, noKey, noMark, plain,
+		/* [6] */
+		"Save", noIcon, "S", noMark, plain,
+		/* [7] */
+		"Save As…", noIcon, noKey, noMark, plain,
+		/* [8] */
+		"Revert", noIcon, noKey, noMark, plain,
+		/* [9] */
+		"-", noIcon, noKey, noMark, plain,
+		/* [10] */
+		"View in Browser", noIcon, "P", noMark, plain,
+		/* [11] */
+		"-", noIcon, noKey, noMark, plain,
+		/* [12] */
+		"Update opml.root…", noIcon, noKey, noMark, plain,
+		/* [13] */
+		"Work Offline", noIcon, noKey, noMark, plain
+	}
+};
+#endif // OPMLEDITOR
+#else
+
+resource 'MENU' (2, "File") {
+	2,
+	textMenuProc,
+	0x7FFFFE77,
+	enabled,
+	"File",
+	{	/* array: 14 elements */
+#ifdef version42orgreater
+		/* [1] */
+		"New", noIcon, hierarchicalMenu, "\0d135", plain,
+#else
+		/* [1] */
+		"New", noIcon, noKey, noMark, plain,
+#endif
+		/* [2] */
+		"Open…", noIcon, "O", noMark, plain,
+		/* [3] */
+		"Open Recent", noIcon, hierarchicalMenu, "\0d137", plain,
+		/* [4] */
+		"-", noIcon, noKey, noMark, plain,
+		/* [5] */
+		"Close", noIcon, "W", noMark, plain,
+		/* [6] */
+		"Save", noIcon, "S", noMark, plain,
+		/* [7] */
+		"Save as Runnable…", noIcon, noKey, noMark, plain,
+		/* [8] */
+		"Save As…", noIcon, noKey, noMark, plain, /* 2005-11-01 creedon */
+		/* [9] */
+		"Revert", noIcon, noKey, noMark, plain,
+		/* [10] */
+		"-", noIcon, noKey, noMark, plain,
+
+//		/* [10] */
+//		"Expert Mode", noIcon, noKey, noMark, plain,
+//		/* [9] */
+//		"-", noIcon, noKey, noMark, plain,
+
+		/* [11] */
+		"Page Setup…", noIcon, noKey, noMark, plain,
+		/* [12] */
+		"Print…", noIcon, "P", noMark, plain,
+		/* [13] */
+		"-", noIcon, noKey, noMark, plain,
+		/* [14] */
+		"Quit", noIcon, "Q", noMark, plain
+	}
+};
+
+//Code change by Timothy Paustian Saturday, July 22, 2000 10:22:52 PM
+//This is the conditional menu for carbon. You do not need a quit 
+//item in carbon
+resource 'MENU' (412, "File") {
+	2,
+	textMenuProc,
+	0x7FFFFE77,
+	enabled,
+	"File",
+	{	/* array: 12 elements */
+#ifdef version42orgreater
+		/* [1] */
+		"New", noIcon, hierarchicalMenu, "\0d135", plain,
+#else
+		/* [1] */
+		"New", noIcon, noKey, noMark, plain,
+#endif
+		/* [2] */
+		"Open…", noIcon, "O", noMark, plain,
+		/* [3] */
+		"Open Recent", noIcon, hierarchicalMenu, "\0d137", plain,
+		/* [4] */
+		"-", noIcon, noKey, noMark, plain,
+		/* [5] */
+		"Close", noIcon, "W", noMark, plain,
+		/* [6] */
+		"Save", noIcon, "S", noMark, plain,
+		/* [7] */
+		"Save as Runnable…", noIcon, noKey, noMark, plain,
+		/* [8] */
+		"Save As…", noIcon, noKey, noMark, plain, /* 2005-11-01 creedon */
+		/* [9] */
+		"Revert", noIcon, noKey, noMark, plain,
+		/* [10] */
+		"-", noIcon, noKey, noMark, plain,
+		/* [11] */
+		"Page Setup…", noIcon, noKey, noMark, plain,
+		/* [12] */
+		"Print…", noIcon, "P", noMark, plain
+	}
+};
+#endif
+
+#ifdef PIKE /*7.0b26 PBS: Radio UserLand has a different Edit menu.*/
+
+#ifndef OPMLEDITOR
+resource 'MENU' (3, "Edit") {
+	3,
+	textMenuProc,
+	0x7FFFFF5D,
+	enabled,
+	"Edit",
+	{	/* array: 17 elements */
+		/* [1] */
+		"Undo", noIcon, "Z", noMark, plain,
+		/* [2] */
+		"-", noIcon, noKey, noMark, plain,
+		/* [3] */
+		"Cut", noIcon, "X", noMark, plain,
+		/* [4] */
+		"Copy", noIcon, "C", noMark, plain,
+		/* [5] */
+		"Paste", noIcon, "V", noMark, plain,
+		/* [6] */
+		"Clear", noIcon, noKey, noMark, plain,
+		/* [7] */
+		"-", noIcon, noKey, noMark, plain,
+		/* [8] */
+		"Select All", noIcon, "A", noMark, plain,
+		/* [9] */
+		"-", noIcon, noKey, noMark, plain,
+		/* [10] */
+		"Find and Replace", noIcon, hierarchicalMenu, "\0d133", plain,
+		/* [11] */
+		"Common Styles", noIcon, hierarchicalMenu, "\0d134", plain,
+		/* [12] */
+		"-", noIcon, noKey, noMark, plain,
+		/* [13] */
+		"Font", noIcon, hierarchicalMenu, "\0d128", plain,
+		/* [14] */
+		"Size", noIcon, hierarchicalMenu, "\0d130", plain,
+		/* [15] */
+		"-", noIcon, noKey, noMark, plain,
+		/* [16] */
+		"Open Notepad", noIcon, "Y", noMark, plain,
+		/* [17] */
+		"Insert Date/Time", noIcon, "4", noMark, plain,
+	}
+};
+#else //OPMLEDITOR
+resource 'MENU' (3, "Edit") {
+	3,
+	textMenuProc,
+	0x7FFFFF5D,
+	enabled,
+	"Edit",
+	{	/* array: 14 elements */
+		/* [1] */
+		"Undo", noIcon, "Z", noMark, plain,
+		/* [2] */
+		"-", noIcon, noKey, noMark, plain,
+		/* [3] */
+		"Cut", noIcon, "X", noMark, plain,
+		/* [4] */
+		"Copy", noIcon, "C", noMark, plain,
+		/* [5] */
+		"Paste", noIcon, "V", noMark, plain,
+		/* [6] */
+		"Clear", noIcon, noKey, noMark, plain,
+		/* [7] */
+		"-", noIcon, noKey, noMark, plain,
+		/* [8] */
+		"Select All", noIcon, "A", noMark, plain,
+		/* [9] */
+		"-", noIcon, noKey, noMark, plain,
+		/* [10] */
+		"Find and Replace", noIcon, hierarchicalMenu, "\0d133", plain,
+		/* [11] */
+		"Common Styles", noIcon, hierarchicalMenu, "\0d134", plain,
+		/* [12] */
+		"-", noIcon, noKey, noMark, plain,
+		/* [13] */
+		"Font", noIcon, hierarchicalMenu, "\0d128", plain,
+		/* [14] */
+		"Size", noIcon, hierarchicalMenu, "\0d130", plain,
+		/* [15] */
+		"-", noIcon, noKey, noMark, plain,
+		/* [16] */
+		"Insert Date/Time", noIcon, "4", noMark, plain,
 		
-#endif  // Frontier
+	}
+};
+
+#endif //OPMLEDITOR
+
+#else
+
+resource 'MENU' (3, "Edit") {
+	3,
+	textMenuProc,
+	0x7FFFFF5D,
+	enabled,
+	"Edit",
+	{	/* array: 19 elements */
+		/* [1] */
+		"Undo", noIcon, "Z", noMark, plain,
+		/* [2] */
+		"-", noIcon, noKey, noMark, plain,
+		/* [3] */
+		"Cut", noIcon, "X", noMark, plain,
+		/* [4] */
+		"Copy", noIcon, "C", noMark, plain,
+		/* [5] */
+		"Paste", noIcon, "V", noMark, plain,
+		/* [6] */
+		"Clear", noIcon, noKey, noMark, plain,
+		/* [7] */
+		"-", noIcon, noKey, noMark, plain,
+		/* [8] */
+		"Select All", noIcon, "A", noMark, plain,
+		/* [9] */
+		"-", noIcon, noKey, noMark, plain,
+		/* [10] */
+		"Find and Replace", noIcon, hierarchicalMenu, "\0d133", plain,
+		/* [11] */
+		"-", noIcon, noKey, noMark, plain,
+		/* [12] */
+		"Font", noIcon, hierarchicalMenu, "\0d128", plain,
+		/* [13] */
+		"Size", noIcon, hierarchicalMenu, "\0d130", plain,
+		/* [14] */
+		"Style", noIcon, hierarchicalMenu, "\0d129", plain,
+		/* [15] */
+		"Leading", noIcon, hierarchicalMenu, "\0d131", plain,
+		/* [16] */
+		"Justify", noIcon, hierarchicalMenu, "\0d132", plain,
+		/* [17] */
+		"Common Styles", noIcon, hierarchicalMenu, "\0d134", plain,
+		/* [18] */
+		"-", noIcon, noKey, noMark, plain,
+		/* [19] */
+		"Insert Date/Time", noIcon, "4", noMark, plain
+	}
+};
+
+#endif
 
 resource 'MENU' (4, "Window") {
 	4,
@@ -613,24 +625,15 @@ resource 'MENU' (133, "Find and Replace") {
 		/* [3] */
 		"Find Next", noIcon, "G", noMark, plain,
 		/* [4] */
+		#ifdef PIKE /* 2005-09-25 creedon */
 		
-		#ifdef PIKE // 2005-09-25 creedon
+		"Replace & Find Next", noIcon, "H", noMark, plain
 		
-			#ifdef IUDADESKTOP // 2007-09-09 creedon
-			
-				"Replace & Find Next", noIcon, "1", noMark, plain
-			
-			#else // OPML Editor or Radio UserLand
-			
-				"Replace & Find Next", noIcon, "H", noMark, plain
-			
-			#endif //
-			
-		#else // Frontier
+		#else
 		
-			"Replace & Find Next", noIcon, "1", noMark, plain
+		"Replace & Find Next", noIcon, "1", noMark, plain
 		
-		#endif // Frontier
+		#endif
 	}
 };
 
@@ -755,78 +758,41 @@ resource 'xmnu' (129, "Style") {
 
 
 resource 'STR#' (129, "Defaults", purgeable) {
-	{	// array StringArray: 6 elements
-	
-		#ifdef PIKE // [1]
-		
-			#if defined ( IUDADESKTOP ) || defined ( OPMLEDITOR )
-			
-				#ifdef IUDADESKTOP
-				
-					"IUDA Desktop",
-					
-				#endif // IUDADESKTOP
-				
-				#ifdef OPMLEDITOR
-				
-					"OPML",
-					
-				#endif // OPMLEDITOR
-				
-			#else
-			
-				"Radio UserLand™", // PBS 7.0b1: name change to Radio UserLand.
-				
-			#endif
-			
-		#else
-		
-			"Frontier", // 2005-01-04 creedon - removed UserLand and (tm) for open source release
-			
-		#endif // [1]
-		
-		// [2]
+	{	/* array StringArray: 6 elements */
+#ifdef PIKE
+#ifndef OPMLEDITOR
+		/* [1] */
+		"Radio UserLand™", /*PBS 7.0b1: name change to Radio UserLand.*/
+#else  // OPMLEDITOR
+		"OPML",
+#endif  //OPMLEDITOR
+#else
+		/* [1] */
+		"Frontier", /* 2005-01-04 creedon - removed UserLand and (tm) for open source release */
+#endif
+		/* [2] */
 		"Untitled",
-		// [3]
+		/* [3] */
 		"Untitled",
-		// [4]	  
+		/* [4] */
 		"Select a database file:",
-		// [5]
-		"", 
-		
-		#ifdef PIKE // [6] -- default DB name
-
-			#if defined ( IUDADESKTOP ) || defined ( OPMLEDITOR )
-			
-				#ifdef IUDADESKTOP
-				
-					"IUDA Desktop.root",
-					
-				#endif // IUDADESKTOP
-				
-				#ifdef OPMLEDITOR
-				
-					"opml.root",
-					
-				#endif // OPMLEDITOR
-				
-			#else
-			
-				"Radio.root", // PBS 7.0b1: changed from Pike.root to Radio.root.
-			
-			#endif
-			
-		#else
-
-			"Frontier.root",
-			
-		#endif // [6]
-
-		// [7]
+		/* [5] */
+		"",
+#ifdef PIKE
+#ifndef OPMLEDITOR
+		/* [6] -- default DB name*/ /*PBS 7.0b1: changed from Pike.root to Radio.root.*/
+		"Radio.root",
+#else  // OPMLEDITOR
+		"opml.root",
+#endif  //OPMLEDITOR
+#else
+		/* [6] */
+		"Frontier.root",
+#endif
+		/* [7] */
 		"Open a file:"
-		
-		}
-	};
+	}
+};
 
 resource 'STR#' (130, "Interface", locked, preload) {
 	{	/* array StringArray: 15 elements */
@@ -4506,41 +4472,22 @@ resource 'MCFG' (1) {
 
 
 #ifdef PIKE
+#ifndef OPMLEDITOR
+type 'PIKE' as 'STR ';
 
-	#if defined ( IUDADESKTOP ) || defined ( OPMLEDITOR )
-	
-		#ifdef IUDADESKTOP
-		
-			type 'IUDA' as 'STR ';
+resource 'PIKE' (0, "Owner resource")
+#else   //OPMLEDITOR
+type 'OPML' as 'STR ';
 
-			resource 'IUDA' ( 0, "Owner resource" )
-			
-		#endif // IUDADESKTOP
-		
-		#ifdef OPMLEDITOR
-		
-			type 'OPML' as 'STR ';
+resource 'OPML' (0, "Owner resource")
+#endif // OPMLEDITOR
 
-			resource 'OPML' (0, "Owner resource")
-			
-		#endif // OPMLEDITOR
-		
-	#else
-	
-		type 'PIKE' as 'STR ';
-
-		resource 'PIKE' (0, "Owner resource")
-				
-	#endif
-	
 #else
 
-	type 'LAND' as 'STR ';
+type 'LAND' as 'STR ';
 
-	resource 'LAND' (0, "Owner resource")
-		
+resource 'LAND' (0, "Owner resource")
 #endif
-
 {
 	"Copyright © " APP_COPYRIGHT
 };
