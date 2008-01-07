@@ -34,12 +34,14 @@ preprocessor_defs=`echo ${GCC_PREPROCESSOR_DEFINITIONS} | sed -e "s/[A-Z0-9_][A-
 export MACOSX_DEPLOYMENT_TARGET="10.1"
 
 # extract the APP_VERSION_STRING
-cc ${preprocessor_defs} -I"${SRCROOT}/../Common/headers" -o appversion appversion.c
+echo "cc ${preprocessor_defs} -isysroot ${SDKROOT} -I \"${SRCROOT}/../Common/headers\" -o appversion appversion.c"
+cc ${preprocessor_defs} -isysroot ${SDKROOT} -I"${SRCROOT}/../Common/headers" -o appversion appversion.c
 version_str=`./appversion`
 echo "Using version string: ${version_str}"
 
 # extract the copyright_year_string
-cc ${preprocessor_defs} -I"${SRCROOT}/../Common/headers" -o appcopyright appcopyright.c
+echo "cc ${preprocessor_defs} -isysroot ${SDKROOT} -I \"${SRCROOT}/../Common/headers\" -o appcopyright appcopyright.c"
+cc ${preprocessor_defs} -isysroot ${SDKROOT} -I"${SRCROOT}/../Common/headers" -o appcopyright appcopyright.c
 copyright_str=`./appcopyright`
 echo "Using copyright string: ${copyright_str}"
 
