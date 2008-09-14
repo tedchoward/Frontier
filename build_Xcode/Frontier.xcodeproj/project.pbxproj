@@ -1037,6 +1037,14 @@
 		6515294D072C000900411831 /* QuickTime.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6515294C072C000900411831 /* QuickTime.framework */; };
 		6515294F072C000D00411831 /* pgMTraps.h in Headers */ = {isa = PBXBuildFile; fileRef = 6515294E072C000D00411831 /* pgMTraps.h */; };
 		65152951072C001700411831 /* PGERRORS.H in Headers */ = {isa = PBXBuildFile; fileRef = 65152950072C001700411831 /* PGERRORS.H */; };
+		65287D840E7DAF68003E6F8A /* FSCopyObject.c in Sources */ = {isa = PBXBuildFile; fileRef = 5D0D91000ADEDFA80000E67B /* FSCopyObject.c */; };
+		65287D850E7DAF68003E6F8A /* FSCopyObject.h in Headers */ = {isa = PBXBuildFile; fileRef = 5D0D91010ADEDFA80000E67B /* FSCopyObject.h */; };
+		65287D870E7DAF6F003E6F8A /* langmysql.c in Sources */ = {isa = PBXBuildFile; fileRef = 5D5837F00C0E02FA00DB769C /* langmysql.c */; };
+		65287D880E7DAF71003E6F8A /* langmysql.h in Headers */ = {isa = PBXBuildFile; fileRef = 5D5837F20C0E035D00DB769C /* langmysql.h */; };
+		65287D890E7DAF72003E6F8A /* langsqlite.c in Sources */ = {isa = PBXBuildFile; fileRef = 5D4E1E470AAA17E900DF6890 /* langsqlite.c */; };
+		65287D8A0E7DAF73003E6F8A /* langsqlite.h in Headers */ = {isa = PBXBuildFile; fileRef = 5D4E1E480AAA17E900DF6890 /* langsqlite.h */; };
+		65287D900E7DAF8A003E6F8A /* GenLinkedList.c in Sources */ = {isa = PBXBuildFile; fileRef = 5D0D91020ADEDFA80000E67B /* GenLinkedList.c */; };
+		65287D910E7DAF8B003E6F8A /* GenLinkedList.h in Headers */ = {isa = PBXBuildFile; fileRef = 5D0D91030ADEDFA80000E67B /* GenLinkedList.h */; };
 		655A983609E929CC009EFFEA /* byteorder.h in Headers */ = {isa = PBXBuildFile; fileRef = 655A983509E929CC009EFFEA /* byteorder.h */; };
 		655A983709E929CC009EFFEA /* byteorder.h in Headers */ = {isa = PBXBuildFile; fileRef = 655A983509E929CC009EFFEA /* byteorder.h */; };
 		6599180709C494EA00F6F58C /* whirlpool.c in Sources */ = {isa = PBXBuildFile; fileRef = 6599180609C494EA00F6F58C /* whirlpool.c */; };
@@ -1071,7 +1079,7 @@
 /* Begin PBXBuildRule section */
 		5D18A84C0AD3AE1200613FDB /* PBXBuildRule */ = {
 			isa = PBXBuildRule;
-			compilerSpec = com.apple.compilers.gcc.3_3;
+			compilerSpec = com.apple.compilers.gcc;
 			fileType = sourcecode.c;
 			isEditable = 1;
 			outputFiles = (
@@ -1079,7 +1087,7 @@
 		};
 		5D18A84D0AD3AE1900613FDB /* PBXBuildRule */ = {
 			isa = PBXBuildRule;
-			compilerSpec = com.apple.compilers.gcc.3_3;
+			compilerSpec = com.apple.compilers.gcc;
 			fileType = sourcecode.asm;
 			isEditable = 1;
 			outputFiles = (
@@ -1087,7 +1095,7 @@
 		};
 		5D4E1E3F0AAA0E1800DF6890 /* PBXBuildRule */ = {
 			isa = PBXBuildRule;
-			compilerSpec = com.apple.compilers.gcc.3_3;
+			compilerSpec = com.apple.compilers.gcc;
 			fileType = sourcecode.c;
 			isEditable = 1;
 			outputFiles = (
@@ -1095,7 +1103,7 @@
 		};
 		5D4E1E400AAA0E3200DF6890 /* PBXBuildRule */ = {
 			isa = PBXBuildRule;
-			compilerSpec = com.apple.compilers.gcc.3_3;
+			compilerSpec = com.apple.compilers.gcc;
 			fileType = sourcecode.asm;
 			isEditable = 1;
 			outputFiles = (
@@ -1103,7 +1111,7 @@
 		};
 		BB37A3C80AB82E200077C6A1 /* PBXBuildRule */ = {
 			isa = PBXBuildRule;
-			compilerSpec = com.apple.compilers.gcc.3_3;
+			compilerSpec = com.apple.compilers.gcc;
 			fileType = sourcecode.asm.asm;
 			isEditable = 1;
 			outputFiles = (
@@ -1111,30 +1119,13 @@
 		};
 		BB37A3C90AB82E270077C6A1 /* PBXBuildRule */ = {
 			isa = PBXBuildRule;
-			compilerSpec = com.apple.compilers.gcc.3_3;
+			compilerSpec = com.apple.compilers.gcc;
 			fileType = sourcecode.c;
 			isEditable = 1;
 			outputFiles = (
 			);
 		};
 /* End PBXBuildRule section */
-
-/* Begin PBXBuildStyle section */
-		655E9E2B0E520A8600E41637 /* Development */ = {
-			isa = PBXBuildStyle;
-			buildSettings = {
-				COPY_PHASE_STRIP = NO;
-			};
-			name = Development;
-		};
-		655E9E2C0E520A8600E41637 /* Deployment */ = {
-			isa = PBXBuildStyle;
-			buildSettings = {
-				COPY_PHASE_STRIP = YES;
-			};
-			name = Deployment;
-		};
-/* End PBXBuildStyle section */
 
 /* Begin PBXContainerItemProxy section */
 		BB37A3170AB827EA0077C6A1 /* PBXContainerItemProxy */ = {
@@ -1718,7 +1709,7 @@
 		65B70CE90797CF78008C2F1A /* FastTimes.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = FastTimes.h; path = ../Common/headers/FastTimes.h; sourceTree = SOURCE_ROOT; };
 		65BBB661072E563B008E2F34 /* frontier.r */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.rez; name = frontier.r; path = ../Common/headers/frontier.r; sourceTree = SOURCE_ROOT; };
 		65BBB663072E5643008E2F34 /* frontierdefs.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = frontierdefs.h; path = ../Common/headers/frontierdefs.h; sourceTree = SOURCE_ROOT; };
-		65CF0C7F099545A4006E3A79 /* Frontier.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = Frontier.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		65CF0C7F099545A4006E3A79 /* Frontier.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Frontier.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		65D516AA072CED430097D18E /* frontier.xcode.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = frontier.xcode.h; sourceTree = SOURCE_ROOT; };
 		65F9C21E09C4CD9700DCC29E /* sha_locl.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = sha_locl.h; path = ../Common/headers/sha_locl.h; sourceTree = SOURCE_ROOT; };
 		65F9C21F09C4CD9700DCC29E /* sha.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = sha.h; path = ../Common/headers/sha.h; sourceTree = SOURCE_ROOT; };
@@ -2892,6 +2883,10 @@
 				65F9C22209C4CD9800DCC29E /* sha_locl.h in Headers */,
 				65F9C22309C4CD9800DCC29E /* sha.h in Headers */,
 				655A983709E929CC009EFFEA /* byteorder.h in Headers */,
+				65287D850E7DAF68003E6F8A /* FSCopyObject.h in Headers */,
+				65287D880E7DAF71003E6F8A /* langmysql.h in Headers */,
+				65287D8A0E7DAF73003E6F8A /* langsqlite.h in Headers */,
+				65287D910E7DAF8B003E6F8A /* GenLinkedList.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -3226,12 +3221,6 @@
 		65152560072BFC6500411831 /* Project object */ = {
 			isa = PBXProject;
 			buildConfigurationList = 5D4E1D460AAA0B1400DF6890 /* Build configuration list for PBXProject "Frontier" */;
-			buildSettings = {
-			};
-			buildStyles = (
-				655E9E2B0E520A8600E41637 /* Development */,
-				655E9E2C0E520A8600E41637 /* Deployment */,
-			);
 			hasScannedForEncodings = 1;
 			mainGroup = 6515255C072BFC6500411831;
 			productRefGroup = 6515255C072BFC6500411831;
@@ -3642,6 +3631,10 @@
 				6599180809C494EA00F6F58C /* whirlpool.c in Sources */,
 				6599181509C4950300F6F58C /* langcrypt.c in Sources */,
 				65F9C22809C4CDDE00DCC29E /* sha1dgst.c in Sources */,
+				65287D840E7DAF68003E6F8A /* FSCopyObject.c in Sources */,
+				65287D870E7DAF6F003E6F8A /* langmysql.c in Sources */,
+				65287D890E7DAF72003E6F8A /* langsqlite.c in Sources */,
+				65287D900E7DAF8A003E6F8A /* GenLinkedList.c in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -3971,6 +3964,7 @@
 		5D4E1D3F0AAA0B1400DF6890 /* Development */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ARCHS = ppc;
 				COPY_PHASE_STRIP = NO;
 				GCC_ALTIVEC_EXTENSIONS = NO;
 				GCC_CHAR_IS_UNSIGNED_CHAR = NO;
@@ -4029,6 +4023,7 @@
 		5D4E1D400AAA0B1400DF6890 /* Deployment */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ARCHS = ppc;
 				COPY_PHASE_STRIP = YES;
 				GCC_ALTIVEC_EXTENSIONS = NO;
 				GCC_CHAR_IS_UNSIGNED_CHAR = NO;
@@ -4083,61 +4078,10 @@
 			};
 			name = Deployment;
 		};
-		5D4E1D410AAA0B1400DF6890 /* Default */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				GCC_ALTIVEC_EXTENSIONS = NO;
-				GCC_CHAR_IS_UNSIGNED_CHAR = NO;
-				GCC_C_LANGUAGE_STANDARD = c99;
-				GCC_ENABLE_ASM_KEYWORD = YES;
-				GCC_ENABLE_CPP_EXCEPTIONS = NO;
-				GCC_ENABLE_CPP_RTTI = NO;
-				GCC_PRECOMPILE_PREFIX_HEADER = YES;
-				GCC_PREFIX_HEADER = frontier.xcode.h;
-				GCC_REUSE_STRINGS = NO;
-				GCC_SHORT_ENUMS = YES;
-				GCC_WARN_ABOUT_MISSING_PROTOTYPES = YES;
-				GCC_WARN_HIDDEN_VIRTUAL_FUNCTIONS = NO;
-				GCC_WARN_UNKNOWN_PRAGMAS = YES;
-				GCC_WARN_UNUSED_FUNCTION = NO;
-				GCC_WARN_UNUSED_LABEL = NO;
-				GCC_WARN_UNUSED_PARAMETER = NO;
-				GCC_WARN_UNUSED_VALUE = NO;
-				GCC_WARN_UNUSED_VARIABLE = NO;
-				INFOPLIST_FILE = Info_Frontier.plist;
-				LIBRARY_SEARCH_PATHS = (
-					tools,
-					"$(SRCROOT)",
-					"$(SRCROOT)/tools",
-					"$(SRCROOT)/../Common/sqlite3",
-				);
-				OTHER_CFLAGS = (
-					"-fno-inline",
-					"-malign-mac68k",
-				);
-				OTHER_LDFLAGS = (
-					"-multiply_defined",
-					warning,
-				);
-				OTHER_REZFLAGS = "-d TARGET_API_MAC_CARBON=1 -d FRONTIER_FRAMEWORK_INCLUDES=1 -i ../Common/headers";
-				PRODUCT_NAME = Frontier;
-				REZ_PREPROCESSOR_DEFINITIONS = "";
-				REZ_PREPROCESSOR_UNDEFINITIONS = "";
-				REZ_SCRIPT_TYPE = Roman;
-				REZ_SUPPRESS_REDECLARED_RESOURCE_TYPE_WARNINGS = NO;
-				SECTORDER_FLAGS = "";
-				WARNING_CFLAGS = (
-					"-Wmost",
-					"-Wno-four-char-constants",
-					"-Wno-unknown-pragmas",
-					"-Wno-long-double",
-				);
-			};
-			name = Default;
-		};
 		5D4E1D430AAA0B1400DF6890 /* Development */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ARCHS = ppc;
 				COPY_PHASE_STRIP = NO;
 				GCC_ALTIVEC_EXTENSIONS = NO;
 				GCC_CHAR_IS_UNSIGNED_CHAR = NO;
@@ -4171,7 +4115,6 @@
 					"$(LIBRARY_SEARCH_PATHS_QUOTED_2)",
 				);
 				LIBRARY_SEARCH_PATHS_QUOTED_1 = "\"tools\"";
-				LIBRARY_SEARCH_PATHS_QUOTED_2 = "\"$(SRCROOT)/tools\"";
 				OTHER_CFLAGS = (
 					"-fno-inline",
 					"-malign-mac68k",
@@ -4200,6 +4143,7 @@
 		5D4E1D440AAA0B1400DF6890 /* Deployment */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ARCHS = ppc;
 				COPY_PHASE_STRIP = YES;
 				GCC_ALTIVEC_EXTENSIONS = NO;
 				GCC_CHAR_IS_UNSIGNED_CHAR = NO;
@@ -4211,7 +4155,11 @@
 				GCC_OPTIMIZATION_LEVEL = 2;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = frontier.xcode.h;
-				GCC_PREPROCESSOR_DEFINITIONS = NDEBUG;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					NDEBUG,
+					"PIKE=1",
+					"OPMLEDITOR=1",
+				);
 				GCC_REUSE_STRINGS = NO;
 				GCC_SHORT_ENUMS = NO;
 				GCC_WARN_ABOUT_MISSING_PROTOTYPES = YES;
@@ -4228,7 +4176,6 @@
 					"$(LIBRARY_SEARCH_PATHS_QUOTED_2)",
 				);
 				LIBRARY_SEARCH_PATHS_QUOTED_1 = "\"tools\"";
-				LIBRARY_SEARCH_PATHS_QUOTED_2 = "\"$(SRCROOT)/tools\"";
 				OTHER_CFLAGS = (
 					"-fno-inline",
 					"-malign-mac68k",
@@ -4254,62 +4201,6 @@
 			};
 			name = Deployment;
 		};
-		5D4E1D450AAA0B1400DF6890 /* Default */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				GCC_ALTIVEC_EXTENSIONS = NO;
-				GCC_CHAR_IS_UNSIGNED_CHAR = NO;
-				GCC_C_LANGUAGE_STANDARD = c99;
-				GCC_ENABLE_ASM_KEYWORD = YES;
-				GCC_ENABLE_CPP_EXCEPTIONS = NO;
-				GCC_ENABLE_CPP_RTTI = NO;
-				GCC_PRECOMPILE_PREFIX_HEADER = YES;
-				GCC_PREFIX_HEADER = frontier.xcode.h;
-				GCC_PREPROCESSOR_DEFINITIONS = (
-					"PIKE=1",
-					"OPMLEDITOR=1",
-				);
-				GCC_REUSE_STRINGS = NO;
-				GCC_SHORT_ENUMS = NO;
-				GCC_WARN_ABOUT_MISSING_PROTOTYPES = YES;
-				GCC_WARN_HIDDEN_VIRTUAL_FUNCTIONS = NO;
-				GCC_WARN_UNKNOWN_PRAGMAS = YES;
-				GCC_WARN_UNUSED_FUNCTION = NO;
-				GCC_WARN_UNUSED_LABEL = NO;
-				GCC_WARN_UNUSED_PARAMETER = NO;
-				GCC_WARN_UNUSED_VALUE = NO;
-				GCC_WARN_UNUSED_VARIABLE = NO;
-				INFOPLIST_FILE = Info_OPML.plist;
-				LIBRARY_SEARCH_PATHS = (
-					"$(LIBRARY_SEARCH_PATHS_QUOTED_1)",
-					"$(LIBRARY_SEARCH_PATHS_QUOTED_2)",
-				);
-				LIBRARY_SEARCH_PATHS_QUOTED_1 = "\"tools\"";
-				LIBRARY_SEARCH_PATHS_QUOTED_2 = "\"$(SRCROOT)/tools\"";
-				OTHER_CFLAGS = (
-					"-fno-inline",
-					"-malign-mac68k",
-				);
-				OTHER_LDFLAGS = (
-					"-multiply_defined",
-					warning,
-				);
-				OTHER_REZFLAGS = "-d TARGET_API_MAC_CARBON=1 -d FRONTIER_FRAMEWORK_INCLUDES=1 -i ../Common/headers -d PIKE=1 -d OPMLEDITOR=1";
-				PRODUCT_NAME = OPML;
-				REZ_PREPROCESSOR_DEFINITIONS = "";
-				REZ_PREPROCESSOR_UNDEFINITIONS = "";
-				REZ_SCRIPT_TYPE = Roman;
-				REZ_SUPPRESS_REDECLARED_RESOURCE_TYPE_WARNINGS = NO;
-				SECTORDER_FLAGS = "";
-				WARNING_CFLAGS = (
-					"-Wmost",
-					"-Wno-four-char-constants",
-					"-Wno-unknown-pragmas",
-					"-Wno-long-double",
-				);
-			};
-			name = Default;
-		};
 		5D4E1D470AAA0B1400DF6890 /* Development */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -4328,18 +4219,10 @@
 			};
 			name = Deployment;
 		};
-		5D4E1D490AAA0B1400DF6890 /* Default */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				OTHER_CFLAGS = "";
-				OTHER_LDFLAGS = "$(inherited)";
-				SDKROOT = /Developer/SDKs/MacOSX10.3.9.sdk;
-			};
-			name = Default;
-		};
 		BB37A29E0AB826C60077C6A1 /* Development */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ARCHS = ppc;
 				COPY_PHASE_STRIP = NO;
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_ENABLE_FIX_AND_CONTINUE = YES;
@@ -4362,6 +4245,7 @@
 		BB37A29F0AB826C60077C6A1 /* Deployment */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ARCHS = ppc;
 				COPY_PHASE_STRIP = YES;
 				GCC_ENABLE_FIX_AND_CONTINUE = NO;
 				GCC_GENERATE_DEBUGGING_SYMBOLS = NO;
@@ -4379,24 +4263,6 @@
 			};
 			name = Deployment;
 		};
-		BB37A2A00AB826C60077C6A1 /* Default */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				GCC_ENABLE_FIX_AND_CONTINUE = YES;
-				GCC_MODEL_TUNING = G5;
-				PREBINDING = NO;
-				PRODUCT_NAME = SQLite3;
-				SKIP_INSTALL = NO;
-				WARNING_CFLAGS = (
-					"-Wmost",
-					"-Wno-four-char-constants",
-					"-Wno-unknown-pragmas",
-					"-Wno-long-double",
-				);
-				ZERO_LINK = NO;
-			};
-			name = Default;
-		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -4405,40 +4271,36 @@
 			buildConfigurations = (
 				5D4E1D3F0AAA0B1400DF6890 /* Development */,
 				5D4E1D400AAA0B1400DF6890 /* Deployment */,
-				5D4E1D410AAA0B1400DF6890 /* Default */,
 			);
 			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Default;
+			defaultConfigurationName = Development;
 		};
 		5D4E1D420AAA0B1400DF6890 /* Build configuration list for PBXNativeTarget "OPML" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				5D4E1D430AAA0B1400DF6890 /* Development */,
 				5D4E1D440AAA0B1400DF6890 /* Deployment */,
-				5D4E1D450AAA0B1400DF6890 /* Default */,
 			);
 			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Default;
+			defaultConfigurationName = Development;
 		};
 		5D4E1D460AAA0B1400DF6890 /* Build configuration list for PBXProject "Frontier" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				5D4E1D470AAA0B1400DF6890 /* Development */,
 				5D4E1D480AAA0B1400DF6890 /* Deployment */,
-				5D4E1D490AAA0B1400DF6890 /* Default */,
 			);
 			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Default;
+			defaultConfigurationName = Development;
 		};
 		BB37A29D0AB826C60077C6A1 /* Build configuration list for PBXNativeTarget "SQLite3" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				BB37A29E0AB826C60077C6A1 /* Development */,
 				BB37A29F0AB826C60077C6A1 /* Deployment */,
-				BB37A2A00AB826C60077C6A1 /* Default */,
 			);
 			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Default;
+			defaultConfigurationName = Development;
 		};
 /* End XCConfigurationList section */
 	};
