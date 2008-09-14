@@ -42,14 +42,11 @@
 #include "oplist.h"
 #include "langsystem7.h"
 
-// #ifdef WIN95VERSION
-
-//	#include "my_global.h"
-
-// #endif // WIN95VERSION
-
-#include "mysql.h"
 #include "langmysql.h"
+
+#ifdef FRONTIER_MYSQL
+#include "mysql.h"
+#endif
 
 
 /*
@@ -110,6 +107,8 @@ static boolean mysqlfunctionvalue ( short token, hdltreenode hparam1, tyvaluerec
 	setbooleanvalue ( false, v ); // by default, sqlite functions return false
 	
 	switch ( token ) {
+
+#ifdef FRONTIER_MYSQL
 		
 		case initfunc: // initialize MySQL
 		
@@ -218,6 +217,8 @@ static boolean mysqlfunctionvalue ( short token, hdltreenode hparam1, tyvaluerec
 		case closefunc: // close a MySQL db
 		
 			return ( mysqlcloseverb ( hp1, v, bserror ) );
+
+#endif
 			
 		default:
 		
@@ -236,6 +237,7 @@ boolean mysqlinitverbs (void) {
 	
 	} /* mysqlinitverbs */
 
+#ifdef FRONTIER_MYSQL
 
 boolean mysqlinitverb ( hdltreenode hparam1, tyvaluerecord *vreturned, bigstring bserror ) {
 
@@ -1775,4 +1777,6 @@ boolean mysqlisthreadsafeverb (hdltreenode hparam1, tyvaluerecord *vreturned, bi
 		return(setbooleanvalue (false, vreturned));
 
 	} /* mysqlisthreadsafeverb */
+
+#endif /*FRONTIER_MYSQL*/
 

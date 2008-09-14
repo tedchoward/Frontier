@@ -44,6 +44,9 @@
 #include "langexternal.h"
 
 #include "langsqlite.h"
+
+#ifdef FRONTIER_SQLITE
+
 #include <sqlite3.h>
 
 #ifdef MACVERSION
@@ -60,6 +63,7 @@
 
 #endif // WIN95VERSION
 
+#endif
 
 /* Building SQLite into Frontier
 
@@ -125,7 +129,9 @@ static boolean sqlitefunctionvalue ( short token, hdltreenode hparam1,
 	setbooleanvalue (false, v);			/* by default, sqlite functions return false */
 	
 	switch (token) {
-		
+	
+#ifdef FRONTIER_SQLITE		
+
 		case openfunc: {				/* 2006-03-14 gewirtz: open an SQLite db */
 
 			return (sqliteopenverb (hp1, v, bserror));
@@ -209,6 +215,8 @@ static boolean sqlitefunctionvalue ( short token, hdltreenode hparam1,
 		
 			return ( getlastinsertrowidverb ( hp1, v, bserror ) );		
 			
+#endif
+
 		default:
 		
 			getstringlist (langerrorlist, unimplementedverberror, bserror);
@@ -227,6 +235,7 @@ boolean sqliteinitverbs (void) {
 	return (loadfunctionprocessor (idsqliteverbs, &sqlitefunctionvalue));
 	} /* sqliteinitverbs */
 
+#ifdef FRONTIER_SQLITE
 
 static void sqliteOpenError (const char *errmsg, bigstring bserror) {
 	bigstring bserrmsg;
@@ -1217,4 +1226,6 @@ boolean getlastinsertrowidverb ( hdltreenode hparam1, tyvaluerecord *vreturned, 
 	return ( setlongvalue ( rowid, vreturned ) );
 	
 	} // getlastinsertrowidverb
+
+#endif	/*FRONTIER_SQLITE*/
 

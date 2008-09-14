@@ -1119,6 +1119,23 @@
 		};
 /* End PBXBuildRule section */
 
+/* Begin PBXBuildStyle section */
+		655E9E2B0E520A8600E41637 /* Development */ = {
+			isa = PBXBuildStyle;
+			buildSettings = {
+				COPY_PHASE_STRIP = NO;
+			};
+			name = Development;
+		};
+		655E9E2C0E520A8600E41637 /* Deployment */ = {
+			isa = PBXBuildStyle;
+			buildSettings = {
+				COPY_PHASE_STRIP = YES;
+			};
+			name = Deployment;
+		};
+/* End PBXBuildStyle section */
+
 /* Begin PBXContainerItemProxy section */
 		BB37A3170AB827EA0077C6A1 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
@@ -1701,7 +1718,7 @@
 		65B70CE90797CF78008C2F1A /* FastTimes.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = FastTimes.h; path = ../Common/headers/FastTimes.h; sourceTree = SOURCE_ROOT; };
 		65BBB661072E563B008E2F34 /* frontier.r */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.rez; name = frontier.r; path = ../Common/headers/frontier.r; sourceTree = SOURCE_ROOT; };
 		65BBB663072E5643008E2F34 /* frontierdefs.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = frontierdefs.h; path = ../Common/headers/frontierdefs.h; sourceTree = SOURCE_ROOT; };
-		65CF0C7F099545A4006E3A79 /* Frontier.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Frontier.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		65CF0C7F099545A4006E3A79 /* Frontier.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = Frontier.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		65D516AA072CED430097D18E /* frontier.xcode.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = frontier.xcode.h; sourceTree = SOURCE_ROOT; };
 		65F9C21E09C4CD9700DCC29E /* sha_locl.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = sha_locl.h; path = ../Common/headers/sha_locl.h; sourceTree = SOURCE_ROOT; };
 		65F9C21F09C4CD9700DCC29E /* sha.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = sha.h; path = ../Common/headers/sha.h; sourceTree = SOURCE_ROOT; };
@@ -3209,6 +3226,12 @@
 		65152560072BFC6500411831 /* Project object */ = {
 			isa = PBXProject;
 			buildConfigurationList = 5D4E1D460AAA0B1400DF6890 /* Build configuration list for PBXProject "Frontier" */;
+			buildSettings = {
+			};
+			buildStyles = (
+				655E9E2B0E520A8600E41637 /* Development */,
+				655E9E2C0E520A8600E41637 /* Deployment */,
+			);
 			hasScannedForEncodings = 1;
 			mainGroup = 6515255C072BFC6500411831;
 			productRefGroup = 6515255C072BFC6500411831;

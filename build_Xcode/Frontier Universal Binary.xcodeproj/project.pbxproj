@@ -1059,6 +1059,12 @@
 		65B70CEA0797CF78008C2F1A /* FastTimes.h in Headers */ = {isa = PBXBuildFile; fileRef = 65B70CE90797CF78008C2F1A /* FastTimes.h */; };
 		65BBB662072E563B008E2F34 /* frontier.r in Rez */ = {isa = PBXBuildFile; fileRef = 65BBB661072E563B008E2F34 /* frontier.r */; };
 		65BBB664072E5643008E2F34 /* frontierdefs.h in Headers */ = {isa = PBXBuildFile; fileRef = 65BBB663072E5643008E2F34 /* frontierdefs.h */; };
+		65C4999B0E7D8F2B0078B6DB /* FSCopyObject.c in Sources */ = {isa = PBXBuildFile; fileRef = 5D0D91000ADEDFA80000E67B /* FSCopyObject.c */; };
+		65C4999E0E7D8F320078B6DB /* FSCopyObject.h in Headers */ = {isa = PBXBuildFile; fileRef = 5D0D91010ADEDFA80000E67B /* FSCopyObject.h */; };
+		65C499A10E7D8F360078B6DB /* GenLinkedList.c in Sources */ = {isa = PBXBuildFile; fileRef = 5D0D91020ADEDFA80000E67B /* GenLinkedList.c */; };
+		65C499A40E7D8F3A0078B6DB /* GenLinkedList.h in Headers */ = {isa = PBXBuildFile; fileRef = 5D0D91030ADEDFA80000E67B /* GenLinkedList.h */; };
+		65C499A70E7D8F450078B6DB /* langsqlite.c in Sources */ = {isa = PBXBuildFile; fileRef = 5D4E1E470AAA17E900DF6890 /* langsqlite.c */; };
+		65C499AA0E7D8F4C0078B6DB /* langmysql.c in Sources */ = {isa = PBXBuildFile; fileRef = 5D8F1EF30C25B51A00927B97 /* langmysql.c */; };
 		65D516AB072CED430097D18E /* frontier.xcode.h in Headers */ = {isa = PBXBuildFile; fileRef = 65D516AA072CED430097D18E /* frontier.xcode.h */; };
 		65F9C22009C4CD9800DCC29E /* sha_locl.h in Headers */ = {isa = PBXBuildFile; fileRef = 65F9C21E09C4CD9700DCC29E /* sha_locl.h */; };
 		65F9C22109C4CD9800DCC29E /* sha.h in Headers */ = {isa = PBXBuildFile; fileRef = 65F9C21F09C4CD9700DCC29E /* sha.h */; };
@@ -1155,7 +1161,7 @@
 		5D8F1EF30C25B51A00927B97 /* langmysql.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = langmysql.c; path = ../Common/source/langmysql.c; sourceTree = SOURCE_ROOT; };
 		5D8F1EF60C25B56600927B97 /* langmysql.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = langmysql.h; path = ../Common/headers/langmysql.h; sourceTree = SOURCE_ROOT; };
 		5DCA3B0B0AF552C700D6155D /* libpaigefat.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libpaigefat.a; path = tools/libpaigefat.a; sourceTree = SOURCE_ROOT; };
-		65059B4E09968C1400410571 /* OPML.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = OPML.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		65059B4E09968C1400410571 /* OPML.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = OPML.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		65059B760996945100410571 /* OPML.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; name = OPML.icns; path = ../resources/OPML/OPML.icns; sourceTree = SOURCE_ROOT; };
 		65059B770996945100410571 /* OPMLdoc.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; name = OPMLdoc.icns; path = ../resources/OPML/OPMLdoc.icns; sourceTree = SOURCE_ROOT; };
 		65059B800996958700410571 /* BNDL.r */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.rez; name = BNDL.r; path = ../resources/OPML/BNDL.r; sourceTree = SOURCE_ROOT; };
@@ -2835,6 +2841,8 @@
 				65F9C22209C4CD9800DCC29E /* sha_locl.h in Headers */,
 				65F9C22309C4CD9800DCC29E /* sha.h in Headers */,
 				655A983709E929CC009EFFEA /* byteorder.h in Headers */,
+				65C4999E0E7D8F320078B6DB /* FSCopyObject.h in Headers */,
+				65C499A40E7D8F3A0078B6DB /* GenLinkedList.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -3575,6 +3583,10 @@
 				6599180809C494EA00F6F58C /* whirlpool.c in Sources */,
 				6599181509C4950300F6F58C /* langcrypt.c in Sources */,
 				65F9C22809C4CDDE00DCC29E /* sha1dgst.c in Sources */,
+				65C4999B0E7D8F2B0078B6DB /* FSCopyObject.c in Sources */,
+				65C499A10E7D8F360078B6DB /* GenLinkedList.c in Sources */,
+				65C499A70E7D8F450078B6DB /* langsqlite.c in Sources */,
+				65C499AA0E7D8F4C0078B6DB /* langmysql.c in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -4016,58 +4028,6 @@
 			};
 			name = Deployment;
 		};
-		5D4E1D410AAA0B1400DF6890 /* Default */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				GCC_ALTIVEC_EXTENSIONS = NO;
-				GCC_CHAR_IS_UNSIGNED_CHAR = NO;
-				GCC_C_LANGUAGE_STANDARD = c99;
-				GCC_ENABLE_ASM_KEYWORD = YES;
-				GCC_ENABLE_CPP_EXCEPTIONS = NO;
-				GCC_ENABLE_CPP_RTTI = NO;
-				GCC_PRECOMPILE_PREFIX_HEADER = YES;
-				GCC_PREFIX_HEADER = frontier.xcode.h;
-				GCC_REUSE_STRINGS = NO;
-				GCC_SHORT_ENUMS = YES;
-				GCC_WARN_ABOUT_MISSING_PROTOTYPES = YES;
-				GCC_WARN_HIDDEN_VIRTUAL_FUNCTIONS = NO;
-				GCC_WARN_UNKNOWN_PRAGMAS = YES;
-				GCC_WARN_UNUSED_FUNCTION = NO;
-				GCC_WARN_UNUSED_LABEL = NO;
-				GCC_WARN_UNUSED_PARAMETER = NO;
-				GCC_WARN_UNUSED_VALUE = NO;
-				GCC_WARN_UNUSED_VARIABLE = NO;
-				INFOPLIST_FILE = Info_Frontier.plist;
-				LIBRARY_SEARCH_PATHS = (
-					tools,
-					"$(SRCROOT)",
-					"$(SRCROOT)/tools",
-					"$(SRCROOT)/../Common/sqlite3",
-				);
-				OTHER_CFLAGS = (
-					"-fno-inline",
-					"-malign-mac68k",
-				);
-				OTHER_LDFLAGS = (
-					"-multiply_defined",
-					warning,
-				);
-				OTHER_REZFLAGS = "-d TARGET_API_MAC_CARBON=1 -d FRONTIER_FRAMEWORK_INCLUDES=1 -i ../Common/headers";
-				PRODUCT_NAME = Frontier;
-				REZ_PREPROCESSOR_DEFINITIONS = "";
-				REZ_PREPROCESSOR_UNDEFINITIONS = "";
-				REZ_SCRIPT_TYPE = Roman;
-				REZ_SUPPRESS_REDECLARED_RESOURCE_TYPE_WARNINGS = NO;
-				SECTORDER_FLAGS = "";
-				WARNING_CFLAGS = (
-					"-Wmost",
-					"-Wno-four-char-constants",
-					"-Wno-unknown-pragmas",
-					"-Wno-long-double",
-				);
-			};
-			name = Default;
-		};
 		5D4E1D430AAA0B1400DF6890 /* Development */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -4142,7 +4102,11 @@
 				GCC_OPTIMIZATION_LEVEL = 2;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = frontier.xcode.h;
-				GCC_PREPROCESSOR_DEFINITIONS = NDEBUG;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					NDEBUG,
+					"PIKE=1",
+					"OPMLEDITOR=1",
+				);
 				GCC_REUSE_STRINGS = NO;
 				GCC_SHORT_ENUMS = YES;
 				GCC_WARN_ABOUT_MISSING_PROTOTYPES = YES;
@@ -4183,60 +4147,6 @@
 			};
 			name = Deployment;
 		};
-		5D4E1D450AAA0B1400DF6890 /* Default */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				GCC_ALTIVEC_EXTENSIONS = NO;
-				GCC_CHAR_IS_UNSIGNED_CHAR = NO;
-				GCC_C_LANGUAGE_STANDARD = c99;
-				GCC_ENABLE_ASM_KEYWORD = YES;
-				GCC_ENABLE_CPP_EXCEPTIONS = NO;
-				GCC_ENABLE_CPP_RTTI = NO;
-				GCC_PRECOMPILE_PREFIX_HEADER = YES;
-				GCC_PREFIX_HEADER = frontier.xcode.h;
-				GCC_PREPROCESSOR_DEFINITIONS = (
-					"PIKE=1",
-					"OPMLEDITOR=1",
-				);
-				GCC_REUSE_STRINGS = NO;
-				GCC_SHORT_ENUMS = YES;
-				GCC_WARN_ABOUT_MISSING_PROTOTYPES = YES;
-				GCC_WARN_HIDDEN_VIRTUAL_FUNCTIONS = NO;
-				GCC_WARN_UNKNOWN_PRAGMAS = YES;
-				GCC_WARN_UNUSED_FUNCTION = NO;
-				GCC_WARN_UNUSED_LABEL = NO;
-				GCC_WARN_UNUSED_PARAMETER = NO;
-				GCC_WARN_UNUSED_VALUE = NO;
-				GCC_WARN_UNUSED_VARIABLE = NO;
-				INFOPLIST_FILE = Info_OPML.plist;
-				LIBRARY_SEARCH_PATHS = (
-					tools,
-					"$(SRCROOT)/tools",
-				);
-				OTHER_CFLAGS = (
-					"-fno-inline",
-					"-malign-mac68k",
-				);
-				OTHER_LDFLAGS = (
-					"-multiply_defined",
-					warning,
-				);
-				OTHER_REZFLAGS = "-d TARGET_API_MAC_CARBON=1 -d FRONTIER_FRAMEWORK_INCLUDES=1 -i ../Common/headers -d PIKE=1 -d OPMLEDITOR=1";
-				PRODUCT_NAME = OPML;
-				REZ_PREPROCESSOR_DEFINITIONS = "";
-				REZ_PREPROCESSOR_UNDEFINITIONS = "";
-				REZ_SCRIPT_TYPE = Roman;
-				REZ_SUPPRESS_REDECLARED_RESOURCE_TYPE_WARNINGS = NO;
-				SECTORDER_FLAGS = "";
-				WARNING_CFLAGS = (
-					"-Wmost",
-					"-Wno-four-char-constants",
-					"-Wno-unknown-pragmas",
-					"-Wno-long-double",
-				);
-			};
-			name = Default;
-		};
 		5D4E1D470AAA0B1400DF6890 /* Development */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -4260,18 +4170,6 @@
 				SDKROOT = /Developer/SDKs/MacOSX10.4u.sdk;
 			};
 			name = Deployment;
-		};
-		5D4E1D490AAA0B1400DF6890 /* Default */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				ARCHS = (
-					ppc,
-					i386,
-				);
-				OTHER_CFLAGS = "";
-				SDKROOT = /Developer/SDKs/MacOSX10.4u.sdk;
-			};
-			name = Default;
 		};
 		BB37A29E0AB826C60077C6A1 /* Development */ = {
 			isa = XCBuildConfiguration;
@@ -4315,24 +4213,6 @@
 			};
 			name = Deployment;
 		};
-		BB37A2A00AB826C60077C6A1 /* Default */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				GCC_ENABLE_FIX_AND_CONTINUE = YES;
-				GCC_MODEL_TUNING = G5;
-				PREBINDING = NO;
-				PRODUCT_NAME = SQLite3;
-				SKIP_INSTALL = NO;
-				WARNING_CFLAGS = (
-					"-Wmost",
-					"-Wno-four-char-constants",
-					"-Wno-unknown-pragmas",
-					"-Wno-long-double",
-				);
-				ZERO_LINK = NO;
-			};
-			name = Default;
-		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -4341,40 +4221,36 @@
 			buildConfigurations = (
 				5D4E1D3F0AAA0B1400DF6890 /* Development */,
 				5D4E1D400AAA0B1400DF6890 /* Deployment */,
-				5D4E1D410AAA0B1400DF6890 /* Default */,
 			);
 			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Default;
+			defaultConfigurationName = Development;
 		};
 		5D4E1D420AAA0B1400DF6890 /* Build configuration list for PBXNativeTarget "OPML" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				5D4E1D430AAA0B1400DF6890 /* Development */,
 				5D4E1D440AAA0B1400DF6890 /* Deployment */,
-				5D4E1D450AAA0B1400DF6890 /* Default */,
 			);
 			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Default;
+			defaultConfigurationName = Development;
 		};
 		5D4E1D460AAA0B1400DF6890 /* Build configuration list for PBXProject "Frontier Universal Binary" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				5D4E1D470AAA0B1400DF6890 /* Development */,
 				5D4E1D480AAA0B1400DF6890 /* Deployment */,
-				5D4E1D490AAA0B1400DF6890 /* Default */,
 			);
 			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Default;
+			defaultConfigurationName = Development;
 		};
 		BB37A29D0AB826C60077C6A1 /* Build configuration list for PBXNativeTarget "SQLite3" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				BB37A29E0AB826C60077C6A1 /* Development */,
 				BB37A29F0AB826C60077C6A1 /* Deployment */,
-				BB37A2A00AB826C60077C6A1 /* Default */,
 			);
 			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Default;
+			defaultConfigurationName = Development;
 		};
 /* End XCConfigurationList section */
 	};
