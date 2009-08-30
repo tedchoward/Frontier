@@ -67,7 +67,7 @@
 			FSRef volumesfsref;
 			OSErr err;
 			
-			status = FSPathMakeRef ( "/Volumes", &volumesfsref, NULL );
+			status = FSPathMakeRef ( (UInt8*) "/Volumes", &volumesfsref, NULL );
 			
 			err = FSCompareFSRefs ( &( *fs ).fsref , &volumesfsref );
 			
@@ -267,8 +267,45 @@ boolean filespectopath (const ptrfilespec fs, bigstring bspath) {
 	} // filespectopath
 
 
+#ifdef MACVERSION
+
+static OSStatus pathtofsref ( bigstring bspath, FSRef *ref ) {
+
+	/*
+	2009-08-30 aradke: mac-only helper function for pathtofilespec for converting from a pascal string (path) to an FSRef
+	*/
+	
+	bigstring bs;
+	CFStringRef csref;
+	char str[256];
+
+	copystring(bspath,  bs);
+
+	// convert from colon-delimited to slash-delimited path
+
+	stringswapall(':', '/', bs);
+	
+	// convert from Mac Roman to UTF-8 */ 
+
+	csref = CFStringCreateWithPascalString(kCFAllocatorDefault, bs, kCFStringEncodingMacRoman);
+	
+	CFStringGetCString(csref, str, sizeof(str), kCFStringEncodingUTF8);
+		
+	CFRelease(csref);
+
+	// finally, pass our temporary copy of the string to the underlying system function
+	
+	return FSPathMakeRef((UInt8*) str, ref, NULL);
+	} /*pathtofsref*/
+
+#endif
+
+
 boolean pathtofilespec ( bigstring bspath, ptrfilespec fs ) {
 	
+	// 2009-08-30 aradke: refactored mac version to make it easier to understand.
+	//			fixed bug where a bspath containing a non-existing volume name was accepted as valid,
+	//			e.g. filespec("foobar:"), thus deviating from previous behaviour.
 	//
 	// 2006-10-16 creedon: for Mac, FSRef-ized
 	//
@@ -287,7 +324,18 @@ boolean pathtofilespec ( bigstring bspath, ptrfilespec fs ) {
 	//		     non-existant files, we don't give up right away.
 	//
 	
-	bigstring bsfolder;
+	#ifdef MACVERSION
+		FSRef fsr;
+		HFSUniStr255 name;
+		OSErr err;
+		bigstring bspathtmp, bsfullpath, bsfile, bsfolder;
+		short ix = 1;
+		boolean flvolume = false;
+	#endif
+
+	#ifdef WIN95VERSION
+		bigstring bsfolder;
+	#endif
 
 	clearbytes ( fs, sizeof ( *fs ) );
 
@@ -295,230 +343,76 @@ boolean pathtofilespec ( bigstring bspath, ptrfilespec fs ) {
 		return ( true );
 		
 	#ifdef MACVERSION
+
+		// create cleaned-up full path representation of our input suitable for pathtosref
 	
-		FSRef fsr;
-		HFSUniStr255 name;
-		OSErr err;
-		OSStatus status;
-		bigstring bs, bspathtmp;
-		short ix = 1, ixslashpos = 0, slashpos [ 255 ];
-		
 		copystring ( bspath, bspathtmp );
 
 		cleanendoffilename ( bspathtmp );
 		
-		if ( scanstring ( ':', bspath, &ix ) && ( ix > 1 ) ) { // full path, includes a colon, not the first character
+		if ( scanstring ( ':', bspath, &ix ) && ( ix > 1 ) ) {
 		
-			bigstring bsfile, bsfullpath;
+			// contains a colon but doesn't start with one, so it must be a full path
+			
+			if ( ix == stringlength ( bspath ) )	// the colon we found is the last char, so bspath is a volume name
+				flvolume = true;
 		 
-			copystring ( bspathtmp, bsfullpath );
+			copystring ( BIGSTRING ( "\x09" ":Volumes:" ), bsfullpath );	// FIXME: what if bspath was just a non-existing volume name like "foo:" ???
 				
-			insertstring ( BIGSTRING ( "\x09" ":Volumes:" ), bsfullpath );
+			pushstring ( bspathtmp, bsfullpath );
+			}
 
-			copystring ( bsfullpath,  bs );
-
-			/* convert to / delimited path */ {
-			
-				while ( scanstring ( '/', bs, &ix ) )
-					slashpos [ ixslashpos++ ] = ix++;
-				
-				stringreplaceall ( ':', '/', bs );
-				
-				while ( ixslashpos > 0 )
-					setstringcharacter ( bs, slashpos [ --ixslashpos ] - 1, ':' );
-				}
-			
-			/* convert from Mac Roman to UTF-8 */ {
-			
-				CFStringRef csr = CFStringCreateWithPascalString ( kCFAllocatorDefault, bs,
-					kCFStringEncodingMacRoman );
-			
-				CFStringGetCString ( csr, ( char * ) bs, sizeof ( bs ), kCFStringEncodingUTF8 );
-				
-				CFRelease ( csr );
+		else {
 		
-				}
-			
-			status = FSPathMakeRef ( bs, &fsr, NULL );
-
-			if ( status == noErr ) {
-			
-				err = FSGetCatalogInfo ( &fsr, kFSCatInfoNone, NULL, &name, NULL, &fsr );
-				
-				( *fs ).fsref = fsr;
-				
-				( *fs ).path = CFStringCreateWithCharacters ( kCFAllocatorDefault, name.unicode, name.length );
-				
-				return ( true );
-				
-				} // if
-			
-			filefrompath ( bsfullpath, bsfile );
-			
-			folderfrompath ( bsfullpath, bsfolder );
-			
-			/* convert to / delimited path */ {
-			
-				ix = 1;
-				ixslashpos = 0;
-					
-				while ( scanstring ( '/', bsfolder, &ix ) )
-					slashpos [ ixslashpos++ ] = ix++;
-				
-				stringreplaceall ( ':', '/', bsfolder );
-				
-				while ( ixslashpos > 0 )
-					setstringcharacter ( bsfolder, slashpos [ --ixslashpos ] - 1, ':' );
-				}
-			
-			/* convert from Mac Roman to UTF-8 */ {
-			
-				CFStringRef csr = CFStringCreateWithPascalString ( kCFAllocatorDefault, bsfolder,
-					kCFStringEncodingMacRoman );
-			
-				CFStringGetCString ( csr, ( char * ) bsfolder, sizeof ( bsfolder ), kCFStringEncodingUTF8 );
-				
-				CFRelease ( csr );
+			// it's a partial path, prefix with default directory (see initfsdefault)
 		
-				}
-			
-			status = FSPathMakeRef ( bsfolder, &fsr, NULL );
-
- 			if ( status == noErr ) {
-			
-				( *fs ).fsref = fsr;
-				
-				( *fs ).path = CFStringCreateWithPascalString ( kCFAllocatorDefault, bsfile,
-					kCFStringEncodingMacRoman );
-			
-				return ( true );
-				
-				} // if
-				
-			} // end full path
-			
-		else { // partial path
-		
-			bigstring bspartialpath;
 			tyfilespec fst;
-			
-			copystring ( bspathtmp, bspartialpath );
-			
-			if ( bspartialpath [ 1 ] != chpathseparator )
-				insertchar ( chpathseparator, bspartialpath );
+			OSStatus status;
 			
 			( void ) extendfilespec ( &fsdefault, &fst );
 			
-			status = FSRefMakePath ( &fst.fsref, ( UInt8 * ) bs, 256 ); // bs is now a c string
+			status = FSRefMakePath ( &fst.fsref, ( UInt8 * ) bsfullpath, sizeof(bsfullpath) ); // bsfullpath is now a c string
 			
-			convertcstring ( bs ); // bs is now a bigstring
+			convertcstring ( bsfullpath ); // bsfullpath is now a bigstring
+
+			stringswapall ( '/', ':', bsfullpath );		// convert to colon-delimited path
 			
-			/* convert bs to colon delimited path */ {
-			
-				ix = 1;
-				ixslashpos = 0;
-				
-				while ( scanstring ( ':', bs, &ix ) )
-					slashpos [ ixslashpos++ ] = ix++;
-				
-				stringreplaceall ( '/', ':', bs );
-				
-				while ( ixslashpos > 0 )
-					setstringcharacter ( bs, slashpos [ --ixslashpos ] - 1, '/' );
-				}
-			
-			insertstring ( bs, bspartialpath ); // we now have a full path
-			
-			copystring ( bspartialpath, bs );
-			
-			 /* convert bs to / delimited path */ {
-			 
-				 ix = 1;
-				 ixslashpos = 0;
-				
-				 while ( scanstring ( '/', bs, &ix ) )
-					slashpos [ ixslashpos++ ] = ix++;
-				
-				stringreplaceall ( ':', '/', bs );
-				
-				while ( ixslashpos > 0 )
-					setstringcharacter ( bs, slashpos [ --ixslashpos ] - 1, ':' );
-				}
-			
-			/* convert from Mac Roman to UTF-8 */ {
-			
-				CFStringRef csr = CFStringCreateWithPascalString ( kCFAllocatorDefault, bsfolder,
-					kCFStringEncodingMacRoman );
-			
-				CFStringGetCString ( csr, ( char * ) bsfolder, sizeof ( bsfolder ), kCFStringEncodingUTF8 );
-				
-				CFRelease ( csr );
+			if ( bspathtmp [ 1 ] != chpathseparator )	// append path separator if partial path doesn't begin with one
+				pushchar ( chpathseparator, bsfullpath );
+
+			pushstring ( bspathtmp, bsfullpath );	// finally append partial path
+			}
 		
-				}
+		// now see if the full path resolves 
 			
-			status = FSPathMakeRef ( bs, &fsr, NULL );
+		if ( pathtofsref ( bsfullpath, &fsr ) == noErr ) {
+		
+			err = FSGetCatalogInfo ( &fsr, kFSCatInfoNone, NULL, &name, NULL, &fsr );
 
-			if ( status == noErr ) {
+			( *fs ).fsref = fsr;
 			
-				err = FSGetCatalogInfo ( &fsr, kFSCatInfoNone, NULL, &name, NULL, &fsr );
+			( *fs ).path = CFStringCreateWithCharacters ( kCFAllocatorDefault, name.unicode, name.length );
+		
+			return ( true );
+			}
+			
+		// full path did not resolve but we actually only require the parent folder to exist
+		
+		if ( ! flvolume ) {		// volumes don't have a parent folder
+		
+			filefrompath ( bsfullpath, bsfile );
+			
+			folderfrompath ( bsfullpath, bsfolder );
 
+			if ( pathtofsref ( bsfolder, &fsr ) == noErr ) {
+			
 				( *fs ).fsref = fsr;
 				
-				( *fs ).path = CFStringCreateWithCharacters ( kCFAllocatorDefault, name.unicode, name.length );
+				( *fs ).path = CFStringCreateWithPascalString ( kCFAllocatorDefault, bsfile, kCFStringEncodingMacRoman );
 			
 				return ( true );
-				
-				} // if
-				
-			/* try parent of path */ {
-			
-				bigstring bsfile;
-			
-				filefrompath ( bspartialpath, bsfile );
-				
-				folderfrompath ( bspartialpath, bsfolder );
-				
-				 /* convert to slash delimited path */ {
-				 
-					 ix = 1;
-					 ixslashpos = 0;
-					
-					 while ( scanstring ( '/', bsfolder, &ix ) )
-						slashpos [ ixslashpos++ ] = ix++;
-					
-					stringreplaceall ( ':', '/', bsfolder );
-					
-					while ( ixslashpos > 0 )
-						setstringcharacter ( bsfolder, slashpos [ --ixslashpos ] - 1, ':' );
-					}
-				
-				/* convert from Mac Roman to UTF-8 */ {
-				
-					CFStringRef csr = CFStringCreateWithPascalString ( kCFAllocatorDefault, bsfolder,
-						kCFStringEncodingMacRoman );
-				
-					CFStringGetCString ( csr, ( char * ) bsfolder, sizeof ( bsfolder ), kCFStringEncodingUTF8 );
-					
-					CFRelease ( csr );
-		
-					}
-				
-				status = FSPathMakeRef ( bsfolder, &fsr, NULL );
-
-				if ( status == noErr ) {
-				
-					( *fs ).fsref = fsr;
-					
-					( *fs ).path = CFStringCreateWithPascalString ( kCFAllocatorDefault, bsfile,
-						kCFStringEncodingMacRoman );
-				
-					return ( true );
-					
-					} // if
-					
-				} // end try parent of path 
-				
-			} // end partial path
+				}
+			}
 		
 		return ( false );
 		

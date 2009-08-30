@@ -3072,23 +3072,30 @@ boolean folderfrompath (bigstring path, bigstring folder) {
 
 	boolean getfileparentfolder ( const ptrfilespec fs, ptrfilespec fsparent ) {
 
+		// 2009-08-30 aradke: handle null filespecs. don't fail silently if an error occurs.
 		//
 		// 2006-08-24 creedon: FSRef-ized
-		//
-		
-		// this function used to use oserror but I don't think oserror can handle osstatus properly
 		
 		HFSUniStr255 name;
-		OSErr err = FSGetCatalogInfo ( &( *fs ).fsref, kFSCatInfoNone, NULL, &name, NULL, &( *fsparent ).fsref );				
+		OSErr err;
+		
+		if ( !FSRefValid ( &(*fs).fsref ) ) {
+			
+			clearbytes ( fsparent, sizeof(tyfilespec) );
+			
+			return ( true );
+			}
+		
+		err = FSGetCatalogInfo ( &( *fs ).fsref, kFSCatInfoNone, NULL, &name, NULL, &( *fsparent ).fsref );				
 
-		if ( err != noErr )
+		if ( oserror(err) )
 			return ( false );
 		
 		if ( ( *fs ).path == NULL ) {
 		
 			err = FSGetCatalogInfo ( &( *fsparent ).fsref, kFSCatInfoNone, NULL, &name, NULL, &( *fsparent ).fsref );				
 
-			if ( err != noErr )
+			if ( oserror(err) )
 				return ( false );
 			}
 		

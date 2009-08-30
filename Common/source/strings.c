@@ -687,6 +687,30 @@ boolean stringreplaceall (char ch1, char ch2, bigstring bs) {
 	} /*stringreplaceall*/
 
 
+boolean stringswapall (char ch1, char ch2, bigstring bs) {
+
+	/*
+	2009-08-30 aradke: replace all instances of ch1 with ch2 and vice versa, useful for converting posix file paths
+	*/
+	
+	int ct = stringlength(bs);
+	unsigned char* p = stringbaseaddress(bs);
+	
+	while (ct > 0) {
+	
+		if (*p == ch1)
+			*p = ch2;
+		else if (*p == ch2)
+			*p = ch1;
+		
+		p++;
+		ct--;
+		}
+	
+	return (true);
+	} /*stringswapall*/
+
+
 boolean textlastword (ptrbyte ptext, long len, byte chdelim, bigstring bsdest) {
 	
 	/*

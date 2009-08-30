@@ -106,6 +106,8 @@ extern boolean stringfindchar (byte, bigstring);
 
 extern boolean stringreplaceall (char, char, bigstring);
 
+extern boolean stringswapall (char, char, bigstring);
+
 extern boolean textlastword (ptrbyte, long, byte, bigstring);
 
 extern boolean textfirstword (ptrbyte, long, byte, bigstring);
