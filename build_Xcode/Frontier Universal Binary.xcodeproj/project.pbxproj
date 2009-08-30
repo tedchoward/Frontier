@@ -1161,7 +1161,7 @@
 		5D8F1EF30C25B51A00927B97 /* langmysql.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = langmysql.c; path = ../Common/source/langmysql.c; sourceTree = SOURCE_ROOT; };
 		5D8F1EF60C25B56600927B97 /* langmysql.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = langmysql.h; path = ../Common/headers/langmysql.h; sourceTree = SOURCE_ROOT; };
 		5DCA3B0B0AF552C700D6155D /* libpaigefat.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libpaigefat.a; path = tools/libpaigefat.a; sourceTree = SOURCE_ROOT; };
-		65059B4E09968C1400410571 /* OPML.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = OPML.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		65059B4E09968C1400410571 /* OPML.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = OPML.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		65059B760996945100410571 /* OPML.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; name = OPML.icns; path = ../resources/OPML/OPML.icns; sourceTree = SOURCE_ROOT; };
 		65059B770996945100410571 /* OPMLdoc.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; name = OPMLdoc.icns; path = ../resources/OPML/OPMLdoc.icns; sourceTree = SOURCE_ROOT; };
 		65059B800996958700410571 /* BNDL.r */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.rez; name = BNDL.r; path = ../resources/OPML/BNDL.r; sourceTree = SOURCE_ROOT; };
@@ -3173,10 +3173,12 @@
 		65152560072BFC6500411831 /* Project object */ = {
 			isa = PBXProject;
 			buildConfigurationList = 5D4E1D460AAA0B1400DF6890 /* Build configuration list for PBXProject "Frontier Universal Binary" */;
+			compatibilityVersion = "Xcode 2.4";
 			hasScannedForEncodings = 1;
 			mainGroup = 6515255C072BFC6500411831;
 			productRefGroup = 6515255C072BFC6500411831;
 			projectDirPath = "";
+			projectRoot = ..;
 			targets = (
 				65152568072BFC6500411831 /* Frontier */,
 				6505996209968C1400410571 /* OPML */,
@@ -3307,7 +3309,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "#set -x\ncp -f \"${SRCROOT}/../Common/Paige/libpaigefat.a\" \"${SRCROOT}/tools/libpaigefat.a\"\nranlib \"${SRCROOT}/tools/libpaigemacho.a\"";
+			shellScript = "#set -x\ncp -f \"${SRCROOT}/../Common/Paige/libpaigefat.a\" \"${SRCROOT}/tools/libpaigefat.a\"\nranlib \"${SRCROOT}/tools/libpaigefat.a\"";
 		};
 		DEA58A9E074359BA00BAB271 /* ShellScript */ = {
 			isa = PBXShellScriptBuildPhase;
