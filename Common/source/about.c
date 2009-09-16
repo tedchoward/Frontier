@@ -288,9 +288,7 @@ static void ccdrawfrontiericon (Rect rcicn, boolean flpressed) {
 		
 		getapplicationfilespec (nil, &programfspec);
 		
-		( void ) extendfilespec ( &programfspec, &programfspec );
-		
-		err = FSRefMakeFSSpec ( &programfspec.fsref, &fs );
+		err = macgetfsspec (&programfspec, &fs);
 
 		if (GetIconRefFromFile (&fs, &iconref, &label) == noErr) {
 			

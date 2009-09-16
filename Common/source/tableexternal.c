@@ -484,8 +484,8 @@ boolean tableedit (hdlexternalvariable hvariable, hdlwindowinfo hparent, ptrfile
 		
 		#ifdef MACVERSION
 		
-			if ( FSRefValid ( &( *fs ).fsref ) && ( *fs ).path == NULL )
-				SetWindowProxyCreatorAndType ( w, 'LAND', 'FTtb', kOnSystemDisk );
+			if (macfilespecisresolvable (fs))
+				SetWindowProxyCreatorAndType (w, 'LAND', 'FTtb', kOnSystemDisk);
 				
 		#endif
 		

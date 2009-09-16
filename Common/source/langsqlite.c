@@ -297,6 +297,8 @@ boolean sqliteopenverb ( hdltreenode hparam1, tyvaluerecord *vreturned, bigstrin
 	tyfilespec fs;		// file specification
 	
 	//
+	// 2009-09-13 aradke: dispose dbfile and texthandle. update filespec code on mac.
+	//
 	// 2006-11-06 creedon: use filespec as parameter, convert dbfile to UTF-8 for sqlite3_open
 	//
 	// 2006-10-08 DG: created
@@ -321,42 +323,29 @@ boolean sqliteopenverb ( hdltreenode hparam1, tyvaluerecord *vreturned, bigstrin
 	// SQLite docs: http://www.sqlite.org/capi3ref.html#sqlite3_open
 	//
 	
-	newhandle ( MAXPATHLEN, &dbfile );
-	
 	flnextparamislast = true; // makes sure Frontier throws an error if more than one param is passed
 	
 	if ( ! getfilespecvalue ( hparam1, 1, &fs ) ) // fs holds the file path
 		return ( false );
 	
+	newhandle ( MAXPATHLEN, &dbfile );
+	
 	#ifdef MACVERSION
 	
-		boolean fl;
+		FSRef fsref;
 		OSStatus status;
 		long len;
-				
-		fl = extendfilespec ( &fs, &fs );
 		
-		status = FSRefMakePath ( &fs.fsref, *dbfile, MAXPATHLEN ); // dbfile encoded in UTF-8
+		if ( oserror ( macgetfsref ( &fs, &fsref ) ) ) {
+			disposehandle (dbfile);
+			return ( false );
+			}
+		
+		status = FSRefMakePath ( &fsref, *dbfile, MAXPATHLEN ); // dbfile encoded in UTF-8
 		
 		len = strlen ( *dbfile );
 		
-		sethandlesize ( dbfile, len );
-		
-		if ( fs.path != NULL ) {
-		
-			Handle path;
-			
-			len = CFStringGetMaximumSizeForEncoding ( CFStringGetLength ( fs.path ), kCFStringEncodingUTF8 );
-			
-			newhandle ( ++len, &path );
-			
-			fl = CFStringGetCString ( fs.path, *path, len, kCFStringEncodingUTF8 );
-			
-			pushcharhandle ( '/', dbfile );
-			
-			pushhandle ( path, dbfile );
-			
-			}
+		sethandlesize ( dbfile, len + 1 );	// include nil terminator
 	
 	#endif // MACVERSION
 	
@@ -367,12 +356,16 @@ boolean sqliteopenverb ( hdltreenode hparam1, tyvaluerecord *vreturned, bigstrin
 		newtexthandle ( bs, &handletext );
 		
 		convertCharset ( handletext, dbfile, BIGSTRING ( "\x0C" "Windows-1252" ), BIGSTRING ( "\x05" "utf-8" ) );
+		
+		disposehandle ( handletext );
 	
 	#endif // WIN95VERSION
 	
 	// Process the SQLite sequence
 	
 	returnCode = sqlite3_open ( *dbfile, &dbid );
+
+	disposehandle (dbfile);
 	
 	if(returnCode) {
 		sqliteOpenError(sqlite3_errmsg(dbid), bserror); // send database open error

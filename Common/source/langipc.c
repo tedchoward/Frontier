@@ -1649,6 +1649,7 @@ static pascal boolean langipchandleverb (hdlverbrecord hverb) {
 	if ( landgetverbattr ( hverb, 'subj', typeFSS, &subject ) == noErr ) {
 		
 		FSSpec fs;
+		FSRef fsref;
 		Handle h;
 		tyfilespec fst;
 		
@@ -1660,7 +1661,9 @@ static pascal boolean langipchandleverb (hdlverbrecord hverb) {
 		
 		disposehandle (h);
 		
-		FSpMakeFSRef ( &fs, &fst.fsref );
+		FSpMakeFSRef ( &fs, &fsref );
+		
+		(void) macmakefilespec (&fsref, &fst);
 		
 		wroot = shellfindfilewindow ( &fst );
 		
@@ -4117,10 +4120,13 @@ static pascal OSErr langipcopendocroutine ( FSSpec *fs ) {
 	//
 
 	tyfilespec fst;
+	FSRef fsref;
 	
 	clearbytes ( &fst, sizeof ( fst ) );
 	
-	FSpMakeFSRef ( fs, &fst.fsref );
+	(void) FSpMakeFSRef ( fs, &fsref );
+	
+	(void) macmakefilespec (&fsref, &fst);
 	
 	if ( ! shellopenfile ( &fst, false, nil ) )
 		return ( getoserror ( ) );

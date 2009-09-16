@@ -943,8 +943,8 @@ boolean wpedit (hdlexternalvariable hvariable, hdlwindowinfo hparent, ptrfilespe
 		
 		#ifdef MACVERSION
 		
-			if ( FSRefValid ( &( *fs ).fsref ) && ( *fs ).path == NULL )
-				SetWindowProxyCreatorAndType ( w, 'LAND', 'FTwp', kOnSystemDisk );
+			if (macfilespecisresolvable (fs))
+				SetWindowProxyCreatorAndType (w, 'LAND', 'FTwp', kOnSystemDisk);
 				
 		#endif
 		

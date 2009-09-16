@@ -521,7 +521,8 @@ boolean playeropenmovieinwindow ( ptrfilespec f ) {
 	hdlwindowinfo hinfo;
 	FSSpec fs;
 	
-	FSRefMakeFSSpec ( &( *f ).fsref, &fs );
+	if (macgetfsspec (f, &fs) != noErr)
+		return (false);
 	
 	if (!findplayerwindow (&hinfo))
 		

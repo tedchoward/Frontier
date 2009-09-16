@@ -546,8 +546,6 @@ static boolean sysfunctionvalue (short token, hdltreenode hparam1, tyvaluerecord
 			
 			if ( ! getapplicationfilespec ( bs, &fs ) ) // 2006-02-17 aradke: initializes fs even if it fails
 				setemptystring (bs);
-			
-			( void ) getfilespecparent ( &fs );
 				
 			return ( setfilespecvalue ( &fs, v ) );
 			}

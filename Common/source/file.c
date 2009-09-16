@@ -55,6 +55,8 @@
 boolean equalfilespecs ( const ptrfilespec fs1, const ptrfilespec fs2 ) {
 	
 	//
+	// 2009-09-03 aradke: converted FSRef name field from CFStringRef to HFSUniStr255
+	//
 	// 2006-06-18 creedon: for Mac, FSRef-ized
 	//
 	// 5.0a25 dmb: until we set the volumeID to zero for all Win fsspecs, we must not compare them here
@@ -62,21 +64,24 @@ boolean equalfilespecs ( const ptrfilespec fs1, const ptrfilespec fs2 ) {
 
 	#ifdef MACVERSION
 	
-		if ( FSCompareFSRefs ( &( *fs1 ).fsref, &( *fs2 ).fsref ) != noErr )
-			return ( false );
-			
-		// seems like the checking could be improved for paths, what if one is NULL and the other is not?
-			
-		if ( ( ( *fs1 ).path != NULL ) && ( ( *fs2 ).path != NULL ) )			
-			if ( CFStringCompare ( ( *fs1 ).path, ( *fs2 ).path, 0 ) != kCFCompareEqualTo )
-				return ( false );
-			
-		bigstring bs1, bs2;
+		CFStringRef cfname1, cfname2;
+		boolean flequal;
 		
-		getfsfile ( fs1, bs1 );
-		getfsfile ( fs2, bs2 );
+		if (fs1->flags.flvolume != fs2->flags.flvolume)
+			return (false);
+	
+		if (FSCompareFSRefs (&fs1->ref, &fs2->ref) != noErr)
+			return (false);
+			
+		cfname1 = CFStringCreateWithCharacters (kCFAllocatorDefault, fs1->name.unicode, fs1->name.length);
+		cfname2 = CFStringCreateWithCharacters (kCFAllocatorDefault, fs2->name.unicode, fs2->name.length);
+
+		flequal = ( CFStringCompare (cfname1, cfname2, 0) == kCFCompareEqualTo );
 		
-		return ( equalstrings ( bs1, bs2 ) );
+		CFRelease (cfname1);
+		CFRelease (cfname2);
+
+		return (flequal);
 		
 	#endif
 	
@@ -484,7 +489,7 @@ boolean flushvolumechanges (const ptrfilespec fs, hdlfilenum fnum) {
 		FSCatalogInfo catalogInfo;
 		OSErr err;
 		
-		err = FSGetCatalogInfo ( &( *fs ).fsref, kFSCatInfoVolume, &catalogInfo, NULL, NULL, NULL );
+		err = FSGetCatalogInfo ( &fs->ref, kFSCatInfoVolume, &catalogInfo, NULL, NULL, NULL );
 		
 		(*pb).volumeParam.ioVRefNum = catalogInfo.volume;
 		
@@ -524,28 +529,24 @@ void fileshutdown(void) {
 
 
 static boolean filecreateandopen ( ptrfilespec fs, OSType creator, OSType filetype, hdlfilenum *fnum) {
-
+	
+	//
+	// 2009-09-03 aradke: converted tyfilespec.name field from CFStringRef to HFSUniStr255
 	//
 	// 2006-09-15 creedon: for Mac, FSRef-ized
 	//
 	
 	#ifdef MACVERSION
 		
-		HFSUniStr255 name;
+		FSRef fsref;
 		OSErr err;
 		
 		setfserrorparam ( fs );
 		
-		CFStringRefToHFSUniStr255 ( ( *fs ).path, &name );
-		
-		err = FSCreateFileUnicode ( &( *fs ).fsref, name.length, name.unicode, kFSCatInfoNone, NULL, &( *fs ).fsref, NULL );
+		err = FSCreateFileUnicode ( &( *fs ).ref, (*fs).name.length, (*fs).name.unicode, kFSCatInfoNone, NULL, &fsref, NULL );
 		
 		if ( oserror ( err ) )
 			return (false);
-		
-		CFRelease ( ( *fs ).path );
-		
-		( *fs ).path = NULL; // clear out path
 		
 		HFSUniStr255 dataforkname;
 		
@@ -554,11 +555,11 @@ static boolean filecreateandopen ( ptrfilespec fs, OSType creator, OSType filety
 		if ( oserror ( err ) )
 			return ( false );
 		
-		err = FSOpenFork ( &( *fs ).fsref, dataforkname.length, dataforkname.unicode, fsRdWrPerm, fnum );
+		err = FSOpenFork ( &fsref, dataforkname.length, dataforkname.unicode, fsRdWrPerm, fnum );
 
 		if ( oserror ( err ) ) {
 			
-			FSClose (*fnum);
+			FSCloseFork (*fnum);	// FIXME: is *fnum actually valid if FSOpenFork failed?
 			
 			deletefile (fs);
 			
@@ -566,7 +567,7 @@ static boolean filecreateandopen ( ptrfilespec fs, OSType creator, OSType filety
 			
 			}
 		
-		FSSetNameLocked ( &( *fs ).fsref );
+		FSSetNameLocked ( &fsref );
 			
 		return (true);
 		
@@ -603,15 +604,12 @@ boolean opennewfile ( ptrfilespec fs, OSType creator, OSType filetype, hdlfilenu
 	//
 	
 	boolean flfolder;
-	tyfilespec fst;
 	
-	( void ) extendfilespec ( fs, &fst );
-	
-	if ( fileexists ( &fst, &flfolder ) ) { // file exists, delete it
+	if ( fileexists ( fs, &flfolder ) ) { // file exists, delete it
 	
 		//WriteToConsole("We're deleting a file that already exists. No idea why.");
 		
-		if ( ! deletefile ( &fst ) )
+		if ( ! deletefile ( fs ) )
 			return ( false );
 		}
 	
@@ -633,7 +631,7 @@ boolean openfile ( const ptrfilespec fs, hdlfilenum *fnum, boolean flreadonly ) 
 		
 	#ifdef MACVERSION
 		
-		OSErr err;
+		FSRef fsref;
 		short perm;
 		
 		setfserrorparam ( fs ); // in case error message takes a filename parameter
@@ -645,21 +643,20 @@ boolean openfile ( const ptrfilespec fs, hdlfilenum *fnum, boolean flreadonly ) 
 
 		HFSUniStr255 dataforkname;
 		
-		err = FSGetDataForkName ( &dataforkname );
+		if ( oserror ( FSGetDataForkName ( &dataforkname ) ) )
+			return ( false );
 		
-		if ( oserror ( err ) )
+		if ( oserror ( macgetfsref ( fs, &fsref ) ) )
 			return ( false );
 			
-		err = FSOpenFork ( &( *fs ).fsref, dataforkname.length, dataforkname.unicode, perm, fnum );
-
-		if ( oserror ( err ) ) {
+		if ( oserror ( FSOpenFork ( &fsref, dataforkname.length, dataforkname.unicode, perm, fnum ) ) ) {
 			
 			*fnum = 0;
 			
 			return (false);
 			}
 		
-		FSSetNameLocked ( &( *fs ).fsref );
+		FSSetNameLocked ( &fsref );
 		
 		return (true);
 		
@@ -768,15 +765,16 @@ boolean deletefile ( const ptrfilespec fs ) {
 	
 	#ifdef MACVERSION
 	
-		OSErr err;
+		FSRef fsref;
 
 		setfserrorparam ( fs ); // in case error message takes a filename parameter
+		
+		if ( oserror ( macgetfsref ( fs, &fsref ) ) )
+			return ( false );
 
-		FSClearNameLocked ( &( *fs ).fsref );
-		
-		err = FSDeleteObject ( &( *fs ).fsref );
-		
-		return ( ! oserror ( err ) );
+		FSClearNameLocked ( &fsref );
+	
+		return ( ! oserror ( FSDeleteObject ( &fsref ) ) );
 		
 	#endif
 
@@ -824,6 +822,8 @@ boolean fileexists ( const ptrfilespec fs, boolean *flfolder ) {
 	//
 	// can't call filegetinfo because it has an error message if the file isn't found.
 	//
+	// 2009-09-03 aradke: converted tyfilespec.name field from CFStringRef to HFSUniStr255
+	//
 	// 2006-06-19 creedon:	Mac OS X bundles/packages are not considered folders
 	//
 	//				for Mac, FSRef-ized
@@ -838,24 +838,25 @@ boolean fileexists ( const ptrfilespec fs, boolean *flfolder ) {
 	#ifdef MACVERSION
 	
 		FSCatalogInfo catalogInfo;
+		FSRef fsref;
 	
 		*flfolder = false;
 		
-		if ( ( *fs ).path != NULL )
-			return ( false );
+		if (macgetfsref(fs, &fsref) != noErr)
+			return (false);
 		
-		if ( FSGetCatalogInfo ( &( *fs ).fsref, kFSCatInfoNodeFlags, &catalogInfo, NULL, NULL, NULL ) != noErr )
-			return ( false );
+		if (FSGetCatalogInfo(&fsref, kFSCatInfoNodeFlags, &catalogInfo, NULL, NULL, NULL) != noErr)
+			return (false);
 		
-		*flfolder = ( ( catalogInfo.nodeFlags & kFSNodeIsDirectoryMask ) != 0 );
+		*flfolder = ((catalogInfo.nodeFlags & kFSNodeIsDirectoryMask) != 0);
 
 		/* Mac OS X bundles/packages are not considered folders */ {
 	
 			boolean flisapplication, flisbundle;
 			
-			LSIsApplication ( &( *fs ).fsref, &flisapplication, &flisbundle );
+			LSIsApplication (&fsref, &flisapplication, &flisbundle);
 
-			if ( flisapplication || flisbundle )
+			if (flisapplication || flisbundle)
 				*flfolder = false;
 			}
 			
@@ -900,216 +901,4 @@ boolean fileexists ( const ptrfilespec fs, boolean *flfolder ) {
 	#endif
 	
 	} // fileexists
-
-
-#ifdef MACVERSION
-
-	static OSErr FSRefGetName ( const FSRef *fsr, CFStringRef *name ) {
-	
-		//
-		// the caller must dispose of the CFString
-		//
-		// 2007-08-01 creedon: changed variable fsRef to fsr to reduce
-		//				   confusion with FSRef definition
-		//
-		// 2006-07-06 creedon: created
-		//
-		
-		HFSUniStr255 hname;
-		OSErr err = FSGetCatalogInfo ( fsr, kFSCatInfoNone, NULL, &hname,
-			NULL, NULL );
-		
-		if ( err == noErr )
-			*name = CFStringCreateWithCharacters ( kCFAllocatorDefault,
-				hname.unicode, hname.length );
-		
-		return ( err );
-		
-		} // FSRefGetName
-	
-	
-	boolean CFStringRefToStr255 ( CFStringRef input, StringPtr output ) {
-	
-		//
-		// 2006-08-08 creedon: created, cribbed from < http://developer.apple.com/carbon/tipsandtricks.html#CFStringFromUnicode >
-		//
-		
-		CFIndex usedBufLen;
-		
-		CFStringGetBytes ( input, CFRangeMake ( 0, MIN ( CFStringGetLength ( input ), 255 ) ),
-					kCFStringEncodingMacRoman, '^', false, &( output [ 1 ] ), 255, &usedBufLen );
-		
-		output [ 0 ] = usedBufLen;
-		
-		if ( output [ 0 ] == 0 )
-			return ( false );
-		
-		return ( true );
-		
-		} // CFStringRefToStr255
-
-
-	boolean HFSUniStr255ToStr255 ( ConstHFSUniStr255Param input, StringPtr output ) {
-	
-		//
-		// 2006-07-06 creedon; created
-		//
-
-		CFStringRef csr;
-		
-		csr = CFStringCreateWithCharacters ( kCFAllocatorDefault, input -> unicode, input -> length );
-		
-		CFStringRefToStr255 ( csr, output );
-
-		CFRelease ( csr );
-		
-		return ( true );
-
-		} // HFSUniStr255ToStr255
-	
-	
-	boolean FSRefGetNameStr255 ( const FSRef *fsRef, Str255 bsname ) {
-	
-		//
-		// 2006-07-06 creedon; created
-		//
-		
-		CFStringRef csr;
-		OSErr err = FSRefGetName ( fsRef, &csr );
-		
-		if ( err != noErr )
-			return ( false );
-			
-		if ( csr == NULL )
-			return ( false );
-			
-		if ( ! CFStringGetPascalString ( csr, bsname, 256, kCFStringEncodingMacRoman ) )
-			return ( false );
-			
-		CFRelease ( csr );
-		
-		return ( true );
-		
-		} // FSRefGetNameStr255
-	
-	
-	boolean bigstringToHFSUniStr255 ( const bigstring bs, HFSUniStr255  *output ) {
-	
-		//
-		// 2006-07-06 creedon; created
-		//
-	
-		CFStringRef csr = CFStringCreateWithPascalString ( kCFAllocatorDefault, bs, kCFStringEncodingMacRoman );
-		
-		( *output ).length = CFStringGetLength ( csr );
-		
-		CFStringGetCharacters ( csr, CFRangeMake ( 0, ( *output ).length ), ( *output ).unicode );
-		
-		CFRelease ( csr );
-		
-		return ( true );
-		
-		} // bigstringToHFSUniStr255
-
-
-	boolean CFStringRefToHFSUniStr255 ( CFStringRef input, HFSUniStr255 *output ) {
-	
-		//
-		// 2006-08-11 creedon: created, cribbed from < http://developer.apple.com/carbon/tipsandtricks.html#CFStringFromUnicode >
-		//
-		
-		( *output ).length = CFStringGetBytes ( input, CFRangeMake ( 0, MIN ( CFStringGetLength ( input ), 255 ) ), 
-			kCFStringEncodingUnicode, 0, false, ( UInt8 * ) ( *output ).unicode, 255, NULL );
-
-		if ( ( *output ).length == 0 ) 
-			return ( false );
-			
-		return ( true );
-		
-		} // CFStringRefToHFSUniStr255
-
-
-/* 2006-08-11 creedon: cribbed from MoreFilesX.c and modded to work with Str255 */
-
-/* macro for casting away const when you really have to */
-#define CONST_CAST(type, const_var) (*(type*)((void *)&(const_var)))
-
-OSErr
-HFSNameGetUnicodeName255 (
-	ConstStr255Param hfsName,
-	TextEncoding textEncodingHint,
-	HFSUniStr255 *unicodeName)
-{
-	ByteCount			unicodeByteLength;
-	OSStatus			result;
-	UnicodeMapping		uMapping;
-	TextToUnicodeInfo	tuInfo;
-	ByteCount			pascalCharsRead;
-	
-	/* check parameters */
-	require_action(NULL != unicodeName, BadParameter, result = paramErr);
-	
-	/* make sure output is valid in case we get errors or there's nothing to convert */
-	unicodeName->length = 0;
-	
-	if ( 0 == StrLength(CONST_CAST(StringPtr, hfsName)) )
-	{
-		result = noErr;
-	}
-	else
-	{
-		/* if textEncodingHint is kTextEncodingUnknown, get a "default" textEncodingHint */
-		if ( kTextEncodingUnknown == textEncodingHint )
-		{
-			ScriptCode			script;
-			RegionCode			region;
-			
-			script = GetScriptManagerVariable(smSysScript);
-			region = GetScriptManagerVariable(smRegionCode);
-			result = UpgradeScriptInfoToTextEncoding(script, kTextLanguageDontCare, region,
-				NULL, &textEncodingHint);
-			if ( paramErr == result )
-			{
-				/* ok, ignore the region and try again */
-				result = UpgradeScriptInfoToTextEncoding(script, kTextLanguageDontCare,
-					kTextRegionDontCare, NULL, &textEncodingHint);
-			}
-			if ( noErr != result )
-			{
-				/* ok... try something */
-				textEncodingHint = kTextEncodingMacRoman;
-			}
-		}
-		
-		uMapping.unicodeEncoding = CreateTextEncoding(kTextEncodingUnicodeDefault,
-			kUnicodeCanonicalDecompVariant, kUnicode16BitFormat);
-		uMapping.otherEncoding = GetTextEncodingBase(textEncodingHint);
-		uMapping.mappingVersion = kUnicodeUseHFSPlusMapping;
-	
-		result = CreateTextToUnicodeInfo(&uMapping, &tuInfo);
-		require_noerr(result, CreateTextToUnicodeInfo);
-			
-		result = ConvertFromTextToUnicode(tuInfo, hfsName[0], &hfsName[1],
-			0,								/* no control flag bits */
-			0, NULL, 0, NULL,				/* offsetCounts & offsetArrays */
-			sizeof(unicodeName->unicode),	/* output buffer size in bytes */
-			&pascalCharsRead, &unicodeByteLength, unicodeName->unicode);
-		require_noerr(result, ConvertFromTextToUnicode);
-		
-		/* convert from byte count to char count */
-		unicodeName->length = unicodeByteLength / sizeof(UniChar);
-
-ConvertFromTextToUnicode:
-
-		/* verify the result in debug builds -- there's really not anything you can do if it fails */
-		verify_noerr(DisposeTextToUnicodeInfo(&tuInfo));
-	}
-	
-CreateTextToUnicodeInfo:
-BadParameter:
-
-	return ( result );
-}
-
-	#endif
 

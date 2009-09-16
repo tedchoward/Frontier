@@ -140,19 +140,15 @@ void setfserrorparam ( const ptrfilespec fs ) {
 	
 		bigstring bs;
 		
-		if ( ( *fs ).path != NULL )
-			CFStringRefToStr255 ( ( *fs ).path, bs );
-		else
-			if ( FSRefValid ( &( *fs ).fsref ) )
-				FSRefGetNameStr255 ( &( *fs ).fsref, bs );
-		
-		setoserrorparam ( bs );
+		macgetfilespecnameasbigstring(fs, bs);
+	
+		setoserrorparam(bs);
 		
 	#endif // MACVERSION
 
 	#ifdef WIN95VERSION
 	
-		setoserrorparam ((ptrstring) fsname (fs));
+		setoserrorparam((ptrstring) fsname(fs));
 	
 	#endif
 	
@@ -279,20 +275,28 @@ boolean getmachinename (bigstring bsname) {
 		*/
 		
 		OSErr err;
+		FSRef fsref;
 		
 		setfserrorparam ( fs ); // in case error message takes a filename parameter
+					
+		err = macgetfsref(fs, &fsref);
 		
-		clearbytes ( pb, sizeof ( *pb ) );
-		clearbytes ( catinfo, sizeof ( *catinfo ) );
+		if (err == noErr) {
 		
-		( *pb ).catInfo = catinfo;
+			clearbytes(pb, sizeof(*pb));
+			clearbytes(catinfo, sizeof(*catinfo));
+			
+			pb->catInfo = catinfo;
+			
+			pb->ref = &fsref;
+			pb->whichInfo = kFSCatInfoGettableInfo;
+			
+			err = PBGetCatalogInfoSync(pb);
+			
+			pb->ref = NULL;		// fsref is a local about to disappear
+			}
 		
-		( *pb ).ref = &( *fs ).fsref;
-		( *pb ).whichInfo = kFSCatInfoGettableInfo;
-		
-		err = PBGetCatalogInfoSync ( pb );
-		
-		return ( ! oserror ( err ) );
+		return (!oserror(err));
 		} /* getmacfileinfo */
 
 
@@ -306,14 +310,14 @@ boolean getmachinename (bigstring bsname) {
 		
 		clearbytes (pb, sizeof (*pb));
 		
-		(*pb).hFileInfo.ioNamePtr = (StringPtr) (*fs).name;
+		pb->hFileInfo.ioNamePtr = (StringPtr) (*fs).name;
 		
-		(*pb).hFileInfo.ioVRefNum = (*fs).vRefNum;
+		pb->hFileInfo.ioVRefNum = (*fs).vRefNum;
 		
-		(*pb).hFileInfo.ioDirID = (*fs).parID;
+		pb->hFileInfo.ioDirID = (*fs).parID;
 		
 		return (!oserror (PBGetCatInfoSync (pb)));
-		} /*getmacfileinfo*/
+		} /*getmacfileinfocipbr*/
 
 
 	static boolean setmacfileinfo ( const ptrfilespec fs, FSRefParam *pb ) {
@@ -322,16 +326,29 @@ boolean getmachinename (bigstring bsname) {
 		2.1b2 dmb: new fsspec-based version
 		*/
 		
-		setfserrorparam ( fs ); /*in case error message takes a filename parameter*/
+		OSErr err;
+		FSRef fsref;
 		
-		( *pb ).ref = &( *fs ).fsref;
-		( *pb ).whichInfo = kFSCatInfoSettableInfo;
+		setfserrorparam(fs); /*in case error message takes a filename parameter*/
+		
+		err = macgetfsref(fs, &fsref);
+		
+		if (err == noErr) {
+			
+			pb->ref = &fsref;
+			
+			pb->whichInfo = kFSCatInfoSettableInfo;
 
-		return ( ! oserror ( PBSetCatalogInfoSync ( pb ) ) );
+			err = PBSetCatalogInfoSync(pb);
+			
+			pb->ref = NULL;		// fsref is a local about to disappear
+			}
+
+		return (!oserror(err));
 		} /* setmacfileinfo */
 
 
-	static boolean touchparentfolder ( const ptrfilespec fs ) {
+	static boolean touchparentfolder(const ptrfilespec fs) {
 		
 		//
 		// touch the file date of the parent folder of fs
@@ -339,12 +356,12 @@ boolean getmachinename (bigstring bsname) {
 		// 2006-06-18 creedon: FSRef-ized
 		//
 		
-		tyfilespec fsfolder = { { { 0 } }, 0 };
+		tyfilespec fsfolder;
 		
-		if ( FSGetCatalogInfo ( &( *fs ).fsref, kFSCatInfoNone, NULL, NULL, NULL, &fsfolder.fsref ) != noErr )
+		if (macgetfilespecparent(fs, &fsfolder) != noErr)
 			return (false);
 		
-		setfilemodified ( &fsfolder, timenow ( ) );
+		setfilemodified(&fsfolder, timenow());
 		
 		return (true);
 		
@@ -898,7 +915,7 @@ void winsetfileinfo (WIN32_FIND_DATA * fileinfo, tyfileinfo *info) {
 #endif
 
 
-boolean filegetinfo ( const ptrfilespec fs, tyfileinfo *info ) {
+boolean filegetinfo (const ptrfilespec fs, tyfileinfo *info) {
 
 	//
 	// 2006-06-25 creedon: for Mac, FSRef-ized
@@ -907,31 +924,26 @@ boolean filegetinfo ( const ptrfilespec fs, tyfileinfo *info ) {
 	//
 
 	#ifdef MACVERSION
-	
-		setfserrorparam ( fs ); // in case error message takes a filename parameter
-		
-		if ( ( *fs ).path != NULL )
-			return ( ! oserror ( fnfErr ) );
-		
-		if ( ! FSRefValid ( &( *fs ).fsref ) )
-			return ( false );
-		
+
+		FSRef fsref;
 		FSCatalogInfo catinfo;
 		FSRefParam pb;
-		OSErr err;
+
+		setfserrorparam(fs); // in case error message takes a filename parameter
 		
-		clearbytes ( &pb, sizeof ( pb ) );
+		if (oserror(macgetfsref(fs, &fsref)))
+			return (false);
+
+		clearbytes(&pb, sizeof(pb));
 			
 		pb.catInfo = &catinfo;
-		pb.ref = &( *fs ).fsref;
+		pb.ref = &fsref;
 		pb.whichInfo = kFSCatInfoGettableInfo;
 		
-		err = PBGetCatalogInfoSync ( &pb );
-		
-		if ( oserror ( err ) )
-			return ( false );
+		if (oserror(PBGetCatalogInfoSync(&pb)))
+			return (false);
 			
-		filegetinfofrompb ( &pb, info );
+		filegetinfofrompb(&pb, info);
 		
 	#endif // MACVERSION
 		
@@ -1194,21 +1206,21 @@ boolean filesetvisible (const ptrfilespec fs, boolean flvisible) {
 	
 	#ifdef MACVERSION
 	
+		FSRef fsref;
 		OSErr err;
 		
-		if ( flvisible ) {
+		if (oserror (macgetfsref (fs, &fsref)))
+			return (false);
 		
-			err = FSClearInvisible ( &( *fs ).fsref );
-			
-			if ( err != noErr )
-				return ( true );
+		if (flvisible) {
+			err = FSClearInvisible (&fsref);
 			}
 		else {
-			err = FSSetInvisible ( &( *fs ).fsref );
-		
-			if ( err != noErr )
-				return ( true );
+			err = FSSetInvisible (&fsref);
 			}
+		
+		if (oserror (err))
+			return (false);
 		
 		touchparentfolder (fs);
 		
@@ -1299,17 +1311,21 @@ boolean fileisfolder (const ptrfilespec fs, boolean *flfolder) {
 	
 		// Mac OS X bundles/packages are not considered folders
 	
+		FSRef fsref;
 		boolean flisapplication, flisbundle;
 		
-		LSIsApplication ( &( *fs ).fsref, &flisapplication, &flisbundle );
+		if (macgetfsref (fs, &fsref) == noErr) {
+			
+			if (LSIsApplication (&fsref, &flisapplication, &flisbundle) == noErr) {
 
-		if ( flisapplication || flisbundle ) {
-		
-			*flfolder = false;
-			
-			return ( true );
-			
-			}			
+				if (flisapplication || flisbundle) {
+				
+					*flfolder = false;
+					
+					return (true);
+					}
+				}
+			}
 	#endif
 	
 	#ifdef WIN95VERSION
@@ -1339,7 +1355,7 @@ boolean fileisfolder (const ptrfilespec fs, boolean *flfolder) {
 		
 	*flfolder = info.flfolder;
 	
-	return ( true );
+	return (true);
 	
 	} // fileisfolder
 
@@ -1351,23 +1367,23 @@ boolean fileisvolume (const ptrfilespec fs) {
 	//
 
 	#ifdef MACVERSION
-	
-		bigstring bsname;
 		
-		getfsfile ( fs, bsname );
-	
-		if ( isemptystring ( bsname ) )
-			return ( false );
-			
 		FSCatalogInfo catalogInfo;
-		OSErr err;
-	
-		clearbytes ( &catalogInfo, longsizeof ( catalogInfo ) );
+		FSRef fsref;
+			
+		if (!fs->flags.flvolume)
+			return (false);
+		
+		if (macgetfsref (fs, &fsref) != noErr)
+			return (false);
+			
+		clearbytes (&catalogInfo, longsizeof (catalogInfo));
 
-		err = FSGetCatalogInfo ( &( *fs ).fsref, kFSCatInfoGettableInfo, &catalogInfo, NULL, NULL, NULL ); // kFSCatInfoParentDirID
-		
-		return ( catalogInfo.parentDirID == fsRtParID );
-		
+		if (FSGetCatalogInfo (&fsref, kFSCatInfoGettableInfo, &catalogInfo, NULL, NULL, NULL) != noErr)
+			return (false);
+			
+		return (catalogInfo.parentDirID == fsRtParID);
+	
 	#endif
 
 	#ifdef WIN95VERSION
@@ -1794,49 +1810,23 @@ boolean largefilebuffer (Handle *hbuffer) {
 
 #ifdef MACVERSION
 
-extern OSStatus LSIsApplication( const FSRef *inRef, Boolean *outIsApplication,
-                          Boolean *outIsBundled )
-{
-  LSItemInfoRecord  info;
-  OSStatus  err = LSCopyItemInfoForRef( inRef, kLSRequestBasicFlagsOnly,
-                                        &info );
-  
-  if ( err == noErr )
-  {
-    *outIsApplication = ( kLSItemInfoIsApplication &info.flags ) != 0;
-    *outIsBundled = ( kLSItemInfoIsPackage &info.flags ) != 0;
-  }
-  return( err );
-}
+	OSStatus LSIsApplication (const FSRef *inRef, Boolean *outIsApplication, Boolean *outIsBundled) {
 
-	//
-	// ConvertCStringToHFSUniStr is from HelloWorldTool.c of FSCopyObject with no changes, I didn't want to include
-	// HelloWorldTool.c in this project because there is a whole bunch of code we don't need
-	//
+		LSItemInfoRecord info;
+		OSStatus err;
 
-	#define kCouldNotCreateCFString	4
-	#define kCouldNotGetStringData	5
+		err = LSCopyItemInfoForRef (inRef, kLSRequestBasicFlagsOnly, &info);
 
-	static OSErr ConvertCStringToHFSUniStr(const char* cStr, HFSUniStr255 *uniStr)
-	{
-		OSErr err = noErr;
-		CFStringRef tmpStringRef = CFStringCreateWithCString( kCFAllocatorDefault, cStr, kCFStringEncodingMacRoman );
-		if( tmpStringRef != NULL )
-		{
-			if( CFStringGetCString( tmpStringRef, (char*)uniStr->unicode, sizeof(uniStr->unicode), kCFStringEncodingUnicode ) )
-				uniStr->length = CFStringGetLength( tmpStringRef );
-			else
-				err = kCouldNotGetStringData;
-				
-			CFRelease( tmpStringRef );
-		}
-		else
-			err = kCouldNotCreateCFString;
-		
-		return err;
-	}
+		if (err == noErr) {
+			*outIsApplication = (kLSItemInfoIsApplication & info.flags) != 0;
+			*outIsBundled = (kLSItemInfoIsPackage & info.flags) != 0;
+			}
+
+		return (err);
+		}/*LSIsApplication*/
 
 #endif
+
 
 boolean copyfile ( const ptrfilespec fsource, const ptrfilespec fdest, boolean fldata, boolean flresources ) {
 
@@ -1844,18 +1834,16 @@ boolean copyfile ( const ptrfilespec fsource, const ptrfilespec fdest, boolean f
 	// create a copy of the indicated file in the destination folder or volume, with the indicated name.
 	//
 	// 2006-06-18 creedon:	for Mac, FSRef-ized
-	//
-	//				combined the two definitions (Mac and Win) of this function into one deleted old code, see
-	//				revision 1329 use FSCopyObject code
+	//				combined the two definitions (Mac and Win) of this function into one, deleted old code, see
+	//				revision 1329, use FSCopyObject code
 	//
 	// 5.0.1 dmb: for Windows, if the file exists, overwrite it.
 	//
 	
 	#ifdef MACVERSION
 	
-		bigstring bs;
 		boolean flsourcefolder;
-		HFSUniStr255 name;
+		FSRef fsrefsource;
 		
 		if ( ! fileisfolder ( fsource, &flsourcefolder ) )
 			return ( false );
@@ -1869,15 +1857,11 @@ boolean copyfile ( const ptrfilespec fsource, const ptrfilespec fdest, boolean f
 				
 			return ( true );
 			}
-				
-		getfsfile ( fdest, bs );
 		
-		convertpstring ( bs );
-		
-		if ( oserror ( ConvertCStringToHFSUniStr ( bs , &name ) ) )
+		if ( oserror ( macgetfsref ( fsource, &fsrefsource ) ) )
 			return ( false );
 		
-		if ( oserror ( FSCopyObject ( &( *fsource ).fsref, &( *fdest ).fsref, 0, kFSCatInfoNone, kDupeActionReplace, &name,
+		if ( oserror ( FSCopyObject ( &fsrefsource, &fdest->ref, 0, kFSCatInfoNone, kDupeActionReplace, &fdest->name,
 							false, false, NULL, NULL, NULL, NULL ) ) )
 			return ( false );
 			
@@ -1983,7 +1967,6 @@ short filegetsystemvnum (void) {
 		
 		getfsvolume ( &fs, ( long * ) vnum );
 		
-		
 		return (true);
 		
 		} // pathtovolume
@@ -2015,8 +1998,8 @@ boolean getspecialfolderpath ( bigstring bsvol, bigstring bsfolder, boolean flcr
 		short ixlist;
 		OSType foldertype;
 		long attrs;
-		OSErr err = errorNone;
 		bigstring bsfirst;
+		FSRef fsref;
 		
 		if (!(gestalt (gestaltFindFolderAttr, &attrs) && (attrs & (1 << gestaltFindFolderPresent))))
 			return (false);
@@ -2038,29 +2021,32 @@ boolean getspecialfolderpath ( bigstring bsvol, bigstring bsfolder, boolean flcr
 		else {
 			firstword (bsfolder, chspace, bsfirst);
 			
-			if (findstringlist (bsfirst, specialfolderlistnumber, &ixlist))
+			if (findstringlist (bsfirst, specialfolderlistnumber, &ixlist)) 
 			{
 				foldertype = specialfolders [ixlist];
 
 				//temp items, we want to redirect to the users domain.
 				//if we don't do this then it is a read only directory at the root.
-				if (ixlist == 11)
+				if (ixlist == 11) {
+			
 					vnum = kUserDomain;
-
-			}
-			else
-				err = dirNFErr;
+					}
+				}
+			else {
+			
+				oserror ( dirNFErr );
+			
+				return ( false );
+				}
 		}
 		
-		if ( err == noErr ) {
-		
-			err = FSFindFolder ( vnum, foldertype, flcreate, &( *fs ).fsref );
+		if ( oserror ( FSFindFolder ( vnum, foldertype, flcreate, &fsref ) ) )
+			return ( false );
 
-			( void ) getfilespecparent ( fs );
-			
-			}
+		if ( oserror ( macmakefilespec ( &fsref, fs ) ) )
+			return ( false );
 		
-		return ( ! oserror ( err ) );
+		return ( true );
 		
 	#endif
 
@@ -2514,7 +2500,7 @@ boolean unmountvolume (const ptrfilespec fs) {
 	//
 	
 	long vnum;
-	OptionBits flags = NULL;
+	OptionBits flags = 0;
 	pid_t dissenter;
 	
 	getfsvolume ( fs, &vnum );
@@ -2580,6 +2566,7 @@ static boolean getdesktopdatabasepath (short vnum, DTPBRec *dt) {
 
 boolean getfilecomment (const ptrfilespec fs, bigstring bscomment) {
 	
+	// 2009-09-06 aradke: FIXME: apparently, the proper way to get and set comments on OS X is to send Apple Events to the Finder (slow!?)
 	//
 	// 2006-06-25 creedon: minimally FSRef-ized
 	//
@@ -2591,16 +2578,17 @@ boolean getfilecomment (const ptrfilespec fs, bigstring bscomment) {
 	DTPBRec dt;
 	FSSpec fss;
 	
-	FSGetCatalogInfo ( &( *fs ).fsref, kFSCatInfoNone, NULL, NULL, &fss, NULL );
-	
 	clearbytes (&dt, sizeof (dt));
 	
 	setemptystring (bscomment); /*default return*/
 	
-	if ( ! surefile ( fs ) )
+	if (!surefile(fs))
 		return (false);
-	
-	if ( ! hasdesktopmanager ( fss.vRefNum ) )
+
+	if (oserror (macgetfsspec (fs, &fss)))
+		return (false);
+		
+	if (!hasdesktopmanager (fss.vRefNum))
 		return (false);
 	
 	dt.ioVRefNum = fss.vRefNum;
@@ -2639,11 +2627,12 @@ boolean setfilecomment (const ptrfilespec fs, bigstring bscomment) {
 	DTPBRec dt;
 	FSSpec fss;
 	
-	FSGetCatalogInfo ( &( *fs ).fsref, kFSCatInfoNone, NULL, NULL, &fss, NULL );
-	
 	clearbytes (&dt, sizeof (dt));
 	
 	if (!surefile (fs))
+		return (false);
+
+	if (oserror (macgetfsspec (fs, &fss)))
 		return (false);
 	
 	if (!hasdesktopmanager (fss.vRefNum))
@@ -2911,7 +2900,7 @@ boolean fileparsevolname ( bigstring bspath, ptrfilespec fs ) {
 	
 	#ifdef MACVERSION
 		
-		OSStatus status;
+		FSRef fsrefvolume;
 		bigstring bs, bsvolname;
 		short ix = 1;
 		
@@ -2951,7 +2940,10 @@ boolean fileparsevolname ( bigstring bspath, ptrfilespec fs ) {
 	
 			}
 		
-		status = FSPathMakeRef ( bsvolname, &( *fs ).fsref, NULL );
+		if ( FSPathMakeRef ( bsvolname, &fsrefvolume, NULL ) != noErr )
+			return ( false );
+		
+		return ( macmakefilespec ( &fsrefvolume, fs ) == noErr );
 		
 	#endif
 	
@@ -2976,18 +2968,21 @@ boolean fileparsevolname ( bigstring bspath, ptrfilespec fs ) {
 
 #ifdef MACVERSION
 
-	boolean fileresolvealias ( ptrfilespec fs ) {
+	boolean fileresolvealias (ptrfilespec fs) {
 	
 		//
 		// 2006-09-18 creedon: FSRef-ized
 		//
 		
+		FSRef fsref;
 		boolean flfolder, flalias;
 		
-		setfserrorparam ( fs );
+		setfserrorparam (fs);
 		
-		return ( ! oserror ( FSResolveAliasFile ( &( *fs ).fsref, true, &flfolder, &flalias ) ) );
-
+		if (oserror (macgetfsref (fs, &fsref)))
+			return (false);
+		
+		return (!oserror (FSResolveAliasFile ( &fsref, true, &flfolder, &flalias)));
 		} // fileresolvealias
 	
 #endif
@@ -3068,73 +3063,12 @@ boolean folderfrompath (bigstring path, bigstring folder) {
 	} /*folderfrompath*/
 
 
-#ifdef MACVERSION
-
-	boolean getfileparentfolder ( const ptrfilespec fs, ptrfilespec fsparent ) {
-
-		// 2009-08-30 aradke: handle null filespecs. don't fail silently if an error occurs.
-		//
-		// 2006-08-24 creedon: FSRef-ized
-		
-		HFSUniStr255 name;
-		OSErr err;
-		
-		if ( !FSRefValid ( &(*fs).fsref ) ) {
-			
-			clearbytes ( fsparent, sizeof(tyfilespec) );
-			
-			return ( true );
-			}
-		
-		err = FSGetCatalogInfo ( &( *fs ).fsref, kFSCatInfoNone, NULL, &name, NULL, &( *fsparent ).fsref );				
-
-		if ( oserror(err) )
-			return ( false );
-		
-		if ( ( *fs ).path == NULL ) {
-		
-			err = FSGetCatalogInfo ( &( *fsparent ).fsref, kFSCatInfoNone, NULL, &name, NULL, &( *fsparent ).fsref );				
-
-			if ( oserror(err) )
-				return ( false );
-			}
-		
-		( *fsparent ).path = CFStringCreateWithCharacters ( kCFAllocatorDefault, name.unicode, name.length );
-		
-		return ( true );
-		
-		} // getfileparentfolder
-
-
-	#if 0
-
-		boolean getdefaultpath (bigstring bs) {
-
-			ParamBlockRec pb;
-			OSErr errcode;
-			
-			setstringlength (bs, 0);
-			
-			clearbytes (&pb, sizeof (pb));
-				
-			errcode = PBGetVolSync (&pb);
-			
-			if (oserror (errcode))
-				return (false);
-			
-			return (filegetpath (pb.fileParam.ioVRefNum, bs));
-			} /*getdefaultpath*/
-
-	#endif
-
-#endif
-
-boolean movefile ( const ptrfilespec fs, const ptrfilespec fsto ) {
+boolean movefile (const ptrfilespec fs, const ptrfilespec fsto) {
 
 	#ifdef MACVERSION
 	
 		//
-		// moves a file or folder speied in fs to the fcifolder specified by fsto.  make sure that the new path is really a folder.
+		// moves a file or folder specified in fs to the folder specified by fsto.  make sure that the new path is really a folder.
 		//
 		// 2006-10-23 creedon: use fileisfolder function to determine if fs is folder
 		//
@@ -3143,21 +3077,22 @@ boolean movefile ( const ptrfilespec fs, const ptrfilespec fsto ) {
 		// 1991-08-02 dmb: corrected error message params
 		//
 		
-		boolean fl;
+		boolean flfolder;
+		FSRef src, dst;
 		
-		( void ) fileisfolder ( fs, &fl );
+		(void) fileisfolder (fs, &flfolder);
 		
-		if ( fl ) {
-					
-			oserror ( errorParam ); // not the best error message, but...
-			
-			return ( false );
-			
+		if (flfolder) {
+			oserror (errorParam); // not the best error message, but...
+			return (false);
 			}
 		
-		setfserrorparam ( fs );
+		setfserrorparam (fs);
 		
-		return ( ! oserror ( FSMoveObject ( &( *fs ).fsref, &( *fsto ).fsref, NULL ) ) );
+		if (oserror (macgetfsref (fs, &src)) || oserror (macgetfsref (fsto, &dst)))
+			return (false);
+		
+		return (!oserror (FSMoveObject (&src, &dst, NULL)));
 		
 	#endif
 		
@@ -3277,18 +3212,22 @@ boolean renamefile (const ptrfilespec fs, bigstring bsnew) {
 		fixes bug when it's a path to a folder.
 		*/
 		
+		FSRef fsref;
+		tyfsname name;
+		
 		if (!surefile (fs)) /*file doesn't exist -- catch error*/
+			return (false);
+		
+		if (oserror (macgetfsref (fs, &fsref)))
 			return (false);
 		
 		filefrompath (bsnew, bsnew);
 		
 		setoserrorparam (bsnew); /*only likely errors from here on relate to new name*/
-		
-		HFSUniStr255 name;
 
-		bigstringToHFSUniStr255 ( bsnew, &name );
+		bigstringtofsname (bsnew, &name);
 		
-		if ( oserror ( FSRenameUnicode ( &fs -> fsref, name.length, name.unicode, kTextEncodingUnknown, NULL ) ) )
+		if (oserror (FSRenameUnicode (&fsref, name.length, name.unicode, kTextEncodingUnknown, NULL)))
 			return (false);
 		
 		touchparentfolder (fs);
@@ -3333,20 +3272,25 @@ boolean lockfile ( const ptrfilespec fs ) {
 
 	#ifdef MACVERSION
 	
+		FSRef fsref;
 		FSCatalogInfo catinfo;
-		OSErr err;
 		
-		clearbytes ( &catinfo, sizeof ( catinfo ) );
+		clearbytes (&catinfo, sizeof (catinfo));
 	
-		setfserrorparam ( fs ); // in case error message takes a filename parameter
+		setfserrorparam (fs); // in case error message takes a filename parameter
 		
-		err = FSGetCatalogInfo ( &( *fs ).fsref, kFSCatInfoNodeFlags, &catinfo, NULL, NULL, NULL );
+		if (oserror (macgetfsref (fs, &fsref)))
+			return (false);
+		
+		if (oserror (FSGetCatalogInfo (&fsref, kFSCatInfoNodeFlags, &catinfo, NULL, NULL, NULL)))
+			return (false);
 		
 		catinfo.nodeFlags |= kFSNodeLockedMask;
 		
-		err = FSSetCatalogInfo ( &( *fs ).fsref, kFSCatInfoNodeFlags, &catinfo );
+		if (oserror (FSSetCatalogInfo (&fsref, kFSCatInfoNodeFlags, &catinfo)))
+			return (false);
 		
-		return ( ! oserror ( err ) );
+		return (true);
 	
 	#endif
 
@@ -3383,20 +3327,25 @@ boolean unlockfile (const ptrfilespec fs) {
 
 	#ifdef MACVERSION
 	
+		FSRef fsref;
 		FSCatalogInfo catinfo;
-		OSErr err;
 		
-		clearbytes ( &catinfo, sizeof ( catinfo ) );
+		clearbytes (&catinfo, sizeof (catinfo));
 	
-		setfserrorparam ( fs ); // in case error message takes a filename parameter
+		setfserrorparam (fs); // in case error message takes a filename parameter
 		
-		err = FSGetCatalogInfo ( &( *fs ).fsref, kFSCatInfoNodeFlags, &catinfo, NULL, NULL, NULL );
+		if (oserror (macgetfsref (fs, &fsref)))
+			return (false);
+			
+		if (oserror (FSGetCatalogInfo (&fsref, kFSCatInfoNodeFlags, &catinfo, NULL, NULL, NULL)))
+			return (false);
 		
 		catinfo.nodeFlags &= ~kFSNodeLockedMask;
 		
-		err = FSSetCatalogInfo ( &( *fs ).fsref, kFSCatInfoNodeFlags, &catinfo );
+		if (oserror (FSSetCatalogInfo (&fsref, kFSCatInfoNodeFlags, &catinfo)))
+			return (false);
 		
-		return ( ! oserror ( err ) );
+		return (true);
 		
 	#endif
 
@@ -3434,18 +3383,14 @@ boolean newfolder ( const ptrfilespec fs ) {
 	//
 		
 	#ifdef MACVERSION
-	
-		HFSUniStr255 name;
-		long dirid;
 		
-		setfserrorparam ( fs );
+		setfserrorparam (fs);
 		
-		if ( ! CFStringRefToHFSUniStr255 ( ( *fs ).path, &name ) )
-			return ( false );
+		if (oserror (FSCreateDirectoryUnicode (&fs->ref, fs->name.length, fs->name.unicode, kFSCatInfoNone, NULL, NULL, NULL, NULL)))
+			return (false);
 		
-		return ( ! oserror ( FSCreateDirectoryUnicode ( &( *fs ).fsref, name.length, name.unicode, kFSCatInfoNone, NULL,
-			NULL, NULL, &dirid ) ) );
-		
+		return (true);
+				
 	#endif
 
 	#ifdef WIN95VERSION
@@ -3465,29 +3410,19 @@ boolean newfolder ( const ptrfilespec fs ) {
 boolean newfile ( const ptrfilespec fs, OSType creator, OSType filetype ) {
 
 	//
-	// 2007-08-01 creedon: if path is NULL oserror
+	// 2009-09-03 aradke: switched tyfilespec.name field from CFStringRef to HFSUniStr255
 	//
+	// 2007-08-01 creedon: if path is NULL oserror
 	//				   set err to bdNamErr by default
 	//
 	// 2006-06-18 creedon: for Mac, FSRef-ized
 	//
 	
 	#ifdef MACVERSION
-	
-		HFSUniStr255 name;
-		OSErr err = bdNamErr;
 		
-		setfserrorparam ( fs );
-		
-		if ( ( *fs ).path != NULL ) {
-		
-			CFStringRefToHFSUniStr255 ( ( *fs ).path, &name );
-			
-			err = FSCreateFileUnicode ( &( *fs ).fsref, name.length,
-				name.unicode, kFSCatInfoNone, NULL, &( *fs ).fsref, NULL );
-			}
-			
-		return ( ! oserror ( err ) );
+		setfserrorparam (fs);
+
+		return (!oserror (FSCreateFileUnicode (&fs->ref, fs->name.length, fs->name.unicode, kFSCatInfoNone, NULL, NULL, NULL)));
 		
 	#endif
 	
@@ -3529,19 +3464,23 @@ boolean newfile ( const ptrfilespec fs, OSType creator, OSType filetype ) {
 		//
 		
 		tyfilespec fs;
+		FSRef fsref;
 		
 		setoserrorparam (bspath); /*in case error message takes a filename parameter*/
 		
-		insertstring ( BIGSTRING ( "\x09" "/Volumes/" ), bspath );
+		insertstring (BIGSTRING ("\x09" "/Volumes/"), bspath);
 		
-		stringreplaceall ( ':', '/', bspath );
+		stringreplaceall (':', '/', bspath);
 			
-		convertpstring ( bspath );
+		convertpstring (bspath);
 			
-		if ( oserror ( FSPathMakeRef ( bspath, &fs.fsref, NULL ) ) )
-			return ( false );
+		if (oserror (FSPathMakeRef (bspath, &fsref, NULL)))
+			return (false);
 		
-		return ( filespectopath ( &fs, bspath ) );
+		if (oserror (macmakefilespec (&fsref, &fs)))
+			return (false);
+		
+		return (filespectopath (&fs, bspath));
 		
 		} // getfullfilepath
 
@@ -3552,11 +3491,12 @@ boolean newfile ( const ptrfilespec fs, OSType creator, OSType filetype ) {
 		// 2006-06-25 creedon: FSRef-ized
 		//
 
-		OSErr err;
+		FSRef fsref;
 		
-		err = FSMakeFSRef (vnum, dirid, fname, &( *pfs ).fsref);
+		if (FSMakeFSRef (vnum, dirid, fname, &fsref) != noErr)
+			return (false);
 		
-		return ( ( err == noErr ) || ( err == fnfErr ) );
+		return (macmakefilespec (&fsref, pfs) == noErr);
 		
 		} // filemakespec
 		
@@ -3603,7 +3543,7 @@ boolean initfile (void) {
 	} /*initfile*/
 
 
-boolean findapplication ( OSType creator, ptrfilespec fsapp ) {
+boolean findapplication (OSType creator, ptrfilespec fsapp) {
 
 	//
 	// 2007-06-12 creedon: for Mac, use getfilespecparent
@@ -3634,20 +3574,16 @@ boolean findapplication ( OSType creator, ptrfilespec fsapp ) {
 	//
 	
 	#ifdef MACVERSION
+		
+		FSRef fsref;
 	
-		OSStatus status;
+		if ((UInt32) LSFindApplicationForInfo == (UInt32) kUnresolvedCFragSymbolAddress)
+			return (false);
 		
-		 if ( ( UInt32 ) LSFindApplicationForInfo == ( UInt32 ) kUnresolvedCFragSymbolAddress )
-			return ( false );
-			
-		status = LSFindApplicationForInfo ( creator, NULL, NULL, &( *fsapp ).fsref, NULL);
+		if (LSFindApplicationForInfo (creator, NULL, NULL, &fsref, NULL) != noErr)
+			return (false);
 		
-		if ( status != noErr )
-			return ( false );
-			
-		getfilespecparent ( fsapp );
-		
-		return ( true );
+		return (macmakefilespec (&fsref, fsapp) == noErr);
 		
 	#endif // MACVERSION
 	
@@ -3697,62 +3633,307 @@ boolean findapplication ( OSType creator, ptrfilespec fsapp ) {
 	} // findapplication
 
 
-boolean extendfilespec ( const ptrfilespec fsin, ptrfilespec fsout ) {
+void clearfilespec (ptrfilespec fs) {
 
-	//
-	// 2006-06-23 creedon: created
-	//
+	/*
+	2009-09-04 aradke: init to nil filespec
+	*/
+
+	clearbytes (fs, sizeof (tyfilespec));
 	
-	#ifdef MACVERSION
-	
-		tyfilespec fst;
-	
-		clearbytes ( &fst, sizeof ( fst ) );
-	
-		if ( ! FSRefValid ( &( *fsin ).fsref ) )
-			return ( false );
+	} /*clearfilespec*/
+
+
+#ifdef MACVERSION
+
+	boolean macfilespecisvalid (const ptrfilespec fs) {
 		
-		if ( ( *fsin ).path == NULL )
-			return ( false );
+		/*
+		2009-09-06 aradke: check if fs data is valid (though file may not exist)
+		*/
 		
-		HFSUniStr255 name;
+		return (FSRefValid (&fs->ref) && (fsnamelength (&fs->name) > 0));
+
+		} /*macfilespecisvalid*/
+	
+	
+	boolean macfilespecisresolvable (const ptrfilespec fs) {
+		
+		FSRef fsref;
+		
+		return (macgetfsref (fs, &fsref) == noErr);
+		} /*macfilespecisresolvable*/
+	
+	
+	OSErr macgetfsref (const ptrfilespec fs, FSRef* fsref) {
+		
+		/*
+		2009-09-05 aradke: obtain the actual FSRef corresponding to our extended filespec.
+					if the file does not exist, we return an error.
+		*/
+		
+		if (!macfilespecisvalid (fs))
+			return (fnfErr);
+		
+		if (fs->flags.flvolume) {
+		
+			*fsref = fs->ref;
+		
+			return (noErr);
+			}
+		
+		return (FSMakeFSRefUnicode (&fs->ref, fs->name.length, fs->name.unicode, kTextEncodingUnknown, fsref));
+		} /*macgetfsref*/
+	
+	
+	OSErr macmakefilespec (const FSRef *fsrefptr, ptrfilespec fs) {
+		
+		/*
+		2009-09-06 aradke: obtain the filespec corresponding to the fsref.
+		*/
+		
+		FSRef fsref = *fsrefptr;	// local copy in case fsrefptr points to fs->ref
+		FSCatalogInfo catalogInfo;
 		OSErr err;
 		
-		CFStringRefToHFSUniStr255 ( ( *fsin ).path, &name );
+		clearfilespec (fs);
 		
-		err = FSMakeFSRefUnicode ( &( *fsin ).fsref, name.length, name.unicode, kTextEncodingUnknown, &fst.fsref ); // kTextEncodingUnicodeDefault
-		
-		if ( err != noErr )
-			return ( false );
-		
-		*fsout = fst;
-		
-	#endif // MACVERSION
-	
-	return ( true );
-	
-	} // extendfilespec
+		clearbytes (&catalogInfo, longsizeof(catalogInfo));
 
-
-boolean getfilespecparent ( ptrfilespec fs ) {
-
-	//
-	// 2006-06-17 creedon: created
-	//
-	
-	#ifdef MACVERSION
-	
-		HFSUniStr255 name;
-		OSErr err = FSGetCatalogInfo ( &( *fs ).fsref, kFSCatInfoNone, NULL, &name, NULL, &( *fs ).fsref );				
-
-		if ( err != noErr )
-			return ( false );
+		err = FSGetCatalogInfo (&fsref, kFSCatInfoGettableInfo, &catalogInfo, NULL, NULL, NULL);
 		
-		( *fs ).path = CFStringCreateWithCharacters ( kCFAllocatorDefault, name.unicode, name.length );
+		if (err != noErr)	
+			return (err);
 		
-	#endif // MACVERSION
+		if (catalogInfo.parentDirID == fsRtParID) {
+		
+			fs->flags.flvolume = true;
+			
+			fs->ref = fsref;
+			
+			return (FSGetCatalogInfo (&fsref, kFSCatInfoNone, NULL, &fs->name, NULL, NULL));
+			}
+
+		return (FSGetCatalogInfo (&fsref, kFSCatInfoNone, NULL, &fs->name, NULL, &fs->ref));
+		} /*macmakefilespec*/
 	
-	return ( true );
 	
-	} // getfilespecparent
+	OSErr macgetfsspec (const ptrfilespec fs, FSSpec *fss) {
+		
+		/*
+		2009-09-06 aradke: get an old-style FSSpec corresponding to our filespec.
+					FSSpecs are seriously deprecated on OS X, but we still use them in a couple of places.
+		*/
+		
+		FSRef fsref;
+		FSCatalogInfo catalogInfo;
+		OSErr err;
+		
+		if (macgetfsref (fs, &fsref) == noErr)	// file (already) exists
+			return (FSGetCatalogInfo (&fsref, kFSCatInfoNone, NULL, NULL, fss, NULL));
+		
+		err = FSGetCatalogInfo (&fs->ref, kFSCatInfoVolume | kFSCatInfoNodeID, &catalogInfo, NULL, NULL, NULL);
+		
+		if (err != noErr)
+			return (err);
+
+		fss->vRefNum = catalogInfo.volume;
+		fss->parID = catalogInfo.nodeID;
+		fsnametobigstring (&fs->name, fss->name);
+
+		return (noErr);
+		} /*macgetfsspec*/
+		
+		
+	OSErr macgetfilespecparent (const ptrfilespec fs, ptrfilespec fsparent) {
+		
+		/*
+		2009-09-05 aradke: obtain parent filespec. file does not have to exist.
+					parent of volume or nil filespec is nil filespec.
+		*/
+		
+		if (!macfilespecisvalid (fs) || fs->flags.flvolume) {
+
+			clearfilespec (fsparent);	// default result
+
+			return (noErr);
+			}
+		
+		return (macmakefilespec (&fs->ref, fsparent));
+		} /*macgetfilespecparent*/
+	
+	
+	OSErr macgetfilespecchild (const ptrfilespec fs, tyfsnameptr name, ptrfilespec fschild) {
+		
+		/*
+		2009-09-13 aradke: dive into a folder
+		*/
+		
+		FSRef fsref;
+		boolean flfolder;
+		OSErr err;
+		
+		if (!fileisfolder (fs, &flfolder) || !flfolder)
+			return (errFSNotAFolder);
+		
+		err = macgetfsref (fs, &fsref);
+		
+		if (err != noErr)
+			return (err);
+		
+		clearfilespec (fschild);
+		
+		fschild->ref = fsref;
+		
+		copyfsname (name, &fschild->name);
+		
+		return (noErr);
+		} /*macgetfilespecchild*/
+	
+	
+	OSErr macgetfilespecchildfrombigstring (const ptrfilespec fs, bigstring bsname, ptrfilespec fschild) {
+		
+		/*
+		2009-09-13 aradke: see macgetfilespecchild
+		*/
+		
+		tyfsname name;
+		
+		bigstringtofsname (bsname, &name);
+		
+		return (macgetfilespecchild (fs, &name, fschild)); 
+		} /*macgetfilespecchildfrombigstring*/
+		
+		
+	boolean macgetfsrefname (const FSRef *fsref, tyfsnameptr fsname) {
+		
+		/*
+		2009-09-05 aradke: obtain name of referenced file.
+		*/
+
+		return (FSGetCatalogInfo (fsref, kFSCatInfoNone, NULL, fsname, NULL, NULL) == noErr);
+
+		} /*macgetfsrefname*/
+	
+	
+	boolean macgetfsrefnameasbigstring (const FSRef *fsref, bigstring bs) {
+		
+		/*
+		2009-09-05 aradke: obtain name of referenced file as pascal string.
+		*/
+		
+		tyfsname fsname;
+		
+		if (!macgetfsrefname (fsref, &fsname))
+			return (false);
+		
+		fsnametobigstring (&fsname, bs);
+		
+		return (true);
+		} /*macgetfsrefnameasbigstring*/
+	
+	
+	void macgetfilespecname (const ptrfilespec fs, tyfsnameptr fsname) {
+		
+		/*
+		2009-09-05 aradke: obtain name of specified file.
+		*/
+		
+		if (macfilespecisvalid (fs)) {
+			copyfsname (&fs->name, fsname);
+			}
+		else {
+			fsname->length = 0;
+			}
+		} /*macgetfilespecname*/
+	
+	
+	void macgetfilespecnameasbigstring (const ptrfilespec fs, bigstring bs) {
+		
+		/*
+		2009-09-05 aradke: obtain name of specified file as pascal string.
+		*/
+		
+		tyfsname fsname;
+		
+		macgetfilespecname (fs, &fsname);
+		
+		fsnametobigstring (&fsname, bs);
+		
+		} /*macgetfilespecnameasbigstring*/
+		
+	
+	void clearfsname (tyfsnameptr fsname) {
+	
+		clearbytes (fsname, sizeof (tyfsname));
+		
+		} /*clearfsname*/
+	
+	
+	void copyfsname (const tyfsnameptr fssource, tyfsnameptr fsdest) {
+		
+		moveleft (fssource, fsdest, sizeof (tyfsname));
+		
+		} /*copyfsname*/
+		
+		
+	unsigned short fsnamelength (const tyfsnameptr fsname) {
+		
+		return (fsname->length);
+		
+		} /*hfsnamelength*/
+
+	
+	void bigstringtofsname (const bigstring bs, tyfsnameptr fsname) {
+	
+		/*
+		2006-07-06 creedon; created
+		*/
+	
+		CFStringRef csr = CFStringCreateWithPascalString (kCFAllocatorDefault, bs, kCFStringEncodingMacRoman);
+		
+		fsname->length = CFStringGetLength (csr);
+		
+		CFStringGetCharacters (csr, CFRangeMake(0, fsname->length), fsname->unicode);
+		
+		CFRelease (csr);
+		
+		} /*bigstringtofsname*/
+	
+	
+	void fsnametobigstring (const tyfsnameptr fsname, bigstring bs) {
+		
+		CFStringRef csr;
+		
+		csr = CFStringCreateWithCharacters (kCFAllocatorDefault, fsname->unicode, fsname->length);
+		
+		CFStringRefToStr255 (csr, bs);
+
+		CFRelease (csr);
+
+		} /*fsnametobigstring*/
+
+	
+	boolean CFStringRefToStr255 (CFStringRef input, StringPtr output) {
+	
+		/*
+		2006-08-08 creedon: created, cribbed from < http://developer.apple.com/carbon/tipsandtricks.html#CFStringFromUnicode >
+		*/
+		
+		CFIndex usedBufLen;
+		
+		CFStringGetBytes (input, CFRangeMake (0, MIN(CFStringGetLength(input), 255)),
+					kCFStringEncodingMacRoman, '^', false, &(output[1]), 255, &usedBufLen);
+		
+		output[0] = usedBufLen;
+		
+		if (output[0] == 0)
+			return (false);
+		
+		return (true);
+		
+		} // CFStringRefToStr255
+	
+
+#endif /*MACVERSION*/
 

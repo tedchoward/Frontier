@@ -536,7 +536,7 @@ boolean getobjectmodeldisplaystring (tyvaluerecord *vitem, bigstring bsdisplay) 
 		//
 		
 		register Handle htext;
-		
+		FSRef fsref;
 		AliasHandle halias;
 		OSErr errcode;
 		bigstring bspath;
@@ -549,10 +549,10 @@ boolean getobjectmodeldisplaystring (tyvaluerecord *vitem, bigstring bsdisplay) 
 		
 		texthandletostring ( htext, bspath );
 		
-		if ( pathtofilespec ( bspath, &fs ) && extendfilespec ( &fs, &fs ) )
-			errcode = FSNewAlias ( NULL, &fs.fsref, &halias );
+		if ( pathtofilespec ( bspath, &fs ) && (macgetfsref (&fs, &fsref) == noErr) )
+			errcode = FSNewAlias ( NULL, &fsref, &halias );
 		else
-			errcode = NewAliasMinimalFromFullPath ( stringlength ( bspath), bspath + 1, NULL, NULL, &halias );
+			errcode = NewAliasMinimalFromFullPath ( stringlength (bspath), stringbaseaddress (bspath), NULL, NULL, &halias );
 		
 		if ( oserror ( errcode ) )
 			return ( false );
@@ -578,38 +578,33 @@ boolean filespectoalias (const ptrfilespec fs, boolean flminimal, AliasHandle *h
 	//
 	
 	#ifdef MACVERSION
-	
-		if ( ! FSRefValid ( &( *fs ).fsref ) )
-			return ( false ) ;
 
-		boolean flcreatefrompath = false;
 		OSErr err = noErr;
 		
-		if ( ( *fs ).path == NULL ) {
+		if (!macfilespecisvalid (fs))
+			return (false);
 		
+		if (fs->flags.flvolume) {
+
 			if (flminimal)
-				err = FSNewAliasMinimal ( &( *fs ).fsref, halias);
+				err = FSNewAliasMinimal (&fs->ref, halias);
 			else
-				err = FSNewAlias (nil, &( *fs ).fsref, halias);
+				err = FSNewAlias (nil, &fs->ref, halias);
 			}
-		else
-			flcreatefrompath = true;
-		
-		if ( ( err == fnfErr ) || flcreatefrompath ) { // alias manager isn't friendly enough to do anything for us here
-			
-				HFSUniStr255 name;
-				
-				CFStringRefToHFSUniStr255 ( ( *fs ).path, &name );
-				
-				err = FSNewAliasMinimalUnicode ( &( *fs ).fsref, name.length, name.unicode, halias, NULL );
+		else {
+
+			if (flminimal)
+				err = FSNewAliasMinimalUnicode ( &fs->ref, fs->name.length, fs->name.unicode, halias, NULL );
+			else
+				err = FSNewAliasUnicode (nil, &fs->ref, fs->name.length, fs->name.unicode, halias, NULL);
 			}
-		
-		if (err == noErr)
+
+		if ((err == noErr) || (err == fnfErr))
 			return (true);
 		
 		if (langerrorenabled ()) {
 			
-			setfserrorparam ( fs );
+			setfserrorparam (fs);
 			
 			oserror (err);
 			}
@@ -680,25 +675,26 @@ boolean aliastostring (Handle halias, bigstring bs) {
 		//
 		
 		register AliasHandle h = (AliasHandle) halias;
-		short flchanged;
-		tyfilespec fs;
+		FSRef fsref;
+		Boolean flchanged;
 		bigstring bsinfo;
 		AliasInfoType ix = asiAliasName;
 		OSErr err;
 		
-		clearbytes ( &fs, sizeof ( fs ) );
-		
 		if (!langcanusealiases ())
 			return (false);
 		
-		err = FSFollowFinderAlias (nil, h, false, &fs.fsref, (Boolean *) &flchanged);
+		err = FSFollowFinderAlias (nil, h, false, &fsref, &flchanged);
 		
 		if ((err == noErr) /* || (err == fnfErr) */ ) {
+		
+			tyfilespec fs;
 			
 			if (flchanged)
-				FSUpdateAlias (nil, &fs.fsref, h, (Boolean *) &flchanged);
+				FSUpdateAlias (nil, &fsref, h, &flchanged);
 			
-			return (filespectopath (&fs, bs));
+			if (macmakefilespec (&fsref, &fs) == noErr)
+				return (filespectopath (&fs, bs));
 			}
 		
 		langgettypestring (aliasvaluetype, bs);
@@ -771,6 +767,7 @@ boolean aliastofilespec ( AliasHandle halias, ptrfilespec fs ) {
 	
 	#ifdef MACVERSION
 	
+		FSRef fsref;
 		boolean flchanged;
 		bigstring bs;
 		OSErr err;
@@ -779,41 +776,33 @@ boolean aliastofilespec ( AliasHandle halias, ptrfilespec fs ) {
 		if ( ! langcanusealiases ( ) )
 			return ( false );
 			
-		err = FSResolveAliasWithMountFlags ( NULL, halias, &( *fs ).fsref, &flchanged, kARMNoUI );
+		err = FSResolveAliasWithMountFlags ( NULL, halias, &fsref, &flchanged, kARMNoUI );
 
 		if ( ( err == noErr ) || ( err == fnfErr ) ) {
 		
-			( void ) getfilespecparent ( fs );
-		
-			return ( true );
-			
+			return ( macmakefilespec (&fsref, fs) == noErr );
 			}
 		
 		FSAliasInfoBitmap whichAliasInfo = kFSAliasInfoNone;
-		HFSUniStr255 targetName;
-		HFSUniStr255 volumeName;
+		tyfsname volumeName;
 		
 		status = FSCopyAliasInfo ( halias, NULL, &volumeName, NULL, &whichAliasInfo, NULL );
 		
 		if ( status == noErr ) { // try to get vol info
 		
-			HFSUniStr255ToStr255 ( &volumeName, bs );
+			fsnametobigstring ( &volumeName, bs );
 
 			fileparsevolname ( bs, fs );
-			
 			}
 		
-		status = FSCopyAliasInfo ( halias, &targetName, NULL, NULL, &whichAliasInfo, NULL );
+		status = FSCopyAliasInfo ( halias, &fs->name, NULL, NULL, &whichAliasInfo, NULL );
 		
-		if ( status == noErr )
-			HFSUniStr255ToStr255 ( &targetName, bs );
-		else {
+		if ( status != noErr ) {
 		
 			langgetmiscstring ( unknownstring, bs );
 			
+			bigstringtofsname ( bs, &fs->name );
 			}
-		
-		( *fs ).path = CFStringCreateWithPascalString ( kCFAllocatorDefault, bs, kCFStringEncodingMacRoman );
 		
 		if ( langerrorenabled ( ) ) {
 			
@@ -907,70 +896,35 @@ boolean filespecaddvalue ( tyvaluerecord *v1, tyvaluerecord *v2, tyvaluerecord *
 	
 	#ifdef MACVERSION
 
-		OSStatus status;
-		bigstring bs, bsadd, bsv1path;
-		boolean flfolder; // unused
+		FSRef fsref;
+		bigstring bs, bsadd;
 		tyfilespec fs;
 			
-		fs = **( *v1 ).data.filespecvalue;
+		fs = **(*v1).data.filespecvalue;
 		
-		( void ) extendfilespec ( &fs, &fs );
-			
-		filespectopath ( &fs, bs );
+		filespectopath (&fs, bs);
 		
-		copystring ( bs, bsv1path );
+		if (!coercetostring (v2))
+			return (false);
 		
-		if ( ! coercetostring ( v2 ) )
-			return ( false );
+		pullstringvalue (v2, bsadd);
 		
-		pullstringvalue ( v2, bsadd );
+		if (lastchar (bs) == ':')
+			popleadingchars (bsadd, ':');
 		
-		if ( lastchar ( bs ) == ':' )
-			popleadingchars ( bsadd, ':' );
-		
-		insertstring ( bs, bsadd );
-		
-		copystring ( bsadd,  bs );
+		pushstring (bsadd, bs);
 				
-		insertstring ( BIGSTRING ( "\x09" ":Volumes:" ), bs );
-		
-		stringreplaceall ( ':', '/', bs );
-				
-		/* convert from Mac Roman to UTF-8 */ {
-		
-			CFStringRef csr = CFStringCreateWithPascalString ( kCFAllocatorDefault, bs, kCFStringEncodingMacRoman );
-		
-			CFStringGetCString ( csr, ( char * ) bs, sizeof ( bs ), kCFStringEncodingUTF8 );
+		if (pathtofsref (bs, &fsref) != noErr) {	// fall back to string addition
+
+			if (!coercetostring (v1))
+				return (false);
 			
-			CFRelease ( csr );
-		
+			return (addvalue (*v1, *v2, vreturned));
 			}
 		
-		status = FSPathMakeRef ( bs, &fs.fsref, &flfolder );
-				
-		if ( status == noErr ) {
-		
-			HFSUniStr255 name;
-			OSErr err;
-			
-			err = FSGetCatalogInfo ( &fs.fsref, kFSCatInfoNone, NULL, &name, NULL, &fs.fsref );
-			
-			fs.path = CFStringCreateWithCharacters ( kCFAllocatorDefault, name.unicode, name.length );
-			
-			}
-			
-		else { // couldn't extend filespec
-		
-			( void ) extendfilespec ( *( *v1 ).data.filespecvalue, *( *v1 ).data.filespecvalue );
-			
-			if ( ! coercetostring ( v1 ) )
-				return ( false );
-			
-			return ( addvalue ( *v1, *v2, vreturned ) );
-			
-			}
-		
-		return ( setfilespecvalue ( &fs, vreturned ) );
+		(void) macmakefilespec (&fsref, &fs);
+
+		return (setfilespecvalue (&fs, vreturned));
 		
 	#endif
 
@@ -992,7 +946,7 @@ boolean filespecaddvalue ( tyvaluerecord *v1, tyvaluerecord *v2, tyvaluerecord *
 boolean filespecsubtractvalue (tyvaluerecord *v1, tyvaluerecord *v2, tyvaluerecord *vreturned) {
 
 	//
-	// subtract v2 from the filespec v1's file name, iff v2 is a simple string (no 
+	// subtract v2 from the filespec v1's file name, if v2 is a simple string (no 
 	// colons). otherwise, return a string value that is simple string subtraction
 	//
 	// 2006-06-24 creedon: FSRef-ized
@@ -1002,42 +956,36 @@ boolean filespecsubtractvalue (tyvaluerecord *v1, tyvaluerecord *v2, tyvaluereco
 
 		tyfilespec fs;
 		bigstring bssub;
-		boolean fl;
-		Str63 bsname;
-		OSStatus status;
 		
 		if (!coercetostring (v2))
 			return (false);
 		
-		fs = **(*v1).data.filespecvalue;
+		fs = **(*v1).data.filespecvalue;	// copy
 		
 		pullstringvalue (v2, bssub);
 		
-		fl = !stringfindchar (':', bssub);
+		if (!fs.flags.flvolume && !stringfindchar (':', bssub)) {	// it's a simple string, just subtract from file name
 		
-		if (fl) {
-			bigstring bs;
+			bigstring bsname;
 			
-			getfsfile ( &fs, bs );
+			getfsfile (&fs, bsname);
 			
-			subtractstrings ( bs, bssub, bsname);
+			subtractstrings (bsname, bssub, bsname);
 			
-			status = FSPathMakeRef ( bsname, &fs.fsref, NULL );
-			
-			fl = ( status == noErr ) || ( status == fnfErr );
-			
+			if (stringlength (bsname) > 0) {
+				bigstringtofsname (bsname, &fs.name);
+				}
+			else {
+				macgetfilespecparent (&fs, &fs);
+				}
+
+			return (setfilespecvalue (&fs, vreturned));
 			}
 		
-		if (!fl) { // couldn't extend filespec
+		if (!coercetostring (v1))
+			return (false);
 		
-			if (!coercetostring (v1))
-				return (false);
-			
-			return (subtractvalue (*v1, *v2, vreturned));
-			
-			}
-		
-		return (setfilespecvalue (&fs, vreturned));
+		return (subtractvalue (*v1, *v2, vreturned));
 		
 	#endif
 

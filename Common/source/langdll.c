@@ -1118,14 +1118,17 @@ static boolean loadprocinforesource (tydllinfohandle hdll) {
 
 	#ifdef MACVERSION
 	
-		tyfilespec fs = (**hdll).fs;
 		short resfile;
 		Handle hRes;
 		HFSUniStr255 resourceforkname;
+		FSRef fsref;
 		
-		FSGetResourceForkName ( &resourceforkname );
+		if (macgetfsref(&(**hdll).fs, &fsref) != noErr)
+			return (false);
+		
+		FSGetResourceForkName(&resourceforkname);
 
-		FSOpenFork ( &fs.fsref, resourceforkname.length, resourceforkname.unicode, fsRdWrPerm, &resfile );
+		FSOpenFork(&fsref, resourceforkname.length, resourceforkname.unicode, fsRdWrPerm, &resfile);
 
 		if (ResError() == noErr) {
 			
@@ -1515,9 +1518,10 @@ static boolean openlibrary (tydllinfohandle hdll) {
 		bigstring bs;
 		FSSpec fst;
 		
-		getfsfile ( &fs, bs );
+		getfsfile (&fs, bs);
 		
-		FSRefMakeFSSpec ( &fs.fsref, &fst );
+		if (macgetfsspec(&fs, &fst) != noErr)
+			goto exit;
 		
 		err = GetDiskFragment (&fst, 0, kCFragGoesToEOF, bs, kReferenceCFrag, &connID, &mainAddr, errName);
 		

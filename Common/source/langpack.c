@@ -855,10 +855,8 @@ boolean langunpackwindowverb (hdltreenode hparam1, tyvaluerecord *vreturned) {
 	fs = &fspec;
 	
 	#ifdef MACVERSION
-	
-		( void ) extendfilespec ( fs, fs );
-	
-		if ( FSRefValid ( &( *fs ).fsref ) )
+
+		if (macfilespecisvalid(fs))
 			langexternalsetdirty ((hdlexternalhandle) val.data.externalvalue, false);
 		else
 			fs = nil;

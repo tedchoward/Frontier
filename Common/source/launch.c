@@ -928,31 +928,24 @@ boolean launchapplication ( const ptrfilespec fsapp, const ptrfilespec fsdoc, bo
 	#ifdef MACVERSION
 	
 		LSLaunchFSRefSpec launchspec;
-		tyfilespec fsappt, fsdoct;
+		FSRef fsrefapp, fsrefdoc;
 		OSStatus status;
-		
-		if ( ! extendfilespec ( fsapp, &fsappt ) )
-			return ( false );
 		
 		clearbytes ( &launchspec, longsizeof ( launchspec ) );
 		
-		launchspec.appRef = &fsappt.fsref;
+		if ( macgetfsref ( fsapp, &fsrefapp ) != noErr )
+			return ( false );
+		
+		launchspec.appRef = &fsrefapp;
 
 		if ( fsdoc != NULL ) {
-		
-			( void ) extendfilespec ( fsdoc, &fsdoct );
-
-			if ( FSRefValid ( &fsdoct.fsref ) ) {
-				FSRef fsa [ 1 ];
-				
+			
+			if ( macgetfsref ( fsdoc, &fsrefdoc ) == noErr ) {
+			
 				launchspec.numDocs = 1;
 				
-				fsa [ 0 ] = fsdoct.fsref;
-				
-				launchspec.itemRefs = fsa;
-				
-				} // FSRefValid
-				
+				launchspec.itemRefs = &fsrefdoc;
+				}
 			} // fsdoc
 			
 		if ( ! flbringtofront )
@@ -1031,10 +1024,14 @@ boolean launchapplication ( const ptrfilespec fsapp, const ptrfilespec fsdoc, bo
 		if (stringfindchar (':', bsprocess)) { // it's a path
 		
 			tyfilespec fs;
+			FSRef fsref;
 		
-			FSMakeFSRef ( ( *processinfo ).processAppSpec -> vRefNum, ( *processinfo ).processAppSpec -> parID, ( *processinfo ).processAppSpec -> name, &fs.fsref);
+			FSMakeFSRef (processinfo->processAppSpec->vRefNum, processinfo->processAppSpec->parID, processinfo->processAppSpec->name, &fsref);
 			
-			if (!filespectopath ( &fs, bspath))
+			if (macmakefilespec (&fsref, &fs) != noErr)
+				return (false);
+				
+			if (!filespectopath (&fs, bspath))
 				return (false);
 			
 			return (equalidentifiers (bsprocess, bspath));
@@ -1446,12 +1443,14 @@ boolean findrunningapplication (OSType *appid, bigstring appname, typrocessid *p
 		
 		if (flfullpath) {
 		
-			tyfilespec fst = { { { 0 } }, 0 };
+			tyfilespec fst;
+			FSRef fsref;
 			
-			FSpMakeFSRef ( &fs, &fst.fsref );
+			FSpMakeFSRef (&fs, &fsref);
+			
+			macmakefilespec (&fsref, &fst);
 			
 			filespectopath (&fst, bsprogram);
-			
 			}
 		
 		return (true);
@@ -1633,11 +1632,14 @@ boolean getnthapplication (short n, bigstring bsprogram) {
 		// 1992-07-14 dmb: created
 		//
 		
-		if ( matchprocess ( visitinfo -> bsprocess, processinfo ) ) { // found the process
+		if ( matchprocess ( visitinfo->bsprocess, processinfo ) ) { // found the process
 		
 			OSStatus status;
+			FSRef fsref;
 		
-			status = GetProcessBundleLocation ( &( *processinfo ).processNumber, &( *visitinfo ).fsprocess -> fsref );
+			status = GetProcessBundleLocation ( &processinfo->processNumber, &fsref );
+			
+			macmakefilespec ( &fsref, visitinfo->fsprocess );
 		
 			return ( false ); // stop visiting
 			
@@ -1659,8 +1661,6 @@ boolean getapplicationfilespec (bigstring bsprogram, ptrfilespec fs) {
 	//				return value and tries to access the filespec anyway. Our only caller with a non-nil bsprogram
 	//				currently is sys.getAppPath (shellsysverbs.c) and it does exactly that.
 	//
-	// 5.0.2b21 dmb: clear unused fields on Win
-	//
 	// 2004-10-26 aradke:	New Carbon/Mach-O implementation for obtaining a filespec to our application bundle, i.e. the
 	//				Frontier.app "folder".
 	//
@@ -1669,6 +1669,8 @@ boolean getapplicationfilespec (bigstring bsprogram, ptrfilespec fs) {
 	//
 	// 2000-06-09 Timothy Paustian:	Changed because using SysEnvisons and SysEnvRec is like Really old style. This was
 	//						changed to Gestalt calls with two new globals see mac.c initmacintosh.	
+	//
+	// 5.0.2b21 dmb: clear unused fields on Win
 	//
 
 	#ifdef MACVERSION
@@ -1689,6 +1691,7 @@ boolean getapplicationfilespec (bigstring bsprogram, ptrfilespec fs) {
 			
 				CFBundleRef mybundleref;
 				CFURLRef myurlref;
+				FSRef fsref;
 				boolean res;
 				
 				mybundleref = CFBundleGetMainBundle();
@@ -1701,16 +1704,14 @@ boolean getapplicationfilespec (bigstring bsprogram, ptrfilespec fs) {
 				if (myurlref == NULL)
 					return (false);
 
-				res = CFURLGetFSRef ( myurlref, &( *fs ).fsref );
-				
-				( void ) getfilespecparent ( fs );
+				res = CFURLGetFSRef ( myurlref, &fsref );
 				
 				CFRelease(myurlref);
 				
 				if (!res)
 					return (false);
 				
-				return ( true );
+				return ( macmakefilespec ( &fsref, fs ) == noErr );
 				
 			#else
 			

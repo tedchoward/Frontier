@@ -43,7 +43,7 @@
 /* common strings for all targets */
 
 #define	APP_COPYRIGHT_FROM	"2004"
-#define	APP_COPYRIGHT_TILL	"2007"
+#define	APP_COPYRIGHT_TILL	"2009"
 
 
 /* target-specific strings and version info */
@@ -69,10 +69,10 @@
 	#define	APP_SUBMINOR_VERSION_BCD		0x10	/* sub and minor version in BCD notation */
 	
 	#define	APP_STAGE_CODE				0x40	/* dev = 0x20, alpha = 0x40, beta = 0x60, final = 0x80 */
-	#define	APP_REVISION_LEVEL			15	/* for non-final releases only */
-	#define	APP_BUILD_NUMBER			15	/* increment by one for every release, final or not */
+	#define	APP_REVISION_LEVEL			16	/* for non-final releases only */
+	#define	APP_BUILD_NUMBER			16	/* increment by one for every release, final or not */
 	
-	#define	APP_VERSION_STRING			"10.1a15"
+	#define	APP_VERSION_STRING			"10.1a16"
 
 #else
 
@@ -95,10 +95,10 @@
 	#define	APP_SUBMINOR_VERSION_BCD		0x10	/* sub and minor version in BCD notation */
 	
 	#define	APP_STAGE_CODE				0x40	/* dev = 0x20, alpha = 0x40, beta = 0x60, final = 0x80 */
-	#define	APP_REVISION_LEVEL			15	/* for non-final releases only */
-	#define	APP_BUILD_NUMBER			15	/* increment by one for every release, final or not */
+	#define	APP_REVISION_LEVEL			16	/* for non-final releases only */
+	#define	APP_BUILD_NUMBER			16	/* increment by one for every release, final or not */
 	
-	#define	APP_VERSION_STRING			"10.1a15"
+	#define	APP_VERSION_STRING			"10.1a16"
 	
 #endif
 #else
@@ -121,10 +121,10 @@
 	#define	APP_SUBMINOR_VERSION_BCD		0x10	/* sub and minor version in BCD notation */
 	
 	#define	APP_STAGE_CODE				0x40	/* dev = 0x20, alpha = 0x40, beta = 0x60, final = 0x80 */
-	#define	APP_REVISION_LEVEL			15	/* for non-final releases only */
-	#define	APP_BUILD_NUMBER			15	/* increment by one for every release, final or not */
+	#define	APP_REVISION_LEVEL			16	/* for non-final releases only */
+	#define	APP_BUILD_NUMBER			16	/* increment by one for every release, final or not */
 	
-	#define	APP_VERSION_STRING			"10.1a15"
+	#define	APP_VERSION_STRING			"10.1a16"
 	
 #endif
 
@@ -133,61 +133,4 @@
 
 #define	APPNAME_SHORT		APPNAME	/* 2006-02-04 aradke */
 #define	APPNAME_TM		APPNAME	/* 2005-01-12 aradke: app names no longer include trademark character */
-
-
-
-
-
-/* 2006-02-07 aradke: old version switched off */
-
-#if 0
-
-/* Radio version information */
-
-#define	radio_major_version				10
-#define	radio_major_version_bcd			0x10 	/* major version in BCD notation */
-
-#define	radio_sub_version				1
-#define	radio_minor_version				0
-#define	radio_subminor_version_bcd		0x10  	/* sub and minor version in BCD notation */
-
-#define	radio_stage_code				0x40		/* dev = 0x20, alpha = 0x40, beta = 0x60, final = 0x80 */
-#define	radio_revision_level			5		/* for non-final releases only */
-#define	radio_build_number				5		/* increment by one for every release, final or not */
-
-#define	radio_version_string				"10.1a5"
-
-
-/* Frontier version information */
-
-#define	frontier_major_version			10
-#define	frontier_major_version_bcd		0x10 	/* major version in BCD notation */
-
-#define	frontier_sub_version			1
-#define	frontier_minor_version			0
-#define	frontier_subminor_version_bcd	0x10  	/* sub and minor version in BCD notation */
-
-#define	frontier_stage_code				0x40		/* dev = 0x20, alpha = 0x40, beta = 0x60, final = 0x80 */
-#define	frontier_revision_level			5		/* for non-final releases only */
-#define	frontier_build_number			5		/* increment by one for every release, final or not */
-
-#define	frontier_version_string			"10.1a5"
-
-
-/* OPML Editor version information */
-
-#define	opml_major_version				10
-#define	opml_major_version_bcd			0x10 	/* major version in BCD notation */
-
-#define	opml_sub_version				1
-#define	opml_minor_version				0
-#define	opml_subminor_version_bcd		0x10  	/* sub and minor version in BCD notation */
-
-#define	opml_stage_code					0x40	/* dev = 0x20, alpha = 0x40, beta = 0x60, final = 0x80 */
-#define	opml_revision_level				5		/* for non-final releases only */
-#define	opml_build_number				5		/* increment by one for every release, final or not */
-
-#define	opml_version_string			"10.1a5"
-
-#endif	/* 2006-02-06 aradke: switched off, see below */
 

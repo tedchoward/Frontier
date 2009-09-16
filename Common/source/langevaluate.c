@@ -28,6 +28,7 @@
 #include "frontier.h"
 #include "standard.h"
 
+#include "error.h"
 #include "memory.h"
 #include "fileloop.h"
 #include "strings.h"
@@ -550,21 +551,12 @@ static boolean fileloopguts (hdltreenode htree, ptrfilespec fsfolder, bigstring 
 	boolean flfolder;
 	Handle hfileloop;
 	
-	clearbytes ( &fs, sizeof ( fs ) );
+	clearfilespec (&fs);
 
 	#ifdef MACVERSION
 	
-		FSSpec fst;
-		tyfilespec fsfoldert;
-		
-		clearbytes ( &fst, sizeof ( fst ) );
-
-		( void ) extendfilespec ( fsfolder, &fsfoldert );
-	
-		FSRefMakeFSSpec ( &fsfoldert.fsref, &fst );
-	
-		if ( isemptystring ( fst.name ) ) // loop over mounted volumes
-			fl = diskinitloop ( nil, &hfileloop );
+		if (!macfilespecisvalid (fsfolder)) // loop over mounted volumes
+			fl = diskinitloop (nil, &hfileloop);
 		else
 		
 	#endif
@@ -589,32 +581,10 @@ static boolean fileloopguts (hdltreenode htree, ptrfilespec fsfolder, bigstring 
 					break;
 				}
 			
-			#ifdef MACVERSION
-			
-				// clear out path
-				
-				CFRelease ( fs.path );
-				
-				fs.path = NULL;
-				
-			#endif // MACVERSION
-			
 			continue;
-			
 			}
 		
 		fl = setfilespecvalue (&fs, &val);
-		
-		#ifdef MACVERSION
-		
-			// clear out path
-			
-			if ( ! fl ) // don't release path if setfilespecvalue is true because val.data.filespecvalue.path needs the address
-				CFRelease ( fs.path );
-			
-			fs.path = NULL;
-			
-		#endif // MACVERSION
 		
 		if (!fl)
 			break;
@@ -684,7 +654,7 @@ static boolean evaluatefileloop (hdltreenode hloop, tyvaluerecord *valtree) {
 	
 	assert (!leakingmemory (&val));
 	
-		fsfolder = **val.data.filespecvalue;
+	fsfolder = **val.data.filespecvalue;
 	
 	if (!langgetidentifier ((**h).param1, bsidentifier))
 		return (false);

@@ -195,45 +195,6 @@
 		return (false);
 		} /*diskinitloop*/
 
-
-	boolean diskloop (tyfileloopcallback diskcallback, long refcon) {
-		
-		/*
-		dmb 9/21/93: filegetvolumeinfo takes a vRefNum, not a string.
-		*/
-		
-		HVolumeParam pb;
-		short ix;
-		
-		clearbytes (&pb, sizeof (pb)); /*init all fields to zero*/
-		
-		ix = 1; /*start with file index 1*/
-		
-		while (true) {
-			
-			bigstring bsvolume;
-			tyfileinfo info;
-			OSErr errcode;
-			
-			pb.ioVolIndex = ix++;
-			
-			pb.ioNamePtr = bsvolume;
-			
-			errcode = PBHGetVInfoSync ((HParmBlkPtr) &pb);
-			
-			if (errcode == nsvErr) /*not an error, just ran out of volumes*/
-				return (true);
-			
-			if (oserror (errcode)) 
-				return (false);
-			
-			filegetvolumeinfo (pb.ioVRefNum, &info);
-			
-			if (!(*diskcallback) (bsvolume, &info, refcon))
-				return (false);
-			} /*while*/
-		} /*diskloop*/	
-	
 #endif // MACVERSION
 
 
@@ -296,6 +257,8 @@ boolean fileinitloop ( const ptrfilespec fst, tyfileloopcallback filefilter, Han
 	#ifdef MACVERSION
 	
 		#pragma unused(filefilter)
+		
+		// FIXME: fileloops should really be rewritten using FSRefs instead of pre-carbon apis
 
 		//
 		// a conglomeration of filemanager incantations which sets up a UserLand
@@ -322,12 +285,10 @@ boolean fileinitloop ( const ptrfilespec fst, tyfileloopcallback filefilter, Han
 		short ix;
 		hdllistrecord hlist;
 		FSSpec fs;
-		tyfilespec fst2;
 		
-		( void ) extendfilespec ( fst, &fst2 );
-		
-		FSRefMakeFSSpec ( &fst2.fsref, &fs ); // might need to do more checking here to handle path
-		
+		if (oserror (macgetfsspec (fst, &fs) ) )
+			return (false);
+				
 		clearbytes (&pb, sizeof (CInfoPBRec)); // init all fields to zero
 		
 		setoserrorparam ((ptrstring) fs.name);
@@ -535,7 +496,8 @@ boolean folderloop ( const ptrfilespec pfs, boolean flreverse, tyfileloopcallbac
 		tyfileinfo info;
 		OSErr ec;
 		
-		FSRefMakeFSSpec ( &( *pfs ).fsref, &fs ); // might need to do more checking here to handle path
+		if (oserror (macgetfsspec (pfs, &fs) ) )
+			return (false);
 		
 		setoserrorparam ((ptrstring) fs.name);
 		
@@ -681,6 +643,7 @@ boolean filenextloop ( Handle hfileloop, ptrfilespec fsfilet, boolean *flfolder 
 		long dirid;
 		OSErr err;
 		FSSpec fsfile;
+		FSRef fsref;
 		
 		if (!opgetlisthandle ((**h).hfilelist, (**h).ixdirectory++, nil, &hdata))
 			return (false);
@@ -699,9 +662,9 @@ boolean filenextloop ( Handle hfileloop, ptrfilespec fsfilet, boolean *flfolder 
 			
 			*flfolder = true; /*3.0.2b1*/
 			
-			FSpMakeFSRef ( &fsfile, &( *fsfilet ).fsref );
+			FSpMakeFSRef ( &fsfile, &fsref );
 			
-			( void ) getfilespecparent ( &( *fsfilet ) );
+			macmakefilespec ( &fsref, fsfilet );
 				
 			return (true);
 			
@@ -727,12 +690,12 @@ boolean filenextloop ( Handle hfileloop, ptrfilespec fsfilet, boolean *flfolder 
 				
 				if ((err == noErr) || (err == fnfErr)) { // 3.0.4b1 dmb
 				
-					err = FSpMakeFSRef ( &fsfile, &( *fsfilet ).fsref );
+					err = FSpMakeFSRef ( &fsfile, &fsref );
+					
+					macmakefilespec ( &fsref, fsfilet );
 					
 					if ( *flfolder )
 						( void ) fileisfolder ( fsfilet, flfolder );
-				
-					( void ) getfilespecparent ( &( *fsfilet ) );
 					
 					return ( true );
 					
@@ -749,12 +712,12 @@ boolean filenextloop ( Handle hfileloop, ptrfilespec fsfilet, boolean *flfolder 
 				
 				copystring (bs, fsfile.name);
 				
-				FSpMakeFSRef ( &fsfile, &( *fsfilet ).fsref );
+				FSpMakeFSRef ( &fsfile, &fsref );
+				
+				macmakefilespec ( &fsref, fsfilet );
 				
 				if ( *flfolder )
 					( void ) fileisfolder ( fsfilet, flfolder );
-				
-				( void ) getfilespecparent ( &( *fsfilet ) );
 				
 				return ( true );
 				

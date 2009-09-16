@@ -1173,8 +1173,6 @@ static boolean filemenufunctionvalue (short token, hdltreenode hparam1, tyvaluer
 			
 			langsaveglobals (); // see comment at function head
 			
-			( void ) extendfilespec ( &fs, &fs );
-		
 			fl = shellopenfile (&fs, vhidden.data.flvalue, &w);
 			
 			if (!langrestoreglobals ())

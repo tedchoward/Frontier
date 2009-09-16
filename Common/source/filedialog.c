@@ -535,9 +535,10 @@ boolean sfdialog ( tysfverb sfverb, bigstring bsprompt, ptrsftypelist filetypes,
 		//
 
 		tysfdata sfdata;
-		FSSpec *fs = &sfdata.sfreply.sfFile, fspect;
+		FSSpec *fs = &sfdata.sfreply.sfFile;
+		FSSpec fspect;
 		OSErr err = noErr;
-		OSType filetype = NULL;
+		OSType filetype = 0;
 		
 		clearbytes ( &fspect, sizeof ( fspect ) );
 		
@@ -547,23 +548,9 @@ boolean sfdialog ( tysfverb sfverb, bigstring bsprompt, ptrsftypelist filetypes,
 		clearbytes (&sfdata, sizeof (sfdata));
 		
 		if ( sfverb == sfputfileverb ) {
-
-			extendfilespec ( fspec, fspec );
-				
-			if ( ( *fspec ).path == NULL )
-				FSGetCatalogInfo ( &( *fspec ).fsref, kFSCatInfoNone, NULL, NULL, &fspect, NULL );
-			else {
-				FSCatalogInfo catalogInfo;
-				
-				FSGetCatalogInfo ( &( *fspec ).fsref, kFSCatInfoVolume | kFSCatInfoNodeID, &catalogInfo, NULL, NULL,
-					NULL );
-				
-				fspect.vRefNum = catalogInfo.volume;
-				fspect.parID = catalogInfo.nodeID;
-				
-				CFStringRefToStr255 ( ( *fspec ).path, fspect.name );
-				
-				}
+			
+			if (oserror (macgetfsspec (fspec, &fspect)))
+				return (false);
 			}
 						
 		if ( filetypes != NULL )
@@ -597,7 +584,7 @@ boolean sfdialog ( tysfverb sfverb, bigstring bsprompt, ptrsftypelist filetypes,
 			
 			case sfputfileverb:
 				if(gCanUseNavServ) {
-					err = TimsPutFile ( bsprompt, ( *fs ).name, &sfdata.sfreply, filetype );
+					err = TimsPutFile (bsprompt, ( *fs ).name, &sfdata.sfreply, filetype);
 					}
 
 				break;
@@ -626,31 +613,32 @@ boolean sfdialog ( tysfverb sfverb, bigstring bsprompt, ptrsftypelist filetypes,
 		if (userCanceledErr == err) 
 			return false;
 
-		if(oserror(err)) 
+		if (oserror(err)) 
 			return false;
 
-		if ( sfdata.sfreply.sfGood ) { // canonize
+		if (sfdata.sfreply.sfGood) { // canonize
 		
+			FSRef fsref;
 			bigstring bs;
-			boolean fl = ( *fs ).parID == fsRtParID;
-			HFSUniStr255 name;
 			
-			setemptystring ( bs );
+			setemptystring (bs);
 		
-			if ( fl )
-				copystring ( ( *fs ).name, bs );
+			fspec->flags.flvolume = (fs->parID == fsRtParID);
+
+			if (fspec->flags.flvolume)
+				copystring (fs->name, bs);
 		
-			err = FSMakeFSRef ( ( *fs ).vRefNum, ( *fs ).parID, bs, &( *fspec ).fsref );
+			err = FSMakeFSRef (fs->vRefNum, fs->parID, bs, &fsref);
 			
-			if ( ! fl ) {
-			
-				err = HFSNameGetUnicodeName ( ( *fs ).name, kTextEncodingUnknown, &name );
-							
-				( *fspec ).path = CFStringCreateWithCharacters ( kCFAllocatorDefault, name.unicode, name.length );
-				
+			if (fspec->flags.flvolume) {
+				fspec->ref = fsref;
+				HFSNameGetUnicodeName (fs->name, kTextEncodingUnknown, &fspec->name);
+				}
+			else {
+				macmakefilespec (&fsref, fspec); 
 				}
 			
-			return ( true );
+			return (true);
 			
 			}
 
@@ -1025,7 +1013,7 @@ boolean sfdialog ( tysfverb sfverb, bigstring bsprompt, ptrsftypelist filetypes,
 		NavDialogOptions	dialogOptions;
 		NavEventUPP		eventProc = NewNavEventUPP ( NavEventProc );
 		
-		if ( filetype == NULL )
+		if ( filetype == 0 )
 			filetype = 'TEXT';
 		
 		err = NavGetDefaultDialogOptions ( &dialogOptions );
@@ -1050,6 +1038,7 @@ boolean sfdialog ( tysfverb sfverb, bigstring bsprompt, ptrsftypelist filetypes,
 				if (err == noErr) {
 					
 					outReply->sfReplacing = reply.replacing;
+					
 					FSMakeFSSpec (documentFSSpec.vRefNum, documentFSSpec.parID, documentFSSpec.name, &(outReply->sfFile));
 					outReply->sfGood = true;
 					

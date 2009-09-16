@@ -353,8 +353,6 @@ boolean shellopen (void) {
 	if (!sfdialog (sfgetfileverb, bs, ptypes, &fspec, 'LAND')) // 2005-10-06 creedon - added 'LAND'
 		return (false);
 	
-	( void ) extendfilespec ( &fspec, &fspec );
-	
 	return ( shellopenfile ( &fspec, false, nil ) );
 	
 	} // shellopen
@@ -478,7 +476,7 @@ static boolean shelldatabasesaveas (WindowPtr wsave, ptrfilespec fspec) {
 	
 #ifdef MACVERSION
 
-	if ( FSRefValid ( &( *fspec ).fsref ) && ( *fspec ).path == NULL )
+	if (macfilespecisresolvable (fspec))
 		SetWindowProxyCreatorAndType ( w, 'LAND', config.filetype, kOnSystemDisk );
 		
 #endif
@@ -675,21 +673,15 @@ boolean shellsaveas (WindowPtr wsave, ptrfilespec fspec, boolean flrunnable) {
 		
 			bigstring bsname;
 			
-			#ifdef MACVERSION
-			
-				if ( fs.path != NULL )
-					CFStringRefToStr255 ( fs.path, bsname );
-				else
-			
-			#endif
-			
 			getdefaultfilename ( bsname );
-			
-			#ifdef MACVERSION
-			
-				fs.path = CFStringCreateWithPascalString ( kCFAllocatorDefault, bsname,
-					kCFStringEncodingMacRoman );
 
+			#ifdef MACVERSION
+				
+				if ( fsnamelength ( &fs.name ) <= 0 ) {
+					
+					bigstringtofsname ( bsname, &fs.name );
+					}
+			
 			#endif
 
 			#ifdef WIN95VERSION
@@ -839,7 +831,6 @@ boolean shellnew (void) {
 	// new front end to shellnewfile, isolates user interface
 	//
 	// 2006-08-26 creedon:	for Mac, FSRef-ized
-	//
 	//				for Mac, add ".root" to bsname
 	//
 	// 2005-10-06 creedon - added 'LAND' to sfdialog call
@@ -863,7 +854,7 @@ boolean shellnew (void) {
 	
 		pushstring ( "\x05"".root", bsname );
 				
-		fspec.path = CFStringCreateWithPascalString ( kCFAllocatorDefault, bsname, kCFStringEncodingMacRoman );
+		bigstringtofsname ( bsname, &fspec.name );
 
 	#endif
 
@@ -1419,19 +1410,13 @@ boolean shellopendefaultfile (void) {
 			
 			setfsfile (&fs, bsdefault);
 			
-			( void ) extendfilespec ( &fs, &fs );
-			
 			if (fileexists (&fs, &flfolder))
 				fl = shellopenfile (&fs, false, nil);
 			else {
 				
 				filegetdefaultpath (&fs);
 				
-				( void ) extendfilespec ( &fs, &fs );
-				
 				setfsfile ( &fs, bsdefault );
-				
-				( void ) extendfilespec ( &fs, &fs );
 				
 				if (fileexists (&fs, &flfolder))
 					fl = shellopenfile (&fs, false, nil);

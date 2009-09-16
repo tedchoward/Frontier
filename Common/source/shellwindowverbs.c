@@ -1067,10 +1067,7 @@ static boolean getfileverb ( hdltreenode hparam1, tyvaluerecord *vreturned ) {
 		
 	if ( ( hinfo != nil ) && windowgetfspec ( ( **hinfo ).macwindow, &fs ) ) {
 	
-		getfilespecparent ( &fs );
-		
 		return ( setfilespecvalue ( &fs, vreturned ) );
-		
 		}
 		
 	return ( setstringvalue ( zerostring, vreturned ) );

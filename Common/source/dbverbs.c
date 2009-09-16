@@ -478,8 +478,6 @@ static boolean getodbparam (hdltreenode hparam1, short pnum, hdlodbrecord *hodbr
 	if (!getfilespecvalue (hparam1, pnum, ptrfs))
 		return (false);
 	
-	( void ) extendfilespec ( ptrfs, ptrfs );
-	
 	for (hodb = hodblist; hodb != nil; hodb = (**hodb).hnext) {
 	
 		if ( equalfilespecs ( &( **hodb ).fs, ptrfs ) ) {
@@ -641,8 +639,6 @@ static boolean dbopenverb (hdltreenode hparam1, tyvaluerecord *vreturned) {
 	
 	if (!getbooleanvalue (hparam1, 2, &odbrec.flreadonly))
 		return (false);
-	
-	( void ) extendfilespec ( &odbrec.fs, &odbrec.fs );
 
 	w = shellfindfilewindow ( &odbrec.fs );
 	

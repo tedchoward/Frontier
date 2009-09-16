@@ -3188,10 +3188,6 @@ static boolean ScanJPEGHeader(hdlfilenum file_ref, unsigned short * height, unsi
 
 boolean getjpegheightwidthverb ( hdltreenode hparam1, tyvaluerecord *vreturned ) {
 
-	//
-	// 2006-11-16 creedon: added call to extendfilespec
-	//
-
 	boolean fl;
 	hdlfilenum fnum;
 	hdllistrecord list = nil;
@@ -3202,8 +3198,6 @@ boolean getjpegheightwidthverb ( hdltreenode hparam1, tyvaluerecord *vreturned )
 	
 	if ( ! getfilespecvalue ( hparam1, 1, &fs ) )
 		return ( false );
-	
-	( void ) extendfilespec ( &fs, &fs );
 
 	fl = openfile ( &fs, &fnum, true );
 

@@ -830,57 +830,6 @@ static boolean expanddiskvisit (bigstring bsitem, tyfileinfo *info, long refcon)
 	return (true);
 	} /*expanddiskvisit*/
 
-#endif
-
-#if 0
-
-static boolean xxxclayinitializeoutline (void) {
-
-
-	#if filebrowser
-		tyexpandinfo expandinfo;	
-		expandinfo.hparent = nil; /*special case, see browserfindinsertionpoint*/
-		
-		expandinfo.ctlevels = 1;
-		
-		expandinfo.flsettmpbits = false;
-	
-		return (diskloop (&expanddiskvisit, (long) &expandinfo));
-	#endif
-	
-	#if odbbrowser
-		tybrowserspec fsroot;
-		tybrowserinfo browserinfo;
-		tyexpandinfo expandinfo;	
-		expandinfo.hparent = nil; /*special case, see browserfindinsertionpoint*/
-		
-		expandinfo.ctlevels = 1;
-		
-		expandinfo.flsettmpbits = false;
-	
-		fsroot.vRefNum = databasedata;
-		
-		/*
-		fsroot.parID = roottable;
-		
-		setemptystring (fsroot.name);
-		*/
-		
-		fsroot.parID = nil;
-		
-		copystring (nameroottable, fsroot.name);
-		
-		claygetfileinfo (&fsroot, &browserinfo);
-		
-		return (clayfolderloop (&fsroot, false, browserexpandvisit, (long) &expandinfo));
-		
-	#endif
-	} /*clayinitializeoutline*/
-
-#endif
-
-
-#if filebrowser
 
 static void pushadjective (bigstring adjective, bigstring bs) {
 	

@@ -1418,9 +1418,11 @@ boolean opedit (hdlexternalvariable hvariable, hdlwindowinfo hparent, ptrfilespe
 		
 		#ifdef MACVERSION
 		
-			if ( FSRefValid ( &( *fs ).fsref ) && ( *fs ).path == NULL ) {
+			FSRef fsref;
+		
+			if ( macgetfsref ( fs, &fsref ) == noErr ) {
 			
-				OSType type = NULL;
+				OSType type = 0;
 			
 				if ( ( **hv ).flscript ) {
 				
@@ -1428,8 +1430,7 @@ boolean opedit (hdlexternalvariable hvariable, hdlwindowinfo hparent, ptrfilespe
 					LSItemInfoRecord iteminfo;
 					OSStatus status;
 					
-					status = LSCopyItemInfoForRef ( &( *fs ).fsref, kLSRequestTypeCreator || kLSRequestExtension,
-						&iteminfo );
+					status = LSCopyItemInfoForRef ( &fsref, kLSRequestTypeCreator || kLSRequestExtension, &iteminfo );
 						
 					CFStringRefToStr255 ( iteminfo.extension, bs );
 					
@@ -1441,7 +1442,7 @@ boolean opedit (hdlexternalvariable hvariable, hdlwindowinfo hparent, ptrfilespe
 					if ( iteminfo.filetype == 'FTds' )
 						type = 'FTds';
 					
-					if ( type == NULL )
+					if ( type == 0 )
 						type = 'FTsc';
 						
 					}

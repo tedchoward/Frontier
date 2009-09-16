@@ -150,6 +150,7 @@ boolean openresourcefile ( const ptrfilespec fs, short *rnum, short forktype ) {
 	#ifdef MACVERSION
 	
 		short resourcerefnum = -1;
+		FSRef fsref;
 		HFSUniStr255 fork;
 		OSErr err;
 			
@@ -172,18 +173,21 @@ boolean openresourcefile ( const ptrfilespec fs, short *rnum, short forktype ) {
 		and manifests. 
 		*/
 		
-		err = FSOpenResourceFile ( &( *fs ).fsref, fork.length, fork.unicode, fsRdWrPerm, &resourcerefnum );
+		if ( oserror ( macgetfsref ( fs, &fsref ) ) )
+			return ( false );
+		
+		err = FSOpenResourceFile ( &fsref, fork.length, fork.unicode, fsRdWrPerm, &resourcerefnum );
 
 		SetResLoad (true);
 
 		if (ResError () == -39 ) { /*eof error, file has no resource fork, create one*/
 
-			err = FSCreateResourceFork (&fs -> fsref, fork.length, fork.unicode, 0);
+			err = FSCreateResourceFork (&fsref, fork.length, fork.unicode, 0);
 		
 			if (err != noErr) /*failed to create resource fork*/
 				goto error;
 			
-			FSOpenResourceFile (&fs -> fsref, fork.length, fork.unicode, fsRdWrPerm, &resourcerefnum);
+			FSOpenResourceFile (&fsref, fork.length, fork.unicode, fsRdWrPerm, &resourcerefnum);
 			}
 
 		if (resourcerefnum != -1) /*it's open*/ {
@@ -599,7 +603,11 @@ private short newrnum, oldrnum;
 		*/
 		
 		register OSErr errcode;
+		FSRef fsref;
 		HFSUniStr255 fork;
+		
+		if (oserror (macgetfsref (fs, &fsref)))
+			return (false);
 		
 		switch (forktype) {
 			case resourcefork:
@@ -621,8 +629,8 @@ private short newrnum, oldrnum;
 		seemed to do the trick.  i've not done that here but could be tried if the problem is real
 		and manifests. 
 		*/
-	
-		errcode = FSOpenResourceFile (&fs -> fsref, fork.length, fork.unicode, permission, &newrnum);
+			
+		errcode = FSOpenResourceFile (&fsref, fork.length, fork.unicode, permission, &newrnum);
 
 		SetResLoad (true);
 

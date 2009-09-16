@@ -252,8 +252,6 @@ extern boolean filefrompath (bigstring, bigstring);
 
 extern boolean folderfrompath (bigstring, bigstring);
 
-extern boolean getfileparentfolder (const ptrfilespec , ptrfilespec );
-
 extern boolean deletefile ( const ptrfilespec );
 
 extern boolean renamefile (const ptrfilespec , bigstring);
@@ -424,16 +422,6 @@ extern boolean filetruncate (hdlfilenum);
 
 #ifdef MACVERSION
 
-	extern boolean CFStringRefToHFSUniStr255 ( CFStringRef, HFSUniStr255 * ); // 2006-06-07 creedon
-	
-	extern boolean CFStringRefToStr255 ( CFStringRef, StringPtr ); // 2006-06-07 creedon
-	
-	extern boolean FSRefGetNameStr255 ( const FSRef *, Str255 ); // 2006-06-07 creedon
-	
-	extern boolean HFSUniStr255ToStr255 ( ConstHFSUniStr255Param, StringPtr ); // 2006-06-07 creedon
-	
-	extern boolean bigstringToHFSUniStr255 ( const bigstring, HFSUniStr255 * ); // 2006-06-07 creedon
-	
 	extern void filegetinfofrompb ( FSRefParam *, tyfileinfo * );
 
 	extern void filegetinfofrompbcipbr ( CInfoPBRec *, tyfileinfo * );
@@ -441,30 +429,6 @@ extern boolean filetruncate (hdlfilenum);
 	extern boolean getmacfileinfo ( const ptrfilespec, FSRefParamPtr, FSCatalogInfoPtr );
 
 	extern boolean getmacfileinfocipbr ( const FSSpecPtr, CInfoPBRec * );
-
-/* 2006-08-11 creedon: cribbed from MoreFilesX.c and modded to work with Str255 */
-
-OSErr
-HFSNameGetUnicodeName255 (
-	ConstStr255Param hfsName,
-	TextEncoding textEncodingHint,
-	HFSUniStr255 *unicodeName);
-
-/*
-	The HFSNameGetUnicodeName function converts a Pascal Str255 string to an
-	Unicode HFSUniStr255 string using the same routines as the File Manager.
-	
-	hfsName				--> The Pascal string to convert.
-	textEncodingHint	--> The text encoding hint used for the conversion.
-							You can pass kTextEncodingUnknown to use the
-							"default" textEncodingHint.
-	unicodeName			<-- The Unicode string.
-	
-	__________
-	
-	Also see:	HFSNameGetUnicodeName in MoreFilesX.c
-	
-*/
 
 #endif
 
@@ -502,16 +466,50 @@ boolean getmp3info (const ptrfilespec , long *, long *, long *, long *, boolean 
 
 #pragma mark === fileops.c ===
 
-extern boolean extendfilespec ( const ptrfilespec, ptrfilespec ); // 2006-06-23 creedon
-
-extern boolean getfilespecparent ( ptrfilespec ); // 2006-06-17 creedon
+extern void clearfilespec(ptrfilespec);	// 2009-09-05 aradke
 
 extern boolean setfilelabelindex (const ptrfilespec , short, boolean); // 2006-04-23 creedon */
 
-extern short getfilelabelindex (const ptrfilespec , short *); // 2006-04-23 creedon */
+extern short getfilelabelindex (const ptrfilespec , short *);	// 2006-04-23 creedon */
 
 #ifdef MACVERSION
 
+	extern boolean macfilespecisvalid(const ptrfilespec fs);	// 2009-09-05 aradke
+	
+	extern boolean macfilespecisresolvable(const ptrfilespec fs);	// 2009-09-13 aradke
+	
+	extern OSErr macgetfsref(const ptrfilespec fs, FSRef* fsref);	// 2009-09-05 aradke
+	
+	extern OSErr macgetfsspec(const ptrfilespec fs, FSSpec *fss);	// 2009-09-06 aradke
+	
+	extern OSErr macgetfilespecparent(const ptrfilespec fs, ptrfilespec fsparent);	// 2009-09-05 aradke
+	
+	extern OSErr macgetfilespecchild(const ptrfilespec fs, tyfsnameptr name, ptrfilespec fschild);	// 2009-09-13 aradke
+	
+	extern OSErr macgetfilespecchildfrombigstring(const ptrfilespec fs, bigstring bsname, ptrfilespec fschild);	// 2009-09-13 aradke
+
+	extern OSErr macmakefilespec(const FSRef *fsref, ptrfilespec fs);	// 2009-09-06 aradke
+	
+	extern boolean macgetfsrefname(const FSRef *fsref, tyfsnameptr fsname);	// 2009-09-05 aradke
+	
+	extern boolean macgetfsrefnameasbigstring(const FSRef *fsref, bigstring bs);	// 2009-09-05 aradke
+	
+	extern void macgetfilespecname(const ptrfilespec fs, tyfsnameptr fsname);	// 2009-09-05 aradke
+	
+	extern void macgetfilespecnameasbigstring(const ptrfilespec fs, bigstring bs);	// 2009-09-05 aradke
+	
+	extern void clearfsname(tyfsnameptr fsname);	// 2009-09-05 aradke
+	
+	extern void copyfsname(const tyfsnameptr fssource, tyfsnameptr fsdest);	// 2009-09-05 aradke
+		
+	unsigned short fsnamelength(const tyfsnameptr fsname);	// 2009-09-05 aradke
+
+	extern void bigstringtofsname(const bigstring bs, tyfsnameptr fsname);	// 2009-09-05 aradke
+	
+	extern void fsnametobigstring(const tyfsnameptr fsname, bigstring bs);	// 2009-09-05 aradke
+	
+	extern boolean CFStringRefToStr255 (CFStringRef input, StringPtr output); // 2006-08-08 creedon
+	
 	extern OSStatus GetApplicationIconRef ( const ProcessSerialNumber * , const FSSpec* , IconRef * ); // 2006-06-04 creedon
 
 	extern OSStatus LSIsApplication( const FSRef *, Boolean *, Boolean * ); // 2006-05-25
@@ -521,7 +519,7 @@ extern short getfilelabelindex (const ptrfilespec , short *); // 2006-04-23 cree
 
 #pragma mark === filepath.c ===
  
- extern boolean directorytopath ( const ptrfilespec, bigstring);
+extern boolean directorytopath ( const ptrfilespec, bigstring);
 
 extern boolean volumerefnumtopath (short, bigstring);
 
@@ -543,7 +541,13 @@ extern boolean getfsvolume (const ptrfilespec, long *);
 
 extern void initfsdefault (void); /* 2005-07-18 creedon */
 
- 
+#ifdef MACVERSION
+
+	extern OSStatus pathtofsref (bigstring, FSRef *);
+
+#endif // MACVERSION
+
+
 #pragma mark === fileverbs.c ===
  
  //extern filecheckdefaultpath (bigstring);

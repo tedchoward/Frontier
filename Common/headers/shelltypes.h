@@ -163,14 +163,38 @@ typedef struct tybuttonstatus {
 
 #ifdef MACVERSION
 
-	typedef struct ExtFSRef {
+	/*
+	2009-09-03 aradke: FSSpec was deprecated on Mac OS X and FSRef is its replacement.
+		FSSpec could represent a non-existant file as long as its parent directory existed, but FSRef can not.
+		Therefore, we have to extend FSRef with a string to hold the name of the non-existant file.
+		The FSRef field usually points to the parent folder instead of to the file itself (even if the file exists).
+		However, volumes have no parent folder so the FSRef field points to the volume itself in that case.
+		
+		We chose a fixed-size Unicode string for the name field to simplify memory management.
+		If we used a CFStringRef we would have to keep track of copying and releasing in lots of places.
 
-		FSRef fsref;
-		CFStringRef path;
+		Reference: Apple Technical Note TN2078 -- Migrating to FSRefs & long Unicode names from FSSpecs
+		http://developer.apple.com/legacy/mac/library/technotes/tn2002/tn2078.html
+	*/
+	
+	typedef struct tyfilespecflags {
+	
+		//boolean	flvalid;	// true: ref and name have been set -- false: empty filespec
+		boolean flvolume;	// true: ref points to volume -- false: ref points to parent of file/folder
 		
-		} ExtFSRef, *ExtFSRefPtr, **ExtFSRefHandle;
+		} tyfilespecflags;
+	
+	typedef struct HFSUniStr255 tyfsname, *tyfsnameptr;
+	
+	typedef struct tyfilespec {
+	
+		tyfilespecflags	flags;
+		FSRef ref;
+		tyfsname name;
 		
-	typedef ExtFSRef tyfilespec, *ptrfilespec, **hdlfilespec;
+		} tyfilespec;
+		
+	typedef tyfilespec *ptrfilespec, **hdlfilespec;
 		
 	#endif // MACVERSION
 

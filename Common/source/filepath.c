@@ -44,9 +44,6 @@
 #endif // MACVERSION
 
 
-#define flaux false /*if true, we're running under the A/UX operating system*/
-
-
 #ifdef MACVERSION
 
 	static tyfilespec fsdefault; // we maintain our own default directory
@@ -61,53 +58,44 @@
 
 		OSErr err;
 		OSStatus status;
+		FSRef volumesfsref;
 		
-		/* bail if fs is Volumes directory */ {
+		status = FSPathMakeRef ((UInt8 *)"/Volumes", &volumesfsref, NULL);
 		
-			FSRef volumesfsref;
-			OSErr err;
+		if ((status == noErr) && (FSCompareFSRefs (&fs->ref, &volumesfsref) == noErr)) {	/* bail if fs is Volumes directory */
+		
+			setemptystring (path);
 			
-			status = FSPathMakeRef ( (UInt8*) "/Volumes", &volumesfsref, NULL );
-			
-			err = FSCompareFSRefs ( &( *fs ).fsref , &volumesfsref );
-			
-			if ( err == noErr ) {
-			
-				setemptystring ( path );
-				
-				return ( true );
-				
-				}
-				
-			} // bail
+			return (true);
+			}
 
-		CFMutableStringRef ioPath = CFStringCreateMutable ( NULL, 0 );
+		CFMutableStringRef ioPath = CFStringCreateMutable (NULL, 0);
 		FSCatalogInfo catalogInfo;
-		FSRef localRef = ( *fs ).fsref;
-		HFSUniStr255 names [ 100 ];
+		FSRef fsrefnomad = fs->ref;
+		HFSUniStr255 names[100];
 		int i, n;
 		UniChar inSepChar = ':';
 		
 		err = noErr;
 
-		clearbytes ( &catalogInfo, longsizeof ( catalogInfo ) );
+		clearbytes (&catalogInfo, longsizeof (catalogInfo));
 
-		for ( n = 0 ; err == noErr && catalogInfo.nodeID != fsRtDirID && n < 100 ; n++ )
-			err = FSGetCatalogInfo ( &localRef, kFSCatInfoNodeID, &catalogInfo, &names [ n ], NULL, &localRef );
+		for (n = 0; err == noErr && catalogInfo.nodeID != fsRtDirID && n < 100; n++) {
 
-		if ( err != noErr )
-			return ( false );
+			err = FSGetCatalogInfo (&fsrefnomad, kFSCatInfoNodeID, &catalogInfo, &names[n], NULL, &fsrefnomad);
+			}
 			
-		for ( i = n - 1; i >= 0; --i ) {
-			CFStringAppendCharacters ( ioPath, names [ i ].unicode, names [ i ].length );
-
-			// if ( i > 0 )
+		if (err != noErr)
+			return (false);
 			
-			CFStringAppendCharacters ( ioPath, &inSepChar, 1 );
+		for (i = n - 1; i >= 0; --i) {
+
+			CFStringAppendCharacters (ioPath, names[i].unicode, names[i].length);
+			
+			CFStringAppendCharacters (ioPath, &inSepChar, 1);
 			}
 		
-		return ( CFStringGetPascalString ( ioPath, path, 256, kCFStringEncodingMacRoman ) );
-
+		return (CFStringGetPascalString (ioPath, path, 256, kCFStringEncodingMacRoman));
 		} // directorytopath
 
 #endif
@@ -202,48 +190,27 @@ boolean filespectopath (const ptrfilespec fs, bigstring bspath) {
 	
 	#ifdef MACVERSION
 	
-		bigstring bs;
 		boolean flfolder;
-		FSCatalogInfo catalogInfo;
-		tyfilespec fsp, fst = *fs;
-		HFSUniStr255 outName;
-		OSErr err;
 		
-		( void ) extendfilespec ( &fst, &fst );
-		
-		err = FSGetCatalogInfo ( &fst.fsref, kFSCatInfoParentDirID | kFSCatInfoVolume, &catalogInfo, &outName, NULL,
-			&fsp.fsref );
-			
-		if ( err != noErr )
-			return ( false );
-		
-		setemptystring ( bspath );
-		
-		if ( catalogInfo.parentDirID != fsRtParID ) // it's not a volume so lets get the directory path
-			if ( ! directorytopath ( &fsp, bspath ) )
-				return ( false );
-		
-		HFSUniStr255ToStr255 ( &outName, bs );
-		
-		pushstring ( bs, bspath );
-		
-		if ( fst.path != NULL ) {
-			
-			pushchar ( ':', bspath );
-			
-			CFStringRefToStr255 ( fst.path, bs );
-			
-			pushstring ( bs, bspath );
+		setemptystring (bspath);
 
-			return ( true );
+		if (!directorytopath (fs, bspath))
+			return (false);
+		
+		if (!fs->flags.flvolume) {
 			
+			bigstring bsfile;
+			
+			fsnametobigstring (&fs->name, bsfile);
+			
+			pushstring (bsfile, bspath);
 			}
-
-		if ( fileexists ( &fst, &flfolder ) )
-			if ( flfolder )
-				assurelastchariscolon ( bspath );
 		
-		return ( true );
+		if (fileexists (fs, &flfolder))
+			if (flfolder)
+				assurelastchariscolon (bspath);
+		
+		return (true);
 		
 	#endif
 
@@ -269,10 +236,10 @@ boolean filespectopath (const ptrfilespec fs, bigstring bspath) {
 
 #ifdef MACVERSION
 
-static OSStatus pathtofsref ( bigstring bspath, FSRef *ref ) {
+OSStatus pathtofsref ( bigstring bspath, FSRef *ref ) {
 
 	/*
-	2009-08-30 aradke: mac-only helper function for pathtofilespec for converting from a pascal string (path) to an FSRef
+	2009-08-30 aradke: mac-only helper function for converting from a pascal string (path) to an FSRef
 	*/
 	
 	bigstring bs;
@@ -284,6 +251,8 @@ static OSStatus pathtofsref ( bigstring bspath, FSRef *ref ) {
 	// convert from colon-delimited to slash-delimited path
 
 	stringswapall(':', '/', bs);
+
+	insertstring ( BIGSTRING ( "\x09" "/Volumes/" ), bs );
 	
 	// convert from Mac Roman to UTF-8 */ 
 
@@ -326,8 +295,6 @@ boolean pathtofilespec ( bigstring bspath, ptrfilespec fs ) {
 	
 	#ifdef MACVERSION
 		FSRef fsr;
-		HFSUniStr255 name;
-		OSErr err;
 		bigstring bspathtmp, bsfullpath, bsfile, bsfolder;
 		short ix = 1;
 		boolean flvolume = false;
@@ -357,43 +324,27 @@ boolean pathtofilespec ( bigstring bspath, ptrfilespec fs ) {
 			if ( ix == stringlength ( bspath ) )	// the colon we found is the last char, so bspath is a volume name
 				flvolume = true;
 		 
-			copystring ( BIGSTRING ( "\x09" ":Volumes:" ), bsfullpath );	// FIXME: what if bspath was just a non-existing volume name like "foo:" ???
-				
-			pushstring ( bspathtmp, bsfullpath );
+			copystring ( bspathtmp, bsfullpath );
 			}
 
 		else {
 		
 			// it's a partial path, prefix with default directory (see initfsdefault)
 		
-			tyfilespec fst;
-			OSStatus status;
-			
-			( void ) extendfilespec ( &fsdefault, &fst );
-			
-			status = FSRefMakePath ( &fst.fsref, ( UInt8 * ) bsfullpath, sizeof(bsfullpath) ); // bsfullpath is now a c string
-			
-			convertcstring ( bsfullpath ); // bsfullpath is now a bigstring
-
-			stringswapall ( '/', ':', bsfullpath );		// convert to colon-delimited path
+			if ( ! filespectopath ( &fsdefault, bsfullpath ) )	// get path of default directory
+				return ( false );
 			
 			if ( bspathtmp [ 1 ] != chpathseparator )	// append path separator if partial path doesn't begin with one
-				pushchar ( chpathseparator, bsfullpath );
+				assurelastchariscolon ( bsfullpath );
 
-			pushstring ( bspathtmp, bsfullpath );	// finally append partial path
+			pushstring ( bspathtmp, bsfullpath );	// append partial path
 			}
 		
 		// now see if the full path resolves 
 			
 		if ( pathtofsref ( bsfullpath, &fsr ) == noErr ) {
-		
-			err = FSGetCatalogInfo ( &fsr, kFSCatInfoNone, NULL, &name, NULL, &fsr );
 
-			( *fs ).fsref = fsr;
-			
-			( *fs ).path = CFStringCreateWithCharacters ( kCFAllocatorDefault, name.unicode, name.length );
-		
-			return ( true );
+			return ( macmakefilespec ( &fsr, fs ) == noErr );
 			}
 			
 		// full path did not resolve but we actually only require the parent folder to exist
@@ -405,10 +356,12 @@ boolean pathtofilespec ( bigstring bspath, ptrfilespec fs ) {
 			folderfrompath ( bsfullpath, bsfolder );
 
 			if ( pathtofsref ( bsfolder, &fsr ) == noErr ) {
-			
-				( *fs ).fsref = fsr;
 				
-				( *fs ).path = CFStringCreateWithPascalString ( kCFAllocatorDefault, bsfile, kCFStringEncodingMacRoman );
+				clearfilespec ( fs );
+				
+				fs->ref = fsr;
+				
+				bigstringtofsname ( bsfile, &fs->name );
 			
 				return ( true );
 				}
@@ -455,11 +408,8 @@ boolean setfsfile ( ptrfilespec fs, bigstring bsfile ) {
 	//
 	
 	#ifdef MACVERSION
-	
-		if ( ( *fs ).path != NULL )
-			CFRelease ( ( *fs ).path );
 		
-		( *fs ).path = CFStringCreateWithPascalString ( kCFAllocatorDefault, bsfile, kCFStringEncodingMacRoman );
+		bigstringtofsname (bsfile, &fs->name);
 		
 		return ( true );
 		
@@ -493,17 +443,8 @@ boolean getfsfile ( const ptrfilespec fs, bigstring bsfile ) {
 	//
 	
 	#ifdef MACVERSION
-	
-		if ( ( *fs ).path != NULL ) {
-
-			if ( CFStringRefToStr255 ( ( *fs ).path, bsfile ) )
-				return ( true );
-			}
-		else {
 		
-			if ( ! FSRefGetNameStr255 ( &( *fs ).fsref, bsfile ) )
-				return ( false );
-			}
+		macgetfilespecnameasbigstring ( fs, bsfile );
 				
 		if ( stringlength ( bsfile ) > 0 )
 			return ( true );
@@ -539,7 +480,7 @@ boolean getfsvolume ( const ptrfilespec fs, long *vnum ) {
 	#ifdef MACVERSION
 	
 		FSCatalogInfo catalogInfo;
-		OSErr err = FSGetCatalogInfo ( &( *fs ).fsref, kFSCatInfoVolume, &catalogInfo, NULL, NULL, NULL );
+		OSErr err = FSGetCatalogInfo ( &fs->ref, kFSCatInfoVolume, &catalogInfo, NULL, NULL, NULL );
 		
 		if ( catalogInfo.volume == 0 )
 			return ( false );
@@ -572,8 +513,6 @@ void initfsdefault (void) {
 	#ifdef MACVERSION
 	
 		getapplicationfilespec ( nil, &fsdefault );
-		
-		( void ) getfilespecparent ( &fsdefault );
 		
 	#endif
 	

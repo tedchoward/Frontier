@@ -247,49 +247,35 @@ boolean ploticonresource (const Rect *r, short align, short transform, short res
 		// 7.0b9 PBS: Open a resource file just once, store info about it, so it doesn't have to be opened for each rendering.
 		//
 		
-		bigstring bsappearancefolder = "\pAppearance";
-		bigstring bsiconsfolder = "\pIcons";
+		bigstring bsappearancefolder = "\x0a" "Appearance";
+		bigstring bsiconsfolder = "\x05" "Icons";
 		tyfilespec programfilespec, appearancefolder, iconsfolder, iconfilespec;
 		short r, ixcurricon;
 		
 		if (ixnexticon >= maxcustomicontypes)
-		
 			return (false); // limit reached
-		
-		HFSUniStr255 name;
 		
 		// get app filespec
 			 
-		getapplicationfilespec ( nil, &programfilespec );
-		
-		( void ) extendfilespec ( &programfilespec, &programfilespec );
+		getapplicationfilespec (nil, &programfilespec);
 		
 		 // get Appearances folder
-		 
-		bigstringToHFSUniStr255 ( bsappearancefolder, &name );
 		
-		if ( FSMakeFSRefUnicode ( &programfilespec.fsref, name.length, name.unicode, kTextEncodingUnknown,
-							&appearancefolder.fsref) != noErr)
+		if (macgetfilespecchildfrombigstring (&programfilespec, bsappearancefolder, &appearancefolder) != noErr)
 			return (false);
-			
+		
 		// get Icons folder
 		
-		bigstringToHFSUniStr255 ( bsiconsfolder, &name );
-		
-		if ( FSMakeFSRefUnicode ( &appearancefolder.fsref, name.length, name.unicode, kTextEncodingUnknown,
-							&iconsfolder.fsref ) != noErr)
+		if (macgetfilespecchildfrombigstring (&appearancefolder, bsiconsfolder, &iconsfolder) != noErr)
 			return (false);
 		
 		// get icon file
 		
-		bigstringToHFSUniStr255 ( bsiconname, &name );
-		
-		if ( FSMakeFSRefUnicode ( &iconsfolder.fsref, name.length, name.unicode, kTextEncodingUnknown,
-							&iconfilespec.fsref ) != noErr)
+		if (macgetfilespecchildfrombigstring (&iconsfolder, bsiconname, &iconfilespec) != noErr)
 			return (false);
 		
-		if ( ! openresourcefile ( &iconfilespec, &r, resourcefork ) )
-			return ( false );
+		if (!openresourcefile (&iconfilespec, &r, resourcefork))
+			return (false);
 
 		if (r == -1)
 			return (false);

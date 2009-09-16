@@ -471,7 +471,7 @@ short windowgetvnum (WindowPtr w) {
 	
 		short vnum;
 	
-		FSGetVRefNum ( &(**hinfo).fspec.fsref, &vnum );
+		FSGetVRefNum ( &(**hinfo).fspec.ref, &vnum );
 	
 		return ( vnum );
 			
@@ -2027,10 +2027,10 @@ boolean newchildwindow (short idtype, hdlwindowinfo hparentinfo, Rect * rwindow,
 		// do we need to do this?
 		
 		#ifdef MACVERSION
-
-			(**hinfo).fspec.path = CFStringCreateWithPascalString (kCFAllocatorDefault, bstitle, kCFStringEncodingMacRoman );
+		
+			bigstringtofsname (bstitle, &(**hinfo).fspec.name);
 				
-			#endif // MACVERSION
+		#endif // MACVERSION
 
 		#ifdef WIN95VERSION
 

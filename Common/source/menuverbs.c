@@ -51,6 +51,7 @@
 #include "menuverbs.h"
 #include "cancoon.h"
 #include "kernelverbdefs.h"
+#include "file.h"
 
 #ifdef MACVERSION
 
@@ -840,8 +841,9 @@ boolean menuedit (hdlexternalvariable hvariable, hdlwindowinfo hparent, ptrfiles
 		
 		#ifdef MACVERSION
 		
-			if ( FSRefValid ( &( *fs ).fsref ) && ( *fs ).path == NULL )
+			if (macfilespecisresolvable (fs))
 				SetWindowProxyCreatorAndType ( w, 'LAND', 'FTmb', kOnSystemDisk );
+				
 		#endif
 		
 		}
