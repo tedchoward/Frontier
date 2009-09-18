@@ -369,6 +369,9 @@ static void prepuserforwait (WindowPtr w) {
 	7.0b16 PBS: Fix for Windows display glitch -- don't gray windows for save
 	if this is Windows, it leads to the display getting messed up for the frontmost
 	outline.
+	
+	2009-09-18 aradke: Fix for Carbon OS X display glitch -- don't gray windows while saving
+	because it would sometimes gray out the menubar and then let it stay grayed out indefinitely.
 	*/
 	
 	initbeachball (left);
@@ -378,7 +381,8 @@ static void prepuserforwait (WindowPtr w) {
 	else
 		shellpartialeventloop (updateMask);
 
-#ifdef MACVERSION /*7.0b16 PBS: only Macs get grayed windows. Fix for Windows display glitch.*/
+#if 0	/*7.0b16 PBS: only Macs get grayed windows. Fix for Windows display glitch.*/
+		/*2009-09-18 aradke: graying out now causes display glitch on Mac OS X too */
 	#if TARGET_API_MAC_CARBON
 	{
 	//only gray the front window
