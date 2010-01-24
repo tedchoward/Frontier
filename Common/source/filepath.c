@@ -271,7 +271,13 @@ OSStatus pathtofsref ( bigstring bspath, FSRef *ref ) {
 
 
 boolean pathtofilespec ( bigstring bspath, ptrfilespec fs ) {
-	
+
+    //
+    // 2010-01-24 creedon: fix for relative paths not working on mac,
+    //                     bsfullpath was ending up with :: in it as well as
+    //                     the full path to the application, see initfsdefault
+    //                     function
+    //
 	// 2009-08-30 aradke: refactored mac version to make it easier to understand.
 	//			fixed bug where a bspath containing a non-existing volume name was accepted as valid,
 	//			e.g. filespec("foobar:"), thus deviating from previous behaviour.
@@ -280,17 +286,21 @@ boolean pathtofilespec ( bigstring bspath, ptrfilespec fs ) {
 	//
 	// 5.0d8 dmb: clear fs first thing
 	//
-	// 2.1b2 dmb: use new fsdefault for building filespec. note that if bspath isn't a partial path, the vref and dirid will be
-	//		   ignored.
+	// 2.1b2 dmb: use new fsdefault for building filespec. note that if bspath
+    //            isn't a partial path, the vref and dirid will be ignored.
 	//
-	// 2.1b2 dmb: added special case for empty string.  also, added drive number interpretation here.
+	// 2.1b2 dmb: added special case for empty string.  also, added drive
+    //            number interpretation here.
 	//
-	// 1993-06-11 dmb: if FSMakeFSSpec returns fnfErr, the spec is cool (but file doesn't exist)
+	// 1993-06-11 dmb: if FSMakeFSSpec returns fnfErr, the spec is cool (but
+    //                 file doesn't exist)
 	//
-	// 1991-012-17 dmb: dont append path to default directory if it's a full path
+	// 1991-012-17 dmb: dont append path to default directory if it's a full
+    //                  path
 	//
-	// 1991-07-05 dmb: use FSMakeFSSpec if it's available.  since it only returns noErr if the file exists, and we want to handle
-	//		     non-existant files, we don't give up right away.
+	// 1991-07-05 dmb: use FSMakeFSSpec if it's available.  since it only
+    //                 returns noErr if the file exists, and we want to handle
+	//                 non-existant files, we don't give up right away.
 	//
 	
 	#ifdef MACVERSION
@@ -323,23 +333,25 @@ boolean pathtofilespec ( bigstring bspath, ptrfilespec fs ) {
 			
 			if ( ix == stringlength ( bspath ) )	// the colon we found is the last char, so bspath is a volume name
 				flvolume = true;
-		 
+                
 			copystring ( bspathtmp, bsfullpath );
 			}
-
+            
 		else {
 		
 			// it's a partial path, prefix with default directory (see initfsdefault)
 		
 			if ( ! filespectopath ( &fsdefault, bsfullpath ) )	// get path of default directory
 				return ( false );
-			
-			if ( bspathtmp [ 1 ] != chpathseparator )	// append path separator if partial path doesn't begin with one
-				assurelastchariscolon ( bsfullpath );
-
+                
+           // delete first path separator if partial path begins with one because bsfullpath always ends with one
+           
+			if ( bspathtmp [ 1 ] == chpathseparator )
+				deletefirstchar ( bspathtmp );
+                
 			pushstring ( bspathtmp, bsfullpath );	// append partial path
 			}
-		
+            
 		// now see if the full path resolves 
 			
 		if ( pathtofsref ( bsfullpath, &fsr ) == noErr ) {
@@ -505,15 +517,22 @@ boolean getfsvolume ( const ptrfilespec fs, long *vnum ) {
 void initfsdefault (void) {
 
 	//
+    // 2010-01-24 creedon: assign fsdefault the path that the application is
+    //                     in, not the path of the application itself,
+    //                     restoring previous behavior, fix for problem with
+    //                     relative paths not working
+    //
 	// 2006-06-18 creedon: FSRef-ized
 	//
 	// 2005-07-18 creedon, karstenw: created
 	//
-
+    
 	#ifdef MACVERSION
 	
 		getapplicationfilespec ( nil, &fsdefault );
 		
+        macgetfilespecparent ( &fsdefault, &fsdefault );
+        
 	#endif
 	
 	} /* initfsdefault */
