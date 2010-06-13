@@ -1432,7 +1432,7 @@ boolean opedit (hdlexternalvariable hvariable, hdlwindowinfo hparent, ptrfilespe
 					
 					status = LSCopyItemInfoForRef ( &fsref, kLSRequestTypeCreator || kLSRequestExtension, &iteminfo );
 						
-					CFStringRefToStr255 ( iteminfo.extension, bs );
+					cfstringreftobigstring ( iteminfo.extension, bs );
 					
 					alllower ( bs );
 					

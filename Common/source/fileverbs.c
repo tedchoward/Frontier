@@ -748,7 +748,7 @@ static boolean filedialogverb (tysfverb sfverb, hdltreenode hparam1, tyvaluereco
 
 		}
 	
-	clearbytes (&fs, sizeof (fs));
+	clearfilespec (&fs);
 	
 	//
 	// if (idstringvalue (htable, bsvarname, bsfname))
@@ -776,7 +776,7 @@ static boolean filedialogverb (tysfverb sfverb, hdltreenode hparam1, tyvaluereco
 		
 		lastword ( bs, '.', bsext);
 
-		if ( ! ( ( stringlength ( bs ) == stringlength ( bsext ) ) || ( stringlength ( bsext ) > 4 ) ) ) { // extension
+		if (!((stringlength (bs) == stringlength (bsext)) || (stringlength (bsext) > 4))) { // extension
 			stringtoostype (bsext, &ostype);
 			filetypes.cttypes = 1;
 			filetypes.types [0] = ostype;
@@ -2715,7 +2715,7 @@ static boolean getposixpathverb ( hdltreenode hp1, tyvaluerecord *vreturned ) {
 		
 			CFStringRef csr = CFStringCreateWithCString ( kCFAllocatorDefault, bs, kCFStringEncodingUTF8 );
 			
-			CFStringRefToStr255 ( csr, bs );
+			cfstringreftobigstring ( csr, bs );
 			
 			CFRelease ( csr );
 			

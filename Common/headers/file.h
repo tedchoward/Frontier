@@ -438,26 +438,7 @@ extern boolean filetruncate (hdlfilenum);
 extern boolean sfdialog (tysfverb, bigstring, ptrsftypelist, ptrfilespec , OSType); /* 2005-10-06 creedon - added OSType */
 
 extern boolean initfiledialog (void);
-
-#ifdef MACVERSION
-
-	//Code change by Timothy Paustian Tuesday, June 20, 2000 2:22:02 PM
-	//Nav services code for Frontier.
-	
-	extern OSErr	TimsPutFile( bigstring, Str255, StandardFileReply *, OSType );
-
-	extern OSErr	TimsGetFolderOrVolume(bigstring prompt, SInt16 dialogType, StandardFileReply * outReply);
-
-	extern pascal void		NavEventProc(NavEventCallbackMessage callBackSelector, 
-					    NavCBRecPtr callBackParms, 
-					    NavCallBackUserData callBackUD);
-
-	extern OSErr getafile (bigstring prompt, ptrsftypelist filetypes, StandardFileReply * outReply, OSType); /* 2005-09-23 creedon */ 
-
-#endif
                         
-#endif
-
 
 #pragma mark === filemp3.c ===
 
@@ -508,7 +489,7 @@ extern short getfilelabelindex (const ptrfilespec , short *);	// 2006-04-23 cree
 	
 	extern void fsnametobigstring(const tyfsnameptr fsname, bigstring bs);	// 2009-09-05 aradke
 	
-	extern boolean CFStringRefToStr255 (CFStringRef input, StringPtr output); // 2006-08-08 creedon
+	extern boolean cfstringreftobigstring (CFStringRef input, StringPtr output); // 2006-08-08 creedon
 	
 	extern OSStatus GetApplicationIconRef ( const ProcessSerialNumber * , const FSSpec* , IconRef * ); // 2006-06-04 creedon
 
@@ -555,4 +536,8 @@ extern void initfsdefault (void); /* 2005-07-18 creedon */
 extern boolean filegetprogramversion (bigstring);
 
 extern boolean filestart (void); /*6.1b15 AR*/
+
+
+#endif	//fileinclude
+
 

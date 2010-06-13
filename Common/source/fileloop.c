@@ -364,13 +364,13 @@ boolean fileinitloop ( const ptrfilespec fst, tyfileloopcallback filefilter, Han
 			
 			if ( fs.parID == fsRtParID ) {
 			
-				if ( equalstrings ( bsfile, "\x0F" ".Spotlight-V100" ) ) // skip Spotlight
+				if ( equalstrings ( bsfile, BIGSTRING ("\x0F" ".Spotlight-V100") ) ) // skip Spotlight
 					continue;
 					
-				if ( equalstrings ( bsfile, "\x04" ".vol" ) ) // skip .vol ( volfs )
+				if ( equalstrings ( bsfile, BIGSTRING ("\x04" ".vol" ) ) ) // skip .vol ( volfs )
 					continue;
 				
-				if ( equalstrings ( bsfile, "\x07" "Volumes" ) ) // skip Volumes
+				if ( equalstrings ( bsfile, BIGSTRING ("\x07" "Volumes") ) ) // skip Volumes
 					continue;
 				}
 			
@@ -675,7 +675,7 @@ boolean filenextloop ( Handle hfileloop, ptrfilespec fsfilet, boolean *flfolder 
 			
 			texthandletostring (hdata, bs);
 			
-			*flfolder = bs [*bs] == ':';
+			*flfolder = (lastchar (bs) == ':');
 			
 			if (*flfolder)
 				--*bs;

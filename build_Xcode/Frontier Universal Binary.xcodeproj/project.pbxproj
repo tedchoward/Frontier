@@ -4084,7 +4084,6 @@
 					"-Wmost",
 					"-Wno-four-char-constants",
 					"-Wno-unknown-pragmas",
-					"-Wno-long-double",
 				);
 				ZERO_LINK = NO;
 			};
@@ -4143,7 +4142,6 @@
 					"-Wmost",
 					"-Wno-four-char-constants",
 					"-Wno-unknown-pragmas",
-					"-Wno-long-double",
 				);
 				ZERO_LINK = NO;
 			};
@@ -4156,6 +4154,7 @@
 					ppc,
 					i386,
 				);
+				GCC_VERSION = 4.0;
 				OTHER_CFLAGS = "";
 				SDKROOT = /Developer/SDKs/MacOSX10.4u.sdk;
 			};
@@ -4168,6 +4167,7 @@
 					ppc,
 					i386,
 				);
+				GCC_VERSION = 4.0;
 				OTHER_CFLAGS = "";
 				SDKROOT = /Developer/SDKs/MacOSX10.4u.sdk;
 			};

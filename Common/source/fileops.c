@@ -661,7 +661,7 @@ boolean winfileerror (const ptrfilespec fs) {
 				status = LSCopyItemInfoForRef ( ( *pb ).ref, kLSRequestExtension, &iteminfo );
 				
 				if ( iteminfo.extension != NULL )
-					CFStringRefToStr255 ( iteminfo.extension, bsext );
+					cfstringreftobigstring ( iteminfo.extension, bsext );
 					
 				if ( isemptystring ( bsext ) || ( stringlength ( bsext ) > 4 ) ) // no extension
 				
@@ -3739,7 +3739,7 @@ void clearfilespec (ptrfilespec fs) {
 
 		fss->vRefNum = catalogInfo.volume;
 		fss->parID = catalogInfo.nodeID;
-		fsnametobigstring (&fs->name, fss->name);
+		fsnametobigstring (&fs->name, fss->name);	// FIXME: what if fs->name is longer than fss->name has room for?
 
 		return (noErr);
 		} /*macgetfsspec*/
@@ -3907,14 +3907,14 @@ void clearfilespec (ptrfilespec fs) {
 		
 		csr = CFStringCreateWithCharacters (kCFAllocatorDefault, fsname->unicode, fsname->length);
 		
-		CFStringRefToStr255 (csr, bs);
+		cfstringreftobigstring (csr, bs);
 
 		CFRelease (csr);
 
 		} /*fsnametobigstring*/
 
 	
-	boolean CFStringRefToStr255 (CFStringRef input, StringPtr output) {
+	boolean cfstringreftobigstring (CFStringRef input, StringPtr output) {
 	
 		/*
 		2006-08-08 creedon: created, cribbed from < http://developer.apple.com/carbon/tipsandtricks.html#CFStringFromUnicode >
@@ -3932,7 +3932,7 @@ void clearfilespec (ptrfilespec fs) {
 		
 		return (true);
 		
-		} // CFStringRefToStr255
+		} //cfstringreftobigstring
 	
 
 #endif /*MACVERSION*/

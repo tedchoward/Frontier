@@ -56,340 +56,20 @@
 
 #ifdef MACVERSION
 
-	#include "SetUpA5.h"
-
 	#define sfgetfileid 5000
 	#define sfputfileid 5001
 	#define sfgetfolderid 5002
 	#define sfgetdiskid 5003
 
-	#define sfgetfolderbutton 11
-	#define sfgetpromptitem 10
+	//Code change by Timothy Paustian Tuesday, June 20, 2000 2:22:02 PM
+	//Nav services code for Frontier.
+	
+	static OSErr macputfiledialog (bigstring, ptrfilespec fs, OSType);
 
-
-	typedef struct tysfdata { /*data passed to hook routines*/
-		
-		StandardFileReply sfreply;
-		
-		bigstring sfprompt;
-		
-		Str63 sfname;
-		
-		ptrsftypelist sftypes;
-		} tysfdata, *ptrsfdata;
+	static OSErr macgetfiledialog (SInt16 dialogtype, bigstring prompt, ptrfilespec fs, OSType filecreator, ptrsftypelist filetypes); /* 2005-09-23 creedon */ 
 
 
 	#if ! TARGET_API_MAC_CARBON
-
-		static pascal short sfputfilehook (short item, DialogPtr pdialog, tysfdata *pdata) {
-			
-			/*
-			6/11/93 dmb: added for System 7 Standard File
-			*/
-			
-			#ifdef flcomponent
-				long curA5;
-			#endif
-
-			if (GetWRefCon (pdialog) != sfMainDialogRefCon)
-				return (item);
-			
-			#ifdef flcomponent
-				
-				curA5 = SetUpAppA5 ();
-				
-			#endif
-			
-			if (item == sfHookFirstCall) {
-				
-				if ((*pdata).sfreply.sfFile.vRefNum != 0)
-					item = sfHookChangeSelection;
-				}
-			
-			#ifdef flcomponent
-				
-				RestoreA5 (curA5);
-				
-			#endif
-			
-			return (item);
-			} /*sfputfilehook*/
-
-
-		static pascal short sfprompthook (short item, DialogPtr pdialog, tysfdata *pdata) {
-			
-			/*
-			6/11/93 dmb: recoded to System 7 Standard File
-			*/
-			
-			#ifdef flcomponent
-				long curA5;
-			#endif
-
-			if (GetWRefCon (pdialog) != sfMainDialogRefCon)
-				return (item);
-			
-			#ifdef flcomponent
-				
-				curA5 = SetUpAppA5 ();
-				
-			#endif
-			
-			if (item == sfHookFirstCall) {
-				Rect ritem, rdialog;
-				CGrafPtr	dialogPort;
-				dialoggetobjectrect (pdialog, sfgetpromptitem, &ritem);
-				
-				//Code change by Timothy Paustian Sunday, April 30, 2000 9:20:45 PM
-				//Changed to Opaque call for Carbon
-				
-			#if ACCESSOR_CALLS_ARE_FUNCTIONS == 1
-					dialogPort = GetDialogPort(pdialog);
-					GetPortBounds(dialogPort, &rdialog);
-			#else
-					//old code
-			#pragma unused(dialogPort)
-					rdialog = (*pdialog).portRect;
-			#endif
-			
-				if (isemptystring ((*pdata).sfprompt)) {
-					
-					rdialog.bottom = ritem.top;
-					
-					/*
-					hidedialogitem (pdialog, sfgetpromptitem);
-					*/
-					}
-				else {
-					
-					rdialog.bottom = ritem.bottom + 4;
-					
-					setdialogtext (pdialog, sfgetpromptitem, (*pdata).sfprompt);
-					}
-				
-				sizewindow (pdialog, rdialog.right - rdialog.left, rdialog.bottom - rdialog.top);
-				
-				if ((*pdata).sfreply.sfFile.vRefNum != 0)
-					item = sfHookChangeSelection;
-				}
-			
-			#ifdef flcomponent
-				
-				RestoreA5 (curA5);
-				
-			#endif
-			
-			return (item);
-			} /*sfprompthook*/
-
-
-		static pascal short sffolderhook (short item, DialogPtr pdialog, tysfdata *pdata) {
-			
-			/*
-			12/5/91 dmb: if a folder is selected, use it instead of the current folder
-			
-			1/30/92 dmb: added code to handle folder aliases, which are files
-			
-			9/15/92 dmb: save path in sfstring (255 chars) instead of reply.fName (63 chars)
-			
-			6/11/93 dmb: recoded to System 7 Standard File
-			
-			2.1b9 dmb: push dialog port when ellipsizing button title
-			*/
-			
-			bigstring bs;
-
-			#ifdef flcomponent
-				long curA5;
-			#endif
-			
-			if (GetWRefCon (pdialog) != sfMainDialogRefCon)
-				return (item);
-			
-			#ifdef flcomponent
-				
-				curA5 = SetUpAppA5 ();
-				
-			#endif
-			
-			item = sfprompthook (item, pdialog, pdata);
-			
-			switch (item) {
-				
-				case sfgetfolderbutton: {
-				
-					if ((*pdata).sfreply.sfFlags & kIsAlias) { /*must be the alias of a folder*/
-						Boolean flfolder, flwasalias;
-						OSErr errcode;
-						
-						errcode = ResolveAliasFile (&(*pdata).sfreply.sfFile, true, &flfolder, &flwasalias);
-						
-						switch (errcode) {
-							
-							case noErr:
-								break;
-							
-							case userCanceledErr:
-								item = sfHookNullEvent;
-								
-								goto exit;
-							
-							default:
-								getsystemerrorstring (errcode, bs);
-								
-								parsedialogstring (bs, (*pdata).sfreply.sfFile.name, nil, nil, nil, bs);
-								
-								customalert (sferrordialogid, bs);
-								
-								item = sfHookNullEvent;
-								
-								goto exit;
-							}
-						}
-					
-					(*pdata).sfreply.sfGood = true;
-					
-					item = sfItemCancelButton; /*force exit*/
-					
-					break;
-					};
-				
-				case sfHookNullEvent:
-					if (!equalstrings ((*pdata).sfname, (*pdata).sfreply.sfFile.name)) { /*selection changed*/
-						FSSpec fs;
-						
-						fs = (*pdata).sfreply.sfFile;
-						
-						copystring (fs.name, (*pdata).sfname); /*remember for next time before changing*/
-						
-						if (isemptystring (fs.name)) /*nothing selected*/
-							FSMakeFSSpec (fs.vRefNum, fs.parID, nil, &fs);
-						
-						copystring (fs.name, bs);
-						//Code change by Timothy Paustian Monday, August 21, 2000 4:20:21 PM
-						//pushport must have a CGrafPtr on OS X
-						{
-						CGrafPtr	thePort;
-						#if TARGET_API_MAC_CARBON == 1
-						thePort = GetDialogPort(pdialog);
-						#else
-						thePort = (CGrafPtr)pdialog;
-						#endif
-				
-						pushport (thePort);
-						}
-						ellipsize (bs, 72);
-						
-						popport ();
-						
-						setdialogbutton (pdialog, sfgetfolderbutton, bs);
-						}
-					
-					break;
-				}
-			
-			exit:
-			
-			#ifdef flcomponent
-			
-				RestoreA5 (curA5);
-			
-			#endif
-			
-			return (item);
-			} /*sffolderhook*/
-
-
-		static pascal short sfdiskhook (short item, DialogPtr pdialog, tysfdata *pdata) {
-			
-			/*
-			6/11/93 dmb: recoded to System 7 Standard File; back to using Drive 
-			button like Frontier 1.0.
-			*/
-			
-			#ifdef flcomponent
-				long curA5;
-			#endif
-
-			if (GetWRefCon (pdialog) != sfMainDialogRefCon)
-				return (item);
-			
-			#ifdef flcomponent
-				
-				curA5 = SetUpAppA5 ();
-				
-			#endif
-			
-			item = sfprompthook (item, pdialog, pdata);
-			
-			switch (item) {
-				
-				case sfItemOpenButton:
-				case sfHookOpenFolder:
-					#if 0
-					
-					(*pdata).sfreply.vRefNum = -SFSaveDisk; /*IM IV-72*/
-					
-					setemptystring ((*pdata).sfreply.fName); /*we just want the volume*/
-					
-					#endif
-					
-					FSMakeFSSpec ((*pdata).sfreply.sfFile.vRefNum, 0, 0, &(*pdata).sfreply.sfFile);
-					
-					(*pdata).sfreply.sfGood = true;
-					
-					item = sfItemCancelButton; /*force exit*/
-					
-					break;
-				
-				case sfHookGoToDesktop:
-					item = sfHookGoToNextDrive;
-					
-					break;
-				
-				case sfHookNullEvent:
-					if ((*pdata).sfreply.sfIsVolume) /*need to open volume to enable Drive button*/
-						item = sfHookOpenFolder;
-					else {
-						if (isemptystring ((*pdata).sfreply.sfFile.name)) /*no selection*/
-							item = sfHookGoToParent;
-						}
-					
-					break;
-				
-				case sfHookGoToParent:
-					item = sfHookNullEvent;
-					
-					break;
-				
-				default:
-					if (item >= sfHookCharOffset) /*typing -- ignore*/
-						item = sfHookNullEvent;
-				}
-			
-			#ifdef flcomponent
-				
-				RestoreA5 (curA5);
-				
-			#endif
-			
-			return (item);
-			} /*sfdiskhook*/
-
-
-		static pascal Boolean onlyfoldersfilter (ParmBlkPtr pb, tysfdata *pdata) {
-		#pragma unused (pdata)
-			
-			/*
-			if (foldertest (pb))
-			*/
-			
-			if (pb->fileParam.ioFlAttrib & ioDirMask)
-				return (0);
-			
-			return (-1); /*...don't show files*/
-			} /*onlyfoldersfilter*/
-
 
 		static pascal Boolean knowntypesfilter (ParmBlkPtr pb, tysfdata *pdata) {
 			
@@ -427,30 +107,14 @@
 				
 		#if !TARGET_RT_MAC_CFM
 			
-			#define onlyfoldersfilterUPP ((FileFilterYDUPP) &onlyfoldersfilter)
 			#define knowntypesfilterUPP ((FileFilterYDUPP) &knowntypesfilter)
-			#define sfputfilehookUPP (&sfputfilehook)
-			#define sfprompthookUPP (&sfprompthook)
-			#define sffolderhookUPP (&sffolderhook)
-			#define sfdiskhookUPP (&sfdiskhook)
 
 		#else
 
 			#if !TARGET_API_MAC_CARBON
-			static RoutineDescriptor onlyfoldersfilterDesc = BUILD_ROUTINE_DESCRIPTOR (uppFileFilterYDProcInfo, onlyfoldersfilter);
 			static RoutineDescriptor knowntypesfilterDesc = BUILD_ROUTINE_DESCRIPTOR (uppFileFilterYDProcInfo, knowntypesfilter);
-			static RoutineDescriptor sfputfilehookDesc = BUILD_ROUTINE_DESCRIPTOR (uppDlgHookYDProcInfo, sfputfilehook);
-			static RoutineDescriptor sfprompthookDesc = BUILD_ROUTINE_DESCRIPTOR (uppDlgHookYDProcInfo, sfprompthook);
-			static RoutineDescriptor sffolderhookDesc = BUILD_ROUTINE_DESCRIPTOR (uppDlgHookYDProcInfo, sffolderhook);
-			static RoutineDescriptor sfdiskhookDesc = BUILD_ROUTINE_DESCRIPTOR (uppDlgHookYDProcInfo, sfdiskhook);
 
-			
-			#define onlyfoldersfilterUPP (&onlyfoldersfilterDesc)
 			#define knowntypesfilterUPP (&knowntypesfilterDesc)
-			#define sfputfilehookUPP (&sfputfilehookDesc)
-			#define sfprompthookUPP (&sfprompthookDesc)
-			#define sffolderhookUPP (&sffolderhookDesc)
-			#define sfdiskhookUPP (&sfdiskhookDesc)
 			
 			#endif
 
@@ -487,11 +151,12 @@ boolean sfdialog ( tysfverb sfverb, bigstring bsprompt, ptrsftypelist filetypes,
 	//
 	// return true if the user selected a file with one of the SF routines, return false otherwise.
 	//
-	// as a bonus, we return the full path for the selected file in the path string.
-	// 
-
+	
 	#ifdef MACVERSION
 
+		// 2010-03-14 aradke: pick up default location from fspec, type filtering checks extension if file type not set 
+		//
+		// 2009-09-20 aradke: discontinue use of FSSpecs and "un-hack" this routine (see 2000-06-20)
 		//
 		// 2006-11-04 creedon: fix a problem with returning gibberish if fs was pointing to a volume
 		//
@@ -499,7 +164,7 @@ boolean sfdialog ( tysfverb sfverb, bigstring bsprompt, ptrsftypelist filetypes,
 		//
 		// 2005-10-06 creedon: added filecreator parameter, used for get file dialog
 		//
-		// 2005-09-21 creedon: changed from TimsGetFile to getafile
+		// 2005-09-21 creedon: changed from TimsGetFile to macgetfiledialog
 		//
 		// 2000-06-20 Timothy Paustian: I am going to hack the heck out of this routine. See what you think
 		// 
@@ -534,48 +199,12 @@ boolean sfdialog ( tysfverb sfverb, bigstring bsprompt, ptrsftypelist filetypes,
 		// 8/1/90 dmb:  if filetype is zero, show all files by passing zero to SFGetFile
 		//
 
-		tysfdata sfdata;
-		FSSpec *fs = &sfdata.sfreply.sfFile;
-		FSSpec fspect;
 		OSErr err = noErr;
 		OSType filetype = 0;
 		
-		clearbytes ( &fspect, sizeof ( fspect ) );
-		
-		// move the switch statement to below because it's smarter to call it there when using the new routines for Nav
-		// services.
-
-		clearbytes (&sfdata, sizeof (sfdata));
-		
-		if ( sfverb == sfputfileverb ) {
-			
-			if (oserror (macgetfsspec (fspec, &fspect)))
-				return (false);
-			}
-						
 		if ( filetypes != NULL )
 			filetype = ( *filetypes ).types [ 0 ];
 		
-		copystring (bsprompt, sfdata.sfprompt);
-
-		sfdata.sftypes = filetypes;
-
-		// setemptystring (bs);
-
-		if ( ! isemptystring ( fspect.name ) ) { // if path is included, set default dir and strip to file name
-			
-			*fs = fspect; /*seed directory & file selection*/
-			
-			/*
-			if (pathtofilespec (fname, fs) && ((*fs).vRefNum != 0))
-				copystring ((*fs).name, fname);
-			else
-				filefrompath (fname, fname);
-			*/
-			}
-
-		setstringlength (sfdata.sfname, -1); /*make sure it can't match fsspec*/
-
 		shellwritescrap (textscraptype);
 
 		shellactivate ();
@@ -583,27 +212,19 @@ boolean sfdialog ( tysfverb sfverb, bigstring bsprompt, ptrsftypelist filetypes,
 		switch (sfverb) {
 			
 			case sfputfileverb:
-				if(gCanUseNavServ) {
-					err = TimsPutFile (bsprompt, ( *fs ).name, &sfdata.sfreply, filetype);
-					}
-
+				err = macputfiledialog (bsprompt, fspec, filetype);
 				break;
 			
 			case sfgetfileverb:
-				err = getafile (bsprompt, filetypes, &sfdata.sfreply, filecreator);
-				
+				err = macgetfiledialog (sfgetfileid, bsprompt, fspec, filecreator, filetypes);
 				break;
 			
 			case sfgetfolderverb:
-				if(gCanUseNavServ) 
-					err = TimsGetFolderOrVolume(bsprompt, sfgetfolderid, &sfdata.sfreply);
-
+				err = macgetfiledialog (sfgetfolderid, bsprompt, fspec, kNavGenericSignature, NULL);
 				break;
 			
 			case sfgetdiskverb:
-				if(gCanUseNavServ) 
-					err = TimsGetFolderOrVolume(bsprompt, sfgetdiskid, &sfdata.sfreply);
-
+				err = macgetfiledialog (sfgetdiskid, bsprompt, fspec, kNavGenericSignature, NULL);
 				break;
 			}
 
@@ -613,36 +234,10 @@ boolean sfdialog ( tysfverb sfverb, bigstring bsprompt, ptrsftypelist filetypes,
 		if (userCanceledErr == err) 
 			return false;
 
-		if (oserror(err)) 
+		if (oserror (err)) 
 			return false;
 
-		if (sfdata.sfreply.sfGood) { // canonize
-		
-			FSRef fsref;
-			bigstring bs;
-			
-			setemptystring (bs);
-		
-			fspec->flags.flvolume = (fs->parID == fsRtParID);
-
-			if (fspec->flags.flvolume)
-				copystring (fs->name, bs);
-		
-			err = FSMakeFSRef (fs->vRefNum, fs->parID, bs, &fsref);
-			
-			if (fspec->flags.flvolume) {
-				fspec->ref = fsref;
-				HFSNameGetUnicodeName (fs->name, kTextEncodingUnknown, &fspec->name);
-				}
-			else {
-				macmakefilespec (&fsref, fspec); 
-				}
-			
-			return (true);
-			
-			}
-
-		return (false);
+		return (true);
 		
 	#endif // MACVERSION
 
@@ -1003,212 +598,356 @@ boolean sfdialog ( tysfverb sfverb, bigstring bsprompt, ptrsftypelist filetypes,
 		} /*initfile*/
 
 
-	OSErr TimsPutFile ( bigstring prompt, Str255 fileName, StandardFileReply *outReply, OSType filetype ) {
+	typedef struct {
+		ptrfilespec fslocation;
+		ptrsftypelist filtertypes;
+		OSType filecreator;
+	} navcallbackcontext;
+
+
+	pascal static void macnaveventcallback(NavEventCallbackMessage cbselector, NavCBRecPtr cbparams, void* refcon) {
+			
+		// 2010-03-13 aradke: set initial location of file navigation dialog
 		
+		switch (cbselector) {
+				
+			case kNavCBStart: {
+				
+				navcallbackcontext* context = (navcallbackcontext*) refcon;
+				ptrfilespec fs = context->fslocation;
+				FSRef fsref;
+				
+				if (macgetfsref (fs, &fsref) != noErr) {
+					
+					fsref = fs->ref;	// try parent for putfile
+					}
+				
+				if (FSRefValid (&fsref)) {
+					
+					OSErr err;
+					AEDesc desc;
+					
+					err = AECreateDesc (typeFSRef, &fsref, sizeof(FSRef), &desc);
+				
+					if (err == noErr)
+						err = NavCustomControl (cbparams->context, kNavCtlSetLocation, (void*)&desc);
+					}
+				}
+			}/*switch*/
+		} /*macfiledialogeventcallback*/
+
+
+	pascal static boolean macnavfiltercallback(AEDesc *item, void* info, void* refcon, NavFilterModes mode) {
+
+		// 2010-03-13 aradke: filter by file creator, type and extension.
+		//		file.type(f) returns the extension if no actual file type is set.
+		//		with this callback, the file will be shown if the specified list of
+		//		file types contains file.type(f).
+		
+		if (mode == kNavFilteringBrowserList && item->descriptorType == typeFSRef) {
+			
+			FSRef fsref;
+			LSItemInfoRecord iteminfo;
+			boolean flcontainer, flapp, flpackage;
+			OSErr err;
+			
+			err = AEGetDescData (item, &fsref, sizeof(FSRef));
+			
+			if (err != noErr)
+				return (false);
+			
+			err = LSCopyItemInfoForRef (&fsref, kLSRequestAllInfo, &iteminfo);
+			
+			if (err != noErr)
+				return (false);
+
+			flcontainer = ((iteminfo.flags & kLSItemInfoIsContainer) != 0);
+			flapp = ((iteminfo.flags & kLSItemInfoIsApplication) != 0);
+			flpackage = ((iteminfo.flags & kLSItemInfoIsPackage) != 0);
+
+			if (flcontainer && !flpackage && !flapp) {
+					
+				return (true);	// always show plain folders
+				}
+			
+			navcallbackcontext* context = (navcallbackcontext*) refcon;
+			OSType filtercreator = context->filecreator;
+			ptrsftypelist filtertypes = context->filtertypes;
+			
+			if (filtercreator != kNavGenericSignature)
+				if (iteminfo.creator != filtercreator)
+					return (false);
+
+			if (filtertypes == NULL || ((filtertypes->cttypes > 0) && (filtertypes->types[0] == kUnknownType)))
+				return (true);
+			
+			OSType filetype = iteminfo.filetype;
+			
+			if (filetype == kLSUnknownType) {	// try file extension
+				
+				if (iteminfo.extension == NULL)
+					return (false);
+				
+				bigstring bsext;
+				
+				cfstringreftobigstring (iteminfo.extension, bsext);
+				
+				filetype = '    ';	// init to four spaces in case actual extension is shorter
+				
+				stringtoostype (bsext, &filetype);
+				}
+
+			for (short k = 0; k < filtertypes->cttypes; ++k) {
+				
+				if ((filetype == filtertypes->types[k]) || (filtertypes->types[k] == kNavGenericSignature))
+					return (true);
+				}
+			}
+		
+		return (false);
+		} /*macnavfiltercallback*/
+
+
+	static OSErr macputfiledialog (bigstring prompt, ptrfilespec fs, OSType filetype) {
+		
+		// 2009-09-20 aradke: discontinue use of FSSpecs
+		//
 		// Code change by Timothy Paustian Tuesday, June 20, 2000 2:55:17 PM.  New routine to use Nav services for this
 		// instead of CustomPutFile.
 		
-		OSErr			err = noErr;
-		NavReplyRecord	reply;
-		NavDialogOptions	dialogOptions;
-		NavEventUPP		eventProc = NewNavEventUPP ( NavEventProc );
+		NavDialogCreationOptions options;
+		NavDialogRef dialog;
+		NavEventUPP eventupp;
+		navcallbackcontext context;
+		NavReplyRecord reply;
+		OSErr err = noErr;
+		boolean flfolder = false;	// default
 		
 		if ( filetype == 0 )
 			filetype = 'TEXT';
 		
-		err = NavGetDefaultDialogOptions ( &dialogOptions );
-		copystring ( fileName, dialogOptions.savedFileName );
-		copystring (prompt, dialogOptions.message );
-		dialogOptions.dialogOptionFlags |= kNavNoTypePopup; // 2000-08-25 AR
+		err = NavGetDefaultDialogCreationOptions (&options);
+		
+		if (err != noErr)
+			return (err);
+		
+		options.clientName = CFStringCreateWithCString (kCFAllocatorDefault, APPNAME_SHORT, kCFStringEncodingMacRoman);
+
+		options.message = CFStringCreateWithPascalString (kCFAllocatorDefault, prompt, kCFStringEncodingMacRoman);
+		
+		disablelangerror();
+		
+		fileisfolder(fs, &flfolder);
+		
+		enablelangerror();
+		
+		if (!flfolder) {
+			options.saveFileName = CFStringCreateWithCharacters (kCFAllocatorDefault, fs->name.unicode, fs->name.length);
+			}
+		else {
+			bigstring bsuntitled;
+			
+			setemptystring (bsuntitled);
+			
+			getuntitledfilename (bsuntitled);
+			
+			options.saveFileName = CFStringCreateWithPascalString (kCFAllocatorDefault, bsuntitled, kCFStringEncodingMacRoman);
+			}
+		
+		options.optionFlags |= kNavNoTypePopup; // 2000-08-25 AR
+		
+		context.fslocation = fs;
+		context.filtertypes = NULL;
+		context.filecreator = kNavGenericSignature;
+		
+		eventupp = NewNavEventUPP(&macnaveventcallback);
+		
+		err = NavCreatePutFileDialog (&options, filetype, 'LAND', eventupp, &context, &dialog);
 		
 		if (err == noErr) {
-		
-			err = NavPutFile ( nil, &reply, &dialogOptions, eventProc, filetype, 'LAND', nil );
-			
-			if ( err == noErr && reply.validRecord ) {
-			
-				AEKeyword   theKeyword;
-				DescType    actualType;
-				Size        actualSize;
-				FSSpec      documentFSSpec;
 				
-				err = AEGetNthPtr ( &( reply.selection ), 1, typeFSS, &theKeyword, &actualType, &documentFSSpec,
-					sizeof ( documentFSSpec ), &actualSize );
-					
+			err = NavDialogRun(dialog);
+			
+			if (err == noErr) {
+			
+				err = NavDialogGetReply (dialog, &reply);
+				
 				if (err == noErr) {
-					
-					outReply->sfReplacing = reply.replacing;
-					
-					FSMakeFSSpec (documentFSSpec.vRefNum, documentFSSpec.parID, documentFSSpec.name, &(outReply->sfFile));
-					outReply->sfGood = true;
-					
-					}
 				
-				( void ) NavDisposeReply ( &reply );
+					if (reply.validRecord) { // get fsref and name to make filespec
+					
+						AEKeyword key;
+						DescType actualtype;
+						Size actualsize;
+						FSRef parentref;
+						
+						err = AEGetNthPtr (&(reply.selection), 1, typeFSRef, &key, &actualtype, &parentref, sizeof (parentref), &actualsize);
+						
+						if (err == noErr) {
+						
+							assert (actualtype == typeFSRef);
+							
+							fs->flags.flvolume = false;
+							
+							fs->ref = parentref;
+							
+							fs->name.length = CFStringGetBytes (reply.saveFileName, CFRangeMake (0, min(CFStringGetLength (reply.saveFileName), 255)), 
+																kCFStringEncodingUnicode, 0, false, (UInt8 *)(fs->name.unicode), 255, NULL );
+							}
+						}
+					else {
+						err = userCanceledErr;
+						}
+					
+					NavDisposeReply (&reply);
+					}
+				}
+
+			NavDialogDispose (dialog);
 			}
-		}
 		
-		DisposeNavEventUPP ( eventProc );
+		DisposeNavEventUPP(eventupp);
 		
-		return ( err );
+		CFRelease (options.clientName);
+		CFRelease (options.message);
+		CFRelease (options.saveFileName);
+
+		return (err);
 		
-	} // TimsPutFile
+		} // macputfiledialog
 
 
-	OSErr getafile (bigstring prompt, ptrsftypelist filetypes, StandardFileReply * outReply, OSType filecreator) {
+	static OSErr macgetfiledialog (SInt16 dialogtype, bigstring prompt, ptrfilespec fs, OSType filecreator, ptrsftypelist filetypes) {
 
-		/*
-		2005-10-06 creedon: added filecreator parameter
+		// 2009-09-20 aradke: discontinue use of FSSpecs, merge with getfolderorvolumedialog
+		//
+		// 2005-10-06 creedon: added filecreator parameter
+		//
+		// 2005-09-21 creedon: created, cribbed from TimsGetFile
+
+		NavDialogCreationOptions options;
+		NavDialogRef dialog;
+		NavEventUPP eventupp;
+		NavObjectFilterUPP filterupp;
+		navcallbackcontext context;
+		NavReplyRecord reply;
+		//NavTypeListHandle typeList = NULL;
+		OSErr err;
+
+		err = NavGetDefaultDialogCreationOptions (&options);
 		
-		2005-09-21 creedon: created, cribbed from TimsGetFile
-		*/ 
-
-		NavDialogCreationOptions	dialogOptions;
-		NavDialogRef			dialogRef;
-		// NavEventUPP			eventProc = NewNavEventUPP (NavEventProc);
-		NavReplyRecord			reply;
-		NavTypeListHandle		typeList = nil;
-		OSErr				anErr = noErr;
-
-		anErr = NavGetDefaultDialogCreationOptions (&dialogOptions);
+		if (err != noErr)
+			return (err);
 		
-		dialogOptions.clientName = CFStringCreateWithCString ( kCFAllocatorDefault, APPNAME_SHORT, kCFStringEncodingMacRoman );
-		dialogOptions.message = CFStringCreateWithPascalString ( kCFAllocatorDefault, prompt, kCFStringEncodingMacRoman );
+		options.clientName = CFStringCreateWithCString (kCFAllocatorDefault, APPNAME_SHORT, kCFStringEncodingMacRoman);
 		
-		if (anErr == noErr) {
+		options.message = CFStringCreateWithPascalString (kCFAllocatorDefault, prompt, kCFStringEncodingMacRoman );
 		
-			if (filetypes == nil)
-				dialogOptions.optionFlags -= kNavNoTypePopup;
-			else
-				dialogOptions.optionFlags += kNavAllFilesInPopup; // add all documents to show pop-up
+		options.optionFlags &= ~kNavAllowMultipleFiles;		// no multiple files for now
+	   
+		options.optionFlags &= ~kNavAllowPreviews;			// clear preview option
+	   
+		options.optionFlags |= kNavSupportPackages;			// show packages
+		
+		options.optionFlags |= kNavNoTypePopup;				// disable type pop-up
 
-			dialogOptions.optionFlags ^=kNavAllowMultipleFiles; //no multiple files for now
-		   
-			dialogOptions.optionFlags ^= kNavAllowPreviews; // clear preview option
-		   
-			dialogOptions.optionFlags += kNavSupportPackages; // see packages
-			
-			// dialogOptions.dialogOptionFlags += kNavAllowOpenPackages; // can open packages
-
-			if (filetypes != nil) { // translate into a type list NavServices understands
-			
-				NavTypeListPtr	typesP = nil;
-				SInt32			hSize = (sizeof (NavTypeList) + sizeof (OSType) * (filetypes->cttypes - 1));
-				newhandle		(hSize, (Handle*) &typeList);
-				typesP		= (NavTypeListPtr) *((Handle) typeList);
+		// options.dialogOptionFlags |= kNavAllowOpenPackages; // can open packages
+		
+		eventupp = NewNavEventUPP(&macnaveventcallback);
+		filterupp = NewNavObjectFilterUPP(&macnavfiltercallback);
+		
+		context.fslocation = fs;
+		context.filtertypes = filetypes;
+		context.filecreator = filecreator;
+		
+		if ((dialogtype == sfgetfileid)) { // translate into a type list NavServices understands
+		
+			if ((filetypes != NULL) || (filecreator != kNavGenericSignature)) {
+				
+				/*
+				NavTypeListPtr typesP = nil;
+				SInt32 hSize = (sizeof (NavTypeList) + sizeof (OSType) * (filetypes->cttypes - 1));
+				
+				newhandle (hSize, (Handle*) &typeList);
+				
+				typesP = (NavTypeListPtr) *((Handle) typeList);
 				
 				typesP->componentSignature = filecreator;
 				typesP->reserved = 0;
 				typesP->osTypeCount = filetypes->cttypes;
 				
 				BlockMoveData (&(filetypes->types), typesP->osType, (Size) (sizeof (OSType) * filetypes->cttypes));
+				
+				options.optionFlags |= kNavAllFilesInPopup;			// add "All Files" to pop-up
+				options.optionFlags |= kNavSelectAllReadableItem;	// select "All Readable Items" in pop-up
+				options.optionFlags &= ~kNavNoTypePopup;			// re-enable type pop-up
+
+				err = NavCreateGetFileDialog (&options, typeList, eventupp, NULL, filterupp, &context, &dialog);
+				*/
+				
+				err = NavCreateGetFileDialog (&options, NULL, eventupp, NULL, filterupp, &context, &dialog);
 				}
-		   
-			anErr = NavCreateGetFileDialog (&dialogOptions, typeList, NULL, NULL, NULL, NULL, &dialogRef);
+			else {
 
-			anErr = NavDialogRun (dialogRef);
-			
-			anErr = NavDialogGetReply (dialogRef, &reply);
-
-			if (anErr == noErr && reply.validRecord) {
-			
-				AEKeyword theKeyword;
-				DescType actualType;
-				Size actualSize;
-				FSSpec documentFSSpec;
-
-				anErr = AEGetNthPtr (&(reply.selection), 1, typeFSS, &theKeyword, &actualType, &documentFSSpec, sizeof (documentFSSpec), &actualSize); // get a pointer to selected file
+				err = NavCreateGetFileDialog (&options, NULL, eventupp, NULL, NULL, &context, &dialog);
+				}
+			}
+		else if (dialogtype == sfgetfolderid) {
 				
-				assert (actualType == typeFSS);
-			    
-				if (anErr == noErr) {
-					FSMakeFSSpec (documentFSSpec.vRefNum, documentFSSpec.parID, documentFSSpec.name, &(outReply->sfFile));
+			err = NavCreateChooseFolderDialog (&options, eventupp, NULL, &context, &dialog);
+			}
+		else {
+			assert (dialogtype == sfgetdiskid);
+			
+			err = NavCreateChooseVolumeDialog (&options, eventupp, NULL, &context, &dialog);
+			}
+
+		if (err == noErr) {
+		
+			err = NavDialogRun (dialog);
+			
+			if (err == noErr) {
+			
+				err = NavDialogGetReply (dialog, &reply);
 				
-					outReply->sfGood = true;
+				if (err == noErr) {
+
+					if (reply.validRecord) {
+					
+						AEKeyword key;
+						DescType actualtype;
+						Size actualsize;
+						FSRef fsref;
+						
+						err = AEGetNthPtr (&(reply.selection), 1, typeFSRef, &key, &actualtype, &fsref, sizeof (fsref), &actualsize);
+						
+						if (err == noErr) {
+						
+							assert (actualtype == typeFSRef);
+							
+							err = macmakefilespec (&fsref, fs);
+							}
+						}
+					else {
+						err = userCanceledErr;
+						}
+
+					NavDisposeReply (&reply); // dispose of NavReplyRecord, resources, descriptors
 					}
-
-				anErr = NavDisposeReply (&reply); // dispose of NavReplyRecord, resources, descriptors
 				}
-			}
-			
-		// DisposeNavEventUPP (eventProc);
 		
-		NavDialogDispose (dialogRef);
+			NavDialogDispose (dialog);
+			}
+		
+		DisposeNavEventUPP(eventupp);
+		DisposeNavObjectFilterUPP(filterupp);
+		
+		CFRelease (options.clientName);
+		CFRelease (options.message);
+		
+		//disposehandle ((Handle) typeList);
 	 
-		return anErr;
-		} /* getafile */
-
-
-	OSErr
-	TimsGetFolderOrVolume(bigstring prompt, SInt16 dialogType, StandardFileReply * 	outReply)
-	{
-		NavDialogOptions    	dialogOptions;
-	    NavEventUPP         	eventProc = NewNavEventUPP(NavEventProc);
-	    OSErr       			anErr = noErr;
-		NavReplyRecord 			reply;
-		   
-	    //  Specify default options for dialog box
-	    //we don't really need to modify this, but it is needed for NavChooseFolder
-	    anErr = NavGetDefaultDialogOptions(&dialogOptions);
-		copystring(prompt, dialogOptions.message);
-	    
-	    if(anErr == noErr)
-	    {
-		//display the dialog
-		if(sfgetfolderid == dialogType)
-			anErr = NavChooseFolder(nil, &reply, &dialogOptions, eventProc, nil, nil);
-		else
-		{
-			assert(sfgetdiskid == dialogType); 
-			anErr = NavChooseVolume(nil, &reply, &dialogOptions, eventProc, nil, nil);
-		}
-		
-		if (anErr == noErr && reply.validRecord)
-		   {
-			  AEKeyword   theKeyword;
-			  DescType    actualType;
-			  Size        actualSize;
-			  FSSpec      documentFSSpec;
-			  
-			  // Get a pointer to selected file
-			  anErr = AEGetNthPtr(&(reply.selection), 1,
-							  typeFSS, &theKeyword,
-							  &actualType, &documentFSSpec,
-							  sizeof(documentFSSpec),
-							  &actualSize);
-				assert(actualType == typeFSS);       
-			  if (anErr == noErr)
-			  {
-				 FSMakeFSSpec (documentFSSpec.vRefNum, documentFSSpec.parID, documentFSSpec.name, &(outReply->sfFile));
-				 outReply->sfGood = true;
-			  }
-			  //  Dispose of NavReplyRecord
-			  anErr = NavDisposeReply(&reply);
-		   }
-	    }
-		DisposeNavEventUPP (eventProc);
-		return anErr;
-	}
-
-
-	//Code change by Timothy Paustian Tuesday, June 20, 2000 9:07:26 PM
-	//a very simple event proc so that Nav file service dialogs are movable and resizable.
-	pascal void NavEventProc(NavEventCallbackMessage callBackSelector,
-					    NavCBRecPtr callBackParms,
-					    NavCallBackUserData callBackUD)
-	{
-	#pragma unused(callBackUD)
-		if (callBackSelector == kNavCBEvent)
-		{
-			if( ((callBackParms->eventData).eventDataParms).event->what == updateEvt)
-			{
-				//I was having a crash due to getting the window ptr outside the switch statement.
-				// This now works.
-				//10/30/00 Timothy Paustian
-				WindowPtr window = (WindowPtr)(((callBackParms->eventData).eventDataParms).event)->message;
-				shellupdatenow(window);
-			}
-		}
-	}
+		return (err);
+		} /* macgetfiledialog */
 
 #endif
