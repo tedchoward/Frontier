@@ -239,62 +239,63 @@ boolean ploticonresource (const Rect *r, short align, short transform, short res
 		} /*customicongetresid*/
 
 
-	static boolean customiconload (bigstring bsiconname, short *rnum) {
-		
-		//
-		// 2006-06-18 creedon: FSRef-ized
-		//
-		// 7.0b9 PBS: Open a resource file just once, store info about it, so it doesn't have to be opened for each rendering.
-		//
-		
-		bigstring bsappearancefolder = "\x0a" "Appearance";
-		bigstring bsiconsfolder = "\x05" "Icons";
-		tyfilespec programfilespec, appearancefolder, iconsfolder, iconfilespec;
-		short r, ixcurricon;
-		
-		if (ixnexticon >= maxcustomicontypes)
-			return (false); // limit reached
-		
-		// get app filespec
-			 
-		getapplicationfilespec (nil, &programfilespec);
-		
-		 // get Appearances folder
-		
-		if (macgetfilespecchildfrombigstring (&programfilespec, bsappearancefolder, &appearancefolder) != noErr)
-			return (false);
-		
-		// get Icons folder
-		
-		if (macgetfilespecchildfrombigstring (&appearancefolder, bsiconsfolder, &iconsfolder) != noErr)
-			return (false);
-		
-		// get icon file
-		
-		if (macgetfilespecchildfrombigstring (&iconsfolder, bsiconname, &iconfilespec) != noErr)
-			return (false);
-		
-		if (!openresourcefile (&iconfilespec, &r, resourcefork))
-			return (false);
-
-		if (r == -1)
-			return (false);
-		
-		*rnum = r;
-		
-		ixcurricon = ixnexticon;
-		
-		ixnexticon++;
-		
-		alllower (bsiconname);
-		
-		copystring (bsiconname, icontypes [ixcurricon].bstype);
-		
-		icontypes [ixcurricon].rnum = r;
-		
-		return (true);	
-		
-		} // customiconload
+static boolean customiconload (bigstring bsiconname, short *rnum) {
+	
+	//
+	// 2006-06-18 creedon: FSRef-ized
+	//
+	// 7.0b9 PBS: Open a resource file just once, store info about it, so it doesn't have to be opened for each rendering.
+	//
+	
+	bigstring bsappearancefolder = "\x0a" "Appearance";
+	bigstring bsiconsfolder = "\x05" "Icons";
+	tyfilespec programfilespec, appfolderfilespec, appearancefolder, iconsfolder, iconfilespec;
+	short r, ixcurricon;
+	
+	if (ixnexticon >= maxcustomicontypes)
+		return (false); // limit reached
+	
+	// get app filespec
+	
+	getapplicationfilespec (nil, &programfilespec);
+	macgetfilespecparent(&programfilespec, &appfolderfilespec); //PBS 8 Sep 2010: need parent folder of app before getting Appearance folder
+	
+	// get Appearances folder
+	
+	if (macgetfilespecchildfrombigstring (&appfolderfilespec, bsappearancefolder, &appearancefolder) != noErr)
+		return (false);
+	
+	// get Icons folder
+	
+	if (macgetfilespecchildfrombigstring (&appearancefolder, bsiconsfolder, &iconsfolder) != noErr)
+		return (false);
+	
+	// get icon file
+	
+	if (macgetfilespecchildfrombigstring (&iconsfolder, bsiconname, &iconfilespec) != noErr)
+		return (false);
+	
+	if (!openresourcefile (&iconfilespec, &r, resourcefork))
+		return (false);
+	
+	if (r == -1)
+		return (false);
+	
+	*rnum = r;
+	
+	ixcurricon = ixnexticon;
+	
+	ixnexticon++;
+	
+	alllower (bsiconname);
+	
+	copystring (bsiconname, icontypes [ixcurricon].bstype);
+	
+	icontypes [ixcurricon].rnum = r;
+	
+	return (true);	
+	
+} // customiconload
 
 #endif
 
