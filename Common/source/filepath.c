@@ -95,8 +95,10 @@
 			CFStringAppendCharacters (ioPath, &inSepChar, 1);
 			}
 		
-		return (CFStringGetPascalString (ioPath, path, 256, kCFStringEncodingMacRoman));
-		} // directorytopath
+		boolean success = CFStringGetPascalString (ioPath, path, 256, kCFStringEncodingMacRoman);
+		CFRelease(ioPath); //PBS 2/28/11: fixed memory leak
+		return success;
+	} // directorytopath
 
 #endif
 
