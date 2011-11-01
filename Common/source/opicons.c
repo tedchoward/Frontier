@@ -159,12 +159,15 @@ boolean opdefaultdrawicon (hdlheadrecord hnode, const Rect *iconrect, boolean fl
 		
 			setemptystring (bsheadlinetype);
 			
+			#if (defined(MACVERSION) && defined(__ppc__)) || defined (WIN95VERSION)
+			
 			if (opattributesgettypestring (hnode, bsheadlinetype)) { /*is there a type att?*/
 
 				/*Draw a custom icon. If it returns false, there was no custom icon.*/
 
 				flcustomicondrawn = opdrawheadiconcustom (bsheadlinetype, iconrect, false);
 				} /*if*/
+			#endif
 			} /*if*/
 		} /*if*/
 
