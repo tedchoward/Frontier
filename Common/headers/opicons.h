@@ -52,3 +52,5 @@ boolean opdrawheadiconcustom (bigstring bsiconname, const Rect *r, boolean flsel
 boolean opdrawheadiconcustomfromodb (bigstring bsadricon, const Rect *r, boolean flselected);
 
 boolean opgetnodetypetableadr(bigstring bsnodetype, bigstring bsadrnodepath);
+
+boolean resolveHashTable(bigstring bsnodetype, bigstring bsadrnodepath);
