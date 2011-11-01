@@ -70,6 +70,7 @@
 OSStatus loadicondatafromodb(bigstring bsadricon, bigstring bsicondatatype, Handle *hicon);
 
 boolean ploticonfromodb (const Rect *r, short align, short transform, bigstring bsadricon) {
+#if defined (MACVERSION)
 	//bigstring bsadricon = "\psystem.verbs.builtins.Frontier.tools.data.nodeTypes.link.icon.mac";
 	
 
@@ -138,7 +139,14 @@ boolean ploticonfromodb (const Rect *r, short align, short transform, bigstring 
 		theErr = PlotIconRef(r, align, transform, kIconServicesNormalUsageFlag, iconRef);
 	}
 	
+	setemptystring(bsadriconpart);
+	ReleaseIconRef(iconRef);
+	disposehandle((Handle) iconHand);
+	
 	return theErr == noErr;
+#else if defined (WIN95VERSION)
+	return FALSE;
+#endif
 }
 
 OSStatus loadicondatafromodb(bigstring bsadricon, bigstring bsicondatatype, Handle *hicon) {
