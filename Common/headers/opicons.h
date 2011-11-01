@@ -49,4 +49,6 @@ extern void opdrawarrowicon (hdlheadrecord, long, tydirection);
 
 boolean opdrawheadiconcustom (bigstring bsiconname, const Rect *r, boolean flselected);
 
+boolean opdrawheadiconcustomfromodb (bigstring bsadricon, const Rect *r, boolean flselected);
 
+boolean opgetnodetypetableadr(bigstring bsnodetype, bigstring bsadrnodepath);

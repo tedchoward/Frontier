@@ -34,7 +34,7 @@
 #include "opicons.h"
 #include "opdisplay.h"
 #include "strings.h" /*7.0b9 PBS*/
-
+#include "tablestructure.h"
 
 #define canexpandicon 475
 #define cantexpandicon 476
@@ -126,6 +126,59 @@ boolean opdrawheadiconcustom (bigstring bsiconname, const Rect *r, boolean flsel
 	return (ploticoncustom (r, 0, transform, bsiconname));
 	} /*opdrawheadiconcustom*/
 
+boolean opdrawheadiconcustomfromodb (bigstring bsadricon, const Rect *r, boolean flselected) {
+	
+	short transform = 0;
+	
+	if (flselected)
+		transform = kTransformSelected; 
+	
+	operaserect (*r);
+	
+	return (ploticonfromodb (r, 0, transform, bsadricon));
+} /*opdrawheadiconcustom*/
+
+boolean opgetnodetypetableadr(bigstring bsnodetype, bigstring bsadrnodepath) {
+	//user.tools.nodeTypes.[type]
+	//Frontier.tools.data.nodeTypes.[type]
+	
+	bigstring bsname;
+	copystring(BIGSTRING("\x15" "user.tools.nodeTypes."), bsadrnodepath);
+	pushstring(bsnodetype, bsadrnodepath);
+	
+	hdlhashtable ht;
+	hdlhashnode hn;
+	tyvaluerecord iconvalue;
+	boolean flexpanded = false;
+	boolean fllookup = false;
+	
+	pushhashtable (roottable);
+	
+	disablelangerror ();
+	
+	flexpanded = langexpandtodotparams (bsadrnodepath, &ht, bsname);
+	enablelangerror ();
+	pophashtable ();
+	
+	fllookup = hashtablelookup (ht, bsnodetype, &iconvalue, &hn);
+	
+	if (!fllookup) {
+		copystring(BIGSTRING("\x1E" "Frontier.tools.data.nodeTypes."), bsadrnodepath);
+		pushstring(bsnodetype, bsadrnodepath);
+		
+		pushhashtable (roottable);
+		
+		disablelangerror ();
+		
+		flexpanded = langexpandtodotparams (bsadrnodepath, &ht, bsname);
+		enablelangerror ();
+		pophashtable ();
+		
+		fllookup = hashtablelookup (ht, bsnodetype, &iconvalue, &hn);
+	}
+
+	return fllookup;
+}
 
 boolean opdefaultdrawicon (hdlheadrecord hnode, const Rect *iconrect, boolean flselected, boolean flinverted) {
 #pragma unused(flselected, flinverted)
@@ -159,15 +212,30 @@ boolean opdefaultdrawicon (hdlheadrecord hnode, const Rect *iconrect, boolean fl
 		
 			setemptystring (bsheadlinetype);
 			
-			#if (defined(MACVERSION) && defined(__ppc__)) || defined (WIN95VERSION)
-			
 			if (opattributesgettypestring (hnode, bsheadlinetype)) { /*is there a type att?*/
 
-				/*Draw a custom icon. If it returns false, there was no custom icon.*/
+				/* Look up a custom icon in the odb and draw it if there is one. */
+				
+				#if defined (MACVERSION)
+				
+				bigstring bsadrnodepath;
 
-				flcustomicondrawn = opdrawheadiconcustom (bsheadlinetype, iconrect, false);
+				if (stringlength(bsheadlinetype) > 0 && opgetnodetypetableadr(bsheadlinetype, bsadrnodepath)) {
+					pushstring(BIGSTRING("\x09" ".icon.mac"), bsadrnodepath);
+					flcustomicondrawn = opdrawheadiconcustomfromodb (bsadrnodepath, iconrect, false);
+				}
+				
+				#endif
+				
+				#if (defined(MACVERSION) && defined(__ppc__)) || defined (WIN95VERSION)
+
+				/*Draw a custom icon. If it returns false, there was no custom icon.*/
+				if (!flcustomicondrawn) {
+					flcustomicondrawn = opdrawheadiconcustom (bsheadlinetype, iconrect, false);
+				}
+				
+				#endif
 				} /*if*/
-			#endif
 			} /*if*/
 		} /*if*/
 
