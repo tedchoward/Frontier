@@ -43,7 +43,22 @@
 /* common strings for all targets */
 
 #define	APP_COPYRIGHT_FROM	"2004"
-#define	APP_COPYRIGHT_TILL	"2009"
+#define	APP_COPYRIGHT_TILL	"2011"
+
+/* 2011-08-03 tedchoward: these properties are identical for each app */
+#define	APP_MAJOR_VERSION			10
+#define	APP_MAJOR_VERSION_BCD		0x10	/* major version in BCD notation */
+
+#define	APP_SUB_VERSION			1
+#define	APP_MINOR_VERSION			0
+#define	APP_SUBMINOR_VERSION_BCD		0x10	/* sub and minor version in BCD notation */
+
+#define	APP_STAGE_CODE				0x60	/* dev = 0x20, alpha = 0x40, beta = 0x60, final = 0x80 */
+#define	APP_REVISION_LEVEL			17	/* for non-final releases only */
+#define	APP_BUILD_NUMBER			17	/* increment by one for every release, final or not */
+
+#define	APP_VERSION_STRING			"10.1b17"
+
 
 
 /* target-specific strings and version info */
@@ -60,19 +75,6 @@
 	#define	bs_APP_SLOGAN				BIGSTRING ("\x2b" "The power of Web publishing on your desktop")
 	#define	bs_APP_COPYRIGHT			BIGSTRING ("\x23" "© " APP_COPYRIGHT_FROM "-" APP_COPYRIGHT_TILL " UserLand Software, Inc.")
 	#define	bs_APP_URL				BIGSTRING ("\x26" "http://frontierkernel.sourceforge.net/")
-	
-	#define	APP_MAJOR_VERSION			10
-	#define	APP_MAJOR_VERSION_BCD		0x10	/* major version in BCD notation */
-	
-	#define	APP_SUB_VERSION			1
-	#define	APP_MINOR_VERSION			0
-	#define	APP_SUBMINOR_VERSION_BCD		0x10	/* sub and minor version in BCD notation */
-	
-	#define	APP_STAGE_CODE				0x40	/* dev = 0x20, alpha = 0x40, beta = 0x60, final = 0x80 */
-	#define	APP_REVISION_LEVEL			16	/* for non-final releases only */
-	#define	APP_BUILD_NUMBER			16	/* increment by one for every release, final or not */
-	
-	#define	APP_VERSION_STRING			"10.1a16"
 
 #else
 
@@ -86,20 +88,7 @@
 	#define	bs_APP_SLOGAN				BIGSTRING ("\x25" "Powerful OPML editing on your desktop")
 	#define	bs_APP_COPYRIGHT			BIGSTRING ("\x20" "© " APP_COPYRIGHT_FROM "-" APP_COPYRIGHT_TILL " Scripting News, Inc.")
 	#define	bs_APP_URL				BIGSTRING ("\x18" "http://support.opml.org/")
-	
-	#define	APP_MAJOR_VERSION			10
-	#define	APP_MAJOR_VERSION_BCD		0x10	/* major version in BCD notation */
-	
-	#define	APP_SUB_VERSION			1
-	#define	APP_MINOR_VERSION			0
-	#define	APP_SUBMINOR_VERSION_BCD		0x10	/* sub and minor version in BCD notation */
-	
-	#define	APP_STAGE_CODE				0x40	/* dev = 0x20, alpha = 0x40, beta = 0x60, final = 0x80 */
-	#define	APP_REVISION_LEVEL			16	/* for non-final releases only */
-	#define	APP_BUILD_NUMBER			16	/* increment by one for every release, final or not */
-	
-	#define	APP_VERSION_STRING			"10.1a16"
-	
+		
 #endif
 #else
 
@@ -112,20 +101,7 @@
 	#define	bs_APP_SLOGAN				BIGSTRING ("\x25" "Powerful cross-platform web scripting")
 	#define	bs_APP_COPYRIGHT			BIGSTRING ("\x23" "© " APP_COPYRIGHT_FROM "-" APP_COPYRIGHT_TILL " Frontier Kernel Project")
 	#define	bs_APP_URL				BIGSTRING ("\x26" "http://frontierkernel.sourceforge.net/")
-	
-	#define	APP_MAJOR_VERSION			10
-	#define	APP_MAJOR_VERSION_BCD		0x10	/* major version in BCD notation */
-	
-	#define	APP_SUB_VERSION			1
-	#define	APP_MINOR_VERSION			0
-	#define	APP_SUBMINOR_VERSION_BCD		0x10	/* sub and minor version in BCD notation */
-	
-	#define	APP_STAGE_CODE				0x40	/* dev = 0x20, alpha = 0x40, beta = 0x60, final = 0x80 */
-	#define	APP_REVISION_LEVEL			16	/* for non-final releases only */
-	#define	APP_BUILD_NUMBER			16	/* increment by one for every release, final or not */
-	
-	#define	APP_VERSION_STRING			"10.1a16"
-	
+		
 #endif
 
 #define	bs_APP_COPYRIGHT2	BIGSTRING ("\x22" "© 1992-2004 UserLand Software, Inc")
