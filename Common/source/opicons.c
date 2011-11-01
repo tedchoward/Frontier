@@ -141,11 +141,25 @@ boolean opdrawheadiconcustomfromodb (bigstring bsadricon, const Rect *r, boolean
 boolean opgetnodetypetableadr(bigstring bsnodetype, bigstring bsadrnodepath) {
 	//user.tools.nodeTypes.[type]
 	//Frontier.tools.data.nodeTypes.[type]
+	boolean fllookup = false;
 	
-	bigstring bsname;
 	copystring(BIGSTRING("\x15" "user.tools.nodeTypes."), bsadrnodepath);
 	pushstring(bsnodetype, bsadrnodepath);
 	
+	fllookup = resolveHashTable(bsnodetype, bsadrnodepath);
+	
+	if (!fllookup) {
+		copystring(BIGSTRING("\x1E" "Frontier.tools.data.nodeTypes."), bsadrnodepath);
+		pushstring(bsnodetype, bsadrnodepath);
+		
+		fllookup = resolveHashTable(bsnodetype, bsadrnodepath);
+	}
+	
+	return fllookup;
+}
+
+boolean resolveHashTable(bigstring bsnodetype, bigstring bsadrnodepath) {
+	bigstring bsname;
 	hdlhashtable ht;
 	hdlhashnode hn;
 	tyvaluerecord iconvalue;
@@ -161,20 +175,10 @@ boolean opgetnodetypetableadr(bigstring bsnodetype, bigstring bsadrnodepath) {
 	pophashtable ();
 	
 	fllookup = hashtablelookup (ht, bsnodetype, &iconvalue, &hn);
-	
-	if (!fllookup) {
-		copystring(BIGSTRING("\x1E" "Frontier.tools.data.nodeTypes."), bsadrnodepath);
-		pushstring(bsnodetype, bsadrnodepath);
-		
-		pushhashtable (roottable);
-		
-		disablelangerror ();
-		
-		flexpanded = langexpandtodotparams (bsadrnodepath, &ht, bsname);
-		enablelangerror ();
-		pophashtable ();
-		
-		fllookup = hashtablelookup (ht, bsnodetype, &iconvalue, &hn);
+
+	if (fllookup && iconvalue.valuetype == addressvaluetype) {
+		copystring(*iconvalue.data.stringvalue, bsadrnodepath);
+		return resolveHashTable(bsnodetype, bsadrnodepath);
 	}
 
 	return fllookup;
