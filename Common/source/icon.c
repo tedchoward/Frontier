@@ -41,6 +41,8 @@
 #include "resources.h" /*7.0b9 PBS*/
 #include "launch.h" /*7.0b9 PBS*/
 
+#include "tablestructure.h"
+
 #include "byteorder.h"
 
 /*
@@ -65,7 +67,104 @@
 #define windoidwithtexticon 137
 #define windoidwithnotexticon 138
 
+OSStatus loadicondatafromodb(bigstring bsadricon, bigstring bsicondatatype, Handle *hicon);
 
+boolean ploticonfromodb (const Rect *r, short align, short transform, bigstring bsadricon) {
+	//bigstring bsadricon = "\psystem.verbs.builtins.Frontier.tools.data.nodeTypes.link.icon.mac";
+	
+
+	IconRef iconRef;
+	IconFamilyHandle iconHand;
+	SInt32 theSize;
+	OSStatus theErr;
+	Handle hicon;
+	bigstring bsadriconpart;
+	
+	theErr = noErr;
+	theSize = sizeof(OSType) + sizeof(OSType);
+	
+	newhandle(theSize, (Handle*) &iconHand);
+
+	//iconHand = (IconFamilyHandle) getnewhandle(theSize, false);
+	
+	if (iconHand == NULL) theErr = memFullErr;
+	
+	if (theErr == noErr) {
+		(*iconHand)->resourceType = EndianU32_NtoB(kIconFamilyType);
+		(*iconHand)->resourceSize = EndianU32_NtoB(theSize);
+	}
+	
+	if (theErr == noErr) {
+		setemptystring(bsadriconpart);
+		copystring(bsadricon, bsadriconpart);
+		pushstring(BIGSTRING("\x05" ".ics4"), bsadriconpart);
+		theErr = loadicondatafromodb(bsadriconpart, BIGSTRING("\x04" "ics4"), &hicon);
+		
+		if (theErr == noErr) {
+			theErr = SetIconFamilyData(iconHand, kSmall4BitData, hicon);
+			disposehandle(hicon);
+		}
+	}
+	
+	if (theErr == noErr) {
+		setemptystring(bsadriconpart);
+		copystring(bsadricon, bsadriconpart);
+		pushstring(BIGSTRING("\x05" ".ics8"), bsadriconpart);
+		theErr = loadicondatafromodb(bsadriconpart, BIGSTRING("\x04" "ics8"), &hicon);
+		
+		if (theErr == noErr) {
+			theErr = SetIconFamilyData(iconHand, kSmall8BitData, hicon);
+			disposehandle(hicon);
+		}
+	}
+	
+	if (theErr == noErr) {
+		setemptystring(bsadriconpart);
+		copystring(bsadricon, bsadriconpart);
+		pushstring(BIGSTRING("\x09" ".icspound"), bsadriconpart);
+		theErr = loadicondatafromodb(bsadriconpart, BIGSTRING("\x08" "icspound"), &hicon);
+		
+		if (theErr == noErr) {
+			theErr = SetIconFamilyData(iconHand, kSmall1BitMask, hicon);
+			disposehandle(hicon);
+		}
+	}
+	
+	if (theErr == noErr) {
+		theErr = GetIconRefFromIconFamilyPtr(*iconHand, GetHandleSize((Handle) iconHand), &iconRef);
+	}
+	
+	if (theErr == noErr) {
+		theErr = PlotIconRef(r, align, transform, kIconServicesNormalUsageFlag, iconRef);
+	}
+	
+	return theErr == noErr;
+}
+
+OSStatus loadicondatafromodb(bigstring bsadricon, bigstring bsicondatatype, Handle *hicon) {
+	bigstring bsname;
+	hdlhashtable ht;
+	hdlhashnode hn;
+	tyvaluerecord iconvalue;
+	//bigstring bsiconname = "\pics4";
+	boolean flexpanded = false;
+	boolean fllookup = false;
+	
+	pushhashtable (roottable);
+	
+	disablelangerror ();
+	
+	flexpanded = langexpandtodotparams (bsadricon, &ht, bsname);
+	enablelangerror ();
+	pophashtable ();
+	
+	
+	fllookup = hashtablelookup (ht, bsicondatatype, &iconvalue, &hn);
+	copyhandle (iconvalue.data.binaryvalue, hicon);
+	stripbinarytypeid (*hicon);
+	
+	return noErr;
+}
 
 boolean ploticonresource (const Rect *r, short align, short transform, short resid) {
 	

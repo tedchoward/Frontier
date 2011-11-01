@@ -52,6 +52,7 @@ struct tycustomicontypeinfo {
 #endif
 
 /*function prototypes*/
+extern boolean ploticonfromodb (const Rect *r, short align, short transform, bigstring bsadricon);
 
 extern void drawlabeledicon (const Rect *, short, bigstring, boolean);
 
