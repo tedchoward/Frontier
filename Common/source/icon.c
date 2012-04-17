@@ -67,7 +67,9 @@
 #define windoidwithtexticon 137
 #define windoidwithnotexticon 138
 
+#if defined (MACVERSION)
 OSStatus loadicondatafromodb(bigstring bsadricon, bigstring bsicondatatype, Handle *hicon);
+#endif
 
 boolean ploticonfromodb (const Rect *r, short align, short transform, bigstring bsadricon) {
 #if defined (MACVERSION)
@@ -149,6 +151,7 @@ boolean ploticonfromodb (const Rect *r, short align, short transform, bigstring 
 #endif
 }
 
+#if defined (MACVERSION)
 OSStatus loadicondatafromodb(bigstring bsadricon, bigstring bsicondatatype, Handle *hicon) {
 	bigstring bsname;
 	hdlhashtable ht;
@@ -173,6 +176,7 @@ OSStatus loadicondatafromodb(bigstring bsadricon, bigstring bsicondatatype, Hand
 	
 	return noErr;
 }
+#endif
 
 boolean ploticonresource (const Rect *r, short align, short transform, short resid) {
 	
