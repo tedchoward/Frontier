@@ -16,4 +16,4 @@ build/
 
 xcuserdata
 
-
+build_Xcode/tools/*.a

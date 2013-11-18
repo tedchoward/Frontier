@@ -426,7 +426,6 @@
 		65059ABC09968C1400410571 /* dbstats.c in Sources */ = {isa = PBXBuildFile; fileRef = 6515261C072BFC6700411831 /* dbstats.c */; };
 		65059ABD09968C1400410571 /* db.c in Sources */ = {isa = PBXBuildFile; fileRef = 6515261B072BFC6700411831 /* db.c */; };
 		65059ABE09968C1400410571 /* CallMachOFrameWork.c in Sources */ = {isa = PBXBuildFile; fileRef = 65152621072BFC6700411831 /* CallMachOFrameWork.c */; };
-		65059ABF09968C1400410571 /* OpenTransportNetEvents.c in Sources */ = {isa = PBXBuildFile; fileRef = 65152628072BFC6700411831 /* OpenTransportNetEvents.c */; };
 		65059AC009968C1400410571 /* langxml.c in Sources */ = {isa = PBXBuildFile; fileRef = 65152643072BFC6800411831 /* langxml.c */; };
 		65059AC109968C1400410571 /* langwinipc.c in Sources */ = {isa = PBXBuildFile; fileRef = 65152642072BFC6800411831 /* langwinipc.c */; };
 		65059AC209968C1400410571 /* langverbs.c in Sources */ = {isa = PBXBuildFile; fileRef = 65152641072BFC6800411831 /* langverbs.c */; };
@@ -705,7 +704,6 @@
 		6515272A072BFC6800411831 /* dbstats.c in Sources */ = {isa = PBXBuildFile; fileRef = 6515261C072BFC6700411831 /* dbstats.c */; };
 		6515272B072BFC6800411831 /* db.c in Sources */ = {isa = PBXBuildFile; fileRef = 6515261B072BFC6700411831 /* db.c */; };
 		6515272C072BFC6800411831 /* CallMachOFrameWork.c in Sources */ = {isa = PBXBuildFile; fileRef = 65152621072BFC6700411831 /* CallMachOFrameWork.c */; };
-		6515272D072BFC6800411831 /* OpenTransportNetEvents.c in Sources */ = {isa = PBXBuildFile; fileRef = 65152628072BFC6700411831 /* OpenTransportNetEvents.c */; };
 		6515272E072BFC6800411831 /* langxml.c in Sources */ = {isa = PBXBuildFile; fileRef = 65152643072BFC6800411831 /* langxml.c */; };
 		6515272F072BFC6800411831 /* langwinipc.c in Sources */ = {isa = PBXBuildFile; fileRef = 65152642072BFC6800411831 /* langwinipc.c */; };
 		65152730072BFC6800411831 /* langverbs.c in Sources */ = {isa = PBXBuildFile; fileRef = 65152641072BFC6800411831 /* langverbs.c */; };
@@ -1072,6 +1070,12 @@
 		65F9C22309C4CD9800DCC29E /* sha.h in Headers */ = {isa = PBXBuildFile; fileRef = 65F9C21F09C4CD9700DCC29E /* sha.h */; };
 		65F9C22709C4CDDE00DCC29E /* sha1dgst.c in Sources */ = {isa = PBXBuildFile; fileRef = 65F9C22609C4CDDE00DCC29E /* sha1dgst.c */; };
 		65F9C22809C4CDDE00DCC29E /* sha1dgst.c in Sources */ = {isa = PBXBuildFile; fileRef = 65F9C22609C4CDDE00DCC29E /* sha1dgst.c */; };
+		9F3A12D4183A6B3E007ACBD2 /* MacSocketNetEvents.c in Sources */ = {isa = PBXBuildFile; fileRef = 9F3A12D3183A6B3E007ACBD2 /* MacSocketNetEvents.c */; };
+		9F3A12D5183A6B3E007ACBD2 /* MacSocketNetEvents.c in Sources */ = {isa = PBXBuildFile; fileRef = 9F3A12D3183A6B3E007ACBD2 /* MacSocketNetEvents.c */; };
+		9F3A12D7183A6B60007ACBD2 /* mutex.c in Sources */ = {isa = PBXBuildFile; fileRef = 9F3A12D6183A6B60007ACBD2 /* mutex.c */; };
+		9F3A12D8183A6B60007ACBD2 /* mutex.c in Sources */ = {isa = PBXBuildFile; fileRef = 9F3A12D6183A6B60007ACBD2 /* mutex.c */; };
+		9F3A12DA183A6B8D007ACBD2 /* mutex.h in Headers */ = {isa = PBXBuildFile; fileRef = 9F3A12D9183A6B8D007ACBD2 /* mutex.h */; };
+		9F3A12DB183A6B8D007ACBD2 /* mutex.h in Headers */ = {isa = PBXBuildFile; fileRef = 9F3A12D9183A6B8D007ACBD2 /* mutex.h */; };
 		BB37A31B0AB828010077C6A1 /* libSQLite3.a in Frameworks */ = {isa = PBXBuildFile; fileRef = BB37A29C0AB826540077C6A1 /* libSQLite3.a */; };
 		DEA58AB407435A9500BAB271 /* Frontier.icns in Resources */ = {isa = PBXBuildFile; fileRef = DEA58AB307435A9500BAB271 /* Frontier.icns */; };
 /* End PBXBuildFile section */
@@ -1334,7 +1338,6 @@
 		65152625072BFC6700411831 /* langipcmenus.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = langipcmenus.c; path = ../Common/source/langipcmenus.c; sourceTree = SOURCE_ROOT; };
 		65152626072BFC6700411831 /* langmodeless.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = langmodeless.c; path = ../Common/source/langmodeless.c; sourceTree = SOURCE_ROOT; };
 		65152627072BFC6700411831 /* langquicktime.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = langquicktime.c; path = ../Common/source/langquicktime.c; sourceTree = SOURCE_ROOT; };
-		65152628072BFC6700411831 /* OpenTransportNetEvents.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = OpenTransportNetEvents.c; path = ../Common/source/OpenTransportNetEvents.c; sourceTree = SOURCE_ROOT; };
 		6515262A072BFC6700411831 /* lang.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = lang.c; path = ../Common/source/lang.c; sourceTree = SOURCE_ROOT; };
 		6515262B072BFC6700411831 /* langcallbacks.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = langcallbacks.c; path = ../Common/source/langcallbacks.c; sourceTree = SOURCE_ROOT; };
 		6515262C072BFC6700411831 /* langdate.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = langdate.c; path = ../Common/source/langdate.c; sourceTree = SOURCE_ROOT; };
@@ -1662,6 +1665,9 @@
 		65F9C21E09C4CD9700DCC29E /* sha_locl.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = sha_locl.h; path = ../Common/headers/sha_locl.h; sourceTree = SOURCE_ROOT; };
 		65F9C21F09C4CD9700DCC29E /* sha.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = sha.h; path = ../Common/headers/sha.h; sourceTree = SOURCE_ROOT; };
 		65F9C22609C4CDDE00DCC29E /* sha1dgst.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = sha1dgst.c; path = ../Common/source/sha1dgst.c; sourceTree = SOURCE_ROOT; };
+		9F3A12D3183A6B3E007ACBD2 /* MacSocketNetEvents.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = MacSocketNetEvents.c; path = ../Common/source/MacSocketNetEvents.c; sourceTree = SOURCE_ROOT; };
+		9F3A12D6183A6B60007ACBD2 /* mutex.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = mutex.c; path = ../Common/source/mutex.c; sourceTree = SOURCE_ROOT; };
+		9F3A12D9183A6B8D007ACBD2 /* mutex.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = mutex.h; path = ../Common/headers/mutex.h; sourceTree = SOURCE_ROOT; };
 		BB37A29C0AB826540077C6A1 /* libSQLite3.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libSQLite3.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		DEA58AB307435A9500BAB271 /* Frontier.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; name = Frontier.icns; path = ../resources/Frontier/Frontier.icns; sourceTree = SOURCE_ROOT; };
 /* End PBXFileReference section */
@@ -2115,6 +2121,7 @@
 		651525E2072BFC6700411831 /* mac */ = {
 			isa = PBXGroup;
 			children = (
+				9F3A12D6183A6B60007ACBD2 /* mutex.c */,
 				651525E3072BFC6700411831 /* aeutils.c */,
 				651525E4072BFC6700411831 /* bitmaps.c */,
 				651525E5072BFC6700411831 /* dialogs.c */,
@@ -2206,6 +2213,7 @@
 		65152620072BFC6700411831 /* mac */ = {
 			isa = PBXGroup;
 			children = (
+				9F3A12D3183A6B3E007ACBD2 /* MacSocketNetEvents.c */,
 				65152621072BFC6700411831 /* CallMachOFrameWork.c */,
 				65152622072BFC6700411831 /* langcard.c */,
 				65152623072BFC6700411831 /* langdialog.c */,
@@ -2213,7 +2221,6 @@
 				65152625072BFC6700411831 /* langipcmenus.c */,
 				65152626072BFC6700411831 /* langmodeless.c */,
 				65152627072BFC6700411831 /* langquicktime.c */,
-				65152628072BFC6700411831 /* OpenTransportNetEvents.c */,
 			);
 			name = mac;
 			sourceTree = "<group>";
@@ -2384,6 +2391,7 @@
 		65AF8D1A074159FC007C3205 /* Include Files */ = {
 			isa = PBXGroup;
 			children = (
+				9F3A12D9183A6B8D007ACBD2 /* mutex.h */,
 				65152878072BFEC900411831 /* about.h */,
 				651527C8072BFE2500411831 /* aeutils.h */,
 				65152820072BFE7100411831 /* applet.h */,
@@ -2843,6 +2851,7 @@
 				655A983709E929CC009EFFEA /* byteorder.h in Headers */,
 				65C4999E0E7D8F320078B6DB /* FSCopyObject.h in Headers */,
 				65C499A40E7D8F3A0078B6DB /* GenLinkedList.h in Headers */,
+				9F3A12DB183A6B8D007ACBD2 /* mutex.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -3081,6 +3090,7 @@
 				5D8F1E160C25AFC600927B97 /* mysql_version.h in Headers */,
 				5D8F1E170C25AFC600927B97 /* typelib.h in Headers */,
 				5D8F1EF70C25B56600927B97 /* langmysql.h in Headers */,
+				9F3A12DA183A6B8D007ACBD2 /* mutex.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -3174,7 +3184,14 @@
 			isa = PBXProject;
 			buildConfigurationList = 5D4E1D460AAA0B1400DF6890 /* Build configuration list for PBXProject "Frontier Universal Binary" */;
 			compatibilityVersion = "Xcode 2.4";
+			developmentRegion = English;
 			hasScannedForEncodings = 1;
+			knownRegions = (
+				English,
+				Japanese,
+				French,
+				German,
+			);
 			mainGroup = 6515255C072BFC6500411831;
 			productRefGroup = 6515255C072BFC6500411831;
 			projectDirPath = "";
@@ -3464,7 +3481,6 @@
 				65059ABC09968C1400410571 /* dbstats.c in Sources */,
 				65059ABD09968C1400410571 /* db.c in Sources */,
 				65059ABE09968C1400410571 /* CallMachOFrameWork.c in Sources */,
-				65059ABF09968C1400410571 /* OpenTransportNetEvents.c in Sources */,
 				65059AC009968C1400410571 /* langxml.c in Sources */,
 				65059AC109968C1400410571 /* langwinipc.c in Sources */,
 				65059AC209968C1400410571 /* langverbs.c in Sources */,
@@ -3589,6 +3605,8 @@
 				65C499A10E7D8F360078B6DB /* GenLinkedList.c in Sources */,
 				65C499A70E7D8F450078B6DB /* langsqlite.c in Sources */,
 				65C499AA0E7D8F4C0078B6DB /* langmysql.c in Sources */,
+				9F3A12D5183A6B3E007ACBD2 /* MacSocketNetEvents.c in Sources */,
+				9F3A12D8183A6B60007ACBD2 /* mutex.c in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -3726,7 +3744,6 @@
 				6515272A072BFC6800411831 /* dbstats.c in Sources */,
 				6515272B072BFC6800411831 /* db.c in Sources */,
 				6515272C072BFC6800411831 /* CallMachOFrameWork.c in Sources */,
-				6515272D072BFC6800411831 /* OpenTransportNetEvents.c in Sources */,
 				6515272E072BFC6800411831 /* langxml.c in Sources */,
 				6515272F072BFC6800411831 /* langwinipc.c in Sources */,
 				65152730072BFC6800411831 /* langverbs.c in Sources */,
@@ -3851,6 +3868,8 @@
 				5D0D91040ADEDFA80000E67B /* FSCopyObject.c in Sources */,
 				5D0D91060ADEDFA80000E67B /* GenLinkedList.c in Sources */,
 				5D8F1EF40C25B51A00927B97 /* langmysql.c in Sources */,
+				9F3A12D4183A6B3E007ACBD2 /* MacSocketNetEvents.c in Sources */,
+				9F3A12D7183A6B60007ACBD2 /* mutex.c in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
