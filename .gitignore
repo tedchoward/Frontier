@@ -9,6 +9,7 @@ DerivedData/
 
 build/
 
+*.mode1
 *.pbxuser
 *.mode1v3
 *.mode2v3

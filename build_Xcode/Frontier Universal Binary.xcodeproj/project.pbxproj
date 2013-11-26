@@ -3184,7 +3184,6 @@
 			isa = PBXProject;
 			buildConfigurationList = 5D4E1D460AAA0B1400DF6890 /* Build configuration list for PBXProject "Frontier Universal Binary" */;
 			compatibilityVersion = "Xcode 2.4";
-			developmentRegion = English;
 			hasScannedForEncodings = 1;
 			knownRegions = (
 				English,
