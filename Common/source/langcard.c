@@ -47,9 +47,6 @@
 #include "langinternal.h"
 #include "langipc.h"
 #include "process.h"
-#ifdef iowaRuntime
-	#include "iowainit.h"
-#endif
 
 
 

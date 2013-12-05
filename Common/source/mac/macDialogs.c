@@ -1826,7 +1826,6 @@ boolean alertdialog (bigstring bsprompt) {
 	true if the user clicked on ok.  false if cancel was clicked.
 	*/
 	
-#ifdef MACVERSION
 	DialogRef theAlert;
 	DialogItemIndex itemIndex;
 	
@@ -1839,30 +1838,6 @@ boolean alertdialog (bigstring bsprompt) {
 	CFRelease(dialogPrompt);
 	
 	return itemIndex == alertokitem;
-#endif
-	register DialogPtr pdialog;
-	register short itemnumber;
-	
-	sysbeep ();
-	
-	if ((pdialog = newmodaldialog (alertdialogid, alertokitem)) == nil)
-		return (false);
-	
-	setdialogtext (pdialog, alertmsgitem, bsprompt);
-	
-	#if TARGET_API_MAC_CARBON == 1
-	{
-	WindowRef pWind = GetDialogWindow(pdialog);
-	ShowWindow(pWind);
-	}
-	#else
-	ShowWindow (pdialog);
-	#endif
-	itemnumber = runmodaldialog ();
-	
-	disposemodaldialog (pdialog);
-	
-	return (itemnumber == alertokitem);
 	} /*alertdialog*/
 
 

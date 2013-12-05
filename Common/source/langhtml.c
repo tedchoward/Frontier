@@ -30,10 +30,6 @@
 #include "frontier.h"
 #include "standard.h"
 
-#ifdef MACVERSION
-#include <iac.h>
-#endif
-
 #include "error.h"
 #include "file.h"
 #include "memory.h"

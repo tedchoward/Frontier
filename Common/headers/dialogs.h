@@ -115,7 +115,7 @@ typedef boolean (*dialogcallback) (DialogPtr, short);
 
 extern short dialogcountitems (DialogPtr);
 
-extern void boldenbutton (DialogPtr, short);
+//extern void boldenbutton (DialogPtr, short);
 
 extern void positiondialogwindow (DialogPtr);
 
@@ -131,45 +131,45 @@ extern void setdefaultitem (DialogPtr, short);
 
 extern boolean dialogitemisbutton (DialogPtr, short);
 
-extern DialogPtr newmodaldialog (short, short);
+//extern DialogPtr newmodaldialog (short, short);
 
-extern void disposemodaldialog (DialogPtr);
+//extern void disposemodaldialog (DialogPtr);
 
-extern void setdialogcheckbox (DialogPtr, short, boolean);
+//extern void setdialogcheckbox (DialogPtr, short, boolean);
 
-extern boolean getdialogcheckbox (DialogPtr, short);
+//extern boolean getdialogcheckbox (DialogPtr, short);
 
-extern void toggledialogcheckbox (DialogPtr, short);
+//extern void toggledialogcheckbox (DialogPtr, short);
 
 extern boolean setdialogradiovalue (DialogPtr, short, short, short);
 
 extern short getdialogradiovalue (DialogPtr, short, short);
 
-extern void setdialogicon (DialogPtr, short, short);
+//extern void setdialogicon (DialogPtr, short, short);
 
 extern void setdialogtext (DialogPtr, short, bigstring);
 
 extern void getdialogtext (DialogPtr, short, bigstring);
 
-extern void selectdialogtext (DialogPtr, short);
+//extern void selectdialogtext (DialogPtr, short);
 
-extern short getdialogint (DialogPtr, short);
+//extern short getdialogint (DialogPtr, short);
 
-extern void setdialogint (DialogPtr, short, short);
+//extern void setdialogint (DialogPtr, short, short);
 
-extern OSType getdialogostype (DialogPtr, short);
+//extern OSType getdialogostype (DialogPtr, short);
 
-extern void setdialogostype (DialogPtr, short, OSType);
+//extern void setdialogostype (DialogPtr, short, OSType);
 
-extern void setdialogbutton (DialogPtr, short, bigstring);
+//extern void setdialogbutton (DialogPtr, short, bigstring);
 
 extern void dialoggetobjectrect (DialogPtr, short, Rect *);
 
-extern void dialogsetobjectrect (DialogPtr, short, Rect);
+//extern void dialogsetobjectrect (DialogPtr, short, Rect);
 
-extern boolean dialogsetfontsize (DialogPtr, short, short);
+//extern boolean dialogsetfontsize (DialogPtr, short, short);
 
-extern boolean ptinuseritem (Point, DialogPtr, short);
+//extern boolean ptinuseritem (Point, DialogPtr, short);
 
 extern boolean setuseritemdrawroutine (DialogPtr, short, dialogcallback);
 
@@ -187,7 +187,7 @@ extern boolean dialogsetselect (DialogPtr, short, short);
 
 extern boolean dialogselectall (DialogPtr);
 
-extern boolean dialoggetselect (DialogPtr, short *, short *);
+//extern boolean dialoggetselect (DialogPtr, short *, short *);
 
 extern short savedialog (bigstring);
 
