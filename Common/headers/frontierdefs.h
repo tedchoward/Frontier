@@ -87,12 +87,12 @@
 
 
 #ifdef MACVERSION
-	#define macBirdRuntime	1
+	#undef macBirdRuntime	
 	#undef appRunsCards			/*for Applet Toolkit, Iowa Runtime is baked in*/
-	#define iowaRuntimeInApp	/*iowa code knows it's in an app*/
-	#define iowaRuntime			/*iowa code knows it's not compiling in Card Editor*/
-	#define cmdPeriodKillsCard
-	#define IOAinsideApp		/*all the IOA's are baked into the app*/
+	#undef iowaRuntimeInApp	/*iowa code knows it's in an app*/
+	#undef iowaRuntime			/*iowa code knows it's not compiling in Card Editor*/
+	#undef cmdPeriodKillsCard
+	#undef IOAinsideApp		/*all the IOA's are baked into the app*/
 	#undef coderesource			/*we're not running inside a code resource*/
 #endif
 

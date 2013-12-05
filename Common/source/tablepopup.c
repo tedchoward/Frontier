@@ -53,7 +53,7 @@
 #include "tablestructure.h"
 #include "tableverbs.h"
 #include "claybrowser.h"
-#include "iowaverbs.h" /*3/18/92 dmb*/
+//#include "iowaverbs.h" /*3/18/92 dmb*/
 
 
 

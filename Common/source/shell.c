@@ -704,7 +704,7 @@ static boolean shellgetevent (void) {
 		if (landeventfilter (&shellevent)) /*event consumed by IAC toolkit*/
 			fl = false;
 	
-	#ifdef MACVERSION
+	#ifdef iowaRuntime
 	
 		/*
 		if (uisHandleEvent (&shellevent, &flcloseallwindows)) // event consumed by window sharing server
