@@ -31,6 +31,7 @@
 #include "error.h"
 #include "memory.h"
 #include "strings.h"
+#include "shell.h"
 #include "shell.rsrc.h"
 #include "file.h"
 #include "resources.h"
@@ -44,20 +45,24 @@
 
 boolean getstringlist (short listnum, short id, bigstring bs) {
 #ifdef MACVERSION	
-	/*
-	the Mac routine GetIndString doesn't set ResError false when we fall off
-	the end of the indicated list, so we return false if the returned string
-	is of zero length.
-	*/
 	
-	#if 0 //#ifdef fldebug	/* 2006-04-16 aradke: disabled for Mac Intel build */
+//	fprintf(stderr, "getstringlist(%d, %d, %.*s\n", listnum, id, bs[0], &bs[1]);
 	
-	if (GetResource ('STR#', listnum) == nil)
-		DebugStr ("\pmissing STR# resource");
+	CFStringRef stringKey = CFStringCreateWithFormat(kCFAllocatorDefault, NULL, CFSTR("%d.%d"), listnum, id);
+	CFBundleRef mainBundle = CFBundleGetMainBundle();
+	CFStringRef stringValue = CFBundleCopyLocalizedString(mainBundle, stringKey, CFSTR("[string not found]"), CFSTR("Localizable"));\
 	
-	#endif
+	if (CFStringCompare(stringValue, CFSTR("[string not found]"), (CFStringCompareFlags) 0) == kCFCompareEqualTo) {
+//		shellerrormessage("\pString Resource Not Found");
+		fprintf(stderr, "string resource not found: %d.%d\n", listnum, id);
+		
+		setemptystring(bs);
+	} else {
+		CFStringGetPascalString(stringValue, bs, sizeof(bigstring), kCFStringEncodingMacRoman);
+	}
 	
-	GetIndString (bs, listnum, id);
+	CFRelease(stringValue);
+	CFRelease(stringKey);
 	
 	return (stringlength (bs) > 0);
 #endif
@@ -760,8 +765,6 @@ boolean loadresourcehandle (const ptrfilespec fs, ResType type, short id, bigstr
 			
 			DetachResource (h);
 			
-			HNoPurge (h); /*in case resource was purgable*/
-			
 			*hresource = h;
 			}
 		
@@ -901,8 +904,6 @@ boolean getnthresourcehandle (const ptrfilespec fs, ResType type, short n, short
 		if (hresource != nil) { /*caller actually wants data*/
 			
 			DetachResource (h);
-			
-			HNoPurge (h); /*in case resource was purgable*/
 			
 			*hresource = h;
 			}

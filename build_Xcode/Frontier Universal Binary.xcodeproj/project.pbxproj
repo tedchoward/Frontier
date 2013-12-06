@@ -868,6 +868,8 @@
 		65F9C22309C4CD9800DCC29E /* sha.h in Headers */ = {isa = PBXBuildFile; fileRef = 65F9C21F09C4CD9700DCC29E /* sha.h */; };
 		65F9C22709C4CDDE00DCC29E /* sha1dgst.c in Sources */ = {isa = PBXBuildFile; fileRef = 65F9C22609C4CDDE00DCC29E /* sha1dgst.c */; };
 		65F9C22809C4CDDE00DCC29E /* sha1dgst.c in Sources */ = {isa = PBXBuildFile; fileRef = 65F9C22609C4CDDE00DCC29E /* sha1dgst.c */; };
+		9F01A7CC1851206200CFBD95 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 9F01A7CA1851206200CFBD95 /* Localizable.strings */; };
+		9F01A7CD1851206200CFBD95 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 9F01A7CA1851206200CFBD95 /* Localizable.strings */; };
 		9F3A12D4183A6B3E007ACBD2 /* MacSocketNetEvents.c in Sources */ = {isa = PBXBuildFile; fileRef = 9F3A12D3183A6B3E007ACBD2 /* MacSocketNetEvents.c */; };
 		9F3A12D5183A6B3E007ACBD2 /* MacSocketNetEvents.c in Sources */ = {isa = PBXBuildFile; fileRef = 9F3A12D3183A6B3E007ACBD2 /* MacSocketNetEvents.c */; };
 		9F3A12D7183A6B60007ACBD2 /* mutex.c in Sources */ = {isa = PBXBuildFile; fileRef = 9F3A12D6183A6B60007ACBD2 /* mutex.c */; };
@@ -1365,6 +1367,7 @@
 		65F9C21E09C4CD9700DCC29E /* sha_locl.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = sha_locl.h; path = ../Common/headers/sha_locl.h; sourceTree = SOURCE_ROOT; };
 		65F9C21F09C4CD9700DCC29E /* sha.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = sha.h; path = ../Common/headers/sha.h; sourceTree = SOURCE_ROOT; };
 		65F9C22609C4CDDE00DCC29E /* sha1dgst.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = sha1dgst.c; path = ../Common/source/sha1dgst.c; sourceTree = SOURCE_ROOT; };
+		9F01A7CB1851206200CFBD95 /* English */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.strings; name = English; path = English.lproj/Localizable.strings; sourceTree = "<group>"; };
 		9F3A12D3183A6B3E007ACBD2 /* MacSocketNetEvents.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = MacSocketNetEvents.c; path = ../Common/source/MacSocketNetEvents.c; sourceTree = SOURCE_ROOT; };
 		9F3A12D6183A6B60007ACBD2 /* mutex.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = mutex.c; path = ../Common/source/mutex.c; sourceTree = SOURCE_ROOT; };
 		9F3A12D9183A6B8D007ACBD2 /* mutex.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = mutex.h; path = ../Common/headers/mutex.h; sourceTree = SOURCE_ROOT; };
@@ -1711,6 +1714,7 @@
 		651525DD072BFC6700411831 /* carbon */ = {
 			isa = PBXGroup;
 			children = (
+				9F01A7CA1851206200CFBD95 /* Localizable.strings */,
 				9FCD376C1845379300E90027 /* OPML.nib */,
 				651525DE072BFC6700411831 /* carb.r */,
 				651525DF072BFC6700411831 /* osxdialogs.r */,
@@ -2722,6 +2726,7 @@
 				65059B780996945100410571 /* OPML.icns in Resources */,
 				65059B790996945100410571 /* OPMLdoc.icns in Resources */,
 				9FCD376E1845379300E90027 /* OPML.nib in Resources */,
+				9F01A7CD1851206200CFBD95 /* Localizable.strings in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -2731,6 +2736,7 @@
 			files = (
 				DEA58AB407435A9500BAB271 /* Frontier.icns in Resources */,
 				9FCD376D1845379300E90027 /* OPML.nib in Resources */,
+				9F01A7CC1851206200CFBD95 /* Localizable.strings in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -3336,6 +3342,17 @@
 			targetProxy = BB37A3170AB827EA0077C6A1 /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
+
+/* Begin PBXVariantGroup section */
+		9F01A7CA1851206200CFBD95 /* Localizable.strings */ = {
+			isa = PBXVariantGroup;
+			children = (
+				9F01A7CB1851206200CFBD95 /* English */,
+			);
+			name = Localizable.strings;
+			sourceTree = "<group>";
+		};
+/* End PBXVariantGroup section */
 
 /* Begin XCBuildConfiguration section */
 		5D4E1D3F0AAA0B1400DF6890 /* Development */ = {
