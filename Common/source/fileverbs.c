@@ -2689,7 +2689,8 @@ static boolean filedeleteverb ( hdltreenode hp1, tyvaluerecord *vreturned ) {
 
 
 static boolean getposixpathverb ( hdltreenode hp1, tyvaluerecord *vreturned ) {
-
+	
+	// 2013-12-06 TedCHoward: corrected a compiler warning and made the code clearer by using a UInt8[] instead of a bigstring for holding the posix path
 	//
 	// 2006-11-01 creedon: for Mac, replace convertcstring function with code to convert from c string in UTF-8 to bigstring in
 	//			       Mac Roman
@@ -2700,6 +2701,7 @@ static boolean getposixpathverb ( hdltreenode hp1, tyvaluerecord *vreturned ) {
 	#ifdef	MACVERSION
 	
 		bigstring bs;
+		UInt8 pathBuffer[256];
 		tyfilespec fs;
 		boolean flfolder;
 		
@@ -2708,14 +2710,17 @@ static boolean getposixpathverb ( hdltreenode hp1, tyvaluerecord *vreturned ) {
 		if ( ! getfilespecvalue ( hp1, 1, &fs ) )
 			return ( false );
 		
-		if ( oserror ( FSRefMakePath ( &fs.ref, ( UInt8 * ) bs, 256 ) ) )	// bs is now a c string
+		if ( oserror ( FSRefMakePath ( &fs.ref, pathBuffer, 256 ) ) )
 			return ( false );
 		
 		/* convert from c string to bigstring */ {
-		
-			CFStringRef csr = CFStringCreateWithCString ( kCFAllocatorDefault, bs, kCFStringEncodingUTF8 );
 			
-			cfstringreftobigstring ( csr, bs );
+		
+			CFStringRef csr = CFStringCreateWithCString ( kCFAllocatorDefault, (char *)pathBuffer, kCFStringEncodingUTF8 );
+			
+			CFStringGetPascalString(csr, bs, sizeof (bigstring), kCFStringEncodingMacRoman);
+			
+			//cfstringreftobigstring ( csr, bs );
 			
 			CFRelease ( csr );
 			
