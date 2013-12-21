@@ -157,7 +157,7 @@ pascal boolean landreturnerror (hdlverbrecord hverb, short iderror) {
 			errcode = userCanceledErr; break;
 		
 		default:
-			GetIndString (bs, (**hg).iderrorlist, iderror);
+			getstringlist((**hg).iderrorlist, iderror, bs);
 			
 			landpushintparam (hverb, errAEEventFailed, errornumberkey);
 			

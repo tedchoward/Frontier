@@ -277,7 +277,6 @@
 		65059A8A09968C1400410571 /* base64.c in Sources */ = {isa = PBXBuildFile; fileRef = 651525ED072BFC6700411831 /* base64.c */; };
 		65059A8B09968C1400410571 /* assert.c in Sources */ = {isa = PBXBuildFile; fileRef = 651525EC072BFC6700411831 /* assert.c */; };
 		65059A8C09968C1400410571 /* aeutils.c in Sources */ = {isa = PBXBuildFile; fileRef = 651525E3072BFC6700411831 /* aeutils.c */; };
-		65059A8D09968C1400410571 /* about.c in Sources */ = {isa = PBXBuildFile; fileRef = 651525EB072BFC6700411831 /* about.c */; };
 		65059A8E09968C1400410571 /* kb.c in Sources */ = {isa = PBXBuildFile; fileRef = 651525F7072BFC6700411831 /* kb.c */; };
 		65059A8F09968C1400410571 /* icon.c in Sources */ = {isa = PBXBuildFile; fileRef = 651525F6072BFC6700411831 /* icon.c */; };
 		65059A9009968C1400410571 /* frontierwindows.c in Sources */ = {isa = PBXBuildFile; fileRef = 651525F5072BFC6700411831 /* frontierwindows.c */; };
@@ -443,7 +442,6 @@
 		65059B3109968C1400410571 /* MoreFilesX.c in Sources */ = {isa = PBXBuildFile; fileRef = 651525C1072BFC6700411831 /* MoreFilesX.c */; };
 		65059B3209968C1400410571 /* langmath.c in Sources */ = {isa = PBXBuildFile; fileRef = 65B70CDB0797CE4A008C2F1A /* langmath.c */; };
 		65059B3309968C1400410571 /* FastTimes.c in Sources */ = {isa = PBXBuildFile; fileRef = 65B70CE50797CF2D008C2F1A /* FastTimes.c */; };
-		65059B3809968C1400410571 /* Carbon.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 651527B8072BFE0E00411831 /* Carbon.framework */; };
 		65059B3909968C1400410571 /* ApplicationServices.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6515294A072C000500411831 /* ApplicationServices.framework */; };
 		65059B3A09968C1400410571 /* QuickTime.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6515294C072C000900411831 /* QuickTime.framework */; };
 		65059B3C09968C1400410571 /* lang.r in Rez */ = {isa = PBXBuildFile; fileRef = 651525D2072BFC6700411831 /* lang.r */; };
@@ -494,7 +492,6 @@
 		651526F8072BFC6800411831 /* base64.c in Sources */ = {isa = PBXBuildFile; fileRef = 651525ED072BFC6700411831 /* base64.c */; };
 		651526F9072BFC6800411831 /* assert.c in Sources */ = {isa = PBXBuildFile; fileRef = 651525EC072BFC6700411831 /* assert.c */; };
 		651526FA072BFC6800411831 /* aeutils.c in Sources */ = {isa = PBXBuildFile; fileRef = 651525E3072BFC6700411831 /* aeutils.c */; };
-		651526FB072BFC6800411831 /* about.c in Sources */ = {isa = PBXBuildFile; fileRef = 651525EB072BFC6700411831 /* about.c */; };
 		651526FC072BFC6800411831 /* kb.c in Sources */ = {isa = PBXBuildFile; fileRef = 651525F7072BFC6700411831 /* kb.c */; };
 		651526FD072BFC6800411831 /* icon.c in Sources */ = {isa = PBXBuildFile; fileRef = 651525F6072BFC6700411831 /* icon.c */; };
 		651526FE072BFC6800411831 /* frontierwindows.c in Sources */ = {isa = PBXBuildFile; fileRef = 651525F5072BFC6700411831 /* frontierwindows.c */; };
@@ -671,7 +668,6 @@
 		651527AD072BFC6900411831 /* MoreFilesX.h in Headers */ = {isa = PBXBuildFile; fileRef = 651525C2072BFC6700411831 /* MoreFilesX.h */; };
 		651527B2072BFE0100411831 /* frontier.h in Headers */ = {isa = PBXBuildFile; fileRef = 651527B1072BFE0100411831 /* frontier.h */; };
 		651527B4072BFE0300411831 /* font.h in Headers */ = {isa = PBXBuildFile; fileRef = 651527B3072BFE0300411831 /* font.h */; };
-		651527B9072BFE0E00411831 /* Carbon.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 651527B8072BFE0E00411831 /* Carbon.framework */; };
 		651527BB072BFE1000411831 /* standard.h in Headers */ = {isa = PBXBuildFile; fileRef = 651527BA072BFE1000411831 /* standard.h */; };
 		651527C9072BFE2500411831 /* aeutils.h in Headers */ = {isa = PBXBuildFile; fileRef = 651527C8072BFE2500411831 /* aeutils.h */; };
 		651527CB072BFE2700411831 /* uisinternal.h in Headers */ = {isa = PBXBuildFile; fileRef = 651527CA072BFE2700411831 /* uisinternal.h */; };
@@ -870,12 +866,33 @@
 		65F9C22809C4CDDE00DCC29E /* sha1dgst.c in Sources */ = {isa = PBXBuildFile; fileRef = 65F9C22609C4CDDE00DCC29E /* sha1dgst.c */; };
 		9F01A7CC1851206200CFBD95 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 9F01A7CA1851206200CFBD95 /* Localizable.strings */; };
 		9F01A7CD1851206200CFBD95 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 9F01A7CA1851206200CFBD95 /* Localizable.strings */; };
+		9F0D5A281864B06400D9A6CE /* AboutViewController.h in Headers */ = {isa = PBXBuildFile; fileRef = 9F0D5A261864B06400D9A6CE /* AboutViewController.h */; };
+		9F0D5A291864B06400D9A6CE /* AboutViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 9F0D5A271864B06400D9A6CE /* AboutViewController.m */; };
+		9F0D5A2A1864B06400D9A6CE /* AboutViewController.h in Headers */ = {isa = PBXBuildFile; fileRef = 9F0D5A261864B06400D9A6CE /* AboutViewController.h */; };
+		9F0D5A2B1864B06400D9A6CE /* AboutViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 9F0D5A271864B06400D9A6CE /* AboutViewController.m */; };
+		9F0D5A2F1864B08D00D9A6CE /* AboutViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 9F0D5A2E1864B08D00D9A6CE /* AboutViewController.xib */; };
+		9F0D5A301864B08D00D9A6CE /* AboutViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 9F0D5A2E1864B08D00D9A6CE /* AboutViewController.xib */; };
+		9F0D5BE11864B58D00D9A6CE /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9F0D5BE01864B58D00D9A6CE /* Cocoa.framework */; };
+		9F0D5BEE1864B62F00D9A6CE /* Carbon.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9F0D5BED1864B62F00D9A6CE /* Carbon.framework */; };
+		9F0D5C991864C68700D9A6CE /* AboutWindow.xib in Resources */ = {isa = PBXBuildFile; fileRef = 9F0D5C981864C68700D9A6CE /* AboutWindow.xib */; };
+		9F0D5C9A1864C68700D9A6CE /* AboutWindow.xib in Resources */ = {isa = PBXBuildFile; fileRef = 9F0D5C981864C68700D9A6CE /* AboutWindow.xib */; };
+		9F0D5C9E1864C6A800D9A6CE /* AboutWindowController.h in Headers */ = {isa = PBXBuildFile; fileRef = 9F0D5C9C1864C6A800D9A6CE /* AboutWindowController.h */; };
+		9F0D5C9F1864C6A800D9A6CE /* AboutWindowController.m in Sources */ = {isa = PBXBuildFile; fileRef = 9F0D5C9D1864C6A800D9A6CE /* AboutWindowController.m */; };
+		9F0D5CA01864C6A800D9A6CE /* AboutWindowController.h in Headers */ = {isa = PBXBuildFile; fileRef = 9F0D5C9C1864C6A800D9A6CE /* AboutWindowController.h */; };
+		9F0D5CA11864C6A800D9A6CE /* AboutWindowController.m in Sources */ = {isa = PBXBuildFile; fileRef = 9F0D5C9D1864C6A800D9A6CE /* AboutWindowController.m */; };
+		9F0D5E561864F04100D9A6CE /* WebKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9F0D5E551864F04100D9A6CE /* WebKit.framework */; };
+		9F34C9DD186397A80047BA53 /* AboutTextView.h in Headers */ = {isa = PBXBuildFile; fileRef = 9F34C9DB186397A80047BA53 /* AboutTextView.h */; };
+		9F34C9DE186397A80047BA53 /* AboutTextView.c in Sources */ = {isa = PBXBuildFile; fileRef = 9F34C9DC186397A80047BA53 /* AboutTextView.c */; };
+		9F34C9DF186397A80047BA53 /* AboutTextView.h in Headers */ = {isa = PBXBuildFile; fileRef = 9F34C9DB186397A80047BA53 /* AboutTextView.h */; };
+		9F34C9E0186397A80047BA53 /* AboutTextView.c in Sources */ = {isa = PBXBuildFile; fileRef = 9F34C9DC186397A80047BA53 /* AboutTextView.c */; };
 		9F3A12D4183A6B3E007ACBD2 /* MacSocketNetEvents.c in Sources */ = {isa = PBXBuildFile; fileRef = 9F3A12D3183A6B3E007ACBD2 /* MacSocketNetEvents.c */; };
 		9F3A12D5183A6B3E007ACBD2 /* MacSocketNetEvents.c in Sources */ = {isa = PBXBuildFile; fileRef = 9F3A12D3183A6B3E007ACBD2 /* MacSocketNetEvents.c */; };
 		9F3A12D7183A6B60007ACBD2 /* mutex.c in Sources */ = {isa = PBXBuildFile; fileRef = 9F3A12D6183A6B60007ACBD2 /* mutex.c */; };
 		9F3A12D8183A6B60007ACBD2 /* mutex.c in Sources */ = {isa = PBXBuildFile; fileRef = 9F3A12D6183A6B60007ACBD2 /* mutex.c */; };
 		9F3A12DA183A6B8D007ACBD2 /* mutex.h in Headers */ = {isa = PBXBuildFile; fileRef = 9F3A12D9183A6B8D007ACBD2 /* mutex.h */; };
 		9F3A12DB183A6B8D007ACBD2 /* mutex.h in Headers */ = {isa = PBXBuildFile; fileRef = 9F3A12D9183A6B8D007ACBD2 /* mutex.h */; };
+		9F92A1C11852927100D6FA9E /* About.xib in Resources */ = {isa = PBXBuildFile; fileRef = 9F92A1C01852927100D6FA9E /* About.xib */; };
+		9F92A1C21852927100D6FA9E /* About.xib in Resources */ = {isa = PBXBuildFile; fileRef = 9F92A1C01852927100D6FA9E /* About.xib */; };
 		9FCD376D1845379300E90027 /* OPML.nib in Resources */ = {isa = PBXBuildFile; fileRef = 9FCD376C1845379300E90027 /* OPML.nib */; };
 		9FCD376E1845379300E90027 /* OPML.nib in Resources */ = {isa = PBXBuildFile; fileRef = 9FCD376C1845379300E90027 /* OPML.nib */; };
 		9FCD37A218454A7500E90027 /* macDialogs.c in Sources */ = {isa = PBXBuildFile; fileRef = 9FCD37A118454A7500E90027 /* macDialogs.c */; };
@@ -1024,7 +1041,6 @@
 		651525E8072BFC6700411831 /* services.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = services.c; path = ../Common/source/services.c; sourceTree = SOURCE_ROOT; };
 		651525E9072BFC6700411831 /* uisharing.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = uisharing.c; path = ../Common/source/uisharing.c; sourceTree = SOURCE_ROOT; };
 		651525EA072BFC6700411831 /* zoom.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = zoom.c; path = ../Common/source/zoom.c; sourceTree = SOURCE_ROOT; };
-		651525EB072BFC6700411831 /* about.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = about.c; path = ../Common/source/about.c; sourceTree = SOURCE_ROOT; };
 		651525EC072BFC6700411831 /* assert.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = assert.c; path = ../Common/source/assert.c; sourceTree = SOURCE_ROOT; };
 		651525ED072BFC6700411831 /* base64.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = base64.c; path = ../Common/source/base64.c; sourceTree = SOURCE_ROOT; };
 		651525EE072BFC6700411831 /* cursor.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = cursor.c; path = ../Common/source/cursor.c; sourceTree = SOURCE_ROOT; };
@@ -1038,7 +1054,7 @@
 		651525F6072BFC6700411831 /* icon.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = icon.c; path = ../Common/source/icon.c; sourceTree = SOURCE_ROOT; };
 		651525F7072BFC6700411831 /* kb.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = kb.c; path = ../Common/source/kb.c; sourceTree = SOURCE_ROOT; };
 		651525F8072BFC6700411831 /* launch.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = launch.c; path = ../Common/source/launch.c; sourceTree = SOURCE_ROOT; };
-		651525F9072BFC6700411831 /* main.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = main.c; path = ../Common/source/main.c; sourceTree = SOURCE_ROOT; };
+		651525F9072BFC6700411831 /* main.c */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.objc; fileEncoding = 30; name = main.c; path = ../Common/source/main.c; sourceTree = SOURCE_ROOT; };
 		651525FA072BFC6700411831 /* md5.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = md5.c; path = ../Common/source/md5.c; sourceTree = SOURCE_ROOT; };
 		651525FB072BFC6700411831 /* memory.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = memory.c; path = ../Common/source/memory.c; sourceTree = SOURCE_ROOT; };
 		651525FC072BFC6700411831 /* menu.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = menu.c; path = ../Common/source/menu.c; sourceTree = SOURCE_ROOT; };
@@ -1142,7 +1158,7 @@
 		65152668072BFC6800411831 /* osadroplet.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = osadroplet.c; path = ../Common/source/osadroplet.c; sourceTree = SOURCE_ROOT; };
 		6515266A072BFC6800411831 /* osaparseaete.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = osaparseaete.c; path = ../Common/source/osaparseaete.c; sourceTree = SOURCE_ROOT; };
 		6515266B072BFC6800411831 /* osawindows.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = osawindows.c; path = ../Common/source/osawindows.c; sourceTree = SOURCE_ROOT; };
-		6515266D072BFC6800411831 /* shell.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = shell.c; path = ../Common/source/shell.c; sourceTree = SOURCE_ROOT; };
+		6515266D072BFC6800411831 /* shell.c */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.objc; fileEncoding = 30; name = shell.c; path = ../Common/source/shell.c; sourceTree = SOURCE_ROOT; };
 		6515266E072BFC6800411831 /* shellactivate.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = shellactivate.c; path = ../Common/source/shellactivate.c; sourceTree = SOURCE_ROOT; };
 		6515266F072BFC6800411831 /* shellblocker.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = shellblocker.c; path = ../Common/source/shellblocker.c; sourceTree = SOURCE_ROOT; };
 		65152670072BFC6800411831 /* shellbuttons.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = shellbuttons.c; path = ../Common/source/shellbuttons.c; sourceTree = SOURCE_ROOT; };
@@ -1185,7 +1201,6 @@
 		65152698072BFC6800411831 /* wpverbs.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = wpverbs.c; path = ../Common/source/wpverbs.c; sourceTree = SOURCE_ROOT; };
 		651527B1072BFE0100411831 /* frontier.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = frontier.h; path = ../Common/headers/frontier.h; sourceTree = SOURCE_ROOT; };
 		651527B3072BFE0300411831 /* font.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = font.h; path = ../Common/headers/font.h; sourceTree = SOURCE_ROOT; };
-		651527B8072BFE0E00411831 /* Carbon.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Carbon.framework; path = /System/Library/Frameworks/Carbon.framework; sourceTree = "<absolute>"; };
 		651527BA072BFE1000411831 /* standard.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = standard.h; path = ../Common/SystemHeaders/standard.h; sourceTree = SOURCE_ROOT; };
 		651527C8072BFE2500411831 /* aeutils.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = aeutils.h; path = ../Common/headers/aeutils.h; sourceTree = SOURCE_ROOT; };
 		651527CA072BFE2700411831 /* uisinternal.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = uisinternal.h; path = ../Common/SystemHeaders/uisinternal.h; sourceTree = SOURCE_ROOT; };
@@ -1244,7 +1259,7 @@
 		65152866072BFEB100411831 /* shellmenu.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = shellmenu.h; path = ../Common/headers/shellmenu.h; sourceTree = SOURCE_ROOT; };
 		65152868072BFEB400411831 /* land.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = land.h; path = ../Common/SystemHeaders/land.h; sourceTree = SOURCE_ROOT; };
 		6515286A072BFEBE00411831 /* BASE64.H */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.h; name = BASE64.H; path = ../Common/headers/BASE64.H; sourceTree = SOURCE_ROOT; };
-		6515286C072BFEC000411831 /* versions.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = versions.h; path = ../Common/headers/versions.h; sourceTree = SOURCE_ROOT; };
+		6515286C072BFEC000411831 /* versions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = versions.h; path = ../Common/headers/versions.h; sourceTree = SOURCE_ROOT; };
 		6515286E072BFEC100411831 /* icon.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = icon.h; path = ../Common/headers/icon.h; sourceTree = SOURCE_ROOT; };
 		65152870072BFEC300411831 /* smallicon.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = smallicon.h; path = ../Common/headers/smallicon.h; sourceTree = SOURCE_ROOT; };
 		65152872072BFEC500411831 /* textedit.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = textedit.h; path = ../Common/headers/textedit.h; sourceTree = SOURCE_ROOT; };
@@ -1368,9 +1383,21 @@
 		65F9C21F09C4CD9700DCC29E /* sha.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = sha.h; path = ../Common/headers/sha.h; sourceTree = SOURCE_ROOT; };
 		65F9C22609C4CDDE00DCC29E /* sha1dgst.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = sha1dgst.c; path = ../Common/source/sha1dgst.c; sourceTree = SOURCE_ROOT; };
 		9F01A7CB1851206200CFBD95 /* English */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.strings; name = English; path = English.lproj/Localizable.strings; sourceTree = "<group>"; };
+		9F0D5A261864B06400D9A6CE /* AboutViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AboutViewController.h; sourceTree = "<group>"; };
+		9F0D5A271864B06400D9A6CE /* AboutViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AboutViewController.m; sourceTree = "<group>"; };
+		9F0D5A2E1864B08D00D9A6CE /* AboutViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = AboutViewController.xib; sourceTree = "<group>"; };
+		9F0D5BE01864B58D00D9A6CE /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = System/Library/Frameworks/Cocoa.framework; sourceTree = SDKROOT; };
+		9F0D5BED1864B62F00D9A6CE /* Carbon.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Carbon.framework; path = System/Library/Frameworks/Carbon.framework; sourceTree = SDKROOT; };
+		9F0D5C981864C68700D9A6CE /* AboutWindow.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = AboutWindow.xib; sourceTree = "<group>"; };
+		9F0D5C9C1864C6A800D9A6CE /* AboutWindowController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AboutWindowController.h; sourceTree = "<group>"; };
+		9F0D5C9D1864C6A800D9A6CE /* AboutWindowController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AboutWindowController.m; sourceTree = "<group>"; };
+		9F0D5E551864F04100D9A6CE /* WebKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = WebKit.framework; path = System/Library/Frameworks/WebKit.framework; sourceTree = SDKROOT; };
+		9F34C9DB186397A80047BA53 /* AboutTextView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AboutTextView.h; sourceTree = "<group>"; };
+		9F34C9DC186397A80047BA53 /* AboutTextView.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = AboutTextView.c; sourceTree = "<group>"; };
 		9F3A12D3183A6B3E007ACBD2 /* MacSocketNetEvents.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = MacSocketNetEvents.c; path = ../Common/source/MacSocketNetEvents.c; sourceTree = SOURCE_ROOT; };
 		9F3A12D6183A6B60007ACBD2 /* mutex.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = mutex.c; path = ../Common/source/mutex.c; sourceTree = SOURCE_ROOT; };
 		9F3A12D9183A6B8D007ACBD2 /* mutex.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = mutex.h; path = ../Common/headers/mutex.h; sourceTree = SOURCE_ROOT; };
+		9F92A1C01852927100D6FA9E /* About.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = About.xib; path = ../Common/resources/Mac/About.xib; sourceTree = SOURCE_ROOT; };
 		9FCD376C1845379300E90027 /* OPML.nib */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = OPML.nib; path = ../Common/resources/Mac/OPML.nib; sourceTree = SOURCE_ROOT; };
 		9FCD37A118454A7500E90027 /* macDialogs.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = macDialogs.c; path = ../Common/source/mac/macDialogs.c; sourceTree = SOURCE_ROOT; };
 		BB37A29C0AB826540077C6A1 /* libSQLite3.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libSQLite3.a; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -1382,10 +1409,12 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				65059B3809968C1400410571 /* Carbon.framework in Frameworks */,
 				65059B3909968C1400410571 /* ApplicationServices.framework in Frameworks */,
 				65059B3A09968C1400410571 /* QuickTime.framework in Frameworks */,
 				5DCA3B0D0AF552C700D6155D /* libpaigefat.a in Frameworks */,
+				9F0D5BE11864B58D00D9A6CE /* Cocoa.framework in Frameworks */,
+				9F0D5BEE1864B62F00D9A6CE /* Carbon.framework in Frameworks */,
+				9F0D5E561864F04100D9A6CE /* WebKit.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1393,7 +1422,6 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				651527B9072BFE0E00411831 /* Carbon.framework in Frameworks */,
 				6515294B072C000500411831 /* ApplicationServices.framework in Frameworks */,
 				6515294D072C000900411831 /* QuickTime.framework in Frameworks */,
 				BB37A31B0AB828010077C6A1 /* libSQLite3.a in Frameworks */,
@@ -1556,6 +1584,8 @@
 		6515255C072BFC6500411831 = {
 			isa = PBXGroup;
 			children = (
+				9F0D5A261864B06400D9A6CE /* AboutViewController.h */,
+				9F0D5A271864B06400D9A6CE /* AboutViewController.m */,
 				6515260D072BFC6700411831 /* _cancoon */,
 				65152614072BFC6700411831 /* _clay */,
 				6515261A072BFC6700411831 /* _db */,
@@ -1692,6 +1722,7 @@
 		651525CE072BFC6700411831 /* rez */ = {
 			isa = PBXGroup;
 			children = (
+				9F0D5A2D1864B07400D9A6CE /* Cocoa */,
 				651525CF072BFC6700411831 /* aeut.r */,
 				651525D0072BFC6700411831 /* BNDL.r */,
 				65059B800996958700410571 /* BNDL.r */,
@@ -1716,6 +1747,7 @@
 			children = (
 				9F01A7CA1851206200CFBD95 /* Localizable.strings */,
 				9FCD376C1845379300E90027 /* OPML.nib */,
+				9F92A1C01852927100D6FA9E /* About.xib */,
 				651525DE072BFC6700411831 /* carb.r */,
 				651525DF072BFC6700411831 /* osxdialogs.r */,
 			);
@@ -1725,7 +1757,6 @@
 		651525E1072BFC6700411831 /* tool */ = {
 			isa = PBXGroup;
 			children = (
-				651525EB072BFC6700411831 /* about.c */,
 				651525EC072BFC6700411831 /* assert.c */,
 				651525ED072BFC6700411831 /* base64.c */,
 				651525EE072BFC6700411831 /* cursor.c */,
@@ -1777,6 +1808,10 @@
 				651525E8072BFC6700411831 /* services.c */,
 				651525E9072BFC6700411831 /* uisharing.c */,
 				651525EA072BFC6700411831 /* zoom.c */,
+				9F34C9DB186397A80047BA53 /* AboutTextView.h */,
+				9F34C9DC186397A80047BA53 /* AboutTextView.c */,
+				9F0D5C9C1864C6A800D9A6CE /* AboutWindowController.h */,
+				9F0D5C9D1864C6A800D9A6CE /* AboutWindowController.m */,
 			);
 			name = mac;
 			sourceTree = "<group>";
@@ -2016,12 +2051,14 @@
 			isa = PBXGroup;
 			children = (
 				6515294A072C000500411831 /* ApplicationServices.framework */,
-				651527B8072BFE0E00411831 /* Carbon.framework */,
 				5D8F1EEE0C25B4AB00927B97 /* libmysqlclient.a */,
 				5DCA3B0B0AF552C700D6155D /* libpaigefat.a */,
 				BB37A29C0AB826540077C6A1 /* libSQLite3.a */,
 				5D8F1EEF0C25B4AB00927B97 /* libz.a */,
 				6515294C072C000900411831 /* QuickTime.framework */,
+				9F0D5BE01864B58D00D9A6CE /* Cocoa.framework */,
+				9F0D5BED1864B62F00D9A6CE /* Carbon.framework */,
+				9F0D5E551864F04100D9A6CE /* WebKit.framework */,
 			);
 			name = "External Frameworks and Libraries";
 			sourceTree = "<group>";
@@ -2218,6 +2255,15 @@
 			name = "Include Files";
 			sourceTree = "<group>";
 		};
+		9F0D5A2D1864B07400D9A6CE /* Cocoa */ = {
+			isa = PBXGroup;
+			children = (
+				9F0D5A2E1864B08D00D9A6CE /* AboutViewController.xib */,
+				9F0D5C981864C68700D9A6CE /* AboutWindow.xib */,
+			);
+			name = Cocoa;
+			sourceTree = "<group>";
+		};
 		BB3B83610730603C0049D0C1 /* Resources */ = {
 			isa = PBXGroup;
 			children = (
@@ -2412,6 +2458,9 @@
 				65C4999E0E7D8F320078B6DB /* FSCopyObject.h in Headers */,
 				65C499A40E7D8F3A0078B6DB /* GenLinkedList.h in Headers */,
 				9F3A12DB183A6B8D007ACBD2 /* mutex.h in Headers */,
+				9F34C9DF186397A80047BA53 /* AboutTextView.h in Headers */,
+				9F0D5A2A1864B06400D9A6CE /* AboutViewController.h in Headers */,
+				9F0D5CA01864C6A800D9A6CE /* AboutWindowController.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -2605,6 +2654,9 @@
 				5D8F1E170C25AFC600927B97 /* typelib.h in Headers */,
 				5D8F1EF70C25B56600927B97 /* langmysql.h in Headers */,
 				9F3A12DA183A6B8D007ACBD2 /* mutex.h in Headers */,
+				9F34C9DD186397A80047BA53 /* AboutTextView.h in Headers */,
+				9F0D5A281864B06400D9A6CE /* AboutViewController.h in Headers */,
+				9F0D5C9E1864C6A800D9A6CE /* AboutWindowController.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -2727,6 +2779,9 @@
 				65059B790996945100410571 /* OPMLdoc.icns in Resources */,
 				9FCD376E1845379300E90027 /* OPML.nib in Resources */,
 				9F01A7CD1851206200CFBD95 /* Localizable.strings in Resources */,
+				9F92A1C21852927100D6FA9E /* About.xib in Resources */,
+				9F0D5A301864B08D00D9A6CE /* AboutViewController.xib in Resources */,
+				9F0D5C9A1864C68700D9A6CE /* AboutWindow.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -2737,6 +2792,9 @@
 				DEA58AB407435A9500BAB271 /* Frontier.icns in Resources */,
 				9FCD376D1845379300E90027 /* OPML.nib in Resources */,
 				9F01A7CC1851206200CFBD95 /* Localizable.strings in Resources */,
+				9F92A1C11852927100D6FA9E /* About.xib in Resources */,
+				9F0D5A2F1864B08D00D9A6CE /* AboutViewController.xib in Resources */,
+				9F0D5C991864C68700D9A6CE /* AboutWindow.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -2892,7 +2950,6 @@
 				65059A8A09968C1400410571 /* base64.c in Sources */,
 				65059A8B09968C1400410571 /* assert.c in Sources */,
 				65059A8C09968C1400410571 /* aeutils.c in Sources */,
-				65059A8D09968C1400410571 /* about.c in Sources */,
 				65059A8E09968C1400410571 /* kb.c in Sources */,
 				65059A8F09968C1400410571 /* icon.c in Sources */,
 				65059A9009968C1400410571 /* frontierwindows.c in Sources */,
@@ -3069,6 +3126,9 @@
 				9F3A12D5183A6B3E007ACBD2 /* MacSocketNetEvents.c in Sources */,
 				9F3A12D8183A6B60007ACBD2 /* mutex.c in Sources */,
 				9FCD37A318454A7500E90027 /* macDialogs.c in Sources */,
+				9F34C9E0186397A80047BA53 /* AboutTextView.c in Sources */,
+				9F0D5A2B1864B06400D9A6CE /* AboutViewController.m in Sources */,
+				9F0D5CA11864C6A800D9A6CE /* AboutWindowController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -3103,7 +3163,6 @@
 				651526F8072BFC6800411831 /* base64.c in Sources */,
 				651526F9072BFC6800411831 /* assert.c in Sources */,
 				651526FA072BFC6800411831 /* aeutils.c in Sources */,
-				651526FB072BFC6800411831 /* about.c in Sources */,
 				651526FC072BFC6800411831 /* kb.c in Sources */,
 				651526FD072BFC6800411831 /* icon.c in Sources */,
 				651526FE072BFC6800411831 /* frontierwindows.c in Sources */,
@@ -3280,6 +3339,9 @@
 				9F3A12D4183A6B3E007ACBD2 /* MacSocketNetEvents.c in Sources */,
 				9F3A12D7183A6B60007ACBD2 /* mutex.c in Sources */,
 				9FCD37A218454A7500E90027 /* macDialogs.c in Sources */,
+				9F34C9DE186397A80047BA53 /* AboutTextView.c in Sources */,
+				9F0D5A291864B06400D9A6CE /* AboutViewController.m in Sources */,
+				9F0D5C9F1864C6A800D9A6CE /* AboutWindowController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -3594,9 +3656,9 @@
 					ppc,
 					i386,
 				);
-				GCC_VERSION = 4.0;
+				GCC_VERSION = "";
 				OTHER_CFLAGS = "";
-				SDKROOT = /Developer/SDKs/MacOSX10.4u.sdk;
+				SDKROOT = /Developer/SDKs/MacOSX10.5.sdk;
 			};
 			name = Development;
 		};
@@ -3609,7 +3671,7 @@
 				);
 				GCC_VERSION = 4.0;
 				OTHER_CFLAGS = "";
-				SDKROOT = /Developer/SDKs/MacOSX10.4u.sdk;
+				SDKROOT = /Developer/SDKs/MacOSX10.5.sdk;
 			};
 			name = Deployment;
 		};

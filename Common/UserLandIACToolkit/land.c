@@ -71,28 +71,11 @@ pascal boolean landpushfastcontext (tyfastverbcontext *savecontext) {
 	register tyfastverbcontext *x = savecontext;
 	//Code change by Timothy Paustian Monday, June 26, 2000 3:19:32 PM
 	//
-	#if TARGET_API_MAC_CARBON == 1
-	(*x).savezone = LMGetApplZone();
-	#else
-	(*x).savezone = GetZone ();
-	#endif
 		
 	(*x).saveresfile = CurResFile ();
 	
 	//I wonder if these calls are needed. Can we get away with
 	//UseResFile and CurResFile
-	#if !TARGET_API_MAC_CARBON
-	(*x).savemaphandle = LMGetTopMapHndl ();
-	#endif
-
-	#if TARGET_API_MAC_CARBON == 1
-	LMSetApplZone(landzone);
-	#else	
-	SetZone (landzone);
-	#endif
-	#if !TARGET_API_MAC_CARBON
-	LMSetTopMapHndl (landresmap);
-	#endif
 
 	UseResFile (landresfile);
 	
@@ -104,16 +87,8 @@ pascal void landpopfastcontext (const tyfastverbcontext *savecontext) {
 	
 	register const tyfastverbcontext *x = savecontext;
 	
-	#if !TARGET_API_MAC_CARBON
-	LMSetTopMapHndl ((*x).savemaphandle);
-	#endif
-
 	UseResFile ((*x).saveresfile);
-	#if TARGET_API_MAC_CARBON == 1
-	LMSetApplZone((*x).savezone);
-	#else
-	SetZone ((*x).savezone);
-	#endif
+	
 	} /*landpopfastcontext*/
 
 	
@@ -706,16 +681,6 @@ pascal boolean landinit (void) {
 	hdllandglobals hglobals;
 	tyapplicationid id;
 	
-	#if TARGET_API_MAC_CARBON == 1
-	landzone = LMGetApplZone();
-	#else	
-	landzone = GetZone ();
-	#endif
-		
-	#if !TARGET_API_MAC_CARBON
-	landresmap = LMGetTopMapHndl ();
-	#endif
-
 	landresfile = CurResFile ();
 	
 	if (hg == nil) { /*if someone hasn't already put something there*/

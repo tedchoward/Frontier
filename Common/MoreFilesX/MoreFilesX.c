@@ -2332,29 +2332,29 @@ BadParameter:
 
 /*****************************************************************************/
 
-OSErr
-FSVolumeMount(
-	const void *volMountInfo,
-	FSVolumeRefNum *volRefNum)
-{
-	OSErr			result;
-	ParamBlockRec	pb;
-
-	/* check parameters */
-	require_action(NULL != volRefNum, BadParameter, result = paramErr);
-	
-	pb.ioParam.ioBuffer = CONST_CAST(Ptr, volMountInfo);
-	result = PBVolumeMount(&pb);
-	require_noerr(result, PBVolumeMount);
-	
-	/* return the volume reference number */
-	*volRefNum = pb.ioParam.ioVRefNum;
-
-PBVolumeMount:
-BadParameter:
-
-	return ( result );
-}
+//OSErr
+//FSVolumeMount(
+//	const void *volMountInfo,
+//	FSVolumeRefNum *volRefNum)
+//{
+//	OSErr			result;
+//	ParamBlockRec	pb;
+//
+//	/* check parameters */
+//	require_action(NULL != volRefNum, BadParameter, result = paramErr);
+//	
+//	pb.ioParam.ioBuffer = CONST_CAST(Ptr, volMountInfo);
+//	result = PBVolumeMount(&pb);
+//	require_noerr(result, PBVolumeMount);
+//	
+//	/* return the volume reference number */
+//	*volRefNum = pb.ioParam.ioVRefNum;
+//
+//PBVolumeMount:
+//BadParameter:
+//
+//	return ( result );
+//}
 
 /*****************************************************************************/
 
