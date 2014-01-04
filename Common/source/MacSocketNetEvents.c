@@ -38,6 +38,8 @@
 #include <arpa/inet.h>
 #include <netdb.h>
 #include <netinet/in.h>
+#include <ifaddrs.h>
+#include <net/if.h>
 #include <sys/socket.h>
 #include <fcntl.h>
 #include <inttypes.h>
@@ -781,23 +783,39 @@ boolean fwsNetEventMyAddress(unsigned long *addr) {
 	if (!netEventLaunch())
 		return false;
 	
-	char sysstring[256];
-	static const int getHostNameFailure = -1;
+	struct ifaddrs *myaddrs, *ifa;
+    void *in_addr;
+    
+    if (getifaddrs(&myaddrs) != 0) {
+		TCPTrackerTraceOutWithError("can't get if addresses", __FUNCTION__, __LINE__);
+		neterror("getifaddrs", errno);
+        return false;
+    }
+    
+    for (ifa = myaddrs; ifa != NULL; ifa = ifa->ifa_next) {
+        if (ifa->ifa_addr == NULL) {
+            continue;
+        }
+        
+        if (!(ifa->ifa_flags & IFF_UP)) {
+            continue;
+        }
+        
+        if (!strstr(ifa->ifa_name, "lo") && ifa->ifa_addr->sa_family == AF_INET) {
+            struct sockaddr_in *s4 = (struct sockaddr_in *)ifa->ifa_addr;
+            in_addr = &s4->sin_addr;
+            *addr = ntohl(((struct in_addr *)in_addr)->s_addr);
+            break;
+        }
+		
+    }
+    
+    freeifaddrs(myaddrs);
+    
+    if (*addr == 0) {
+        *addr = 0x7F000001;
+    }
 	
-	if (gethostname(sysstring, 255) == getHostNameFailure) {
-		TCPTrackerTraceOutWithError("can't get local address", __FUNCTION__, __LINE__);
-		neterror("get local address", errno);
-		return false;
-	}
-	
-	struct hostent *h = gethostbyname(sysstring);	
-	if (h == NULL) {
-		TCPTrackerTraceOutWithError("can't get local address name", __FUNCTION__, __LINE__);
-		neterror("get local address name", h_errno);
-		return false;
-	}
-	
-	*addr = ntohl(*((long *)h->h_addr_list[0]));	
 	TCPOUT();
 	return true;
 }
