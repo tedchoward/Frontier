@@ -13,4 +13,4 @@ deprecated frameworks.)
 You can download a binary of the OPML Editor built from the master tree
 here: [Download OPML Editor v10.1b19][1].
 
-[1]: https://www.dropbox.com/s/cttl76cletqlb4c/OPML.zip
+[1]: http://bit.ly/1f3HKzY
