@@ -43,7 +43,7 @@
 /* common strings for all targets */
 
 #define	APP_COPYRIGHT_FROM	"2004"
-#define	APP_COPYRIGHT_TILL	"2013"
+#define	APP_COPYRIGHT_TILL	"2014"
 
 /* 2011-08-03 tedchoward: these properties are identical for each app */
 #define	APP_MAJOR_VERSION			11
@@ -57,7 +57,7 @@
 #define	APP_REVISION_LEVEL			0	/* for non-final releases only */
 #define	APP_BUILD_NUMBER			0	/* increment by one for every release, final or not */
 
-#define	APP_VERSION_STRING			"11.0d0"
+#define	APP_VERSION_STRING			"11.0d1"
 
 
 
