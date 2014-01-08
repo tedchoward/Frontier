@@ -197,8 +197,11 @@ boolean getmachinename (bigstring bsname) {
 	boolean fl;
 	
 	#ifdef MACVERSION
+		CFStringRef machineName = CSCopyMachineName();
 	
-		fl = CFStringGetPascalString (CSCopyMachineName (), bsname, sizeof (bigstring), kCFStringEncodingMacRoman);
+		fl = CFStringGetPascalString (machineName, bsname, sizeof (bigstring), kCFStringEncodingMacRoman);
+	
+		CFRelease(machineName);
 
 		if (!fl)
 			setemptystring (bsname);
