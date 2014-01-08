@@ -60,7 +60,6 @@
 #define	APP_VERSION_STRING			"11.0d1"
 
 
-
 /* target-specific strings and version info */
 
 #ifdef PIKE
