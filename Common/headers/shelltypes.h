@@ -191,6 +191,7 @@ typedef struct tybuttonstatus {
 		tyfilespecflags	flags;
 		FSRef ref;
 		tyfsname name;
+		CFURLRef url;
 		
 		} tyfilespec;
 		
