@@ -531,11 +531,11 @@ boolean winfileerror (const ptrfilespec fs) {
 			
 			 status = UCConvertUTCDateTimeToCFAbsoluteTime ( &( *pb ).catInfo -> createDate, &oCFTime );
 			 
-			 status = UCConvertCFAbsoluteTimeToSeconds ( oCFTime, &info -> timecreated );
+			 status = UCConvertCFAbsoluteTimeToSeconds ( oCFTime, (UInt32 *)&info -> timecreated );
 
 			 status = UCConvertUTCDateTimeToCFAbsoluteTime ( &( *pb ).catInfo -> contentModDate, &oCFTime );
 			 
-			 status = UCConvertCFAbsoluteTimeToSeconds ( oCFTime, &info -> timemodified );
+			 status = UCConvertCFAbsoluteTimeToSeconds ( oCFTime, (UInt32 *)&info -> timemodified );
 			 
 			 } // date time
 
@@ -659,7 +659,7 @@ boolean winfileerror (const ptrfilespec fs) {
 					
 				if ( isemptystring ( bsext ) || ( stringlength ( bsext ) > 4 ) ) // no extension
 				
-					stringtoostype ( "\x04" "????", &( *info ).filetype );
+					stringtoostype ( BIGSTRING("\x04" "????"), &( *info ).filetype );
 				else
 					stringtoostype ( bsext, &( *info ).filetype );
 					
