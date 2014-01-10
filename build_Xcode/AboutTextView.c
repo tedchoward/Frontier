@@ -15,6 +15,7 @@ typedef struct {
 	HIViewRef view;
 } AboutTextViewData;
 
+OSStatus aboutTextViewRegister();
 OSStatus aboutTextViewHandler(EventHandlerCallRef inCallRef, EventRef inEvent, void *inUserData);
 OSStatus aboutTextViewConstruct(EventRef inEvent);
 OSStatus aboutTextViewDestruct(EventRef inEvent, AboutTextViewData *inData);

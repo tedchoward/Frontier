@@ -171,7 +171,7 @@ boolean filereaddata(hdlfilenum fnum, long ctread, long *ctactual, void *buffer)
 boolean fileread(hdlfilenum fnum, long ctread, void *buffer) {
 	long ctactual;
 	
-	if (!filereaddata(fnum, ctread, ctactual, buffer)) {
+	if (!filereaddata(fnum, ctread, &ctactual, buffer)) {
 		return false;
 	}
 	
@@ -216,7 +216,7 @@ boolean filereadhandle(hdlfilenum fnum, Handle *hreturned) {
 }
 
 boolean flushvolumechanges(const ptrfilespec fs, hdlfilenum fnum) {
-	if (fnum != NULL) {
+	if (fnum >= 0) {
 		fsync(fnum);
 	}
 	
@@ -234,11 +234,11 @@ static boolean fileCreateAndOpen(ptrfilespec fs, OSType creator, OSType fileType
 	UInt8 buffer[1024];
 	CFURLGetFileSystemRepresentation(fs->url, true, buffer, 1024);
 	
-	int fd = open(buffer, O_RDWR | O_CREAT | O_EXCL);
+	int fd = open((char *)buffer, O_RDWR | O_CREAT | O_EXCL);
 	
 	if (fd == -1) {
 		//TODO proper error reporting
-		return false
+		return false;
 	}
 	
 	*fnum = fd;
@@ -265,7 +265,7 @@ boolean openfile(const ptrfilespec fs, hdlfilenum *fnum, boolean flreadonly) {
 	CFURLGetFileSystemRepresentation(fs->url, true, buffer, 1024);
 
 	
-	fileDescriptor = open(buffer, flags);
+	fileDescriptor = open((char *)buffer, flags);
 	
 	if (fileDescriptor == -1) {
 		//TODO: error reporting
@@ -297,7 +297,7 @@ boolean deletefile(const ptrfilespec fs) {
 	NSString *path = [fileURL path];
 	NSError *err;
 	
-	success = [[NSFileManager defaultManager] removeItemAtPath:path error:err];
+	success = [[NSFileManager defaultManager] removeItemAtPath:path error:&err];
 	
 	if (!success) {
 		//TODO: error reporting
@@ -316,8 +316,10 @@ boolean fileexists(const ptrfilespec fs, boolean *flfolder) {
 	
 	NSURL *fileURL = (NSURL *)fs->url;
 	NSString *path = [fileURL path];
+	BOOL isFolder;
 	
-	exists = [[NSFileManager defaultManager] fileExistsAtPath:path isDirectory:flfolder];
+	exists = [[NSFileManager defaultManager] fileExistsAtPath:path isDirectory:&isFolder];
+	*flfolder = isFolder;
 	
 	[pool release];
 	
