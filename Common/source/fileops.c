@@ -483,19 +483,10 @@ boolean winfileerror (const ptrfilespec fs) {
 		
 		/* network volume */ {
 			
-			HParamBlockRec lpb;
 			GetVolParmsInfoBuffer buffer;
 			OSErr err;
 			
-			clearbytes (&lpb, sizeof (lpb)); /*init all fields to zero*/
-			
-			lpb.ioParam.ioVRefNum = (*info).vnum;
-			
-			lpb.ioParam.ioBuffer = ( Ptr ) &buffer;
-			
-			lpb.ioParam.ioReqCount = sizeof (buffer);
-			
-			err = PBHGetVolParmsSync (&lpb);
+			err = FSGetVolumeParms(vnum, &buffer, sizeof (GetVolParmsInfoBuffer));
 		
 			if (err == noErr) 
 				( *info ).flremotevolume = VolIsNetworkVolume ( &buffer );
@@ -3716,7 +3707,7 @@ void clearfilespec (ptrfilespec fs) {
 			
 			return (FSGetCatalogInfo (&fsref, kFSCatInfoNone, NULL, &fs->name, NULL, NULL));
 			}
-
+		
 		return (FSGetCatalogInfo (&fsref, kFSCatInfoNone, NULL, &fs->name, NULL, &fs->ref));
 		} /*macmakefilespec*/
 	
