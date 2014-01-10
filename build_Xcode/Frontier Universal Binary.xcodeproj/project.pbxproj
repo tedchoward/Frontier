@@ -259,7 +259,6 @@
 		65059A4609968C1400410571 /* fileloop.c in Sources */ = {isa = PBXBuildFile; fileRef = 65152577072BFC6700411831 /* fileloop.c */; };
 		65059A4809968C1400410571 /* filedialog.c in Sources */ = {isa = PBXBuildFile; fileRef = 65152576072BFC6700411831 /* filedialog.c */; };
 		65059A4909968C1400410571 /* filealias.c in Sources */ = {isa = PBXBuildFile; fileRef = 65152573072BFC6700411831 /* filealias.c */; };
-		65059A4A09968C1400410571 /* file.c in Sources */ = {isa = PBXBuildFile; fileRef = 65152575072BFC6700411831 /* file.c */; };
 		65059A7B09968C1400410571 /* landverbarray.c in Sources */ = {isa = PBXBuildFile; fileRef = 651525BF072BFC6700411831 /* landverbarray.c */; };
 		65059A7C09968C1400410571 /* land.c in Sources */ = {isa = PBXBuildFile; fileRef = 651525B8072BFC6700411831 /* land.c */; };
 		65059A7D09968C1400410571 /* landops.c in Sources */ = {isa = PBXBuildFile; fileRef = 651525BA072BFC6700411831 /* landops.c */; };
@@ -470,7 +469,6 @@
 		651526A9072BFC6800411831 /* fileloop.c in Sources */ = {isa = PBXBuildFile; fileRef = 65152577072BFC6700411831 /* fileloop.c */; };
 		651526AB072BFC6800411831 /* filedialog.c in Sources */ = {isa = PBXBuildFile; fileRef = 65152576072BFC6700411831 /* filedialog.c */; };
 		651526AC072BFC6800411831 /* filealias.c in Sources */ = {isa = PBXBuildFile; fileRef = 65152573072BFC6700411831 /* filealias.c */; };
-		651526AD072BFC6800411831 /* file.c in Sources */ = {isa = PBXBuildFile; fileRef = 65152575072BFC6700411831 /* file.c */; };
 		651526E4072BFC6800411831 /* landverbarray.c in Sources */ = {isa = PBXBuildFile; fileRef = 651525BF072BFC6700411831 /* landverbarray.c */; };
 		651526E5072BFC6800411831 /* land.c in Sources */ = {isa = PBXBuildFile; fileRef = 651525B8072BFC6700411831 /* land.c */; };
 		651526E6072BFC6800411831 /* landops.c in Sources */ = {isa = PBXBuildFile; fileRef = 651525BA072BFC6700411831 /* landops.c */; };
@@ -893,6 +891,8 @@
 		9F3A12DB183A6B8D007ACBD2 /* mutex.h in Headers */ = {isa = PBXBuildFile; fileRef = 9F3A12D9183A6B8D007ACBD2 /* mutex.h */; };
 		9F92A1C11852927100D6FA9E /* About.xib in Resources */ = {isa = PBXBuildFile; fileRef = 9F92A1C01852927100D6FA9E /* About.xib */; };
 		9F92A1C21852927100D6FA9E /* About.xib in Resources */ = {isa = PBXBuildFile; fileRef = 9F92A1C01852927100D6FA9E /* About.xib */; };
+		9FAA95D2187F3AD7008923D3 /* file.c in Sources */ = {isa = PBXBuildFile; fileRef = 9FAA95D1187F3AD7008923D3 /* file.c */; };
+		9FAA95D3187F3AD7008923D3 /* file.c in Sources */ = {isa = PBXBuildFile; fileRef = 9FAA95D1187F3AD7008923D3 /* file.c */; };
 		9FCD376D1845379300E90027 /* OPML.nib in Resources */ = {isa = PBXBuildFile; fileRef = 9FCD376C1845379300E90027 /* OPML.nib */; };
 		9FCD376E1845379300E90027 /* OPML.nib in Resources */ = {isa = PBXBuildFile; fileRef = 9FCD376C1845379300E90027 /* OPML.nib */; };
 		9FCD37A218454A7500E90027 /* macDialogs.c in Sources */ = {isa = PBXBuildFile; fileRef = 9FCD37A118454A7500E90027 /* macDialogs.c */; };
@@ -995,7 +995,6 @@
 		65123A8509D9C173005AB449 /* kernelverbs.rc */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text; name = kernelverbs.rc; path = ../Common/resources/Win32/kernelverbs.rc; sourceTree = SOURCE_ROOT; };
 		65123A8609D9C173005AB449 /* WinLand.rc */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text; name = WinLand.rc; path = ../Common/resources/Win32/WinLand.rc; sourceTree = SOURCE_ROOT; };
 		65152573072BFC6700411831 /* filealias.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = filealias.c; path = ../Common/source/filealias.c; sourceTree = SOURCE_ROOT; };
-		65152575072BFC6700411831 /* file.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = file.c; path = ../Common/source/file.c; sourceTree = SOURCE_ROOT; };
 		65152576072BFC6700411831 /* filedialog.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = filedialog.c; path = ../Common/source/filedialog.c; sourceTree = SOURCE_ROOT; };
 		65152577072BFC6700411831 /* fileloop.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = fileloop.c; path = ../Common/source/fileloop.c; sourceTree = SOURCE_ROOT; };
 		65152578072BFC6700411831 /* filemp3.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = filemp3.c; path = ../Common/source/filemp3.c; sourceTree = SOURCE_ROOT; };
@@ -1398,6 +1397,7 @@
 		9F3A12D6183A6B60007ACBD2 /* mutex.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = mutex.c; path = ../Common/source/mutex.c; sourceTree = SOURCE_ROOT; };
 		9F3A12D9183A6B8D007ACBD2 /* mutex.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = mutex.h; path = ../Common/headers/mutex.h; sourceTree = SOURCE_ROOT; };
 		9F92A1C01852927100D6FA9E /* About.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = About.xib; path = ../Common/resources/Mac/About.xib; sourceTree = SOURCE_ROOT; };
+		9FAA95D1187F3AD7008923D3 /* file.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = file.c; path = ../Common/source/file.c; sourceTree = SOURCE_ROOT; };
 		9FCD376C1845379300E90027 /* OPML.nib */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = OPML.nib; path = ../Common/resources/Mac/OPML.nib; sourceTree = SOURCE_ROOT; };
 		9FCD37A118454A7500E90027 /* macDialogs.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = macDialogs.c; path = ../Common/source/mac/macDialogs.c; sourceTree = SOURCE_ROOT; };
 		BB37A29C0AB826540077C6A1 /* libSQLite3.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libSQLite3.a; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -1633,7 +1633,6 @@
 			isa = PBXGroup;
 			children = (
 				65152572072BFC6700411831 /* mac */,
-				65152575072BFC6700411831 /* file.c */,
 				65152576072BFC6700411831 /* filedialog.c */,
 				65152577072BFC6700411831 /* fileloop.c */,
 				65152578072BFC6700411831 /* filemp3.c */,
@@ -1641,6 +1640,7 @@
 				6515257A072BFC6700411831 /* filepath.c */,
 				6515257B072BFC6700411831 /* fileverbs.c */,
 				6515257C072BFC6700411831 /* findinfile.c */,
+				9FAA95D1187F3AD7008923D3 /* file.c */,
 				6515257D072BFC6700411831 /* resources.c */,
 			);
 			name = file;
@@ -2932,7 +2932,6 @@
 				65059A4609968C1400410571 /* fileloop.c in Sources */,
 				65059A4809968C1400410571 /* filedialog.c in Sources */,
 				65059A4909968C1400410571 /* filealias.c in Sources */,
-				65059A4A09968C1400410571 /* file.c in Sources */,
 				65059A7B09968C1400410571 /* landverbarray.c in Sources */,
 				65059A7C09968C1400410571 /* land.c in Sources */,
 				65059A7D09968C1400410571 /* landops.c in Sources */,
@@ -3129,6 +3128,7 @@
 				9F34C9E0186397A80047BA53 /* AboutTextView.c in Sources */,
 				9F0D5A2B1864B06400D9A6CE /* AboutViewController.m in Sources */,
 				9F0D5CA11864C6A800D9A6CE /* AboutWindowController.m in Sources */,
+				9FAA95D2187F3AD7008923D3 /* file.c in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -3145,7 +3145,6 @@
 				651526A9072BFC6800411831 /* fileloop.c in Sources */,
 				651526AB072BFC6800411831 /* filedialog.c in Sources */,
 				651526AC072BFC6800411831 /* filealias.c in Sources */,
-				651526AD072BFC6800411831 /* file.c in Sources */,
 				651526E4072BFC6800411831 /* landverbarray.c in Sources */,
 				651526E5072BFC6800411831 /* land.c in Sources */,
 				651526E6072BFC6800411831 /* landops.c in Sources */,
@@ -3342,6 +3341,7 @@
 				9F34C9DE186397A80047BA53 /* AboutTextView.c in Sources */,
 				9F0D5A291864B06400D9A6CE /* AboutViewController.m in Sources */,
 				9F0D5C9F1864C6A800D9A6CE /* AboutWindowController.m in Sources */,
+				9FAA95D3187F3AD7008923D3 /* file.c in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

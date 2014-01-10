@@ -486,63 +486,88 @@ boolean folderloop ( const ptrfilespec pfs, boolean flreverse, tyfileloopcallbac
 		// continue the loop. the next time thru it will find a file. hope this
 		// doesn't break anything else (it shouldn't).
 		//
-		
-		FSSpec fs;
-		CInfoPBRec pb;
-		long dirid;
 		bigstring bsfile;
 		short ix;
 		long ctfiles;
 		tyfileinfo info;
-		OSErr ec;
+		tyfilespec fs;
 		
-		if (oserror (macgetfsspec (pfs, &fs) ) )
-			return (false);
+	
+		FSRef fileRef;
+		FSRefParam paramBlock;
+		FSCatalogInfo catalogInfo;
+		FSIterator iterator;
 		
-		setoserrorparam ((ptrstring) fs.name);
-		
-		if (!getmacfileinfocipbr (&fs, &pb))
-			return (false);
+		if (oserror(macgetfsref(pfs, &fileRef))) {
+			return false;
+		}
 			
-		assert (BitTst (&pb.dirInfo.ioFlAttrib, 3)); // be sure it's a folder
+		bigstring bsfilename;
+		CFStringRef cfFileName = CFStringCreateWithCharacters(kCFAllocatorDefault, pfs->name.unicode, pfs->name.length);
+		CFStringGetPascalString(cfFileName, bsfilename, sizeof (bigstring), kCFStringEncodingMacRoman);
+		CFRelease(cfFileName);
+		setoserrorparam(bsfilename);
 		
-		dirid = pb.dirInfo.ioDrDirID; // must remember this for loop body
+		getmacfileinfo(pfs, &paramBlock, &catalogInfo);
 		
-		ctfiles = pb.dirInfo.ioDrNmFls;
 		
-		if (flreverse)
-			ix = ctfiles;
-		else
-			ix = 1; // start with file index 1
+		// be sure it's a folder
+		assert ((catalogInfo.nodeFlags & kFSNodeIsDirectoryMask) != 0);
+
+		ctfiles = catalogInfo.valence;
 		
+		if (flreverse) {
+			ix = ctfiles - 1;
+		} else {
+			ix = 0;
+		}
+		
+		FSOpenIterator(&fileRef, kFSIterateFlat, &iterator);
+		FSRef childFSRefs[ctfiles];
+		FSCatalogInfo childCatalogInfos[ctfiles];
+		HFSUniStr255 childFileNames[ctfiles];
+			
+		FSRef currentFSRef;
+		HFSUniStr255 currentFileName;
+		FSCatalogInfo currentCatalogInfo;
+		
+		FSGetCatalogInfoBulk(iterator, ctfiles, NULL, NULL, kFSCatInfoGettableInfo, childCatalogInfos, childFSRefs, NULL, childFileNames);
+
 		while (--ctfiles >= 0) {
+			currentFSRef = childFSRefs[ix];
+			currentFileName = childFileNames[ix];
+			currentCatalogInfo = childCatalogInfos[ix];
 			
-			pb.dirInfo.ioDrDirID = dirid; // may be smashed by ioFlNum on previous loop
-			
-			pb.dirInfo.ioFDirIndex = ix;
-			
-			if (flreverse)
+			if (flreverse) {
 				--ix;
-			else
+			} else {
 				++ix;
+			}
 			
-			pb.dirInfo.ioNamePtr = bsfile;
+			memset(&fs, 0, sizeof (tyfilespec));
 			
-			ec = PBGetCatInfoSync (&pb);
+			if (currentCatalogInfo.parentDirID == fsRtParID) {
+				fs.flags.flvolume = true;
+				fs.ref = currentFSRef;
+				fs.name = currentFileName;
+			} else {
+				fs.ref = fileRef;
+				fs.name = currentFileName;
+			}
 			
-			if (ec == fnfErr) // DW 8/28/93: continue instead of returning true
-				continue; 
-				
-			if (oserror (ec)) 
-				return (false);
+			filegetinfo(&fs, &info);
 			
-			filegetinfofrompbcipbr (&pb, &info);
+			CFStringRef cfFile = CFStringCreateWithCharacters(kCFAllocatorDefault, fs.name.unicode, fs.name.length);
+			CFStringGetPascalString(cfFile, bsfile, sizeof (bigstring), kCFStringEncodingMacRoman);
+			CFRelease(cfFile);
 			
-			if (!(*filecallback) (bsfile, &info, refcon))
-				return (false);
-				
-			} // while
-			
+			if (!(*filecallback) (bsfile, &info, refcon)) {
+				return false;
+			}
+		}
+		
+		FSCloseIterator(iterator);
+	
 		return (true);
 		
 	#endif // MACVERSION
