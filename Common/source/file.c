@@ -104,7 +104,8 @@ boolean filesetposition (hdlfilenum fnum, long position) {
 	*/
 	
 	#ifdef MACVERSION
-		return (!oserror (SetFPos (fnum, fsFromStart, position)));
+		SInt64 pos = position;
+		return (!oserror (FSSetForkPosition (fnum, fsFromStart, pos)));
 	#endif
 
 	#ifdef WIN95VERSION
@@ -123,7 +124,14 @@ boolean filesetposition (hdlfilenum fnum, long position) {
 boolean filegetposition (hdlfilenum fnum, long *position) {
 	
 	#ifdef MACVERSION
-		return (!oserror (GetFPos (fnum, position)));
+		SInt64 pos;
+	
+		if (!oserror (FSGetForkPosition (fnum, &pos))) {
+			*position = pos;
+			return true;
+		}
+	
+		return false;
 	#endif
 
 	#ifdef WIN95VERSION
@@ -147,8 +155,14 @@ boolean filegeteof (hdlfilenum fnum, long *position) {
 		/*
 		6/x/91 mao
 		*/
-
-		return (!oserror (GetEOF (fnum, position)));
+		SInt64 pos;
+	
+		if (!oserror (FSGetForkSize (fnum, &pos))) {
+			*position = pos;
+			return true;
+		}
+	
+		return false;
 	#endif
 
 	#ifdef WIN95VERSION
@@ -179,7 +193,7 @@ boolean fileseteof (hdlfilenum fnum, long position) {
 	*/
 	
 	#ifdef MACVERSION
-		return (!oserror (SetEOF (fnum, position)));
+		return (!oserror (FSSetForkSize(fnum, fsFromStart, position)));
 	#endif
 
 	#ifdef WIN95VERSION
@@ -216,12 +230,13 @@ long filegetsize (hdlfilenum fnum) {
 	*/
 	
 	#ifdef MACVERSION
-		long lfilesize;
+		SInt64 forkSize;
+	
+		if (FSGetForkSize(fnum, &forkSize) != noErr) {
+			forkSize = 0;
+		}
 		
-		if (GetEOF (fnum, &lfilesize) != noErr)
-			lfilesize = 0;
-		
-		return (lfilesize);
+		return forkSize;
 	#endif
 
 	#ifdef WIN95VERSION
@@ -252,8 +267,10 @@ boolean filewrite (hdlfilenum fnum, long ctwrite, void *buffer) {
 	if (ctwrite > 0) {
 		
 		#ifdef MACVERSION
-			if (oserror (FSWrite (fnum, &ctwrite, buffer)))
-				return (false);
+			ByteCount actualBytes;
+			if (oserror(FSWriteFork(fnum, fsAtMark, 0, ctwrite, buffer, &actualBytes) || ctwrite != actualBytes)) {
+				return false;
+			}
 		#endif
 
 		#ifdef WIN95VERSION
@@ -287,7 +304,7 @@ boolean filereaddata (hdlfilenum fnum, long ctread, long *ctactual, void *buffer
 	if (ctread > 0) {
 		
 		#ifdef MACVERSION
-			OSErr ec = FSRead (fnum, ctactual, buffer);
+			OSErr ec = FSReadFork(fnum, fsAtMark, 0, ctread, buffer, (ByteCount *)ctactual);
 			
 			if (ec != noErr && ec != eofErr) {
 				
@@ -482,20 +499,20 @@ boolean flushvolumechanges (const ptrfilespec fs, hdlfilenum fnum) {
 		now use PB call to do asynch flush
 		*/
 		
-		ParamBlockRec *pb;
-		
-		pb = (ParamBlockRec *) NewPtrClear (sizeof (ParamBlockRec));
+		FSRefParamPtr pb;
+
+		pb = (FSRefParamPtr) NewPtrClear(sizeof (FSRefParam));
 		
 		FSCatalogInfo catalogInfo;
 		OSErr err;
 		
 		err = FSGetCatalogInfo ( &fs->ref, kFSCatInfoVolume, &catalogInfo, NULL, NULL, NULL );
 		
-		(*pb).volumeParam.ioVRefNum = catalogInfo.volume;
+		pb->ioVRefNum = catalogInfo.volume;
 		
-		(*pb).volumeParam.ioCompletion = iocompletionUPP;
+		pb->ioCompletion = iocompletionUPP;
 		
-		PBFlushVolAsync (pb);
+		PBFlushVolumeAsync(pb);
 		
 	#endif	
 
