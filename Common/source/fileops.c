@@ -416,11 +416,11 @@ boolean winfileerror (const ptrfilespec fs) {
 			
 			 status = UCConvertUTCDateTimeToCFAbsoluteTime ( &( *( *pb ).volumeInfo ).createDate, &oCFTime );
 			 
-			 status = UCConvertCFAbsoluteTimeToSeconds ( oCFTime, &( *info ).timecreated );
+			 status = UCConvertCFAbsoluteTimeToSeconds ( oCFTime, (UInt32 *)&( *info ).timecreated );
 
 			 status = UCConvertUTCDateTimeToCFAbsoluteTime ( &( *( *pb ).volumeInfo ).modifyDate, &oCFTime );
 			 
-			 status = UCConvertCFAbsoluteTimeToSeconds ( oCFTime, &( *info ).timemodified );
+			 status = UCConvertCFAbsoluteTimeToSeconds ( oCFTime, (UInt32 *)&( *info ).timemodified );
 			 
 			 }
 
