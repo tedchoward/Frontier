@@ -1749,52 +1749,17 @@ boolean largefilebuffer (Handle *hbuffer) {
 	
 	3/16/92 dmb: total rewrite; old version _always_ compacted the heap, 
 	resulting in poor performance.
+	 
+	2/10/2014 tch: total rewrite: with virtual memory, we can always allocate as much
+	we want. This method now alyways allocates 128K (this is what the windows version
+	already did).
 	*/
 	
-	register long ctbytes;
-	register Handle h;
+	UInt32 ctbytes;
 	
 	*hbuffer = nil; /*default return*/
-
-#ifdef MACVERSION
-	ctbytes = FreeMem () / 2;
-	
-	if (ctbytes < 1024) { /*no enough memory to work with*/
-		
-		memoryerror ();
-		
-		return (false);
-		}
-	
-	ctbytes &= ~(1024 - 1); /*fast round down to nearest multiple of 1024*/
-	
-	h = NewHandle (ctbytes);
-	
-	if (h != nil) {
-		
-		*hbuffer = h;
-		
-		return (true);
-		}
-	
-	/*allocation failed; heap has been compacted; find largest block size*/
-	
-	ctbytes = CompactMem (maxSize); /*recompact the heap, finding out size of largest block*/
-	
-	if (ctbytes < 1024) { /*largest block is too small to use*/
-		
-		memoryerror ();
-		
-		return (false);
-		}
-	
-#endif
-
-#ifdef WIN95VERSION
-	DBG_UNREFERENCED_LOCAL_VARIABLE(h);
 	
 	ctbytes = 0x00020000L;		/* 128K buffer */
-#endif
 
 	ctbytes &= ~(1024 - 1); /*fast round down to nearest multiple of 1024*/
 	
