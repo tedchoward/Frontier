@@ -2657,9 +2657,9 @@ boolean mountvolume (bigstring volumepath, bigstring username, bigstring passwor
 	*/
 	
 	AFPVolMountInfo info;
+	FSVolumeRefNum vnum;
 	bigstring bsitem;
-	short ixdata;
-	ParamBlockRec pb;
+	SInt16 ixdata;
 	OSErr errcode;
 	
 	clearbytes (&info, sizeof (info));
@@ -2668,11 +2668,11 @@ boolean mountvolume (bigstring volumepath, bigstring username, bigstring passwor
 	
 	info.media = AppleShareMediaType;
 	
-	if (isemptystring (username))
+	if (isemptystring (username)) {
 		info.uamType = kNoUserAuthentication;
-	else
+	} else {
 		info.uamType = kPassword;
-	
+	}
 	
 	firstword (volumepath, ':', bsitem); /*get the zone name*/
 	
@@ -2714,17 +2714,11 @@ boolean mountvolume (bigstring volumepath, bigstring username, bigstring passwor
 	
 	ixdata += stringsize (password);
 	
-	
 	info.length = ixdata;
 	
+	errcode = FSVolumeMount((BytePtr)&info, &vnum);
 	
-	clearbytes (&pb, sizeof (pb));
-	
-	pb.ioParam.ioBuffer = (Ptr) &info;
-	
-	errcode = PBVolumeMount (&pb);
-	
-	if (errcode == -5062) /*volume is already mounted*/
+	if (errcode == afpAlreadyMounted) /*volume is already mounted*/
 		return (true);
 	
 	return (!oserror (errcode));
