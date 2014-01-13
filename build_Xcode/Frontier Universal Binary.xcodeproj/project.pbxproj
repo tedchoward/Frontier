@@ -893,6 +893,10 @@
 		9F92A1C21852927100D6FA9E /* About.xib in Resources */ = {isa = PBXBuildFile; fileRef = 9F92A1C01852927100D6FA9E /* About.xib */; };
 		9FAA95D2187F3AD7008923D3 /* file.c in Sources */ = {isa = PBXBuildFile; fileRef = 9FAA95D1187F3AD7008923D3 /* file.c */; };
 		9FAA95D3187F3AD7008923D3 /* file.c in Sources */ = {isa = PBXBuildFile; fileRef = 9FAA95D1187F3AD7008923D3 /* file.c */; };
+		9FAA97571880CB5F008923D3 /* AppleEventUtils.h in Headers */ = {isa = PBXBuildFile; fileRef = 9FAA97551880CB5F008923D3 /* AppleEventUtils.h */; };
+		9FAA97581880CB5F008923D3 /* AppleEventUtils.c in Sources */ = {isa = PBXBuildFile; fileRef = 9FAA97561880CB5F008923D3 /* AppleEventUtils.c */; };
+		9FAA97591880CB5F008923D3 /* AppleEventUtils.h in Headers */ = {isa = PBXBuildFile; fileRef = 9FAA97551880CB5F008923D3 /* AppleEventUtils.h */; };
+		9FAA975A1880CB5F008923D3 /* AppleEventUtils.c in Sources */ = {isa = PBXBuildFile; fileRef = 9FAA97561880CB5F008923D3 /* AppleEventUtils.c */; };
 		9FCD376D1845379300E90027 /* OPML.nib in Resources */ = {isa = PBXBuildFile; fileRef = 9FCD376C1845379300E90027 /* OPML.nib */; };
 		9FCD376E1845379300E90027 /* OPML.nib in Resources */ = {isa = PBXBuildFile; fileRef = 9FCD376C1845379300E90027 /* OPML.nib */; };
 		9FCD37A218454A7500E90027 /* macDialogs.c in Sources */ = {isa = PBXBuildFile; fileRef = 9FCD37A118454A7500E90027 /* macDialogs.c */; };
@@ -1398,6 +1402,8 @@
 		9F3A12D9183A6B8D007ACBD2 /* mutex.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = mutex.h; path = ../Common/headers/mutex.h; sourceTree = SOURCE_ROOT; };
 		9F92A1C01852927100D6FA9E /* About.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = About.xib; path = ../Common/resources/Mac/About.xib; sourceTree = SOURCE_ROOT; };
 		9FAA95D1187F3AD7008923D3 /* file.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = file.c; path = ../Common/source/file.c; sourceTree = SOURCE_ROOT; };
+		9FAA97551880CB5F008923D3 /* AppleEventUtils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AppleEventUtils.h; sourceTree = "<group>"; };
+		9FAA97561880CB5F008923D3 /* AppleEventUtils.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = AppleEventUtils.c; sourceTree = "<group>"; };
 		9FCD376C1845379300E90027 /* OPML.nib */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = OPML.nib; path = ../Common/resources/Mac/OPML.nib; sourceTree = SOURCE_ROOT; };
 		9FCD37A118454A7500E90027 /* macDialogs.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = macDialogs.c; path = ../Common/source/mac/macDialogs.c; sourceTree = SOURCE_ROOT; };
 		BB37A29C0AB826540077C6A1 /* libSQLite3.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libSQLite3.a; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -1812,6 +1818,8 @@
 				9F34C9DC186397A80047BA53 /* AboutTextView.c */,
 				9F0D5C9C1864C6A800D9A6CE /* AboutWindowController.h */,
 				9F0D5C9D1864C6A800D9A6CE /* AboutWindowController.m */,
+				9FAA97551880CB5F008923D3 /* AppleEventUtils.h */,
+				9FAA97561880CB5F008923D3 /* AppleEventUtils.c */,
 			);
 			name = mac;
 			sourceTree = "<group>";
@@ -2461,6 +2469,7 @@
 				9F34C9DF186397A80047BA53 /* AboutTextView.h in Headers */,
 				9F0D5A2A1864B06400D9A6CE /* AboutViewController.h in Headers */,
 				9F0D5CA01864C6A800D9A6CE /* AboutWindowController.h in Headers */,
+				9FAA97571880CB5F008923D3 /* AppleEventUtils.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -2657,6 +2666,7 @@
 				9F34C9DD186397A80047BA53 /* AboutTextView.h in Headers */,
 				9F0D5A281864B06400D9A6CE /* AboutViewController.h in Headers */,
 				9F0D5C9E1864C6A800D9A6CE /* AboutWindowController.h in Headers */,
+				9FAA97591880CB5F008923D3 /* AppleEventUtils.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -3129,6 +3139,7 @@
 				9F0D5A2B1864B06400D9A6CE /* AboutViewController.m in Sources */,
 				9F0D5CA11864C6A800D9A6CE /* AboutWindowController.m in Sources */,
 				9FAA95D2187F3AD7008923D3 /* file.c in Sources */,
+				9FAA97581880CB5F008923D3 /* AppleEventUtils.c in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -3342,6 +3353,7 @@
 				9F0D5A291864B06400D9A6CE /* AboutViewController.m in Sources */,
 				9F0D5C9F1864C6A800D9A6CE /* AboutWindowController.m in Sources */,
 				9FAA95D3187F3AD7008923D3 /* file.c in Sources */,
+				9FAA975A1880CB5F008923D3 /* AppleEventUtils.c in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

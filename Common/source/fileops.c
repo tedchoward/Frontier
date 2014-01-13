@@ -54,6 +54,8 @@
 	#include "FSCopyObject.h"
 	#include <sys/param.h> // 2006-08-11 creedon
 
+	#include "AppleEventUtils.h"
+
 	#ifdef flcomponent
 		#include "SetUpA5.h"
 	#endif
@@ -2454,64 +2456,25 @@ boolean unmountvolume (const ptrfilespec fs) {
 	
 	} // unmountvolume
 
-
-boolean drivenumtovolname (short drivenum, bigstring bsvol) {
-	
-	HParamBlockRec pb;
-	
-	clearbytes (&pb, sizeof (pb));
-	
-	pb.volumeParam.ioNamePtr = bsvol;
-	
-	pb.volumeParam.ioVRefNum = drivenum;
-	//Code change by Timothy Paustian Sunday, June 25, 2000 9:21:31 PM
-	//Updated call for carbon
-	return (PBHGetVInfoSync (&pb) == noErr);
-	
-	/*
-	return (GetVInfo (drivenum, bsvol, &vnum, &freebytes) == noErr);
-	*/
-	} /*drivenumtovolname*/
-
-
 static boolean hasdesktopmanager (short vnum) {
 	
 	GetVolParmsInfoBuffer volparms;
-	HParamBlockRec pb;
 	
-	pb.volumeParam.ioVRefNum = vnum;
-	
-	pb.volumeParam.ioNamePtr = nil;
-	
-	pb.ioParam.ioBuffer = (Ptr) &volparms;
-	
-	pb.ioParam.ioReqCount = sizeof (volparms);
-	
-	if (PBHGetVolParmsSync (&pb) != noErr)
-		return (false);
+	if (FSGetVolumeParms(vnum, &volparms, sizeof (volparms)) != noErr) {
+		return false;
+	}
 	
 	return ((volparms.vMAttrib & (1 << bHasDesktopMgr)) != 0);
 	} /*hasdesktopmanager*/
 
 
-#if 0
-
-static boolean getdesktopdatabasepath (short vnum, DTPBRec *dt) {
-	
-	if (!hasdesktopmanager (vnum))
-		return (false);
-	
-	dt.ioVRefNum = vnum;
-	
-	return (PBDTGetPath (&dt) == noErr);
-	} /*getdesktopdatabasepath*/
-
-#endif
-
-
 boolean getfilecomment (const ptrfilespec fs, bigstring bscomment) {
 	
-	// 2009-09-06 aradke: FIXME: apparently, the proper way to get and set comments on OS X is to send Apple Events to the Finder (slow!?)
+	// 2014-01-12 thoward: rewrote to use Apple Events. The old Desktop Manager APIs were removed and
+	//					   replaced with nothing, so this is the only way to get and set comments
+	//					   (which are now called Spotlight Comments)
+	//
+	// 2009-09-06 aradke: apparently, the proper way to get and set comments on OS X is to send Apple Events to the Finder (slow!?)
 	//
 	// 2006-06-25 creedon: minimally FSRef-ized
 	//
@@ -2520,47 +2483,54 @@ boolean getfilecomment (const ptrfilespec fs, bigstring bscomment) {
 	// 1991-12-05 dmb: created
 	//	
 	
-	DTPBRec dt;
-	FSSpec fss;
-	
-	clearbytes (&dt, sizeof (dt));
-	
-	setemptystring (bscomment); /*default return*/
-	
-	if (!surefile(fs))
-		return (false);
+	const OSType kFinderCreatorType = 'MACS';
+	AppleEvent event = {typeNull, nil};
+	AEDesc eventDesc = {typeNull, nil};
+	OSErr err;
 
-	if (oserror (macgetfsspec (fs, &fss)))
-		return (false);
+	AEIdleUPP idleProcUPP = createIdleUPP();
+	
+	FSRef fileRef;
+	macgetfsref(fs, &fileRef);
+	CFURLRef fileUrl = CFURLCreateFromFSRef(kCFAllocatorDefault, &fileRef);
+	err = createObjectSpecifierFromURL(fileUrl, &eventDesc);
+	CFRelease(fileUrl);
+	
+	if (noErr == err) {
+		AEBuildError buildError;
 		
-	if (!hasdesktopmanager (fss.vRefNum))
-		return (false);
+		err = AEBuildAppleEvent(
+								kAECoreSuite, 
+								kAEGetData,
+								typeApplSignature,
+								&kFinderCreatorType,
+								sizeof (OSType),
+								kAutoGenerateReturnID, 
+								kAnyTransactionID, 
+								&event, 
+								&buildError, 
+								"'----':obj {form:prop,want:type(prop),seld:type(comt),from:(@)}",&eventDesc);
+		
+		(void) disposeAEDesc(&eventDesc);
+		
+		if (noErr == err) {
+			err = sendEventReturnBigstring(idleProcUPP, &event, bscomment);
+			(void) disposeAEDesc(&event);
+		}
+	}
 	
-	dt.ioVRefNum = fss.vRefNum;
+	DisposeAEIdleUPP(idleProcUPP);
 	
-	if (PBDTGetPath (&dt) != noErr)
-		return (false);
-	
-	dt.ioNamePtr = (StringPtr) fss.name;
-	
-	dt.ioDirID = fss.parID;
-	
-	dt.ioDTBuffer = (Ptr) bscomment + 1;
-	
-	dt.ioDTReqCount = lenbigstring;
-	
-	if (PBDTGetCommentSync (&dt) != noErr)
-		return (false);
-	
-	setstringlength (bscomment, dt.ioDTActCount);
-	
-	return (true);
+	return err == noErr;
 	
 	} // getfilecomment
 
 
 boolean setfilecomment (const ptrfilespec fs, bigstring bscomment) {
 	
+	// 2014-01-12 thoward: rewrote to use Apple Events. The old Desktop Manager APIs were removed and
+	//					   replaced with nothing, so this is the only way to get and set comments
+	//					   (which are now called Spotlight Comments)
 	//
 	// 2006-06-25 creedon: minimally FSRef-ized
 	//
@@ -2569,40 +2539,45 @@ boolean setfilecomment (const ptrfilespec fs, bigstring bscomment) {
 	// 1991-12-05 dmb: created
 	//	
 	
-	DTPBRec dt;
-	FSSpec fss;
+	const OSType kFinderCreatorType = 'MACS';
+	AppleEvent event = {typeNull, nil};
+	AEBuildError buildError;
+	AEDesc desc = {typeNull, nil};
+	OSErr err = noErr;
 	
-	clearbytes (&dt, sizeof (dt));
+	AEIdleUPP idleProcUPP = createIdleUPP();
 	
-	if (!surefile (fs))
-		return (false);
-
-	if (oserror (macgetfsspec (fs, &fss)))
-		return (false);
+	FSRef fileRef;
+	macgetfsref(fs, &fileRef);
+	CFURLRef fileURL = CFURLCreateFromFSRef(kCFAllocatorDefault, &fileRef);
+	createObjectSpecifierFromURL(fileURL, &desc);
+	CFRelease(fileURL);
 	
-	if (!hasdesktopmanager (fss.vRefNum))
-		return (false);
+	if (noErr == err) {
+		char data[stringlength(bscomment) + 1];
+		copyptocstring(bscomment, data);
+		
+		err = AEBuildAppleEvent(kAECoreSuite, 
+								kAESetData, 
+								typeApplSignature, 
+								&kFinderCreatorType, 
+								sizeof (OSType), 
+								kAutoGenerateReturnID, 
+								kAnyTransactionID, 
+								&event, 
+								&buildError,
+								"'----':obj {form:prop,want:type(prop),seld:type(comt),from:(@)},data:'TEXT'(@)",
+								&desc,data);
+		
+		
+		if (noErr == err) {
+			err = sendEventReturnVoid(idleProcUPP, &event);
+			(void)disposeAEDesc(&event);
+		}
+	}
 	
-	dt.ioVRefNum = fss.vRefNum;
-	
-	if (PBDTGetPath (&dt) != noErr)
-		return (false);
-	
-	dt.ioNamePtr = (StringPtr) fss.name;
-	
-	dt.ioDirID = fss.parID;
-	
-	dt.ioDTBuffer = (Ptr) bscomment + 1;
-	
-	dt.ioDTReqCount = stringlength (bscomment);
-	
-	if (PBDTSetCommentSync (&dt) != noErr)
-		return (false);
-	
-	PBDTFlushSync (&dt);
-	
-	return (true);
-	
+	return noErr == err;
+		
 	} // setfilecomment
 
 
