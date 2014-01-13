@@ -245,7 +245,9 @@ void shorttostring (short shortval, bigstring bs) {
 void numbertostring (long longval, bigstring bs) {
 	
 #ifdef MACVERSION
-	NumToString (longval, bs);
+	char buf[12];
+	snprintf(buf, 12, "%ld", longval);
+	copyctopstring(buf, bs);
 #endif
 
 #ifdef WIN95VERSION
@@ -287,7 +289,9 @@ boolean stringtonumber (bigstring bs, long *longval) {
 		}
 	else {	
 		#ifdef MACVERSION	
-			StringToNum (bs, longval);
+			char buf[stringlength(bs) + 1];
+			copyptocstring(bs, buf);
+			*longval = atol(buf);
 		#endif
 		#ifdef WIN95VERSION
 			nullterminate (bs);
