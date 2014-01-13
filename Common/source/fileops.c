@@ -2456,18 +2456,6 @@ boolean unmountvolume (const ptrfilespec fs) {
 	
 	} // unmountvolume
 
-static boolean hasdesktopmanager (short vnum) {
-	
-	GetVolParmsInfoBuffer volparms;
-	
-	if (FSGetVolumeParms(vnum, &volparms, sizeof (volparms)) != noErr) {
-		return false;
-	}
-	
-	return ((volparms.vMAttrib & (1 << bHasDesktopMgr)) != 0);
-	} /*hasdesktopmanager*/
-
-
 boolean getfilecomment (const ptrfilespec fs, bigstring bscomment) {
 	
 	// 2014-01-12 thoward: rewrote to use Apple Events. The old Desktop Manager APIs were removed and
