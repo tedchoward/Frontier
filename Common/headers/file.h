@@ -360,8 +360,6 @@ extern boolean lockvolume (const ptrfilespec , boolean);
 
 extern boolean unmountvolume (const ptrfilespec );
 
-extern boolean drivenumtovolname (short, bigstring);
-
 extern boolean findapplication (OSType, ptrfilespec );
 
 extern boolean getfilecomment (const ptrfilespec , bigstring);
@@ -427,8 +425,6 @@ extern boolean filetruncate (hdlfilenum);
 	extern void filegetinfofrompbcipbr ( CInfoPBRec *, tyfileinfo * );
 
 	extern boolean getmacfileinfo ( const ptrfilespec, FSRefParamPtr, FSCatalogInfoPtr );
-
-	extern boolean getmacfileinfocipbr ( const FSSpecPtr, CInfoPBRec * );
 
 #endif
 

@@ -303,26 +303,6 @@ boolean getmachinename (bigstring bsname) {
 		} /* getmacfileinfo */
 
 
-	boolean getmacfileinfocipbr (const FSSpecPtr fs, CInfoPBRec *pb) {
-		
-		/* 
-		2.1b2 dmb: new fsspec-based version
-		*/
-		
-		setoserrorparam ((ptrstring) (*fs).name); /*in case error message takes a filename parameter*/
-		
-		clearbytes (pb, sizeof (*pb));
-		
-		pb->hFileInfo.ioNamePtr = (StringPtr) (*fs).name;
-		
-		pb->hFileInfo.ioVRefNum = (*fs).vRefNum;
-		
-		pb->hFileInfo.ioDirID = (*fs).parID;
-		
-		return (!oserror (PBGetCatInfoSync (pb)));
-		} /*getmacfileinfocipbr*/
-
-
 	static boolean setmacfileinfo ( const ptrfilespec fs, FSRefParam *pb ) {
 		
 		/* 
@@ -1024,23 +1004,29 @@ boolean filegetinfo (const ptrfilespec fs, tyfileinfo *info) {
 	
 boolean filegetvolumename (short vnum, bigstring volname) {
 #ifdef MACVERSION	
-	HVolumeParam pb;
+	FSVolumeInfoParam pb;
+	HFSUniStr255 volumeName;
 	OSErr ec;
 	
-	clearbytes (&pb, sizeof (pb)); /*init all fields to zero*/
+	/* init all fields to zero */
+	memset(&pb, 0, sizeof (FSVolumeInfoParam));
 	
-	pb.ioNamePtr = volname;
+	pb.volumeName = &volumeName;
 	
 	pb.ioVRefNum = vnum;
 	
-	ec = PBHGetVInfoSync ((HParmBlkPtr) &pb);
+	ec = PBGetVolumeInfoSync(&pb);
 	
 	if (ec != noErr) {
 		
 		setstringlength (volname, 0);
 		
 		return (false);
-		}
+	} else {
+		CFStringRef cfVolumeName = CFStringCreateWithCharacters(kCFAllocatorDefault, volumeName.unicode, volumeName.length);
+		CFStringGetPascalString(cfVolumeName, volname, sizeof (bigstring), kCFStringEncodingMacRoman);
+		CFRelease(cfVolumeName);
+	}
 		
 	return (true);
 #endif

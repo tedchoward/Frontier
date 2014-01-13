@@ -322,7 +322,7 @@ static checkfordrivenum (bigstring bspath) {
 			
 			drivenum = ch - '0';
 			
-			if (drivenumtovolname (drivenum, bsvol))
+			if (filegetvolumename(drivenum, bsvol))
 				replacestring (bspath, 1, 1, bsvol);
 			}
 		}
