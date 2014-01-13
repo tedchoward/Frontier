@@ -52,5 +52,5 @@
 **
 ******************************************************************************/
 
-boolean MakeAliasFile (const FSSpec* srcFile, const FSSpec* destFile);
+boolean MakeAliasFile (const ptrfilespec srcFile, const ptrfilespec destFile);
 

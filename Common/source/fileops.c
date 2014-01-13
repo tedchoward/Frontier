@@ -32,7 +32,6 @@
 #include "winregistry.h"
 #endif
 
-#include "filealias.h"
 #include "cursor.h"
 #include "dialogs.h"
 #include "error.h"
@@ -47,6 +46,7 @@
 #include "shell.h"
 #include "shell.rsrc.h"
 #include "langinternal.h" /*for langbackgroundtask*/
+#include "filealias.h"
 
 #ifdef MACVERSION
 

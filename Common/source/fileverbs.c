@@ -2783,23 +2783,13 @@ static boolean getposixpathverb ( hdltreenode hp1, tyvaluerecord *vreturned ) {
 		
 		setfserrorparam ( &fsalias ); // assume error will relate to new file
 		
-		/* coerce fsalias to FSSpec */ {
+//		FSRef fst, fsaliast;
+//		
+//		if (oserror(macgetfsref(&fs, &fst)) || oserror(macgetfsref(&fsalias, &fsaliast))) {
+//			return false;
+//		}
 		
-			FSCatalogInfo catinfo;
-			FSSpec fst, fsaliast;
-			
-			if ( oserror ( macgetfsspec ( &fs, &fst ) ) )
-				return ( false );
-			
-			FSGetCatalogInfo ( &fsalias.ref, kFSCatInfoVolume | kFSCatInfoNodeID, &catinfo, NULL, NULL, NULL );
-			
-			fsaliast.vRefNum = catinfo.volume;
-			fsaliast.parID = catinfo.nodeID;
-			
-			fsnametobigstring ( &fsalias.name, fsaliast.name );
-			
-			fl = MakeAliasFile ( &fst, &fsaliast );
-			}
+		fl = MakeAliasFile ( &fs, &fsalias );
 		
 		setbooleanvalue ( fl, vreturned );
 		

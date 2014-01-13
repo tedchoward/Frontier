@@ -35,7 +35,6 @@
 	
 #endif
 
-#include "filealias.h"
 #include "cursor.h"
 #include "dialogs.h"
 #include "error.h"
@@ -52,6 +51,7 @@
 #include "shell.rsrc.h"
 #include "langinternal.h" /*for langbackgroundtask*/
 #include "versions.h" /* 2005-09-23 creedon */
+#include "filealias.h"
 
 
 #ifdef MACVERSION

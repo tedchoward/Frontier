@@ -35,7 +35,6 @@
 	
 #endif
 
-#include "filealias.h"
 #include "cursor.h"
 #include "dialogs.h"
 #include "error.h"
@@ -50,6 +49,7 @@
 #include "shell.h"
 #include "shell.rsrc.h"
 #include "langinternal.h" /*for langbackgroundtask*/
+#include "filealias.h"
 
 
 boolean equalfilespecs ( const ptrfilespec fs1, const ptrfilespec fs2 ) {

@@ -15,5 +15,7 @@ OSErr sendEventReturnVoid(const AEIdleUPP idleProcUPP, const AppleEvent *event);
 OSStatus createObjectSpecifierFromURL(const CFURLRef url, AEDesc *objectSpecifier);
 void disposeAEDesc(AEDesc *desc);
 AEIdleUPP createIdleUPP(void);
+OSErr createAppleEventSignatureTarget(OSType type, OSType creator, AEEventClass eventClass, AEEventID eventID, AppleEvent *appleEvent);
+OSErr addAliasParameterFromFSRef(const FSRefPtr fsRef, const DescType keyword, AERecord *record);
 
 #endif

@@ -16,6 +16,9 @@
 static OSErr sendEventReturnData(const AEIdleUPP idleProcUPP, const AppleEvent *appleEvent, DescType desiredType, DescType *actualType, void *data, Size maxSize, Size *actualSize);
 static OSErr getHandlerError(const AppleEvent *reply);
 static Boolean idleProc(EventRecord *eventRecord, UInt32 *sleepTime, RgnHandle *mouseRgn);
+static OSStatus findProcessBySignature(const OSType creator, const OSType type, ProcessSerialNumberPtr psn);
+static OSStatus getProcessInformation(const ProcessSerialNumberPtr psn, ProcessInfoRecPtr pir);
+static OSErr createAppleEventProcessTarget(const ProcessSerialNumberPtr psn, AEEventClass eventClass, AEEventID eventID, AppleEvent *appleEvent);
 
 OSErr sendEventReturnBigstring(const AEIdleUPP idleProcUPP, const AppleEvent *event, bigstring returnValue) {
 	DescType actualType;
@@ -161,4 +164,88 @@ static Boolean idleProc(EventRecord *eventRecord, UInt32 *sleepTime, RgnHandle *
 
 AEIdleUPP createIdleUPP() {
 	return NewAEIdleUPP(idleProc);
+}
+
+static OSStatus findProcessBySignature(const OSType creator, const OSType type, ProcessSerialNumberPtr psn) {
+	OSStatus err = noErr;
+	
+	psn->lowLongOfPSN = kNoProcess;
+	psn->highLongOfPSN = kNoProcess;
+	
+	while (!(err = GetNextProcess(psn))) {
+		ProcessInfoRec pir;
+		
+		if (!(err = getProcessInformation(psn, &pir))) {
+			if ((creator == pir.processSignature) && (type == pir.processType)) {
+				break;
+			}
+		}
+	}
+	
+	return err;
+}
+
+static OSStatus getProcessInformation(const ProcessSerialNumberPtr psn, ProcessInfoRecPtr pir) {
+	pir->processInfoLength = sizeof (*pir);
+	pir->processName = nil;
+	pir->processAppSpec = nil;
+	
+	if (psn) {
+		return GetProcessInformation(psn, pir);
+	} else {
+		ProcessSerialNumber noProcPSN = { kNoProcess, kCurrentProcess };
+		return GetProcessInformation(&noProcPSN, pir);
+	}
+}
+
+static OSErr createAppleEventProcessTarget(const ProcessSerialNumberPtr psn, AEEventClass eventClass, AEEventID eventID, AppleEvent *appleEvent) {
+	OSErr err = noErr;
+	AEDesc targetAppDesc = {typeNull, nil};
+	
+	err = AECreateDesc(typeProcessSerialNumber, psn, sizeof (ProcessSerialNumber), &targetAppDesc);
+	
+	if (noErr == err) {
+		err = AECreateAppleEvent(eventClass, eventID, &targetAppDesc, kAutoGenerateReturnID, kAnyTransactionID, appleEvent);
+	}
+	
+	disposeAEDesc(&targetAppDesc);
+	
+	return err;
+}
+
+OSErr createAppleEventSignatureTarget(OSType type, OSType creator, AEEventClass eventClass, AEEventID eventID, AppleEvent *appleEvent) {
+	OSErr err = noErr;
+	ProcessSerialNumber psn = { kNoProcess, kNoProcess };
+	
+	err = findProcessBySignature(creator, type, &psn);
+	
+	if (noErr == err) {
+		err = createAppleEventProcessTarget(&psn, eventClass, eventID, appleEvent);
+	}
+	
+	return err;
+}
+
+OSErr addAliasParameterFromFSRef(const FSRefPtr fsRef, const DescType keyword, AERecord *record) {
+	OSErr err = noErr;
+	AliasHandle alias;
+	
+	err = FSNewAlias(nil, fsRef, &alias);
+	if (noErr == err && alias == nil) {
+		err = paramErr;
+	}
+	
+	if (noErr == err) {
+		SInt8 handleState = HGetState((Handle)alias);
+		Size handleSize = GetHandleSize((Handle)alias);
+
+		HLock((Handle)alias);
+		
+		err = AEPutParamPtr(record, keyword, typeAlias, *alias, handleSize);
+		
+		HSetState((Handle)alias, handleState);
+		DisposeHandle((Handle)alias);
+	}
+	
+	return err;
 }
