@@ -2605,7 +2605,7 @@ static boolean label2index (bigstring bslabel, short *ixlabel) {
 		
 			return (false);
 			
-		if (RelString (bslabel, bs, false, false) == 0) {
+		if (equalstrings(bslabel, bs)) {
 			
 			*ixlabel = ix;
 			
