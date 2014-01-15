@@ -194,8 +194,6 @@ extern boolean setparseparams (bigstring, bigstring, bigstring, bigstring);
 
 extern void parseparamstring (bigstring);
 
-extern void getstringresource (short, bigstring);
-
 extern void parsenumberstring (short, short, long, bigstring);
 
 extern void convertpstring (bigstring);

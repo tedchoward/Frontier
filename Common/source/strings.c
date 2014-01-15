@@ -1686,25 +1686,6 @@ void parseparamstring (bigstring bsparse) {
 	} /*parseparamstring*/
 
 
-void getstringresource (short resnum, bigstring bs) {
-#ifdef MACVERSION	
-	/*
-	get a string resource, numbered resnum.  if there's an error,
-	set the string to the empty string.
-	*/
-	
-	StringHandle hstring;
-	
-	hstring = GetString (resnum);
-	
-	if (hstring == nil)
-		setemptystring (bs);
-	else
-		copyheapstring (hstring, bs);
-#endif
-	} /*getstringresource*/
-
-
 void parsenumberstring (short listnum, short id, long number, bigstring bsparse) {
 	
 	/*
