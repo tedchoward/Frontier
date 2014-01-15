@@ -549,11 +549,16 @@ boolean getobjectmodeldisplaystring (tyvaluerecord *vitem, bigstring bsdisplay) 
 		
 		texthandletostring ( htext, bspath );
 		
-		if ( pathtofilespec ( bspath, &fs ) && (macgetfsref (&fs, &fsref) == noErr) )
-			errcode = FSNewAlias ( NULL, &fsref, &halias );
-		else
-			errcode = NewAliasMinimalFromFullPath ( stringlength (bspath), stringbaseaddress (bspath), NULL, NULL, &halias );
-		
+		if (pathtofilespec(bspath, &fs)) {
+			errcode = macgetfsref(&fs, &fsref);
+			
+			if (noErr == errcode) {
+				errcode = FSNewAlias ( NULL, &fsref, &halias );
+			} else {				
+				FSNewAliasMinimalUnicode(&fs.ref, fs.name.length, fs.name.unicode, &halias, NULL);
+			}
+		}
+				
 		if ( oserror ( errcode ) )
 			return ( false );
 		
@@ -673,71 +678,29 @@ boolean aliastostring (Handle halias, bigstring bs) {
 		//
 		// 1991-10-04 dmb: if alias can't be resolved, just say what volume it's on.
 		//
-		
-		register AliasHandle h = (AliasHandle) halias;
-		FSRef fsref;
-		Boolean flchanged;
-		bigstring bsinfo;
-		AliasInfoType ix = asiAliasName;
-		OSErr err;
-		
+		OSStatus err = noErr;
+		CFStringRef pathString;
+	
 		if (!langcanusealiases ())
 			return (false);
-		
-		err = FSFollowFinderAlias (nil, h, false, &fsref, &flchanged);
-		
-		if ((err == noErr) /* || (err == fnfErr) */ ) {
-		
-			tyfilespec fs;
+	
+		// copy the POSIX style path of the alias's target
+		err = FSCopyAliasInfo((AliasHandle)halias, NULL, NULL, &pathString, kFSAliasInfoNone, NULL);
+	
+		if (noErr == err) {
+			// convert the POSIX style path to an HFS style path
+			CFURLRef fileURL = CFURLCreateWithFileSystemPath(kCFAllocatorDefault, pathString, kCFURLPOSIXPathStyle, FALSE);
+			CFRelease(pathString);
+			pathString = CFURLCopyFileSystemPath(fileURL, kCFURLHFSPathStyle);
 			
-			if (flchanged)
-				FSUpdateAlias (nil, &fsref, h, &flchanged);
-			
-			if (macmakefilespec (&fsref, &fs) == noErr)
-				return (filespectopath (&fs, bs));
-			}
-		
-		langgettypestring (aliasvaluetype, bs);
-		
-		/*
-		if (GetAliasInfo (h, asiVolumeName, bsinfo) == noErr) { //add the volume name
-			
-			bigstring bsaliasondisk;
-			
-			langgetstringlist (unresolvedaliasstring, bsaliasondisk);
-			
-			parsedialogstring (bsaliasondisk, bs, bsinfo, nil, nil, bsaliasondisk);
-			
-			copystring (bsaliasondisk, bs);
-			}
-		*/
-		
-		setemptystring (bs);
-		
-		// get each path element out of the alias
-		while (GetAliasInfo (h, ix, bsinfo) == noErr) {
-			
-			if (isemptystring (bsinfo)) // reached top of path hierarchy
-				break;
-			
-			if (ix > asiAliasName)
-				pushchar (':', bsinfo);
-			
-			if (!insertstring (bsinfo, bs))
-				break;
-			
-			++ix;
-			}
-		
-		// add the volume name
-		GetAliasInfo (h, asiVolumeName, bsinfo);
-		
-		pushchar (':', bsinfo);
-		
-		insertstring (bsinfo, bs);
-		
-		return (true);
-		
+			// copy the CFString to a pascal string
+			CFStringGetPascalString(pathString, bs, sizeof (bigstring), kCFStringEncodingMacRoman);
+			CFRelease(pathString);
+			return true;
+		}
+	
+		return false;
+				
 	#endif
 
 	#ifdef WIN95VERSION
