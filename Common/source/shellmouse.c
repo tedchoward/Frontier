@@ -114,10 +114,10 @@ static void shellhandlecontent (Point pt) {
 
 static void shellhandlegrow (Point pt, WindowPtr wgrow) {
 	
-	register WindowPtr w = wgrow;
-	register long x;
+	WindowPtr w = wgrow;
 	Rect boundsrect;
 	Rect r;
+	Rect newContentRect;
 	
 	getdesktopbounds (&r);
 	
@@ -129,13 +129,8 @@ static void shellhandlegrow (Point pt, WindowPtr wgrow) {
 	
 	boundsrect.bottom = r.bottom - r.top - 5; /*maximum window height*/
 	
-	x = GrowWindow (w, pt, &boundsrect);
-	
-	if (x) {
-		
-		sizewindow (w, LoWord (x), HiWord (x));
-		
-		shelladjustaftergrow (w);
+	if (ResizeWindow(w, pt, &boundsrect, &newContentRect)) {
+		shelladjustaftergrow(w);
 		}
 	} /*shellhandlegrow*/
 
