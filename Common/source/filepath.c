@@ -243,30 +243,20 @@ OSStatus pathtofsref ( bigstring bspath, FSRef *ref ) {
 	/*
 	2009-08-30 aradke: mac-only helper function for converting from a pascal string (path) to an FSRef
 	*/
+	Boolean filePath = lastchar(bspath) == ':';
 	
-	bigstring bs;
-	CFStringRef csref;
-	char str[256];
-
-	copystring(bspath,  bs);
-
-	// convert from colon-delimited to slash-delimited path
-
-	stringswapall(':', '/', bs);
-
-	insertstring ( BIGSTRING ( "\x09" "/Volumes/" ), bs );
+	CFStringRef hfsPathStr = CFStringCreateWithPascalString(kCFAllocatorDefault, bspath, kCFStringEncodingMacRoman);
 	
-	// convert from Mac Roman to UTF-8 */ 
-
-	csref = CFStringCreateWithPascalString(kCFAllocatorDefault, bs, kCFStringEncodingMacRoman);
+	CFURLRef fileURL = CFURLCreateWithFileSystemPath(kCFAllocatorDefault, hfsPathStr, kCFURLHFSPathStyle, filePath);
 	
-	CFStringGetCString(csref, str, sizeof(str), kCFStringEncodingUTF8);
-		
-	CFRelease(csref);
-
-	// finally, pass our temporary copy of the string to the underlying system function
+	CFRelease(hfsPathStr);
 	
-	return FSPathMakeRef((UInt8*) str, ref, NULL);
+	CFURLGetFSRef(fileURL, ref);
+	
+	CFRelease(fileURL);
+	
+	return noErr;
+
 	} /*pathtofsref*/
 
 #endif
