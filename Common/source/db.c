@@ -425,13 +425,14 @@ static boolean dbflushheader (void) {
 				flushvolumechanges (nil, (hdlfilenum)((**databasedata).fnumdatabase));
 		#else
 		/*flush file buffers*/ {
-			IOParam pb;
+			FSForkIOParam pb;
 			
 			clearbytes (&pb, sizeof (pb));
 			
-			pb.ioRefNum = (hdlfilenum)((**databasedata).fnumdatabase);
+			pb.forkRefNum = (FSIORefNum)(*databasedata)->fnumdatabase;
 			
-			PBFlushFile ((ParmBlkPtr) &pb, false);
+			
+			PBFlushForkSync(&pb);
 			}
 		#endif
 
