@@ -1057,88 +1057,29 @@ static void grabnthfield (Handle htext, long fieldnum, byte chdelim, Handle *hfi
 
 #ifdef MACVERSION
 
-static void macuppertext (byte *p, long ct) {
+static void macuppertext (UInt8 *p, CFIndex ct) {
 	
-	/*
-	5.1.1 dmb: we use UpperText for handle international chars, but the 
-	length is a short...
-	*/
-	//Code change by Timothy Paustian Monday, June 19, 2000 3:09:12 PM
-	//Updated to new routine.
-	//UppercaseText(p, ct, smSystemScript);	
+	CFStringRef textString = CFStringCreateWithBytes(kCFAllocatorDefault, p, ct, kCFStringEncodingMacRoman, FALSE);
+	CFMutableStringRef mutableText = CFStringCreateMutableCopy(kCFAllocatorDefault, CFStringGetLength(textString), textString);
+	CFRelease(textString);
 	
-	/*7.0b28 PBS: restore the loop. This way we don't
-	have a >32K bug.*/
-
-	while (ct > infinity) {
-		
-		#if TARGET_API_MAC_CARBON == 1
-		
-			UppercaseText ((Ptr) p, infinity, smSystemScript);	
-		
-		#else
-		
-			UpperText ((Ptr) p, infinity);
-		
-		#endif
-		
-		p += infinity;
-		
-		ct -= infinity;
-		}
-	
-	#if TARGET_API_MAC_CARBON == 1
-	
-		UppercaseText ((Ptr) p, ct, smSystemScript);	
-	
-	#else
-	
-		UpperText ((Ptr) p, ct);
-	
-	#endif
+	CFStringUppercase(mutableText, CFLocaleGetSystem());
+	CFStringGetBytes(mutableText, CFRangeMake(0, CFStringGetLength(mutableText)), kCFStringEncodingMacRoman, '?', FALSE, p, ct, NULL);
+	CFRelease(mutableText);
 		
 	} /*macuppertext*/
 
 
-static void maclowertext (byte *p, long ct) {
+static void maclowertext (UInt8 *p, CFIndex ct) {
 	
-	/*
-	5.1.1 dmb: we use LowerText for handle international chars, but the 
-	length is a short...
-	*/
-	//Code change by Timothy Paustian Monday, June 19, 2000 3:09:28 PM
-	//Changed to Opaque call for Carbon
-//	LowercaseText(p, ct, smSystemScript);
-
-	/*7.0b28 PBS: restore the loop. This way we don't
-	have a >32K bug.*/
+	CFStringRef textString = CFStringCreateWithBytes(kCFAllocatorDefault, p, ct, kCFStringEncodingMacRoman, FALSE);
+	CFMutableStringRef mutableText = CFStringCreateMutableCopy(kCFAllocatorDefault, CFStringGetLength(textString), textString);
+	CFRelease(textString);
 	
-	while (ct > infinity) {
-		
-		#if TARGET_API_MAC_CARBON == 1
-
-			LowercaseText ((Ptr) p, infinity, smSystemScript);
+	CFStringLowercase(mutableText, CFLocaleGetSystem());
+	CFStringGetBytes(mutableText, CFRangeMake(0, CFStringGetLength(mutableText)), kCFStringEncodingMacRoman, '?', FALSE, p, ct, NULL);
+	CFRelease(mutableText);
 	
-		#else
-		
-			LowerText ((Ptr) p, infinity);
-		
-		#endif
-		
-		p += infinity;
-		
-		ct -= infinity;
-		}
-	
-	#if TARGET_API_MAC_CARBON == 1
-
-		LowercaseText ((Ptr) p, ct, smSystemScript);
-
-	#else
-	
-		LowerText ((Ptr) p, ct);
-	
-	#endif
 	} /*maclowertext*/
 
 #endif
