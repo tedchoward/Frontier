@@ -326,7 +326,7 @@ boolean wpsetglobals (void) {
 	
 	wpbuffer = hbuf; /*set global*/
 	
-	return (hbuf != nil);
+	return (hbuf != (pg_ref)nil);
 	} /*wpsetglobals*/
 
 
@@ -371,7 +371,7 @@ static void wpdisposeundo (hdlwprecord hwp) {
 		
 		hundo = (undo_ref) (**hwp).hlastundodata;
 		
-		if (hundo != nil) { /*there was a linked undo*/
+		if (hundo != (undo_ref)nil) { /*there was a linked undo*/
 			
 			pgDisposeUndo (hundo);
 			
@@ -2882,7 +2882,7 @@ hdlwprecord wpnewbuffer (Handle hpacked, const Rect *rclip, const Rect *rbounds,
 	shape_ref visarea, pagearea;
 //	generic_var device = flinwindow? MEM_NULL : USE_NO_DEVICE;
 	generic_var device = USE_NO_DEVICE;
-	pg_ref hbuf = nil;
+	pg_ref hbuf = (pg_ref)nil;
 	
 	if (flinwindow)
 	{
@@ -2939,7 +2939,7 @@ hdlwprecord wpnewbuffer (Handle hpacked, const Rect *rclip, const Rect *rbounds,
 		pgDisposeShape (pagearea);
 		}
 	
-	if (hbuf == nil) { /*memory error*/
+	if (hbuf == (pg_ref)nil) { /*memory error*/
 			
 		disposehandle ((Handle) hwp);
 		
@@ -3031,7 +3031,7 @@ void wpdisposerecord (hdlwprecord hwp) {
 	
 	register pg_ref hbuf = (pg_ref) (**hwp).wpbuffer;
 	
-	if (hbuf != nil)
+	if (hbuf != (pg_ref)nil)
 		pgDispose (hbuf);
 	
 	disposehandle ((Handle) (**hwp).hname);
@@ -3198,7 +3198,7 @@ static boolean wpundoroutine (Handle hdata, boolean flundo) {
 	
 	if (flundo) {
 		
-		assert (getundo () == nil);
+		assert (getundo () == (undo_ref)nil);
 		
 		setundo (hundo);
 		
@@ -3228,7 +3228,7 @@ static boolean wppushundostep (void) {
 	if (!pushundostep (&wpundoroutine, (Handle) getundo ()))
 		return (false);
 	
-	setundo (nil); // undo owns it now
+	setundo ((undo_ref)nil); // undo owns it now
 	
 	return (true);
 	} /*wppushundostep*/
