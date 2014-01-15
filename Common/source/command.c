@@ -436,7 +436,7 @@ boolean cmdsetstring ( Handle h ) {
 	// 2007-07-25 creedon: created
 	//
 	
-	if ( ! cmdsavestring ( NULL, h ) )
+	if ( ! cmdsavestring ( (short)NULL, h ) )
 		return ( false );
 		
 	minireloadstrings ( idcommandconfig );

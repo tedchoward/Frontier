@@ -1418,7 +1418,7 @@ boolean findrunningapplication (OSType *appid, bigstring appname, typrocessid *p
 #ifdef MACVERSION
 
 	static boolean system7frontprogram (bigstring bsprogram, boolean flfullpath) {
-		
+		// 2014-01-13 thoward: FIXME: FSpMakeFSRef is deprecated, but this appears to be the only way to get the frontmost application usin 10.5 APIs
 		//
 		// 2006-06-24 creedon: FSRef-ized
 		//

@@ -30,6 +30,8 @@
 
 #include "landinternal.h"
 
+#include "resources.h"
+
 
 /*
 landreturn.c -- these routines can be called by a client application to return

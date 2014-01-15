@@ -3748,7 +3748,7 @@ static boolean langfunctionvalue (short token, hdltreenode hparam1, tyvaluerecor
 		case netstatus: {
 		
 			#if defined(MACVERSION) && __POWERPC__
-				long stream = nil;
+				long stream = (long)nil;
 				bigstring lbs;
 				
 				if (langgetparamcount (hparam1) > 0) {

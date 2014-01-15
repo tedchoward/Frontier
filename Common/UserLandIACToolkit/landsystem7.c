@@ -571,7 +571,7 @@ static pascal OSErr landsystem7handleevent (AppleEvent *message, AppleEvent *rep
 			
 		#else
 			
-			curA5 = SetUpAppA5 ();
+			curA5 = (long)SetUpAppA5 ();
 		
 		#endif
 		

@@ -540,7 +540,7 @@ boolean dbreadavailnode (dbaddress adr, boolean *flfree, long *ctbytes, dbaddres
 
 static boolean dbwriteavailnode (dbaddress adr, long ctbytes, dbaddress nextlink) {
 
-	assert (adr != nil);
+	assert (adr != (dbaddress)nil);
 	
 	assert ((**databasedata).u.extensions.availlistblock == nildbaddress);
 	
@@ -758,7 +758,7 @@ static boolean dbwriteshadowavaillist (void) {
 	*/
 
 	register hdldatabaserecord hdb = databasedata;
-	dbaddress adrblock = nil;
+	dbaddress adrblock = (dbaddress)nil;
 	boolean fl = false;
 	boolean flfree;
 	
@@ -781,7 +781,7 @@ static boolean dbwriteshadowavaillist (void) {
 		if (!dballocate (nodebytes, nil, &adrblock))
 			goto error;
 		
-		assert (adrblock != nil);
+		assert (adrblock != (dbaddress)nil);
 
 		closehandlestream (&(**hdb).u.extensions.availlistshadow);
 		

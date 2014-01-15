@@ -509,7 +509,7 @@ static void wpverbunload (hdlwpvariable hv) {
 	else
 		wpdisposerecord ((hdlwprecord) variabledata);
 	
-	if ((**hv).oldaddress == nil) // 5.0d3 dmb
+	if ((**hv).oldaddress == (dbaddress)nil) // 5.0d3 dmb
 		disposehandle ((Handle) hv);
 	else
 		wpverbondisk (hv, (**hv).oldaddress);

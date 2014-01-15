@@ -767,24 +767,12 @@ static long getidealchunksize (void) {
 	will yield a good result on average.
 	
 	4/20/93 dmb: tweaked algorith; if more than 64K is available, grab half
+	 
+	1/13/2014 tch: virtual memory means never worrying about available memory
+					the windows and mac versions both return the same value now.
 	*/
-#ifdef MACVERSION		
-	register long ctgrab = MaxBlock ();
 	
-	if (ctgrab < 0x4000)
-		ctgrab -= 0x0400;
-	else
-		if (ctgrab < 0x10000)
-			ctgrab -= 0x2000;
-		else
-			ctgrab >>= 1;
-	
-	return (ctgrab);
-#endif
-
-#ifdef WIN95VERSION
 	return (32768L);
-#endif
 
 	} /*getidealchunksize*/
 

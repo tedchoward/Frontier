@@ -175,8 +175,8 @@ boolean initmacintosh (void) {
 		if(oserror(theErr))
 			ExitToShell();
 		gHasColorQD = (quickDrawFeatures & (1 << gestaltHasColor));
-		//Nav services has to be present and we want the 1.1 or greater version.
-		gCanUseNavServ = (NavServicesAvailable() && (NavLibraryVersion() >= 0x01108000));
+		// Navigation services is always available
+		gCanUseNavServ = true;
 	}
 	
 	
@@ -189,13 +189,7 @@ boolean initmacintosh (void) {
 		
 		EventAvail (everyEvent, &ev); /*see TN180 -- splash screen*/
 		} /*for*/
-	
-	#if TARGET_API_MAC_CARBON == 1
-	
-		RegisterAppearanceClient ();
 		
-	#endif
-	
 	return (true);
 	} /*initmacintosh*/
 
