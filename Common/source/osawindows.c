@@ -47,7 +47,6 @@
 #include "tablestructure.h"
 #include "osainternal.h"
 #include "osawindows.h"
-#include <SetUpA5.h>
 
 
 static WindowPtr osageteventwindow (EventRecord *ev) {
@@ -55,7 +54,7 @@ static WindowPtr osageteventwindow (EventRecord *ev) {
 	WindowPtr w;
 	WindowPtr wfront;
 	
-	wfront = FrontWindow ();
+	wfront = GetFrontWindowOfClass(kAllWindowClasses, TRUE);
 	
 	w = nil; /*default*/
 	
@@ -196,7 +195,7 @@ static pascal ComponentResult windoweditcommand (Handle hglobals, short editcmd)
 	register WindowPtr w;
 	register boolean fl;
 	
-	w = FrontWindow ();
+	w = GetFrontWindowOfClass(kAllWindowClasses, TRUE);
 	
 	if (!isshellwindow (w))
 		return (false);
@@ -296,11 +295,9 @@ static pascal OSErr handleselectwindow (const AppleEvent *event, AppleEvent *rep
 		
 		SelectWindow (w);
 		
-		curA5 = SetUpAppA5 ();
 		
 		shellwindowmenudirty ();
 		
-		RestoreA5 (curA5);
 		}
 	
 	return (err);
@@ -491,29 +488,17 @@ static pascal ComponentResult windowsharingdispatch (register ComponentParameter
 			
 			hdlcomponentglobals hglobals;
 			Component self = (Component) (*params).params [0];
-			long selfa5;
-			long clienta5;
+			long selfa5, clienta5 = 0;
 			
 			selfa5 = GetComponentRefcon (self);
 			
-			clienta5 = SetUpAppA5 ();
-			
-			#if !TARGET_API_MAC_CARBON
-				SetComponentInstanceA5 ((ComponentInstance) self, selfa5);
-			#endif
-
 			if (newcomponentglobals (self, clienta5, &hglobals))
 				SetComponentInstanceStorage ((ComponentInstance) self, (Handle) hglobals);
 			else
 				result = memFullErr;
 			
 			installwindowsharinghandlers ();
-			
-			/*
-			initprocess ();
-			*/
-			
-			RestoreA5 (clienta5);
+
 			
 			break;
 			}
@@ -592,19 +577,13 @@ boolean initwindowsharingcomponent (void) {
 	*/
 	
 	Component comp;
-	
-	#if !TARGET_API_MAC_CARBON
- 		RememberA5 ();
-	#endif
-	
-	#if TARGET_API_MAC_CARBON
-		windowcandofunctionDesc = NewComponentFunctionUPP((ProcPtr) windowcandofunction, windowcandofunctionProcInfo);
-		handlewindoweventcommandDesc = NewComponentFunctionUPP((ProcPtr) handlewindoweventcommand, handlewindoweventcommandProcInfo);
-		windowiscardcommandDesc = NewComponentFunctionUPP((ProcPtr) windowiscardcommand, windowiscardcommandProcInfo);
-		closewindowcommandDesc = NewComponentFunctionUPP((ProcPtr) closewindowcommand, closewindowcommandProcInfo);
-		windoweditcommandDesc = NewComponentFunctionUPP((ProcPtr) windoweditcommand, windoweditcommandProcInfo);
-		windowopencommandDesc = NewComponentFunctionUPP((ProcPtr) windowopencommand, windowopencommandProcInfo);
-	#endif
+
+    windowcandofunctionDesc = NewComponentFunctionUPP((ProcPtr) windowcandofunction, windowcandofunctionProcInfo);
+    handlewindoweventcommandDesc = NewComponentFunctionUPP((ProcPtr) handlewindoweventcommand, handlewindoweventcommandProcInfo);
+    windowiscardcommandDesc = NewComponentFunctionUPP((ProcPtr) windowiscardcommand, windowiscardcommandProcInfo);
+    closewindowcommandDesc = NewComponentFunctionUPP((ProcPtr) closewindowcommand, closewindowcommandProcInfo);
+    windoweditcommandDesc = NewComponentFunctionUPP((ProcPtr) windoweditcommand, windoweditcommandProcInfo);
+    windowopencommandDesc = NewComponentFunctionUPP((ProcPtr) windowopencommand, windowopencommandProcInfo);
 		
 	comp = osaregistercomponent (wsComponentType, 0, &windowsharingdispatch, frontierstring, windowsharingcomponentstring);
 	

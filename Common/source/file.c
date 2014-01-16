@@ -649,7 +649,7 @@ boolean openfile ( const ptrfilespec fs, hdlfilenum *fnum, boolean flreadonly ) 
 	#ifdef MACVERSION
 		
 		FSRef fsref;
-		short perm;
+		UInt8 perm;
 		
 		setfserrorparam ( fs ); // in case error message takes a filename parameter
 		
@@ -665,9 +665,16 @@ boolean openfile ( const ptrfilespec fs, hdlfilenum *fnum, boolean flreadonly ) 
 		
 		if ( oserror ( macgetfsref ( fs, &fsref ) ) )
 			return ( false );
-			
-		if ( oserror ( FSOpenFork ( &fsref, dataforkname.length, dataforkname.unicode, perm, fnum ) ) ) {
-			
+    
+		if ( oserror ( FSOpenFork(&fsref, dataforkname.length, dataforkname.unicode, perm, fnum) ) ) {
+			CFStringRef fileString = CFStringCreateWithCharacters(kCFAllocatorDefault, fs->name.unicode, fs->name.length);
+            CFIndex length = CFStringGetLength(fileString);
+            CFIndex maxLength = CFStringGetMaximumSizeForEncoding(length, kCFStringEncodingUTF8);
+            char *buffer = (char *)malloc(maxLength);
+            CFStringGetCString(fileString, buffer, maxLength, kCFStringEncodingUTF8);
+            CFRelease(fileString);
+            fprintf(stderr, "file not found: %s\n", buffer);
+            free(buffer);
 			*fnum = 0;
 			
 			return (false);

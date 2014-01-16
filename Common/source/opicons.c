@@ -177,7 +177,7 @@ boolean resolveHashTable(bigstring bsnodetype, bigstring bsadrnodepath) {
 	fllookup = hashtablelookup (ht, bsnodetype, &iconvalue, &hn);
 
 	if (fllookup && iconvalue.valuetype == addressvaluetype) {
-		copystring(*iconvalue.data.stringvalue, bsadrnodepath);
+		copystring(BIGSTRING(*iconvalue.data.stringvalue), bsadrnodepath);
 		return resolveHashTable(bsnodetype, bsadrnodepath);
 	}
 

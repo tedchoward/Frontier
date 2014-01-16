@@ -856,7 +856,7 @@ boolean shellnew (void) {
 	
 	#ifdef MACVERSION
 	
-		pushstring ( "\x05"".root", bsname );
+		pushstring ( BIGSTRING("\x05"".root"), bsname );
 				
 		bigstringtofsname ( bsname, &fspec.name );
 

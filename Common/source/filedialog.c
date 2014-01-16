@@ -585,15 +585,7 @@ boolean sfdialog ( tysfverb sfverb, bigstring bsprompt, ptrsftypelist filetypes,
 #ifdef MACVERSION
 
 	boolean initfiledialog (void) {
-
-		#ifdef flcomponent
-		
-		#if !TARGET_API_MAC_CARBON
-		RememberA5 ();
-		#endif /*for hook*/
-		
-		#endif
-		
+        
 		return (true);
 		} /*initfile*/
 

@@ -251,11 +251,35 @@ OSStatus pathtofsref ( bigstring bspath, FSRef *ref ) {
 	
 	CFRelease(hfsPathStr);
 	
-	CFURLGetFSRef(fileURL, ref);
+	Boolean success = CFURLGetFSRef(fileURL, ref);
 	
 	CFRelease(fileURL);
 	
-	return noErr;
+	return success ? noErr : fnfErr;
+//    
+//    bigstring bs;
+//    CFStringRef csref;
+//    char str[256];
+//    
+//    copystring(bspath,  bs);
+//    
+//    // convert from colon-delimited to slash-delimited path
+//    
+//    stringswapall(':', '/', bs);
+//    
+//    insertstring ( BIGSTRING ( "\x09" "/Volumes/" ), bs );
+//    
+//    // convert from Mac Roman to UTF-8 */ 
+//    
+//    csref = CFStringCreateWithPascalString(kCFAllocatorDefault, bs, kCFStringEncodingMacRoman);
+//    
+//    CFStringGetCString(csref, str, sizeof(str), kCFStringEncodingUTF8);
+//    
+//    CFRelease(csref);
+//    
+//    // finally, pass our temporary copy of the string to the underlying system function
+//    
+//    return FSPathMakeRef((UInt8*) str, ref, NULL);
 
 	} /*pathtofsref*/
 

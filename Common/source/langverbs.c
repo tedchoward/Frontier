@@ -28,10 +28,6 @@
 #include "frontier.h"
 #include "standard.h"
 
-#ifdef MACVERSION
-#include "langxcmd.h"
-#endif
-
 #ifdef WIN95VERSION
 #include "htmlcontrol.h"
 #endif
@@ -1384,175 +1380,6 @@ static boolean threewayfunc (hdltreenode hparam1, tyvaluerecord *v) {
 	
 	return (setintvalue (threewaydialog (bsprompt, bs1, bs2, bs3), v));
 	} /*threewayfunc*/
-
-
-#if MACVERSION && TARGET_API_MAC_OS8
-
-#if !TARGET_RT_MAC_CFM
-		
-	#define xcmdcallbackUPP ((UniversalProcPtr) &xcmdcallback)
-		
-#else
-	enum {
-		XCmdProcInfo = kPascalStackBased
-			 | STACK_ROUTINE_PARAMETER(1, SIZE_CODE(sizeof(XCmdPtr)))
-	};
-	
-	enum {
-		xcmdcallbackProcInfo = kPascalStackBased
-	};
-	
-	static RoutineDescriptor xcmdcallbackDesc = BUILD_ROUTINE_DESCRIPTOR (xcmdcallbackProcInfo, xcmdcallback);
-	
-	#define xcmdcallbackUPP (&xcmdcallbackDesc)
-#endif
-
-static boolean callxcmdverb (hdltreenode hparam1, tyvaluerecord *vreturned) {
-	
-	/*
-	5/4/92 dmb: created.
-	
-	7/8/92 dmb: don't rely on temp stack for handle disposal; will overflow
-				push/popport on frontwindow; some XCMDs may expect this
-	
-	7/14/92 dmb: different return values for XCMDs & XFCNs when they return nothing
-	
-	10/3/92 dmb: must set plangxcmdrec for the callback routine
-	
-	7.0b48: calling an XCMD or XFCN on OS X is an error.
-	*/
-	
-	register hdltreenode hp1 = hparam1;
-	short ctparams = langgetparamcount (hp1) - 1;
-	hdlhashtable htable;
-	bigstring bsxcmd;
-	tyvaluerecord val;
-	Handle hxcmd;
-	struct XCmdBlock xcb;
-	short i;
-	Handle x;
-	OSType xtype;
-	boolean fl = false;
-	hdlhashnode hnode;
-		
-	if (!getvarvalue (hp1, 1, &htable, bsxcmd, &val, &hnode))
-		return (false);
-	
-	if (val.valuetype != binaryvaluetype) {
-		
-		langparamerror (notxcmderror, bsxcmd);
-		
-		return (false);
-		}
-		
-	hxcmd = val.data.binaryvalue; /*copy into register*/
-	
-	xtype = getbinarytypeid (hxcmd);
-	
-	if ((xtype != 'XCMD') && (xtype != 'XFCN')) {
-		
-		langparamerror (notxcmderror, bsxcmd);
-		
-		return (false);
-		}
-	
-	if (ctparams > 16) { /*max number of XCMD params is 16*/
-		
-		langparamerror (toomanyparameterserror, bsfunctionname);
-		
-		return (false);
-		}
-	
-	clearbytes (&xcb, longsizeof (xcb));
-	
-	for (i = 0; i < ctparams; ++i) {
-		
-		if (!getexempttextvalue (hp1, i + 2, &x))
-			goto exit;
-		
-		xcb.params [i] = x;
-		
-		if (!enlargehandle (x, 1, zerostring))
-			goto exit;
-		}
-	
-	xcb.paramCount = ctparams;
-	
-	xcb.passFlag = false;
-	
-	xcb.entryPoint = xcmdcallbackUPP;
-	
-	lockhandle (hxcmd);
-	//Code change by Timothy Paustian Monday, August 21, 2000 4:24:28 PM
-	//We cannot pass a window ptr to push port
-	{
-	CGrafPtr	thePort;
-	#if TARGET_API_MAC_CARBON == 1
-	thePort = GetWindowPort(getfrontwindow ());
-	#else
-	thePort = (CGrafPtr)getfrontwindow ();
-	#endif
-		
-	pushport (thePort); /*checks for nil*/
-	}
-	plangxcmdrec = &xcb; /*set global*/
-	
-	//Code change by Timothy Paustian Wednesday, June 14, 2000 9:06:07 PM
-	//No CFM for Carbon
-	#if TARGET_RT_MAC_CFM
-		
-	{
-		#if TARGET_API_MAC_CARBON == 1
-		(*(pascal void (*)(XCmdPtr)) ((OSType *) *hxcmd + 1)) (&xcb);
-		#else
-		
-		UniversalProcPtr upp = NewRoutineDescriptor ((ProcPtr) ((OSType *) *hxcmd + 1), XCmdProcInfo, kM68kISA);
-		
-		CallUniversalProc (upp, XCmdProcInfo, &xcb);
-		
-		DisposeRoutineDescriptor (upp);
-		#endif
-		
-	}
-	#else
-	
-		(*(pascal void (*)(XCmdPtr)) ((OSType *) *hxcmd + 1)) (&xcb);
-	
-	#endif
-	plangxcmdrec = nil; /*clear it*/
-	
-	popport ();
-	
-	unlockhandle (hxcmd);
-	
-	if (xcb.returnValue == nil) { /*no explicit return value*/
-		
-		if (xtype == 'XCMD')
-			fl = setbooleanvalue (true, vreturned);
-		else
-			fl = setstringvalue (zerostring, vreturned);
-		}
-	else {
-		
-		truncatecstringhandle (xcb.returnValue); /*strip zero terminator*/
-		
-		fl = setheapvalue (xcb.returnValue, stringvaluetype, vreturned);
-		}
-	
-	exit:
-	
-	for (i = 0; i < ctparams; ++i) {
-		
-		register Handle x = xcb.params [i];
-		
-		if (x != xcb.returnValue) /*some xcmds return a parameter as the result*/
-			disposehandle (x);
-		}
-	
-	return (fl);
-	} /*callxcmdverb*/
-
-#endif
 
 
 static boolean callscriptverb (hdltreenode hparam1, tyvaluerecord *vreturned) {
@@ -3201,11 +3028,6 @@ static boolean langfunctionvalue (short token, hdltreenode hparam1, tyvaluerecor
 		case msgfunc:
 			return ((*langcallbacks.msgverbcallback) (hparam1, v));
 		
-	#if MACVERSION && TARGET_API_MAC_OS8 /*7.0b49: not implemented in OS X*/
-			case callxcmdfunc:
-				return (callxcmdverb (hparam1, v));
-	#endif
-
 		case callscriptfunc:
 			return (callscriptverb (hparam1, v));
 

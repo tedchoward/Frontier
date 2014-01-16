@@ -65,7 +65,6 @@ version at the bottom. This file should be reconciled later.*/
 #include "osamenus.h"
 #include "osaparseaete.h"
 #include "osawindows.h"
-#include <SetUpA5.h>
 #include "byteorder.h"
 
 #if TARGET_API_MAC_CARBON == 1 /*PBS 03/14/02: AE OS X fix.*/
@@ -1347,10 +1346,6 @@ coerceTypetoObj (
 	AEDesc containerdesc;
 	OSErr err;
 	
-	#if !TARGET_API_MAC_CARBON
-	long curA5 = SetUpAppA5 ();
-	#endif
-	
 	#ifdef fldebug
 		if ((*desc).descriptorType != typeType)
 			DebugStr ("\punexpected coercion");
@@ -1364,10 +1359,6 @@ coerceTypetoObj (
 	#endif
 	
 	err = CreateObjSpecifier (cProperty, &containerdesc, formPropertyID, desc, false, result);
-	
-	#if !TARGET_API_MAC_CARBON
-	RestoreA5 (curA5);
-	#endif
 	
 	return (err);
 	} /*coerceTypetoObj*/
@@ -1558,89 +1549,6 @@ void osapostclientcallback (hdlcomponentglobals hglobals) {
 	} /*osapostclientcallback*/
 
 
-#if TARGET_API_MAC_OS8
-	
-	static UniversalProcPtr installpatch (short trapnum, GNEUPP patch) {
-		
-		UniversalProcPtr origtrap = nil;
-		
-		origtrap = NGetTrapAddress (trapnum, ToolTrap);
-		
-		NSetTrapAddress ((UniversalProcPtr) patch, trapnum, ToolTrap);
-		
-		return (origtrap);
-		} /*installpatch*/
-	
-	
-	static void removepatch (short trapnum, GNEUPP origtrap) {
-		
-		NSetTrapAddress ((UniversalProcPtr) origtrap, trapnum, ToolTrap);
-	
-		} /*removepatch*/
-
-
-static pascal Boolean osagetnextevent (short, EventRecord *);
-
-
-#if TARGET_RT_MAC_CFM
-
-	static RoutineDescriptor osagetnexteventDesc = BUILD_ROUTINE_DESCRIPTOR (uppGNEProcInfo, osagetnextevent);
-	
-	#define osagetnexteventUPP (&osagetnexteventDesc)
-	
-#else
-
-	#define osagetnexteventUPP (&osagetnextevent)
-
-#endif
-
-
-GNEUPP osainstallpatch (hdlcomponentglobals hglobals) {
-	
-	/*
-	3.0a dmb: return the original value of getnexteventproc so it can 
-	be restored in osaremovepath. this allows patching pairs to be 
-	nested, so calls to handlerunscript can be nested.
-	*/
-	
-	register hdlcomponentglobals hcg = hglobals;
-	GNEUPP origproc;
-	UniversalProcPtr origtrap;
-	
-	if ((**hcg).isHomeProcess)
-		origproc = nil;
-		
-	else {
-	
-		origtrap = installpatch (_GetNextEvent, osagetnexteventUPP);
-		
-		origproc = (**hcg).getnexteventproc;
-		
-		(**hcg).getnexteventproc = (GNEUPP) origtrap;
-		}
-	
-	return (origproc);
-	} /*osainstallpatch*/
-
-
-void osaremovepatch (hdlcomponentglobals hglobals, GNEUPP origproc) {
-#pragma unused (origproc)
-
-	register hdlcomponentglobals hcg = hglobals;
-	
-	if ((**hcg).isHomeProcess)
-		;	
-	else {
-	
-		assert ((**hcg).getnexteventproc != nil);
-		
-		removepatch (_GetNextEvent, (**hcg).getnexteventproc);
-				
-		(**hcg).getnexteventproc = origproc;
-		}
-	} /*osaremovepatch*/
-
-#else
 
 GNEUPP osainstallpatch (hdlcomponentglobals hglobals) {
 #pragma unused (hglobals)
@@ -1654,7 +1562,6 @@ void osaremovepatch (hdlcomponentglobals hglobals, GNEUPP origproc) {
 
 	} /*osaremovepatch*/
 
-#endif
 
 
 static boolean osapartialeventloop (short desiredevents) {
@@ -1738,59 +1645,6 @@ THz osasetclientzone (hdlcomponentglobals hglobals) {
 	return (origzone);
 	} /*osasetclientzone*/
 
-
-#if TARGET_API_MAC_OS8
-
-static pascal Boolean osagetnextevent (short mask, EventRecord *event) {
-	
-	/*
-	if any toolbox call that we use calls GetNextEvent or EventAvail, we 
-	need to take many of the same precautions as we do for background 
-	tasking. in particular, we need to make sure that the Frontier environment 
-	is restored, since it may get swapped in by the process manager
-	*/
-	
-	register hdlcomponentglobals hcg;
-	register GNEUPP getnexteventproc;
-	register THz origzone;
-	Boolean fl;
-	
-	long curA5 = SetUpAppA5 ();
-	
-	hcg = osaglobals;
-	
-	getnexteventproc = (**hcg).getnexteventproc;
-	
-	osapopfastcontext (hcg);
-	
-	origzone = osasetclientzone (hcg);
-	
-	osaremovepatch (hcg, nil); /*unpatch*/
-	
-	RestoreA5 (curA5);
-	
-	fl = CallGNEProc (getnexteventproc, mask, event);
-
-	curA5 = SetUpAppA5 ();
-	
-	osainstallpatch (hcg); /*repatch*/
-
-	#if TARGET_API_MAC_CARBON == 1
-		LMSetApplZone(origzone);
-	#else
-		SetZone (origzone);
-	#endif
-		
-	osapushfastcontext (hcg);
-	
-	RestoreA5 (curA5);
-	
-	return (fl);
-	} /*osagetnextevent*/
-
-#endif	/*TARGET_API_MAC_OS8*/
-
-
 static pascal OSErr osacreateevent (AEEventClass class, AEEventID id,
                     const AEAddressDesc *target, short returnID,
                     long transactionID, AppleEvent *result) {
@@ -1813,22 +1667,9 @@ static pascal OSErr osacreateevent (AEEventClass class, AEEventID id,
 	
 	clienta5 = (**hcg).clienta5;
 	
-	appA5 = SetUpCurA5 ();	// SetUpThisA5 (clienta5);	// 4.0b5: was: SetUpCurA5 ();
-	
-	#if TARGET_API_MAC_CARBON == 1
-		err = InvokeOSACreateAppleEventUPP (class, id, target, returnID, transactionID, result, (**hcg).createprocrefcon, (**hcg).createproc);
-	#else
-		err = CallOSACreateAppleEventProc ((**hcg).createproc, class, id, target, returnID, transactionID, result, (**hcg).createprocrefcon);
-	#endif
-	
-	RestoreA5 (appA5);
+    err = InvokeOSACreateAppleEventUPP (class, id, target, returnID, transactionID, result, (**hcg).createprocrefcon, (**hcg).createproc);
 
-	#if TARGET_API_MAC_CARBON == 1
-		LMSetApplZone(origzone);
-	#else
-		SetZone (origzone);
-	#endif
-		
+    LMSetApplZone(origzone);
 	osapushfastcontext (hcg);
 	
 	return (err);
@@ -1874,24 +1715,12 @@ osasendevent (
 	
 	clienta5 = (**hcg).clienta5;
 	
-	appA5 = SetUpCurA5 ();	// SetUpThisA5 (clienta5);	// 4.0b5: was: SetUpCurA5 ();
-	
-	#if TARGET_API_MAC_CARBON == 1
-		err = InvokeOSASendUPP (event, reply, mode, priority, timeout, nil, nil, (**hcg).sendprocrefcon, sendproc);
-	#else
-		err = CallOSASendProc (sendproc, event, reply, mode, priority, timeout, nil, nil, (**hcg).sendprocrefcon);
-	#endif
-	
-	RestoreA5 (appA5);
+    err = InvokeOSASendUPP (event, reply, mode, priority, timeout, nil, nil, (**hcg).sendprocrefcon, sendproc);
 	
 	if (getnexteventproc != nil)
 		osainstallpatch (hcg); /*repatch*/
 	
-	#if TARGET_API_MAC_CARBON == 1
-		LMSetApplZone(origzone);
-	#else	
-		SetZone (origzone);
-	#endif
+	LMSetApplZone(origzone);
 		
 	osapushfastcontext (hcg);
 	
@@ -1931,24 +1760,12 @@ static boolean osabackgroundtask (boolean flresting) {
 	osaremovepatch (hcg, nil); /*unpatch*/
 	
 	clienta5 = (**hcg).clienta5;
-		
-	appA5 = SetUpThisA5 (clienta5);	// 4.0b5: was: SetUpCurA5 ();
 	
-	#if TARGET_API_MAC_CARBON == 1
-		err = InvokeOSAActiveUPP ((**hcg).activeprocrefcon, (**hcg).activeproc);
-	#else
-		err = CallOSAActiveProc ((**hcg).activeproc, (**hcg).activeprocrefcon);
-	#endif
-	
-	RestoreA5 (appA5);
+    err = InvokeOSAActiveUPP ((**hcg).activeprocrefcon, (**hcg).activeproc);
 	
 	osainstallpatch (hcg); /*repatch*/
 	
-	#if TARGET_API_MAC_CARBON == 1
-		LMSetApplZone(origzone);
-	#else	
-		SetZone (origzone);
-	#endif
+	LMSetApplZone(origzone);
 		
 	osapushfastcontext (hcg);
 	
@@ -1999,20 +1816,12 @@ static boolean osadebugger (hdltreenode hnode) {
 	osaremovepatch (hcg, nil); /*unpatch*/
 	
 	clienta5 = (**hcg).clienta5;
-	
-	appA5 = SetUpCurA5 ();	// SetUpThisA5 (clienta5);	// 4.0b5: was: SetUpCurA5 ();
 		
 	err = CallOSADebugProc ((**hcg).debugproc, (**hcg).debugprocrefcon);
 	
-	RestoreA5 (appA5);
-	
 	osainstallpatch (hcg); /*repatch*/
 	
-	#if TARGET_API_MAC_CARBON == 1
-		LMSetApplZone(origzone);
-	#else
-		SetZone (origzone);
-	#endif
+    LMSetApplZone(origzone);
 		
 	osapushfastcontext (hcg);
 	
@@ -3386,10 +3195,6 @@ coerceInsltoTEXT (
 	
 exit:
 	
-	#if !TARGET_API_MAC_CARBON
-		RestoreA5(curA5);
-	#endif
-	
 	return (err);
 	} /*coerceInsltoTEXT*/
 
@@ -3512,21 +3317,14 @@ static pascal OSErr sendrecordedtextevent (hdlcomponentglobals hcg, bigstring bs
 			
 			origzone = osasetclientzone (hcg);
 			
-			appA5 = SetUpCurA5 ();
-			
 			err = AESend (&event, &reply, 
 				
 				(AESendMode) kAENoReply + kAEDontRecord, 
 				
 				(AESendPriority) kAENormalPriority, (long) kNoTimeOut, nil, nil);
 			
-			RestoreA5 (appA5);
-			
-			#if TARGET_API_MAC_CARBON == 1
-			LMSetApplZone(origzone);
-			#else	
-			SetZone (origzone);
-			#endif		
+            LMSetApplZone(origzone);
+
 			osapostclientcallback (hcg);
 			
 			AEDisposeDesc (&event);
@@ -3714,36 +3512,20 @@ handlerecordableevent (
 	short rnum = 0;
 	Handle haete = nil;
 	
-	#if !TARGET_API_MAC_CARBON
-		long curA5 = SetUpAppA5 ();
-	#endif
-	
 	err = landsystem7getsenderinfo (event, &psn, &fs, &signature);
 	
 	if (err != noErr) {
-		
-		#if !TARGET_API_MAC_CARBON
-			RestoreA5 (curA5);
-		#endif
 		
 		return (err);
 		}
 	
 	osapushfastcontext (hcg);
 	
-	#if TARGET_API_MAC_CARBON	
-		coerceInsltoTEXTDesc = NewAECoerceDescUPP(coerceInsltoTEXT);
-		AEInstallCoercionHandler (typeInsertionLoc, typeObjectSpecifier, coerceInsltoTEXTDesc, 0, true, false);
-	#else
-		AEInstallCoercionHandler (typeInsertionLoc, typeObjectSpecifier, coerceInsltoTEXTUPP, 0, true, false);
-	#endif
-	
-	#if TARGET_API_MAC_CARBON == 1
-		LMSetApplZone(homezone);
-	#else	
-		SetZone (homezone);
-	#endif
+    coerceInsltoTEXTDesc = NewAECoerceDescUPP(coerceInsltoTEXT);
+    AEInstallCoercionHandler (typeInsertionLoc, typeObjectSpecifier, coerceInsltoTEXTDesc, 0, true, false);
 
+    LMSetApplZone(homezone);
+	
 	if (signature == (**hcg).recordingstate.lastappid)
 		happtable = (**hcg).recordingstate.lastapptable;
 	
@@ -3972,10 +3754,7 @@ exit:
 		AERemoveCoercionHandler (typeInsertionLoc, typeChar, coerceInsltoTEXTUPP, false);
 	#endif
 	osapopfastcontext (hcg);
-	
-	#if !TARGET_API_MAC_CARBON
-		RestoreA5 (curA5);
-	#endif
+
 	
 	return (err);
 	} /*handlerecordableevent*/
@@ -4868,36 +4647,11 @@ static pascal ComponentResult osaDispatch (ComponentParameters *params, Handle s
 				long clienta5;
 				
 				selfa5 = GetComponentRefcon (self);
-				
-				#ifdef THINK_C
-					
-					asm {
-						move.l	a5,clienta5
-						move.l	a5,-(a7)
-						move.l	selfa5,a5
-						}
-					
-				#else
-				
-					clienta5 = SetUpAppA5 ();
-					
-					// 5.0.1: might not be - assert (clienta5 == (long) LMGetCurrentA5 ());
-					
-				#endif
-				//Code change by Timothy Paustian Monday, June 26, 2000 9:39:54 PM
-				//We don't need this
-				#if !TARGET_API_MAC_CARBON
-				SetComponentInstanceA5 ((ComponentInstance) self, selfa5);
-				#endif
-				
+
 				if (newcomponentglobals (self, clienta5, &hglobals))
 					SetComponentInstanceStorage ((ComponentInstance) self, (Handle) hglobals);
 				else
 					result = memFullErr;
-				#if !TARGET_API_MAC_CARBON
-				RestoreA5 (clienta5);
-				#endif
-				
 				
 				break;
 				}
@@ -5342,11 +5096,7 @@ ComponentInstance getosaserver (OSType type) {
 			}
 		}
 	
-	appA5 = SetUpCurA5 (); /*3.0a*/
-	
 	instance = OpenDefaultComponent (kOSAComponentType, type);
-	
-	RestoreA5 (appA5);
 	
 	if (instance != nil)
 		addosaserver (instance, type);
@@ -5623,17 +5373,9 @@ static pascal OSErr osaclientactive (long refcon) {
 	
 	OSErr err = noErr;
 	
-	#if !TARGET_API_MAC_CARBON
-		long curA5 = SetUpAppA5 ();
-	#endif
-	
 	if (!langbackgroundtask (false) || languserescaped (false))
 		err = userCanceledErr;
-	
-	#if !TARGET_API_MAC_CARBON
-		RestoreA5 (curA5);
-	#endif
-	
+
 	return (err);
 	} /*osaclientactive*/
 
@@ -5683,10 +5425,6 @@ osaclientsend (
 	
 	OSErr err;
 	register hdllandglobals hlg;
-
-	#if !TARGET_API_MAC_CARBON
-		long curA5 = SetUpAppA5 ();
-	#endif
 	
 	hlg = landgetglobals ();
 	
@@ -5701,10 +5439,6 @@ osaclientsend (
 		if (!langbackgroundtask (false) || languserescaped (false))
 			err = userCanceledErr;
 		}
-	
-	#if !TARGET_API_MAC_CARBON
-		RestoreA5 (curA5);
-	#endif
 	
 	return (err);
 	} /*osaclientsend*/

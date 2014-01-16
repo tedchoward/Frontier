@@ -56,7 +56,6 @@
 	#include <uisharing.h>
 	#include <uisinternal.h>
 	#include "osacomponent.h"
-	#include <SetUpA5.h>
 #endif
 
 #if TARGET_API_MAC_CARBON == 1 /*PBS 03/14/02: AE OS X fix.*/
@@ -1510,120 +1509,6 @@ static boolean langipchandletrapverb (hdlverbrecord hverb, boolean *flfoundhandl
 	
 	return (fl);
 	} /*langipchandletrapverb*/
-
-
-#if TARGET_API_MAC_OS8
-
-static boolean langipcgetmenuarrayverb (hdlverbrecord hverb) {
-	
-	long id;
-	Handle h = nil; /*4.1b2 dmb*/
-	short firstmenuresource;
-	
-	if (!langipcfileopen (hverb))
-		return (false);
-	
-	if (!landgetlongparam (hverb, idmenuprogram, &id))
-		return (false);
-	
-	if (!landgetintparam (hverb, idstartingresource, &firstmenuresource))
-		return (false);
-	
-	if (!langipcgetmenuarray (id, firstmenuresource, false, &h)) {
-		
-		landreturnerror (hverb, outofmemoryerror); /*ran out of memory in menu server*/
-		
-		return (false);
-		}
-	
-	return (landreturnbinary (hverb, h));
-	} /*langipcgetmenuarrayverb*/
-
-
-static boolean langipcgetmenuhandleverb (hdlverbrecord hverb) {
-	
-	long id;
-	short ixarray;
-	Handle h;
-	
-	if (!langipcfileopen (hverb))
-		return (false);
-	
-	if (!landgetlongparam (hverb, idmenuprogram, &id))
-		return (false);
-	
-	if (!landgetintparam (hverb, idarrayindex, &ixarray))
-		return (false);
-	
-	if (!langipcgetmenuhandle (id, ixarray, &h)) {
-		
-		landreturnerror (hverb, outofmemoryerror);
-		
-		return (false);
-		}
-	
-	return (landreturnbinary (hverb, h));
-	} /*langipcgetmenuhandleverb*/
-
-
-static boolean langipcrunmenuitemverb (hdlverbrecord hverb) {
-	
-	long id;
-	short idmenu, iditem;
-	long refcon;
-	register hdlverbrecord hv = hverb;
-	
-	if (!langipcfileopen (hverb))
-		return (false);
-	
-	if (!landgetlongparam (hv, idmenuprogram, &id))
-		return (false);
-	
-	if (!landgetintparam (hv, idmenuidvalue, &idmenu))
-		return (false);
-	
-	if (!landgetintparam (hv, idmenuitemvalue, &iditem))
-		return (false);
-	
-	if (!langipcrunitem (id, idmenu, iditem, &refcon)) {
-		
-		landreturnerror (hv, outofmemoryerror);
-		
-		return (false);
-		}
-	
-	return (landreturnlong (hv, refcon));
-	} /*langipcrunmenuitemverb*/
-
-
-static boolean langipckillscriptverb (hdlverbrecord hverb) {
-	
-	/*
-	the long parameter shoud be the refcon returned by runmenuitem.  since 
-	we count count on perfect synchonization, we shouldn't assume that the 
-	process still exists, so we're using the code instead of the process 
-	handle itself.  the down side is that it won't find the process if the 
-	current process list isn't the original one.  we can make this more 
-	robust if necessary.
-	
-	7/17/92 dmb: refcon parameter uses directparamkey, not idmenuprogram
-	*/
-	
-	long refcon;
-	boolean fl;
-	
-	if (!langipcfileopen (hverb))
-		return (false);
-	
-	if (!landgetlongparam (hverb, directparamkey, &refcon))
-		return (false);
-	
-	fl = processdisposecode ((hdltreenode) refcon);
-	
-	return (landreturnboolean (hverb, fl));
-	} /*langipckillscriptverb*/
-
-#endif
 
 
 static pascal boolean langipchandleverb (hdlverbrecord hverb) {
@@ -4229,13 +4114,6 @@ static pascal OSErr langipcfastgetobject (AppleEvent *event, AppleEvent *reply, 
 	OSErr err;
 	AEDesc desc;
 	tyfastverbcontext savecontext;
-	long curA5;
-	
-	#if flcomponent
-		
-		curA5 = SetUpAppA5 ();
-	
-	#endif
 	
 	landpushfastcontext (&savecontext);
 	
@@ -4286,12 +4164,6 @@ static pascal OSErr langipcfastgetobject (AppleEvent *event, AppleEvent *reply, 
 	
 	landpopfastcontext (&savecontext);
 	
-	#if flcomponent
-		
-		RestoreA5 (curA5);
-	
-	#endif
-	
 	return (err);
 	} /*langipcfastgetobject*/
 
@@ -4312,13 +4184,7 @@ langipcfastsetobject (
 	AEDesc desc1, desc2;
 	tyfastverbcontext savecontext;
 	Boolean fl;
-	
-	#if flcomponent && TARGET_API_MAC_OS8
 		
-		long curA5 = SetUpAppA5 ();
-	
-	#endif
-	
 	landpushfastcontext (&savecontext);
 	
 	langipchookfasterrors (reply);
@@ -4368,13 +4234,7 @@ langipcfastsetobject (
 	langipcunhookfasterrors ();
 	
 	landpopfastcontext (&savecontext);
-	
-	#if flcomponent && TARGET_API_MAC_OS8
-		
-		RestoreA5 (curA5);
-	
-	#endif
-	
+    
 	return (err);
 	} /*langipcfastsetobject*/
 
@@ -4402,102 +4262,60 @@ langipchandlefastscript (
 	boolean fl;
 	OSErr err;
 	
-	#if flcomponent && TARGET_API_MAC_OS8
-		
-		long curA5 = SetUpThisA5 (refcon);
 	
-	#endif
-	
-	#if 1
-	
-		landpushfastcontext (&savecontext);
-		
-		langipchookfasterrors (reply);
-		
-		++fldisableyield;
-		
-		err = AEGetKeyDesc (event, '----', typeChar, &script);
-		
-		if (oserror (err))
-			goto exit;
-		
-		pushhashtable (roottable); /*make sure we don't tromple current script's tmpstack*/
-		
-		flscriptwasrunning = flscriptrunning;
-		
-		flscriptrunning = false;
-		
-		setemptystring (bs);
-		
-		#if TARGET_API_MAC_CARBON == 1 /*PBS 03/14/02: AE OS X fix.*/
-		
-			{
-			Handle h;
+
+    landpushfastcontext (&savecontext);
+    
+    langipchookfasterrors (reply);
+    
+    ++fldisableyield;
+    
+    err = AEGetKeyDesc (event, '----', typeChar, &script);
+    
+    if (oserror (err))
+        goto exit;
+    
+    pushhashtable (roottable); /*make sure we don't tromple current script's tmpstack*/
+    
+    flscriptwasrunning = flscriptrunning;
+    
+    flscriptrunning = false;
+    
+    setemptystring (bs);
+    
+    #if TARGET_API_MAC_CARBON == 1 /*PBS 03/14/02: AE OS X fix.*/
+    
+        {
+        Handle h;
+        
+        copydatahandle (&script, &h);
+        
+        fl = langrunhandle (h, bs);
+        }
+    
+    #else
+    
+        fl = langrunhandle (script.dataHandle, bs); /*consumes dataHandle*/
+    
+    #endif
+    
+    flscriptrunning = flscriptwasrunning;
+    
+    cleartmpstack (); /*make sure we're livin' clean*/
+    
+    pophashtable ();
+    
+    if (fl)
+        AEPutKeyPtr (reply, '----', typeChar, (Ptr) bs + 1, stringlength (bs));
+    
+    exit:
+    
+    --fldisableyield;
+    
+    langipcunhookfasterrors ();
+    
+    landpopfastcontext (&savecontext);
 			
-			copydatahandle (&script, &h);
-			
-			fl = langrunhandle (h, bs);
-			}
-		
-		#else
-		
-			fl = langrunhandle (script.dataHandle, bs); /*consumes dataHandle*/
-		
-		#endif
-		
-		flscriptrunning = flscriptwasrunning;
-		
-		cleartmpstack (); /*make sure we're livin' clean*/
-		
-		pophashtable ();
-		
-		if (fl)
-			AEPutKeyPtr (reply, '----', typeChar, (Ptr) bs + 1, stringlength (bs));
-		
-		exit:
-		
-		--fldisableyield;
-		
-		langipcunhookfasterrors ();
-		
-		landpopfastcontext (&savecontext);
-		
-	#else /*this code assumes that the component manger is present*/
-		
-		comp = OpenComponent (osacomponent);
-		
-		if (comp == nil)
-			err = memFullErr;
-		
-		else {
-			
-			err = AEGetKeyDesc (event, '----', typeChar, &script);
-			
-			if (err == noErr) {
-				
-				err = OSADoScript (comp, &script, kOSANullScript, typeChar, kOSANullMode, &result);
-				
-				AEDisposeDesc (&script);
-				
-				if (err == noErr) {
-					
-					err = AEPutKeyDesc (reply, '----', &result);
-					
-					AEDisposeDesc (&result);
-					}
-				}
-			
-			CloseComponent (comp);
-			}
-	
-	#endif
-	
-	#if flcomponent && TARGET_API_MAC_OS8
-		
-		RestoreA5 (curA5);
-	
-	#endif
-	
 	return (err);
 	} /*langipchandlefastscript*/
 
@@ -4666,14 +4484,6 @@ void langipcshutdown (void) {
 #if flruntime
 
 boolean langipcinit (void) {
-	
-	#ifdef flcomponent
-	
-		#if !TARGET_API_MAC_CARBON
-		RememberA5 ();
-		#endif
-	
-	#endif
 	
 	return (true);
 	} /*langipcinit*/

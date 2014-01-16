@@ -458,8 +458,6 @@ static pascal void drawmessageitem (DialogPtr pdialog, short itemnumber) {
 	
 	htext = getResourceAndDetach ('TEXT', 128);
 	
-	RestoreA5 (curA5);
-	
 	savedfont = (*thePort).txFont;
 	
 	savedsize = (*thePort).txSize;
@@ -544,11 +542,8 @@ static void drawitemstring (DialogPtr pdialog, short itemnumber, Str255 s) {
 static pascal void drawtitleitem (DialogPtr pdialog, short itemnumber) {
 	
 	Str255 titlestring;
-	long appA5;
 	
 	GetWTitle (pdialog, titlestring);
-	
-	curA5 = SetUpAppA5 ();
 	
 	insertstring ("\pThe Ò", titlestring);
 	
@@ -556,7 +551,6 @@ static pascal void drawtitleitem (DialogPtr pdialog, short itemnumber) {
 	
 	drawitemstring (pdialog, itemnumber, titlestring);
 	
-	RestoreA5 (curA5);
 	} /*drawtitleitem*/
 
 
@@ -778,8 +772,6 @@ static void initdropletmenus (hdlcomponentglobals hcg) {
 	
 	register MenuHandle hmenu;
 	
-	long appA5 = SetUpCurA5 ();
-	
 	hmenu = GetMenu (applemenu);
 	
 	if (hmenu != nil) {
@@ -802,7 +794,6 @@ static void initdropletmenus (hdlcomponentglobals hcg) {
 	
 	DrawMenuBar ();
 	
-	RestoreA5 (appA5);
 	} /*initdropletmenus*/
 
 
@@ -812,7 +803,6 @@ static boolean initdropletwindow (hdlcomponentglobals hcg, boolean fl2click) {
 	Str255 appname;
 	DialogPtr w;
 	boolean flignore;
-	long appA5;
 	
 	psn.highLongOfPSN = 0;
 	
@@ -820,11 +810,7 @@ static boolean initdropletwindow (hdlcomponentglobals hcg, boolean fl2click) {
 	
 	getprocessname (psn, appname, &flignore);
 	
-	appA5 = SetUpCurA5 ();
-	
 	w = GetNewDialog (mainwindowid, nil, (WindowPtr) -1);
-	
-	RestoreA5 (appA5);
 	
 	dropletglobals.pmainwindow = w;
 	
@@ -924,11 +910,7 @@ static OSErr dropletmaineventloop (hdlcomponentglobals hglobals) {
 		
 //		osapreclientcallback (hcg);
 		
-		appA5 = SetUpCurA5 ();
-		
 		fl = WaitNextEvent (everyEvent, &ev, 30, nil);
-		
-		RestoreA5 (appA5z);
 		
 //		osapostclientcallback (hcg);
 		
@@ -1000,8 +982,7 @@ static OSErr dropletmaineventloop (hdlcomponentglobals hglobals) {
 static pascal ComponentResult rundropletcommand (hdlcomponentglobals hglobals) {
 	
 	OSErr err;
-	
-	long appA5 = SetUpCurA5 ();
+
 	
 	err = AEInstallEventHandler (kCoreEventClass, kAEOpenApplication, (ProcPtr) &droplethandleopenapp, (long) hglobals, false);
 	
@@ -1010,8 +991,6 @@ static pascal ComponentResult rundropletcommand (hdlcomponentglobals hglobals) {
 	
 	if (err == noErr)
 		err = AEInstallEventHandler (typeWildCard, typeWildCard, (ProcPtr) &droplethandlewildcard, (long) hglobals, false);
-	
-	RestoreA5 (appA5);
 	
 	if (err != noErr)
 		return (err);
@@ -1050,39 +1029,18 @@ static pascal ComponentResult dropletdispatch (register ComponentParameters *par
 	ComponentResult result = noErr;
 	short what = (*params).what;
 	
-	long curA5 = SetUpAppA5 ();
-	
 	switch (what) {
 		
 		case kComponentOpenSelect: { /*can't call subroutine because a5 isn't ours*/
 			
 			hdlcomponentglobals hglobals;
 			Component self = (Component) (*params).params [0];
-			long selfa5;
 			long clienta5;
-			
-			/*
-			selfa5 = GetComponentRefcon (self);
-			
-			asm {
-				move.l	a5,clienta5
-				move.l	a5,-(a7)
-				move.l	selfa5,a5
-				}
-			
-			SetComponentInstanceA5 ((ComponentInstance) self, selfa5);
-			*/
 			
 			if (newcomponentglobals (self, clienta5, &hglobals))
 				SetComponentInstanceStorage ((ComponentInstance) self, (Handle) hglobals);
 			else
 				result = memFullErr;
-			
-			/*
-			asm {
-				move.l	(a7)+,a5
-				}
-			*/
 			
 			break;
 			}
@@ -1113,8 +1071,6 @@ static pascal ComponentResult dropletdispatch (register ComponentParameters *par
 			
 			break;
 		}
-	
-	RestoreA5 (curA5);
 	
 	return (result);
 	} /*dropletdispatch*/

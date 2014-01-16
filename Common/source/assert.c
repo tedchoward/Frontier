@@ -163,38 +163,6 @@
 
 #endif	/*TARGET_API_MAC_CARBON*/
 
-#if TARGET_API_MAC_OS8
-		
-	short __assert (char *expr, char *file, short line) {
-
-		bigstring bsfile, bsline, bsmessage;
-		static boolean flnorentry = false;
-		
-		if (flnorentry)
-			return (0);
-		
-		flnorentry = true;
-		
-		moveleft (file, bsfile, (long) lenbigstring);
-		
-		convertcstring (bsfile);
-		
-		numbertostring ((long) line, bsline);
-		
-		parsedialogstring (
-				"\pAssertion failed in file ^0, at line ^1.",
-				bsfile, bsline, nil, nil,
-				bsmessage);
-		
-		DebugStr (bsmessage);
-		
-		flnorentry = false;
-
-		return (0);
-	} /*__assert*/
-
-#endif	/*TARGET_API_MAC_OS8*/
-
 #endif	/*MACVERSION*/
 	
 

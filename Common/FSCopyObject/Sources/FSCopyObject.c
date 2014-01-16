@@ -916,7 +916,7 @@ static OSErr ProcessFolderList( FSCopyFolderGlobals *folderGlobals )
 		folderListData = (FolderListData*) GetData( folderGlobals->folderListIter );
 		if( folderListData != NULL )
 		{
-			#if DEBUG && !TARGET_API_MAC_OS8
+			#if DEBUG
 			{
 				char	path[1024];
 				myverify_noerr(FSRefMakePath( &(folderListData->sourceDirRef),	(unsigned char*)path, 1024 ));
@@ -1453,7 +1453,7 @@ OSErr FSDeleteObjects( const FSRef *source )
 	FSCatalogInfo	catalogInfo;
 	OSErr			err = ( source != NULL ) ? noErr : paramErr;
 	
-	#if DEBUG && !TARGET_API_MAC_OS8
+	#if DEBUG
 	if( err == noErr )
 	{
 		char	path[1024];

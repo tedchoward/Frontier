@@ -1083,12 +1083,7 @@ static boolean activateprocess (ProcessSerialNumber psn) {
 	*/
 	
 	long startticks;
-	
-#if defined(TARGET_API_MAC_OS8) && (TARGET_API_MAC_OS8 == 1)
-	if (oserror (WakeUpProcess (&psn)))
-		return (false);
-#endif
-	
+		
 	if (oserror (SetFrontProcess (&psn)))
 		return (false);
 	

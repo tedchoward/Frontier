@@ -25,6 +25,11 @@
 
 ******************************************************************************/
 
+#ifdef TARGET_API_MAC_OSX
+#import <Foundation/Foundation.h>
+#import <AppKit/NSApplication.h>
+#endif
+
 #include "frontier.h"
 #include "standard.h"
 
@@ -32,11 +37,6 @@
 #include "shell.h"
 #include "shellprivate.h"
 #include "frontierstart.h"
-
-#ifdef TARGET_API_MAC_OSX
-#import <Foundation/Foundation.h>
-#import <AppKit/NSApplication.h>
-#endif
 
 int main (void) {
 #ifdef TARGET_API_MAC_OSX

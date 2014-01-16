@@ -101,9 +101,13 @@
 	#define	APP_COPYRIGHT_HOLDER		"Frontier Kernel Project"
 	
 	#define	bs_APP_NAME				BIGSTRING ("\x08" "Frontier")
+    #define cf_APP_NAME             CFSTR("Frontier")
 	#define	bs_APP_SLOGAN				BIGSTRING ("\x25" "Powerful cross-platform web scripting")
+    #define cf_APP_SLOGAN               CFSTR("Powerful cross-platform web scripting")
 	#define	bs_APP_COPYRIGHT			BIGSTRING ("\x23" "© " APP_COPYRIGHT_FROM "-" APP_COPYRIGHT_TILL " Frontier Kernel Project")
+    #define cf_APP_COPYRIGHT            CFSTR("© " APP_COPYRIGHT_FROM "-" APP_COPYRIGHT_TILL " Frontier Kernel Project")
 	#define	bs_APP_URL				BIGSTRING ("\x26" "http://frontierkernel.sourceforge.net/")
+    #define cf_APP_URL              CFSTR("http://frontierkernel.sourceforge.net/")
 		
 #endif
 

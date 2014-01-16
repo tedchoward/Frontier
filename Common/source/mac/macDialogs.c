@@ -49,12 +49,6 @@
 #include "langinternal.h" /* 2005-09-26 creedon */
 #include "tablestructure.h" /* 2005-09-26 creedon */
 
-#ifdef flcomponent
-
-	#include <SetUpA5.h>
-
-#endif
-
 
 #define windowevents (updateMask + activMask)
 
@@ -335,7 +329,6 @@ DialogPtr newmodaldialog (short id, short defaultitem) {
 	*/
 	
 	register DialogPtr pdialog;
-	long appA5;
 	
 	#ifdef fldebug
 	
@@ -344,19 +337,8 @@ DialogPtr newmodaldialog (short id, short defaultitem) {
 	
 	#endif
 	
-	#ifdef flcomponent
-	
-	appA5 = SetUpCurA5 ();
-	
-	#endif
 	
 	pdialog = GetNewDialog (id, nil, (WindowRef) -1L);
-	
-	#ifdef flcomponent
-	
-	RestoreA5 (appA5);
-	
-	#endif
 	
 	if (pdialog == nil) 
 		return (nil);
@@ -989,10 +971,6 @@ pascal boolean modaldialogcallback (DialogPtr pdialog, EventRecord *ev, short *i
 	
  	//register short hit = 0;
  	
- 	#if !TARGET_API_MAC_CARBON && defined(flcomponent)
-		long curA5 = SetUpAppA5 ();
- 	#endif
- 	
  	if (whatevent != nullEvent) { /*non-null event; set global event time for background logic*/
  		
  		shellevent.when = (*ev).when;
@@ -1097,9 +1075,6 @@ pascal boolean modaldialogcallback (DialogPtr pdialog, EventRecord *ev, short *i
 		
 		} /*switch*/
 	
-	#if !TARGET_API_MAC_CARBON && defined(flcomponent)
-		RestoreA5 (curA5);
-	#endif
 	return (eventHandled); /*the dialog manager's version of false*/
 	} /*modaldialogcallback*/
 
@@ -1118,15 +1093,9 @@ static short runmodaldialog (void) {
 	#ifdef flcomponent
 		{
 		ProcPtr filter = (ProcPtr) modaldialogcallback;
-		#if !TARGET_API_MAC_CARBON && defined(flcomponent)
-			long appA5 = SetUpCurA5 (); /*for system*/
-		#endif
 		
 		ModalDialog ((ModalFilterUPP) filter, &itemnumber);
 		
-		#if !TARGET_API_MAC_CARBON && defined(flcomponent)
-			RestoreA5 (appA5);
-		#endif
 		}
 	#else
 	
@@ -1158,11 +1127,7 @@ static short runmodaldialog (void) {
 	
 	#if flcomponent && !TARGET_API_MAC_CARBON
 		{
-		long appA5 = SetUpCurA5 (); /*for system*/
-		
 		ModalDialog (filter, &itemnumber);
-		
-		RestoreA5 (appA5);
 		}
 	#else
 	
@@ -1964,14 +1929,6 @@ boolean askpassword (bigstring passprompt, bigstring password) {
 
 
 boolean initdialogs (void) {
-	
-	#ifdef flcomponent
-		//Code change by Timothy Paustian Sunday, May 7, 2000 11:10:48 PM
-		//In Carbon this is not needed.
-		#if !TARGET_CARBON
-		RememberA5 ();
-		#endif /*for filters, callbacks*/
-	#endif
 	
 	return (true);
 	} /*dialoginit*/

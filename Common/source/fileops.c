@@ -56,10 +56,6 @@
 
 	#include "AppleEventUtils.h"
 
-	#ifdef flcomponent
-		#include "SetUpA5.h"
-	#endif
-
 	#define hasOpenDeny(volParms)		(((volParms).vMAttrib & (1L << bHasOpenDeny)) != 0)
 	
 	#ifndef __MOREFILESEXTRAS__
@@ -3430,15 +3426,7 @@ boolean initfile (void) {
 	
 	#endif
 
-#ifdef MACVERSION
-	#ifdef flcomponent
-	
-	#if !TARGET_API_MAC_CARBON
-	RememberA5 ();
-	#endif /*for hook*/
-	
-	#endif
-	
+#ifdef MACVERSION	
 	applicationresnum = CurResFile ();
 #endif	
 	return (true);

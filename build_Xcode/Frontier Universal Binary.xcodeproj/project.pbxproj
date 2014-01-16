@@ -3,7 +3,7 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 42;
+	objectVersion = 46;
 	objects = {
 
 /* Begin PBXBuildFile section */
@@ -114,7 +114,6 @@
 		6505999309968C1400410571 /* timedate.h in Headers */ = {isa = PBXBuildFile; fileRef = 65152802072BFE5400411831 /* timedate.h */; };
 		6505999409968C1400410571 /* frontierwindows.h in Headers */ = {isa = PBXBuildFile; fileRef = 65152804072BFE5500411831 /* frontierwindows.h */; };
 		6505999509968C1400410571 /* shell.h in Headers */ = {isa = PBXBuildFile; fileRef = 65152806072BFE5700411831 /* shell.h */; };
-		6505999609968C1400410571 /* SetUpA5.h in Headers */ = {isa = PBXBuildFile; fileRef = 65152808072BFE5900411831 /* SetUpA5.h */; };
 		6505999709968C1400410571 /* oplist.h in Headers */ = {isa = PBXBuildFile; fileRef = 6515280A072BFE5B00411831 /* oplist.h */; };
 		6505999809968C1400410571 /* fileloop.h in Headers */ = {isa = PBXBuildFile; fileRef = 6515280C072BFE5C00411831 /* fileloop.h */; };
 		6505999909968C1400410571 /* mac.h in Headers */ = {isa = PBXBuildFile; fileRef = 6515280E072BFE5E00411831 /* mac.h */; };
@@ -197,7 +196,6 @@
 		650599FB09968C1400410571 /* CallMachOFrameWork.h in Headers */ = {isa = PBXBuildFile; fileRef = 651528D2072BFF2200411831 /* CallMachOFrameWork.h */; };
 		650599FC09968C1400410571 /* langhtml.h in Headers */ = {isa = PBXBuildFile; fileRef = 651528D4072BFF2500411831 /* langhtml.h */; };
 		650599FD09968C1400410571 /* langxml.h in Headers */ = {isa = PBXBuildFile; fileRef = 651528D6072BFF2700411831 /* langxml.h */; };
-		650599FE09968C1400410571 /* langxcmd.h in Headers */ = {isa = PBXBuildFile; fileRef = 651528D8072BFF2900411831 /* langxcmd.h */; };
 		650599FF09968C1400410571 /* langdll.h in Headers */ = {isa = PBXBuildFile; fileRef = 651528DA072BFF2C00411831 /* langdll.h */; };
 		65059A0009968C1400410571 /* langtokens.h in Headers */ = {isa = PBXBuildFile; fileRef = 651528DC072BFF2D00411831 /* langtokens.h */; };
 		65059A0109968C1400410571 /* langwinipc.h in Headers */ = {isa = PBXBuildFile; fileRef = 651528DE072BFF2F00411831 /* langwinipc.h */; };
@@ -694,7 +692,6 @@
 		65152803072BFE5400411831 /* timedate.h in Headers */ = {isa = PBXBuildFile; fileRef = 65152802072BFE5400411831 /* timedate.h */; };
 		65152805072BFE5500411831 /* frontierwindows.h in Headers */ = {isa = PBXBuildFile; fileRef = 65152804072BFE5500411831 /* frontierwindows.h */; };
 		65152807072BFE5700411831 /* shell.h in Headers */ = {isa = PBXBuildFile; fileRef = 65152806072BFE5700411831 /* shell.h */; };
-		65152809072BFE5900411831 /* SetUpA5.h in Headers */ = {isa = PBXBuildFile; fileRef = 65152808072BFE5900411831 /* SetUpA5.h */; };
 		6515280B072BFE5B00411831 /* oplist.h in Headers */ = {isa = PBXBuildFile; fileRef = 6515280A072BFE5B00411831 /* oplist.h */; };
 		6515280D072BFE5C00411831 /* fileloop.h in Headers */ = {isa = PBXBuildFile; fileRef = 6515280C072BFE5C00411831 /* fileloop.h */; };
 		6515280F072BFE5E00411831 /* mac.h in Headers */ = {isa = PBXBuildFile; fileRef = 6515280E072BFE5E00411831 /* mac.h */; };
@@ -777,7 +774,6 @@
 		651528D3072BFF2200411831 /* CallMachOFrameWork.h in Headers */ = {isa = PBXBuildFile; fileRef = 651528D2072BFF2200411831 /* CallMachOFrameWork.h */; };
 		651528D5072BFF2500411831 /* langhtml.h in Headers */ = {isa = PBXBuildFile; fileRef = 651528D4072BFF2500411831 /* langhtml.h */; };
 		651528D7072BFF2700411831 /* langxml.h in Headers */ = {isa = PBXBuildFile; fileRef = 651528D6072BFF2700411831 /* langxml.h */; };
-		651528D9072BFF2900411831 /* langxcmd.h in Headers */ = {isa = PBXBuildFile; fileRef = 651528D8072BFF2900411831 /* langxcmd.h */; };
 		651528DB072BFF2C00411831 /* langdll.h in Headers */ = {isa = PBXBuildFile; fileRef = 651528DA072BFF2C00411831 /* langdll.h */; };
 		651528DD072BFF2D00411831 /* langtokens.h in Headers */ = {isa = PBXBuildFile; fileRef = 651528DC072BFF2D00411831 /* langtokens.h */; };
 		651528DF072BFF2F00411831 /* langwinipc.h in Headers */ = {isa = PBXBuildFile; fileRef = 651528DE072BFF2F00411831 /* langwinipc.h */; };
@@ -864,12 +860,6 @@
 		65F9C22809C4CDDE00DCC29E /* sha1dgst.c in Sources */ = {isa = PBXBuildFile; fileRef = 65F9C22609C4CDDE00DCC29E /* sha1dgst.c */; };
 		9F01A7CC1851206200CFBD95 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 9F01A7CA1851206200CFBD95 /* Localizable.strings */; };
 		9F01A7CD1851206200CFBD95 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 9F01A7CA1851206200CFBD95 /* Localizable.strings */; };
-		9F0D5A281864B06400D9A6CE /* AboutViewController.h in Headers */ = {isa = PBXBuildFile; fileRef = 9F0D5A261864B06400D9A6CE /* AboutViewController.h */; };
-		9F0D5A291864B06400D9A6CE /* AboutViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 9F0D5A271864B06400D9A6CE /* AboutViewController.m */; };
-		9F0D5A2A1864B06400D9A6CE /* AboutViewController.h in Headers */ = {isa = PBXBuildFile; fileRef = 9F0D5A261864B06400D9A6CE /* AboutViewController.h */; };
-		9F0D5A2B1864B06400D9A6CE /* AboutViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 9F0D5A271864B06400D9A6CE /* AboutViewController.m */; };
-		9F0D5A2F1864B08D00D9A6CE /* AboutViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 9F0D5A2E1864B08D00D9A6CE /* AboutViewController.xib */; };
-		9F0D5A301864B08D00D9A6CE /* AboutViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 9F0D5A2E1864B08D00D9A6CE /* AboutViewController.xib */; };
 		9F0D5BE11864B58D00D9A6CE /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9F0D5BE01864B58D00D9A6CE /* Cocoa.framework */; };
 		9F0D5BEE1864B62F00D9A6CE /* Carbon.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9F0D5BED1864B62F00D9A6CE /* Carbon.framework */; };
 		9F0D5C991864C68700D9A6CE /* AboutWindow.xib in Resources */ = {isa = PBXBuildFile; fileRef = 9F0D5C981864C68700D9A6CE /* AboutWindow.xib */; };
@@ -879,41 +869,28 @@
 		9F0D5CA01864C6A800D9A6CE /* AboutWindowController.h in Headers */ = {isa = PBXBuildFile; fileRef = 9F0D5C9C1864C6A800D9A6CE /* AboutWindowController.h */; };
 		9F0D5CA11864C6A800D9A6CE /* AboutWindowController.m in Sources */ = {isa = PBXBuildFile; fileRef = 9F0D5C9D1864C6A800D9A6CE /* AboutWindowController.m */; };
 		9F0D5E561864F04100D9A6CE /* WebKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9F0D5E551864F04100D9A6CE /* WebKit.framework */; };
-		9F34C9DD186397A80047BA53 /* AboutTextView.h in Headers */ = {isa = PBXBuildFile; fileRef = 9F34C9DB186397A80047BA53 /* AboutTextView.h */; };
-		9F34C9DE186397A80047BA53 /* AboutTextView.c in Sources */ = {isa = PBXBuildFile; fileRef = 9F34C9DC186397A80047BA53 /* AboutTextView.c */; };
-		9F34C9DF186397A80047BA53 /* AboutTextView.h in Headers */ = {isa = PBXBuildFile; fileRef = 9F34C9DB186397A80047BA53 /* AboutTextView.h */; };
-		9F34C9E0186397A80047BA53 /* AboutTextView.c in Sources */ = {isa = PBXBuildFile; fileRef = 9F34C9DC186397A80047BA53 /* AboutTextView.c */; };
 		9F3A12D4183A6B3E007ACBD2 /* MacSocketNetEvents.c in Sources */ = {isa = PBXBuildFile; fileRef = 9F3A12D3183A6B3E007ACBD2 /* MacSocketNetEvents.c */; };
 		9F3A12D5183A6B3E007ACBD2 /* MacSocketNetEvents.c in Sources */ = {isa = PBXBuildFile; fileRef = 9F3A12D3183A6B3E007ACBD2 /* MacSocketNetEvents.c */; };
 		9F3A12D7183A6B60007ACBD2 /* mutex.c in Sources */ = {isa = PBXBuildFile; fileRef = 9F3A12D6183A6B60007ACBD2 /* mutex.c */; };
 		9F3A12D8183A6B60007ACBD2 /* mutex.c in Sources */ = {isa = PBXBuildFile; fileRef = 9F3A12D6183A6B60007ACBD2 /* mutex.c */; };
 		9F3A12DA183A6B8D007ACBD2 /* mutex.h in Headers */ = {isa = PBXBuildFile; fileRef = 9F3A12D9183A6B8D007ACBD2 /* mutex.h */; };
 		9F3A12DB183A6B8D007ACBD2 /* mutex.h in Headers */ = {isa = PBXBuildFile; fileRef = 9F3A12D9183A6B8D007ACBD2 /* mutex.h */; };
-		9F92A1C11852927100D6FA9E /* About.xib in Resources */ = {isa = PBXBuildFile; fileRef = 9F92A1C01852927100D6FA9E /* About.xib */; };
-		9F92A1C21852927100D6FA9E /* About.xib in Resources */ = {isa = PBXBuildFile; fileRef = 9F92A1C01852927100D6FA9E /* About.xib */; };
 		9FAA95D2187F3AD7008923D3 /* file.c in Sources */ = {isa = PBXBuildFile; fileRef = 9FAA95D1187F3AD7008923D3 /* file.c */; };
 		9FAA95D3187F3AD7008923D3 /* file.c in Sources */ = {isa = PBXBuildFile; fileRef = 9FAA95D1187F3AD7008923D3 /* file.c */; };
 		9FAA97571880CB5F008923D3 /* AppleEventUtils.h in Headers */ = {isa = PBXBuildFile; fileRef = 9FAA97551880CB5F008923D3 /* AppleEventUtils.h */; };
 		9FAA97581880CB5F008923D3 /* AppleEventUtils.c in Sources */ = {isa = PBXBuildFile; fileRef = 9FAA97561880CB5F008923D3 /* AppleEventUtils.c */; };
 		9FAA97591880CB5F008923D3 /* AppleEventUtils.h in Headers */ = {isa = PBXBuildFile; fileRef = 9FAA97551880CB5F008923D3 /* AppleEventUtils.h */; };
 		9FAA975A1880CB5F008923D3 /* AppleEventUtils.c in Sources */ = {isa = PBXBuildFile; fileRef = 9FAA97561880CB5F008923D3 /* AppleEventUtils.c */; };
+		9FC4F07218884306005F72EE /* libsqlite3.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 9FC4F07118884306005F72EE /* libsqlite3.dylib */; };
+		9FC4F07318884453005F72EE /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9F0D5BE01864B58D00D9A6CE /* Cocoa.framework */; };
+		9FC4F07418884469005F72EE /* WebKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9F0D5E551864F04100D9A6CE /* WebKit.framework */; };
+		9FC4F07518884485005F72EE /* Carbon.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9F0D5BED1864B62F00D9A6CE /* Carbon.framework */; };
 		9FCD376D1845379300E90027 /* OPML.nib in Resources */ = {isa = PBXBuildFile; fileRef = 9FCD376C1845379300E90027 /* OPML.nib */; };
 		9FCD376E1845379300E90027 /* OPML.nib in Resources */ = {isa = PBXBuildFile; fileRef = 9FCD376C1845379300E90027 /* OPML.nib */; };
 		9FCD37A218454A7500E90027 /* macDialogs.c in Sources */ = {isa = PBXBuildFile; fileRef = 9FCD37A118454A7500E90027 /* macDialogs.c */; };
 		9FCD37A318454A7500E90027 /* macDialogs.c in Sources */ = {isa = PBXBuildFile; fileRef = 9FCD37A118454A7500E90027 /* macDialogs.c */; };
-		BB37A31B0AB828010077C6A1 /* libSQLite3.a in Frameworks */ = {isa = PBXBuildFile; fileRef = BB37A29C0AB826540077C6A1 /* libSQLite3.a */; };
 		DEA58AB407435A9500BAB271 /* Frontier.icns in Resources */ = {isa = PBXBuildFile; fileRef = DEA58AB307435A9500BAB271 /* Frontier.icns */; };
 /* End PBXBuildFile section */
-
-/* Begin PBXContainerItemProxy section */
-		BB37A3170AB827EA0077C6A1 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 65152560072BFC6500411831 /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = BB37A29B0AB826540077C6A1;
-			remoteInfo = sqlite3_static;
-		};
-/* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
 		5D0D91000ADEDFA80000E67B /* FSCopyObject.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = FSCopyObject.c; path = ../Common/FSCopyObject/Sources/FSCopyObject.c; sourceTree = SOURCE_ROOT; };
@@ -1232,7 +1209,6 @@
 		65152802072BFE5400411831 /* timedate.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = timedate.h; path = ../Common/headers/timedate.h; sourceTree = SOURCE_ROOT; };
 		65152804072BFE5500411831 /* frontierwindows.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = frontierwindows.h; path = ../Common/headers/frontierwindows.h; sourceTree = SOURCE_ROOT; };
 		65152806072BFE5700411831 /* shell.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = shell.h; path = ../Common/headers/shell.h; sourceTree = SOURCE_ROOT; };
-		65152808072BFE5900411831 /* SetUpA5.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = SetUpA5.h; path = ../Common/SystemHeaders/SetUpA5.h; sourceTree = SOURCE_ROOT; };
 		6515280A072BFE5B00411831 /* oplist.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = oplist.h; path = ../Common/headers/oplist.h; sourceTree = SOURCE_ROOT; };
 		6515280C072BFE5C00411831 /* fileloop.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = fileloop.h; path = ../Common/headers/fileloop.h; sourceTree = SOURCE_ROOT; };
 		6515280E072BFE5E00411831 /* mac.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = mac.h; path = ../Common/headers/mac.h; sourceTree = SOURCE_ROOT; };
@@ -1315,7 +1291,6 @@
 		651528D2072BFF2200411831 /* CallMachOFrameWork.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = CallMachOFrameWork.h; path = ../Common/headers/CallMachOFrameWork.h; sourceTree = SOURCE_ROOT; };
 		651528D4072BFF2500411831 /* langhtml.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = langhtml.h; path = ../Common/headers/langhtml.h; sourceTree = SOURCE_ROOT; };
 		651528D6072BFF2700411831 /* langxml.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = langxml.h; path = ../Common/headers/langxml.h; sourceTree = SOURCE_ROOT; };
-		651528D8072BFF2900411831 /* langxcmd.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = langxcmd.h; path = ../Common/headers/langxcmd.h; sourceTree = SOURCE_ROOT; };
 		651528DA072BFF2C00411831 /* langdll.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = langdll.h; path = ../Common/headers/langdll.h; sourceTree = SOURCE_ROOT; };
 		651528DC072BFF2D00411831 /* langtokens.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = langtokens.h; path = ../Common/headers/langtokens.h; sourceTree = SOURCE_ROOT; };
 		651528DE072BFF2F00411831 /* langwinipc.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = langwinipc.h; path = ../Common/headers/langwinipc.h; sourceTree = SOURCE_ROOT; };
@@ -1386,24 +1361,19 @@
 		65F9C21F09C4CD9700DCC29E /* sha.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = sha.h; path = ../Common/headers/sha.h; sourceTree = SOURCE_ROOT; };
 		65F9C22609C4CDDE00DCC29E /* sha1dgst.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = sha1dgst.c; path = ../Common/source/sha1dgst.c; sourceTree = SOURCE_ROOT; };
 		9F01A7CB1851206200CFBD95 /* English */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.strings; name = English; path = English.lproj/Localizable.strings; sourceTree = "<group>"; };
-		9F0D5A261864B06400D9A6CE /* AboutViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AboutViewController.h; sourceTree = "<group>"; };
-		9F0D5A271864B06400D9A6CE /* AboutViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AboutViewController.m; sourceTree = "<group>"; };
-		9F0D5A2E1864B08D00D9A6CE /* AboutViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = AboutViewController.xib; sourceTree = "<group>"; };
 		9F0D5BE01864B58D00D9A6CE /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = System/Library/Frameworks/Cocoa.framework; sourceTree = SDKROOT; };
 		9F0D5BED1864B62F00D9A6CE /* Carbon.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Carbon.framework; path = System/Library/Frameworks/Carbon.framework; sourceTree = SDKROOT; };
 		9F0D5C981864C68700D9A6CE /* AboutWindow.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = AboutWindow.xib; sourceTree = "<group>"; };
 		9F0D5C9C1864C6A800D9A6CE /* AboutWindowController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AboutWindowController.h; sourceTree = "<group>"; };
 		9F0D5C9D1864C6A800D9A6CE /* AboutWindowController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AboutWindowController.m; sourceTree = "<group>"; };
 		9F0D5E551864F04100D9A6CE /* WebKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = WebKit.framework; path = System/Library/Frameworks/WebKit.framework; sourceTree = SDKROOT; };
-		9F34C9DB186397A80047BA53 /* AboutTextView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AboutTextView.h; sourceTree = "<group>"; };
-		9F34C9DC186397A80047BA53 /* AboutTextView.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = AboutTextView.c; sourceTree = "<group>"; };
 		9F3A12D3183A6B3E007ACBD2 /* MacSocketNetEvents.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = MacSocketNetEvents.c; path = ../Common/source/MacSocketNetEvents.c; sourceTree = SOURCE_ROOT; };
 		9F3A12D6183A6B60007ACBD2 /* mutex.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = mutex.c; path = ../Common/source/mutex.c; sourceTree = SOURCE_ROOT; };
 		9F3A12D9183A6B8D007ACBD2 /* mutex.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = mutex.h; path = ../Common/headers/mutex.h; sourceTree = SOURCE_ROOT; };
-		9F92A1C01852927100D6FA9E /* About.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = About.xib; path = ../Common/resources/Mac/About.xib; sourceTree = SOURCE_ROOT; };
 		9FAA95D1187F3AD7008923D3 /* file.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = file.c; path = ../Common/source/file.c; sourceTree = SOURCE_ROOT; };
 		9FAA97551880CB5F008923D3 /* AppleEventUtils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AppleEventUtils.h; sourceTree = "<group>"; };
 		9FAA97561880CB5F008923D3 /* AppleEventUtils.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = AppleEventUtils.c; sourceTree = "<group>"; };
+		9FC4F07118884306005F72EE /* libsqlite3.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libsqlite3.dylib; path = usr/lib/libsqlite3.dylib; sourceTree = SDKROOT; };
 		9FCD376C1845379300E90027 /* OPML.nib */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = OPML.nib; path = ../Common/resources/Mac/OPML.nib; sourceTree = SOURCE_ROOT; };
 		9FCD37A118454A7500E90027 /* macDialogs.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = macDialogs.c; path = ../Common/source/mac/macDialogs.c; sourceTree = SOURCE_ROOT; };
 		BB37A29C0AB826540077C6A1 /* libSQLite3.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libSQLite3.a; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -1428,9 +1398,12 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				9FC4F07518884485005F72EE /* Carbon.framework in Frameworks */,
+				9FC4F07418884469005F72EE /* WebKit.framework in Frameworks */,
+				9FC4F07318884453005F72EE /* Cocoa.framework in Frameworks */,
+				9FC4F07218884306005F72EE /* libsqlite3.dylib in Frameworks */,
 				6515294B072C000500411831 /* ApplicationServices.framework in Frameworks */,
 				6515294D072C000900411831 /* QuickTime.framework in Frameworks */,
-				BB37A31B0AB828010077C6A1 /* libSQLite3.a in Frameworks */,
 				5DCA3B0C0AF552C700D6155D /* libpaigefat.a in Frameworks */,
 				5D8F1EF00C25B4AB00927B97 /* libmysqlclient.a in Frameworks */,
 				5D8F1EF10C25B4AB00927B97 /* libz.a in Frameworks */,
@@ -1590,8 +1563,7 @@
 		6515255C072BFC6500411831 = {
 			isa = PBXGroup;
 			children = (
-				9F0D5A261864B06400D9A6CE /* AboutViewController.h */,
-				9F0D5A271864B06400D9A6CE /* AboutViewController.m */,
+				9FC4F07118884306005F72EE /* libsqlite3.dylib */,
 				6515260D072BFC6700411831 /* _cancoon */,
 				65152614072BFC6700411831 /* _clay */,
 				6515261A072BFC6700411831 /* _db */,
@@ -1753,7 +1725,6 @@
 			children = (
 				9F01A7CA1851206200CFBD95 /* Localizable.strings */,
 				9FCD376C1845379300E90027 /* OPML.nib */,
-				9F92A1C01852927100D6FA9E /* About.xib */,
 				651525DE072BFC6700411831 /* carb.r */,
 				651525DF072BFC6700411831 /* osxdialogs.r */,
 			);
@@ -1814,8 +1785,6 @@
 				651525E8072BFC6700411831 /* services.c */,
 				651525E9072BFC6700411831 /* uisharing.c */,
 				651525EA072BFC6700411831 /* zoom.c */,
-				9F34C9DB186397A80047BA53 /* AboutTextView.h */,
-				9F34C9DC186397A80047BA53 /* AboutTextView.c */,
 				9F0D5C9C1864C6A800D9A6CE /* AboutWindowController.h */,
 				9F0D5C9D1864C6A800D9A6CE /* AboutWindowController.m */,
 				9FAA97551880CB5F008923D3 /* AppleEventUtils.h */,
@@ -2146,7 +2115,6 @@
 				651527EE072BFE4400411831 /* langsystem7.h */,
 				651528DC072BFF2D00411831 /* langtokens.h */,
 				651528DE072BFF2F00411831 /* langwinipc.h */,
-				651528D8072BFF2900411831 /* langxcmd.h */,
 				651528D6072BFF2700411831 /* langxml.h */,
 				651527D4072BFE3000411831 /* launch.h */,
 				6515280E072BFE5E00411831 /* mac.h */,
@@ -2215,7 +2183,6 @@
 				65152842072BFE9000411831 /* search.h */,
 				651528A4072BFEF100411831 /* serialnumber.h */,
 				651528A2072BFEEF00411831 /* services.h */,
-				65152808072BFE5900411831 /* SetUpA5.h */,
 				65F9C21F09C4CD9700DCC29E /* sha.h */,
 				65F9C21E09C4CD9700DCC29E /* sha_locl.h */,
 				65152806072BFE5700411831 /* shell.h */,
@@ -2266,7 +2233,6 @@
 		9F0D5A2D1864B07400D9A6CE /* Cocoa */ = {
 			isa = PBXGroup;
 			children = (
-				9F0D5A2E1864B08D00D9A6CE /* AboutViewController.xib */,
 				9F0D5C981864C68700D9A6CE /* AboutWindow.xib */,
 			);
 			name = Cocoa;
@@ -2321,7 +2287,6 @@
 				6505999309968C1400410571 /* timedate.h in Headers */,
 				6505999409968C1400410571 /* frontierwindows.h in Headers */,
 				6505999509968C1400410571 /* shell.h in Headers */,
-				6505999609968C1400410571 /* SetUpA5.h in Headers */,
 				6505999709968C1400410571 /* oplist.h in Headers */,
 				6505999809968C1400410571 /* fileloop.h in Headers */,
 				6505999909968C1400410571 /* mac.h in Headers */,
@@ -2404,7 +2369,6 @@
 				650599FB09968C1400410571 /* CallMachOFrameWork.h in Headers */,
 				650599FC09968C1400410571 /* langhtml.h in Headers */,
 				650599FD09968C1400410571 /* langxml.h in Headers */,
-				650599FE09968C1400410571 /* langxcmd.h in Headers */,
 				650599FF09968C1400410571 /* langdll.h in Headers */,
 				65059A0009968C1400410571 /* langtokens.h in Headers */,
 				65059A0109968C1400410571 /* langwinipc.h in Headers */,
@@ -2466,8 +2430,6 @@
 				65C4999E0E7D8F320078B6DB /* FSCopyObject.h in Headers */,
 				65C499A40E7D8F3A0078B6DB /* GenLinkedList.h in Headers */,
 				9F3A12DB183A6B8D007ACBD2 /* mutex.h in Headers */,
-				9F34C9DF186397A80047BA53 /* AboutTextView.h in Headers */,
-				9F0D5A2A1864B06400D9A6CE /* AboutViewController.h in Headers */,
 				9F0D5CA01864C6A800D9A6CE /* AboutWindowController.h in Headers */,
 				9FAA97571880CB5F008923D3 /* AppleEventUtils.h in Headers */,
 			);
@@ -2509,7 +2471,6 @@
 				65152803072BFE5400411831 /* timedate.h in Headers */,
 				65152805072BFE5500411831 /* frontierwindows.h in Headers */,
 				65152807072BFE5700411831 /* shell.h in Headers */,
-				65152809072BFE5900411831 /* SetUpA5.h in Headers */,
 				6515280B072BFE5B00411831 /* oplist.h in Headers */,
 				6515280D072BFE5C00411831 /* fileloop.h in Headers */,
 				6515280F072BFE5E00411831 /* mac.h in Headers */,
@@ -2592,7 +2553,6 @@
 				651528D3072BFF2200411831 /* CallMachOFrameWork.h in Headers */,
 				651528D5072BFF2500411831 /* langhtml.h in Headers */,
 				651528D7072BFF2700411831 /* langxml.h in Headers */,
-				651528D9072BFF2900411831 /* langxcmd.h in Headers */,
 				651528DB072BFF2C00411831 /* langdll.h in Headers */,
 				651528DD072BFF2D00411831 /* langtokens.h in Headers */,
 				651528DF072BFF2F00411831 /* langwinipc.h in Headers */,
@@ -2663,8 +2623,6 @@
 				5D8F1E170C25AFC600927B97 /* typelib.h in Headers */,
 				5D8F1EF70C25B56600927B97 /* langmysql.h in Headers */,
 				9F3A12DA183A6B8D007ACBD2 /* mutex.h in Headers */,
-				9F34C9DD186397A80047BA53 /* AboutTextView.h in Headers */,
-				9F0D5A281864B06400D9A6CE /* AboutViewController.h in Headers */,
 				9F0D5C9E1864C6A800D9A6CE /* AboutWindowController.h in Headers */,
 				9FAA97591880CB5F008923D3 /* AppleEventUtils.h in Headers */,
 			);
@@ -2729,7 +2687,6 @@
 			buildRules = (
 			);
 			dependencies = (
-				BB37A3180AB827EA0077C6A1 /* PBXTargetDependency */,
 			);
 			name = Frontier;
 			productName = "Frontier OSX MachO Debug";
@@ -2758,8 +2715,11 @@
 /* Begin PBXProject section */
 		65152560072BFC6500411831 /* Project object */ = {
 			isa = PBXProject;
+			attributes = {
+				LastUpgradeCheck = 0420;
+			};
 			buildConfigurationList = 5D4E1D460AAA0B1400DF6890 /* Build configuration list for PBXProject "Frontier Universal Binary" */;
-			compatibilityVersion = "Xcode 2.4";
+			compatibilityVersion = "Xcode 3.2";
 			developmentRegion = English;
 			hasScannedForEncodings = 1;
 			knownRegions = (
@@ -2789,8 +2749,6 @@
 				65059B790996945100410571 /* OPMLdoc.icns in Resources */,
 				9FCD376E1845379300E90027 /* OPML.nib in Resources */,
 				9F01A7CD1851206200CFBD95 /* Localizable.strings in Resources */,
-				9F92A1C21852927100D6FA9E /* About.xib in Resources */,
-				9F0D5A301864B08D00D9A6CE /* AboutViewController.xib in Resources */,
 				9F0D5C9A1864C68700D9A6CE /* AboutWindow.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -2802,8 +2760,6 @@
 				DEA58AB407435A9500BAB271 /* Frontier.icns in Resources */,
 				9FCD376D1845379300E90027 /* OPML.nib in Resources */,
 				9F01A7CC1851206200CFBD95 /* Localizable.strings in Resources */,
-				9F92A1C11852927100D6FA9E /* About.xib in Resources */,
-				9F0D5A2F1864B08D00D9A6CE /* AboutViewController.xib in Resources */,
 				9F0D5C991864C68700D9A6CE /* AboutWindow.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -3135,8 +3091,6 @@
 				9F3A12D5183A6B3E007ACBD2 /* MacSocketNetEvents.c in Sources */,
 				9F3A12D8183A6B60007ACBD2 /* mutex.c in Sources */,
 				9FCD37A318454A7500E90027 /* macDialogs.c in Sources */,
-				9F34C9E0186397A80047BA53 /* AboutTextView.c in Sources */,
-				9F0D5A2B1864B06400D9A6CE /* AboutViewController.m in Sources */,
 				9F0D5CA11864C6A800D9A6CE /* AboutWindowController.m in Sources */,
 				9FAA95D2187F3AD7008923D3 /* file.c in Sources */,
 				9FAA97581880CB5F008923D3 /* AppleEventUtils.c in Sources */,
@@ -3349,8 +3303,6 @@
 				9F3A12D4183A6B3E007ACBD2 /* MacSocketNetEvents.c in Sources */,
 				9F3A12D7183A6B60007ACBD2 /* mutex.c in Sources */,
 				9FCD37A218454A7500E90027 /* macDialogs.c in Sources */,
-				9F34C9DE186397A80047BA53 /* AboutTextView.c in Sources */,
-				9F0D5A291864B06400D9A6CE /* AboutViewController.m in Sources */,
 				9F0D5C9F1864C6A800D9A6CE /* AboutWindowController.m in Sources */,
 				9FAA95D3187F3AD7008923D3 /* file.c in Sources */,
 				9FAA975A1880CB5F008923D3 /* AppleEventUtils.c in Sources */,
@@ -3409,14 +3361,6 @@
 		};
 /* End PBXSourcesBuildPhase section */
 
-/* Begin PBXTargetDependency section */
-		BB37A3180AB827EA0077C6A1 /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = BB37A29B0AB826540077C6A1 /* SQLite3 */;
-			targetProxy = BB37A3170AB827EA0077C6A1 /* PBXContainerItemProxy */;
-		};
-/* End PBXTargetDependency section */
-
 /* Begin PBXVariantGroup section */
 		9F01A7CA1851206200CFBD95 /* Localizable.strings */ = {
 			isa = PBXVariantGroup;
@@ -3440,7 +3384,6 @@
 				GCC_ENABLE_ASM_KEYWORD = YES;
 				GCC_ENABLE_CPP_EXCEPTIONS = NO;
 				GCC_ENABLE_CPP_RTTI = NO;
-				GCC_ENABLE_FIX_AND_CONTINUE = YES;
 				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
 				GCC_OPTIMIZATION_LEVEL = 0;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
@@ -3481,7 +3424,6 @@
 					"-Wmost",
 					"-Wno-four-char-constants",
 					"-Wno-unknown-pragmas",
-					"-Wno-long-double",
 				);
 				ZERO_LINK = NO;
 			};
@@ -3497,7 +3439,6 @@
 				GCC_ENABLE_ASM_KEYWORD = YES;
 				GCC_ENABLE_CPP_EXCEPTIONS = NO;
 				GCC_ENABLE_CPP_RTTI = NO;
-				GCC_ENABLE_FIX_AND_CONTINUE = NO;
 				GCC_OPTIMIZATION_LEVEL = 2;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = frontier.xcode.h;
@@ -3538,7 +3479,6 @@
 					"-Wmost",
 					"-Wno-four-char-constants",
 					"-Wno-unknown-pragmas",
-					"-Wno-long-double",
 				);
 				ZERO_LINK = NO;
 			};
@@ -3555,7 +3495,6 @@
 				GCC_ENABLE_ASM_KEYWORD = YES;
 				GCC_ENABLE_CPP_EXCEPTIONS = NO;
 				GCC_ENABLE_CPP_RTTI = NO;
-				GCC_ENABLE_FIX_AND_CONTINUE = YES;
 				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
 				GCC_OPTIMIZATION_LEVEL = 0;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
@@ -3613,7 +3552,6 @@
 				GCC_ENABLE_ASM_KEYWORD = YES;
 				GCC_ENABLE_CPP_EXCEPTIONS = NO;
 				GCC_ENABLE_CPP_RTTI = NO;
-				GCC_ENABLE_FIX_AND_CONTINUE = NO;
 				GCC_OPTIMIZATION_LEVEL = 2;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = frontier.xcode.h;
@@ -3668,9 +3606,10 @@
 					ppc,
 					i386,
 				);
-				GCC_VERSION = "";
+				GCC_VERSION = com.apple.compilers.llvmgcc42;
+				MACOSX_DEPLOYMENT_TARGET = 10.6;
 				OTHER_CFLAGS = "";
-				SDKROOT = /Developer/SDKs/MacOSX10.5.sdk;
+				SDKROOT = macosx;
 			};
 			name = Development;
 		};
@@ -3681,9 +3620,10 @@
 					ppc,
 					i386,
 				);
-				GCC_VERSION = 4.0;
+				GCC_VERSION = com.apple.compilers.llvmgcc42;
+				MACOSX_DEPLOYMENT_TARGET = 10.6;
 				OTHER_CFLAGS = "";
-				SDKROOT = /Developer/SDKs/MacOSX10.5.sdk;
+				SDKROOT = macosx;
 			};
 			name = Deployment;
 		};
@@ -3692,11 +3632,9 @@
 			buildSettings = {
 				COPY_PHASE_STRIP = NO;
 				GCC_DYNAMIC_NO_PIC = NO;
-				GCC_ENABLE_FIX_AND_CONTINUE = YES;
 				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
 				GCC_MODEL_TUNING = G5;
 				GCC_OPTIMIZATION_LEVEL = 0;
-				PREBINDING = NO;
 				PRODUCT_NAME = SQLite3;
 				SKIP_INSTALL = NO;
 				WARNING_CFLAGS = (
@@ -3713,10 +3651,8 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				COPY_PHASE_STRIP = YES;
-				GCC_ENABLE_FIX_AND_CONTINUE = NO;
 				GCC_GENERATE_DEBUGGING_SYMBOLS = NO;
 				GCC_MODEL_TUNING = G5;
-				PREBINDING = NO;
 				PRODUCT_NAME = SQLite3;
 				SKIP_INSTALL = NO;
 				WARNING_CFLAGS = (

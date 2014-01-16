@@ -52,7 +52,7 @@
 
 
 #ifdef MACVERSION
-	#define flcomponent 1
+	#define flcomponent 0
 	#ifdef __powerc
 		#define noextended 1
 	#elif defined(__GNUC__)

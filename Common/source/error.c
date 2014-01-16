@@ -404,6 +404,11 @@ boolean oserror (OSErr errcode) {
 	
 	2.1b5: don't post a message for user cancelled
 	*/
+    
+    if (errcode == errFSForkNotFound) {
+        fprintf(stderr, "error -1409\n");
+        SysError(errcode);
+    }
 	
 	register OSErr x = errcode;
  	bigstring bs;

@@ -30,7 +30,6 @@
   
 #ifdef MACVERSION
 #include <land.h>
-#include <SetUpA5.h>
 #include "player.h" /*7.0b4 PBS*/
 #endif
 
@@ -254,7 +253,6 @@ boolean shellshutdown (void) {
 	#if TARGET_API_MAC_CARBON == 1
 		shellshutdownscroll();
 		fileshutdown();
-		UnregisterAppearanceClient();
 	#endif
 
 	exittooperatingsystem (); /*doesn't return*/
@@ -279,21 +277,6 @@ boolean shellquit (void) {
 	
 	return (true);
 	} /*shellquit*/
-
-
-#if defined(MACVERSION) && TARGET_API_MAC_OS8
-static void shellhandlediskinsertion (void) {
-	//Code change by Timothy Paustian Friday, June 16, 2000 2:21:17 PM
-	//Changed to Opaque call for Carbon
-	//The system takes care of bad mounted disks, we don't need to.
-	Point pt = {0, 0};
-	
-	if (HiWord (shellevent.message) != 0)
-		DIBadMount (pt, shellevent.message);
-
-	} /*shellhandlediskinsertion*/
-#endif
-
 
 static void shellhandleevent (void) {
 	
@@ -383,11 +366,6 @@ static void shellhandleevent (void) {
 
 	#ifdef MACVERSION
 		case diskEvt:
-			//Code change by Timothy Paustian Friday, June 16, 2000 2:22:47 PM
-			//Changed to Opaque call for Carbon
-			#if TARGET_API_MAC_OS8
-			shellhandlediskinsertion ();
-			#endif
 
 			break;
 	#endif
@@ -967,11 +945,7 @@ void shellmaineventloop (void) {
 	*/
 	
 	//shellpushblock (networkMask, true); /*for network toolkit; block network events%/
-	
-#if defined(MACVERSION) && TARGET_API_MAC_OS8
-	UnloadSeg (&initsegment);
-#endif
-	
+		
 	shelleventloop (&shellmainbreakproc);
 	
 	grabthreadglobals ();
@@ -1098,17 +1072,8 @@ static shelltrashresource (OSType type, short id) {
 static pascal long shellgrowzone (Size ctbytesneeded) {
 	
 	long ctstillneeded = ctbytesneeded;
-	
-	#if TARGET_API_MAC_OS8
-	long curA5 = SetUpAppA5 ();
-	#endif
-	
 	shellcallmemoryhooks (&ctstillneeded);
 	
-	#if TARGET_API_MAC_OS8
-	RestoreA5 (curA5);
-	#endif
-		
 	return (ctbytesneeded - ctstillneeded);
 	} /*shellgrowzone*/
 #endif

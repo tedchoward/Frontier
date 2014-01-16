@@ -28,10 +28,6 @@
 #include "frontier.h"
 #include "standard.h"
 
-#ifdef MACVERSION
-#include "langxcmd.h"
-#endif
-
 #include "memory.h"
 #include "frontierconfig.h"
 #include "cursor.h"

@@ -30,7 +30,6 @@
 
 #ifdef MACVERSION
 
-	#include "langxcmd.h"
 	#include "MoreFilesX.h"
 	
 #endif

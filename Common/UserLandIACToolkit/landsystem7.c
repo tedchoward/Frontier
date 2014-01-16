@@ -40,7 +40,6 @@
 
 #ifdef flcomponent
 	
-	#include <SetUpA5.h>
 	
 	typedef pascal OSErr (*AESendCallback)(
 							const AppleEvent*	theAppleEvent,
@@ -554,27 +553,12 @@ static pascal OSErr landsystem7handleevent (AppleEvent *message, AppleEvent *rep
 	OSErr errcode;
 	boolean flsystemevent;
 	tyfastverbcontext savecontext;
-	long curA5;
 	
 	assert (refcon != -1);
 	
 	flsystemevent = (refcon != 0) && (refcon != typeWildCard);
 	
 	if (flsystemevent) {
-		
-		#if THINK_C
-			
-			asm {
-				move.l	a5,-(a7)
-				move.l	refcon,a5
-				}
-			
-		#else
-			
-			curA5 = (long)SetUpAppA5 ();
-		
-		#endif
-		
 		landpushfastcontext (&savecontext);
 		}
 	
@@ -630,17 +614,6 @@ static pascal OSErr landsystem7handleevent (AppleEvent *message, AppleEvent *rep
 			
 			landpopfastcontext (&savecontext);
 			
-			#if THINK_C
-			
-				asm {
-					move.l	(a7)+,a5
-					}
-			
-			#else
-			
-				RestoreA5 (curA5);
-			
-			#endif
 			}
 		
 		return (errcode);
@@ -648,17 +621,8 @@ static pascal OSErr landsystem7handleevent (AppleEvent *message, AppleEvent *rep
 	} /*landsystem7handleevent*/
 
 
-#if !TARGET_RT_MAC_CFM
-	#define landsystem7handleeventUPP ((AEEventHandlerUPP) landsystem7handleevent)
-#else
-	#if !TARGET_API_MAC_CARBON
-		static RoutineDescriptor landsystem7handleeventDesc = BUILD_ROUTINE_DESCRIPTOR (uppAEEventHandlerProcInfo, landsystem7handleevent);
-		#define landsystem7handleeventUPP (&landsystem7handleeventDesc)
-	#else
-		AEEventHandlerUPP	landsystem7handleeventDesc = nil;
-		#define landsystem7handleeventUPP (landsystem7handleeventDesc)
-	#endif
-#endif
+
+#define landsystem7handleeventUPP ((AEEventHandlerUPP) landsystem7handleevent)
 
 
 static pascal boolean replyidvisit (Handle htinfo, long id) {
@@ -1328,68 +1292,6 @@ boolean landsystem7eventfilter (EventRecord *ev) {
 
 #endif
 
-#if 0 // def THINK_C
-
-	static boolean landsystem7installhandler (AEEventClass class, AEEventID id, tyeventhandler handler) {
-		
-		/*
-		little layer to make code prettier
-		*/
-		
-		OSErr errcode;
-		
-		errcode = AEInstallEventHandler (class, id, (EventHandlerProcPtr) handler, 0, false);
-		
-		return (errcode == noErr);
-		} /*landsystem7installhandler*/
-	
-	
-	pascal boolean landsystem7installfasthandler (tyverbclass class, tyverbtoken token, tyeventhandler handler) {
-		
-		OSErr errcode;
-		
-		errcode = AEInstallEventHandler (class, token, (EventHandlerProcPtr) handler, (long) CurrentA5, true);
-		
-		return (errcode == noErr);
-		} /*landsystem7installfasthandler*/
-
-	
-	boolean landsystem7addclass (tyverbclass class) {
-		
-		return (landsystem7installhandler (class, typeWildCard, (ProcPtr) &landsystem7handleevent));
-		} /*landsystem7addclass*/
-	
-	
-	boolean landsystem7addfastverb (tyverbclass class, tyverbtoken token) {
-		
-		return (landsystem7installfasthandler (class, token, &landsystem7handleevent));
-		} /*landsystem7addfastverb*/
-	
-	
-	boolean landsystem7acceptanyverb (void) {
-		
-		OSErr errcode;
-		
-		errcode = AEInstallEventHandler (typeWildCard, typeWildCard, (EventHandlerProcPtr) &landsystem7handleevent, typeWildCard, false);
-		
-		return (errcode == noErr);
-		} /*landsystem7acceptanyverb*/
-	
-	
-	pascal boolean landsystem7removefasthandler (tyverbclass class, tyverbtoken token) {
-		
-		EventHandlerProcPtr handler;
-		long refcon;
-		
-		if (AEGetEventHandler (class, token, &handler, &refcon, true) != errAEHandlerNotFound) {
-			
-			if (refcon == (long) CurrentA5) /*it's our handler*/
-				AERemoveEventHandler (class, token, handler, true);
-			}
-		} /*landsystem7removefasthandler*/
-
-#else
-
 	static boolean landsystem7installhandlerUPP (AEEventClass class, AEEventID id, AEEventHandlerUPP handler) {
 		
 		OSErr errcode;
@@ -1403,13 +1305,8 @@ boolean landsystem7eventfilter (EventRecord *ev) {
 	static pascal boolean landsystem7installfasthandlerUPP (tyverbclass class, tyverbtoken token, AEEventHandlerUPP handler) {
 		
 		OSErr errcode;
-		//Code change by Timothy Paustian Monday, June 26, 2000 3:45:05 PM
-		//A5 worlds make no sense on PPC so why pass this as our refcon
-		#if TARGET_API_MAC_CARBON == 1
-		errcode = AEInstallEventHandler (class, token, handler, (long) nil, true);
-		#else
-		errcode = AEInstallEventHandler (class, token, handler, (long) LMGetCurrentA5 (), true);
-		#endif
+
+		errcode = AEInstallEventHandler (class, token, handler, (SRefCon) nil, true);
 		
 		return (errcode == noErr);
 		} /*landsystem7installfasthandler*/
@@ -1492,11 +1389,7 @@ boolean landsystem7eventfilter (EventRecord *ev) {
 		
 		if (AEGetEventHandler (class, token, &handler, &refcon, true) != errAEHandlerNotFound) {
 			
-			#if TARGET_API_MAC_CARBON == 1
 			if(refcon == (long) 'LAND'){
-			#else
-			if (refcon == (long) LMGetCurrentA5 ()) { /*it's our handler*/
-			#endif
 			
 				AERemoveEventHandler (class, token, handler, true);
 				//I need to dispose of these handlers
@@ -1506,8 +1399,6 @@ boolean landsystem7eventfilter (EventRecord *ev) {
 		
 		return (false);
 		} /*landsystem7removefasthandler*/
-
-#endif
 
 
 pascal boolean landsystem7pushparam (AERecord *evt, typaramtype type, Handle hval, void *pval, long len, typaramkeyword key) {
@@ -1744,16 +1635,7 @@ boolean landsystem7init (void) {
 	*/
 	
 	register hdllandglobals hg = landgetglobals ();
-	
-
-	#ifdef flcomponent
-	
-		#if !TARGET_API_MAC_CARBON
-		RememberA5 ();
-		#endif /*for event handlers, browser hook*/
-	
-	#endif
-	
+		
 	(**hg).macnetglobals.flhavebrowsed = false;
 	
 	(**hg).eventsettings.timeoutticks = kNoTimeOut;
