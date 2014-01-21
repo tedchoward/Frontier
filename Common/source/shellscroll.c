@@ -277,17 +277,9 @@ static pascal void shellvertscroll (hdlscrollbar ctrl, short part) {
 //Code change by Timothy Paustian Friday, June 16, 2000 3:14:00 PM
 //Changed to Opaque call for Carbon
 
-#if TARGET_RT_MAC_MACHO
 	#define shellvertscrollUPP	(&shellvertscroll)
 	#define shellhorizscrollUPP	(&shellhorizscroll)
 	#define	shelllivescrollupp	(&ScrollThumbActionProc)
-#elif TARGET_RT_MAC_CFM
-		ControlActionUPP	shellvertscrollDesc;
-		ControlActionUPP	shellhorizscrollDesc;
-		ControlActionUPP	shelllivescrollupp;
-		#define shellvertscrollUPP (shellvertscrollDesc)
-		#define shellhorizscrollUPP (shellhorizscrollDesc)
-#endif
 
 
 /*The live scrolling code descends from Apple sample code, hence the different style of code.*/

@@ -1729,11 +1729,9 @@ static boolean lookupprocaddress (tydllinfohandle hdll, typrocinfohandle hprocin
 		
 		err = FindSymbol ((**hdll).hdllsyshandle, (**hprocinfo).bsprocname, (Ptr*) &(**hprocinfo).procaddress, &procclass); 
 
-		#if   TARGET_RT_MAC_MACHO
 			if (err == noErr) {
 				(**hprocinfo).procaddress = convertcfmtomachofuncptr ((**hprocinfo).procaddress);
 				}
-		#endif
 	#endif
 
 	#ifdef WIN95VERSION

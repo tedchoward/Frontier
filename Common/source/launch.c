@@ -1676,7 +1676,6 @@ boolean getapplicationfilespec (bigstring bsprogram, ptrfilespec fs) {
 		
 		if (bsprogram == nil) { // get path to this process
 			
-			#if TARGET_RT_MAC_MACHO
 			
 				CFBundleRef mybundleref;
 				CFURLRef myurlref;
@@ -1702,27 +1701,6 @@ boolean getapplicationfilespec (bigstring bsprogram, ptrfilespec fs) {
 				
 				return ( macmakefilespec ( &fsref, fs ) == noErr );
 				
-			#else
-			
-				ProcessInfoRec processinfo;
-				ProcessSerialNumber psn;
-				
-				processinfo.processInfoLength = sizeof (processinfo);
-				
-				processinfo.processName = nil; // place to store process name
-				
-				processinfo.processAppSpec = fs; // place to store process filespec
-				
-				psn.highLongOfPSN = 0;
-				
-				psn.lowLongOfPSN = kCurrentProcess;
-				
-				if (GetProcessInformation (&psn, &processinfo) != noErr)
-					return (false);
-				
-				return (true);
-				
-			#endif
 			
 			}
 		
