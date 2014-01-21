@@ -257,11 +257,9 @@ static boolean dockmenuinsertmenuitem (hdlmenu hmenu, short itemnumber, hdlheadr
 
 	pushpopupitem (hmenu, bsheadstring, flenabled, menuid);
 
-	#if TARGET_API_MAC_CARBON == 1
 	
 		SetMenuItemCommandID (hmenu, countmenuitems (hmenu), menuid);
 		
-	#endif
 
 	if (flchecked) /*7.1b42 PBS: support for checked menu items.*/
 		checkmenuitem (hmenu, countmenuitems (hmenu), flchecked);
@@ -357,10 +355,8 @@ static boolean dockmenufillpopup (hdlmenu hmenu, hdlmenurecord *hmreturned) {
 
 	hsummit = (**(**hm).menuoutline).hsummit;
 
-	#if TARGET_API_MAC_CARBON == 1
 		menuid = kbasecommandid;
 		idsubmenu = 5;
-	#endif
 
 	dockmenudisposemenusinstack ();
 	
@@ -400,7 +396,6 @@ static void dockmenuruncommand (hdlmenurecord hm, short itemhit) {
 	} /*dockmenuruncommand*/
 
 
-#if TARGET_API_MAC_CARBON == 1
 
 pascal OSStatus dockcommandhandler (EventHandlerCallRef nextHandler, EventRef theEvent, void* userData) {
 #pragma unused(nextHandler, theEvent, userData)	/*happy compiler*/
@@ -477,7 +472,6 @@ pascal OSStatus dockmenuhandler (EventHandlerCallRef nextHandler, EventRef theEv
 	return (noErr); /*all's well in dock-menu-land*/
 	} /*dockmenuhandler*/
 
-#endif
 
 #ifdef WIN95VERSION
 

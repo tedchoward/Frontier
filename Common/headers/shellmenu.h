@@ -233,10 +233,8 @@
 
 // #define windowsmenu (editmenu + mainmenuincrement)
 #define hidewindowitem 1
-#if TARGET_API_MAC_CARBON == 1
 	#define minimizewindowitem 2
 	#define bringalltofrontwindowitem 4
-#endif
 
 // #define helpmenu (windowsmenu + mainmenuincrement)
 #define aboutitem 1

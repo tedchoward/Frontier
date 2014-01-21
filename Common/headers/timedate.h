@@ -54,10 +54,6 @@ typedef struct tyinternationalinfo {
 	} tyinternationalinfo, * tyinternationalinfoptr;
 
 
-#ifdef MACVERSION
-/* #define getlongermilliseconds() (unsigned long long)FastMilliseconds() */
-#define getmilliseconds() (long)FastMilliseconds()
-#endif
 
 /*prototypes*/
 
@@ -119,10 +115,6 @@ extern long getcurrenttimezonebias(void);
 
 extern boolean isLeapYear (short year);
 
-#ifdef WIN95VERSION
-
 extern long getmilliseconds(void);  /* mac version is #defined near the top of the file */
-
-#endif /* WIN95VERSION */
 
 #endif /*timedateinclude*/

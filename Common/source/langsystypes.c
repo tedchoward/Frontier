@@ -47,9 +47,7 @@
 	
 #endif // MACVERSION
 
-#if TARGET_API_MAC_CARBON == 1 /*PBS 03/14/02: AE OS X fix.*/
 	#include "aeutils.h"
-#endif
 
 #ifdef MACVERSION
 	static byte bsellipses [] = "\x01É";
@@ -115,7 +113,6 @@ static boolean equaldescriptors (AEDesc *desc1, AEDesc *desc2) {
 		}
 	else
 	
-		#if TARGET_API_MAC_CARBON == 1 /*PBS 03/14/02: AE OS X fix.*/
 		
 			{
 			Handle hcopy1, hcopy2;
@@ -134,11 +131,6 @@ static boolean equaldescriptors (AEDesc *desc1, AEDesc *desc2) {
 			return (fl);
 			}
 				
-		#else
-		
-			return (equalhandles ((*d1).dataHandle, (*d2).dataHandle));
-		
-		#endif
 	} /*equaldescriptors*/
 
 #endif
@@ -1270,15 +1262,9 @@ static pascal OSErr langsystem7accessobject (
 			if (err != noErr)
 				return (err);
 			
-			#if TARGET_API_MAC_CARBON == 1 /*PBS 03/14/02: AE OS X fix.*/
 			
 				datahandletostring (keydesc, bs);
 				
-			#else
-			
-				texthandletostring ((*keydesc).dataHandle, bs);
-			
-			#endif
 			
 			if (!langexpandtodotparams (bs, &htable, bs)) {
 				
@@ -1309,7 +1295,6 @@ static pascal OSErr langsystem7accessobject (
 
 static void setupdescriptor (Handle hdata, AEDesc *desc) {
 	
-	#if TARGET_API_MAC_CARBON == 1 /*PBS 03/14/02: AE OS X fix.*/
 	
 		DescType type = typeObjectSpecifier;
 		
@@ -1318,18 +1303,6 @@ static void setupdescriptor (Handle hdata, AEDesc *desc) {
 		
 		newdescwithhandle (desc, type, hdata);
 	
-	#else
-	
-		register AEDesc *d = desc;
-	
-		(*d).dataHandle = hdata;
-		
-		if ((*d).dataHandle == nil)
-			(*d).descriptorType = typeNull;
-		else
-			(*d).descriptorType = typeObjectSpecifier;
-		
-	#endif
 	} /*setupdescriptor*/
 
 
@@ -1431,7 +1404,6 @@ boolean objspectoaddress (tyvaluerecord *val) {
 	
 	disposevaluerecord (*v, true);
 	
-	#if TARGET_API_MAC_CARBON == 1 /*PBS 03/14/02: AE OS X fix.*/
 	
 		{
 		Handle h;
@@ -1442,12 +1414,6 @@ boolean objspectoaddress (tyvaluerecord *val) {
 			return (false);
 		}
 	
-	#else
-	
-		if (!setheapvalue (token.dataHandle, stringvaluetype, v)) /*consumes handle*/
-			return (false);
-			
-	#endif
 	
 	return (stringtoaddress (v));
 	} /*objspectoaddress*/
@@ -1526,7 +1492,6 @@ boolean filespectoobjspec (tyvaluerecord *val) {
 	disposevaluerecord (*v, true);
 	
 	
-	#if TARGET_API_MAC_CARBON == 1 /*PBS 03/14/02: AE OS X fix.*/
 	
 		{
 		Handle h;
@@ -1536,11 +1501,6 @@ boolean filespectoobjspec (tyvaluerecord *val) {
 		return (setheapvalue (h, objspecvaluetype, v));
 		}
 	
-	#else
-	
-		return (setheapvalue (objdesc.dataHandle, objspecvaluetype, v));
-	
-	#endif
 	
 	} /*filespectoobjspec*/
 
@@ -1633,7 +1593,6 @@ typedef struct tyobjspecitem { /*data within special object specifier structures
 
 static boolean getobjspeckeydesc (AEDesc *objdata, OSType desiredkey, AEDesc *keydata) {
 
-    #if TARGET_API_MAC_CARBON == 1
     // MJL 17/08/05: As of Jaguar the AEDesc datahandle is opaque so use toolbox accessor functions rather
     //  than trying to parse the data structure.
 	AEKeyword		curKeyWord;
@@ -1661,56 +1620,6 @@ static boolean getobjspeckeydesc (AEDesc *objdata, OSType desiredkey, AEDesc *ke
     exit:
     return (!oserror (err));
 	
-	#else  // #if TARGET_API_MAC_CARBON == 1
-	
-    register Handle h = (*objdata).dataHandle;
-	register byte *p;
-	long ctitems;
-	tyobjspecitem objspecitem;
-	OSErr err;
-	
-	HLock (h);
-	//Code change by Timothy Paustian Saturday, April 29, 2000 11:00:17 PM
-	//Changed to dereference h instead of the AEDesc directly.
-	p = (byte *)*h;
-	//old code
-	//p = (byte *) *(*objdata).dataHandle;
-	
-	if (*(OSType *)p == (*objdata).descriptorType) /*data begins with redundant type; skip it*/
-		p += 4;
-	
-	BlockMove (p, &ctitems, 4);
-	
-	p += 8;
-	
-	while (--ctitems >= 0) {
-		
-		BlockMove (p, &objspecitem, sizeof (tyobjspecitem));
-		
-		p += sizeof (objspecitem);
-		
-		if (objspecitem.key == desiredkey) {
-			
-			err = AECreateDesc (objspecitem.type, (Ptr) p, objspecitem.size, keydata);
-			
-			goto exit;
-			}
-		
-		p += objspecitem.size;
-		
-		if (odd (objspecitem.size))
-			++p;
-		}
-	
-	err = errAEDescNotFound;
-	
-	exit:
-	
-	HUnlock (h);
-	
-	return (!oserror (err));
-
-    #endif // #if !TARGET_API_MAC_CARBON == 1
 	} /*getobjspeckeydesc*/
 
 
@@ -1814,7 +1723,6 @@ static boolean testtostring (AEDesc *testdata, bigstring bstest) {
 			if (!getobjspeckeydesc (testdata, keyAELogicalOperator, &desc))
 				goto exit;
 			
-			#if TARGET_API_MAC_CARBON == 1 /*PBS 03/14/02: AE OS X fix.*/
 			
 				{
 				Handle hcopy;
@@ -1826,11 +1734,6 @@ static boolean testtostring (AEDesc *testdata, bigstring bstest) {
 				disposehandle (hcopy);
 				}
 
-			#else
-			
-				op = **(OSType **)desc.dataHandle;
-			
-			#endif
 			
 			operatortostring (op, bsop);
 			
@@ -1884,7 +1787,6 @@ static boolean testtostring (AEDesc *testdata, bigstring bstest) {
 				goto exit;
 			
 			
-				#if TARGET_API_MAC_CARBON == 1 /*PBS 03/14/02: AE OS X fix.*/
 			
 				{
 				Handle hcopy;
@@ -1896,11 +1798,6 @@ static boolean testtostring (AEDesc *testdata, bigstring bstest) {
 				disposehandle (hcopy);
 				}
 
-				#else
-			
-					op = **(OSType **)desc.dataHandle;
-			
-				#endif
 
 			operatortostring (op, bsop);
 			
@@ -2042,14 +1939,10 @@ static boolean objtostring (AEDesc *objdesc, boolean fldisposeobj, DescType exam
 		if (oserror (langsystem7parseobject (objdesc, &class, &container, &keyform, &keydata)))
 			goto exit;
 		
-#if TARGET_API_MAC_CARBON == 1
         // MJL 17/08/05: On X we cannot keep a lazy handle in the AEDesc to the keydata datahandle that gets 
         //  pushed onto the Frontier temp stack in the vkey. As we need it later we must duplicate the AEDesc before pushing it.
         tempDescPtr = &tempDesc;
         AEDuplicateDesc (&keydata, tempDescPtr);
-#else
-        tempDescPtr = &keydata;
-#endif
 		if (!setdescriptorvalue (*tempDescPtr, &vkey)) /*if successful, keydata is on temp stack*/
 			goto exit;
 		
@@ -2128,9 +2021,7 @@ static boolean objtostring (AEDesc *objdesc, boolean fldisposeobj, DescType exam
 		
 		disposevaluerecord (vkey, false);
 		
-#if TARGET_API_MAC_CARBON == 1
         AEDisposeDesc (&keydata);   // MJL 17/08/05 dispose of our duplicated temp AEDesc. On 9 the dataHandle belongs also to the vkey which is disposed above so we don't need to explicitly dispose the AEDesc
-#endif
 		if (fldisposeobj)
 			AEDisposeDesc (objdesc);
 		
@@ -2213,17 +2104,9 @@ static void getdefaultcontainer (OSType nulltype, AEDesc *containerdesc, boolean
 			}
 		}
 	
-	#if TARGET_API_MAC_CARBON == 1
 		
 		newdescnull (containerdesc, nulltype);
 	
-	#else
-	
-		(*containerdesc).descriptorType = nulltype;
-	
-		(*containerdesc).dataHandle = nil;
-	
-	#endif
 	} /*getdefaultcontainer*/
 
 
@@ -2326,7 +2209,6 @@ static boolean valtoobjspec (tyvaluerecord *val, OSType nulltype, AEDesc *object
 			return (false);
 		} /*switch*/
 	
-	#if TARGET_API_MAC_CARBON == 1 /*PBS 03/14/02: AE OS X fix.*/
 	
 		if (x == nil)
 		
@@ -2339,23 +2221,6 @@ static boolean valtoobjspec (tyvaluerecord *val, OSType nulltype, AEDesc *object
 			newdescwithhandle (obj, typeObjectSpecifier, x);
 			} /*else*/
 	
-	#else
-	
-		(*obj).dataHandle = x;
-	
-		
-		if (x == nil) {
-			
-			(*obj).descriptorType = typeNull; /*don't use nulltype here; nil spec is always typeNull*/
-			}
-		else {
-			
-			exemptfromtmpstack (v);
-			
-			(*obj).descriptorType = typeObjectSpecifier;
-			}
-		
-	#endif
 	return (true);
 	} /*valtoobjspec*/
 
@@ -2390,7 +2255,6 @@ boolean coercetoobjspec (tyvaluerecord *v) {
 			if (!valtoobjspec (v, typeNull, &objectdesc))
 				return (false);
 			
-			#if TARGET_API_MAC_CARBON == 1 /*PBS 03/14/02: AE OS X fix.*/
 			
 				{
 				Handle h;
@@ -2400,11 +2264,6 @@ boolean coercetoobjspec (tyvaluerecord *v) {
 				return (setheapvalue (h, objspecvaluetype, v));
 				}			
 			
-			#else
-			
-				return (setheapvalue (objectdesc.dataHandle, objspecvaluetype, v));
-			
-			#endif
 		} /*switch*/
 	} /*coercetoobjspec*/
 
@@ -2493,7 +2352,6 @@ boolean setobjspecverb (hdltreenode hparam1, tyvaluerecord *val) {
 	if (oserror (errcode))
 		return (false);
 
-	#if TARGET_API_MAC_CARBON == 1 /*PBS 03/14/02: AE OS X fix.*/
 
 		{
 		Handle h;
@@ -2503,11 +2361,6 @@ boolean setobjspecverb (hdltreenode hparam1, tyvaluerecord *val) {
 		return (setheapvalue (h, objspecvaluetype, val));
 		}			
 
-	#else
-
-		return (setheapvalue (objspecdesc.dataHandle, objspecvaluetype, val));
-	
-	#endif
 	} /*setobjspecverb*/
 
 
@@ -2546,11 +2399,9 @@ static boolean evaluateproperty (hdltreenode htree, OSType nulltype, AEDesc *obj
 	OSType propkey;
 	boolean fltmp = false;
 	
-	#if TARGET_API_MAC_CARBON == 1
 	
 		Handle hcopy;
 		
-	#endif
 	
 	assert (h != nil);
 	
@@ -2575,17 +2426,11 @@ static boolean evaluateproperty (hdltreenode htree, OSType nulltype, AEDesc *obj
 			if (!evaluateobject ((**h).param1, nulltype, &containerdesc)) /*daisy-chain recursion*/
 				return (false);
 			
-			#if TARGET_API_MAC_CARBON == 1 /*PBS 03/14/02: AE OS X fix.*/
 			
 				copydatahandle (&containerdesc, &hcopy);
 				
 				pushtmpstack (hcopy);
 						
-			#else
-			
-				pushtmpstack (containerdesc.dataHandle); /*until it's merged*/
-			
-			#endif
 			
 			fltmp = true;
 			
@@ -2605,15 +2450,9 @@ static boolean evaluateproperty (hdltreenode htree, OSType nulltype, AEDesc *obj
 	
 	if (fltmp)
 	
-		#if TARGET_API_MAC_CARBON == 1 /*PBS 03/14/02: AE OS X fix.*/
 		
 			releaseheaptmp (hcopy);
 
-		#else
-	
-			releaseheaptmp (containerdesc.dataHandle);
-	
-		#endif
 		
 	return (true);
 	} /*evaluateproperty*/
@@ -2745,26 +2584,18 @@ static boolean evaluatecomparison (hdltreenode htree, DescType operator, AEDesc 
 	AEDesc valdesc;
 	OSErr errcode;
 	
-	#if TARGET_API_MAC_CARBON == 1
 	
 		Handle hcopy;
 	
-	#endif
 	
 	if (!evaluateobject ((**h).param1, typeObjectBeingExamined, &objectdesc))
 		return (false);
 	
-	#if TARGET_API_MAC_CARBON == 1 /*PBS 03/14/02: AE OS X fix.*/
 	
 		copydatahandle (&objectdesc, &hcopy);
 		
 		pushtmpstack (hcopy);
 	
-	#else
-	
-		pushtmpstack (objectdesc.dataHandle); /*until it's merged*/
-	
-	#endif
 	
 	if (!evaluatetree ((**h).param2, &val))
 		return (false);
@@ -2774,15 +2605,9 @@ static boolean evaluatecomparison (hdltreenode htree, DescType operator, AEDesc 
 	
 	errcode = CreateCompDescriptor (operator, &objectdesc, &valdesc, false, keydatadesc);
 	
-	#if TARGET_API_MAC_CARBON == 1 /*PBS 03/14/02: AE OS X fix.*/
 
 		releaseheaptmp (hcopy);
 	
-	#else
-		
-		releaseheaptmp (objectdesc.dataHandle); /*keep tmpstack cleared out*/
-	
-	#endif
 	
 	AEDisposeDesc (&valdesc);
 	
@@ -2931,15 +2756,9 @@ static boolean evaluateboundryobject (hdltreenode htree, OSType rangeclass, AEDe
 	if (!evaluatesimplekey (h, &keyform, &keydatadesc))
 		return (false);
 		
-	#if TARGET_API_MAC_CARBON == 1
 	
 		nildatahandle (&containerdesc);
 	
-	#else
-		
-		containerdesc.dataHandle = nil;
-	
-	#endif
 
 	containerdesc.descriptorType = typeCurrentContainer;
 	
@@ -2995,11 +2814,9 @@ static boolean evaluateelement (hdltreenode htree, OSType nulltype, OSType *elem
 	OSErr errcode;
 	boolean fltmp = false;
 	
-	#if TARGET_API_MAC_CARBON == 1 /*PBS 03/14/02: AE OS X fix.*/
 	
 		Handle hcopy;
 	
-	#endif
 	
 	assert (h != nil);
 	
@@ -3028,17 +2845,11 @@ static boolean evaluateelement (hdltreenode htree, OSType nulltype, OSType *elem
 			if (!evaluateobject ((**hp1).param1, nulltype, &containerdesc)) /*daisy-chain recursion*/
 				return (false);
 			
-			#if TARGET_API_MAC_CARBON == 1 /*PBS 03/14/02: AE OS X fix.*/
 			
 				copydatahandle (&containerdesc, &hcopy);
 				
 				pushtmpstack (hcopy);
 			
-			#else
-			
-				pushtmpstack (containerdesc.dataHandle); /*until it's merged*/
-			
-			#endif
 			
 			fltmp = true;
 			
@@ -3051,17 +2862,11 @@ static boolean evaluateelement (hdltreenode htree, OSType nulltype, OSType *elem
 			if (!evaluateelement (hp1, nulltype, &class, &containerdesc))
 				return (false);
 
-			#if TARGET_API_MAC_CARBON == 1 /*PBS 03/14/02: AE OS X fix.*/
 			
 				copydatahandle (&containerdesc, &hcopy);
 				
 				pushtmpstack (hcopy);
 			
-			#else
-			
-				pushtmpstack (containerdesc.dataHandle); /*until it's merged*/
-				
-			#endif
 			
 			fltmp = true;
 			
@@ -3121,17 +2926,10 @@ static boolean evaluateelement (hdltreenode htree, OSType nulltype, OSType *elem
 	
 	errcode = CreateObjSpecifier (class, &containerdesc, keyform, &keydatadesc, false, objectdesc);
 	
-	#if TARGET_API_MAC_CARBON == 1 /*PBS 03/14/02: AE OS X fix.*/
 	
 		if (fltmp)
 			releaseheaptmp (hcopy);
 	
-	#else
-	
-		if (fltmp)
-			releaseheaptmp (containerdesc.dataHandle);
-	
-	#endif
 	
 	AEDisposeDesc (&keydatadesc);
 	
@@ -3217,7 +3015,6 @@ boolean evaluateobjspec (hdltreenode htree, tyvaluerecord *vreturned) {
 	if (!evaluateobject (htree, typeNull, &objectdesc))
 		return (false);
 	
-	#if TARGET_API_MAC_CARBON == 1 /*PBS 03/14/02: AE OS X fix.*/
 	
 		{
 		Handle h;
@@ -3227,11 +3024,6 @@ boolean evaluateobjspec (hdltreenode htree, tyvaluerecord *vreturned) {
 		return (setheapvalue (h, objspecvaluetype, vreturned));
 		}
 	
-	#else
-	
-		return (setheapvalue (objectdesc.dataHandle, objspecvaluetype, vreturned));
-
-	#endif
 	} /*evaluateobjspec*/
 
 

@@ -56,14 +56,9 @@
 	#define buttonbackground GetStockObject (GRAY_BRUSH)
 #endif
 
-#if TARGET_API_MAC_CARBON == 1 /*7.0b53 PBS: common code -- QDFlushPortBuffer on OS X*/
 
 	#define flushwindowbuffer(w) QDFlushPortBuffer (GetWindowPort (w), nil)
 
-#else
-
-	#define flushwindowbuffer(w) /*nothing*/
-#endif
 
 extern RGBColor blackcolor, whitecolor, lightbluecolor, lightgraycolor, graycolor, darkgraycolor;
 

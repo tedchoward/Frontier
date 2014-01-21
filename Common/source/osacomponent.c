@@ -60,16 +60,13 @@ version at the bottom. This file should be reconciled later.*/
 #include "processinternal.h"
 #include "tablestructure.h"
 #include "osacomponent.h"
-#include "osadroplet.h"
 #include "osainternal.h"
 #include "osamenus.h"
 #include "osaparseaete.h"
 #include "osawindows.h"
 #include "byteorder.h"
 
-#if TARGET_API_MAC_CARBON == 1 /*PBS 03/14/02: AE OS X fix.*/
 	#include "aeutils.h"
-#endif
 
 
 /* forward declarations for static functions */
@@ -526,7 +523,6 @@ static pascal OSAError osaGetCreateProc (
 		};
 
 	
-	#if TARGET_API_MAC_CARBON
 		
 		/*
 			For Carbon we have to build univeral procedure pointers at runtime.
@@ -575,91 +571,6 @@ static pascal OSAError osaGetCreateProc (
 		#define osaclientidleUPP (osaclientidleDesc)
 		#define osaclientsendUPP (osaclientsendDesc)
 
-	#else
-		
-		/*
-			For the Classic Mac OS API, routine descriptors are built by the compiler.
-			Just define the UPPs as pointers to these routine descriptors.
-		*/
-	
-		static RoutineDescriptor cmpcloseDesc = BUILD_ROUTINE_DESCRIPTOR (cmpcloseProcInfo, cmpclose);
-		static RoutineDescriptor cmpcandoDesc = BUILD_ROUTINE_DESCRIPTOR (cmpcandoProcInfo, cmpcando);
-		static RoutineDescriptor cmpversionDesc = BUILD_ROUTINE_DESCRIPTOR (cmpversionProcInfo, cmpversion);
-		static RoutineDescriptor osaLoadDesc = BUILD_ROUTINE_DESCRIPTOR (osaLoadProcInfo, osaLoad);
-		static RoutineDescriptor osaStoreDesc = BUILD_ROUTINE_DESCRIPTOR (osaStoreProcInfo, osaStore);
-		static RoutineDescriptor osaExecuteDesc = BUILD_ROUTINE_DESCRIPTOR (osaExecuteProcInfo, osaExecute);
-		static RoutineDescriptor osaDisplayDesc = BUILD_ROUTINE_DESCRIPTOR (osaDisplayProcInfo, osaDisplay);
-		static RoutineDescriptor osaScriptErrorDesc = BUILD_ROUTINE_DESCRIPTOR (osaScriptErrorProcInfo, osaScriptError);
-		static RoutineDescriptor osaDisposeDesc = BUILD_ROUTINE_DESCRIPTOR (osaDisposeProcInfo, osaDispose);
-		static RoutineDescriptor osaSetScriptInfoDesc = BUILD_ROUTINE_DESCRIPTOR (osaSetScriptInfoProcInfo, osaSetScriptInfo);
-		static RoutineDescriptor osaGetScriptInfoDesc = BUILD_ROUTINE_DESCRIPTOR (osaGetScriptInfoProcInfo, osaGetScriptInfo);
-		static RoutineDescriptor osaCompileDesc = BUILD_ROUTINE_DESCRIPTOR (osaCompileProcInfo, osaCompile);
-		static RoutineDescriptor osaGetSourceDesc = BUILD_ROUTINE_DESCRIPTOR (osaGetSourceProcInfo, osaGetSource);
-		static RoutineDescriptor osaCoerceFromDescDesc = BUILD_ROUTINE_DESCRIPTOR (osaCoerceFromDescProcInfo, osaCoerceFromDesc);
-		static RoutineDescriptor osaCoerceToDescDesc = BUILD_ROUTINE_DESCRIPTOR (osaCoerceToDescProcInfo, osaCoerceToDesc);
-		static RoutineDescriptor osaStartRecordingDesc = BUILD_ROUTINE_DESCRIPTOR (osaStartRecordingProcInfo, osaStartRecording);
-		static RoutineDescriptor osaStopRecordingDesc = BUILD_ROUTINE_DESCRIPTOR (osaStopRecordingProcInfo, osaStopRecording);
-		static RoutineDescriptor osaScriptingComponentNameDesc = BUILD_ROUTINE_DESCRIPTOR (osaScriptingComponentNameProcInfo, osaScriptingComponentName);
-		static RoutineDescriptor osaLoadExecuteDesc = BUILD_ROUTINE_DESCRIPTOR (osaLoadExecuteProcInfo, osaLoadExecute);
-		static RoutineDescriptor osaCompileExecuteDesc = BUILD_ROUTINE_DESCRIPTOR (osaCompileExecuteProcInfo, osaCompileExecute);
-		static RoutineDescriptor osaDoScriptDesc = BUILD_ROUTINE_DESCRIPTOR (osaDoScriptProcInfo, osaDoScript);
-		static RoutineDescriptor osaMakeContextDesc = BUILD_ROUTINE_DESCRIPTOR (osaMakeContextProcInfo, osaMakeContext);
-		static RoutineDescriptor osaSetResumeDispatchProcDesc = BUILD_ROUTINE_DESCRIPTOR (osaSetResumeDispatchProcProcInfo, osaSetResumeDispatchProc);
-		static RoutineDescriptor osaGetResumeDispatchProcDesc = BUILD_ROUTINE_DESCRIPTOR (osaGetResumeDispatchProcProcInfo, osaGetResumeDispatchProc);
-		static RoutineDescriptor osaExecuteEventDesc = BUILD_ROUTINE_DESCRIPTOR (osaExecuteEventProcInfo, osaExecuteEvent);
-		static RoutineDescriptor osaDoEventDesc = BUILD_ROUTINE_DESCRIPTOR (osaDoEventProcInfo, osaDoEvent);
-		static RoutineDescriptor osaSetActiveProcDesc = BUILD_ROUTINE_DESCRIPTOR (osaSetActiveProcProcInfo, osaSetActiveProc);
-		static RoutineDescriptor osaSetDebugProcDesc = BUILD_ROUTINE_DESCRIPTOR (osaSetDebugProcProcInfo, osaSetDebugProc);
-		static RoutineDescriptor osaDebugDesc = BUILD_ROUTINE_DESCRIPTOR (osaDebugProcInfo, osaDebug);
-		static RoutineDescriptor osaSetSendProcDesc = BUILD_ROUTINE_DESCRIPTOR (osaSetSendProcProcInfo, osaSetSendProc);
-		static RoutineDescriptor osaGetSendProcDesc = BUILD_ROUTINE_DESCRIPTOR (osaGetSendProcProcInfo, osaGetSendProc);
-		static RoutineDescriptor osaSetCreateProcDesc = BUILD_ROUTINE_DESCRIPTOR (osaSetCreateProcProcInfo, osaSetCreateProc);
-		static RoutineDescriptor osaGetCreateProcDesc = BUILD_ROUTINE_DESCRIPTOR (osaGetCreateProcProcInfo, osaGetCreateProc);
-	
-		static RoutineDescriptor osaclientactiveDesc = BUILD_ROUTINE_DESCRIPTOR (uppOSAActiveProcInfo, osaclientactive);
-		static RoutineDescriptor osaclientidleDesc = BUILD_ROUTINE_DESCRIPTOR (uppAEIdleProcInfo, osaclientidleproc);
-		static RoutineDescriptor osaclientsendDesc = BUILD_ROUTINE_DESCRIPTOR (uppOSASendProcInfo, osaclientsend);
-
-		#define cmpcloseUPP (&cmpcloseDesc)
-		#define cmpcandoUPP (&cmpcandoDesc)
-		#define cmpversionUPP (&cmpversionDesc)
-		#define osaLoadUPP (&osaLoadDesc)
-		#define osaStoreUPP (&osaStoreDesc)
-		#define osaExecuteUPP (&osaExecuteDesc)
-		#define osaDisplayUPP (&osaDisplayDesc)
-		#define osaScriptErrorUPP (&osaScriptErrorDesc)
-		#define osaDisposeUPP (&osaDisposeDesc)
-		#define osaSetScriptInfoUPP (&osaSetScriptInfoDesc)
-		#define osaGetScriptInfoUPP (&osaGetScriptInfoDesc)
-		#define osaCompileUPP (&osaCompileDesc)
-		#define osaGetSourceUPP (&osaGetSourceDesc)
-		#define osaCoerceFromDescUPP (&osaCoerceFromDescDesc)
-		#define osaCoerceToDescUPP (&osaCoerceToDescDesc)
-		#define osaStartRecordingUPP (&osaStartRecordingDesc)
-		#define osaStopRecordingUPP (&osaStopRecordingDesc)
-		#define osaScriptingComponentNameUPP (&osaScriptingComponentNameDesc)
-		#define osaLoadExecuteUPP (&osaLoadExecuteDesc)
-		#define osaCompileExecuteUPP (&osaCompileExecuteDesc)
-		#define osaDoScriptUPP (&osaDoScriptDesc)
-		#define osaMakeContextUPP (&osaMakeContextDesc)
-		#define osaSetResumeDispatchProcUPP (&osaSetResumeDispatchProcDesc)
-		#define osaGetResumeDispatchProcUPP (&osaGetResumeDispatchProcDesc)
-		#define osaExecuteEventUPP (&osaExecuteEventDesc)
-		#define osaDoEventUPP (&osaDoEventDesc)
-		#define osaSetActiveProcUPP (&osaSetActiveProcDesc)
-		#define osaSetDebugProcUPP (&osaSetDebugProcDesc)
-		#define osaDebugUPP (&osaDebugDesc)
-		#define osaSetSendProcUPP (&osaSetSendProcDesc)
-		#define osaGetSendProcUPP (&osaGetSendProcDesc)
-		#define osaSetCreateProcUPP (&osaSetCreateProcDesc)
-		#define osaGetCreateProcUPP (&osaGetCreateProcDesc)
-		#define osaSetDefaultTargetUPP (&osaSetDefaultTargetDesc)
-
-		#define osaclientactiveUPP (&osaclientactiveDesc)
-		#define osaclientidleUPP (&osaclientidleDesc)
-		#define osaclientsendUPP (&osaclientsendDesc)
-
-	#endif	/*TARGET_API_MAC_CARBON*/
 	
 	/*
 	static RoutineDescriptor osaSetDefaultTargetDesc = BUILD_ROUTINE_DESCRIPTOR (osaSetDefaultTargetProcInfo, osaSetDefaultTarget);
@@ -814,9 +725,6 @@ typedef struct tystylerecord {
 
 static THz homezone;
 
-#if !TARGET_API_MAC_CARBON
-	static Handle homeresmap;
-#endif
 
 static short homeresfile;
 
@@ -851,7 +759,6 @@ void disposecomponentglobals (hdlcomponentglobals hglobals) {
 	
 	hashtablestack = (**(**hcg).clientthreadglobals).htablestack;
 		
-	#if TARGET_API_MAC_CARBON
 		DisposeOSAActiveUPP((**hcg).activeproc);
 		DisposeOSASendUPP((**hcg).sendproc);
 		DisposeOSACreateAppleEventUPP((**hcg).createproc);
@@ -889,7 +796,6 @@ void disposecomponentglobals (hdlcomponentglobals hglobals) {
 		DisposeComponentFunctionUPP((**hcg).osaGetSendProcUPP);
 		DisposeComponentFunctionUPP((**hcg).osaSetCreateProcUPP);
 		DisposeComponentFunctionUPP((**hcg).osaGetCreateProcUPP);	
-	#endif
 		
 	disposehashtable ((**hcg).storagetable, false);
 	
@@ -972,7 +878,6 @@ osadefaultsend (
 	//Code change by Timothy Paustian Friday, July 21, 2000 10:52:57 PM
 	//I think I can get away with this because only frontier code calls it.
 
-	#if TARGET_API_MAC_CARBON
 
 		OSAActiveUPP osadefaultactiveDesc = nil;
 		OSACreateAppleEventUPP osadefaultcreateDesc = nil;
@@ -982,17 +887,6 @@ osadefaultsend (
 		#define osadefaultcreateUPP (osadefaultcreateDesc)
 		#define osadefaultsendUPP (osadefaultsendDesc)
 		
-	#else
-
-		static RoutineDescriptor osadefaultactiveDesc = BUILD_ROUTINE_DESCRIPTOR (uppOSAActiveProcInfo, osadefaultactiveproc);
-		static RoutineDescriptor osadefaultcreateDesc = BUILD_ROUTINE_DESCRIPTOR (uppOSACreateAppleEventProcInfo, osadefaultcreate);
-		static RoutineDescriptor osadefaultsendDesc = BUILD_ROUTINE_DESCRIPTOR (uppOSASendProcInfo, osadefaultsend);
-	
-		#define osadefaultactiveUPP (&osadefaultactiveDesc)
-		#define osadefaultcreateUPP (&osadefaultcreateDesc)
-		#define osadefaultsendUPP (&osadefaultsendDesc)
-
-	#endif
 	
 #else
 
@@ -1043,29 +937,17 @@ boolean newcomponentglobals (Component self, long clienta5, hdlcomponentglobals 
 	
 	//Code change by Timothy Paustian Friday, June 16, 2000 1:39:07 PM
 	//Changed to Opaque call for Carbon - you can't use this in carbon anyway
-	#if TARGET_API_MAC_CARBON == 1
 		(**hcg).clientzone = LMGetApplZone();
-	#else	
-		(**hcg).clientzone = GetZone ();
-	#endif
 		
 	(**hcg).clientid = appid;
 	
 	(**hcg).clientpsn = psn;
 	
-	#if TARGET_API_MAC_CARBON == 1
 		LMSetApplZone(homezone);
-	#else	
-		SetZone (homezone);
-	#endif
 		
 	fl = newhashtable (&storagetable);
 	
-	#if TARGET_API_MAC_CARBON == 1
 		LMSetApplZone((**hcg).clientzone);
-	#else	
-		SetZone ((**hcg).clientzone);
-	#endif
 	
 	if (!fl) {
 	
@@ -1076,7 +958,6 @@ boolean newcomponentglobals (Component self, long clienta5, hdlcomponentglobals 
 	
 	(**hcg).storagetable = storagetable;
 	
-	#if TARGET_API_MAC_CARBON
 	
 		(**hcg).activeproc = NewOSAActiveUPP(osadefaultactiveproc);
 		(**hcg).createproc = NewOSACreateAppleEventUPP(osadefaultcreate);
@@ -1118,13 +999,6 @@ boolean newcomponentglobals (Component self, long clienta5, hdlcomponentglobals 
 		(**hcg).osaGetSendProcUPP = NewComponentFunctionUPP(osaGetSendProc, osaGetSendProcProcInfo);
 		(**hcg).osaSetCreateProcUPP = NewComponentFunctionUPP(osaSetCreateProc, osaSetCreateProcProcInfo);
 		(**hcg).osaGetCreateProcUPP = NewComponentFunctionUPP(osaGetCreateProc, osaGetCreateProcProcInfo);
-	#else
-		
-		(**hcg).activeproc = osadefaultactiveUPP;
-		(**hcg).createproc = osadefaultcreateUPP;
-		(**hcg).sendproc = osadefaultsendUPP;
-
-	#endif
 			
 	if (!newthreadglobals (&hthreadglobals)) {
 		
@@ -1210,17 +1084,9 @@ static boolean osaerrormessage (bigstring bs, ptrvoid refcon) {
 	
 	if (err != noErr) {
 		
-		#if TARGET_API_MAC_CARBON == 1 /*PBS 03/14/02: AE OS X fix.*/
 		
 			newdescnull (&list, typeNull);
 		
-		#else
-		
-			list.descriptorType = typeNull;
-		
-			list.dataHandle = nil;
-			
-		#endif
 		}
 	else {
 		
@@ -1351,12 +1217,7 @@ coerceTypetoObj (
 			DebugStr ("\punexpected coercion");
 	#endif
 	
-	#if TARGET_API_MAC_CARBON == 1 /*PBS 03/14/02: AE OS X fix.*/
 		newdescnull (&containerdesc, typeNull);
-	#else
-		containerdesc.descriptorType = typeNull;
-		containerdesc.dataHandle = nil;
-	#endif
 	
 	err = CreateObjSpecifier (cProperty, &containerdesc, formPropertyID, desc, false, result);
 	
@@ -1368,7 +1229,6 @@ coerceTypetoObj (
 //Changed to Opaque call for Carbon
 #if TARGET_RT_MAC_CFM || TARGET_RT_MAC_MACHO
 
-	#if TARGET_API_MAC_CARBON
 
 		AECoercionHandlerUPP	coerceTEXTtoSTXTDesc;
 		AECoercionHandlerUPP	coerceTypetoObjDesc;
@@ -1376,15 +1236,6 @@ coerceTypetoObj (
 		#define coerceTEXTtoSTXTUPP (coerceTEXTtoSTXTDesc)
 		#define coerceTypetoObjUPP (coerceTypetoObjDesc)
 
-	#else
-
-		static RoutineDescriptor coerceTEXTtoSTXTDesc = BUILD_ROUTINE_DESCRIPTOR (uppAECoercePtrProcInfo, coerceTEXTtoSTXT);
-		static RoutineDescriptor coerceTypetoObjDesc = BUILD_ROUTINE_DESCRIPTOR (uppAECoerceDescProcInfo, coerceTypetoObj);
-	
-		#define coerceTEXTtoSTXTUPP ((AECoercionHandlerUPP) &coerceTEXTtoSTXTDesc)
-		#define coerceTypetoObjUPP ((AECoercionHandlerUPP) &coerceTypetoObjDesc)
-
-	#endif
 
 #else
 
@@ -1448,10 +1299,8 @@ static void osapushfastcontext (hdlcomponentglobals hglobals) {
 		}
 	
 	if (++osacoercionhandlerinstalled == 1) {
-		#if TARGET_API_MAC_CARBON
 			if(coerceTEXTtoSTXTUPP == nil)
 				coerceTEXTtoSTXTUPP = NewAECoerceDescUPP((AECoerceDescProcPtr)coerceTEXTtoSTXT);
-		#endif
 
 		AEInstallCoercionHandler (typeChar, typeStyledText, coerceTEXTtoSTXTUPP, 0, false, false);
 		}
@@ -1464,11 +1313,6 @@ static void osapushfastcontext (hdlcomponentglobals hglobals) {
 		//Changed to Opaque call for Carbon
 		//This is not supported in carbon. You cannot use res files in OS X
 		//We may have some serious rewriting to do for this.
-		#if !TARGET_API_MAC_CARBON
-			(**hcg).clientresmaphandle = LMGetTopMapHndl ();
-			
-			LMSetTopMapHndl (homeresmap);
-		#endif
 		
 		UseResFile (homeresfile);
 		}
@@ -1502,18 +1346,13 @@ static void osapopfastcontext (hdlcomponentglobals hglobals) {
 
 		//Code change by Timothy Paustian Friday, July 21, 2000 11:02:21 PM
 		//added dispose of coercion handler
-		#if TARGET_API_MAC_CARBON
 			if(coerceTEXTtoSTXTUPP != nil) {
 				DisposeAECoerceDescUPP(coerceTEXTtoSTXTUPP);
 				coerceTEXTtoSTXTUPP = nil;
 				}
-		#endif
 	}
 	if (!(**hcg).isHomeProcess) {
 
-		#if !TARGET_API_MAC_CARBON
-			LMSetTopMapHndl ((**hcg).clientresmaphandle);
-		#endif
 
 		UseResFile ((**hcg).clientresfile);
 		}
@@ -1612,13 +1451,8 @@ THz osasethomezone (hdlcomponentglobals hglobals) {
 	
 	register THz origzone;
 
-	#if TARGET_API_MAC_CARBON == 1
 		origzone = LMGetApplZone();
 		LMSetApplZone(homezone);
-	#else
-		origzone = GetZone ();
-		SetZone (homezone);
-	#endif
 		
 	return (origzone);
 	} /*osasethomezone*/
@@ -1634,13 +1468,8 @@ THz osasetclientzone (hdlcomponentglobals hglobals) {
 	register hdlcomponentglobals hcg = hglobals;
 	register THz origzone;
 
-	#if TARGET_API_MAC_CARBON == 1
 		origzone = LMGetApplZone();
 		LMSetApplZone((**hcg).clientzone);
-	#else
-	 	origzone = GetZone ();
-		SetZone ((**hcg).clientzone);
-	#endif
 		
 	return (origzone);
 	} /*osasetclientzone*/
@@ -1927,11 +1756,7 @@ static boolean osahandlerunscript (hdlcomponentglobals hglobals, hdltreenode hco
 	
 	origproc = osainstallpatch (hcg);
 	
-	#if TARGET_API_MAC_CARBON == 1
 		LMSetApplZone(homezone);
-	#else	
-		SetZone (homezone);
-	#endif
 		
 	if (testheapspace (2 * 1024)) /*enough memory to run a process*/
 		fl = processruncode (hp, resultval);
@@ -2292,21 +2117,12 @@ static boolean osanewvalue (tyexternalid id, Handle hdata, tyvaluerecord *val) {
 	register THz origzone;
 	boolean fl;
 
-	#if TARGET_API_MAC_CARBON == 1
 		origzone = LMGetApplZone();
 		LMSetApplZone(homezone);
-	#else
-		origzone = GetZone ();
-		SetZone (homezone);
-	#endif
 
 	fl = langexternalnewvalue (id, hdata, val);
 	
-	#if TARGET_API_MAC_CARBON == 1
 		LMSetApplZone(origzone);
-	#else	
-		SetZone (origzone);
-	#endif
 		
 	return (fl);
 	} /*osanewvalue*/
@@ -2336,12 +2152,8 @@ osaLoad (
 	hdlhashnode hnodesource;
 	hdlhashnode hnodecode;
 	
-	#if TARGET_API_MAC_CARBON == 1
 		if (!copydatahandle ((AEDesc*)scriptData, &descData))	/* AE OS X fix */
 			return (memFullErr);
-	#else
-		descData = scriptData->dataHandle;
-	#endif
 	
 	switch (scriptData->descriptorType) {
 		
@@ -2420,14 +2232,12 @@ osaLoad (
 			err = errOSABadStorageType;
 		}
 
-	#if TARGET_API_MAC_CARBON == 1
 		if(descData != nil) {
 
 			disposehandle(descData);	/* AE OS X fix */
 
 			descData = nil;
 			}
-	#endif
 	
 	if (err != noErr)
 		return (err);
@@ -2537,12 +2347,7 @@ static pascal OSAError osaStore (
 		descType = typeLAND;
 		}
 
-	#if TARGET_API_MAC_CARBON == 1
 		fl = newdescwithhandle (&desc, descType, hpacked);
-	#else
-		desc.dataHandle = hpacked;
-		desc.descriptorType = descType;
-	#endif
 
 	*resultingScriptData = desc;
 	
@@ -2842,17 +2647,10 @@ static pascal OSAError osacompiledesc (
 	if ((*sourceData).descriptorType != typeChar)
 		return (errAECoercionFail);
 	
-	#if TARGET_API_MAC_CARBON == 1 /*PBS 03/14/02: AE OS X fix.*/
 	
 		if (!copydatahandle ((AEDesc*) sourceData, &htext)) /*don't let langbuildtree consume caller's text*/
 			return (memFullErr);
 	
-	#else
-	
-		if (!copyhandle ((*sourceData).dataHandle, &htext)) /*don't let langbuildtree consume caller's text*/
-			return (memFullErr);
-		
-	#endif
 	
 	if (!langbuildtree (htext, false, &hcode)) /*syntax error*/
 		return (osageterror ());
@@ -2892,17 +2690,10 @@ static pascal OSAError osaCompile (
 		
 		flkeepsource = true;
 		
-		#if TARGET_API_MAC_CARBON == 1 /*PBS 03/14/02: AE OS X fix.*/
 			
 			if (!copydatahandle ((AEDesc*) sourceData, &htext)) /*make copy for eventual getsource*/
 				return (memFullErr);		
 		
-		#else
-		
-			if (!copyhandle ((*sourceData).dataHandle, &htext)) /*make copy for eventual getsource*/
-				return (memFullErr);
-		
-		#endif
 		
 		if (!setheapvalue (htext, stringvaluetype, &vsource))
 			return (osageterror ());
@@ -3003,7 +2794,6 @@ osaCoerceFromDesc (
 		
 		val.valuetype = externalvaluetype;
 		
-		#if TARGET_API_MAC_CARBON == 1 /*PBS 03/14/02: AE OS X fix.*/
 			{
 			Handle h;
 			
@@ -3013,9 +2803,6 @@ osaCoerceFromDesc (
 			
 			disposehandle (h);
 			}
-		#else
-			fl = langexternalmemoryunpack (desc.dataHandle, (hdlexternalhandle *) &val.data.externalvalue);
-		#endif
 		
 		AEDisposeDesc (&desc);
 		
@@ -3121,9 +2908,6 @@ coerceInsltoTEXT (
 	long size;
 	OSType pos;
 	
-	#if !TARGET_API_MAC_CARBON
-		long curA5 = SetUpAppA5 ();
-	#endif
 	
 	#ifdef fldebug // 2006-04-04 - kw --- this was fldegug
 	
@@ -3203,19 +2987,11 @@ exit:
 //Changed to Opaque call for Carbon
 #if TARGET_RT_MAC_CFM || TARGET_RT_MAC_MACHO
 
-	#if TARGET_API_MAC_CARBON
 
 		AECoercionHandlerUPP	coerceInsltoTEXTDesc;
 		
 		#define coerceInsltoTEXTUPP (coerceInsltoTEXTDesc);
 
-	#else
-
-		static RoutineDescriptor coerceInsltoTEXTDesc = BUILD_ROUTINE_DESCRIPTOR (uppAECoerceDescProcInfo, coerceInsltoTEXT);
-	
-		#define coerceInsltoTEXTUPP ((AECoercionHandlerUPP) &coerceInsltoTEXTDesc)
-
-	#endif
 
 #else
 
@@ -3341,34 +3117,6 @@ static pascal OSErr sendrecordedtextevent (hdlcomponentglobals hcg, bigstring bs
 
 static pascal OSErr targettoprocessinfo (const TargetID *target, ProcessSerialNumber *psn, FSSpec *fs, OSType *signature) {
 
-	#if !TARGET_API_MAC_CARBON
-
-		ProcessInfoRec info;
-		OSErr ec;
-		
-		if ((*target).location.locationKindSelector == ppcNoLocation) { /*local program*/
-			
-			ec = GetProcessSerialNumberFromPortName ((PPCPortPtr) &(*target).name, psn);
-			
-			if (ec != noErr)
-				return (ec);
-			
-			info.processInfoLength = (long) sizeof (info);
-			
-			info.processName = nil;
-			
-			info.processAppSpec = fs;
-			
-			ec = GetProcessInformation (psn, &info);
-			
-			if (ec != noErr)
-				return (ec);
-			
-			*signature = info.processSignature;
-			}
-		else
-
-	#endif
 		 { /*not a local program*/
 		
 		clearbytes (psn, sizeof (ProcessSerialNumber));
@@ -3628,11 +3376,7 @@ handlerecordableevent (
 		
 		if (err == noErr) {
 			
-			#if TARGET_API_MAC_CARBON == 1 /*PBS 03/14/02: AE OS X fix.*/
 				datahandletostring (&desc, bs);
-			#else
-				texthandletostring (desc.dataHandle, bs);
-			#endif
 			
 			insertstring ("\p\t«", bs);
 			
@@ -3747,12 +3491,8 @@ exit:
 	
 	//Code change by Timothy Paustian Friday, July 21, 2000 11:03:49 PM
 	//Get rid of the UPP wer are done.
-	#if TARGET_API_MAC_CARBON
 		AERemoveCoercionHandler (typeInsertionLoc, typeChar, coerceInsltoTEXTDesc, false);
 		DisposeAECoerceDescUPP(coerceInsltoTEXTDesc);
-	#else
-		AERemoveCoercionHandler (typeInsertionLoc, typeChar, coerceInsltoTEXTUPP, false);
-	#endif
 	osapopfastcontext (hcg);
 
 	
@@ -3762,19 +3502,11 @@ exit:
 
 #if TARGET_RT_MAC_CFM || TARGET_RT_MAC_MACHO
 
-	#if TARGET_API_MAC_CARBON
 
 		AEEventHandlerUPP handlerecordableeventDesc = nil;
 
 		#define handlerecordableeventUPP (handlerecordableeventDesc)
 
-	#else
-
-		static RoutineDescriptor handlerecordableeventDesc = BUILD_ROUTINE_DESCRIPTOR (uppAEEventHandlerProcInfo, handlerecordableevent);
-
-		#define handlerecordableeventUPP (&handlerecordableeventDesc)
-
-	#endif
 
 #else
 
@@ -3831,10 +3563,8 @@ static pascal OSAError osaStartRecording (
 
 		//Code change by Timothy Paustian Friday, July 28, 2000 2:40:45 PM
 		//we need to create the UPP now that we want to use it.
-		#if TARGET_API_MAC_CARBON
 		if (handlerecordableeventDesc == nil)
 			handlerecordableeventDesc = NewAEEventHandlerUPP(handlerecordableevent);
-		#endif
 		
 		err = AEInstallEventHandler (kCoreEventClass, kAENotifyRecording, handlerecordableeventUPP, (long) hglobals, false);
 		}
@@ -3865,11 +3595,7 @@ static pascal OSAError osaStopRecording (
 	
 	if ((err == noErr) && (compiledScriptID != kOSANullScript)) {
 	
-		#if TARGET_API_MAC_CARBON == 1 /*PBS 03/14/02: AE OS X fix.*/
 			newdescwithhandle (&sourcedesc, typeChar, (**hcg).recordingstate.hrecordedtext);
-		#else
-			sourcedesc.dataHandle = (**hcg).recordingstate.hrecordedtext;
-		#endif
 
 		if ((**hcg).recordingstate.hrecordedtext != nil) {	/*script was created by recording process*/
 
@@ -3885,10 +3611,8 @@ static pascal OSAError osaStopRecording (
 
 	//Code change by Timothy Paustian Friday, July 28, 2000 2:43:14 PM
 	//I am assuming the osaStopRecording is called every time osaStartRecording is called.
-	#if TARGET_API_MAC_CARBON
 		DisposeAEEventHandlerUPP(handlerecordableeventDesc);
 		handlerecordableeventDesc = nil;
-	#endif
 
 	return (err);
 	} /*osaStopRecording*/
@@ -4206,11 +3930,7 @@ static pascal Boolean osahandleevent (
 			
 			origproc = osainstallpatch (hcg);
 			
-			#if TARGET_API_MAC_CARBON == 1
 			LMSetApplZone(homezone);
-			#else	
-			SetZone (homezone);
-			#endif		
 			fl = (*(**hg).handleverbroutine) (hverb);
 			
 			getverbresult (hverb, vresult);
@@ -4323,7 +4043,6 @@ static pascal OSAError osaDoEvent (
 				
 				if (osaScriptError (hcg, kOSAErrorNumber, typeShortInteger, &desc) == noErr) {
 					
-					#if TARGET_API_MAC_CARBON == 1 /*PBS 03/14/02: AE OS X fix.*/
 					
 						{
 						Handle h;
@@ -4335,11 +4054,6 @@ static pascal OSAError osaDoEvent (
 						disposehandle (h);
 						} 
 					
-					#else
-					
-						err = numberfromhandle (desc.dataHandle);
-					
-					#endif
 					
 					AEPutKeyDesc (reply, keyErrorNumber, &desc);
 					
@@ -4416,15 +4130,9 @@ static pascal OSAError osaDebug (
 				break;
 				}
 			
-			#if TARGET_API_MAC_CARBON == 1 /*PBS 03/14/02: AE OS X fix.*/
 			
 				datahandletostring ((AEDesc*) selectorData, bs);
 			
-			#else
-			
-				texthandletostring ((*selectorData).dataHandle, bs);
-			
-			#endif
 			
 			if (!langgetsymbolval (bs, &val, &hnode)) {
 				
@@ -4559,13 +4267,8 @@ pascal ComponentResult callosafunction (Handle storage, register ComponentParame
 
 	//Code change by Timothy Paustian Monday, June 26, 2000 9:38:15 PM
 	//
-	#if TARGET_API_MAC_CARBON == 1
 		CGrafPtr saveport;
 		saveport = GetQDGlobalsThePort();
-	#else
-		GrafPtr saveport;
-		saveport = quickdrawglobal (thePort);
-	#endif
 		
 	osapushfastcontext (hcg);
 	
@@ -4605,13 +4308,8 @@ pascal ComponentResult callosafunction (Handle storage, register ComponentParame
 	//Code change by Timothy Paustian Monday, June 26, 2000 9:37:17 PM
 	//
 		{
-		#if TARGET_API_MAC_CARBON == 1
 			CGrafPtr thePort;
 			thePort = GetQDGlobalsThePort();
-		#else
-			GrafPtr thePort;
-			thePort = quickdrawglobal (thePort);
-		#endif
 	
 		if (thePort != saveport)
 			SetPort (saveport);
@@ -4626,14 +4324,12 @@ static pascal ComponentResult osaDispatch (ComponentParameters *params, Handle s
 	ComponentResult result = noErr;
 	short what = (*params).what;
 	
-	#if TARGET_API_MAC_CARBON
 
 		hdlcomponentglobals	theGlobals = nil;
 
 		if(what != kComponentOpenSelect) //else we create the globals
 			theGlobals = (hdlcomponentglobals)storage;
 
-	#endif
 	
 	if (what < 0) { /*negative selectors are component manager calls*/
 		
@@ -4657,27 +4353,15 @@ static pascal ComponentResult osaDispatch (ComponentParameters *params, Handle s
 				}
 			
 			case kComponentCloseSelect:
-				#if TARGET_API_MAC_CARBON
 				result = CallComponentFunctionWithStorage (storage, params, (**theGlobals).cmpcloseUPP);								
-				#else
-				result = CallComponentFunctionWithStorage (storage, params, cmpcloseUPP);
-				#endif
 				break;
 			
 			case kComponentCanDoSelect:
-				#if TARGET_API_MAC_CARBON
 				result = CallComponentFunction (params, (**theGlobals).cmpcandoUPP);			
-				#else
-				result = CallComponentFunction(params, cmpcandoUPP);
-				#endif
 				break;
 			
 			case kComponentVersionSelect:
-				#if TARGET_API_MAC_CARBON
 				result = CallComponentFunction(params, (**theGlobals).cmpversionUPP);			
-				#else
-				result = CallComponentFunction(params, cmpversionUPP);
-				#endif
 				break;
 			
 			default:
@@ -4692,253 +4376,129 @@ static pascal ComponentResult osaDispatch (ComponentParameters *params, Handle s
 		switch (what) {
 			
 			case kOSASelectLoad:
-				#if TARGET_API_MAC_CARBON
 				func = (**theGlobals).osaLoadUPP;
-				#else
-				func = osaLoadUPP;
-				#endif
 				break;
 			
 			case kOSASelectStore:
-				#if TARGET_API_MAC_CARBON
 				func = (**theGlobals).osaStoreUPP;
-				#else
-				func = osaStoreUPP;
-				#endif
 				break;
 			
 			case kOSASelectExecute:
-				#if TARGET_API_MAC_CARBON
 				func = (**theGlobals).osaExecuteUPP;
-				#else
-				func = osaExecuteUPP;
-				#endif
 				break;
 			
 			case kOSASelectDisplay:
-				#if TARGET_API_MAC_CARBON
 				func = (**theGlobals).osaDisplayUPP;
-				#else
-				func = osaDisplayUPP;
-				#endif
 				break;
 			
 			case kOSASelectScriptError:
-				#if TARGET_API_MAC_CARBON
 				func = (**theGlobals).osaScriptErrorUPP;
-				#else
-				func = osaScriptErrorUPP;
-				#endif
 				break;
 			
 			case kOSASelectDispose:
-				#if TARGET_API_MAC_CARBON
 				func = (**theGlobals).osaDisposeUPP;
-				#else
-				func = osaDisposeUPP;
-				#endif
 				break;
 			
 			case kOSASelectSetScriptInfo:
-				#if TARGET_API_MAC_CARBON
 				func = (**theGlobals).osaSetScriptInfoUPP;
-				#else
-				func = osaSetScriptInfoUPP;
-				#endif
 				break;
 			
 			case kOSASelectGetScriptInfo:
-				#if TARGET_API_MAC_CARBON
 				func = (**theGlobals).osaGetScriptInfoUPP;
-				#else
-				func = osaGetScriptInfoUPP;
-				#endif
 				break;
 			
 			case kOSASelectCompile:
-				#if TARGET_API_MAC_CARBON
 				func = (**theGlobals).osaCompileUPP;
-				#else
-				func = osaCompileUPP;
-				#endif
 				break;
 			
 			case kOSASelectGetSource:
-				#if TARGET_API_MAC_CARBON
 				func = (**theGlobals).osaGetSourceUPP;
-				#else
-				func = osaGetSourceUPP;
-				#endif
 				break;
 			
 			case kOSASelectCoerceFromDesc:
-				#if TARGET_API_MAC_CARBON
 				func = (**theGlobals).osaCoerceFromDescUPP;
-				#else
-				func = osaCoerceFromDescUPP;
-				#endif
 				break;
 			
 			case kOSASelectCoerceToDesc:
-				#if TARGET_API_MAC_CARBON
 				func = (**theGlobals).osaCoerceToDescUPP;
-				#else
-				func = osaCoerceToDescUPP;
-				#endif
 				break;
 			
 			case kOSASelectStartRecording:
-				#if TARGET_API_MAC_CARBON
 				func = (**theGlobals).osaStartRecordingUPP;
-				#else
-				func = osaStartRecordingUPP;
-				#endif
 				break;
 			
 			case kOSASelectStopRecording:
-				#if TARGET_API_MAC_CARBON
 				func = (**theGlobals).osaStopRecordingUPP;
-				#else
-				func = osaStopRecordingUPP;
-				#endif
 				break;
 			
 			case kOSASelectScriptingComponentName:
-				#if TARGET_API_MAC_CARBON
 				func = (**theGlobals).osaScriptingComponentNameUPP;
-				#else
-				func = osaScriptingComponentNameUPP;
-				#endif
 				break;
 			
 			case kOSASelectLoadExecute:
-				#if TARGET_API_MAC_CARBON
 				func = (**theGlobals).osaLoadExecuteUPP;
-				#else
-				func = osaLoadExecuteUPP;
-				#endif
 				break;
 			
 			case kOSASelectCompileExecute:
-				#if TARGET_API_MAC_CARBON
 				func = (**theGlobals).osaCompileExecuteUPP;
-				#else
-				func = osaCompileExecuteUPP;
-				#endif
 				break;
 			
 			case kOSASelectDoScript:
-				#if TARGET_API_MAC_CARBON
 				func = (**theGlobals).osaDoScriptUPP;
-				#else
-				func = osaDoScriptUPP;
-				#endif
 				break;
 			
 			case kOSASelectMakeContext:
-				#if TARGET_API_MAC_CARBON
 				func = (**theGlobals).osaMakeContextUPP;
-				#else
-				func = osaMakeContextUPP;
-				#endif
 				break;
 			
 			case kOSASelectSetResumeDispatchProc:
-				#if TARGET_API_MAC_CARBON
 				func = (**theGlobals).osaSetResumeDispatchProcUPP;
-				#else
-				func = osaSetResumeDispatchProcUPP;
-				#endif
 				break;
 			
 			case kOSASelectGetResumeDispatchProc:
-				#if TARGET_API_MAC_CARBON
 				func = (**theGlobals).osaGetResumeDispatchProcUPP;
-				#else
-				func = osaGetResumeDispatchProcUPP;
-				#endif
 				break;
 			
 			case kOSASelectExecuteEvent:
-				#if TARGET_API_MAC_CARBON
 				func = (**theGlobals).osaExecuteEventUPP;
-				#else
-				func = osaExecuteEventUPP;
-				#endif
 				break;
 			
 			case kOSASelectDoEvent:
-				#if TARGET_API_MAC_CARBON
 				func = (**theGlobals).osaDoEventUPP;
-				#else
-				func = osaDoEventUPP;
-				#endif
 				break;
 			
 			case kOSASelectSetActiveProc:
-				#if TARGET_API_MAC_CARBON
 				func = (**theGlobals).osaSetActiveProcUPP;
-				#else
-				func = osaSetActiveProcUPP;
-				#endif
 				break;
 			
 			case kOSASelectSetDebugProc:
-				#if TARGET_API_MAC_CARBON
 				func = (**theGlobals).osaSetDebugProcUPP;
-				#else
-				func = osaSetDebugProcUPP;
-				#endif
 				break;
 			
 			case kOSASelectDebug:
-				#if TARGET_API_MAC_CARBON
 				func = (**theGlobals).osaDebugUPP;
-				#else
-				func = osaDebugUPP;
-				#endif
 				break;
 			
 			case kOSASelectSetSendProc:
-				#if TARGET_API_MAC_CARBON
 				func = (**theGlobals).osaSetSendProcUPP;
-				#else
-				func = osaSetSendProcUPP;
-				#endif
 				break;
 			
 			case kOSASelectGetSendProc:
-				#if TARGET_API_MAC_CARBON
 				func = (**theGlobals).osaGetSendProcUPP;
-				#else
-				func = osaGetSendProcUPP;
-				#endif
 				break;
 			
 			case kOSASelectSetCreateProc:
-				#if TARGET_API_MAC_CARBON
 				func = (**theGlobals).osaSetCreateProcUPP;
-				#else
-				func = osaSetCreateProcUPP;
-				#endif
 				break;
 			
 			case kOSASelectGetCreateProc:
-				#if TARGET_API_MAC_CARBON
 				func = (**theGlobals).osaGetCreateProcUPP;
-				#else
-				func = osaGetCreateProcUPP;
-				#endif
 				break;
 			
 			#if 0
 			
 			case kOSASelectSetDefaultTarget:
-				#if TARGET_API_MAC_CARBON
 				func = (**theGlobals).osaSetDefaultTargetUPP;
-				#else
-				func = osaSetDefaultTargetUPP;
-				#endif
 				break;
 			
 			#endif
@@ -4973,7 +4533,6 @@ static boolean osacomponenterror (ComponentInstance comp, OSAID idscript, OSAErr
 	
 	if (OSAScriptError (comp, kOSAErrorNumber, typeLongInteger, &errordesc) == noErr) {
 		
-		#if TARGET_API_MAC_CARBON == 1 /*PBS 03/14/02: AE OS X fix.*/
 			{
 			Handle h;
 			
@@ -4983,9 +4542,6 @@ static boolean osacomponenterror (ComponentInstance comp, OSAID idscript, OSAErr
 			
 			disposehandle (h);
 			}
-		#else
-			err = numberfromhandle (errordesc.dataHandle);
-		#endif
 		
 		AEDisposeDesc (&errordesc);
 		
@@ -5020,11 +4576,7 @@ static boolean osacomponenterror (ComponentInstance comp, OSAID idscript, OSAErr
 		
 		bigstring bserror;
 		
-		#if TARGET_API_MAC_CARBON == 1 /*PBS 03/14/02: AE OS X fix.*/
 			datahandletostring (&errordesc, bserror);
-		#else
-			texthandletostring (errordesc.dataHandle, bserror);
-		#endif
 		
 		AEDisposeDesc (&errordesc);
 		
@@ -5170,7 +4722,6 @@ static boolean openscriptcomponent (const tyvaluerecord *osaval, AEDesc *scriptd
 	
 	binarytodesc (hdata, scriptdata);
 	
-	#if TARGET_API_MAC_CARBON == 1 /*PBS 03/14/02: AE OS X fix.*/
 		{
 		Handle h;
 		
@@ -5181,10 +4732,6 @@ static boolean openscriptcomponent (const tyvaluerecord *osaval, AEDesc *scriptd
 			
 		disposehandle (h);
 		}
-	#else
-		if (OSAGetStorageType ((*scriptdata).dataHandle, &idserver) != noErr)
-			idserver = (*scriptdata).descriptorType;
-	#endif
 	
 	*comp = getosaserver (idserver);
 	
@@ -5228,20 +4775,13 @@ boolean osagetcode (Handle htext, OSType idserver, boolean fljustexecutable, tyv
 		return (false);
 		}
 	
-	#if TARGET_API_MAC_CARBON == 1 /*PBS 03/14/02: AE OS X fix.*/
 		newdescwithhandle (&scriptsource, typeChar, htext);
-	#else
-		scriptsource.dataHandle = htext;
-		scriptsource.descriptorType = typeChar;
-	#endif
 	
 	id = kOSANullScript;
 	
 	err = OSACompile (comp, &scriptsource, kOSAModeCompileIntoContext, &id);
 
-	#if TARGET_API_MAC_CARBON == 1
 		AEDisposeDesc (&scriptsource);	/* 2004-10-27 aradke: we're done with it */
-	#endif
 	
 	if (!osacomponenterror (comp, kOSANullScript, err)) {
 		
@@ -5260,7 +4800,6 @@ boolean osagetcode (Handle htext, OSType idserver, boolean fljustexecutable, tyv
 	if (!fl)
 		return (false);
 	
-	#if TARGET_API_MAC_CARBON == 1 /*PBS 03/14/02: AE OS X fix.*/
 		{
 		Handle h;
 		
@@ -5272,9 +4811,6 @@ boolean osagetcode (Handle htext, OSType idserver, boolean fljustexecutable, tyv
 
 		return (fl);
 		}
-	#else
-		return (setbinaryvalue (scriptdata.dataHandle, scriptdata.descriptorType, vcode));
-	#endif
 	} /*osagetcode*/
 
 
@@ -5302,7 +4838,6 @@ boolean osagetsource (const tyvaluerecord *osaval, OSType *idserver, tyvaluereco
 	if (osacomponenterror (comp, kOSANullScript, err))
 		return (false);
 	
-	#if TARGET_API_MAC_CARBON == 1 /*PBS 03/14/02: AE OS X fix.*/
 		{
 		Handle h;
 		
@@ -5312,9 +4847,6 @@ boolean osagetsource (const tyvaluerecord *osaval, OSType *idserver, tyvaluereco
 		
 		return (setheapvalue (h, stringvaluetype, vsource));
 		}
-	#else
-		return (setheapvalue (scriptsource.dataHandle, stringvaluetype, vsource));
-	#endif
 	} /*osagetsource*/
 
 
@@ -5609,9 +5141,6 @@ static boolean osagethomeresfile (void) {
 	
 	homeresfile = CurResFile ();
 	
-	#if !TARGET_API_MAC_CARBON
-	homeresmap = LMGetTopMapHndl ();
-	#endif
 
 	return (true);
 	} /*osagethomeresfile*/
@@ -5652,22 +5181,13 @@ Component osaregistercomponent (OSType type, long flags, ComponentRoutine dispat
 	
 	hicon = GetIcon (129);
 	
-	#if TARGET_API_MAC_CARBON == 1
 		comp = RegisterComponent (&desc, NewComponentRoutineUPP (dispatch),
 										global, hname, hdescription, hicon);
-	#else
-		comp = RegisterComponent (&desc, NewComponentRoutineProc (dispatch),
-										global, hname, hdescription, hicon);
-	#endif
 	
 	disposehandle (hname);
 	
 	disposehandle (hdescription);
 	
-	#if !TARGET_API_MAC_CARBON
-		if (comp != nil)
-			SetComponentRefcon (comp, (long) LMGetCurrentA5 ());
-	#endif
 
 	return (comp);
 	} /*osaregistercomponent*/
@@ -5689,28 +5209,19 @@ static boolean initosacomponent (void) {
 	
 	long flags = 0;
 	
-	#if !TARGET_API_MAC_CARBON
-		RememberA5 ();
-	#endif
 	
-	#if TARGET_API_MAC_CARBON == 1
 		homezone = LMGetApplZone();
-	#else	
-		homezone = GetZone ();
-	#endif
 
 	osagethomeresfile();
 	
 	//Code change by Timothy Paustian Friday, July 21, 2000 11:18:39 PM
 	//create all the osa UPPs
-	#if TARGET_API_MAC_CARBON
 		osaclientactiveDesc = NewOSAActiveUPP(osaclientactive);
 		osaclientsendDesc = NewOSASendUPP(osaclientsend);
 		osaclientidleDesc = NewAEIdleUPP(osaclientidleproc);
 		osadefaultactiveDesc = NewOSAActiveUPP(osadefaultactiveproc);
 		osadefaultcreateDesc = NewOSACreateAppleEventUPP(osadefaultcreate);
 		osadefaultsendDesc = NewOSASendUPP(osadefaultsend);
-	#endif
 		
 	shellpushfilehook (&osagethomeresfile);
 	
@@ -5990,7 +5501,6 @@ void osacomponentshutdown (void) {
 	
 	AERemoveCoercionHandler (typeType, typeObjectSpecifier, coerceTypetoObjUPP, true);
 
-	#if TARGET_API_MAC_CARBON
 		DisposeAECoerceDescUPP(coerceTypetoObjDesc);
 		
 		//the next three are used to send apple events
@@ -6001,7 +5511,6 @@ void osacomponentshutdown (void) {
 		DisposeOSAActiveUPP(osadefaultactiveDesc);
 		DisposeOSACreateAppleEventUPP(osadefaultcreateDesc);
 		DisposeOSASendUPP(osadefaultsendDesc);
-	#endif
 	} /*osacomponentshutdown*/
 
 
@@ -6039,9 +5548,7 @@ boolean osacomponentstart (void) {
 	
 	RegisterComponentResourceFile (filegetapplicationrnum (), true); /*2.1b4*/
 	
-	#if TARGET_API_MAC_CARBON
 		coerceTypetoObjDesc = NewAECoerceDescUPP((AECoerceDescProcPtr)coerceTypetoObj);
-	#endif
 
 	AEInstallCoercionHandler (typeType, typeObjectSpecifier, coerceTypetoObjUPP, 0, true, true);
 	

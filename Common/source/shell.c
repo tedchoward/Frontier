@@ -250,10 +250,8 @@ boolean shellshutdown (void) {
 
 	//Code change by Timothy Paustian Wednesday, July 26, 2000 9:24:46 PM
 	//added code to free action procs for scroll bars.
-	#if TARGET_API_MAC_CARBON == 1
 		shellshutdownscroll();
 		fileshutdown();
-	#endif
 
 	exittooperatingsystem (); /*doesn't return*/
 	
@@ -985,7 +983,6 @@ boolean shellstart (void) {
 		
 	drawmenubar (); /*don't show menubar until it is available*/
 
-	#if TARGET_API_MAC_CARBON == 1 /*OS X PBS: delete Preferences and separator menu items.*/
 	
 		{
 	
@@ -1002,7 +999,6 @@ boolean shellstart (void) {
 	
 		}
 	
-	#endif
 		
 	shelladjustmenus ();
 	
@@ -1093,19 +1089,10 @@ static boolean shellinitmemory (void) {
 	//Code change by Timothy Paustian Friday, June 16, 2000 2:23:28 PM
 	//Changed to Opaque call for Carbon
 	//we don't need this for carbon
-	#if !TARGET_API_MAC_CARBON
-		RememberA5 ();
-	#endif
 
-	#if TARGET_API_MAC_CARBON
 
 		SetGrowZone (NewGrowZoneUPP (shellgrowzone));
 	
-	#else
-	
-		SetGrowZone (NewGrowZoneProc (shellgrowzone));
-		
-	#endif
 	
 #endif
 	
@@ -1206,8 +1193,6 @@ boolean shellinit (void) {
 		openabout (true, macmemoryconfig.reserveforcode); /*show about window, do zoom -- closed by shellmaineventloop*/
 	//#endif
 	
-		FastInitialize(); /*2005-01-14 aradke: init timer, may take up to a second to callibrate*/
-	
 	#endif
 	
 	#ifdef WIN95VERSION
@@ -1236,21 +1221,13 @@ boolean shellinit (void) {
 	
 	initsearch ();
 	
-	#if TARGET_API_MAC_CARBON == 1 /*7.0b48: bitmaps off in OS X*/
 	
 		initbitmaps (false);
 		
-	#else
 	
-		initbitmaps (true);
-		
-	#endif
-	
-	#if TARGET_API_MAC_CARBON == 1
 	
 	initservices ();
 
-#endif
 
 #if isFrontier || flruntime || winhybrid
 
@@ -1318,7 +1295,6 @@ boolean shellinit (void) {
 	//Code change by Timothy Paustian Wednesday, July 26, 2000 9:23:50 PM
 	//added init code for scroll proc
 
-	#if TARGET_API_MAC_CARBON == 1
 	
 		shellinitscroll();
 		//Ok we now need to set up a timer for handling idle and network processes
@@ -1356,7 +1332,6 @@ boolean shellinit (void) {
 	/*If it fails, oh well, there's nothing to be done. So ec isn't checked.*/
 	}
     
-	#endif
 
 	fileinit();
 	return (true);

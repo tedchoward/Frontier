@@ -36,14 +36,8 @@
 
 
 #ifdef MACVERSION
-	#if TARGET_API_MAC_CARBON == 1
 	
 		#define popupwidth 54
-	#else
-	
-		#define popupwidth 45
-
-	#endif
 	
 	#define popupheight 16
 	#define geneva9popupmenuid 257

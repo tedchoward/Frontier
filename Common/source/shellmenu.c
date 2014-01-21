@@ -222,7 +222,6 @@ boolean shelltgetmainmenu (bigstring bsmenu, hdlmenu *hmenu, short *idmenu) {
 	#ifdef MACVERSION
 		if (equalstrings (bsmenu, "\pHelp")) {
 			
-			#if TARGET_API_MAC_CARBON == 1
 			//Code change by Timothy Paustian Friday, June 16, 2000 3:04:41 PM
 			//Changed to Opaque call for Carbon
 			//we will add the below code when this is implemented in carbon.
@@ -235,16 +234,6 @@ boolean shelltgetmainmenu (bigstring bsmenu, hdlmenu *hmenu, short *idmenu) {
 					return (true);
 					}
 				}
-			#else
-			
-				if (HMGetHelpMenuHandle (hmenu) == noErr && *hmenu != nil) {
-					
-					*idmenu = kHMHelpMenuID;
-					
-					return (true);
-					}
-				
-			#endif
 		}
 	#endif
 
@@ -427,9 +416,6 @@ boolean shellapplemenu (bigstring bsname) {
 			//Code change by Timothy Paustian Friday, June 16, 2000 3:01:02 PM
 			//Changed to Opaque call for Carbon
 			//we do not need to do this for carbon
-			#if !TARGET_API_MAC_CARBON
-			OpenDeskAcc (bsorig); /*use the string as the menu manager provided it*/
-			#endif
 
 			popstyle ();    
 			

@@ -827,17 +827,14 @@ static long langgetlexicalrefcon (void) {
 	
 	register hdlerrorstack hs;
 
-	#if TARGET_API_MAC_CARBON == 1	 
 
 		if (langcallbacks.scripterrorstack == nil)
 			return (-1);
 	
-	#endif	
 		
 	hs = langcallbacks.scripterrorstack;
 
 	
-	#if TARGET_API_MAC_CARBON == 1
 	
 		if (hs == nil)
 			return (-1);
@@ -845,7 +842,6 @@ static long langgetlexicalrefcon (void) {
 		if ((long) (*hs) == -1)
 			return (-1);
 	
-	#endif
 	
 	if ((hs == nil) || ((**hs).toperror == 0)) {
 
@@ -853,7 +849,6 @@ static long langgetlexicalrefcon (void) {
 		}
 	else {
 
-		#if TARGET_API_MAC_CARBON == 1
 		
 			if ((**hs).stack == nil)
 				return (-1);
@@ -863,7 +858,6 @@ static long langgetlexicalrefcon (void) {
 				
 			if ((**hs).toperror > cterrorcallbacks)
 				return (-1);
-		#endif
 		
 		return ((**hs).stack [(**hs).toperror - 1].errorrefcon);
 		}

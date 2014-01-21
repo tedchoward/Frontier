@@ -43,9 +43,7 @@
 #include "launch.h"
 #include "threads.h"
 
-#if TARGET_API_MAC_CARBON == 1 /*PBS 03/14/02: AE OS X fix.*/
 	#include "aeutils.h"
-#endif
 
 #ifdef MACVERSION
 
@@ -1040,7 +1038,6 @@ boolean launchapplication ( const ptrfilespec fsapp, const ptrfilespec fsdoc, bo
 		if (equalidentifiers (bsprocess, ( *processinfo ).processName))
 			return (true);
 		
-		#if TARGET_API_MAC_CARBON
 		
 			{
 			bigstring bsprocessminussuffix;
@@ -1056,7 +1053,6 @@ boolean launchapplication ( const ptrfilespec fsapp, const ptrfilespec fsdoc, bo
 						return (true);
 			}
 		
-		#endif
 		
 		if (stringtoostype (bsprocess, &id))
 			return (id == ( *processinfo ).processSignature);
@@ -1167,9 +1163,7 @@ static boolean system7activate (bigstring bsprogram) {
 
 #ifdef MACVERSION
 static boolean system6activate (bigstring bsprogram) {
-#	if TARGET_API_MAC_CARBON == 1
 #		pragma unused (bsprogram)
-#	endif
 
 #	ifdef flsystem6
 
@@ -1842,17 +1836,7 @@ boolean executeresource (ResType type, short id, bigstring bsname) {
 	//we can just call the routine directly. I think.
 	#elif TARGET_RT_MAC_CFM
 	
-	#if TARGET_API_MAC_CARBON == 1
 		(*(pascal void (*) (void)) hcode) ();
-	#else
-	{
-		UniversalProcPtr upp = NewRoutineDescriptor ((ProcPtr) *hcode, kPascalStackBased, kM68kISA);
-		
-		CallUniversalProc (upp, kPascalStackBased);
-		
-		DisposeRoutineDescriptor (upp);
-	}
-	#endif
 		
 	#else
 	

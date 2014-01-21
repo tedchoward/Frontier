@@ -95,11 +95,7 @@ static OSType specialfolders [] = {
 	
 	0, /*make 1-based*/
 	
-	#if TARGET_API_MAC_CARBON //macs is not working right now. This is not a good substitute, nice hack eh?
 	'pref',
-	#else
-	'macs', /*system*/
-	#endif
 	'desk', /*desktop*/
 	
 	'trsh', /*trash*/
@@ -2125,25 +2121,8 @@ boolean getspecialfolderpath ( bigstring bsvol, bigstring bsfolder, boolean flcr
 
 #ifdef MACVERSION
 boolean ejectvol (const ptrfilespec fs) {
-#if TARGET_API_MAC_CARBON
 #pragma unused (fs)
 	return false;
-#else
-	
-	/*
-	6/x/91 mao
-	*/
-
-	tyvolinfo volinfo;
-	
-	if (!filegetfsvolumeinfo (fs, &volinfo))
-		return (false);
-		
-	if (!volinfo.flejectable)
-		return (false);
-		
-	return (!oserror (Eject (nil, (*fs).vRefNum)));
-	#endif
 } /*ejectvol*/
 #endif
 	
@@ -2386,45 +2365,10 @@ boolean volumecreated (const ptrfilespec fs, unsigned long *createdate) {
 
 boolean lockvolume (const ptrfilespec fs, boolean fllock) {
 #ifdef MACVERSION
-#if TARGET_API_MAC_CARBON == 1
 #pragma unused (fs, fllock)
 	//Code change by Timothy Paustian Sunday, June 25, 2000 9:19:49 PM
 	//can't lock volumes in carbon.
 	return false;
-#else
-	short vnum;
-	QHdrPtr vqtop;
-	QElemPtr vqelem;
-	
-	vnum = (*fs).vRefNum;
-	
-	vqtop = GetVCBQHdr ();
-	
-	vqelem = (*vqtop).qHead;
-	
-	while (true) {
-		
-		if (((VCB *)vqelem)->vcbVRefNum == vnum) {
-			
-			if (fllock)
-				BitSet (&(*(VCB *)vqelem).vcbAtrb, 0);
-			else
-				BitClr (&(*(VCB *)vqelem).vcbAtrb, 0);
-			
-			return (true);
-			}
-		
-		if (vqelem == (*vqtop).qTail) { /*reached end of list -- shouldn't happen*/
-			
-			oserror (errorVolume); /*no such volume*/
-			
-			return (false);
-			}
-		
-		vqelem = (*vqelem).qLink;
-		
-		}
-#endif
 #endif
 #ifdef WIN95VERSION
 	return (false);

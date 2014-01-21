@@ -1864,22 +1864,6 @@ static boolean langfunctionvalue (short token, hdltreenode hparam1, tyvaluerecor
 			return (setdatevalue (timenow (), v));
 			}
 		
-		#if !TARGET_API_MAC_CARBON
-
-			case settimefunc: {
-				unsigned long time;
-				
-				flnextparamislast = true;
-				
-				if (!getdatevalue (hparam1, 1, &time))
-					return (false);
-				
-				setbooleanvalue (setsystemclock (time), v);
-				
-				return (true);
-				}
-			
-		#endif
 		
 		case datefunc:
 			flnextparamislast = true;
@@ -2663,11 +2647,7 @@ static boolean langfunctionvalue (short token, hdltreenode hparam1, tyvaluerecor
 				//Code change by Timothy Paustian Monday, August 21, 2000 4:29:53 PM
 				//pushport must receive a CGrafPtr, no implicit converstion on OS X
 				CGrafPtr	thePort;
-				#if TARGET_API_MAC_CARBON == 1
 				thePort = GetWindowPort(w);
-				#else
-				thePort = (CGrafPtr)w;
-				#endif
 				pushport (thePort);
 				
 				getmousepoint (&pt);

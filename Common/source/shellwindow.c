@@ -84,11 +84,7 @@ void shellinvalcontent (hdlwindowinfo hinfo) {
 	//Code change by Timothy Paustian Monday, August 21, 2000 4:31:49 PM
 	//Must pass a CGrafPtr to pushport on OS X to avoid a crash
 	CGrafPtr	thePort;
-	#if TARGET_API_MAC_CARBON == 1
 	thePort = GetWindowPort((**hinfo).macwindow);
-	#else
-	thePort = (CGrafPtr)(**hinfo).macwindow;
-	#endif
 		
 	pushport (thePort);
 	
@@ -129,62 +125,10 @@ boolean shellgetgrowiconrect (hdlwindowinfo hinfo, Rect *r) {
 void shelldrawgrowicon (hdlwindowinfo hinfo) {
 
 #	ifdef MACVERSION
-#		if TARGET_API_MAC_CARBON == 1
 #			pragma unused (hinfo)
 
 	return;
 
-#	else
-			
-			Rect r;
-			
-			if (shellgetgrowiconrect (hinfo, &r)) {
-				
-				register WindowPtr w = (**hinfo).macwindow;
-				boolean flnoframe; // 5.0a3 dmb: should add new config flag
-				
-				//Code change by Timothy Paustian Monday, August 21, 2000 4:31:49 PM
-				//Must pass a CGrafPtr to pushport on OS X to avoid a crash
-				{
-				CGrafPtr	thePort;
-				#if TARGET_API_MAC_CARBON == 1
-				thePort = GetWindowPort(w);
-				#else
-				thePort = (CGrafPtr)w;
-				#endif
-					
-				pushport (thePort);
-				}
-				
-				flnoframe = (**hinfo).configresnum == idaboutconfig;
-				
-				if (flnoframe)
-					insetrect (&r, 1, 1); /*don't wan't to erase its frame*/
-				
-				pushclip (r);
-				
-				if ((**hinfo).flwindowactive)
-					DrawGrowIcon (w);
-				
-				else {
-					
-					if (!flnoframe) {
-					
-						framerect (r);
-						
-						insetrect (&r, 1, 1); /*don't wan't to erase its frame*/
-						}
-					
-					eraserect (r);
-					}
-				
-				validrect (r);
-				
-				popclip ();
-				
-				popport ();
-				}
-		#endif
 	#endif
 
 	} /*shelldrawgrowicon*/
@@ -708,15 +652,11 @@ void getdefaultwindowrect (Rect *rdefault) {
 	register short h, v;
 	
 #ifdef MACVERSION
-	#if TARGET_API_MAC_CARBON == 1
 		{
 		BitMap	screenBits;
 		GetQDGlobalsScreenBits(&screenBits);
 		rdesktop = r = screenBits.bounds;
 		}
-		#else
-		rdesktop = r = qd.screenBits.bounds;
-	#endif
 		
 #endif
 
@@ -1847,11 +1787,7 @@ boolean newfilewindow ( const ptrfilespec fspec, hdlfilenum fnum, short rnum, bo
 	//Must pass a CGrafPtr to pushport on OS X to avoid a crash
 	{
 	CGrafPtr	thePort;
-	#if TARGET_API_MAC_CARBON == 1
 	thePort = GetWindowPort(w);
-	#else
-	thePort = (CGrafPtr)w;
-	#endif
 		
 	pushport (thePort);
 	}	
@@ -1985,11 +1921,7 @@ boolean newchildwindow (short idtype, hdlwindowinfo hparentinfo, Rect * rwindow,
 	//Must pass a CGrafPtr to pushport on OS X to avoid a crash
 	{
 	CGrafPtr	thePort;
-	#if TARGET_API_MAC_CARBON == 1
 	thePort = GetWindowPort(w);
-	#else
-	thePort = (CGrafPtr)w;
-	#endif
 		
 	pushport (thePort);
 	}
@@ -2626,11 +2558,7 @@ boolean drawwindowmessage (WindowPtr wptr) {
 	//Must pass a CGrafPtr to pushport on OS X to avoid a crash
 	{
 	CGrafPtr	thePort;
-	#if TARGET_API_MAC_CARBON == 1
 	thePort = GetWindowPort(w);
-	#else
-	thePort = (CGrafPtr)w;
-	#endif
 		
 	pushport (thePort);
 	}

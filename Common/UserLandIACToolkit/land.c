@@ -33,9 +33,7 @@
 #include "ops.h"
 #include "process.h"
 
-#if TARGET_API_MAC_CARBON == 1 /*PBS 03/14/02: AE OS X fix.*/
 	#include "aeutils.h" /*PBS 03/14/02: AE OS X fix.*/
-#endif
 
 
 /*
@@ -58,9 +56,6 @@ typedef struct tytransportinfo {
 
 static THz landzone;
 
-#if !TARGET_API_MAC_CARBON
-	static Handle landresmap;
-#endif
 
 static short landresfile;
 
@@ -109,19 +104,9 @@ pascal boolean landdisposeparamrecord (const typaramrecord *p) {
 	docnote: param now passed by reference for Pascal compatability.
 	*/
 	
-	#if TARGET_API_MAC_CARBON == 1
 	
 		AEDisposeDesc ((AEDesc*) &(*p).desc);
 		
-	#else
-	
-		register Handle h;
-		
-		h = (*p).desc.dataHandle;
-		
-		landdisposehandle (h);
-	
-	#endif
 	
 	return (true);
 	} /*landdisposeparamrecord*/

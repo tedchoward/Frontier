@@ -126,7 +126,6 @@
 			FSSpec fsvol;
 			OSErr errcode;
 			Handle hstring;
-			#if TARGET_API_MAC_CARBON == 1
 			HFSUniStr255	theName;
 			//Code change by Timothy Paustian Thursday, June 29, 2000 10:29:59 AM
 			//Updated to modern call for volume infomation
@@ -156,17 +155,6 @@
 			ix++;
 			fsvol.vRefNum = vRefNum;
 			
-			#else //not carbon
-			pb.volumeParam.ioVolIndex = ix++;
-			
-			pb.volumeParam.ioNamePtr = fsvol.name;
-			
-			errcode = PBGetVInfoSync (&pb);
-			fsvol.vRefNum = pb.volumeParam.ioVRefNum;
-			
-			if (errcode == nsvErr) /*not an error, just ran out of volumes*/
-				return (true);
-			#endif//end carbon
 			
 			if (errcode == nsvErr) /*not an error, just ran out of volumes*/
 				return (true);

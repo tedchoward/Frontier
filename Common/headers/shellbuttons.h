@@ -37,18 +37,10 @@
 
 #define pixelsbetweenbuttons 8
 
-#if TARGET_API_MAC_CARBON == 1
 	#define buttontextinset 9
-#else
-	#define buttontextinset 3
-#endif
 
 #ifdef MACVERSION
-	#if TARGET_API_MAC_CARBON == 1
 		#define buttonsrectheight 29
-	#else
-		#define buttonsrectheight 25
-	#endif	
 	#define buttonbackground qd.gray
 	#define whitebackground qd.white
 #endif

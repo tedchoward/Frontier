@@ -114,11 +114,7 @@ void shellupdatewindow (WindowPtr w) {
 	//Must pass a CGrafPtr to pushport on OS X to avoid a crash
 	{
 	CGrafPtr	thePort;
-	#if TARGET_API_MAC_CARBON == 1
 	thePort = GetWindowPort(w);
-	#else
-	thePort = (CGrafPtr)w;
-	#endif
 		
 	pushport (thePort);/*7/7/90 DW: this probably is not necessary, shellpushglobals does it*/
 	}
@@ -270,11 +266,7 @@ void shellupdatecontent (Rect contentrect) {
 		//Code change by Timothy Paustian Monday, June 19, 2000 3:09:46 PM
 		//Changed to Opaque call for Carbon
 		#ifdef MACVERSION
-			#if TARGET_API_MAC_CARBON == 1
 			ValidWindowRgn((WindowRef) hw, contentrgn);
-			#else
-			ValidRgn (contentrgn); /*no need to draw it again.  do now to simulate beginupdate*/
-			#endif
 		#endif
 		#ifdef WIN95VERSION
 			ValidateRgn (shellwindow, contentrgn);

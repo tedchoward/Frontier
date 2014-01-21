@@ -313,9 +313,6 @@ void shellhandlemouse (void) {
 			//Code change by Timothy Paustian Friday, June 16, 2000 3:07:31 PM
 			//Changed to Opaque call for Carbon
 			//not used in carbon
-			#if !TARGET_API_MAC_CARBON
-			SystemClick (&shellevent, macwindow); 
-			#endif
 
 			return;
 		
@@ -342,7 +339,6 @@ void shellhandlemouse (void) {
 	
 	shellpushglobals (w); /*following mouse operations assume globals are pushed*/
 	
-	#if TARGET_API_MAC_CARBON == 1
 	
 		/*On OS X, some operations don't require the window to come to front. PBS 7.0b53.*/
 
@@ -350,11 +346,6 @@ void shellhandlemouse (void) {
 			&& (windowpart != inGoAway) && (windowpart != inZoomOut) && (windowpart != inZoomIn)
 			&& (windowpart != inProxyIcon)) {
 	
-	#else
-	
-		if ((macwindow != getfrontwindow ()) && (windowpart != inDrag) && (windowpart != inMenuBar)) {
-	
-	#endif
 		
 		windowbringtofront (macwindow);
 		
@@ -449,14 +440,12 @@ void shellhandlemouse (void) {
 			
 			break;
 			
-		#if TARGET_API_MAC_CARBON == 1
 		
 			case inProxyIcon: /*7.0b50: proxy icons are draggable in OS X*/
 			
 				TrackWindowProxyDrag (w, mousept);
 				
 				break;
-		#endif
 		} /*switch*/
 #endif
 	
@@ -472,7 +461,6 @@ boolean shellcheckautoscroll (Point pt, boolean flhoriz, tydirection *dir) {
 	} /*shellcheckautoscroll*/
 
 
-#if TARGET_API_MAC_CARBON == 1
 
 static pascal OSStatus mousewheelhandler (EventHandlerCallRef nextHandler, EventRef theEvent, void* userData) {
 	
@@ -513,14 +501,11 @@ static void shellinstallmousewheelhandler (void) {
 	InstallApplicationEventHandler (NewEventHandlerUPP (mousewheelhandler), 1, &myevents, 0, NULL);	
 	} /*dockmenuinstallhandler*/
 
-#endif
 
 void initmouse (void) {
 	
-	#if TARGET_API_MAC_CARBON == 1
 	
 		shellinstallmousewheelhandler (); /*7.1b24 PBS: install mouse wheel support on OS X.*/
 		
-	#endif
 	} /*initmouse*/
 

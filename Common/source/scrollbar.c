@@ -156,20 +156,9 @@ void disablescrollbar (hdlscrollbar hscrollbar) {
 		
 #ifdef MACVERSION
 
-	#if TARGET_API_MAC_CARBON == 1
 		
 		DeactivateControl (hscrollbar);
 
-	#else	
-		scrollbarpushclip (hscrollbar);
-			
-		HiliteControl (hscrollbar, -1);
-		
-		validscrollbar (hscrollbar);
-		
-		scrollbarpopclip ();
-		
-	#endif
 	
 #endif
 #ifdef WIN95VERSION

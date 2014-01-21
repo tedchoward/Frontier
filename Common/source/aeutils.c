@@ -25,7 +25,6 @@
 
 ******************************************************************************/
 
-#if TARGET_API_MAC_CARBON == 1 /*PBS 03/14/02: AE OS X fix.*/
 
 #include "frontier.h"
 #include "standard.h"
@@ -187,4 +186,3 @@ boolean copydatahandle (AEDesc *desc, Handle *h) {
 	} /*copydatahandle*/
 
 
-#endif

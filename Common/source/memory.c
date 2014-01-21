@@ -103,12 +103,10 @@ static boolean safetycushionhook (long *ctbytesneeded) {
 		extrasize = strlen(filename) + 1 + sizeof(long) + sizeof(long) + sizeof(long) + (2 * (sizeof(Handle))) + 4;
 
 		#ifdef MACVERSION
-			#if TARGET_API_MAC_CARBON == 1
 			// TRT - 13 Mar 2005 - 10.1a2
 			// There is no temp memory in Carbon or OS X so make sure 
 			// we never ask for it.
 			fltemp = false;
-			#endif
 
 			if (fltemp) { /*try grabbing temp memory first*/
 				
@@ -122,13 +120,6 @@ static boolean safetycushionhook (long *ctbytesneeded) {
 					
 					// again we can't have any temp handles so this
 					// code isn't useful
-					#if TARGET_API_MAC_CARBON == 0
-					
-					++cttemphandles;
-					
-					tempzone = HandleZone (h);
-					
-					#endif
 					
 					#endif
 					
@@ -174,12 +165,10 @@ static Handle getnewhandle (long ctbytes, boolean fltemp) {
 
 	OSErr err;
 	
-	#if TARGET_API_MAC_CARBON == 1
 	//Code change by Timothy Paustian Friday, June 9, 2000 9:39:50 PM
 	//There is no temp memory in Carbon or OS X so make sure 
 	//we never ask for it.
 	fltemp = false;
-	#endif
 
 	if (fltemp) { /*try grabbing temp memory first*/
 		h = TempNewHandle (ctbytes, &err);
@@ -190,12 +179,6 @@ static Handle getnewhandle (long ctbytes, boolean fltemp) {
 			
 			//again we can't have any temp handles so this
 			//code isn't useful
-			#if TARGET_API_MAC_CARBON == 0
-	
-			++cttemphandles;
-			
-			tempzone = HandleZone (h);
-			#endif
 			
 			#endif
 			
@@ -457,10 +440,6 @@ void disposehandle (Handle h) {
 		#ifdef fldebug
 		//Code change by Timothy Paustian Friday, June 9, 2000 9:43:15 PM
 		//No temp memory in Carbon
-		#if TARGET_API_MAC_CARBON == 0
-		if (HandleZone (h) == tempzone)
-			--cttemphandles;
-		#endif
 		#endif
 		
 		DisposeHandle (h);

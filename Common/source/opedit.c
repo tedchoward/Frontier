@@ -332,12 +332,7 @@ static pascal void opedittrackclick (hdlwprecord wp, Point pt) {
 	#define opedittrackclickUPP (&opedittrackclick)
 
 #else
-	 #if TARGET_API_MAC_CARBON == 1
 		#define opedittrackclickUPP opedittrackclick
-	 #else
-	static RoutineDescriptor opedittrackclickDesc = BUILD_ROUTINE_DESCRIPTOR (uppTrackClickProcInfo, opedittrackclick);
-	#define opedittrackclickUPP (&opedittrackclickDesc)
-	#endif
 #endif
 
 

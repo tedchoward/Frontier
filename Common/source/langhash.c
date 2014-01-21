@@ -46,9 +46,7 @@
 #include "timedate.h"
 #include "byteorder.h"	/* 2006-04-08 aradke: endianness conversion macros */
 
-#if TARGET_API_MAC_CARBON == 1 /*PBS 03/14/02: AE OS X fix.*/
 	#include "aeutils.h" /*PBS 03/14/02: AE OS X fix.*/
-#endif
 
 typedef struct tydisksymbolrecord {
 	
@@ -3216,7 +3214,6 @@ boolean hashunpacktable (Handle hpackedtable, boolean flmemory, hdlhashtable hta
 							val.fldiskval = false;
 							}
 						
-						#if TARGET_API_MAC_CARBON == 1 /*PBS 03/14/02: AE OS X fix.*/
 							
 							{
 							DescType typecode = typeAEList;
@@ -3227,16 +3224,6 @@ boolean hashunpacktable (Handle hpackedtable, boolean flmemory, hdlhashtable hta
 							newdescwithhandle (&aelist, typecode, val.data.binaryvalue);
 							}
 						
-						#else
-								
-							if (val.valuetype == recordvaluetype)
-								aelist.descriptorType = typeAERecord;
-							else
-								aelist.descriptorType = typeAEList;
-					
-							aelist.dataHandle = val.data.binaryvalue;
-						
-						#endif
 						
 						if (!langipcconvertaelist (&aelist, &val))
 							goto L1;

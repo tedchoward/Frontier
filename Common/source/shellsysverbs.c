@@ -580,16 +580,7 @@ static boolean sysfunctionvalue (short token, hdltreenode hparam1, tyvaluerecord
 				//Code change by Timothy Paustian Friday, June 16, 2000 3:13:09 PM
 				//Changed to Opaque call for Carbon
 				//Carbon only runs on PPC
-				#if TARGET_API_MAC_CARBON
 				return (setstringvalue (machinePPC, v));
-				#else
-				#if GENERATINGPOWERPC
-				return (setstringvalue (machinePPC, v));
-				#endif
-				#if GENERATING68K
-				return (setstringvalue (machine68K, v));
-				#endif
-				#endif
 
 				
 			#endif
@@ -667,7 +658,6 @@ static boolean sysfunctionvalue (short token, hdltreenode hparam1, tyvaluerecord
 				break;
 		#endif
 		
-		#if TARGET_API_MAC_CARBON == 1
 		
 			case unixshellcommandfunc: { /*7.0b51 PBS: call shell on OS X*/
 			
@@ -694,7 +684,6 @@ static boolean sysfunctionvalue (short token, hdltreenode hparam1, tyvaluerecord
 				return (setheapvalue (hreturn, stringvaluetype, v));
 				}
 		
-		#endif 
 		
 		#ifdef WIN95VERSION
 

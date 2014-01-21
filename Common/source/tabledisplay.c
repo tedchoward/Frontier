@@ -184,7 +184,6 @@ static void tabledisplaytitle (short col, boolean flbitmap) {
 	if (flbitmap)
 		flbitmap = openbitmap (r, (WindowPtr) getport ());
 	
-	#if TARGET_API_MAC_CARBON == 1
 	
 		pushpen ();
 				
@@ -194,11 +193,6 @@ static void tabledisplaytitle (short col, boolean flbitmap) {
 		
 		poppen ();
 	
-	#else
-	
-		eraserect (r);
-		
-	#endif
 	
 	tablegetstringlist (nametitlestring+col, bs);
 	
@@ -300,11 +294,9 @@ static void tableupdategridlines (void) {
 
 	frame3sides (rtable);
 	
-	#if TARGET_API_MAC_CARBON == 1 /*the frame3sides routine drew over the scroll bar.*/
 	
 		drawscrollbar ((**shellwindowinfo).vertscrollbar);
 		 
-	#endif
 	
 	insetrect (&rtable, 1, 1); // back to original
 
@@ -339,21 +331,14 @@ void tableupdate (void) {
 	
 	if (!isclaydisplay (hf)) {
 		
-		#if !TARGET_API_MAC_CARBON
-		
-			tableupdatecoltitles (true);
-		
-		#endif
 		
 	//	tableupdateseparator ();
 		
 		tableupdategridlines ();
 		
-		#if TARGET_API_MAC_CARBON == 1
 		
 			tableupdatecoltitles (true);
 			
-		#endif
 		}
 	
 	opupdate ();
@@ -364,11 +349,9 @@ void tableupdate (void) {
 	
 	tableupdatesortpopup ();
 	
-	#if TARGET_API_MAC_CARBON == 1
 	
 		shelldrawwindowmessage (shellwindowinfo);
 	
-	#endif
 	} /* tableupdate */
 
 

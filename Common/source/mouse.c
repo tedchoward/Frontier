@@ -203,11 +203,7 @@ boolean getmousewindowpos (WindowPtr *w, Point *pt) {
 		//Must pass a CGrafPtr to pushport on OS X to avoid a crash
 		{
 		CGrafPtr	thePort;
-		#if TARGET_API_MAC_CARBON == 1
 		thePort = GetWindowPort(*w);
-		#else
-		thePort = (CGrafPtr)(*w);
-		#endif
 			
 		pushport (thePort);
 		}		

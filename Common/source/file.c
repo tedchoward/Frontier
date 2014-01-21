@@ -463,7 +463,6 @@ static pascal void iocompletion (ParmBlkPtr pb) {
 
 #if TARGET_RT_MAC_CFM || TARGET_RT_MAC_MACHO
 
-	#if TARGET_API_MAC_CARBON
 
 		//looks like we need some kind of file UPP
 		//do we need to create a UPP, yes we do.
@@ -471,13 +470,6 @@ static pascal void iocompletion (ParmBlkPtr pb) {
 
 		#define iocompletionUPP (iocompletionDesc)
 
-	#else
-
-		static RoutineDescriptor iocompletionDesc = BUILD_ROUTINE_DESCRIPTOR (uppIOCompletionProcInfo, iocompletion);
-
-		#define iocompletionUPP (&iocompletionDesc)
-
-	#endif
 
 #else
 
@@ -529,19 +521,15 @@ boolean flushvolumechanges (const ptrfilespec fs, hdlfilenum fnum) {
 //Code change by Timothy Paustian Wednesday, July 26, 2000 10:52:49 PM
 //new routine to create UPPS for the async file saves.
 void fileinit (void) {
-	#if TARGET_API_MAC_CARBON
 	if(iocompletionDesc == nil)
 		iocompletionDesc = NewIOCompletionUPP(iocompletion);
-	#endif
 	} /*fileinit*/
 
 
 void fileshutdown(void) {
 
-	#if TARGET_API_MAC_CARBON
 	if(iocompletionDesc != nil)
 		DisposeIOCompletionUPP(iocompletionDesc);
-	#endif
 	} /*fileshutdown*/
 
 

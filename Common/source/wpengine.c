@@ -517,11 +517,7 @@ static void wppushdraw (void) {
 
 			CGrafPtr thePort;
 
-			#if TARGET_API_MAC_CARBON == 1
 			thePort = GetWindowPort(wpwindow);
-			#else
-			thePort = (CGrafPtr)wpwindow;
-			#endif
 
 			pushport (thePort);
 
@@ -773,12 +769,8 @@ void wpsetupwindow (void) {
 	if (wpsetglobals () && wpwindow) {
 
 		#ifdef MACVERSION
-			#if TARGET_API_MAC_CARBON
 			CGrafPtr thePort = GetWindowPort(wpwindow);
 			pgInitDevice (&ws_globals, thePort, 0, &port);
-			#else
-			pgInitDevice (&ws_globals, wpwindow, 0, &port);
-			#endif
 		#endif
 	
 		#ifdef WIN95VERSION
@@ -1962,30 +1954,7 @@ boolean wpprint (short pagenumber) {
 	*/
 	
 	/* kw - 2005-12-05 remove this after print error correction */
-#if TARGET_API_MAC_CARBON == 1
 	return (false);
-#else
-	register hdlwprecord hwp = wpdata;
-	long nextpos = 0;
-	rectangle r;
-	
-	if (!wpsetglobals ())
-		return (false);
-	
-	RectToRectangle (&shellprintinfo.paperrect, &r);
-	
-	wpresettyping ();
-	
-	(**hwp).flprinting = true;
-	
-	nextpos = pgPrintToPage (wpbuffer, &wpprintdevice, (**hwp).printpos, &r, best_way);
-	
-	(**hwp).flprinting = false;
-	
-	(**hwp).printpos = nextpos; /*copy from local, used to avoid locking handle*/
-	
-	return (nextpos > 0);
-#endif
 	} /*wpprint*/
 
 
@@ -2032,14 +2001,8 @@ pascal void wptrackclick (hdlwprecord wp, Point pt) {
 //Code change by Timothy Paustian Wednesday, August 2, 2000 9:45:12 PM
 //I had a crash with wptrackclickDesc. I found I can get away with a proc ptr.
 #if TARGET_RT_MAC_CFM
-	#if TARGET_API_MAC_CARBON == 1
 	//we can get away with a straight proc ptr here.
 		#define wptrackclickUPP (wptrackclick)
-	#else	
-		static RoutineDescriptor wptrackclickDesc = BUILD_ROUTINE_DESCRIPTOR (uppTrackClickProcInfo, wptrackclick);
-		#define wptrackclickUPP (&wptrackclickDesc)
-
-	#endif
 #else
 
 	#define wptrackclickUPP (&wptrackclick)
@@ -2886,11 +2849,7 @@ hdlwprecord wpnewbuffer (Handle hpacked, const Rect *rclip, const Rect *rbounds,
 	
 	if (flinwindow)
 	{
-		#if TARGET_API_MAC_CARBON == 1
 		device = (generic_var)GetWindowPort(wpwindow);
-		#else
-		device = (generic_var) wpwindow;
-		#endif
 	}
 	
 	if (!newclearhandle (sizeof (tywprecord), &hrecord))

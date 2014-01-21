@@ -43,11 +43,9 @@
 
 CGrafPtr currentprintport = NULL;
 
-#	if TARGET_API_MAC_CARBON
 
 #		define iPrAbort kPMCancel
 
-#	endif
 
 #endif
 
@@ -86,15 +84,9 @@ static boolean shellcheckprinterror (boolean flopening) {
 	//Code change by Timothy Paustian Friday, June 16, 2000 3:50:52 PM
 	//Changed to Opaque call for Carbon
 	// this is pointless --- explicitly excluded
-#		if TARGET_API_MAC_CARBON == 1
 	
 	x = PMSessionError(shellprintinfo.printhandle);
 	
-#		else	
-	
-	x = PrError ();
-	
-#		endif
 	
 	if (x == noErr) /*no error, keep going*/
 		return (true);
@@ -138,7 +130,6 @@ static boolean
 carbonKillPrintVars(void)
 {
 	
-#if TARGET_API_MAC_CARBON == 1
 	
 	// empty out carbon print vars
 	// setting to nil is important since it is checked for
@@ -160,7 +151,6 @@ carbonKillPrintVars(void)
 		shellprintinfo.printhandle = nil;
 	}
 	
-#endif
 	
 	return(true);
 }	
@@ -169,18 +159,13 @@ carbonKillPrintVars(void)
 static boolean
 carbonValidSession(void)
 {
-#if TARGET_API_MAC_CARBON == 1
 	return (nil != shellprintinfo.printhandle);
-#else
-	return (false);
-#endif
 }
 
 
 static boolean
 carbonSessionPrintSession()
 {
-#if TARGET_API_MAC_CARBON == 1
 	OSStatus	theErr;
 
 	if (nil == shellprintinfo.printhandle)
@@ -193,7 +178,6 @@ carbonSessionPrintSession()
 			return (false);
 		}
 	}
-#endif	
 	return(true);
 }
 
@@ -201,7 +185,6 @@ carbonSessionPrintSession()
 static boolean
 carbonSessionDefaultPageAndSettingValidate(void)
 {
-#if TARGET_API_MAC_CARBON == 1
 	OSStatus	theErr;
 	Boolean		f;
 	
@@ -236,7 +219,6 @@ carbonSessionDefaultPageAndSettingValidate(void)
 error:
 		carbonKillPrintVars();
 
-#endif
 	
 	return false;
 	
@@ -246,7 +228,6 @@ error:
 static boolean
 carbonCreateFormatAndSetting(void)
 {
-#if TARGET_API_MAC_CARBON == 1
 	OSStatus	theErr;
 
 	theErr = PMCreatePageFormat(&shellprintinfo.pageformat);
@@ -262,7 +243,6 @@ carbonCreateFormatAndSetting(void)
 error:
 		carbonKillPrintVars();
 	
-#endif
 	return false;
 }
 
@@ -311,7 +291,6 @@ static void shellcopyprintinfo (void) {
 	//typrintinfo *dbgprintinfo = &shellprintinfo;
 	
 #ifdef MACVERSION
-#	if TARGET_API_MAC_CARBON == 1
 	
 	static int firstTime = 1;
 	
@@ -347,13 +326,6 @@ static void shellcopyprintinfo (void) {
 	
 	rpaper = shellprintinfo.paperrect;
 	
-#	else
-	
-	rpage = (**shellprintinfo.printhandle).prInfo.rPage;
-	
-	rpaper = (**shellprintinfo.printhandle).rPaper;
-	
-#	endif
 	
 #endif
 	
@@ -426,7 +398,6 @@ boolean shellinitprint (void) {
 	
 #ifdef MACVERSION
 	
-#	if TARGET_API_MAC_CARBON == 1
 	
 	//I realized this is only called once during the startup of the app.
 	//Carbon printing really doesn't need any global structures. Better to 
@@ -441,25 +412,6 @@ boolean shellinitprint (void) {
 	shellprintinfo.printsettings = nil;
 	// shellprintinfo.pagerect = {0,0,0,0};
 	
-#	else		
-	
-	if (!newclearhandle (longsizeof (TPrint), &h))
-		return (false);
-	
-	shellprintinfo.printhandle = (THPrint) h; /*copy into print record*/
-	
-	PrOpen (); /*initialize the Mac print manager*/
-	
-	if (PrError () != noErr)
-		goto error;
-	
-	PrintDefault (shellprintinfo.printhandle); /*set default print record*/
-	
-	PrClose (); /*shouldn't leave print resources open all the time*/
-	
-	if (!shellcheckprinterror (false)) 
-		goto error;
-#	endif
 	
 #endif
 	
@@ -531,7 +483,6 @@ boolean shellpagesetup (void) {
 	//Code change by Timothy Paustian Friday, June 16, 2000 10:08:37 PM
 	//new code for the new print manager.
 	
-#	if TARGET_API_MAC_CARBON == 1
 	
 	if (!carbonValidSession())
 	{
@@ -554,23 +505,6 @@ boolean shellpagesetup (void) {
 		
 	}
 	
-#	else
-	
-	PrOpen ();
-	
-	if (!shellcheckprinterror (true)) 
-		return (false);
-	
-	PrValidate (shellprintinfo.printhandle);
-	
-	fl = PrStlDialog (shellprintinfo.printhandle);
-	
-	PrClose ();
-	
-	if (!shellcheckprinterror (false))
-		return (false);
-	
-#	endif
 	
 #endif
 	
@@ -783,7 +717,6 @@ exit:
 #endif
 
 #ifdef MACVERSION
-#	if TARGET_API_MAC_CARBON == 1
 #		pragma mark shellprint carbon
 
 boolean shellprint (WindowPtr w, boolean fldialog) {
@@ -983,128 +916,5 @@ exit:
 
 	} /*shellprint*/
 
-#	else
-#		pragma mark shellprint classic
-boolean shellprint (WindowPtr w, boolean fldialog) {
-
-	/*
-	9/5/90 dmb:  open and close print resources each time we're called.  also, 
-	make sure we close each page opened, even when errors occur
-	
-	9/28/91 dmb: for exit of edit mode before printing
-	
-	4/24/92 dmb: make sure bJDocLoop is bSpoolLoop before calling PrPicFile, as 
-	per IM II-155.  otherwise, we can get bogus PrErrors
-	*/
-
-	// classic mac
-	TPPrPort printport;
-	TPrStatus printstatus;
-	THPrint hp = shellprintinfo.printhandle;
-
-	SInt32	firstPage = 1;
-	SInt32	lastPage = 9999;
-
-	short i;
-	boolean fl = false;
-	
-	if (w == nil) /*defensive driving*/
-		return (false);
-
-	PrOpen ();
-	if (!shellcheckprinterror (true))
-		return (false);
-
-	fl = false; /*until sucessfull print, this is return value*/
-
-	if (fldialog) {
-		if (!PrJobDialog (hp))
-			goto exit;
-	}
-	else
-		PrValidate (hp);
-
-	setcursortype (cursoriswatch);
-
-	shellupdateallnow (); /*update all windows that were dirtied by the print dialog*/
-
-	shellpushglobals (w);
-
-	(*shellglobals.settextmoderoutine) (false); /*make sure editing changes are accepted*/
-
-	pushport (nil); /*save current port on stack*/
-
-	shellprintinfo.printport = printport = PrOpenDoc (hp, nil, nil);
-	currentprintport = w;
-
-	/*prepares for printing*/
-	(*shellglobals.beginprintroutine) ();
-
-	/*fills in fields of printinfo record*/
-	(*shellglobals.setprintinfoproutine) ();
-	//this only counts the number of pages.
-
-	// wird in classic lastPage gesetzt?
-	if(lastPage > shellprintinfo.ctpages)
-		lastPage = shellprintinfo.ctpages;
-
-	for (i = 1; i <= lastPage; i++) { /*print one page*/
-
-		if (PrError () != noErr)
-			break;
-
-		PrOpenPage (printport, nil);
-
-		if (PrError () == noErr) {
-
-			SetFractEnable (true);
-
-			fl = (*shellglobals.printroutine) (i);
-
-			SetFractEnable (false);
-		}
-
-		PrClosePage (printport);
-
-		if (!fl)
-			break;
-
-		if (keyboardescape ()) {
-
-			PrSetError (iPrAbort);
-
-		}
-	} /*for*/
-
-	PrCloseDoc (printport);
-
-	if (fl) {
-
-		if (	(PrError () == noErr)
-			&& ((**hp).prJob.bJDocLoop == bSpoolLoop))
-		{
-			PrPicFile (hp, nil, nil, nil, &printstatus);
-		}
-
-		fl = shellcheckprinterror (false);
-	}
-
-	popport ();
-	
-	(*shellglobals.endprintroutine) ();
-
-	shellpopglobals ();
-
-exit:
-
-	PrClose ();
-
-	currentprintport = NULL;
-
-	return (fl);
-
-	} /*shellprint*/
-
-#	endif
 #endif
 

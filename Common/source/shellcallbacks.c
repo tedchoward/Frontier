@@ -571,11 +571,7 @@ boolean shellsetglobals (WindowPtr wglobals) {
 	//Code change by Timothy Paustian Wednesday, August 23, 2000 9:08:56 PM
 	//
 	{
-	#if TARGET_API_MAC_CARBON
 	CGrafPtr thePort = GetWindowPort(w);
- 	#else
- 	GrafPtr thePort = (GrafPtr)w;
- 	#endif
 	if (getport () != thePort) /*make sure w is current port; a courtesy to the content handler*/
 		setport (thePort);
 	}

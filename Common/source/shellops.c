@@ -87,11 +87,7 @@ void shellsetselectioninfo (void) {
 		//Code change by Timothy Paustian Monday, August 21, 2000 4:31:49 PM
 	//Must pass a CGrafPtr to pushport on OS X to avoid a crash
 	CGrafPtr	thePort;
-	#if TARGET_API_MAC_CARBON == 1
 	thePort = GetWindowPort(shellwindow);
-	#else
-	thePort = (GrafPtr)shellwindow;
-	#endif
 		
 	pushport (thePort);
 		

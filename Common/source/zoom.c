@@ -224,11 +224,9 @@ void zoomfrommiddle (Rect r) {
 */	
 
 void zoomport (Rect rsource, WindowPtr w, boolean flzoomup) {
-#if TARGET_API_MAC_CARBON == 1
 #	pragma unused(rsource)
 #	pragma unused(w)
 #	pragma unused(flzoomup)
-#endif
 
 	/*
 	zooms the window from an invisible state to a visible 
@@ -243,42 +241,9 @@ void zoomport (Rect rsource, WindowPtr w, boolean flzoomup) {
 	8.0fc3 PBS: Again, don't zoom in Carbon version.
 	*/
 	
-	#if TARGET_API_MAC_CARBON == 1 /*8.0fc3 PBS: don't zoom in Carbon.*/
 	
 		return;
 		
-	#else
-
-	Rect rsmall, rbig;
-	//Code change by Timothy Paustian Sunday, May 21, 2000 9:34:22 PM
-	//Changed to Opaque call for Carbon
-	//Not called in the PPC OT Version.
-	#if ACCESSOR_CALLS_ARE_FUNCTIONS == 1
-	GetWindowBounds(w, kWindowContentRgn, &rbig);
-	#else
-	rbig = w->portRect;
-	#endif
-	rsmall = rbig;
-	
-	insetrect (&rsmall, (rbig.right - rbig.left + 20) / 2, (rbig.bottom - rbig.top + 20) / 2);
-	
-	localtoglobalrect (w, &rsmall);
-	
-	localtoglobalrect (w, &rbig);
-	
-	if (flzoomup) {
-	
-		zoomrect (&rsource, &rsmall, true);
-		
-		zoomrect (&rsmall, &rbig, true);
-		}
-	else {
-		zoomrect (&rsmall, &rbig, false);
-		
-		zoomrect (&rsource, &rsmall, false);
-		}
-	
-	#endif
 	} /*zoomport*/
 
 
@@ -294,11 +259,7 @@ void zoomwindowfrom (Rect rsource, WindowPtr w) {
 	//Must pass a CGrafPtr to pushport on OS X to avoid a crash
 	{
 	CGrafPtr	thePort;
-	#if TARGET_API_MAC_CARBON == 1
 	thePort = GetWindowPort(w);
-	#else
-	thePort = (CGrafPtr)w;
-	#endif
 		
 	pushport (thePort);
 	}
@@ -323,11 +284,7 @@ void zoomwindowto (Rect rsource, WindowPtr w) {
 	//Must pass a CGrafPtr to pushport on OS X to avoid a crash
 	{
 	CGrafPtr	thePort;
-	#if TARGET_API_MAC_CARBON == 1
 	thePort = GetWindowPort(w);
-	#else
-	thePort = (CGrafPtr)w;
-	#endif
 		
 	pushport (thePort);
 	}

@@ -469,9 +469,6 @@ static boolean ccinstalltablestructure (boolean flhavehost) {
 	loadsystemscripts (); /*load agents, compile handlers, run startup scripts, etc.*/
 	
 #ifndef PIKE
-	#if TARGET_API_MAC_CARBON == 0
-	langipcmenustartup ();
-	#endif
 #endif
 	
 	return (true);
@@ -1415,9 +1412,6 @@ boolean ccdisposerecord (void) {
 	if (!flguestroot) {
 		
 #ifndef PIKE
-		#if TARGET_API_MAC_CARBON == 0
-		langipcmenushutdown ();
-		#endif
 		
 #endif
 		

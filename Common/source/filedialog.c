@@ -69,58 +69,6 @@
 	static OSErr macgetfiledialog (SInt16 dialogtype, bigstring prompt, ptrfilespec fs, OSType filecreator, ptrsftypelist filetypes); /* 2005-09-23 creedon */ 
 
 
-	#if ! TARGET_API_MAC_CARBON
-
-		static pascal Boolean knowntypesfilter (ParmBlkPtr pb, tysfdata *pdata) {
-			
-			short i;
-			
-			if (pb->fileParam.ioFlAttrib & ioDirMask)
-				return (0);
-			
-			if (pdata->sftypes == nil) // show all files
-				return (0);
-			
-			for (i = 0; i < pdata->sftypes->cttypes; ++i) {
-				
-				OSType type = pdata->sftypes->types [i];
-				byte bstype [6];
-				bigstring bssuffix;
-				
-				ostypetostring (type, bstype);
-				
-				lastword (pb->fileParam.ioNamePtr, '.', bssuffix);
-				
-				if (stringlength (bssuffix) == 3) //handle 8.3 names
-					setstringlength (bstype, 3);
-				
-				if (equalidentifiers (bssuffix, bstype))
-					return (0);
-				
-				if (pb->fileParam.ioFlFndrInfo.fdType == type)
-					return (0);
-				}
-			
-			return (-1); // didn't find it in our list
-			} /*knowntypesfilter*/
-
-				
-		#if !TARGET_RT_MAC_CFM
-			
-			#define knowntypesfilterUPP ((FileFilterYDUPP) &knowntypesfilter)
-
-		#else
-
-			#if !TARGET_API_MAC_CARBON
-			static RoutineDescriptor knowntypesfilterDesc = BUILD_ROUTINE_DESCRIPTOR (uppFileFilterYDProcInfo, knowntypesfilter);
-
-			#define knowntypesfilterUPP (&knowntypesfilterDesc)
-			
-			#endif
-
-		#endif
-
-	#endif /* !TARGET_API_MAC_CARBON */
 
 #endif
 

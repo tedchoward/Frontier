@@ -692,22 +692,10 @@ boolean falsenoop (void) {
 static boolean gestaltavailable (void) {
 
 	#ifdef MACVERSION
-		#if TARGET_API_MAC_CARBON == 1
 		//Code change by Timothy Paustian Friday, June 9, 2000 9:55:04 PM
 		//Changed to Opaque call for Carbon
 		//Gestalt is available for OS 9 and X
 		return true;
-		#else
-
-		long gestaltaddr;
-		long unimplementedaddr;
-		
-		gestaltaddr = (long) NGetTrapAddress (gestalttrap, ToolTrap);
-		
-		unimplementedaddr = (long) NGetTrapAddress (unimplementedtrap, ToolTrap);
-		
-		return (unimplementedaddr != gestaltaddr);	
-		#endif
 	#else
 	
 		return (false);

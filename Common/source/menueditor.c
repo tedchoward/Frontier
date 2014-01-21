@@ -992,11 +992,7 @@ static void mezoomdownwindow (WindowPtr w) {
 	//Must pass a CGrafPtr to pushport on OS X to avoid a crash
 	{
 	CGrafPtr	thePort;
-	#if TARGET_API_MAC_CARBON == 1
 	thePort = GetWindowPort(menuwindow);
-	#else
-	thePort = (CGrafPtr)menuwindow;
-	#endif
 		
 	pushport (thePort);
 	}
@@ -1012,11 +1008,7 @@ static void mezoomdownwindow (WindowPtr w) {
 	//Must pass a CGrafPtr to pushport on OS X to avoid a crash
 	{
 	CGrafPtr	thePort;
-	#if TARGET_API_MAC_CARBON == 1
 	thePort = GetWindowPort(menuwindow);
-	#else
-	thePort = (CGrafPtr)menuwindow;
-	#endif
 		
 	pushport (thePort);/*who knows what zoomport did to the port?*/
 	}
@@ -1059,11 +1051,7 @@ boolean mescriptwindowclosed (void) {
 	//Must pass a CGrafPtr to pushport on OS X to avoid a crash
 	{
 	CGrafPtr	thePort;
-	#if TARGET_API_MAC_CARBON == 1
 	thePort = GetWindowPort(menuwindow);
-	#else
-	thePort = (CGrafPtr)menuwindow;
-	#endif
 		
 	pushport (thePort);/*who knows what zoomport did to the port?*/
 	} 
@@ -1270,9 +1258,7 @@ static boolean mecmdkeypopup (void) {
 	hdlheadrecord hsummit;
 	boolean flgeneva9 = false;
 	
-	#if TARGET_API_MAC_CARBON
 		flgeneva9 = true;
-	#endif
 	
 	mecheckglobals ();
 	
@@ -2038,11 +2024,9 @@ void meupdate (void) {
 	
 	medisplayuseritems ();
 	
-	#if TARGET_API_MAC_CARBON == 1
 	
 		shelldrawwindowmessage (shellwindowinfo);
 	
-	#endif
 
 	} /*meupdate*/
 

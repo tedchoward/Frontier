@@ -297,11 +297,7 @@ boolean graywindow (WindowPtr w) {
 	//Code change by Timothy Paustian Monday, August 21, 2000 4:21:47 PM
 	//Cannot do an implicit cast, pushport requires a CGrafPtr
 	CGrafPtr	thePort;
-	#if TARGET_API_MAC_CARBON == 1
 	thePort = GetWindowPort(w);
-	#else
-	thePort = (CGrafPtr)w;
-	#endif
 		
 	pushport (thePort);
 	
@@ -646,11 +642,7 @@ boolean windowsetcolor (WindowPtr w, long color, boolean flforeground) {
 		//pushport needs a CGrafPtr, passing windowPtr causes a crash on OS X
 		{
 		CGrafPtr	thePort;
-		#if TARGET_API_MAC_CARBON == 1
 		thePort = GetWindowPort(w);
-		#else
-		thePort = (CGrafPtr)w;
-		#endif
 		
 		pushport (thePort);
 		}

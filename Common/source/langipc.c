@@ -58,9 +58,7 @@
 	#include "osacomponent.h"
 #endif
 
-#if TARGET_API_MAC_CARBON == 1 /*PBS 03/14/02: AE OS X fix.*/
 	#include "aeutils.h"
-#endif
 
 
 // Subroutine Events:
@@ -349,15 +347,9 @@ boolean langipcpushparam (tyvaluerecord *valparam, typaramkeyword key, hdlverbre
 			if (!langipcconvertoplist (v, &aelist))
 				return (false);
 			
-			#if TARGET_API_MAC_CARBON == 1 /*PBS 03/14/02: AE OS X fix.*/
 			
 				copydatahandle (&aelist, &hval);
 				
-			#else
-			
-				hval = aelist.dataHandle;
-			
-			#endif
 			
 			disposevaluerecord (*v, false); /*override exempt, below*/
 		
@@ -465,17 +457,9 @@ static boolean langipccoerceparam (AEDesc *param, tyvaluerecord *vreturned) {
 
 	#endif
 	
-	#if TARGET_API_MAC_CARBON == 1
 		
 		copydatahandle (p, &hdata);	/*make a copy of the opaque data handle*/
 
-	#else
-	
-		hdata = (*p).dataHandle;	/*get a reference to the data handle*/
-		
-		(*p).dataHandle = nil;	/*we own the original now, make sure AE manager won't dispose*/
-
-	#endif
 	
 	AEDisposeDesc (p);
 	
@@ -686,15 +670,9 @@ boolean valuetodescriptor (tyvaluerecord *val, AEDesc *desc) {
 		case novaluetype:
 			(*desc).descriptorType = typeNull;
 			
-			#if TARGET_API_MAC_CARBON == 1 /*PBS 03/14/02: AE OS X fix.*/
 			
 				newdescnull (desc, typeNull);
 				
-			#else
-	
-				(*desc).descriptorType = typeNull;
-								
-			#endif
 
 			return (true);
 	
@@ -1278,36 +1256,6 @@ static setglobaltransactionid (long idtransaction) {
 	} /%setglobaltransactionid%/
 */
 
-#if TARGET_API_MAC_CARBON == 0
-#if GENERATINGCFM
-
-#define BUILD_68K_ROUTINE_DESCRIPTOR(procInfo, m68kProcPtr)  \
-	{								\
-	_MixedModeMagic,				\
-	kRoutineDescriptorVersion,		\
-	kSelectorsAreNotIndexable,		\
-	0,								\
-	0,								\
-	0,								\
-	0,								\
-	{								\
-	{								\
-	(procInfo),						\
-	0,								\
-	kM68kISA,						\
-	kProcDescriptorIsAbsolute |		\
-	kUseCurrentISA,					\
-	(ProcPtr)(m68kProcPtr),			\
-	0,								\
-	0,								\
-	},								\
-	},								\
-	}
-
-static RoutineDescriptor UCMDDesc = BUILD_68K_ROUTINE_DESCRIPTOR (uppAEEventHandlerProcInfo, nil);
-
-#endif
-#endif
 
 
 static boolean langipchandletrapverb (hdlverbrecord hverb, boolean *flfoundhandler) {
@@ -1417,19 +1365,9 @@ static boolean langipchandletrapverb (hdlverbrecord hverb, boolean *flfoundhandl
 		*/
 		
 		
-		#if TARGET_API_MAC_CARBON == 1
 		
 			langerrormessage ("\pUCMDs are not supported in the Carbon version.");
 			
-		#else
-		
-			#if __powerc
-				fl = !oserror (CallAEEventHandlerProc ((UniversalProcPtr) (*h), &event, &reply, 0L));
-			#else
-				fl = !oserror (CallAEEventHandlerProc ((tyeventhandler) (*h), &event, &reply, 0L));
-			#endif
-		
-		#endif
 		
 		unlockhandle ((Handle) h);
 		
@@ -2049,7 +1987,6 @@ void binarytodesc (Handle hbinary, AEDesc *desc) {
 	
 	register AEDesc *d = desc;
 
-	#if TARGET_API_MAC_CARBON == 1 /*PBS 03/14/02: AE OS X fix.*/	
 		
 		Handle hcopy;
 		DescType dtype;
@@ -2064,15 +2001,6 @@ void binarytodesc (Handle hbinary, AEDesc *desc) {
 		
 		disposehandle (hcopy);
 	
-	#else
-	
-		(*d).dataHandle = hbinary;
-	
-		pullfromhandle ((*d).dataHandle, 0L, sizeof (DescType), &(*d).descriptorType);
-		
-		disktomemlong ((*d).descriptorType);
-	
-	#endif
 	
 	
 	switch ((*d).descriptorType) {
@@ -2081,7 +2009,6 @@ void binarytodesc (Handle hbinary, AEDesc *desc) {
 	
 		case 'bool': {
 		
-			#if TARGET_API_MAC_CARBON == 1 /*PBS 03/14/02: AE OS X fix.*/
 			
 				Handle hcopy;
 				
@@ -2093,11 +2020,6 @@ void binarytodesc (Handle hbinary, AEDesc *desc) {
 				
 				disposehandle (hcopy);
 			
-			#else
-	
-				pullfromhandle ((*d).dataHandle, 0L, 1L, nil);
-			
-			#endif
 			
 			break;
 			}
@@ -2150,7 +2072,6 @@ static boolean getbinarylistdesc (boolean flrecord, tyvaluerecord val, AEDescLis
 				return (langipcconvertoplist (&val, listdesc));
 			#else
 			
-				#if TARGET_API_MAC_CARBON == 1 /*PBS 03/14/02: AE OS X fix.*/
 				
 					{
 					Handle hcopy;
@@ -2163,12 +2084,6 @@ static boolean getbinarylistdesc (boolean flrecord, tyvaluerecord val, AEDescLis
 					disposehandle (hcopy);
 					}
 				
-				#else
-				
-					if (!stealbinaryhandle (&val, &(*listdesc).dataHandle))
-						return (false);
-								
-				#endif
 					
 				(*listdesc).descriptorType = typeAERecord;
 				
@@ -2280,7 +2195,6 @@ boolean langipcputlistitem (hdltreenode hparam1, tyvaluerecord *vreturned) {
 	
 	/*don't dispose itemdesc handle -- it's in the temp stack*/
 	
-	#if TARGET_API_MAC_CARBON == 1 /*PBS 03/14/02: AE OS X fix.*/
 	
 		{
 		Handle hcopy;
@@ -2296,12 +2210,6 @@ boolean langipcputlistitem (hdltreenode hparam1, tyvaluerecord *vreturned) {
 			return (false);
 		}
 	
-	#else
-	
-		if (!setbinarysymbolval (htable, bsname, listdesc.dataHandle, listdesc.descriptorType))
-			return (false);
-	
-	#endif
 	
 	(*vreturned).data.flvalue = true;
 	
@@ -3359,15 +3267,9 @@ static boolean langipcgeterrorstring (const AppleEvent *reply, bigstring bserror
 	
 	if (AEGetParamDesc (reply, 'errs', typeChar, &desc) == noErr) {
 		
-		#if TARGET_API_MAC_CARBON == 1 /*PBS 03/14/02: AE OS X fix.*/	
 		
 			datahandletostring (&desc, bserror);
 		
-		#else
-		
-			texthandletostring (desc.dataHandle, bserror);
-		
-		#endif
 		
 		AEDisposeDesc (&desc);
 		
@@ -3833,15 +3735,9 @@ boolean langipckernelfunction (hdlhashtable htable, bigstring bsverb, hdltreenod
 			
 			bigstring bs;
 			
-			#if TARGET_API_MAC_CARBON == 1 /*PBS 03/14/02: AE OS X fix.*/
 			
 				datahandletostring (&desc, bs);
 			
-			#else
-
-				texthandletostring (desc.dataHandle, bs);
-			
-			#endif
 			
 			langerrormessage (bs);
 			}
@@ -4125,7 +4021,6 @@ static pascal OSErr langipcfastgetobject (AppleEvent *event, AppleEvent *reply, 
 		goto exit;
 	
 	
-	#if TARGET_API_MAC_CARBON == 1 /*PBS 03/14/02: AE OS X fix.*/
 	
 		{
 		Handle hcopy;
@@ -4145,12 +4040,6 @@ static pascal OSErr langipcfastgetobject (AppleEvent *event, AppleEvent *reply, 
 			goto exit;
 		}
 	
-	#else
-	
-		if (!getpackedobject (desc.dataHandle, &desc.dataHandle)) /*consumes input handle*/
-			goto exit;
-		
-	#endif
 	
 	desc.descriptorType = 'data';
 	
@@ -4201,7 +4090,6 @@ langipcfastsetobject (
 		goto exit;
 		}
 	
-	#if TARGET_API_MAC_CARBON == 1 /*PBS 03/14/02: AE OS X fix.*/
 	
 		{
 		Handle hcopy1, hcopy2;
@@ -4214,12 +4102,6 @@ langipcfastsetobject (
 			goto exit;
 		}
 	
-	#else
-	
-		if (!setpackedobject (desc1.dataHandle, desc2.dataHandle)) /*consumes handles*/
-			goto exit;
-	
-	#endif
 	
 	fl = true;
 	
@@ -4283,7 +4165,6 @@ langipchandlefastscript (
     
     setemptystring (bs);
     
-    #if TARGET_API_MAC_CARBON == 1 /*PBS 03/14/02: AE OS X fix.*/
     
         {
         Handle h;
@@ -4293,11 +4174,6 @@ langipchandlefastscript (
         fl = langrunhandle (h, bs);
         }
     
-    #else
-    
-        fl = langrunhandle (script.dataHandle, bs); /*consumes dataHandle*/
-    
-    #endif
     
     flscriptrunning = flscriptwasrunning;
     
@@ -4417,27 +4293,15 @@ boolean langipcstart (void) {
 	
 	#if !flruntime
 	
-		#if TARGET_API_MAC_CARBON == 1
 	
 			AEInstallEventHandler ('LAND', 'show', NewAEEventHandlerUPP (handleshowmenunode), 0, false);
 		
-		#else
-
-			AEInstallEventHandler ('LAND', 'show', NewAEEventHandlerProc (handleshowmenunode), 0, false);
-		
-		#endif
 	
 	#endif
 	
-	#if TARGET_API_MAC_CARBON == 1
 
 		AEInstallEventHandler ('LAND', 'yiel', NewAEEventHandlerUPP (handleyield), 0, false);
 	
-	#else
-
-		AEInstallEventHandler ('LAND', 'yiel', NewAEEventHandlerProc (handleyield), 0, false);
-	
-	#endif
 		
 	langipcinstallfastscript ();
 	

@@ -64,11 +64,7 @@ boolean resetscrap (void) {
 	//Code change by Timothy Paustian Sunday, June 25, 2000 11:05:43 AM
 	//Carbon Support
 	#ifdef MACVERSION
-		#if TARGET_API_MAC_CARBON == 1
 		return (ClearCurrentScrap() == noErr);
-		#else
-		return (ZeroScrap () == noErr);
-		#endif
 	#endif
 
 	#ifdef WIN95VERSION
@@ -87,7 +83,6 @@ short getscrapcount (void) {
 	#ifdef MACVERSION
 		//Code change by Timothy Paustian Sunday, June 25, 2000 11:05:56 AM
 		//Carbon Support
-		#if TARGET_API_MAC_CARBON == 1
 		
 			ScrapRef 	theRef;
 			//UInt32	 	theCount;
@@ -117,15 +112,6 @@ short getscrapcount (void) {
 			//theShortCount = min(theCount, 32000);
 			//return theShortCount;
 			
-		#else
-			
-			PScrapStuff pscrap;
-			
-			pscrap = InfoScrap ();
-			
-			return ((*pscrap).scrapCount);
-			
-		#endif
 		
 	#endif
 
@@ -214,7 +200,6 @@ tyscraptype getscraptype (void) {
 	#ifdef MACVERSION
 		//Code change by Timothy Paustian Sunday, June 25, 2000 11:06:10 AM
 		//Carbon support for new Scrap Manager API
-		#if TARGET_API_MAC_CARBON == 1
 		ScrapRef		scrap;
 		UInt32			infoNumber = 1;
     	ScrapFlavorInfo info[1];
@@ -229,20 +214,6 @@ tyscraptype getscraptype (void) {
 			return 0;
 		
 		return (tyscraptype)info[1].flavorType;
-		#else
-		
-		PScrapStuff pscrap;
-		OSType **htype;
-		
-		pscrap = InfoScrap ();
-		
-		htype = (OSType **) (*pscrap).scrapHandle;
-		
-		if (htype == nil)
-			return (0);
-		
-		return (**htype);
-		#endif
 		
 	#endif
 
@@ -293,7 +264,6 @@ boolean getscrap (tyscraptype scraptype, Handle hscrap) {
 	*/
 	
 	#ifdef MACVERSION
-#if TARGET_API_MAC_CARBON == 1
 		ScrapRef			theScrap;
 	    ScrapFlavorType 	flavorType = (ScrapFlavorType)scraptype;
 	    Size 				byteCount;
@@ -338,20 +308,6 @@ boolean getscrap (tyscraptype scraptype, Handle hscrap) {
 		//only return true if we got all the data.
 		return (byteCount == prevCount);
 
-		#else //precarbon mac		
-		long result;
-		long offset;
-		
-		result = GetScrap (hscrap, scraptype, &offset);
-		
-		if (result == noTypeErr)
-			return (false);
-		
-		if (result < 0)
-			oserror (result);
-
-		return (true); /*there was something on the scrap of the given type*/
-		#endif
 		
 	#endif
 	
@@ -431,7 +387,6 @@ boolean putscrap (tyscraptype scraptype, Handle hscrap) {
 	#ifdef MACVERSION
 		//Code change by Timothy Paustian Sunday, June 25, 2000 11:28:22 AM
 		//New scrap code. We don't need flavorFlags I think
-		#if TARGET_API_MAC_CARBON == 1
 		ScrapRef			theScrap;
 		OSStatus			status;
 	    ScrapFlavorType 	flavorType = (ScrapFlavorType) scraptype;
@@ -446,16 +401,6 @@ boolean putscrap (tyscraptype scraptype, Handle hscrap) {
     	HUnlock(hscrap);
     	return fl;
     	
-		#else
-		
-		HLock (hscrap);
-		
-		fl = PutScrap (GetHandleSize (hscrap), scraptype, *hscrap) == noErr;
-		
-		HUnlock (hscrap);
-
-		return (fl);
-		#endif
 		
 	#endif
 

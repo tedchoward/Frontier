@@ -405,13 +405,11 @@ boolean shellwritescrap (tyscraptype type) {
 	
 	switch (shellscrap.type) {
 		
-		#if TARGET_API_MAC_CARBON == 1
 			case hashscraptype: /*7.0b48 PBS: can't export this type*/
 			
 				fl = false;
 				
 				break;
-		#endif
 			
 		case pictscraptype:
 			fl = shellexportscrap (pictscraptype);

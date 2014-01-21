@@ -235,24 +235,11 @@ boolean popupmenuhit (Rect r, boolean flgeneva9, fillpopupcallback fillpopuprout
 		inserthierarchicmenu (hmenu, -1); /*see IM-V, p 236*/
 		
 
-		#if TARGET_API_MAC_CARBON == 1
 		
 			if (flgeneva9)
 		
 				SetMenuFont (hmenu, 0, 10); /*smaller font in OS X*/
 		
-		#else
-		
-			if (flgeneva9) { /*Geneva*/
-				
-				short idgeneva;
-				
-				fontgetnumber ("\pGeneva", &idgeneva);
-				
-				SetMenuFont (hmenu, idgeneva, 9);
-				
-				} /*if*/
-		#endif
 	#endif
 	
 	itemselected = handlepopup (hmenu, r, checkeditem); /*menus are 1-based*/
@@ -294,7 +281,6 @@ boolean popupmenuhit (Rect r, boolean flgeneva9, fillpopupcallback fillpopuprout
 #endif
 
 
-#if TARGET_API_MAC_CARBON == 1
 
 static void
 MyThemeButtonDrawCallback (
@@ -324,11 +310,9 @@ MyThemeButtonDrawCallback (
 	popstyle ();
 	} /*MyThemeButtonDrawCallback*/
 
-#endif
 
 
 boolean drawpopup (Rect rpopup, bigstring bs, boolean flbitmap) {
-#if TARGET_API_MAC_CARBON == 1
 #	pragma unused (flbitmap)
 
 	Rect r;
@@ -358,56 +342,6 @@ boolean drawpopup (Rect rpopup, bigstring bs, boolean flbitmap) {
 
 	return (true);
 
-#else
-
-	Rect r;
-
-	initpopupfont ();
-
-	setrect (&r, rpopup.top, rpopup.left, rpopup.bottom + 1, rpopup.right + 1);
-
-	if (flbitmap)
-		flbitmap = openbitmap (r, getport ());
-
-	eraserect (r);
-
-	r = rpopup;
-
-	framerect (r);
-
-	movepento (r.left + 1, r.bottom);
-
-	pendrawline (r.right, r.bottom);
-
-	pendrawline (r.right, r.top + 1);
-
-	r.right -= popuparrowwidth;
-
-	insetrect (&r, 4, 2);
-
-	pushstyle (popupfont, popupfontsize, 0);
-
-	movepento (r.left, r.bottom - globalfontinfo.descent - 1);
-
-	ellipsize (bs, r.right - r.left);
-
-	pendrawstring (bs);
-
-	popstyle ();
-
-	r = rpopup;
-
-	insetrect (&r, 1, 1);
-
-	r.left = r.right - popuparrowwidth;
-
-	displaypopupicon (r, true);
-
-	if (flbitmap)
-		closebitmap (getport ());
-
-	return (true);
-#endif
 	} /*drawpopup*/
 
 

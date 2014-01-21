@@ -74,11 +74,7 @@
 #define menuscriptitem 5 /*the script button*/
 
 #ifdef MACVERSION
-	#if TARGET_API_MAC_CARBON == 1
 		#define cmdkeypopupwidth 60
-	#else
-		#define cmdkeypopupwidth 50
-	#endif
 #endif
 #ifdef WIN95VERSION
 	#define cmdkeypopupwidth 60

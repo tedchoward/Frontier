@@ -123,11 +123,6 @@ boolean shellactivatewindow (WindowPtr w, boolean flactivate) {
 		
 		disablescrollbar (horizbar);
 	
-	#if TARGET_API_MAC_CARBON != 1
-	
-		if (isdeskaccessorywindow (getfrontwindow ())) /*DA is being activated*/
-
-	#endif	
 	
 	shellwritescrap (anyscraptype);
 		

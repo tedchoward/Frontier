@@ -184,7 +184,6 @@ typedef struct tythreadglobals {
 	
 	long debugthreadingcookie; /*6.2b11 AR: for debugging hung threads*/
 	
-	#if TARGET_API_MAC_CARBON == 1
 	
 	ThreadSwitchUPP threadInCallbackUPP;
 	
@@ -194,7 +193,6 @@ typedef struct tythreadglobals {
 	
 	ThreadEntryUPP threadEntryCallbackUPP;
 	
-	#endif
 
 	boolean flcominitialized;
 

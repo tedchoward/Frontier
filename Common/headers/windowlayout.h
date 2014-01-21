@@ -29,21 +29,13 @@
 
 
 #ifdef MACVERSION
-	#if TARGET_API_MAC_CARBON
 		#define iconrectheight 38
-	#else
-		#define iconrectheight 44 /*icons have labels, leave 12 pixels for the label, 32 for icon*/
-	#endif
 #endif
 #ifdef WIN95VERSION
 	#define iconrectheight 46 /*icons have labels, leave 12 pixels for the label, 32 for icon*/
 #endif
 
-#if TARGET_API_MAC_CARBON
 	#define iconrectwidth 26
-#else
-	#define iconrectwidth 32
-#endif
 
 #define windowmargin 10 /*leave this much room all around*/
 

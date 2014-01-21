@@ -264,11 +264,7 @@ GrafPtr getport (void) {
 		//Code change by Timothy Paustian Friday, June 9, 2000 9:57:48 PM
 		//Changed to Opaque call for Carbon
 		//This is weird, Shouldn't this be calling GetPort()?
-		#if TARGET_API_MAC_CARBON == 1
 		return GetQDGlobalsThePort();
-		#else
-		return (quickdrawglobal (thePort));
-		#endif
 	#endif
 
 	#ifdef WIN95VERSION
@@ -329,11 +325,7 @@ boolean pushport (CGrafPtr p) {
 		//to find out why.
 		{
 		CGrafPtr	theGlobalPort = nil;
-		#if TARGET_API_MAC_CARBON == 1
 		theGlobalPort = GetQDGlobalsThePort();
-		#else
-		theGlobalPort = quickdrawglobal (thePort);
-		#endif
 		
 		portstack [topport++] = theGlobalPort;
 		
@@ -378,11 +370,7 @@ boolean popport (void) {
 		//Code change by Timothy Paustian Friday, June 9, 2000 10:01:35 PM
 		//Changed to Opaque call for Carbon
 		CGrafPtr	theQDPort = 
-		#if TARGET_API_MAC_CARBON == 1
 		GetQDGlobalsThePort();
-		#else
-		quickdrawglobal (thePort);
-		#endif
 		
 		if ((p != nil) && (p != theQDPort)) {
 			
@@ -410,11 +398,7 @@ boolean pushscratchport (void) {
 	//Code change by Timothy Paustian Monday, August 21, 2000 4:31:49 PM
 	//Must pass a CGrafPtr to pushport on OS X to avoid a crash
 	CGrafPtr	thePort;
-	#if TARGET_API_MAC_CARBON == 1
 	thePort = scratchport; /* hra: scratchport is already a CGrafPtr, not a WindowPtr */
-	#else
-	thePort = (CGrafPtr)scratchport;
-	#endif
 		
 	return pushport (thePort);
 	#endif
@@ -1128,11 +1112,7 @@ void getcurrentscreenbounds (Rect *r) {
 	//Code change by Timothy Paustian Friday, June 9, 2000 10:05:41 PM
 	//Changed to Opaque call for Carbon
 	BitMap	screenBits;
-	#if TARGET_API_MAC_CARBON == 1
 	GetQDGlobalsScreenBits(&screenBits);
-	#else
-	screenBits = qd.screenBits;
-	#endif
 	
 	*r = screenBits.bounds; /*default: use the old standby...*/
 	
@@ -1142,11 +1122,7 @@ void getcurrentscreenbounds (Rect *r) {
 	//Must pass a CGrafPtr to pushport on OS X to avoid a crash
 	{
 	CGrafPtr	thePort;
-	#if TARGET_API_MAC_CARBON == 1
 	thePort = GetWindowPort(w);
-	#else
-	thePort = (CGrafPtr)w;
-	#endif
 	
 	pushport (thePort);
 	}
@@ -1222,11 +1198,7 @@ void getwindowscreenbounds (const Rect *rwindow, Rect *r) {
 	//Code change by Timothy Paustian Friday, June 9, 2000 10:05:50 PM
 	//Changed to Opaque call for Carbon
 	BitMap	screenBits;
-	#if TARGET_API_MAC_CARBON == 1
 	GetQDGlobalsScreenBits(&screenBits);
-	#else
-	screenBits = qd.screenBits;
-	#endif
 	
 	*r = screenBits.bounds; /*default return value, if no window open, or error*/
 	
@@ -1325,11 +1297,9 @@ void centerbuttonstring (const Rect *r, bigstring bs, boolean fldisabled) {
 	if (v > (*r).top) /*9/10/91*/
 		v--;
 	
-	#if TARGET_API_MAC_CARBON
 	
 		v--;
 		
-	#endif
 	
 	movepento (h, v + globalfontinfo.ascent);
 	
@@ -1347,15 +1317,10 @@ void grayrect (Rect r) {
 	
 	PenMode (patBic);
 	{
-	#if TARGET_API_MAC_CARBON == 1
 	
 	Pattern	gray;
 	GetQDGlobalsGray(&gray);
 	PenPat(&gray);
-	#else
-	PenPat (&qd.gray);
-	
-	#endif
 	}
 	PaintRect (&r);
 	
@@ -1485,11 +1450,7 @@ void localtoglobalrect (WindowPtr w, Rect *r) {
 	//Code change by Timothy Paustian Monday, August 21, 2000 4:31:49 PM
 	//Must pass a CGrafPtr to pushport on OS X to avoid a crash
 	CGrafPtr	thePort;
-	#if TARGET_API_MAC_CARBON == 1
 	thePort = GetWindowPort(w);
-	#else
-	thePort = (CGrafPtr)w;
-	#endif
 		
 	pushport (thePort);
 	
@@ -1530,11 +1491,7 @@ void globaltolocalpoint (WindowPtr w, Point *pt) {
 	//Code change by Timothy Paustian Monday, August 21, 2000 4:31:49 PM
 	//Must pass a CGrafPtr to pushport on OS X to avoid a crash
 	CGrafPtr	thePort;
-	#if TARGET_API_MAC_CARBON == 1
 	thePort = GetWindowPort(w);
-	#else
-	thePort = (CGrafPtr)w;
-	#endif
 		
 	pushport (thePort);
 	
@@ -1567,11 +1524,7 @@ void localtoglobalpoint (WindowPtr w, Point *pt) {
 	//Code change by Timothy Paustian Monday, August 21, 2000 4:31:49 PM
 	//Must pass a CGrafPtr to pushport on OS X to avoid a crash
 	CGrafPtr	thePort;
-	#if TARGET_API_MAC_CARBON == 1
 	thePort = GetWindowPort(w);
-	#else
-	thePort = (CGrafPtr)w;
-	#endif
 		
 	pushport (thePort);
 	
@@ -1656,26 +1609,18 @@ void dropshadowrect (Rect r, short width, boolean flerase) {
 	if (flerase) {
 		//Code change by Timothy Paustian Friday, June 9, 2000 10:10:25 PM
 		//Changed to Opaque call for Carbon
-		#if TARGET_API_MAC_CARBON == 1
 			Pattern gray;
 			
 			GetQDGlobalsGray(&gray);
 			
 			fillrect (rfill, gray);
-		#else
-			fillrect (rfill, getstockpattern (stockgray));
-		#endif
 		}
 	else {
-		#if TARGET_API_MAC_CARBON == 1
 			Pattern black;
 
 			GetQDGlobalsBlack(&black);
 			
 			fillrect (rfill, black);
-		#else
-			fillrect (rfill, getstockpattern (stockblack));
-		#endif
 		}
 
 							
@@ -1692,26 +1637,18 @@ void dropshadowrect (Rect r, short width, boolean flerase) {
 	if (flerase) {
 		//Code change by Timothy Paustian Friday, June 9, 2000 10:10:25 PM
 		//Changed to Opaque call for Carbon
-		#if TARGET_API_MAC_CARBON == 1
 			Pattern gray;
 
 			GetQDGlobalsGray(&gray);
 			
 			fillrect (rfill, gray);
-		#else
-			fillrect (rfill, getstockpattern (stockgray));
-		#endif
 		}
 	else {
-		#if TARGET_API_MAC_CARBON == 1
 			Pattern black;
 
 			GetQDGlobalsBlack(&black);
 			
 			fillrect (rfill, black);
-		#else
-			fillrect (rfill, getstockpattern (stockblack));
-		#endif
 		}
 	} /*dropshadowrect*/
 
@@ -1721,7 +1658,6 @@ void smashrect (Rect r) {
 	EraseRect (&r);
 	//Code change by Timothy Paustian Friday, June 9, 2000 10:13:24 PM
 	//Changed to Opaque call for Carbon
-	#if TARGET_API_MAC_CARBON == 1
 	//Will GetFrontWindowOfClass do what we want. I hope so.
 	{
 	WindowRef w;	
@@ -1731,9 +1667,6 @@ void smashrect (Rect r) {
 		
 	InvalWindowRect(w, &r);
 	}
-	#else
-	InvalRect (&r);
-	#endif
 #endif
 #ifdef WIN95VERSION
 	RECT winrect;
@@ -1748,7 +1681,6 @@ void invalrect (Rect r) {
 #ifdef MACVERSION	
 	//Code change by Timothy Paustian Friday, June 9, 2000 10:13:24 PM
 	//Changed to Opaque call for Carbon
-	#if TARGET_API_MAC_CARBON == 1
 	//Will GetFrontWindowOfClass do what we want. I hope so.
 	//InvalWindowRect(GetFrontWindowOfClass(kAllWindowClasses, false), &r);
 	{
@@ -1759,9 +1691,6 @@ void invalrect (Rect r) {
 		
 	InvalWindowRect(w, &r);
 	}
-	#else
-	InvalRect (&r);
-	#endif
 #endif
 #ifdef WIN95VERSION
 	RECT winrect;
@@ -1777,11 +1706,7 @@ void invalwindowrect (WindowPtr w, Rect r) {
 	//Code change by Timothy Paustian Monday, August 21, 2000 4:31:49 PM
 	//Must pass a CGrafPtr to pushport on OS X to avoid a crash
 	CGrafPtr	thePort;
-	#if TARGET_API_MAC_CARBON == 1
 	thePort = GetWindowPort(w);
-	#else
-	thePort = (CGrafPtr)w;
-	#endif
 		
 	pushport (thePort);
 	
@@ -1793,12 +1718,8 @@ void invalwindowrect (WindowPtr w, Rect r) {
 
 void validrect (Rect r) {
 #ifdef MACVERSION	
-	#if TARGET_API_MAC_CARBON == 1
 	//ValidWindowRect(GetFrontWindowOfClass(kAllWindowClasses, false), &r);
 	ValidWindowRect (shellwindow, &r);
-	#else
-	ValidRect (&r);
-	#endif
 #endif
 #ifdef WIN95VERSION
 	RECT winrect;
@@ -1890,7 +1811,6 @@ void drawthemeborder (Rect r, Rect rcontent) {
 	7.0b52 PBS: draw the "scan line" theme border on OS X.
 	*/
 	
-	#if TARGET_API_MAC_CARBON == 1
 	
 		//register hdlminirecord hm = minidata;
 		//register hdlwindowinfo hw = miniwindowinfo;
@@ -1930,7 +1850,6 @@ void drawthemeborder (Rect r, Rect rcontent) {
 		
 		poppen ();
 
-	#endif
 	
 	}
 
@@ -1939,12 +1858,8 @@ void setgraypen (void) {
 #ifdef MACVERSION	
 	//Code change by Timothy Paustian Friday, June 9, 2000 10:22:55 PM
 	//Changed to Opaque call for Carbon
-	#if TARGET_API_MAC_CARBON == 1
 	Pattern gray;
 	PenPat(GetQDGlobalsGray(&gray));
-	#else
-	PenPat (&qd.gray);
-	#endif
 #endif
 
 #ifdef WIN95VERSION
@@ -1963,11 +1878,9 @@ void setgraypen (void) {
 
 void setthemepen (const short brush, Rect r, boolean flupdate) {
 
-	#if TARGET_API_MAC_CARBON == 1
 	
 		SetThemePen (brush, maxdepth (&r), flupdate);
 				
-	#endif
 	} /*setthemepen*/
 
 
@@ -2114,7 +2027,6 @@ void frame3sides (Rect r) {
 	
 	pendrawline (r.right, r.bottom); /*draw bottom of box*/
 	
-	#if TARGET_API_MAC_CARBON == 1
 	
 		{
 		Rect rwindow;
@@ -2156,7 +2068,6 @@ void frame3sides (Rect r) {
 		}
 	
 	
-	#endif
 	
 	#endif
 
@@ -2287,7 +2198,6 @@ void scrollrect (Rect r, short dh, short dv) {
 		
 	ScrollRect (&r, dh, dv, rgn);
 	
-	#if TARGET_API_MAC_CARBON == 1
 	//InvalWindowRgn(GetFrontWindowOfClass(kAllWindowClasses, false), rgn);
 	{
 	WindowRef w;	
@@ -2298,9 +2208,6 @@ void scrollrect (Rect r, short dh, short dv) {
 	InvalWindowRgn (w, rgn);
 	}
 	
-	#else
-	InvalRgn (rgn);
-	#endif
 	DisposeRgn (rgn);
 #endif
 	
@@ -2664,11 +2571,7 @@ boolean pushdesktopport (CGrafPtr port) {
 		
 	pushport (nil); /*save current port, don't SetPort*/
 	
-	#if TARGET_API_MAC_CARBON == 1
 	 p = CreateNewPort();
-	#else
-	OpenPort (p); /*also makes it the current port*/
-	#endif
 	grayrgn = GetGrayRgn ();
 	
 	#if ACCESSOR_CALLS_ARE_FUNCTIONS == 1
@@ -2694,11 +2597,7 @@ void popdesktopport (CGrafPtr port) {
 	popport ();
 	//Code change by Timothy Paustian Friday, June 16, 2000 2:51:11 PM
 	//Changed to Opaque call for Carbon
-	#if TARGET_API_MAC_CARBON == 1
 	DisposePort(port);
-	#else	
-	ClosePort (port);
-	#endif
 		
 	
 	} /*popdesktopport*/
@@ -2803,15 +2702,11 @@ boolean colorenabled (void) {
 	#ifdef MACVERSION
 		//Code change by Timothy Paustian Friday, June 9, 2000 10:28:39 PM
 		//Changed to Opaque call for Carbon
-		#if TARGET_API_MAC_CARBON == 1
 		{
 		BitMap	screenBits;
 		GetQDGlobalsScreenBits(&screenBits);
 		return (maxdepth(&(screenBits).bounds) > 1);
 		}
-		#else
-		return (maxdepth (&quickdrawglobal (screenBits).bounds) > 1);
-		#endif
 	#endif
 	#ifdef WIN95VERSION
 		return (maxdepth (NULL) > 1);

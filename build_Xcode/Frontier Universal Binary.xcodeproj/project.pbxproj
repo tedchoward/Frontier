@@ -213,7 +213,6 @@
 		65059A0D09968C1400410571 /* opxml.h in Headers */ = {isa = PBXBuildFile; fileRef = 651528F6072BFF5300411831 /* opxml.h */; };
 		65059A0E09968C1400410571 /* opbuttons.h in Headers */ = {isa = PBXBuildFile; fileRef = 651528F8072BFF5600411831 /* opbuttons.h */; };
 		65059A0F09968C1400410571 /* opdraggingmove.h in Headers */ = {isa = PBXBuildFile; fileRef = 651528FA072BFF5900411831 /* opdraggingmove.h */; };
-		65059A1009968C1400410571 /* osadroplet.h in Headers */ = {isa = PBXBuildFile; fileRef = 651528FC072BFF5C00411831 /* osadroplet.h */; };
 		65059A1109968C1400410571 /* osainternal.h in Headers */ = {isa = PBXBuildFile; fileRef = 651528FE072BFF5D00411831 /* osainternal.h */; };
 		65059A1209968C1400410571 /* osamenus.h in Headers */ = {isa = PBXBuildFile; fileRef = 65152900072BFF6000411831 /* osamenus.h */; };
 		65059A1309968C1400410571 /* osaparseaete.h in Headers */ = {isa = PBXBuildFile; fileRef = 65152902072BFF6300411831 /* osaparseaete.h */; };
@@ -247,7 +246,6 @@
 		65059A3709968C1400410571 /* frontier.xcode.h in Headers */ = {isa = PBXBuildFile; fileRef = 65D516AA072CED430097D18E /* frontier.xcode.h */; };
 		65059A3809968C1400410571 /* frontierdefs.h in Headers */ = {isa = PBXBuildFile; fileRef = 65BBB663072E5643008E2F34 /* frontierdefs.h */; };
 		65059A3909968C1400410571 /* langmath.h in Headers */ = {isa = PBXBuildFile; fileRef = 65B70CDF0797CEAD008C2F1A /* langmath.h */; };
-		65059A3A09968C1400410571 /* FastTimes.h in Headers */ = {isa = PBXBuildFile; fileRef = 65B70CE90797CF78008C2F1A /* FastTimes.h */; };
 		65059A4009968C1400410571 /* resources.c in Sources */ = {isa = PBXBuildFile; fileRef = 6515257D072BFC6700411831 /* resources.c */; };
 		65059A4109968C1400410571 /* findinfile.c in Sources */ = {isa = PBXBuildFile; fileRef = 6515257C072BFC6700411831 /* findinfile.c */; };
 		65059A4209968C1400410571 /* fileverbs.c in Sources */ = {isa = PBXBuildFile; fileRef = 6515257B072BFC6700411831 /* fileverbs.c */; };
@@ -272,7 +270,6 @@
 		65059A8809968C1400410571 /* cursor.c in Sources */ = {isa = PBXBuildFile; fileRef = 651525EE072BFC6700411831 /* cursor.c */; };
 		65059A8909968C1400410571 /* bitmaps.c in Sources */ = {isa = PBXBuildFile; fileRef = 651525E4072BFC6700411831 /* bitmaps.c */; };
 		65059A8A09968C1400410571 /* base64.c in Sources */ = {isa = PBXBuildFile; fileRef = 651525ED072BFC6700411831 /* base64.c */; };
-		65059A8B09968C1400410571 /* assert.c in Sources */ = {isa = PBXBuildFile; fileRef = 651525EC072BFC6700411831 /* assert.c */; };
 		65059A8C09968C1400410571 /* aeutils.c in Sources */ = {isa = PBXBuildFile; fileRef = 651525E3072BFC6700411831 /* aeutils.c */; };
 		65059A8E09968C1400410571 /* kb.c in Sources */ = {isa = PBXBuildFile; fileRef = 651525F7072BFC6700411831 /* kb.c */; };
 		65059A8F09968C1400410571 /* icon.c in Sources */ = {isa = PBXBuildFile; fileRef = 651525F6072BFC6700411831 /* icon.c */; };
@@ -388,7 +385,6 @@
 		65059AFE09968C1400410571 /* opbuttons.c in Sources */ = {isa = PBXBuildFile; fileRef = 6515264E072BFC6800411831 /* opbuttons.c */; };
 		65059AFF09968C1400410571 /* op.c in Sources */ = {isa = PBXBuildFile; fileRef = 6515264D072BFC6800411831 /* op.c */; };
 		65059B0009968C1400410571 /* osacomponent.c in Sources */ = {isa = PBXBuildFile; fileRef = 65152667072BFC6800411831 /* osacomponent.c */; };
-		65059B0109968C1400410571 /* osadroplet.c in Sources */ = {isa = PBXBuildFile; fileRef = 65152668072BFC6800411831 /* osadroplet.c */; };
 		65059B0209968C1400410571 /* osaparseaete.c in Sources */ = {isa = PBXBuildFile; fileRef = 6515266A072BFC6800411831 /* osaparseaete.c */; };
 		65059B0309968C1400410571 /* osawindows.c in Sources */ = {isa = PBXBuildFile; fileRef = 6515266B072BFC6800411831 /* osawindows.c */; };
 		65059B0409968C1400410571 /* shell.c in Sources */ = {isa = PBXBuildFile; fileRef = 6515266D072BFC6800411831 /* shell.c */; };
@@ -438,7 +434,6 @@
 		65059B3009968C1400410571 /* study.c in Sources */ = {isa = PBXBuildFile; fileRef = 651525CA072BFC6700411831 /* study.c */; };
 		65059B3109968C1400410571 /* MoreFilesX.c in Sources */ = {isa = PBXBuildFile; fileRef = 651525C1072BFC6700411831 /* MoreFilesX.c */; };
 		65059B3209968C1400410571 /* langmath.c in Sources */ = {isa = PBXBuildFile; fileRef = 65B70CDB0797CE4A008C2F1A /* langmath.c */; };
-		65059B3309968C1400410571 /* FastTimes.c in Sources */ = {isa = PBXBuildFile; fileRef = 65B70CE50797CF2D008C2F1A /* FastTimes.c */; };
 		65059B3909968C1400410571 /* ApplicationServices.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6515294A072C000500411831 /* ApplicationServices.framework */; };
 		65059B3A09968C1400410571 /* QuickTime.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6515294C072C000900411831 /* QuickTime.framework */; };
 		65059B3C09968C1400410571 /* lang.r in Rez */ = {isa = PBXBuildFile; fileRef = 651525D2072BFC6700411831 /* lang.r */; };
@@ -486,7 +481,6 @@
 		651526F6072BFC6800411831 /* cursor.c in Sources */ = {isa = PBXBuildFile; fileRef = 651525EE072BFC6700411831 /* cursor.c */; };
 		651526F7072BFC6800411831 /* bitmaps.c in Sources */ = {isa = PBXBuildFile; fileRef = 651525E4072BFC6700411831 /* bitmaps.c */; };
 		651526F8072BFC6800411831 /* base64.c in Sources */ = {isa = PBXBuildFile; fileRef = 651525ED072BFC6700411831 /* base64.c */; };
-		651526F9072BFC6800411831 /* assert.c in Sources */ = {isa = PBXBuildFile; fileRef = 651525EC072BFC6700411831 /* assert.c */; };
 		651526FA072BFC6800411831 /* aeutils.c in Sources */ = {isa = PBXBuildFile; fileRef = 651525E3072BFC6700411831 /* aeutils.c */; };
 		651526FC072BFC6800411831 /* kb.c in Sources */ = {isa = PBXBuildFile; fileRef = 651525F7072BFC6700411831 /* kb.c */; };
 		651526FD072BFC6800411831 /* icon.c in Sources */ = {isa = PBXBuildFile; fileRef = 651525F6072BFC6700411831 /* icon.c */; };
@@ -602,7 +596,6 @@
 		6515276C072BFC6800411831 /* opbuttons.c in Sources */ = {isa = PBXBuildFile; fileRef = 6515264E072BFC6800411831 /* opbuttons.c */; };
 		6515276D072BFC6800411831 /* op.c in Sources */ = {isa = PBXBuildFile; fileRef = 6515264D072BFC6800411831 /* op.c */; };
 		6515276E072BFC6800411831 /* osacomponent.c in Sources */ = {isa = PBXBuildFile; fileRef = 65152667072BFC6800411831 /* osacomponent.c */; };
-		6515276F072BFC6800411831 /* osadroplet.c in Sources */ = {isa = PBXBuildFile; fileRef = 65152668072BFC6800411831 /* osadroplet.c */; };
 		65152771072BFC6800411831 /* osaparseaete.c in Sources */ = {isa = PBXBuildFile; fileRef = 6515266A072BFC6800411831 /* osaparseaete.c */; };
 		65152772072BFC6800411831 /* osawindows.c in Sources */ = {isa = PBXBuildFile; fileRef = 6515266B072BFC6800411831 /* osawindows.c */; };
 		65152773072BFC6800411831 /* shell.c in Sources */ = {isa = PBXBuildFile; fileRef = 6515266D072BFC6800411831 /* shell.c */; };
@@ -791,7 +784,6 @@
 		651528F7072BFF5300411831 /* opxml.h in Headers */ = {isa = PBXBuildFile; fileRef = 651528F6072BFF5300411831 /* opxml.h */; };
 		651528F9072BFF5600411831 /* opbuttons.h in Headers */ = {isa = PBXBuildFile; fileRef = 651528F8072BFF5600411831 /* opbuttons.h */; };
 		651528FB072BFF5900411831 /* opdraggingmove.h in Headers */ = {isa = PBXBuildFile; fileRef = 651528FA072BFF5900411831 /* opdraggingmove.h */; };
-		651528FD072BFF5C00411831 /* osadroplet.h in Headers */ = {isa = PBXBuildFile; fileRef = 651528FC072BFF5C00411831 /* osadroplet.h */; };
 		651528FF072BFF5D00411831 /* osainternal.h in Headers */ = {isa = PBXBuildFile; fileRef = 651528FE072BFF5D00411831 /* osainternal.h */; };
 		65152901072BFF6000411831 /* osamenus.h in Headers */ = {isa = PBXBuildFile; fileRef = 65152900072BFF6000411831 /* osamenus.h */; };
 		65152903072BFF6300411831 /* osaparseaete.h in Headers */ = {isa = PBXBuildFile; fileRef = 65152902072BFF6300411831 /* osaparseaete.h */; };
@@ -841,8 +833,6 @@
 		65AC81D908DC792700ADD675 /* kernelverbs.r in Rez */ = {isa = PBXBuildFile; fileRef = 65AC81D808DC792700ADD675 /* kernelverbs.r */; };
 		65B70CDC0797CE4A008C2F1A /* langmath.c in Sources */ = {isa = PBXBuildFile; fileRef = 65B70CDB0797CE4A008C2F1A /* langmath.c */; };
 		65B70CE00797CEAD008C2F1A /* langmath.h in Headers */ = {isa = PBXBuildFile; fileRef = 65B70CDF0797CEAD008C2F1A /* langmath.h */; };
-		65B70CE60797CF2D008C2F1A /* FastTimes.c in Sources */ = {isa = PBXBuildFile; fileRef = 65B70CE50797CF2D008C2F1A /* FastTimes.c */; };
-		65B70CEA0797CF78008C2F1A /* FastTimes.h in Headers */ = {isa = PBXBuildFile; fileRef = 65B70CE90797CF78008C2F1A /* FastTimes.h */; };
 		65BBB662072E563B008E2F34 /* frontier.r in Rez */ = {isa = PBXBuildFile; fileRef = 65BBB661072E563B008E2F34 /* frontier.r */; };
 		65BBB664072E5643008E2F34 /* frontierdefs.h in Headers */ = {isa = PBXBuildFile; fileRef = 65BBB663072E5643008E2F34 /* frontierdefs.h */; };
 		65C4999B0E7D8F2B0078B6DB /* FSCopyObject.c in Sources */ = {isa = PBXBuildFile; fileRef = 5D0D91000ADEDFA80000E67B /* FSCopyObject.c */; };
@@ -1021,7 +1011,6 @@
 		651525E8072BFC6700411831 /* services.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = services.c; path = ../Common/source/services.c; sourceTree = SOURCE_ROOT; };
 		651525E9072BFC6700411831 /* uisharing.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = uisharing.c; path = ../Common/source/uisharing.c; sourceTree = SOURCE_ROOT; };
 		651525EA072BFC6700411831 /* zoom.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = zoom.c; path = ../Common/source/zoom.c; sourceTree = SOURCE_ROOT; };
-		651525EC072BFC6700411831 /* assert.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = assert.c; path = ../Common/source/assert.c; sourceTree = SOURCE_ROOT; };
 		651525ED072BFC6700411831 /* base64.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = base64.c; path = ../Common/source/base64.c; sourceTree = SOURCE_ROOT; };
 		651525EE072BFC6700411831 /* cursor.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = cursor.c; path = ../Common/source/cursor.c; sourceTree = SOURCE_ROOT; };
 		651525EF072BFC6700411831 /* dockmenu.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = dockmenu.c; path = ../Common/source/dockmenu.c; sourceTree = SOURCE_ROOT; };
@@ -1135,7 +1124,6 @@
 		65152664072BFC6800411831 /* opxml.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = opxml.c; path = ../Common/source/opxml.c; sourceTree = SOURCE_ROOT; };
 		65152665072BFC6800411831 /* textdisplay.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = textdisplay.c; path = ../Common/source/textdisplay.c; sourceTree = SOURCE_ROOT; };
 		65152667072BFC6800411831 /* osacomponent.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = osacomponent.c; path = ../Common/source/osacomponent.c; sourceTree = SOURCE_ROOT; };
-		65152668072BFC6800411831 /* osadroplet.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = osadroplet.c; path = ../Common/source/osadroplet.c; sourceTree = SOURCE_ROOT; };
 		6515266A072BFC6800411831 /* osaparseaete.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = osaparseaete.c; path = ../Common/source/osaparseaete.c; sourceTree = SOURCE_ROOT; };
 		6515266B072BFC6800411831 /* osawindows.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = osawindows.c; path = ../Common/source/osawindows.c; sourceTree = SOURCE_ROOT; };
 		6515266D072BFC6800411831 /* shell.c */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.objc; fileEncoding = 30; name = shell.c; path = ../Common/source/shell.c; sourceTree = SOURCE_ROOT; };
@@ -1308,7 +1296,6 @@
 		651528F6072BFF5300411831 /* opxml.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = opxml.h; path = ../Common/headers/opxml.h; sourceTree = SOURCE_ROOT; };
 		651528F8072BFF5600411831 /* opbuttons.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = opbuttons.h; path = ../Common/headers/opbuttons.h; sourceTree = SOURCE_ROOT; };
 		651528FA072BFF5900411831 /* opdraggingmove.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = opdraggingmove.h; path = ../Common/headers/opdraggingmove.h; sourceTree = SOURCE_ROOT; };
-		651528FC072BFF5C00411831 /* osadroplet.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = osadroplet.h; path = ../Common/headers/osadroplet.h; sourceTree = SOURCE_ROOT; };
 		651528FE072BFF5D00411831 /* osainternal.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = osainternal.h; path = ../Common/headers/osainternal.h; sourceTree = SOURCE_ROOT; };
 		65152900072BFF6000411831 /* osamenus.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = osamenus.h; path = ../Common/headers/osamenus.h; sourceTree = SOURCE_ROOT; };
 		65152902072BFF6300411831 /* osaparseaete.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = osaparseaete.h; path = ../Common/headers/osaparseaete.h; sourceTree = SOURCE_ROOT; };
@@ -1351,8 +1338,6 @@
 		65AC81D808DC792700ADD675 /* kernelverbs.r */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.rez; name = kernelverbs.r; path = ../Common/resources/Mac/kernelverbs.r; sourceTree = SOURCE_ROOT; };
 		65B70CDB0797CE4A008C2F1A /* langmath.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = langmath.c; path = ../Common/source/langmath.c; sourceTree = SOURCE_ROOT; };
 		65B70CDF0797CEAD008C2F1A /* langmath.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = langmath.h; path = ../Common/headers/langmath.h; sourceTree = SOURCE_ROOT; };
-		65B70CE50797CF2D008C2F1A /* FastTimes.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = FastTimes.c; path = ../Common/source/FastTimes.c; sourceTree = SOURCE_ROOT; };
-		65B70CE90797CF78008C2F1A /* FastTimes.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = FastTimes.h; path = ../Common/headers/FastTimes.h; sourceTree = SOURCE_ROOT; };
 		65BBB661072E563B008E2F34 /* frontier.r */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.rez; name = frontier.r; path = ../Common/headers/frontier.r; sourceTree = SOURCE_ROOT; };
 		65BBB663072E5643008E2F34 /* frontierdefs.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = frontierdefs.h; path = ../Common/headers/frontierdefs.h; sourceTree = SOURCE_ROOT; };
 		65CF0C7F099545A4006E3A79 /* Frontier.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Frontier.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -1734,7 +1719,6 @@
 		651525E1072BFC6700411831 /* tool */ = {
 			isa = PBXGroup;
 			children = (
-				651525EC072BFC6700411831 /* assert.c */,
 				651525ED072BFC6700411831 /* base64.c */,
 				651525EE072BFC6700411831 /* cursor.c */,
 				651525EF072BFC6700411831 /* dockmenu.c */,
@@ -1779,7 +1763,6 @@
 				9F3A12D6183A6B60007ACBD2 /* mutex.c */,
 				651525E3072BFC6700411831 /* aeutils.c */,
 				651525E4072BFC6700411831 /* bitmaps.c */,
-				65B70CE50797CF2D008C2F1A /* FastTimes.c */,
 				651525E6072BFC6700411831 /* mac.c */,
 				651525E7072BFC6700411831 /* player.c */,
 				651525E8072BFC6700411831 /* services.c */,
@@ -1940,7 +1923,6 @@
 			isa = PBXGroup;
 			children = (
 				65152667072BFC6800411831 /* osacomponent.c */,
-				65152668072BFC6800411831 /* osadroplet.c */,
 				6515266A072BFC6800411831 /* osaparseaete.c */,
 				6515266B072BFC6800411831 /* osawindows.c */,
 			);
@@ -2077,7 +2059,6 @@
 				65152800072BFE5200411831 /* dialogs.h */,
 				6515285E072BFEA900411831 /* dockmenu.h */,
 				651527DE072BFE3800411831 /* error.h */,
-				65B70CE90797CF78008C2F1A /* FastTimes.h */,
 				65152944072C000000411831 /* FDllCall.h */,
 				651527D2072BFE2E00411831 /* file.h */,
 				651527F6072BFE4A00411831 /* filealias.h */,
@@ -2150,7 +2131,6 @@
 				6515288A072BFED800411831 /* opverbs.h */,
 				651528F6072BFF5300411831 /* opxml.h */,
 				65152892072BFEDF00411831 /* osacomponent.h */,
-				651528FC072BFF5C00411831 /* osadroplet.h */,
 				651528FE072BFF5D00411831 /* osainternal.h */,
 				65152900072BFF6000411831 /* osamenus.h */,
 				65152902072BFF6300411831 /* osaparseaete.h */,
@@ -2386,7 +2366,6 @@
 				65059A0D09968C1400410571 /* opxml.h in Headers */,
 				65059A0E09968C1400410571 /* opbuttons.h in Headers */,
 				65059A0F09968C1400410571 /* opdraggingmove.h in Headers */,
-				65059A1009968C1400410571 /* osadroplet.h in Headers */,
 				65059A1109968C1400410571 /* osainternal.h in Headers */,
 				65059A1209968C1400410571 /* osamenus.h in Headers */,
 				65059A1309968C1400410571 /* osaparseaete.h in Headers */,
@@ -2420,7 +2399,6 @@
 				65059A3709968C1400410571 /* frontier.xcode.h in Headers */,
 				65059A3809968C1400410571 /* frontierdefs.h in Headers */,
 				65059A3909968C1400410571 /* langmath.h in Headers */,
-				65059A3A09968C1400410571 /* FastTimes.h in Headers */,
 				65AA438709C03C6D00A4B237 /* sysshellcall.h in Headers */,
 				6599181C09C4952A00F6F58C /* langcrypt.h in Headers */,
 				6599181D09C4952A00F6F58C /* whirlpool.h in Headers */,
@@ -2570,7 +2548,6 @@
 				651528F7072BFF5300411831 /* opxml.h in Headers */,
 				651528F9072BFF5600411831 /* opbuttons.h in Headers */,
 				651528FB072BFF5900411831 /* opdraggingmove.h in Headers */,
-				651528FD072BFF5C00411831 /* osadroplet.h in Headers */,
 				651528FF072BFF5D00411831 /* osainternal.h in Headers */,
 				65152901072BFF6000411831 /* osamenus.h in Headers */,
 				65152903072BFF6300411831 /* osaparseaete.h in Headers */,
@@ -2604,7 +2581,6 @@
 				65D516AB072CED430097D18E /* frontier.xcode.h in Headers */,
 				65BBB664072E5643008E2F34 /* frontierdefs.h in Headers */,
 				65B70CE00797CEAD008C2F1A /* langmath.h in Headers */,
-				65B70CEA0797CF78008C2F1A /* FastTimes.h in Headers */,
 				65AA438609C03C6D00A4B237 /* sysshellcall.h in Headers */,
 				6599181A09C4952A00F6F58C /* langcrypt.h in Headers */,
 				6599181B09C4952A00F6F58C /* whirlpool.h in Headers */,
@@ -2913,7 +2889,6 @@
 				65059A8809968C1400410571 /* cursor.c in Sources */,
 				65059A8909968C1400410571 /* bitmaps.c in Sources */,
 				65059A8A09968C1400410571 /* base64.c in Sources */,
-				65059A8B09968C1400410571 /* assert.c in Sources */,
 				65059A8C09968C1400410571 /* aeutils.c in Sources */,
 				65059A8E09968C1400410571 /* kb.c in Sources */,
 				65059A8F09968C1400410571 /* icon.c in Sources */,
@@ -3029,7 +3004,6 @@
 				65059AFE09968C1400410571 /* opbuttons.c in Sources */,
 				65059AFF09968C1400410571 /* op.c in Sources */,
 				65059B0009968C1400410571 /* osacomponent.c in Sources */,
-				65059B0109968C1400410571 /* osadroplet.c in Sources */,
 				65059B0209968C1400410571 /* osaparseaete.c in Sources */,
 				65059B0309968C1400410571 /* osawindows.c in Sources */,
 				65059B0409968C1400410571 /* shell.c in Sources */,
@@ -3079,7 +3053,6 @@
 				65059B3009968C1400410571 /* study.c in Sources */,
 				65059B3109968C1400410571 /* MoreFilesX.c in Sources */,
 				65059B3209968C1400410571 /* langmath.c in Sources */,
-				65059B3309968C1400410571 /* FastTimes.c in Sources */,
 				65AA438C09C03C8900A4B237 /* sysshellcall.c in Sources */,
 				6599180809C494EA00F6F58C /* whirlpool.c in Sources */,
 				6599181509C4950300F6F58C /* langcrypt.c in Sources */,
@@ -3125,7 +3098,6 @@
 				651526F6072BFC6800411831 /* cursor.c in Sources */,
 				651526F7072BFC6800411831 /* bitmaps.c in Sources */,
 				651526F8072BFC6800411831 /* base64.c in Sources */,
-				651526F9072BFC6800411831 /* assert.c in Sources */,
 				651526FA072BFC6800411831 /* aeutils.c in Sources */,
 				651526FC072BFC6800411831 /* kb.c in Sources */,
 				651526FD072BFC6800411831 /* icon.c in Sources */,
@@ -3241,7 +3213,6 @@
 				6515276C072BFC6800411831 /* opbuttons.c in Sources */,
 				6515276D072BFC6800411831 /* op.c in Sources */,
 				6515276E072BFC6800411831 /* osacomponent.c in Sources */,
-				6515276F072BFC6800411831 /* osadroplet.c in Sources */,
 				65152771072BFC6800411831 /* osaparseaete.c in Sources */,
 				65152772072BFC6800411831 /* osawindows.c in Sources */,
 				65152773072BFC6800411831 /* shell.c in Sources */,
@@ -3291,7 +3262,6 @@
 				651527A0072BFC6900411831 /* study.c in Sources */,
 				651527AC072BFC6900411831 /* MoreFilesX.c in Sources */,
 				65B70CDC0797CE4A008C2F1A /* langmath.c in Sources */,
-				65B70CE60797CF2D008C2F1A /* FastTimes.c in Sources */,
 				65AA438B09C03C8900A4B237 /* sysshellcall.c in Sources */,
 				6599180709C494EA00F6F58C /* whirlpool.c in Sources */,
 				6599181409C4950300F6F58C /* langcrypt.c in Sources */,

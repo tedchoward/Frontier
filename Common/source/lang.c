@@ -962,11 +962,7 @@ boolean langrunhandletraperror (Handle htext, bigstring bsresult, bigstring bser
 	GrafPtr saveport;
 	//Code change by Timothy Paustian Wednesday, June 14, 2000 4:32:31 PM
 	//Changed to Opaque call for Carbon
-	#if TARGET_API_MAC_CARBON == 1
 	saveport = GetQDGlobalsThePort();
-	#else
-	saveport = quickdrawglobal (thePort);
-	#endif
 	
 	savecallback = langcallbacks.errormessagecallback;
 	
@@ -990,11 +986,7 @@ boolean langrunhandletraperror (Handle htext, bigstring bsresult, bigstring bser
 	//Changed to Opaque call for Carbon
 	{
 	GrafPtr thePort;
-	#if TARGET_API_MAC_CARBON == 1
 	thePort = GetQDGlobalsThePort();
-	#else
-	thePort = quickdrawglobal (thePort);
-	#endif
 	
 	if (thePort != saveport)
 		SetPort (saveport);

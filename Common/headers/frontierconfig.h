@@ -49,13 +49,8 @@
 #define	idaboutconfig 137
 
 
-#if TARGET_API_MAC_CARBON == 1
 	#define idcommandconfig 146 /*OS X uses a normal window*/
 	#define idlangerrorconfig 145
-#else
-	#define idcommandconfig 138
-	#define idlangerrorconfig 139
-#endif
 
 #define idstatsconfig 140
 #define idpictconfig 141

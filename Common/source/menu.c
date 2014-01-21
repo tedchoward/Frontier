@@ -358,7 +358,6 @@ hdlmenu getresourcemenu (short id) {
 		/*Code change by Timothy Paustian Saturday, July 22, 2000 10:26:47 PM
 		/code to conditionalize the quit menu.*/
 		
-		#if TARGET_API_MAC_CARBON == 1
 		
 			if (id == 2 || id == 4) { /*PBS 7.1b5: conditionalize Window menu also*/
 			
@@ -380,7 +379,6 @@ hdlmenu getresourcemenu (short id) {
 					} /*if*/
 			} /*if*/
 			
-		#endif
 		
 		return (GetMenu (id));
 		

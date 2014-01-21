@@ -614,15 +614,9 @@ static boolean picttextparse (Ptr textbuf, short ctbytes, bigstring bs) {
 			StdText (stringlength (bs), &bs [1], numer, denom);
 		else
 		
-			#if TARGET_API_MAC_CARBON == 1
 			
 				InvokeQDTextUPP ((short) stringlength (bs), (Ptr) &bs [1], numer, denom, (*porigprocs).textProc);
 			
-			#else
-		
-				CallQDTextProc ((*porigprocs).textProc, (short) stringlength (bs), (Ptr) &bs [1], numer, denom);
-			
-			#endif
 		} /*update_stdtext*/
 	
 	
@@ -635,40 +629,14 @@ static boolean picttextparse (Ptr textbuf, short ctbytes, bigstring bs) {
 		if (porigprocs == nil)
 			return (StdTxMeas (stringlength (bs), &bs [1], numer, denom, info));
 	
-		#if TARGET_API_MAC_CARBON == 1
 
 			return (InvokeQDTxMeasUPP ((short) stringlength (bs), (Ptr) &bs [1], numer, denom, info, (*porigprocs).txMeasProc));
 			
-		#else
-			
-			return (CallQDTxMeasProc ((*porigprocs).txMeasProc, (short) stringlength (bs), (Ptr) &bs [1], numer, denom, info));
-		
-		#endif
 		} /*update_stdtxmeas*/
 	
-	#if TARGET_API_MAC_CARBON == 1
 	#define update_stdtextUPP ((QDTextUPP) update_stdtext)
 		
 	#define update_stdtxmeasUPP ((QDTxMeasUPP) update_stdtxmeas)
-	#else
-	#if GENERATINGCFM
-		
-		static RoutineDescriptor update_stdtextDesc = BUILD_ROUTINE_DESCRIPTOR (uppQDTextProcInfo, update_stdtext);
-		
-		static RoutineDescriptor update_stdtxmeasDesc = BUILD_ROUTINE_DESCRIPTOR (uppQDTxMeasProcInfo, update_stdtxmeas);
-		
-		#define update_stdtextUPP (&update_stdtextDesc)
-		
-		#define update_stdtxmeasUPP (&update_stdtxmeasDesc)
-		
-	#else
-		
-		#define update_stdtextUPP ((QDTextUPP) update_stdtext)
-		
-		#define update_stdtxmeasUPP ((QDTxMeasUPP) update_stdtxmeas)
-		
-	#endif
-#endif//TARGET_API_MAC_CARBON
 		
 	
 #endif

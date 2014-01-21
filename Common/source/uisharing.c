@@ -117,11 +117,7 @@ glue windoweventGlue (ComponentInstance comp, EventRecord *ev, tyWindowSharingGl
 	pb.ev = ev;
 	pb.comp = comp;
 	
-	#if TARGET_API_MAC_CARBON == 1
 	return CallComponentDispatch((ComponentParameters *)&pb);
-	#else	
-	return CallUniversalProc(CallComponentUPP, uppCallComponentProcInfo, &pb);
-	#endif
 		} /*windoweventGlue*/
 
 
@@ -145,11 +141,7 @@ glue windowiscardGlue (ComponentInstance comp, WindowPtr w) {
 	pb.w = w;
 	pb.comp = comp;
 	
-	#if TARGET_API_MAC_CARBON == 1
 	return CallComponentDispatch((ComponentParameters *)&pb);
-	#else	
-	return CallUniversalProc(CallComponentUPP, uppCallComponentProcInfo, &pb);
-	#endif
 	} /*windowiscardGlue*/
 	
 	
@@ -173,11 +165,7 @@ glue closewindowGlue (ComponentInstance comp, WindowPtr w) {
 	pb.w = w;
 	pb.comp = comp;
 	
-	#if TARGET_API_MAC_CARBON == 1
 	return CallComponentDispatch((ComponentParameters *)&pb);
-	#else	
-	return CallUniversalProc(CallComponentUPP, uppCallComponentProcInfo, &pb);
-	#endif
 	} /*windowiscardGlue*/
 	
 
@@ -201,11 +189,7 @@ glue closewindowGlue (ComponentInstance comp, WindowPtr w) {
 		pb.componentWhat = msInitSharedMenusCommand;
 		pb.comp = comp;
 		
-		#if TARGET_API_MAC_CARBON == 1
 		return CallComponentDispatch((ComponentParameters *)&pb);
-		#else	
-		return CallUniversalProc(CallComponentUPP, uppCallComponentProcInfo, &pb);
-		#endif
 		} 	/*initsharedmenusGlue*/
 		
 	
@@ -233,11 +217,7 @@ glue closewindowGlue (ComponentInstance comp, WindowPtr w) {
 		pb.idmenu = idmenu;
 		pb.comp = comp;
 		
-		#if TARGET_API_MAC_CARBON == 1
 		return CallComponentDispatch((ComponentParameters *)&pb);
-		#else	
-		return CallUniversalProc(CallComponentUPP, uppCallComponentProcInfo, &pb);
-		#endif
 		} 	/*sharedmenuhitGlue*/
 		
 	
@@ -261,11 +241,7 @@ glue closewindowGlue (ComponentInstance comp, WindowPtr w) {
 		pb.flrunning = flrunning;
 		pb.comp = comp;
 		
-		#if TARGET_API_MAC_CARBON == 1
 		return CallComponentDispatch((ComponentParameters *)&pb);
-		#else	
-		return CallUniversalProc(CallComponentUPP, uppCallComponentProcInfo, &pb);
-		#endif
 		} 	/*sharedscriptrunningGlue*/
 		
 	
@@ -287,11 +263,7 @@ glue closewindowGlue (ComponentInstance comp, WindowPtr w) {
 		pb.componentWhat = msCancelSharedScriptCommand;
 		pb.comp = comp;
 		
-		#if TARGET_API_MAC_CARBON == 1
 		return CallComponentDispatch((ComponentParameters *)&pb);
-		#else	
-		return CallUniversalProc(CallComponentUPP, uppCallComponentProcInfo, &pb);
-		#endif
 		} 	/*cancelsharedscriptGlue*/
 		
 	
@@ -315,11 +287,7 @@ glue closewindowGlue (ComponentInstance comp, WindowPtr w) {
 		pb.idinsertafter = idinsertafter;
 		pb.comp = comp;
 		
-		#if TARGET_API_MAC_CARBON == 1
 		return CallComponentDispatch((ComponentParameters *)&pb);
-		#else	
-		return CallUniversalProc(CallComponentUPP, uppCallComponentProcInfo, &pb);
-		#endif
 		} 	/*checksharedmenusGlue*/
 		
 	
@@ -341,11 +309,7 @@ glue closewindowGlue (ComponentInstance comp, WindowPtr w) {
 		pb.componentWhat = msDisposeSharedMenusCommand;
 		pb.comp = comp;
 		
-		#if TARGET_API_MAC_CARBON == 1
 		return CallComponentDispatch((ComponentParameters *)&pb);
-		#else	
-		return CallUniversalProc(CallComponentUPP, uppCallComponentProcInfo, &pb);
-		#endif
 		} 	/*disposesharedmenusGlue*/
 		
 	
@@ -371,11 +335,7 @@ glue closewindowGlue (ComponentInstance comp, WindowPtr w) {
 		pb.idmenu = idmenu;
 		pb.comp = comp;
 		
-		#if TARGET_API_MAC_CARBON == 1
 		return CallComponentDispatch((ComponentParameters *)&pb);
-		#else	
-		return CallUniversalProc(CallComponentUPP, uppCallComponentProcInfo, &pb);
-		#endif
 		} 	/*issharedmenuGlue*/
 		
 	
@@ -399,11 +359,7 @@ glue closewindowGlue (ComponentInstance comp, WindowPtr w) {
 		pb.flenable = flenable;
 		pb.comp = comp;
 		
-		#if TARGET_API_MAC_CARBON == 1
 		return CallComponentDispatch((ComponentParameters *)&pb);
-		#else	
-		return CallUniversalProc(CallComponentUPP, uppCallComponentProcInfo, &pb);
-		#endif
 		} 	/*enablesharedmenusGlue*/
 		
 	
@@ -429,11 +385,7 @@ glue closewindowGlue (ComponentInstance comp, WindowPtr w) {
 		pb.idmenu = idmenu;
 		pb.comp = comp;
 		
-		#if TARGET_API_MAC_CARBON == 1
 		return CallComponentDispatch(&pb);
-		#else	
-		return CallUniversalProc(CallComponentUPP, uppCallComponentProcInfo, &pb);
-		#endif
 		} 	/*runsharedmenuitemGlue*/
 		
 	
@@ -457,11 +409,7 @@ glue closewindowGlue (ComponentInstance comp, WindowPtr w) {
 		pb.scripterrorproc = scripterrorproc;
 		pb.comp = comp;
 		
-		#if TARGET_API_MAC_CARBON == 1
 		return CallComponentDispatch((ComponentParameters *)&pb);
-		#else	
-		return CallUniversalProc(CallComponentUPP, uppCallComponentProcInfo, &pb);
-		#endif
 		} 	/*setscripterrorcallbackGlue*/
 	
 	
@@ -483,11 +431,7 @@ glue closewindowGlue (ComponentInstance comp, WindowPtr w) {
 		pb.componentWhat = wsStubStartCommand;
 		pb.comp = comp;
 		
-		#if TARGET_API_MAC_CARBON == 1
 		return CallComponentDispatch((ComponentParameters *)&pb);
-		#else	
-		return CallUniversalProc(CallComponentUPP, uppCallComponentProcInfo, &pb);
-		#endif
 		} 	/*stubstartGlue*/
 
 #endif
@@ -521,11 +465,7 @@ glue runhandleGlue (ComponentInstance comp, Handle h, short flscriptedcard, Str2
 	pb.h = h;
 	pb.comp = comp;
 	
-	#if TARGET_API_MAC_CARBON == 1
 	return CallComponentDispatch((ComponentParameters *)&pb);
-	#else	
-	return CallUniversalProc(CallComponentUPP, uppCallComponentProcInfo, &pb);
-	#endif
 	} /*runhandleGlue*/
 
 
@@ -557,11 +497,7 @@ glue runmodalhandleGlue (ComponentInstance comp, Handle h, short flscriptedcard,
 	pb.h = h;
 	pb.comp = comp;
 	
-	#if TARGET_API_MAC_CARBON == 1
 	return CallComponentDispatch((ComponentParameters *)&pb);
-	#else	
-	return CallUniversalProc(CallComponentUPP, uppCallComponentProcInfo, &pb);
-	#endif
 	} /*runmodalhandleGlue*/
 
 
@@ -591,11 +527,7 @@ glue setobjectvalueGlue (ComponentInstance comp, Handle hcard, Str255 name, Hand
 	pb.hcard = hcard;
 	pb.comp = comp;
 	
-	#if TARGET_API_MAC_CARBON == 1
 	return CallComponentDispatch((ComponentParameters *)&pb);
-	#else	
-	return CallUniversalProc(CallComponentUPP, uppCallComponentProcInfo, &pb);
-	#endif
 	} /*setobjectvalueGlue*/
 	
 
@@ -623,11 +555,7 @@ glue getobjectvalueGlue (ComponentInstance comp, Handle hcard, Str255 name, Hand
 	pb.hcard = hcard;
 	pb.comp = comp;
 	
-	#if TARGET_API_MAC_CARBON == 1
 	return CallComponentDispatch((ComponentParameters *)&pb);
-	#else	
-	return CallUniversalProc(CallComponentUPP, uppCallComponentProcInfo, &pb);
-	#endif
 	} /*getobjectvalueGlue*/
 	
 
@@ -655,11 +583,7 @@ glue getobjecthandleGlue (ComponentInstance comp, Handle hcard, Str255 name, Han
 	pb.hcard = hcard;
 	pb.comp = comp;
 	
-	#if TARGET_API_MAC_CARBON == 1
 	return CallComponentDispatch((ComponentParameters *)&pb);
-	#else	
-	return CallUniversalProc(CallComponentUPP, uppCallComponentProcInfo, &pb);
-	#endif
 	} /*getobjecthandleGlue*/
 	
 
@@ -683,11 +607,7 @@ glue recalcGlue (ComponentInstance comp, Handle h) {
 	pb.h = h;
 	pb.comp = comp;
 	
-	#if TARGET_API_MAC_CARBON == 1
 	return CallComponentDispatch((ComponentParameters *)&pb);
-	#else	
-	return CallUniversalProc(CallComponentUPP, uppCallComponentProcInfo, &pb);
-	#endif
 	} /*recalcGlue*/
 
 #endif
@@ -713,11 +633,7 @@ glue editGlue (ComponentInstance comp, short editcommand) {
 	pb.editcommand = editcommand;
 	pb.comp = comp;
 	
-	#if TARGET_API_MAC_CARBON == 1
 	return CallComponentDispatch((ComponentParameters *)&pb);
-	#else	
-	return CallUniversalProc(CallComponentUPP, uppCallComponentProcInfo, &pb);
-	#endif
 	} /*editGlue*/
 
 
@@ -743,11 +659,7 @@ glue updateGlue (ComponentInstance comp, Handle h) {
 	pb.h = h;
 	pb.comp = comp;
 	
-	#if TARGET_API_MAC_CARBON == 1
 	return CallComponentDispatch((ComponentParameters *) &pb);
-	#else	
-	return CallUniversalProc(CallComponentUPP, uppCallComponentProcInfo, &pb);
-	#endif
 	} /*updateGlue*/
 
 #endif
@@ -1156,12 +1068,7 @@ void uisCloseAllSharedWindows (void) {
 	
 	while (w != nil) {
 		
-		#if TARGET_API_MAC_CARBON == 1
 		wnext = GetNextWindow(w);
-		#else
-		
-		wnext = (WindowPtr) (*(WindowPeek) w).nextWindow;
-		#endif
 		
 		if (uisIsSharedWindow (w))
 			uisCloseSharedWindow (w);
@@ -1182,15 +1089,9 @@ static Boolean IACgetbinaryparam (AppleEvent *event, OSType keyword, Handle *hbi
 	if (*errcode != noErr) 
 		return (false);
 	
-	#if TARGET_API_MAC_CARBON == 1 /*PBS 03/14/02: AE OS X fix.*/
 	
 		copydatahandle (&result, hbinary);
 		
-	#else
-	
-		*hbinary = result.dataHandle;
-	
-	#endif
 	
 	*binarytype = result.descriptorType;
 	
@@ -1209,15 +1110,9 @@ static Boolean IACgetstringparam (AppleEvent *event, OSType keyword, Str255 s, O
 	if (*errcode != noErr) 
 		return (false);
 	
-	#if TARGET_API_MAC_CARBON == 1 /*PBS 03/14/02: AE OS X fix.*/
 	
 		copydatahandle (&result, &htext);
 	
-	#else
-	
-		htext = result.dataHandle;
-	
-	#endif
 	
 	lenstring = GetHandleSize (htext);
 	

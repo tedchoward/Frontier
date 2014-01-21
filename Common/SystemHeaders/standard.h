@@ -36,10 +36,6 @@ standard.h -- standard types and constants
 	#include "macconv.h"
 #endif
 
-#ifdef MACVERSION  /* 2005-01-09 SMD - for getmilliseconds */
-	#include "FastTimes.h"
-#endif
-
 #include "stringdefs.h"		/* embedded string definitions */
 
 #ifndef appletdefsinclude

@@ -127,7 +127,6 @@ static void setthreadprocs (ThreadID idthread, void * hglobals) {
 	*/
 	//Code change by Timothy Paustian Thursday, May 11, 2000 4:38:48 PM
 	//creating the UPPs for use on carbon.
-	#if TARGET_API_MAC_CARBON == 1
 	hdlthreadglobals	globals = (hdlthreadglobals)hglobals;
 	HLock((Handle) globals);
 	(**globals).threadInCallbackUPP = NewThreadSwitchUPP(&swapinthreadcontext);
@@ -141,14 +140,6 @@ static void setthreadprocs (ThreadID idthread, void * hglobals) {
 	SetThreadTerminator (idthread, (**globals).threadTerminateUPP, hglobals);
 	
 	HUnlock((Handle) globals);
-	#else
-		
-	SetThreadSwitcher (idthread, &swapinthreadcontext, hglobals, true);
-	
-	SetThreadSwitcher (idthread, &copythreadcontext, hglobals, false);
-	
-	SetThreadTerminator (idthread, &disposethreadcontext, hglobals);
-	#endif
 		} /*setthreadprocs*/
 
 #endif
@@ -162,9 +153,6 @@ boolean initmainthread (void * hglobals) {
 	*/
 	
 #ifdef MACVERSION
-	#if !TARGET_API_MAC_CARBON
-		RememberA5 ();
-		#endif /*for thread procs*/
 	
 	setthreadprocs (kApplicationThreadID, hglobals);
 	
@@ -329,17 +317,9 @@ boolean newthread (tythreadmaincallback threadmain, tythreadmainparams threadpar
 	ThreadID idthread;
 	//Code change by Timothy Paustian Thursday, May 11, 2000 4:49:58 PM
 	//we need to create a thread callback UPP for carbon. 
-	#if TARGET_API_MAC_CARBON == 1
 	hdlthreadglobals	globals = (hdlthreadglobals)hglobals;
 	(**globals).threadEntryCallbackUPP = NewThreadEntryUPP((ThreadEntryProcPtr)threadmain);
 	err = NewThread (kCooperativeThread, (**globals).threadEntryCallbackUPP, threadparams, (Size) macmemoryconfig.minstacksize, kUsePremadeThread + kCreateIfNeeded + kFPUNotNeeded, nil, &idthread);
-	#else
-		
-
-	err = NewThread (kCooperativeThread, threadmain, threadparams, (Size) macmemoryconfig.minstacksize, 
-		
-		kUsePremadeThread + kCreateIfNeeded + kFPUNotNeeded, nil, &idthread);
-	#endif
 		
 	if (oserror (err))
 		return (false);

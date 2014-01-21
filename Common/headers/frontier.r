@@ -33,21 +33,11 @@
 #define __FRONTIER_R__
 
 
-#if TARGET_API_MAC_CARBON
 	#ifdef FRONTIER_FRAMEWORK_INCLUDES
 		#include <Carbon/Carbon.r>
 	#else
 		#include <Carbon.r>
 	#endif
-#else
-	#include <MacTypes.r>
-	#include <AEUserTermTypes.r>
-	#include <Controls.r>
-	#include <Dialogs.r>
-	#include <Icons.r>
-	#include <Menus.r>
-	#include <IntlResources.r>
-#endif
 
 
 #include "frontierdefs.h"	/* global pre-processor defines */

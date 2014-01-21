@@ -1726,19 +1726,10 @@ static boolean lookupprocaddress (tydllinfohandle hdll, typrocinfohandle hprocin
 	#ifdef MACVERSION
 		CFragSymbolClass procclass;
 		OSErr err;
-		#if !TARGET_API_MAC_CARBON
-			RoutineDescriptor desctemplate = BUILD_ROUTINE_DESCRIPTOR (uppdllcallProcInfo, NULL);
-		#endif
 		
 		err = FindSymbol ((**hdll).hdllsyshandle, (**hprocinfo).bsprocname, (Ptr*) &(**hprocinfo).procaddress, &procclass); 
 
-		#if !TARGET_API_MAC_CARBON
-			if (err == noErr) {
-				(**hprocinfo).moduledesc = desctemplate;
-				(**hprocinfo).moduledesc.routineRecords[0].procDescriptor = (ProcPtr) (**hprocinfo).procaddress;	/* fill in the blank */
-				(**hprocinfo).moduleUPP = (UniversalProcPtr) &(**hprocinfo).moduledesc;
-				}
-		#elif TARGET_RT_MAC_MACHO
+		#if   TARGET_RT_MAC_MACHO
 			if (err == noErr) {
 				(**hprocinfo).procaddress = convertcfmtomachofuncptr ((**hprocinfo).procaddress);
 				}
@@ -2130,9 +2121,6 @@ static boolean getprocinfo (const ptrfilespec fs, bigstring bsprocname, tydllmod
 
 		CFragSymbolClass procclass;
 		OSErr err;
-		 #if !TARGET_API_MAC_CARBON
-		RoutineDescriptor desctemplate = BUILD_ROUTINE_DESCRIPTOR (uppdllcallProcInfo, NULL);
-		#endif
 	#endif
 	/*
 	load the dll, find the module, and map its parameter info to our types.
@@ -2143,7 +2131,6 @@ static boolean getprocinfo (const ptrfilespec fs, bigstring bsprocname, tydllmod
 	nullterminate (procname);
 
 	#ifdef MACVERSION
-		#if TARGET_API_MAC_CARBON
 		info->procAddress = NULL;
 	
 		err = FindSymbol ((CFragConnectionID)info->moduleHandle, procname, (Ptr*)&(info->procAddress), &procclass); 
@@ -2157,20 +2144,6 @@ static boolean getprocinfo (const ptrfilespec fs, bigstring bsprocname, tydllmod
 			//This is the only place the frontier code uses moduleUPP so it should be save. 
 			info->moduleUPP = NULL;
 			}
-		#else
-		info->moduleDesc = desctemplate;
-
-		info->procAddress = NULL;
-	
-		err = FindSymbol ((CFragConnectionID)info->moduleHandle, procname, (Ptr*)&(info->procAddress), &procclass); 
-
-		if (err == noErr) {
-			
-			info->moduleDesc.routineRecords [0].procDescriptor = (ProcPtr)info->procAddress;	// fill in the blank
-	
-			info->moduleUPP = (UniversalProcPtr) &(info->moduleDesc);
-			}
-		#endif
 	#endif
 
 	#ifdef WIN95VERSION
@@ -2219,11 +2192,7 @@ static boolean islibraryloaded (const ptrfilespec fs, Handle * hModule) {
 		if ((err != noErr) || (response & (1 << gestaltCFMPresent)) == 0)
 			return (false);
 		
-		#if TARGET_API_MAC_CARBON == 1
 			err = GetDiskFragment (fs, 0, kCFragGoesToEOF, fs->name, kReferenceCFrag, &connID, &mainAddr, errName);		
-		#else
-			err = GetDiskFragment (fs, 0, kCFragGoesToEOF, fs->name, kFindCFrag, &connID, &mainAddr, errName);		
-		#endif
 		
 		if (err != noErr)
 			return (false);
@@ -2411,18 +2380,10 @@ static boolean langcalldll (tydllmoduleinfo *dllinfo, tydllparamblock *dllcall) 
 	#endif
 
 	#ifdef MACVERSION
-		#if TARGET_API_MAC_CARBON == 1
 			//Code change by Timothy Paustian Friday, June 16, 2000 1:13:28 PM
 			//Changed to Opaque call for Carbon - we don't need UPPs in Carbon.
 			//fl = (*(tyDLLEXTROUTINE) (dllinfo->moduleUPP)) (dllcall, dllcallbacks); // call it
 			fl = (*(dllinfo->procAddress)) (dllcall, dllcallbacks); // call it
-		#else
-			#if GENERATINGCFM
-				fl = CallUniversalProc (dllinfo->moduleUPP, uppdllcallProcInfo, dllcall, dllcallbacks);
-			#else
-				fl = (*(tyDLLEXTROUTINE) (dllinfo->moduleUPP)) (dllcall, dllcallbacks); // call it
-			#endif
-		#endif
 	#endif
 
 	dofreelibrary (dllinfo->moduleHandle, false);  /*okay we used it, now release it.*/

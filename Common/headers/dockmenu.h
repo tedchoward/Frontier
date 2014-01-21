@@ -33,8 +33,6 @@ extern pascal OSStatus dockmenuhandler (EventHandlerCallRef nextHandler, EventRe
 
 #endif
 
-#if TARGET_API_MAC_CARBON == 1
 
 pascal OSStatus dockcommandhandler (EventHandlerCallRef nextHandler, EventRef theEvent, void* userData);
 
-#endif

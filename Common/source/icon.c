@@ -770,7 +770,6 @@ drawiconsequence (Rect r, short firsticon, short lasticon, bigstring bs) {
 */
 
 
-#if TARGET_API_MAC_CARBON == 1
 
 static void
 MyThemeButtonDrawCallback (
@@ -800,7 +799,6 @@ MyThemeButtonDrawCallback (
 
 	} /*MyThemeButtonDrawCallback*/
 
-#endif
 
 void drawlabeledwindoidicon (Rect r, bigstring bslabel, boolean flhastext, boolean flpressed) {
 	
@@ -808,7 +806,6 @@ void drawlabeledwindoidicon (Rect r, bigstring bslabel, boolean flhastext, boole
 	draw the labeled windoid icon in the appropriate state
 	*/
 	
-	#if TARGET_API_MAC_CARBON == 1
 	
 		ThemeButtonDrawInfo drawinfo;
 		ThemeButtonDrawUPP drawupp;
@@ -848,23 +845,6 @@ void drawlabeledwindoidicon (Rect r, bigstring bslabel, boolean flhastext, boole
 			popstyle ();
 			} /*if*/			
 			
-	#else
-
-		register short resnum;
-		
-		if (flpressed)
-			resnum = depressedshrunkenwindoidicon;
-			
-		else {
-			if (flhastext)
-				resnum = windoidwithtexticon;
-			else
-				resnum = windoidwithnotexticon;
-			}
-		
-		drawlabeledicon (&r, resnum, bslabel, false);
-	
-	#endif
 		
 	} /*drawlabeledwindoidicon*/
 

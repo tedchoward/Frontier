@@ -359,9 +359,7 @@ boolean shellopen (void) {
 
 
 static void prepuserforwait (WindowPtr w) {
-#if TARGET_API_MAC_CARBON
 #	pragma unused(w)
-#endif
 
 	/*
 	4.1.1b1 dmb: call langpartialeventloop when appropriate
@@ -383,15 +381,11 @@ static void prepuserforwait (WindowPtr w) {
 
 #if 0	/*7.0b16 PBS: only Macs get grayed windows. Fix for Windows display glitch.*/
 		/*2009-09-18 aradke: graying out now causes display glitch on Mac OS X too */
-	#if TARGET_API_MAC_CARBON
 	{
 	//only gray the front window
 	WindowRef	frontWind = GetFrontWindowOfClass(kAllWindowClasses, false);
 	graywindow(frontWind);
 	}
-	#else
-	grayownedwindows (w); /*gray the window while saving*/
-	#endif
 
 #endif
 	} /*prepuserforwait*/

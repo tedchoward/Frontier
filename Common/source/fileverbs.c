@@ -3739,35 +3739,6 @@ static boolean filefunctionvalue (short token, hdltreenode hparam1, tyvaluerecor
 			return (setbooleanvalue (true, v));
 			}
 		
-		#if TARGET_API_MAC_CARBON != 1 /*7.0B59 PBS: not implemented in OS X yet*/
-		
-			case mountservervolumefunc: {
-				bigstring bsvol, bsuser, bspassword;
-				
-				if (!getstringvalue (hp1, 1, bsvol))
-					break;
-				
-				if (!getstringvalue (hp1, 2, bsuser))
-					break;
-				
-				flnextparamislast = true;
-				
-				if (!getstringvalue (hp1, 3, bspassword))
-					break;
-				
-				if (countwords (bsvol, chpathseparator) != 3) {
-					
-					langparamerror (badnetworkvolumespecificationerror, bsvol);
-					
-					return (false);
-					}
-				
-				if (!mountvolume (bsvol, bsuser, bspassword))
-					break;
-				
-				return (setbooleanvalue (true, v));
-				}
-		#endif
 		
 		case volumeejectfunc: {
 			tyfilespec fs;

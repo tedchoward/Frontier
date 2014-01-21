@@ -77,7 +77,6 @@ boolean notifyuser (bigstring bsmessage) {
 
 	#define systemevents (osMask | updateMask | activMask | highLevelEventMask)
 
-	#if TARGET_API_MAC_CARBON == 1
 	
 		{
 		
@@ -89,7 +88,6 @@ boolean notifyuser (bigstring bsmessage) {
 			return (err == noErr);
 		}
 	
-	#endif
 	
 	pb = (NMRecPtr) NewPtrClear (longsizeof (NMRec));
 	

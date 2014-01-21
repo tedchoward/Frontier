@@ -856,11 +856,9 @@ static void miniresize (void) {
 	
 	miniresizetextrects (r); /*left and right are the same as for msgrect*/
 	
-	#if TARGET_API_MAC_CARBON == 1
 	
 		drawthemeborder ((**hm).textrects [0], (**hw).contentrect); /*PBS 7.0b52: draw scan-lines border*/
 		
-	#endif
 	
 	//(**hm).flmassiveupdate = true; /*it don't get much more massive than this!*/
 	} /*miniresize*/
@@ -975,9 +973,7 @@ static boolean mininewwindow (callback setuproutine) {
 		
 	windowzoom (w);
 	
-	#if TARGET_API_MAC_CARBON == 1 /*Make sure the window is fully drawn.*/
 		miniresize ();
-	#endif
 
 	shellpopglobals ();
 	

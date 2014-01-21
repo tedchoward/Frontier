@@ -927,11 +927,7 @@ boolean aboutsetmiscstring (bigstring bsmisc) {
 		//We cannot just pass a window or dialog ptr to pushport. It's doing
 		//an implicit cast. This will not work on OS X
 		CGrafPtr	thePort;
-		#if TARGET_API_MAC_CARBON == 1
 		thePort = GetWindowPort((WindowRef) aboutport);
-		#else
-		thePort = (CGrafPtr)aboutport;		
-		#endif
 		pushport(thePort);
 			
 			pushclip (miscinforect);
@@ -1054,11 +1050,7 @@ static void aboutupdate (void) {
 	
 	displayedaboutdata = aboutdata;
 
-	#if TARGET_API_MAC_CARBON
 		aboutport = GetWindowPort(aboutwindow);
-	#else
-		aboutport = (CGrafPtr)aboutwindow;	
-	#endif
 	
 	flhavemiscrect = false;
 
@@ -1080,7 +1072,6 @@ static void aboutupdate (void) {
 		
 		insetrect (&r, -1, -1);
 		
-		#if TARGET_API_MAC_CARBON == 1
 			
 			insetrect (&r, 0, -3);
 			
@@ -1088,20 +1079,6 @@ static void aboutupdate (void) {
 		
 			DrawThemeSeparator (&r, kThemeStateActive);
 		
-		#else
-
-		//	grayframerect (r);
-			movepento (r.left, r.top);
-			
-			pushpen ();
-			
-			setgraypen ();
-			
-			pendrawline (r.right, r.top);
-			
-			poppen ();
-
-		#endif
 		
 		flhavemiscrect = ccgettextitemrect (miscinfoitem, &miscinforect);
 		}
@@ -1691,11 +1668,9 @@ static boolean newaboutwindow (boolean flbootsplash) {
 		return (false);
 		}
 	
-	#if TARGET_API_MAC_CARBON == 1
 	
 		SetThemeWindowBackground (w, kThemeBrushModelessDialogBackgroundActive, false);
 	
-	#endif
 	
 	getwindowinfo (w, &hw);
 	
@@ -1867,9 +1842,7 @@ boolean openabout (boolean flzoom, long ctreservebytes) {
 		//Code change by Timothy Paustian 10/5/00
 		//We need to flush the about window to the screen
 		//safe because this routine only gets call during init. 
-		#if TARGET_API_MAC_CARBON == 1
 		QDFlushPortBuffer(GetWindowPort((**hinfo).macwindow), nil);
-		#endif
 	}
 #ifdef MACVERSION
 	if (ptemp != nil)

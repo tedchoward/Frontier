@@ -1001,22 +1001,6 @@ boolean tableclienttitlepopuphit (Point pt, hdlexternalvariable hvariable) {
 
 #ifdef MACVERSION
 
-	#if TARGET_API_MAC_CARBON != 1
-	
-		//Code change by Timothy Paustian Sunday, April 30, 2000 9:18:54 PM
-		//Leave this till later, but I have a feeling these are going to be 
-		//a real pain in Mac OS X
-		//Friday, May 5, 2000 10:36:39 PM
-		//I think I know how to handle this now.
-		//Code change by Timothy Paustian Sunday, May 21, 2000 9:28:04 PM
-		//I checked this out and it seems to work just fine.
-		CGrafPtr deskport;
-		#if ACCESSOR_CALLS_ARE_FUNCTIONS == 1
-		deskport = CreateNewPort();
-		#else
-		deskport = NewPtr(sizeof(CGrafPort));
-		#endif
-	#endif
 #endif
 	
 	if (hvariable == nil) /*defensive driving*/
@@ -1029,10 +1013,6 @@ boolean tableclienttitlepopuphit (Point pt, hdlexternalvariable hvariable) {
 	localtoglobalpoint (shellwindow, &pt);
 
 #ifdef MACVERSION	
-	#if TARGET_API_MAC_CARBON != 1
-		if (!pushdesktopport (deskport)) /*failed to open up a port on the whole desktop*/
-			return (false);
-	#endif
 #endif
 	
 	windowgettitle (shellwindow, bs);
@@ -1087,15 +1067,6 @@ boolean tableclienttitlepopuphit (Point pt, hdlexternalvariable hvariable) {
 	exit:
 
 #ifdef MACVERSION
-	#if TARGET_API_MAC_CARBON != 1
-
-		popdesktopport (deskport);
-		#if ACCESSOR_CALLS_ARE_FUNCTIONS == 1
-		 DisposePort(deskport);
-		#else
-		DisposePtr(deskport);
-		#endif
-	#endif
 #endif
 
 	return (fl);

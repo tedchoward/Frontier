@@ -157,7 +157,6 @@ boolean plotsmallicon (tysmalliconspec spec) {
 	
 boolean displaypopupicon (Rect r, boolean flenabled) {
 	
-	#if TARGET_API_MAC_CARBON == 1
 	
 		short themestate = kThemeStateActive;
 		
@@ -174,30 +173,6 @@ boolean displaypopupicon (Rect r, boolean flenabled) {
 
 		return (true);
 	
-	#else
-	
-		tysmalliconspec spec;
-		
-		spec.hbits = nil;
-		
-		spec.iconlist = miscsmalliconlist;
-		
-		if (flenabled)
-			spec.iconnum = blackpopupicon;
-		else
-			spec.iconnum = graypopupicon;
-		
-		spec.iconwindow = getport (); // quickdrawglobal (thePort);
-		
-		spec.iconrect = r;
-		
-		spec.flinverted = false;
-		
-		spec.flclearwhatsthere = true;
-		
-		return (plotsmallicon (spec));
-		
-	#endif
 	} /*displaypopupicon*/
 	
 	
@@ -264,9 +239,6 @@ boolean myMoof (short ticksbetweenframes, long howlong) {
 #ifdef MACVERSION
 	//you cannot call this with a window ptr, the function needs a dialog ptr
 	//its really not needed anyway, but I will leave it in for the non-carbon version
-	#if TARGET_API_MAC_CARBON == 0
-	positiondialogwindow (w);
-	#endif
 #endif
 
 	showwindow (w);	
@@ -274,11 +246,7 @@ boolean myMoof (short ticksbetweenframes, long howlong) {
 	//Code change by Timothy Paustian Monday, August 21, 2000 4:31:49 PM
 	//Must pass a CGrafPtr to pushport on OS X to avoid a crash
 	{
-	#if TARGET_API_MAC_CARBON == 1
 	thePort = GetWindowPort(w);
-	#else
-	thePort = (CGrafPtr)w;
-	#endif
 		
 	pushport (thePort);
 	}
@@ -303,9 +271,7 @@ boolean myMoof (short ticksbetweenframes, long howlong) {
 			sicn.iconnum = i;
 			
 			plotsmallicon (sicn);
-			#if TARGET_API_MAC_CARBON
 			QDFlushPortBuffer(thePort, nil);
-			#endif
 			if (mousebuttondown ()) {
 				
 				while (mousebuttondown ()) {}

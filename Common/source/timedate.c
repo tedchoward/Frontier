@@ -39,6 +39,8 @@
 
 #ifdef MACVERSION
 	#define tydate DateTimeRec
+    #include <sys/sysctl.h>
+    #include <sys/time.h>
 #endif
 
 #ifdef WIN95VERSION
@@ -1575,6 +1577,23 @@ extern long getmilliseconds(void) {
 	return ((long) (counter.QuadPart / gPerformanceFreq));
 } /* getmilliseconds */
 
+#endif
+
+#ifdef MACVERSION
+extern long getmilliseconds(void) {
+    struct timeval boottime, now;
+    int mib[2] = {CTL_KERN, KERN_BOOTTIME};
+    size_t size = sizeof (boottime);
+    long uptime = -1;
+    
+    gettimeofday(&now, NULL);
+    
+    if (sysctl(mib, 2, &boottime, &size, NULL, 0) != -1) {
+        uptime = (now.tv_sec * 1000 + now.tv_usec / 1000) - (boottime.tv_sec * 1000 + boottime.tv_usec / 1000);
+    }
+    
+    return uptime;
+}
 #endif
 
 

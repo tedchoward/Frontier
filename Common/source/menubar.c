@@ -200,12 +200,8 @@ static boolean meallocmenuid (short *id) {
 		//9/1/00 Timothy Paustian
 		//got rid of nasty use of direct memory access.
 		//not allowed in carbon
-		#if TARGET_API_MAC_CARBON == 1
 		MenuBarHandle MenuList = nil;
 		MenuList = GetMenuBar();
-		#else
-		#define MenuList (*(Handle *)0xA1C)
-		#endif		
 	#endif
 
 	if (hlist == nil)
@@ -766,11 +762,7 @@ static boolean getmenutobuild (bigstring bsmenu, boolean flhierarchic, short *id
 
 	#ifdef flcomponent
 		THz savezone;
-		#if TARGET_API_MAC_CARBON == 1
 		savezone = LMGetApplZone();
-		#else
-		 savezone = GetZone ();
-		 #endif
 		
 		#endif
 	
@@ -802,24 +794,16 @@ static boolean getmenutobuild (bigstring bsmenu, boolean flhierarchic, short *id
 		}
 	
 	#ifdef flcomponent
-		#if TARGET_API_MAC_CARBON == 1
 		//Code change by Timothy Paustian Monday, June 26, 2000 9:29:46 PM
 		//This code makes no sense to me.
 		LMSetApplZone(LMGetApplZone());
-		#else		
-		SetZone (ApplicationZone ());
-		#endif
 		
 	#endif
 	
 	*hmenu = Newmenu (*id, bsmenu);
 	
 	#ifdef flcomponent
-		#if TARGET_API_MAC_CARBON == 1
 		LMSetApplZone(savezone);
-		#else
-		SetZone (savezone);
-		#endif
 		
 		
 	#endif

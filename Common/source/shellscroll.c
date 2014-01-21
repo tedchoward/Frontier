@@ -282,21 +282,13 @@ static pascal void shellvertscroll (hdlscrollbar ctrl, short part) {
 	#define shellhorizscrollUPP	(&shellhorizscroll)
 	#define	shelllivescrollupp	(&ScrollThumbActionProc)
 #elif TARGET_RT_MAC_CFM
-	#if TARGET_API_MAC_CARBON
 		ControlActionUPP	shellvertscrollDesc;
 		ControlActionUPP	shellhorizscrollDesc;
 		ControlActionUPP	shelllivescrollupp;
 		#define shellvertscrollUPP (shellvertscrollDesc)
 		#define shellhorizscrollUPP (shellhorizscrollDesc)
-	#else
-		static RoutineDescriptor shellvertscrollDesc = BUILD_ROUTINE_DESCRIPTOR (uppControlActionProcInfo, shellvertscroll);
-		static RoutineDescriptor shellhorizscrollDesc = BUILD_ROUTINE_DESCRIPTOR (uppControlActionProcInfo, shellhorizscroll);
-		#define shellvertscrollUPP (&shellvertscrollDesc)
-		#define shellhorizscrollUPP (&shellhorizscrollDesc)
-	#endif
 #endif
 
-#if TARGET_API_MAC_CARBON == 1
 
 /*The live scrolling code descends from Apple sample code, hence the different style of code.*/
 
@@ -524,7 +516,6 @@ static void EndThumbTracking ( void ) {
 	return;
 	} /*EndThumbTracking*/
 
-#endif
 
 extern void shellinitscroll ();
 
@@ -532,26 +523,22 @@ void shellinitscroll(void)
 {
 	//Code change by Timothy Paustian Saturday, July 22, 2000 12:04:35 AM
 	//Needed in shellscroll
-	#if TARGET_API_MAC_CARBON
 		#if TARGET_RT_MAC_CFM
 			shellvertscrollDesc = NewControlActionUPP(shellvertscroll);
 			shellhorizscrollDesc = NewControlActionUPP(shellhorizscroll);
 			shelllivescrollupp = NewControlActionUPP (ScrollThumbActionProc);
 		#endif
-	#endif
 }
 
 extern void shellshutdownscroll ();
 
 void shellshutdownscroll(void)
 {
-	#if TARGET_API_MAC_CARBON
 		#if TARGET_RT_MAC_CFM
 			DisposeControlActionUPP(shellvertscrollDesc);
 			DisposeControlActionUPP(shellhorizscrollDesc);
 			DisposeControlActionUPP (shelllivescrollupp);
 		#endif
-	#endif
 }
 
 
@@ -559,10 +546,6 @@ void shellscroll (boolean flvert, hdlscrollbar sb, short part, Point pt) {
 	
 //	register WindowPtr w = shellwindow;
 	register long oldscrollbarcurrent;
-	#if TARGET_API_MAC_CARBON != 1
-		register long ctscroll;
-		tydirection dir;
-	#endif
 	
 	//pushclip ((*w).portRect); /*allow drawing in whole window%/
 		
@@ -570,7 +553,6 @@ void shellscroll (boolean flvert, hdlscrollbar sb, short part, Point pt) {
 		
 		oldscrollbarcurrent = getscrollbarcurrent (sb);
 		
-		#if TARGET_API_MAC_CARBON == 1
 			
 			gControl = sb;
 			
@@ -584,17 +566,6 @@ void shellscroll (boolean flvert, hdlscrollbar sb, short part, Point pt) {
 			
 			EndThumbTracking ();			
 		
-		#else
-		
-			TrackControl (sb, pt, nil);
-			
-			ctscroll = getscrollbarcurrent (sb) - oldscrollbarcurrent;
-		
-			dir = scrolldirection (flvert, ctscroll > 0);
-			
-			(*shellglobals.scrollroutine) (dir, false, abs (ctscroll));
-
-		#endif			
 		}
 	
 	else {
