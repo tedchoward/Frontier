@@ -88,6 +88,7 @@ boolean dosound (short duration, short amplitude, short frequency) {
 	//sysbeep();
 	//return true;
 	//#else
+    
 
 	SndChannelPtr channel;
 	SndCommand cmd;

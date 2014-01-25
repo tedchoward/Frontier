@@ -248,26 +248,27 @@ static void sqliteOpenError (const char *errmsg, bigstring bserror) {
 	} /*sqliteOpenError*/
 
 
-static void sqliteDatabaseError (const char *errmsg, bigstring bserror) {
-	bigstring bserrmsg;
+// 2014-01-25 tch: seems to be unused
+//static void sqliteDatabaseError (const char *errmsg, bigstring bserror) {
+//	bigstring bserrmsg;
+//
+//	copyctopstring (errmsg, bserrmsg); /* This creates a pstring at bserrmsg */
+//	getstringlist (langerrorlist, sqlitedberror, bserror); 
+//	parsedialogstring (bserror, bserrmsg, nil, nil, nil, bserror);
+//
+//	return;
+//	} /*sqliteDatabaseError*/
 
-	copyctopstring (errmsg, bserrmsg); /* This creates a pstring at bserrmsg */
-	getstringlist (langerrorlist, sqlitedberror, bserror); 
-	parsedialogstring (bserror, bserrmsg, nil, nil, nil, bserror);
-
-	return;
-	} /*sqliteDatabaseError*/
-
-
-static void sqliteScriptError (const char *errmsg, bigstring bserror) {
-	bigstring bserrmsg;
-
-	copyctopstring (errmsg, bserrmsg); /* This creates a pstring at bserrmsg */
-	getstringlist (langerrorlist, notfunctionerror, bserror);
-	parsedialogstring (bserror, bserrmsg, nil, nil, nil, bserror);
-
-	return;
-	} /*sqliteScriptError*/
+// 2014-01-25 tch: seems to be unused
+//static void sqliteScriptError (const char *errmsg, bigstring bserror) {
+//	bigstring bserrmsg;
+//
+//	copyctopstring (errmsg, bserrmsg); /* This creates a pstring at bserrmsg */
+//	getstringlist (langerrorlist, notfunctionerror, bserror);
+//	parsedialogstring (bserror, bserrmsg, nil, nil, nil, bserror);
+//
+//	return;
+//	} /*sqliteScriptError*/
 
 
 static void sqliteCompileError ( const char *errmsg, bigstring bserror ) {
@@ -341,7 +342,7 @@ boolean sqliteopenverb ( hdltreenode hparam1, tyvaluerecord *vreturned, bigstrin
 			return ( false );
 			}
 		
-		status = FSRefMakePath ( &fsref, *dbfile, MAXPATHLEN ); // dbfile encoded in UTF-8
+		status = FSRefMakePath ( &fsref, (UInt8 *)*dbfile, MAXPATHLEN ); // dbfile encoded in UTF-8
 		
 		len = strlen ( *dbfile );
 		
@@ -843,7 +844,7 @@ boolean sqlitegetcolumntextverb (hdltreenode hparam1, tyvaluerecord *vreturned, 
 		}
 		
 	/* Exit the verb, converting column_name back to Frontier handle */
-	if (!newfilledhandle ((ptrvoid) column_text, strlen (column_text), &returnH))
+	if (!newfilledhandle ((ptrvoid) column_text, strlen ((const char *)column_text), &returnH))
 		return false; /* Allocation failed */
 		
 	return (setheapvalue (returnH, stringvaluetype, vreturned)); 
@@ -909,7 +910,7 @@ boolean sqlitegetcolumnverb (hdltreenode hparam1, tyvaluerecord *vreturned, bigs
 			column_text = sqlite3_column_text(queryid, (int) columnNumber);
 
 			/* Exit the verb, converting column_name back to Frontier handle */
-			if (!newfilledhandle ((ptrvoid) column_text, strlen (column_text), &returnH))
+			if (!newfilledhandle ((ptrvoid) column_text, strlen ((const char *)column_text), &returnH))
 				return false; /* Allocation failed */
 			return (setheapvalue (returnH, stringvaluetype, vreturned)); 
 		} 
@@ -935,7 +936,7 @@ boolean sqlitegetcolumnverb (hdltreenode hparam1, tyvaluerecord *vreturned, bigs
 			/* SQLite spec says sqlite3_column_type only returns the above 5 types. But,
 			   just in case it lied, we'll return an error type to help Frontier avoid
 			   getting a case of return value indigestion. */
-			langerrormessage ("\x29""SQLite returned an undefined column type.");		
+			langerrormessage (BIGSTRING("\x29""SQLite returned an undefined column type."));		
 			return (false);
 		}
 	} /* switch */
@@ -980,7 +981,7 @@ boolean sqlitegetrowverb (hdltreenode hparam1, tyvaluerecord *vreturned, bigstri
 	
 	if (columnCount == 0) {
 	
-			langerrormessage ("\x2F""SQLite.getRow requires a minimum of one column.");
+			langerrormessage (BIGSTRING("\x2F""SQLite.getRow requires a minimum of one column."));
 					
 			return (false);
 		}
@@ -1024,7 +1025,7 @@ boolean sqlitegetrowverb (hdltreenode hparam1, tyvaluerecord *vreturned, bigstri
 				column_text = sqlite3_column_text(queryid, (int) columnNumber);
 
 				/* Exit the verb, converting column_name back to Frontier handle */
-				if (!newfilledhandle ((ptrvoid) column_text, strlen (column_text), &returnH))
+				if (!newfilledhandle ((ptrvoid) column_text, strlen ((const char *)column_text), &returnH))
 					return false; /* Allocation failed */
 					
 				if (!setheapvalue (returnH, stringvaluetype, &val)) /* convert handle to value */

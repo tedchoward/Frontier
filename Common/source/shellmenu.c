@@ -337,10 +337,10 @@ boolean shellinitmenus (void) {
 	
 	happlemenu = shellmenuhandle (applemenu); /*set global*/
 
-#ifdef MACVERSION
-	if (!installresitems (applemenu, 'DRVR'))
-		return (false);
-#endif
+//#ifdef MACVERSION
+//	if (!installresitems (applemenu, 'DRVR'))
+//		return (false);
+//#endif
 	
 	if (!installresitems (fontmenu, 'FONT'))
 		return (false);

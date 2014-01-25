@@ -158,6 +158,10 @@ typedef struct handlestream {
 	extern boolean debugloadhandleremains  (char * filename, unsigned long linenumber, unsigned long threadid, long, Handle, Handle *);
 #endif
 
+#ifdef MACVERSION
+extern UInt64 getPhysicalMemorySize(void);
+extern UInt64 getAvailableMemory(void);
+#endif
 
 extern boolean analyzeheap (void);
 

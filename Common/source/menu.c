@@ -421,7 +421,12 @@ hdlmenu Newmenu (short idmenu, bigstring bstitle) {
 	*/
 
 	#ifdef MACVERSION
-		return (NewMenu (idmenu, bstitle));
+        MenuRef menuRef;
+        CreateNewMenu(idmenu, 0, &menuRef);
+        CFStringRef menuTitle = CFStringCreateWithPascalString(kCFAllocatorDefault, bstitle, kCFStringEncodingMacRoman);
+        SetMenuTitleWithCFString(menuRef, menuTitle);
+        CFRelease(menuTitle);
+        return menuRef;
 	#endif
 
 	#ifdef WIN95VERSION
@@ -1036,7 +1041,9 @@ static short matchsubmenu (hdlmenu hmenu, hdlmenu hmatchmenu, hdlmenu * hreturn)
 boolean setmenutitle (hdlmenu hmenu, bigstring bs) {
 	
 	#ifdef MACVERSION
-		SetMenuItemText (hmenu, 0, bs);
+        CFStringRef menuItemText = CFStringCreateWithPascalString(kCFAllocatorDefault, bs, kCFStringEncodingMacRoman);
+        SetMenuItemTextWithCFString(hmenu, 0, menuItemText);
+        CFRelease(menuItemText);
 		
 		return (true);
 	#endif
@@ -1069,16 +1076,10 @@ boolean setmenutitle (hdlmenu hmenu, bigstring bs) {
 static boolean getmenutitle (hdlmenu hmenu, bigstring bs) {
 	
 	#ifdef MACVERSION
-		//Code change by Timothy Paustian Monday, May 1, 2000 9:15:51 PM
-		//Changed to Opaque call for Carbon
-		#if ACCESSOR_CALLS_ARE_FUNCTIONS == 1
-		Str255	menuTitle;
-		GetMenuTitle(hmenu, menuTitle);
-		copystring (menuTitle, bs);
-		#else
-		//old code
-		copystring ((ptrstring) (**hmenu).menuData, bs);
-		#endif
+        CFStringRef menuTitle;
+        CopyMenuTitleAsCFString(hmenu, &menuTitle);
+        CFStringGetPascalString(menuTitle, bs, sizeof (bigstring), kCFStringEncodingMacRoman);
+        CFRelease(menuTitle);
 		return (true);
 	#endif
 
@@ -1121,13 +1122,15 @@ boolean setmenuitem (hdlmenu hmenu, short ixmenu, bigstring bs) {
 	*/
 	
 	#ifdef MACVERSION
-		if (ixmenu <= 0)
-			return (false);
+		if (ixmenu <= 0) return (false);
 		
-		if (isemptystring (bs))
-			SetMenuItemText (hmenu, ixmenu, "\p ");
-		else
-			SetMenuItemText (hmenu, ixmenu, bs);
+        if (isemptystring (bs)) {
+            SetMenuItemTextWithCFString(hmenu, ixmenu, CFSTR(""));
+        } else {
+            CFStringRef menuItemText = CFStringCreateWithPascalString(kCFAllocatorDefault, bs, kCFStringEncodingMacRoman);
+            SetMenuItemTextWithCFString(hmenu, ixmenu, menuItemText);
+            CFRelease(menuItemText);
+        }
 			
 		return (true);
 	#endif
@@ -1189,7 +1192,10 @@ boolean getmenuitem (hdlmenu hmenu, short ixmenu, bigstring bs) {
 		return (getmenutitle (hmenu, bs));
 
 	#ifdef MACVERSION
-		GetMenuItemText (hmenu, ixmenu, bs);
+        CFStringRef menuItemText;
+        CopyMenuItemTextAsCFString(hmenu, ixmenu, &menuItemText);
+        CFStringGetPascalString(menuItemText, bs, sizeof (bigstring), kCFStringEncodingMacRoman);
+        CFRelease(menuItemText);
 		
 		return (true);
 	#endif
@@ -1357,21 +1363,13 @@ boolean Insertmenuitem (hdlmenu hmenu, short ixmenu, bigstring bs) {
 	*/
 	
 #ifdef MACVERSION
-	 /*to allow meta-characters in bs, append blank item, then set item text*/
-	bigstring bsspace;
-	
-	if (equalstrings (bs, STR_menuseparator)) /*take disabled seperator as is*/
-		InsertMenuItem (hmenu, bs, ixmenu - 1);
-		
-	else {
-		setstringwithchar (chspace, bsspace);
-		
-	//	AppendMenu (hmenu, bsspace);
-		InsertMenuItem (hmenu, bsspace, ixmenu - 1);
-		
-		if (!isemptystring (bs))
-			SetMenuItemText (hmenu, ixmenu, bs);
-		}
+	if (equalstrings (bs, STR_menuseparator)) { /*take disabled seperator as is*/
+        InsertMenuItemTextWithCFString(hmenu, CFSTR(""), ixmenu - 1, kMenuItemAttrSeparator, 0);
+    } else {
+        CFStringRef menuItemText = CFStringCreateWithPascalString(kCFAllocatorDefault, bs, kCFStringEncodingMacRoman);
+        InsertMenuItemTextWithCFString(hmenu, menuItemText, ixmenu - 1, 0, 0);
+        CFRelease(menuItemText);
+    }
 	
 	return (true);
 #endif
@@ -1487,24 +1485,14 @@ boolean pushmenuitem (hdlmenu hmenu, short idmenu, bigstring bs, short commandid
 	
 #ifdef MACVERSION
 #	pragma unused (idmenu)
-	bigstring bsspace;
 	
-	if (isseparatorstring (bs)) /*take disabled seperator as is*/
-		AppendMenu (hmenu, bs);
-	
-	else { /*to allow meta-characters in bs, append blank item, then set item text*/
-		
-		setstringwithchar (chspace, bsspace);
-		
-		AppendMenu (hmenu, bsspace);
-		
-		if (!isemptystring (bs))
-			SetMenuItemText (hmenu, countmenuitems (hmenu), bs);
-		
-		if (commandid > 0) /*7.1b23 PBS: allow caller to specify commandid*/
-			SetMenuItemCommandID (hmenu, countmenuitems (hmenu), commandid);
-			
-		}
+	if (isseparatorstring (bs)) { /*take disabled seperator as is*/
+		AppendMenuItemTextWithCFString(hmenu, CFSTR(""), kMenuItemAttrSeparator, commandid, NULL);
+    } else {
+		CFStringRef menuItemText = CFStringCreateWithPascalString(kCFAllocatorDefault, bs, kCFStringEncodingMacRoman);
+        AppendMenuItemTextWithCFString(hmenu, menuItemText, 0, commandid, NULL);
+		CFRelease(menuItemText);
+    }
 	
 	return (true);
 #endif
@@ -1538,12 +1526,11 @@ boolean pushresourcemenuitems (hdlmenu hmenu, short idmenu, OSType restype) {
 
 #ifdef MACVERSION
 #	pragma unused (idmenu)
-	//Code change by Timothy Paustian Wednesday, June 28, 2000 4:27:19 PM
-	//You can't do this in carbon.
-	//#if !TARGET_API_MAC_CARBON	
-	AppendResMenu (hmenu, restype);
-	//#endif
-		
+    if (restype == 'FONT') {
+        CreateStandardFontMenu(hmenu, idmenu, 0, 0, NULL);
+    } else {
+        fprintf(stderr, "unknown restype");
+    }
 	return (true);
 #endif
 

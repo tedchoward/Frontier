@@ -7033,7 +7033,7 @@ static boolean webservermaintainstats (void) {
 
 		long hits, maxconn, maxbytes, minbytes;
 		long ctthreads = processthreadcount ();
-		long ctbytes = FreeMem ();
+		long ctbytes = getAvailableMemory();
 		
 		/*	if threads > user.webserver.stats.maxConnections {
 				user.webserver.stats.maxConnections = threads}; */

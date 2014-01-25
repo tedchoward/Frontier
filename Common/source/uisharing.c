@@ -1063,7 +1063,7 @@ Boolean uisCloseSharedWindow (WindowPtr w) {
 	
 void uisCloseAllSharedWindows (void) {
 	
-	WindowPtr w = FrontWindow ();
+	WindowPtr w = GetFrontWindowOfClass(kAllWindowClasses, TRUE);
 	WindowPtr wnext;
 	
 	while (w != nil) {

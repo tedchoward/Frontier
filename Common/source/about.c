@@ -33,6 +33,8 @@ Make sure you have a STR# resource number 128, with exactly six strings in it.
 Not too big, kind of sexy, and certainly better than nothing!
 */ 
 
+
+
 #include "frontier.h"
 #include "standard.h"
 
@@ -233,13 +235,13 @@ enum { /*main window items*/
 
 
 void aboutsegment (void) {
-	fprintf(stderr, "aboutsegment()\n");
+	//fprintf(stderr, "aboutsegment()\n");
 	
 	} /*aboutsegment*/
 
 
 static boolean findaboutwindow (hdlwindowinfo *hinfo) {
-	fprintf(stderr, "findaboutwindow(%p)\n", hinfo);
+	//fprintf(stderr, "findaboutwindow(%p)\n", hinfo);
 
 	WindowPtr w;
 	Handle hdata;
@@ -249,14 +251,14 @@ static boolean findaboutwindow (hdlwindowinfo *hinfo) {
 
 
 boolean aboutstatsshowing (void) {
-	fprintf(stderr, "aboutstatsshowing()\n");
+	//fprintf(stderr, "aboutstatsshowing()\n");
 	
 	return (displayedaboutdata && (**displayedaboutdata).flbigwindow && (**displayedaboutdata).flextrastats);
 	} /*aboutstatsshowing*/
 
 
 static long aboutrectheight () {
-	fprintf(stderr, "aboutrectheight()\n");
+	//fprintf(stderr, "aboutrectheight()\n");
 	if (aboutstatsshowing())
 		return (aboutrectheightStats);
 
@@ -265,7 +267,7 @@ static long aboutrectheight () {
 
 
 static void getmessagecontentrect (Rect *rcontent) {
-	fprintf(stderr, "getmessagecontentrect(%p)\n", rcontent);
+	//fprintf(stderr, "getmessagecontentrect(%p)\n", rcontent);
 
 	if (aboutdata == nil)
 		zerorect (rcontent);
@@ -275,7 +277,7 @@ static void getmessagecontentrect (Rect *rcontent) {
 
 
 static void ccdrawfrontiericon (Rect rcicn, boolean flpressed) {
-	fprintf(stderr, "ccdrawfrontiericon({%hd, %hd, %hd, %hd}, %s)\n", rcicn.top, rcicn.left, rcicn.bottom, rcicn.right, flpressed ? "true" : "false");
+	//fprintf(stderr, "ccdrawfrontiericon({%hd, %hd, %hd, %hd}, %s)\n", rcicn.top, rcicn.left, rcicn.bottom, rcicn.right, flpressed ? "true" : "false");
 
 	//
 	// 2006-07-12 creedon: FSRef-ized
@@ -287,16 +289,16 @@ static void ccdrawfrontiericon (Rect rcicn, boolean flpressed) {
 
 		IconRef iconref;
 		tyfilespec programfspec;
-		short label;
+		SInt16 label;
 		OSErr err;
 		Rect r = rcicn;
-		FSSpec fs;
+        FSRef fsref;
 		
 		getapplicationfilespec (nil, &programfspec);
 		
-		err = macgetfsspec (&programfspec, &fs);
-
-		if (GetIconRefFromFile (&fs, &iconref, &label) == noErr) {
+        err = macgetfsref(&programfspec, &fsref);
+    
+        if (GetIconRefFromFileInfo(&fsref, programfspec.name.length, programfspec.name.unicode, kFSCatInfoNone, NULL, kIconServicesNormalUsageFlag, &iconref, &label)) {
 			
 			err = PlotIconRef (&r, kAlignAbsoluteCenter, flpressed? kTransformSelected : 0, kIconServicesNormalUsageFlag, iconref);			
 			
@@ -314,7 +316,7 @@ static void ccdrawfrontiericon (Rect rcicn, boolean flpressed) {
 
 
 static boolean ccgettextitemrect (short item, Rect *r) {
-	fprintf(stderr, "ccgettextitemrect(%hd, {%hd, %hd, %hd, %hd})\n", item, r->top, r->left, r->bottom, r->right);
+	//fprintf(stderr, "ccgettextitemrect(%hd, {%hd, %hd, %hd, %hd})\n", item, r->top, r->left, r->bottom, r->right);
 	
 	short linewidth = aboutlinewidth;
 	
@@ -360,7 +362,7 @@ static boolean ccgettextitemrect (short item, Rect *r) {
 
 
 static boolean ccgetagentpopuprect (Rect *rpopup) {
-	fprintf(stderr, "ccgetagentpopuprect({%hd, %hd, %hd, %hd})\n", rpopup->top, rpopup->left, rpopup->bottom, rpopup->right);
+	//fprintf(stderr, "ccgetagentpopuprect({%hd, %hd, %hd, %hd})\n", rpopup->top, rpopup->left, rpopup->bottom, rpopup->right);
 	
 	Rect r = (**aboutdata).messagearea;
 	
@@ -380,7 +382,7 @@ static boolean ccgetagentpopuprect (Rect *rpopup) {
 
 
 static void ccdrawmainwindowtext (short item, short style, ptrstring bs, short just) {
-	fprintf(stderr, "ccdrawmainwindowtext(%hd, %hd, %.*s, %hd)\n", item, style, bs[0], &bs[1], just);
+	//fprintf(stderr, "ccdrawmainwindowtext(%hd, %hd, %.*s, %hd)\n", item, style, bs[0], &bs[1], just);
 	
 	Rect r;
 	bigstring bsitem;
@@ -388,7 +390,7 @@ static void ccdrawmainwindowtext (short item, short style, ptrstring bs, short j
 	if (!ccgettextitemrect (item, &r))
 		return;
 	
-	fprintf(stderr, "about to print string \"%.*s\" at rect {%hd, %hd, %hd, %hd}", bs[0], &bs[1], r.top, r.left, r.bottom, r.right);
+	//fprintf(stderr, "about to print string \"%.*s\" at rect {%hd, %hd, %hd, %hd}", bs[0], &bs[1], r.top, r.left, r.bottom, r.right);
 	
 	if (bs == nil) { /*get from string list*/
 		
@@ -422,7 +424,7 @@ static void ccdrawmainwindowtext (short item, short style, ptrstring bs, short j
 
 
 static void pushaboutstyle (void) {
-	fprintf(stderr, "pushaboutstyle()\n");
+	//fprintf(stderr, "pushaboutstyle()\n");
 
 	register hdlwindowinfo hw = aboutwindowinfo;
 	
@@ -434,7 +436,7 @@ static void pushaboutstyle (void) {
 
 
 static short ccgetneededheight (boolean flbigwindow) {
-	fprintf(stderr, "ccgetneededheight(%s)\n", flbigwindow ? "true" : "false");
+	//fprintf(stderr, "ccgetneededheight(%s)\n", flbigwindow ? "true" : "false");
 
 	register short x;
 	
@@ -480,7 +482,7 @@ static boolean ccfindagentvisit (bigstring bsname, hdlhashnode hnode, tyvaluerec
 
 
 static void ccdrawagentpopup (void) {
-	fprintf(stderr, "ccdrawagentpopup()\n");
+	//fprintf(stderr, "ccdrawagentpopup()\n");
 	
 	Rect r;
 	
@@ -528,7 +530,7 @@ static void cceraseagentpopup (void) {
 
 
 static void ccgetmsgrect (Rect *rmsg) {
-	fprintf(stderr, "ccgetmsgrect({%hd, %hd, %hd, %hd})\n", rmsg->top, rmsg->left, rmsg->bottom, rmsg->right);
+	//fprintf(stderr, "ccgetmsgrect({%hd, %hd, %hd, %hd})\n", rmsg->top, rmsg->left, rmsg->bottom, rmsg->right);
 	
 	/*
 	5.0.2b19 dmb: leave correct room for version string
@@ -560,7 +562,7 @@ static void ccgetmsgrect (Rect *rmsg) {
 
 
 static boolean ccdrawmsg (void) {
-	fprintf(stderr, "ccdrawmsg()\n");
+	//fprintf(stderr, "ccdrawmsg()\n");
 	
 	/*
 	2.1b5 dmb: don't need flbitmapactive logic; openbitmap will return 
@@ -620,9 +622,9 @@ static boolean ccdrawmsg (void) {
 
 static void ccdrawtextitem (short item, ptrstring param, short style, short just) {
 	if (param) {
-		fprintf(stderr, "ccdrawtextitem(%hd, %.*s, %hd, %hd)\n", item, param[0], &param[1], style, just);
+		//fprintf(stderr, "ccdrawtextitem(%hd, %.*s, %hd, %hd)\n", item, param[0], &param[1], style, just);
 	} else {
-		fprintf(stderr, "ccdrawtextitem(%hd, %p, %hd, %hd)\n", item, param, style, just);
+		//fprintf(stderr, "ccdrawtextitem(%hd, %p, %hd, %hd)\n", item, param, style, just);
 	}
 	
 	bigstring bsitem;
@@ -634,7 +636,7 @@ static void ccdrawtextitem (short item, ptrstring param, short style, short just
 
 
 static boolean ccrunurlscript () {
-	fprintf(stderr, "ccrunurlscript()\n");
+	//fprintf(stderr, "ccrunurlscript()\n");
 
 	bigstring bsscript;
 	
@@ -648,7 +650,7 @@ static boolean ccrunurlscript () {
 
 
 static void ccdrawurlitem (boolean flpressed) {
-	fprintf(stderr, "ccdrawurlitem(%s)\n", flpressed ? "true" : "false");
+	//fprintf(stderr, "ccdrawurlitem(%s)\n", flpressed ? "true" : "false");
 	
 	RGBColor rgb = {0, 0, 0};
 	
@@ -667,7 +669,7 @@ static void ccdrawurlitem (boolean flpressed) {
 
 
 static void ccdrawstatistic (short item, ptrstring value, boolean flbitmap) {
-	fprintf(stderr, "ccdrawstatistic(%hd, %.*s, %s)\n", item, value[0], &value[1], flbitmap ? "true" : "false");
+	//fprintf(stderr, "ccdrawstatistic(%hd, %.*s, %s)\n", item, value[0], &value[1], flbitmap ? "true" : "false");
 
 	Rect r;
 	
@@ -689,7 +691,7 @@ static void ccdrawstatistic (short item, ptrstring value, boolean flbitmap) {
 
 	
 static void ccupdatestatistics (boolean flbitmap) {
-	fprintf(stderr, "ccupdatestastics(%s)\n", flbitmap ? "true" : "false");
+	//fprintf(stderr, "ccupdatestastics(%s)\n", flbitmap ? "true" : "false");
 	
 	/*
 	1/20/93 dmb: if fldisableyield is set, we got here in strange circumstances.
@@ -713,7 +715,7 @@ static void ccupdatestatistics (boolean flbitmap) {
 	#endif
 
 	#ifdef MACVERSION
-		long freemem = FreeMem () / 1024;
+		long freemem = getAvailableMemory() / 1024;
 		
 		numbertostring (freemem, bs);
 		
@@ -746,7 +748,7 @@ static void ccupdatestatistics (boolean flbitmap) {
 
 
 static void	ccdrawabout (void) {
-	fprintf(stderr, "ccdrawabout()\n");
+	//fprintf(stderr, "ccdrawabout()\n");
 	
 	/*
 	5.0b9 dmb: user Arial, but just for the frontier(tm) item
@@ -830,7 +832,7 @@ static void	ccdrawabout (void) {
 
 
 static void ccunblockmsg (void) {
-	fprintf(stderr, "ccunblockmsg()\n");
+	//fprintf(stderr, "ccunblockmsg()\n");
 	
 	/*
 	1/9/91 dmb: must set secondary message to nil when it's moved into 
@@ -861,7 +863,7 @@ static void ccunblockmsg (void) {
 
 
 boolean aboutsetthreadstring (hdlprocessthread hp, boolean flin) {
-	fprintf(stderr, "aboutsetthreadstring(%p, %s)\n", hp, flin ? "true" : "false");
+	//fprintf(stderr, "aboutsetthreadstring(%p, %s)\n", hp, flin ? "true" : "false");
 	
 	register hdlcancoonrecord hc = cancoonglobals;
 	hdlthreadglobals hg = (hdlthreadglobals) hp;
@@ -903,7 +905,7 @@ boolean aboutsetthreadstring (hdlprocessthread hp, boolean flin) {
 
 
 boolean aboutsetmiscstring (bigstring bsmisc) {
-	fprintf(stderr, "aboutsetmiscstring(%.*s)\n", bsmisc[0], &bsmisc[1]);
+	//fprintf(stderr, "aboutsetmiscstring(%.*s)\n", bsmisc[0], &bsmisc[1]);
 	
 	#ifdef WIN95VERSION
 	extern 	DWORD ixthreadglobalsgrabcount;			// Tls index of counter for nest globals grabbing
@@ -950,7 +952,7 @@ boolean aboutsetmiscstring (bigstring bsmisc) {
 
 
 boolean ccmsg (bigstring bs, boolean flbackgroundmsg) {
-	fprintf(stderr, "ccmsg(%.*s, %s)\n", bs[0], &bs[1], flbackgroundmsg ? "true" : "false");
+	//fprintf(stderr, "ccmsg(%.*s, %s)\n", bs[0], &bs[1], flbackgroundmsg ? "true" : "false");
 	
 	/*
 	can be called from a script, not as part of a callback sequence.
@@ -1035,7 +1037,7 @@ boolean ccmsg (bigstring bs, boolean flbackgroundmsg) {
 	
 
 static void aboutupdate (void) {
-	fprintf(stderr, "aboutupdate()\n");
+	//fprintf(stderr, "aboutupdate()\n");
 	
 	/*
 	1/22/91 dmb: openbitmap moves memory; its result cannot be assigned 
@@ -1093,14 +1095,14 @@ static void aboutupdate (void) {
 
 
 static boolean aboutgettargetdata (short id) {
-	fprintf(stderr, "aboutgettargetdata(%hd)\n", id);
+	//fprintf(stderr, "aboutgettargetdata(%hd)\n", id);
 	
 	return (id == -1); /*true if target type is generic -- a shell verb*/
 	} /*aboutgettargetdata*/
 
 
 static boolean aboutresetrects (hdlwindowinfo hinfo) {
-	fprintf(stderr, "aboutresetrects(%p)\n", hinfo);
+	//fprintf(stderr, "aboutresetrects(%p)\n", hinfo);
 	
 	/*
 	12/28/90 dmb: the resetrects routine is called while the windowinfo is 
@@ -1145,7 +1147,7 @@ static boolean aboutresetrects (hdlwindowinfo hinfo) {
 	
 
 static boolean attachabout (void) {
-	fprintf(stderr, "attachabout()\n");
+	//fprintf(stderr, "attachabout()\n");
 	
 	hdlwindowinfo hroot;
 	
@@ -1166,14 +1168,14 @@ static boolean attachabout (void) {
 
 
 static void detachabout (void) {
-	fprintf(stderr, "detachabout()\n");
+	//fprintf(stderr, "detachabout()\n");
 	
 	(**aboutwindowinfo).parentwindow = nil;
 	} /*detachabout*/
 
 
 static void aboutresizeafterfontchange (void) {
-	fprintf(stderr, "aboutresizeafterfontchange()\n");
+	//fprintf(stderr, "aboutresizeafterfontchange()\n");
 	
 	register hdlwindowinfo hw = aboutwindowinfo;
 	register short diff;
@@ -1205,7 +1207,7 @@ static void aboutresizeafterfontchange (void) {
 	} /*aboutresizeafterfontchange*/
 
 static void aboutsetconfigminimum (void) {
-	fprintf(stderr, "aboutsetconfigminimum()\n");
+	//fprintf(stderr, "aboutsetconfigminimum()\n");
 	
 	short ixaboutconfig;
 	Rect *rmin;
@@ -1231,7 +1233,7 @@ static void aboutsetconfigminimum (void) {
 
 
 static boolean aboutzoom (hdlwindowinfo hinfo, boolean flgrow) {
-	fprintf(stderr, "aboutzoom(%p, %s)\n", hinfo, flgrow ? "true" : "false");
+	//fprintf(stderr, "aboutzoom(%p, %s)\n", hinfo, flgrow ? "true" : "false");
 	
 
 	hdlaboutrecord ha = aboutdata;
@@ -1271,7 +1273,7 @@ static boolean aboutzoom (hdlwindowinfo hinfo, boolean flgrow) {
 
 
 static boolean aboutsetsize (void) {
-	fprintf(stderr, "aboutsetsize()\n");
+	//fprintf(stderr, "aboutsetsize()\n");
 	
 	register hdlwindowinfo hw = aboutwindowinfo;
 
@@ -1286,7 +1288,7 @@ static boolean aboutsetsize (void) {
 
 
 static boolean aboutsetfont (void) {
-	fprintf(stderr, "aboutsetfont()\n");
+	//fprintf(stderr, "aboutsetfont()\n");
 
 	register hdlwindowinfo hw = aboutwindowinfo;
 
@@ -1301,7 +1303,7 @@ static boolean aboutsetfont (void) {
 
 	
 static boolean aboutsetstyle (void) {
-	fprintf(stderr, "aboutsetstyle()\n");
+	//fprintf(stderr, "aboutsetstyle()\n");
 
 	register hdlwindowinfo hw = aboutwindowinfo;
 	
@@ -1317,7 +1319,7 @@ static boolean aboutsetstyle (void) {
 
 static boolean aboutmousedown (Point pt, tyclickflags flags) {
 #pragma unused (flags)
-	fprintf(stderr, "aboutmousedown({%hd, %hd}, %x)\n", pt.h, pt.v, flags);
+	//fprintf(stderr, "aboutmousedown({%hd, %hd}, %x)\n", pt.h, pt.v, flags);
 
 	/*
 	1/24/91 dmb: to allow the home window to be dragged with a single click, 
@@ -1340,6 +1342,8 @@ static boolean aboutmousedown (Point pt, tyclickflags flags) {
 			if (trackicon (r, &ccdrawurlitem))
 				if (!ccrunurlscript ())
 					sysbeep ();
+                    AudioServicesPlayAlertSound(kSystemSoundID_UserPreferredAlert);
+                    
 			
 			return (true);
 			}
@@ -1363,7 +1367,7 @@ static boolean aboutmousedown (Point pt, tyclickflags flags) {
 
 
 static boolean aboutkeystroke (void) {
-	fprintf(stderr, "aboutkeystroke()\n");
+	//fprintf(stderr, "aboutkeystroke()\n");
 
 	char chkb = keyboardstatus.chkb;
 
@@ -1377,7 +1381,7 @@ static boolean aboutkeystroke (void) {
 #ifndef version42orgreater
 
 static void drawtextitem (WindowPtr w, short item, short font, short size, short style) {
-	fprintf(stderr, "drawtextitem(%p, %hd, %hd, %hd, %hd)\n", w, item, font, size, style);
+	//fprintf(stderr, "drawtextitem(%p, %hd, %hd, %hd, %hd)\n", w, item, font, size, style);
 	
 	Rect ritem;
 	bigstring bsitem;
@@ -1391,7 +1395,7 @@ static void drawtextitem (WindowPtr w, short item, short font, short size, short
 
 
 static boolean runurlscript () {
-	fprintf(stderr, "runurlscript()\n");
+	//fprintf(stderr, "runurlscript()\n");
 
 	bigstring bsurl;
 	bigstring bsscript;
@@ -1408,7 +1412,7 @@ static boolean runurlscript () {
 
 
 static void drawurlitem (boolean flpressed) {
-	fprintf(stderr, "drawurlitem(%s)\n", flpressed ? "true" : "false");
+	//fprintf(stderr, "drawurlitem(%s)\n", flpressed ? "true" : "false");
 	
 	RGBColor rgb = {0, 0, 0};
 	
@@ -1428,7 +1432,7 @@ static void drawurlitem (boolean flpressed) {
 #define aboutresnumber 128 /*the id of the various "about" resources*/
 
 static void drawabout (WindowPtr w, boolean flliveurl) { 
-	fprintf(stderr, "drawabout(%p, %s)\n", w, flliveurl ? "true" : "false");
+	//fprintf(stderr, "drawabout(%p, %s)\n", w, flliveurl ? "true" : "false");
 
 	/*
 	10/18/91 DW: color!
@@ -1488,14 +1492,14 @@ static void drawabout (WindowPtr w, boolean flliveurl) {
 
 
 static void updateabout (WindowPtr w, boolean flliveurl) {
-	fprintf(stderr, "updateabout(%p, %s)\n", w, flliveurl ? "true" : "false");
+	//fprintf(stderr, "updateabout(%p, %s)\n", w, flliveurl ? "true" : "false");
 	
 	shellupdatenow (w);
 	} /*updateabout*/
 
 
 static boolean abouteventhook (EventRecord *ev, WindowPtr w) {
-	fprintf(stderr, "abouteventhook(%p, %p)\n", ev, w);
+	//fprintf(stderr, "abouteventhook(%p, %p)\n", ev, w);
 	
 	if (w != aboutwindow) /*don't hook if not our dialog*/
 		return (true);
@@ -1510,7 +1514,7 @@ static boolean abouteventhook (EventRecord *ev, WindowPtr w) {
 
 
 static boolean aboutsave (ptrfilespec fs, hdlfilenum fnum, short rnum, boolean flsaveas, boolean flrunnable) {
-	fprintf(stderr, "aboutsave(%p, %p, %hd, %s, %s)\n", fs, fnum, rnum, flsaveas ? "true" : "false", flrunnable ? "true" : "false");
+	//fprintf(stderr, "aboutsave(%p, %p, %hd, %s, %s)\n", fs, fnum, rnum, flsaveas ? "true" : "false", flrunnable ? "true" : "false");
 
 	hdlwindowinfo hinfo;
 	
@@ -1530,7 +1534,7 @@ static boolean aboutsave (ptrfilespec fs, hdlfilenum fnum, short rnum, boolean f
 
 
 static boolean aboutclose (void) {
-	fprintf(stderr, "aboutclose()\n");
+	//fprintf(stderr, "aboutclose()\n");
 	
 	if (!(**aboutdata).flbootsplash && (cancoonglobals != nil)) {
 		
@@ -1548,7 +1552,7 @@ static boolean aboutclose (void) {
 
 
 static boolean aboutdisposerecord (void) {
-	fprintf(stderr, "aboutdisposerecord()\n");
+	//fprintf(stderr, "aboutdisposerecord()\n");
 	
 	disposehandle ((Handle) aboutdata);
 	
@@ -1563,7 +1567,7 @@ static boolean aboutdisposerecord (void) {
 
 
 static boolean aboutsetsuperglobals (void) {
-	fprintf(stderr, "aboutsetsuperglobals()\n");
+	//fprintf(stderr, "aboutsetsuperglobals()\n");
 	
 	hdlwindowinfo hinfo;
 	
@@ -1581,7 +1585,7 @@ static boolean aboutsetsuperglobals (void) {
 
 
 static void aboutwindowsetup (void) {
-	fprintf(stderr, "aboutwindowsetup()\n");
+	//fprintf(stderr, "aboutwindowsetup()\n");
 	
 	/*
 	5.0a2 dmb: while we're grabbing out font settings from the root, 
@@ -1618,7 +1622,7 @@ static void aboutwindowsetup (void) {
 
 
 static boolean newaboutwindow (boolean flbootsplash) {
-	fprintf(stderr, "newaboutwindow(%s)\n", flbootsplash ? "true" : "false");
+	//fprintf(stderr, "newaboutwindow(%s)\n", flbootsplash ? "true" : "false");
 	
 	/*
 	5.0.2b20 dmb: don't reset window pos for negative values
@@ -1698,7 +1702,7 @@ static boolean newaboutwindow (boolean flbootsplash) {
 
 
 boolean aboutcommand (void) {
-	fprintf(stderr, "aboutcommand()\n");
+	//fprintf(stderr, "aboutcommand()\n");
 	
 	hdlwindowinfo hinfo;
 	
@@ -1714,7 +1718,7 @@ boolean aboutcommand (void) {
 
 
 void aboutsetstatsflag (boolean fl) {
-	fprintf(stderr, "aboutsetstatsflag(%s)\n", fl ? "true" : "false");
+	//fprintf(stderr, "aboutsetstatsflag(%s)\n", fl ? "true" : "false");
 	hdlwindowinfo hinfo;
 	WindowPtr w;
 	flsessionstats = fl;
@@ -1743,7 +1747,7 @@ void aboutsetstatsflag (boolean fl) {
 
 
 boolean aboutstart (void) {
-	fprintf(stderr, "aboutstart()\n");
+	//fprintf(stderr, "aboutstart()\n");
 	
 	/*
 	set up callback routines record, and link our data into the shell's 
@@ -1813,7 +1817,7 @@ boolean aboutstart (void) {
 
 boolean openabout (boolean flzoom, long ctreservebytes) {
 #pragma unused(flzoom)
-	fprintf(stderr, "openabout(%s, %ld)\n", flzoom ? "true" : "false", ctreservebytes);
+	//fprintf(stderr, "openabout(%s, %ld)\n", flzoom ? "true" : "false", ctreservebytes);
 
 	/*
 	2.1b5 dmb: added ctreservebytes parameter. of non-zero, caller wants us to 
@@ -1857,7 +1861,7 @@ boolean openabout (boolean flzoom, long ctreservebytes) {
 
 void closeabout (boolean flzoom, short minticks) {
 #pragma unused(flzoom)
-	fprintf(stderr, "closeabout(%s, %hd)\n", flzoom ? "true" : "false", minticks);
+	//fprintf(stderr, "closeabout(%s, %hd)\n", flzoom ? "true" : "false", minticks);
 
 	hdlwindowinfo hinfo;
 	

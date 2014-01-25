@@ -2574,7 +2574,7 @@ static boolean langfunctionvalue (short token, hdltreenode hparam1, tyvaluerecor
 			if (!langcheckparamcount (hparam1, 0))
 				break;
 			
-			return (setlongvalue (FreeMem (), v));
+			return (setlongvalue (getAvailableMemory(), v));
 		
 		case flushmemfunc: {
 			long ctbytes = longinfinity;

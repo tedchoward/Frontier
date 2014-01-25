@@ -2660,7 +2660,47 @@ boolean initmemory (void) {
 
 
 
+#ifdef MACVERSION
+#include <sys/sysctl.h>
+#include <mach/host_info.h>
+#include <mach/mach_host.h>
+#include <mach/task_info.h>
+#include <mach/task.h>
 
+extern UInt64 getPhysicalMemorySize() {
+    UInt64 physicalMemory;
+    size_t length = sizeof (physicalMemory);
+    
+    int mib[2] = { CTL_HW, HW_MEMSIZE };
+    
+    sysctl(mib, 2, &physicalMemory, &length, NULL, 0);
+    
+    return physicalMemory;
+}
+
+extern UInt64 getAvailableMemory() {
+    UInt64 availableMemory;
+    
+    int mib[2] = { CTL_HW, HW_PAGESIZE };
+    UInt32 pageSize;
+    size_t length = sizeof (pageSize);
+    
+    if (sysctl(mib, 2, &pageSize, &length, NULL, 0) < 0) {
+        fprintf(stderr, "error getting page size");
+    }
+    
+    mach_msg_type_number_t count = HOST_VM_INFO_COUNT;
+    
+    vm_statistics_data_t vmstat;
+    if (host_statistics(mach_host_self(), HOST_VM_INFO, (host_info_t)&vmstat, &count) != KERN_SUCCESS) {
+        fprintf(stderr, "Failed to get VM statistics");
+    }
+    
+    availableMemory = vmstat.free_count * pageSize;
+    
+    return availableMemory;
+}
+#endif
 
 
 

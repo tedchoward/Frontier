@@ -565,7 +565,7 @@ static boolean sysfunctionvalue (short token, hdltreenode hparam1, tyvaluerecord
 			#endif
 
 			#ifdef MACVERSION
-				memavail = TempFreeMem();
+				memavail = getAvailableMemory();
 			#endif
 			
 			if (!langcheckparamcount (hparam1, 0)) /*shouldn't have any parameters*/

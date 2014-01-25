@@ -261,7 +261,8 @@ typedef	unsigned char byte, *ptrbyte;
 #endif
 
 #ifdef MACVERSION
-	#define sysbeep() SysBeep(1) 
+    #include <AudioToolbox/AudioServices.h>
+	#define sysbeep() AudioServicesPlayAlertSound(kSystemSoundID_UserPreferredAlert);
 #endif
 
 #ifdef WIN95VERSION

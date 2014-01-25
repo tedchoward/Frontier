@@ -67,9 +67,9 @@ extern boolean getlastinsertrowidverb ( hdltreenode, tyvaluerecord *, bigstring 
 
 // SQLITE MESSAGES
 
-#define SQLITE_COLUMN_ERROR_0 "\xe9""SQLite column error. Frontier uses a base-1 index. Columns must be specified with 1 indicating the first column. This is different from the SQLite API, which requires that columns must be specified with 0 indicating the first column."
-#define SQLITE_COLUMN_ERROR_MAX "\x50""SQLite column error. An attempt was made to access a column that does not exist."
-#define SQLITE_COLUMN_ERROR_UNDEFINED "\x29""SQLite returned an undefined column type."
-#define SQLITE_COLUMN_ERROR_ROW_OR_COLUMN "\x31" "SQLite invalid row or column number out of range." // 2007-08-25 creedon
-#define SQLITE_PARAMETER_ERROR_COUNT "\x1b" "SQLite parameter error. An attempt was made to access a parameter that does not exist." // 2007-08-26 creedon
+#define SQLITE_COLUMN_ERROR_0 BIGSTRING("\xe9""SQLite column error. Frontier uses a base-1 index. Columns must be specified with 1 indicating the first column. This is different from the SQLite API, which requires that columns must be specified with 0 indicating the first column.")
+#define SQLITE_COLUMN_ERROR_MAX BIGSTRING("\x50""SQLite column error. An attempt was made to access a column that does not exist.")
+#define SQLITE_COLUMN_ERROR_UNDEFINED BIGSTRING("\x29""SQLite returned an undefined column type.")
+#define SQLITE_COLUMN_ERROR_ROW_OR_COLUMN BIGSTRING("\x31" "SQLite invalid row or column number out of range.") // 2007-08-25 creedon
+#define SQLITE_PARAMETER_ERROR_COUNT BIGSTRING("\x1b" "SQLite parameter error. An attempt was made to access a parameter that does not exist.") // 2007-08-26 creedon
 
