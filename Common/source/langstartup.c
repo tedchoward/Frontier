@@ -247,8 +247,7 @@ static boolean initenvironment ( hdlhashtable ht ) {
 	
 		Handle hcommand, hreturn;
 		bigstring bs;
-		unsigned long x;
-		
+    
 		newemptyhandle ( &hreturn );
 		
 		bundle { // system version
@@ -256,39 +255,21 @@ static boolean initenvironment ( hdlhashtable ht ) {
 			getsystemversionstring ( bsversion, NULL );
 			
 			bundle { // major
-			
-				bigstring bsSystemVersionMajor;
-				
-				nthfield ( bsversion, 1, '.', bsSystemVersionMajor );
-				
-				stringtonumber ( bsSystemVersionMajor, &x );
-				
-				langassignlongvalue ( ht, str_osMajorVersion, x );
-				
+                SInt32 majorVersion;
+                Gestalt(gestaltSystemVersionMajor, &majorVersion);
+                langassignlongvalue(ht, str_osMajorVersion, majorVersion);
 				}
 					
 			bundle { // minor
-			
-				bigstring bsSystemVersionMinor;
-				
-				nthfield ( bsversion, 2, '.', bsSystemVersionMinor );
-				
-				stringtonumber ( bsSystemVersionMinor, &x );
-				
-				langassignlongvalue ( ht, str_osMinorVersion, x );
-				
+                SInt32 minorVersion;
+                Gestalt(gestaltSystemVersionMinor, &minorVersion);
+                langassignlongvalue(ht, str_osMinorVersion, minorVersion);
 				}
 					
 			bundle { // bug fix
-			
-				bigstring bsSystemVersionBugFix;
-				
-				nthfield ( bsversion, 3, '.', bsSystemVersionBugFix );
-				
-				stringtonumber ( bsSystemVersionBugFix, &x );
-				
-				langassignlongvalue ( ht, str_osPointVersion, x );
-				
+                SInt32 bugfixVersion;
+                Gestalt(gestaltSystemVersionBugFix, &bugfixVersion);
+                langassignlongvalue(ht, str_osPointVersion, bugfixVersion);
 				}
 					
 			}
