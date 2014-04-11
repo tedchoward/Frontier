@@ -527,8 +527,8 @@ void GetDateTime (long * secs) {
 
 
 void timestamp (long *ptime) {
-	
-	GetDateTime ((unsigned long *) ptime);
+    CFAbsoluteTime time = CFAbsoluteTimeGetCurrent() + kCFAbsoluteTimeIntervalSince1904;
+    *ptime = time;
 	} /*timestamp*/
 	
 	
@@ -537,12 +537,9 @@ unsigned long timenow (void) {
 	/*
 	2.1b4 dmb; more convenient than timestamp for most callers
 	*/
+    
+    return CFAbsoluteTimeGetCurrent() + kCFAbsoluteTimeIntervalSince1904;
 	
-	unsigned long now;
-	
-	GetDateTime (&now);
-	
-	return (now);
 	} /*timenow*/
 	
 	
@@ -554,7 +551,8 @@ boolean setsystemclock (unsigned long secs) {
 	*/
 
 	#ifdef MACVERSION
-		return (!oserror (SetDateTime (secs)));
+        langerrormessage(BIGSTRING("\x32" "Mac OS X does not support setting the system date."));
+        return false;
 	#endif
 
 	#ifdef WIN95VERSION
@@ -608,15 +606,77 @@ timelessthan (
 	return (time1 < time2);
 } /*timelessthan*/
 
+#ifdef MACVERSION
+static CFDateFormatterRef getShortTimeFormatter() {
+    static CFDateFormatterRef shortTimeFormatter;
+    
+    if (!shortTimeFormatter) {
+        shortTimeFormatter = CFDateFormatterCreate(kCFAllocatorDefault, CFLocaleGetSystem(), kCFDateFormatterNoStyle, kCFDateFormatterShortStyle);
+        CFDateFormatterSetFormat(shortTimeFormatter, CFSTR("h:mm a"));
+        CFTimeZoneRef systemTimeZone = CFTimeZoneCopySystem();
+        CFDateFormatterSetProperty(shortTimeFormatter, kCFDateFormatterTimeZone, systemTimeZone);
+        CFRelease(systemTimeZone);
+    }
+    
+    return shortTimeFormatter;
+}
+
+static CFDateFormatterRef getLongTimeFormatter() {
+    static CFDateFormatterRef shortTimeFormatter;
+    
+    if (!shortTimeFormatter) {
+        shortTimeFormatter = CFDateFormatterCreate(kCFAllocatorDefault, CFLocaleGetSystem(), kCFDateFormatterNoStyle, kCFDateFormatterLongStyle);
+        CFDateFormatterSetFormat(shortTimeFormatter, CFSTR("h:mm:ss a"));
+        CFTimeZoneRef systemTimeZone = CFTimeZoneCopySystem();
+        CFDateFormatterSetProperty(shortTimeFormatter, kCFDateFormatterTimeZone, systemTimeZone);
+        CFRelease(systemTimeZone);
+    }
+    
+    return shortTimeFormatter;
+}
+
+static CFDateFormatterRef getShortDateFormatter() {
+    static CFDateFormatterRef shortDateFormatter;
+    
+    if (!shortDateFormatter) {
+        shortDateFormatter = CFDateFormatterCreate(kCFAllocatorDefault, CFLocaleGetSystem(), kCFDateFormatterShortStyle, kCFDateFormatterNoStyle);
+        CFDateFormatterSetFormat(shortDateFormatter, CFSTR("M/dd/yy"));
+        CFTimeZoneRef systemTimeZone = CFTimeZoneCopySystem();
+        CFDateFormatterSetProperty(shortDateFormatter, kCFDateFormatterTimeZone, systemTimeZone);
+        CFRelease(systemTimeZone);
+    }
+    
+    return shortDateFormatter;
+
+}
+
+static CFDateFormatterRef getAbbrevDateFormatter() {
+    static CFDateFormatterRef shortDateFormatter;
+    
+    if (!shortDateFormatter) {
+        shortDateFormatter = CFDateFormatterCreate(kCFAllocatorDefault, CFLocaleGetSystem(), kCFDateFormatterMediumStyle, kCFDateFormatterNoStyle);
+        CFDateFormatterSetFormat(shortDateFormatter, CFSTR("E, MMM dd, yyyy"));
+        CFTimeZoneRef systemTimeZone = CFTimeZoneCopySystem();
+        CFDateFormatterSetProperty(shortDateFormatter, kCFDateFormatterTimeZone, systemTimeZone);
+        CFRelease(systemTimeZone);
+    }
+    
+    return shortDateFormatter;
+    
+}
+#endif
+
 
 boolean timetotimestring (unsigned long ptime, bigstring bstime, boolean flwantseconds) {
 
 #ifdef MACVERSION
-	//Code change by Timothy Paustian Sunday, June 25, 2000 9:45:30 PM
-	//updated call for carbon, the nil parameter says use the current script
-	//for formatting the time.
-	TimeString (ptime, flwantseconds, bstime, nil);
-
+        CFAbsoluteTime time = ptime - kCFAbsoluteTimeIntervalSince1904;
+        CFDateFormatterRef dateFormatter = flwantseconds ? getLongTimeFormatter() : getShortTimeFormatter();
+        CFStringRef timeString = CFDateFormatterCreateStringWithAbsoluteTime(kCFAllocatorDefault, dateFormatter, time);
+        
+        CFStringGetPascalString(timeString, bstime, sizeof (bigstring), kCFStringEncodingMacRoman);
+        
+        CFRelease(timeString);
 		return (true);
 	#endif
 
@@ -641,11 +701,13 @@ boolean timetotimestring (unsigned long ptime, bigstring bstime, boolean flwants
 boolean timetodatestring (unsigned long ptime, bigstring bsdate, boolean flabbreviate) {
 
 #ifdef MACVERSION
-	//Code change by Timothy Paustian Sunday, June 25, 2000 9:45:49 PM
-	//Updated call for carbon
-	DateString (ptime, flabbreviate? abbrevDate : shortDate, bsdate, nil);
+        CFAbsoluteTime time = ptime - kCFAbsoluteTimeIntervalSince1904;
+        CFDateFormatterRef dateFormatter = flabbreviate ? getAbbrevDateFormatter() : getShortDateFormatter();
+        CFStringRef dateString = CFDateFormatterCreateStringWithAbsoluteTime(kCFAllocatorDefault, dateFormatter, time);
+        CFStringGetPascalString(dateString, bsdate, sizeof (bigstring), kCFStringEncodingMacRoman);
+        CFRelease(dateString);
 
-	return (true);
+        return (true);
 	#endif
 
 	#ifdef WIN95VERSION
@@ -900,43 +962,58 @@ long datetimetoseconds (short day, short month, short year, short hour, short mi
 
 	#ifdef MACVERSION
 
-		DateTimeRec date;
+//		DateTimeRec date;
 		unsigned long secs;
 		
-		if (year < 100) { /*use script manager's StringToDate heuristic -- pg 188 in § docs*/
-			
-			long thisyear, lcentury;
-			
-			GetTime (&date);
-			
-			thisyear = date.year % 100;
-			
-			lcentury = date.year - thisyear;
-			
-			if ((thisyear <= 10) && (year >= 90)) /*assume last century*/
-				lcentury -= 100;
-			else
-				if ((thisyear >= 90) && (year <= 10)) /*assume next century*/
-					lcentury += 100;
-			
-			year += lcentury;
-			}
-		
-		clearbytes (&date, sizeof (date));
-		
-		date.day = day;
-		
-		date.month = month;
-		
-		date.year = year;
-		
-		date.hour = hour;
-		
-		date.minute = minute;
-		
-		date.second = second;
-		
-		DateToSeconds (&date, &secs);
+//		if (year < 100) { /*use script manager's StringToDate heuristic -- pg 188 in § docs*/
+//			
+//			long thisyear, lcentury;
+//			
+//			GetTime (&date);
+//			
+//			thisyear = date.year % 100;
+//			
+//			lcentury = date.year - thisyear;
+//			
+//			if ((thisyear <= 10) && (year >= 90)) /*assume last century*/
+//				lcentury -= 100;
+//			else
+//				if ((thisyear >= 90) && (year <= 10)) /*assume next century*/
+//					lcentury += 100;
+//			
+//			year += lcentury;
+//			}
+//    
+    CFGregorianDate gregDate;
+    gregDate.day = day;
+    gregDate.month = month;
+    gregDate.year = year;
+    gregDate.hour = hour;
+    gregDate.minute = minute;
+    gregDate.second = second;
+    
+    if (CFGregorianDateIsValid(gregDate, kCFGregorianAllUnits)) {
+        CFTimeZoneRef currentTimeZone = CFTimeZoneCopySystem();
+        CFAbsoluteTime absTime = CFGregorianDateGetAbsoluteTime(gregDate, currentTimeZone);
+        CFRelease(currentTimeZone);
+        secs = absTime + kCFAbsoluteTimeIntervalSince1904;
+    }
+//		
+//		clearbytes (&date, sizeof (date));
+//		
+//		date.day = day;
+//		
+//		date.month = month;
+//		
+//		date.year = year;
+//		
+//		date.hour = hour;
+//		
+//		date.minute = minute;
+//		
+//		date.second = second;
+//		
+//		DateToSeconds (&date, &secs);
 	#endif
 
 	#ifdef WIN95VERSION
@@ -1012,25 +1089,37 @@ long datetimetoseconds (short day, short month, short year, short hour, short mi
 	} /*datetimetoseconds*/
 
 
-void secondstodatetime (long secs, short *day, short *month, short *year, short *hour, short *minute, short *second) {
+void secondstodatetime (unsigned long secs, short *day, short *month, short *year, short *hour, short *minute, short *second) {
 	
 	#ifdef MACVERSION
 
-		DateTimeRec date;
+//		DateTimeRec date;
+    
+    CFAbsoluteTime absoluteTime = secs - kCFAbsoluteTimeIntervalSince1904;
+    CFTimeZoneRef systemTimeZone = CFTimeZoneCopySystem();
+    CFGregorianDate gregDate = CFAbsoluteTimeGetGregorianDate(absoluteTime, systemTimeZone);
+    CFRelease(systemTimeZone);
+    
+    *day = gregDate.day;
+    *month = gregDate.month;
+    *year = gregDate.year;
+    *hour = gregDate.hour;
+    *minute = gregDate.minute;
+    *second = gregDate.second;
 		
-		SecondsToDate (secs, &date);
-		
-		*day = date.day;
-		
-		*month = date.month;
-		
-		*year = date.year;
-		
-		*hour = date.hour;
-		
-		*minute = date.minute;
-		
-		*second = date.second;
+//		SecondsToDate (secs, &date);
+//		
+//		*day = date.day;
+//		
+//		*month = date.month;
+//		
+//		*year = date.year;
+//		
+//		*hour = date.hour;
+//		
+//		*minute = date.minute;
+//		
+//		*second = date.second;
 	#endif
 
 	#ifdef WIN95VERSION
@@ -1061,11 +1150,16 @@ void secondstodayofweek (long secs, short *dayofweek) {
 	
 	#ifdef MACVERSION
 
-		DateTimeRec date;
+//		DateTimeRec date;
 		
-		SecondsToDate (secs, &date);
+//		SecondsToDate (secs, &date);
+    CFAbsoluteTime absoluteTime = (UInt32)secs - kCFAbsoluteTimeIntervalSince1904;
+    CFTimeZoneRef systemTimeZone = CFTimeZoneCopySystem();
+    // caller expects the range to be 0-6, system method returns value in range 1-7
+    *dayofweek = (CFAbsoluteTimeGetDayOfWeek(absoluteTime, systemTimeZone) - 1);
+    CFRelease(systemTimeZone);
 		
-		*dayofweek = date.dayOfWeek;
+//		*dayofweek = date.dayOfWeek;
 	#endif
 
 	#ifdef WIN95VERSION
@@ -1144,28 +1238,19 @@ unsigned long nextmonth(unsigned long date) {
 	*/
 	
 	#ifdef MACVERSION
-
-		DateTimeRec daterec;
-		short maxday;
-		
-		SecondsToDate (date, &daterec);
-		
-		if (daterec.month < 12) {
-			++daterec.month;
-			}
-		else {
-			daterec.month = 1;
-			++daterec.year;
-			}
-		
-		maxday = daysInMonth(daterec.month, daterec.year);
-		
-		if (daterec.day > maxday)
-			daterec.day = maxday;
-		
-		fixdate (&daterec);
-
-		DateToSeconds (&daterec, &date);
+    
+        CFAbsoluteTime absoluteTime = date - kCFAbsoluteTimeIntervalSince1904;
+        CFTimeZoneRef systemTimeZone = CFTimeZoneCopySystem();
+    
+        CFGregorianUnits units;
+        memset(&units, 0, sizeof (CFGregorianUnits));
+        units.months = 1;
+        
+        absoluteTime = CFAbsoluteTimeAddGregorianUnits(absoluteTime, systemTimeZone, units);
+    
+        CFRelease(systemTimeZone);
+        
+        date = absoluteTime + kCFAbsoluteTimeIntervalSince1904;
 
 		return (date);
 	#endif
@@ -1204,15 +1289,18 @@ unsigned long nextmonth(unsigned long date) {
 unsigned long nextyear(unsigned long date) {
 	#ifdef MACVERSION
 
-		DateTimeRec daterec;
-		
-		SecondsToDate (date, &daterec);
-		
-		++daterec.year;
-
-		fixdate (&daterec);
-
-		DateToSeconds (&daterec, &date);
+        CFAbsoluteTime absoluteTime = date - kCFAbsoluteTimeIntervalSince1904;
+        CFTimeZoneRef systemTimeZone = CFTimeZoneCopySystem();
+        
+        CFGregorianUnits units;
+        memset(&units, 0, sizeof (CFGregorianUnits));
+        units.years = 1;
+        
+        absoluteTime = CFAbsoluteTimeAddGregorianUnits(absoluteTime, systemTimeZone, units);
+        
+        CFRelease(systemTimeZone);
+        
+        date = absoluteTime + kCFAbsoluteTimeIntervalSince1904;
 
 		return (date);
 	#endif
@@ -1244,27 +1332,18 @@ unsigned long prevmonth(unsigned long date) {
 	
 	#ifdef MACVERSION
 
-		DateTimeRec daterec;
-		short maxday;
-		
-		SecondsToDate (date, &daterec);
-		
-		if (daterec.month > 1) {
-			--daterec.month;
-			}
-		else {
-			daterec.month = 12;
-			--daterec.year;
-			}
-
-		maxday = daysInMonth(daterec.month, daterec.year);
-		
-		if (daterec.day > maxday)
-			daterec.day = maxday;
-		
-		fixdate (&daterec);
-
-		DateToSeconds (&daterec, &date);
+        CFAbsoluteTime absoluteTime = date - kCFAbsoluteTimeIntervalSince1904;
+        CFTimeZoneRef systemTimeZone = CFTimeZoneCopySystem();
+        
+        CFGregorianUnits units;
+        memset(&units, 0, sizeof (CFGregorianUnits));
+        units.months = -1;
+        
+        absoluteTime = CFAbsoluteTimeAddGregorianUnits(absoluteTime, systemTimeZone, units);
+        
+        CFRelease(systemTimeZone);
+        
+        date = absoluteTime + kCFAbsoluteTimeIntervalSince1904;
 
 		return (date);
 	#endif
@@ -1303,15 +1382,18 @@ unsigned long prevmonth(unsigned long date) {
 unsigned long prevyear(unsigned long date) {
 	#ifdef MACVERSION
 
-		DateTimeRec daterec;
-		
-		SecondsToDate (date, &daterec);
-		
-		--daterec.year;
-
-		fixdate (&daterec);
-
-		DateToSeconds (&daterec, &date);
+        CFAbsoluteTime absoluteTime = date - kCFAbsoluteTimeIntervalSince1904;
+        CFTimeZoneRef systemTimeZone = CFTimeZoneCopySystem();
+        
+        CFGregorianUnits units;
+        memset(&units, 0, sizeof (CFGregorianUnits));
+        units.years = -1;
+        
+        absoluteTime = CFAbsoluteTimeAddGregorianUnits(absoluteTime, systemTimeZone, units);
+        
+        CFRelease(systemTimeZone);
+        
+        date = absoluteTime + kCFAbsoluteTimeIntervalSince1904;
 
 		return (date);
 	#endif
@@ -1337,19 +1419,20 @@ unsigned long prevyear(unsigned long date) {
 
 unsigned long firstofmonth(unsigned long date) {
 	#ifdef MACVERSION
-
-		DateTimeRec daterec;
-		
-		SecondsToDate (date, &daterec);
-		
-		daterec.day  = 1;
-
-		daterec.hour = 0;
-		daterec.minute = 0;
-		daterec.second = 0;
-
-		DateToSeconds (&daterec, &date);
-
+    
+        CFAbsoluteTime absoluteTime = date - kCFAbsoluteTimeIntervalSince1904;
+        CFTimeZoneRef systemTimeZone = CFTimeZoneCopySystem();
+        CFGregorianDate gregDate = CFAbsoluteTimeGetGregorianDate(absoluteTime, systemTimeZone);
+        
+        gregDate.day = 1;
+        gregDate.hour = 0;
+        gregDate.minute = 0;
+        gregDate.second = 0;
+        
+        absoluteTime = CFGregorianDateGetAbsoluteTime(gregDate, systemTimeZone);
+        
+        CFRelease(systemTimeZone);
+        
 		return (date);
 	#endif
 

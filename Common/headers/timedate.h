@@ -75,7 +75,7 @@ extern boolean stringtotime (bigstring, unsigned long *);
 
 extern long datetimetoseconds (short, short, short, short, short, short);
 
-extern void secondstodatetime (long, short *, short *, short *, short *, short *, short *);
+extern void secondstodatetime (unsigned long, short *, short *, short *, short *, short *, short *);
 
 extern void secondstodayofweek (long, short *);
 

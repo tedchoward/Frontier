@@ -854,10 +854,6 @@
 		9F0D5BEE1864B62F00D9A6CE /* Carbon.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9F0D5BED1864B62F00D9A6CE /* Carbon.framework */; };
 		9F0D5C991864C68700D9A6CE /* AboutWindow.xib in Resources */ = {isa = PBXBuildFile; fileRef = 9F0D5C981864C68700D9A6CE /* AboutWindow.xib */; };
 		9F0D5C9A1864C68700D9A6CE /* AboutWindow.xib in Resources */ = {isa = PBXBuildFile; fileRef = 9F0D5C981864C68700D9A6CE /* AboutWindow.xib */; };
-		9F0D5C9E1864C6A800D9A6CE /* AboutWindowController.h in Headers */ = {isa = PBXBuildFile; fileRef = 9F0D5C9C1864C6A800D9A6CE /* AboutWindowController.h */; };
-		9F0D5C9F1864C6A800D9A6CE /* AboutWindowController.m in Sources */ = {isa = PBXBuildFile; fileRef = 9F0D5C9D1864C6A800D9A6CE /* AboutWindowController.m */; };
-		9F0D5CA01864C6A800D9A6CE /* AboutWindowController.h in Headers */ = {isa = PBXBuildFile; fileRef = 9F0D5C9C1864C6A800D9A6CE /* AboutWindowController.h */; };
-		9F0D5CA11864C6A800D9A6CE /* AboutWindowController.m in Sources */ = {isa = PBXBuildFile; fileRef = 9F0D5C9D1864C6A800D9A6CE /* AboutWindowController.m */; };
 		9F0D5E561864F04100D9A6CE /* WebKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9F0D5E551864F04100D9A6CE /* WebKit.framework */; };
 		9F3A12D4183A6B3E007ACBD2 /* MacSocketNetEvents.c in Sources */ = {isa = PBXBuildFile; fileRef = 9F3A12D3183A6B3E007ACBD2 /* MacSocketNetEvents.c */; };
 		9F3A12D5183A6B3E007ACBD2 /* MacSocketNetEvents.c in Sources */ = {isa = PBXBuildFile; fileRef = 9F3A12D3183A6B3E007ACBD2 /* MacSocketNetEvents.c */; };
@@ -871,6 +867,9 @@
 		9FAA97581880CB5F008923D3 /* AppleEventUtils.c in Sources */ = {isa = PBXBuildFile; fileRef = 9FAA97561880CB5F008923D3 /* AppleEventUtils.c */; };
 		9FAA97591880CB5F008923D3 /* AppleEventUtils.h in Headers */ = {isa = PBXBuildFile; fileRef = 9FAA97551880CB5F008923D3 /* AppleEventUtils.h */; };
 		9FAA975A1880CB5F008923D3 /* AppleEventUtils.c in Sources */ = {isa = PBXBuildFile; fileRef = 9FAA97561880CB5F008923D3 /* AppleEventUtils.c */; };
+		9FBC00E5188F362D00D7D174 /* about.c in Sources */ = {isa = PBXBuildFile; fileRef = 9FBC00E4188F362D00D7D174 /* about.c */; };
+		9FBC00E6188F362D00D7D174 /* about.c in Sources */ = {isa = PBXBuildFile; fileRef = 9FBC00E4188F362D00D7D174 /* about.c */; };
+		9FBC00E81891B5AA00D7D174 /* AudioToolbox.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9FBC00E71891B5AA00D7D174 /* AudioToolbox.framework */; };
 		9FC4F07218884306005F72EE /* libsqlite3.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 9FC4F07118884306005F72EE /* libsqlite3.dylib */; };
 		9FC4F07318884453005F72EE /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9F0D5BE01864B58D00D9A6CE /* Cocoa.framework */; };
 		9FC4F07418884469005F72EE /* WebKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9F0D5E551864F04100D9A6CE /* WebKit.framework */; };
@@ -1349,8 +1348,6 @@
 		9F0D5BE01864B58D00D9A6CE /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = System/Library/Frameworks/Cocoa.framework; sourceTree = SDKROOT; };
 		9F0D5BED1864B62F00D9A6CE /* Carbon.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Carbon.framework; path = System/Library/Frameworks/Carbon.framework; sourceTree = SDKROOT; };
 		9F0D5C981864C68700D9A6CE /* AboutWindow.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = AboutWindow.xib; sourceTree = "<group>"; };
-		9F0D5C9C1864C6A800D9A6CE /* AboutWindowController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AboutWindowController.h; sourceTree = "<group>"; };
-		9F0D5C9D1864C6A800D9A6CE /* AboutWindowController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AboutWindowController.m; sourceTree = "<group>"; };
 		9F0D5E551864F04100D9A6CE /* WebKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = WebKit.framework; path = System/Library/Frameworks/WebKit.framework; sourceTree = SDKROOT; };
 		9F3A12D3183A6B3E007ACBD2 /* MacSocketNetEvents.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = MacSocketNetEvents.c; path = ../Common/source/MacSocketNetEvents.c; sourceTree = SOURCE_ROOT; };
 		9F3A12D6183A6B60007ACBD2 /* mutex.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = mutex.c; path = ../Common/source/mutex.c; sourceTree = SOURCE_ROOT; };
@@ -1358,6 +1355,8 @@
 		9FAA95D1187F3AD7008923D3 /* file.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = file.c; path = ../Common/source/file.c; sourceTree = SOURCE_ROOT; };
 		9FAA97551880CB5F008923D3 /* AppleEventUtils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AppleEventUtils.h; sourceTree = "<group>"; };
 		9FAA97561880CB5F008923D3 /* AppleEventUtils.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = AppleEventUtils.c; sourceTree = "<group>"; };
+		9FBC00E4188F362D00D7D174 /* about.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = about.c; path = ../Common/source/about.c; sourceTree = "<group>"; };
+		9FBC00E71891B5AA00D7D174 /* AudioToolbox.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AudioToolbox.framework; path = System/Library/Frameworks/AudioToolbox.framework; sourceTree = SDKROOT; };
 		9FC4F07118884306005F72EE /* libsqlite3.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libsqlite3.dylib; path = usr/lib/libsqlite3.dylib; sourceTree = SDKROOT; };
 		9FCD376C1845379300E90027 /* OPML.nib */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = OPML.nib; path = ../Common/resources/Mac/OPML.nib; sourceTree = SOURCE_ROOT; };
 		9FCD37A118454A7500E90027 /* macDialogs.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = macDialogs.c; path = ../Common/source/mac/macDialogs.c; sourceTree = SOURCE_ROOT; };
@@ -1383,6 +1382,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				9FBC00E81891B5AA00D7D174 /* AudioToolbox.framework in Frameworks */,
 				9FC4F07518884485005F72EE /* Carbon.framework in Frameworks */,
 				9FC4F07418884469005F72EE /* WebKit.framework in Frameworks */,
 				9FC4F07318884453005F72EE /* Cocoa.framework in Frameworks */,
@@ -1548,6 +1548,7 @@
 		6515255C072BFC6500411831 = {
 			isa = PBXGroup;
 			children = (
+				9FBC00E71891B5AA00D7D174 /* AudioToolbox.framework */,
 				9FC4F07118884306005F72EE /* libsqlite3.dylib */,
 				6515260D072BFC6700411831 /* _cancoon */,
 				65152614072BFC6700411831 /* _clay */,
@@ -1719,6 +1720,7 @@
 		651525E1072BFC6700411831 /* tool */ = {
 			isa = PBXGroup;
 			children = (
+				9FBC00E4188F362D00D7D174 /* about.c */,
 				651525ED072BFC6700411831 /* base64.c */,
 				651525EE072BFC6700411831 /* cursor.c */,
 				651525EF072BFC6700411831 /* dockmenu.c */,
@@ -1768,8 +1770,6 @@
 				651525E8072BFC6700411831 /* services.c */,
 				651525E9072BFC6700411831 /* uisharing.c */,
 				651525EA072BFC6700411831 /* zoom.c */,
-				9F0D5C9C1864C6A800D9A6CE /* AboutWindowController.h */,
-				9F0D5C9D1864C6A800D9A6CE /* AboutWindowController.m */,
 				9FAA97551880CB5F008923D3 /* AppleEventUtils.h */,
 				9FAA97561880CB5F008923D3 /* AppleEventUtils.c */,
 			);
@@ -2408,7 +2408,6 @@
 				65C4999E0E7D8F320078B6DB /* FSCopyObject.h in Headers */,
 				65C499A40E7D8F3A0078B6DB /* GenLinkedList.h in Headers */,
 				9F3A12DB183A6B8D007ACBD2 /* mutex.h in Headers */,
-				9F0D5CA01864C6A800D9A6CE /* AboutWindowController.h in Headers */,
 				9FAA97571880CB5F008923D3 /* AppleEventUtils.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -2599,7 +2598,6 @@
 				5D8F1E170C25AFC600927B97 /* typelib.h in Headers */,
 				5D8F1EF70C25B56600927B97 /* langmysql.h in Headers */,
 				9F3A12DA183A6B8D007ACBD2 /* mutex.h in Headers */,
-				9F0D5C9E1864C6A800D9A6CE /* AboutWindowController.h in Headers */,
 				9FAA97591880CB5F008923D3 /* AppleEventUtils.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -3064,9 +3062,9 @@
 				9F3A12D5183A6B3E007ACBD2 /* MacSocketNetEvents.c in Sources */,
 				9F3A12D8183A6B60007ACBD2 /* mutex.c in Sources */,
 				9FCD37A318454A7500E90027 /* macDialogs.c in Sources */,
-				9F0D5CA11864C6A800D9A6CE /* AboutWindowController.m in Sources */,
 				9FAA95D2187F3AD7008923D3 /* file.c in Sources */,
 				9FAA97581880CB5F008923D3 /* AppleEventUtils.c in Sources */,
+				9FBC00E6188F362D00D7D174 /* about.c in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -3273,9 +3271,9 @@
 				9F3A12D4183A6B3E007ACBD2 /* MacSocketNetEvents.c in Sources */,
 				9F3A12D7183A6B60007ACBD2 /* mutex.c in Sources */,
 				9FCD37A218454A7500E90027 /* macDialogs.c in Sources */,
-				9F0D5C9F1864C6A800D9A6CE /* AboutWindowController.m in Sources */,
 				9FAA95D3187F3AD7008923D3 /* file.c in Sources */,
 				9FAA975A1880CB5F008923D3 /* AppleEventUtils.c in Sources */,
+				9FBC00E5188F362D00D7D174 /* about.c in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
