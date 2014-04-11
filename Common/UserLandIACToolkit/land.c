@@ -53,12 +53,7 @@ typedef struct tytransportinfo {
 	} tytransportinfo, *ptrtransportinfo, **hdltransportinfo;
 
 
-
-static THz landzone;
-
-
 static short landresfile;
-
 
 
 pascal boolean landpushfastcontext (tyfastverbcontext *savecontext) {

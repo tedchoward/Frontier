@@ -824,8 +824,14 @@ static void * getstudydata (Handle hcp) {
 	Compute a ptr to the study_data part of the handle that is only valid
 	until the memory manager relocates our block of memory.
 	*/
-	
-	return ((void *) (((**((tycompiledpattern**)hcp)).study_size != nil) ? ((char *) *hcp + ((**((tycompiledpattern**)hcp)).study_offset)) : nil));
+    
+    if ((**((tycompiledpattern**)hcp)).study_size != 0) {
+        return ((char *) *hcp + ((**((tycompiledpattern**)hcp)).study_offset));
+    }
+    
+    return nil;
+     
+    
 	} /*getstudydata*/
 
 

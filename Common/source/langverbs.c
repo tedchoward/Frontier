@@ -2583,13 +2583,7 @@ static boolean langfunctionvalue (short token, hdltreenode hparam1, tyvaluerecor
 				break;
 			
 			shellcallmemoryhooks (&ctbytes);
-			
-			#if MACVERSION && fldebug
-			
-				CompactMem (longinfinity); /*makes it easier to debug heap leakage*/
-			
-			#endif
-			
+						
 			return (setbooleanvalue ((boolean)(ctbytes < longinfinity), v));
 			}
 		

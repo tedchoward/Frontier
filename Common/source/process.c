@@ -2794,7 +2794,7 @@ unsigned long processstackspace (void) {
 				return (space);
 			}
 	
-	return (StackSpace ());
+	return (0x04000);
 #endif
 
 #ifdef WIN95VERSION

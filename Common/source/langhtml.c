@@ -7594,7 +7594,7 @@ static boolean mrcalendargetdayaddressdive (short num, tyaddress *adr, boolean f
 	while (stringlength ((*adr).bs) < 2)
 		insertchar ('0', (*adr).bs);
 	
-	if (!langtablelookup ((*adr).ht, (*adr).bs, &(*adr).ht) && flcreate && idtype != nil) {
+	if (!langtablelookup ((*adr).ht, (*adr).bs, &(*adr).ht) && flcreate && idtype != 0) {
 
 		tyvaluetype type = langgetvaluetype (idtype);
 		

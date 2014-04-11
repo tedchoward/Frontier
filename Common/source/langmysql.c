@@ -262,7 +262,7 @@ boolean mysqlinitverb ( hdltreenode hparam1, tyvaluerecord *vreturned, bigstring
 	// Initialize the MySQL object
 	resultCode = mysql_library_init(-1, server_args, NULL); // -1 means don't start embedded server
 	if (resultCode != 0) {
-		langerrormessage ("\x1B""MySQL could not initialize.");	
+		langerrormessage (BIGSTRING("\x1B""MySQL could not initialize."));
 		return (false);
 	}
 
@@ -353,7 +353,7 @@ boolean mysqlconnectverb ( hdltreenode hparam1, tyvaluerecord *vreturned, bigstr
 	
 	if ( dbid == NULL ) {
 	
-		langerrormessage ( "\x2D" "MySQL could not allocate a connection object." );
+		langerrormessage ( BIGSTRING("\x2D" "MySQL could not allocate a connection object.") );
 		
 		return ( false );
 		
@@ -363,7 +363,7 @@ boolean mysqlconnectverb ( hdltreenode hparam1, tyvaluerecord *vreturned, bigstr
 	
 	if ( dbid == NULL ) {
 	
-		langerrormessage ( "\x22" "Could not connect to MySQL server." );
+		langerrormessage ( BIGSTRING("\x22" "Could not connect to MySQL server.") );
 		
 		return ( false );
 		
@@ -403,7 +403,7 @@ boolean mysqlcloseverb (hdltreenode hparam1, tyvaluerecord *vreturned, bigstring
 		
 	if ( dbid == NULL ) {
 	
-		langerrormessage ( "\x25" "Invalid MySQL database connection ID." );
+		langerrormessage ( BIGSTRING("\x25" "Invalid MySQL database connection ID.") );
 		
 		return ( false );
 		
@@ -411,7 +411,7 @@ boolean mysqlcloseverb (hdltreenode hparam1, tyvaluerecord *vreturned, bigstring
 		
 	// Check that server's still alive
 	if (mysql_ping(dbid) != 0) {
-		langerrormessage ("\x20""Lost connection to MySQL server.");	
+		langerrormessage (BIGSTRING("\x20""Lost connection to MySQL server."));	
 		return (false);
 	}
 
@@ -457,7 +457,7 @@ boolean mysqlcompilequeryverb (hdltreenode hparam1, tyvaluerecord *vreturned, bi
 		
 	if ( dbid == NULL ) {
 	
-		langerrormessage ( "\x25" "Invalid MySQL database connection ID." );
+		langerrormessage ( BIGSTRING("\x25" "Invalid MySQL database connection ID.") );
 		
 		return ( false );
 		
@@ -474,20 +474,20 @@ boolean mysqlcompilequeryverb (hdltreenode hparam1, tyvaluerecord *vreturned, bi
 
 	// Check that server's still alive
 	if (mysql_ping(dbid) != 0) {
-		langerrormessage ("\x20""Lost connection to MySQL server.");	
+		langerrormessage (BIGSTRING("\x20""Lost connection to MySQL server."));	
 		return (false);
 	}
 
 	// Process the initial query sequence
 	returnCode = mysql_query(dbid, *query);
 	if(returnCode != 0) {
-		langerrormessage ("\x21""Could not initialize MySQL query.");	
+		langerrormessage (BIGSTRING("\x21""Could not initialize MySQL query."));	
 		return (false);
 	}
 
 	queryid = mysql_store_result(dbid);
 	if(mysql_errno(dbid) != 0) {
-		langerrormessage ("\x21""Could not initialize MySQL query.");	
+		langerrormessage (BIGSTRING("\x21""Could not initialize MySQL query."));	
 		return (false);
 	}
 
@@ -630,7 +630,7 @@ boolean mysqlgetrowverb (hdltreenode hparam1, tyvaluerecord *vreturned, bigstrin
 	
 	if (fieldCount == 0) {
 	
-		langerrormessage ("\x2D""MySQL.getRow requires a minimum of one field.");
+		langerrormessage (BIGSTRING("\x2D""MySQL.getRow requires a minimum of one field."));
 			
 		return (false);
 		
@@ -676,7 +676,7 @@ boolean mysqlgetrowverb (hdltreenode hparam1, tyvaluerecord *vreturned, bigstrin
 					}
 				}
 				
-				column_text = row[fieldNumber];
+				column_text = (unsigned char *)row[fieldNumber];
 				
 				if ( column_text == NULL )
 				
@@ -686,7 +686,7 @@ boolean mysqlgetrowverb (hdltreenode hparam1, tyvaluerecord *vreturned, bigstrin
 
 					// Exit the verb, converting column_name back to Frontier handle
 					
-					if ( ! newfilledhandle ( ( ptrvoid ) column_text, strlen ( column_text ), &h ) )
+					if ( ! newfilledhandle ( ( ptrvoid ) column_text, strlen ( (const char *)column_text ), &h ) )
 						return ( false ); // Allocation failed
 						
 					if ( ! setheapvalue ( h, stringvaluetype, &val ) ) // convert handle to value
@@ -789,7 +789,7 @@ boolean mysqlgeterrornumberverb (hdltreenode hparam1, tyvaluerecord *vreturned, 
 		
 	if ( dbid == NULL ) {
 	
-		langerrormessage ( "\x25" "Invalid MySQL database connection ID." );
+		langerrormessage ( BIGSTRING("\x25" "Invalid MySQL database connection ID.") );
 		
 		return ( false );
 		
@@ -797,7 +797,7 @@ boolean mysqlgeterrornumberverb (hdltreenode hparam1, tyvaluerecord *vreturned, 
 		
 	// Check that server's still alive
 	if (mysql_ping(dbid) != 0) {
-		langerrormessage ("\x20""Lost connection to MySQL server.");	
+		langerrormessage (BIGSTRING("\x20""Lost connection to MySQL server."));	
 		return (false);
 	}
 
@@ -841,7 +841,7 @@ boolean mysqlgeterrormessageverb ( hdltreenode hparam1, tyvaluerecord *vreturned
 		
 	if ( dbid == NULL ) {
 	
-		langerrormessage ( "\x25" "Invalid MySQL database connection ID." );
+		langerrormessage ( BIGSTRING("\x25" "Invalid MySQL database connection ID.") );
 		
 		return ( false );
 		
@@ -849,7 +849,7 @@ boolean mysqlgeterrormessageverb ( hdltreenode hparam1, tyvaluerecord *vreturned
 		
 	if ( mysql_ping ( dbid ) != 0 ) { // Check that server's still alive
 	
-		langerrormessage ( "\x20" "Lost connection to MySQL server." );
+		langerrormessage ( BIGSTRING("\x20" "Lost connection to MySQL server.") );
 		
 		return ( false );
 		
@@ -953,7 +953,7 @@ boolean mysqlgethostinfoverb (hdltreenode hparam1, tyvaluerecord *vreturned, big
 		
 	if ( dbid == NULL ) {
 	
-		langerrormessage ( "\x25" "Invalid MySQL database connection ID." );
+		langerrormessage ( BIGSTRING("\x25" "Invalid MySQL database connection ID.") );
 		
 		return ( false );
 		
@@ -961,7 +961,7 @@ boolean mysqlgethostinfoverb (hdltreenode hparam1, tyvaluerecord *vreturned, big
 		
 	// Check that server's still alive
 	if (mysql_ping(dbid) != 0) {
-		langerrormessage ("\x20""Lost connection to MySQL server.");	
+		langerrormessage (BIGSTRING("\x20""Lost connection to MySQL server."));	
 		return (false);
 	}
 
@@ -1016,7 +1016,7 @@ boolean mysqlgetserverversionverb (hdltreenode hparam1, tyvaluerecord *vreturned
 		
 	if ( dbid == NULL ) {
 	
-		langerrormessage ( "\x25" "Invalid MySQL database connection ID." );
+		langerrormessage ( BIGSTRING("\x25" "Invalid MySQL database connection ID.") );
 		
 		return ( false );
 		
@@ -1024,7 +1024,7 @@ boolean mysqlgetserverversionverb (hdltreenode hparam1, tyvaluerecord *vreturned
 		
 	// Check that server's still alive
 	if (mysql_ping(dbid) != 0) {
-		langerrormessage ("\x20""Lost connection to MySQL server.");	
+		langerrormessage (BIGSTRING("\x20""Lost connection to MySQL server."));	
 		return (false);
 	}
 
@@ -1073,7 +1073,7 @@ boolean mysqlgetprotocolinfoverb (hdltreenode hparam1, tyvaluerecord *vreturned,
 
 	if ( dbid == NULL ) {
 	
-		langerrormessage ( "\x25" "Invalid MySQL database connection ID." );
+		langerrormessage ( BIGSTRING("\x25" "Invalid MySQL database connection ID.") );
 		
 		return ( false );
 		
@@ -1081,7 +1081,7 @@ boolean mysqlgetprotocolinfoverb (hdltreenode hparam1, tyvaluerecord *vreturned,
 		
 	// Check that server's still alive
 	if (mysql_ping(dbid) != 0) {
-		langerrormessage ("\x20""Lost connection to MySQL server.");	
+		langerrormessage (BIGSTRING("\x20""Lost connection to MySQL server."));	
 		return (false);
 	}
 
@@ -1125,7 +1125,7 @@ boolean mysqlgetserverinfoverb (hdltreenode hparam1, tyvaluerecord *vreturned, b
 		
 	if ( dbid == NULL ) {
 	
-		langerrormessage ( "\x25" "Invalid MySQL database connection ID." );
+		langerrormessage ( BIGSTRING("\x25" "Invalid MySQL database connection ID.") );
 		
 		return ( false );
 		
@@ -1133,7 +1133,7 @@ boolean mysqlgetserverinfoverb (hdltreenode hparam1, tyvaluerecord *vreturned, b
 		
 	// Check that server's still alive
 	if (mysql_ping(dbid) != 0) {
-		langerrormessage ("\x20""Lost connection to MySQL server.");	
+		langerrormessage (BIGSTRING("\x20""Lost connection to MySQL server."));	
 		return (false);
 	}
 
@@ -1192,7 +1192,7 @@ boolean mysqlgetqueryinfoverb (hdltreenode hparam1, tyvaluerecord *vreturned, bi
 		
 	if ( dbid == NULL ) {
 	
-		langerrormessage ( "\x25" "Invalid MySQL database connection ID." );
+		langerrormessage ( BIGSTRING("\x25" "Invalid MySQL database connection ID.") );
 		
 		return ( false );
 		
@@ -1200,7 +1200,7 @@ boolean mysqlgetqueryinfoverb (hdltreenode hparam1, tyvaluerecord *vreturned, bi
 		
 	// Check that server's still alive
 	if (mysql_ping(dbid) != 0) {
-		langerrormessage ("\x20""Lost connection to MySQL server.");	
+		langerrormessage (BIGSTRING("\x20""Lost connection to MySQL server."));	
 		return (false);
 	}
 
@@ -1256,7 +1256,7 @@ boolean mysqlgetaffectedrowcountverb (hdltreenode hparam1, tyvaluerecord *vretur
 		
 	if ( dbid == NULL ) {
 	
-		langerrormessage ( "\x25" "Invalid MySQL database connection ID." );
+		langerrormessage ( BIGSTRING("\x25" "Invalid MySQL database connection ID.") );
 		
 		return ( false );
 		
@@ -1264,7 +1264,7 @@ boolean mysqlgetaffectedrowcountverb (hdltreenode hparam1, tyvaluerecord *vretur
 		
 	// Check that server's still alive
 	if (mysql_ping(dbid) != 0) {
-		langerrormessage ("\x20""Lost connection to MySQL server.");	
+		langerrormessage (BIGSTRING("\x20""Lost connection to MySQL server."));	
 		return (false);
 	}
 
@@ -1332,7 +1332,7 @@ boolean mysqlgetcolumncountverb (hdltreenode hparam1, tyvaluerecord *vreturned, 
 		
 	if ( dbid == NULL ) {
 	
-		langerrormessage ( "\x25" "Invalid MySQL database connection ID." );
+		langerrormessage ( BIGSTRING("\x25" "Invalid MySQL database connection ID.") );
 		
 		return ( false );
 		
@@ -1340,7 +1340,7 @@ boolean mysqlgetcolumncountverb (hdltreenode hparam1, tyvaluerecord *vreturned, 
 		
 	// Check that server's still alive
 	if (mysql_ping(dbid) != 0) {
-		langerrormessage ("\x20""Lost connection to MySQL server.");	
+		langerrormessage (BIGSTRING("\x20""Lost connection to MySQL server."));	
 		return (false);
 	}
 
@@ -1386,7 +1386,7 @@ boolean mysqlgetserverstatusverb (hdltreenode hparam1, tyvaluerecord *vreturned,
 		
 	if ( dbid == NULL ) {
 	
-		langerrormessage ( "\x25" "Invalid MySQL database connection ID." );
+		langerrormessage ( BIGSTRING("\x25" "Invalid MySQL database connection ID.") );
 		
 		return ( false );
 		
@@ -1394,7 +1394,7 @@ boolean mysqlgetserverstatusverb (hdltreenode hparam1, tyvaluerecord *vreturned,
 		
 	// Check that server's still alive
 	if (mysql_ping(dbid) != 0) {
-		langerrormessage ("\x20""Lost connection to MySQL server.");	
+		langerrormessage (BIGSTRING("\x20""Lost connection to MySQL server."));	
 		return (false);
 	}
 
@@ -1447,7 +1447,7 @@ boolean mysqlgetquerywarningcountverb (hdltreenode hparam1, tyvaluerecord *vretu
 		
 	if ( dbid == NULL ) {
 	
-		langerrormessage ( "\x25" "Invalid MySQL database connection ID." );
+		langerrormessage ( BIGSTRING("\x25" "Invalid MySQL database connection ID.") );
 		
 		return ( false );
 		
@@ -1455,7 +1455,7 @@ boolean mysqlgetquerywarningcountverb (hdltreenode hparam1, tyvaluerecord *vretu
 		
 	// Check that server's still alive
 	if (mysql_ping(dbid) != 0) {
-		langerrormessage ("\x20""Lost connection to MySQL server.");	
+		langerrormessage (BIGSTRING("\x20""Lost connection to MySQL server."));	
 		return (false);
 	}
 
@@ -1499,7 +1499,7 @@ boolean mysqlpingserververb (hdltreenode hparam1, tyvaluerecord *vreturned, bigs
 		
 	if ( dbid == NULL ) {
 	
-		langerrormessage ( "\x25" "Invalid MySQL database connection ID." );
+		langerrormessage ( BIGSTRING("\x25" "Invalid MySQL database connection ID.") );
 		
 		return ( false );
 		
@@ -1552,7 +1552,7 @@ boolean mysqlseekrowverb (hdltreenode hparam1, tyvaluerecord *vreturned, bigstri
 		--row; // adjust for Frontier's base of 1
 	}
 	else {
-		langerrormessage ("\x2F""MySQL.seekRow requires a value of 1 or greater.");	
+		langerrormessage (BIGSTRING("\x2F""MySQL.seekRow requires a value of 1 or greater."));	
 		return (false);
 	}
 
@@ -1590,7 +1590,7 @@ boolean mysqlselectdatabaseverb ( hdltreenode hparam1, tyvaluerecord *vreturned,
 		
 	if ( dbid == NULL ) {
 	
-		langerrormessage ( "\x25" "Invalid MySQL database connection ID." );
+		langerrormessage ( BIGSTRING("\x25" "Invalid MySQL database connection ID.") );
 		
 		return ( false );
 		
@@ -1607,14 +1607,14 @@ boolean mysqlselectdatabaseverb ( hdltreenode hparam1, tyvaluerecord *vreturned,
 
 	// Check that server's still alive
 	if (mysql_ping(dbid) != 0) {
-		langerrormessage ("\x20""Lost connection to MySQL server.");	
+		langerrormessage (BIGSTRING("\x20""Lost connection to MySQL server."));	
 		return (false);
 	}
 
 	// Process the MySQL request
 	resultCode = mysql_select_db(dbid, *dbname);
 	if (resultCode != 0) {
-		langerrormessage ("\x24""Could not connect to MySQL database.");	
+		langerrormessage (BIGSTRING("\x24""Could not connect to MySQL database."));	
 		return (false);
 	}
 	
@@ -1657,7 +1657,7 @@ boolean mysqlgetsqlstateverb (hdltreenode hparam1, tyvaluerecord *vreturned, big
 		
 	if ( dbid == NULL ) {
 	
-		langerrormessage ( "\x25" "Invalid MySQL database connection ID." );
+		langerrormessage ( BIGSTRING("\x25" "Invalid MySQL database connection ID.") );
 		
 		return ( false );
 		
@@ -1665,7 +1665,7 @@ boolean mysqlgetsqlstateverb (hdltreenode hparam1, tyvaluerecord *vreturned, big
 		
 	// Check that server's still alive
 	if (mysql_ping(dbid) != 0) {
-		langerrormessage ("\x20""Lost connection to MySQL server.");	
+		langerrormessage (BIGSTRING("\x20""Lost connection to MySQL server."));	
 		return (false);
 	}
 
@@ -1714,7 +1714,7 @@ boolean mysqlescapestringverb (hdltreenode hparam1, tyvaluerecord *vreturned, bi
 
 	if ( dbid == NULL ) {
 	
-		langerrormessage ( "\x25" "Invalid MySQL database connection ID." );
+		langerrormessage ( BIGSTRING("\x25" "Invalid MySQL database connection ID.") );
 		
 		return ( false );
 		

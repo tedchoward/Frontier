@@ -56,7 +56,6 @@ boolean initmacintosh (void) {
 	3.0.4 dmb: pass 0L to InitDialogs
 	*/
 	
-	register short i;
 	register hdlmemoryconfig h;
 	register long ctbytes;
 	//Code change by Timothy Paustian Thursday, June 8, 2000 3:45:13 PM
@@ -126,12 +125,12 @@ boolean initmacintosh (void) {
 	//SysEnvirons (1, &macworld);
 	
 	//gee I bet this isn't required anymore either.
-	for (i = 1; i <= 5; i++) { /*register with Multifinder*/
-		
-		EventRecord ev;
-		
-		EventAvail (everyEvent, &ev); /*see TN180 -- splash screen*/
-		} /*for*/
+//	for (i = 1; i <= 5; i++) { /*register with Multifinder*/
+//		
+//		EventRecord ev;
+//		
+//		EventAvail (everyEvent, &ev); /*see TN180 -- splash screen*/
+//		} /*for*/
 		
 	return (true);
 	} /*initmacintosh*/
