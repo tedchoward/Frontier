@@ -43,7 +43,7 @@
 /* common strings for all targets */
 
 #define	APP_COPYRIGHT_FROM	"2004"
-#define	APP_COPYRIGHT_TILL	"2014"
+#define	APP_COPYRIGHT_TILL	"2015"
 
 /* 2011-08-03 tedchoward: these properties are identical for each app */
 #define	APP_MAJOR_VERSION			10
@@ -54,10 +54,10 @@
 #define	APP_SUBMINOR_VERSION_BCD		0x10	/* sub and minor version in BCD notation */
 
 #define	APP_STAGE_CODE				0x60	/* dev = 0x20, alpha = 0x40, beta = 0x60, final = 0x80 */
-#define	APP_REVISION_LEVEL			20	/* for non-final releases only */
-#define	APP_BUILD_NUMBER			20	/* increment by one for every release, final or not */
+#define	APP_REVISION_LEVEL			21	/* for non-final releases only */
+#define	APP_BUILD_NUMBER			21	/* increment by one for every release, final or not */
 
-#define	APP_VERSION_STRING			"10.1b20"
+#define	APP_VERSION_STRING			"10.1b21"
 
 
 
