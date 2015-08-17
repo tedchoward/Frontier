@@ -1016,6 +1016,7 @@
 		9F3A12DA183A6B8D007ACBD2 /* mutex.h in Headers */ = {isa = PBXBuildFile; fileRef = 9F3A12D9183A6B8D007ACBD2 /* mutex.h */; };
 		9F3A12DB183A6B8D007ACBD2 /* mutex.h in Headers */ = {isa = PBXBuildFile; fileRef = 9F3A12D9183A6B8D007ACBD2 /* mutex.h */; };
 		9FAA176D1B824B7F00416D78 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9FAA176C1B824B7F00416D78 /* Cocoa.framework */; };
+		9FAA17B41B82592900416D78 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9FAA176C1B824B7F00416D78 /* Cocoa.framework */; };
 		DEA58AB407435A9500BAB271 /* Frontier.icns in Resources */ = {isa = PBXBuildFile; fileRef = DEA58AB307435A9500BAB271 /* Frontier.icns */; };
 /* End PBXBuildFile section */
 
@@ -1547,6 +1548,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				9FAA17B41B82592900416D78 /* Cocoa.framework in Frameworks */,
 				65059B3809968C1400410571 /* Carbon.framework in Frameworks */,
 				65059B3909968C1400410571 /* ApplicationServices.framework in Frameworks */,
 				65059B3A09968C1400410571 /* QuickTime.framework in Frameworks */,
@@ -3856,13 +3858,10 @@
 		5D4E1D480AAA0B1400DF6890 /* Deployment */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ARCHS = (
-					ppc,
-					i386,
-				);
+				ARCHS = i386;
 				GCC_VERSION = 4.0;
 				OTHER_CFLAGS = "";
-				SDKROOT = /Developer/SDKs/MacOSX10.4u.sdk;
+				SDKROOT = "$(DEVELOPER_SDK_DIR)/MacOSX10.6.sdk";
 			};
 			name = Deployment;
 		};
