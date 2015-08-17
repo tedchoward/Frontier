@@ -55,11 +55,6 @@
 #include "wpverbs.h"
 #include "kernelverbdefs.h"
 
-#ifdef MACVERSION
-
-	#include "MoreFilesX.h"
-
-#endif
 
 
 #define wperrorlist 264 

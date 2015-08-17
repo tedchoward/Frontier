@@ -41,11 +41,6 @@
 #include "tableinternal.h" /*for hdltablevariable; so we can avoid loading unloaded tables*/
 #include "tablestructure.h"
 
-#ifdef MACVERSION
-
-	#include "MoreFilesX.h" // 2006-10-25 creedon
-	
-#endif // MACVERSION
 
 #if TARGET_API_MAC_CARBON == 1 /*PBS 03/14/02: AE OS X fix.*/
 	#include "aeutils.h"

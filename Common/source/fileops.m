@@ -50,7 +50,8 @@
 
 #ifdef MACVERSION
 
-	#include "MoreFilesX.h"
+#import <Foundation/Foundation.h>
+
 	#include "FSCopyObject.h"
 	#include <sys/param.h> // 2006-08-11 creedon
 
@@ -498,7 +499,7 @@ boolean winfileerror (const ptrfilespec fs) {
 			err = PBHGetVolParmsSync (&lpb);
 		
 			if (err == noErr) 
-				( *info ).flremotevolume = VolIsNetworkVolume ( &buffer );
+				( *info ).flremotevolume = (&buffer)->vMServerAdr != 0;
 			}
 		
 		return (true);
@@ -1210,21 +1211,18 @@ boolean filesetvisible (const ptrfilespec fs, boolean flvisible) {
 	#ifdef MACVERSION
 	
 		FSRef fsref;
-		OSErr err;
 		
 		if (oserror (macgetfsref (fs, &fsref)))
 			return (false);
+	
+		NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
 		
-		if (flvisible) {
-			err = FSClearInvisible (&fsref);
-			}
-		else {
-			err = FSSetInvisible (&fsref);
-			}
+		CFURLRef fileUrl = CFURLCreateFromFSRef(kCFAllocatorDefault, &fsref);
+		[(NSURL *)fileUrl setResourceValue:[NSNumber numberWithBool:!flvisible] forKey:NSURLIsHiddenKey error:NULL]; 
+		CFRelease(fileUrl);
 		
-		if (oserror (err))
-			return (false);
-		
+		[pool release];
+				
 		touchparentfolder (fs);
 		
 	#endif	
@@ -3496,7 +3494,15 @@ boolean newfile ( const ptrfilespec fs, OSType creator, OSType filetype ) {
 
 		FSRef fsref;
 		
-		if (FSMakeFSRef (vnum, dirid, fname, &fsref) != noErr)
+		FSRefParam pb;
+		pb.ioVRefNum = vnum;
+		pb.ioDirID = dirid;
+		pb.ioNamePtr = fname;
+		pb.newRef = &fsref;
+		
+		OSErr result = PBMakeFSRefSync(&pb);
+		
+		if (noErr != result)
 			return (false);
 		
 		return (macmakefilespec (&fsref, pfs) == noErr);
@@ -3655,7 +3661,9 @@ void clearfilespec (ptrfilespec fs) {
 		2009-09-06 aradke: check if fs data is valid (though file may not exist)
 		*/
 		
-		return (FSRefValid (&fs->ref) && (fsnamelength (&fs->name) > 0));
+		
+		
+		return (noErr == FSGetCatalogInfo(&fs->ref, kFSCatInfoNone, NULL, NULL, NULL, NULL) && (fsnamelength (&fs->name) > 0));
 
 		} /*macfilespecisvalid*/
 	

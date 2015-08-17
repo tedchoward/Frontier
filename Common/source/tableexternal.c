@@ -50,11 +50,6 @@
 #include "claycallbacks.h"
 #include "cancoon.h"
 
-#ifdef MACVERSION
-
-	#include "MoreFilesX.h"
-
-#endif
 
 
 boolean tablevaltotable (tyvaluerecord val, hdlhashtable *htable, hdlhashnode hnode) {

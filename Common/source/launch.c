@@ -32,7 +32,6 @@
 
 	#include <land.h>
 	#include "mac.h"
-	#include "MoreFilesX.h"
 
 #endif
 
@@ -1025,8 +1024,15 @@ boolean launchapplication ( const ptrfilespec fsapp, const ptrfilespec fsdoc, bo
 		
 			tyfilespec fs;
 			FSRef fsref;
-		
-			FSMakeFSRef (processinfo->processAppSpec->vRefNum, processinfo->processAppSpec->parID, processinfo->processAppSpec->name, &fsref);
+					
+			FSRefParam pb;
+			
+			pb.ioVRefNum = processinfo->processAppSpec->vRefNum;
+			pb.ioDirID = processinfo->processAppSpec->parID;
+			pb.ioNamePtr = processinfo->processAppSpec->name;
+			pb.newRef = &fsref;
+			
+			PBMakeFSRefSync(&pb);
 			
 			if (macmakefilespec (&fsref, &fs) != noErr)
 				return (false);

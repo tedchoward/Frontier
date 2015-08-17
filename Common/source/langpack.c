@@ -43,11 +43,6 @@
 #include "byteorder.h"	/* 2006-04-08 aradke: endianness conversion macros */
 #include "file.h" // 2006-09-15 creedon
 
-#ifdef MACVERSION
-
-	#include "MoreFilesX.h"
-
-#endif
 
 #define ctsigbytes 19 /*length of string + 1 byte for length*/
 

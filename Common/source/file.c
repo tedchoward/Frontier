@@ -30,7 +30,6 @@
 
 #ifdef MACVERSION
 
-	#include "MoreFilesX.h"
 	#include <sys/param.h>
 	
 #endif
@@ -566,8 +565,22 @@ static boolean filecreateandopen ( ptrfilespec fs, OSType creator, OSType filety
 			return (false); // failed to open the file for writing
 			
 			}
+	
+		FSCatalogInfo catalogInfo;
 		
-		FSSetNameLocked ( &fsref );
+		err = FSGetCatalogInfo(&fsref, kFSCatInfoFinderInfo, &catalogInfo, NULL, NULL, NULL);
+		
+		if (oserror(err)) {
+			return false;
+		}
+		
+		((FileInfo *)&catalogInfo.finderInfo)->finderFlags |= kNameLocked;
+		
+		err = FSSetCatalogInfo(&fsref, kFSCatInfoFinderInfo, &catalogInfo);
+		
+		if (oserror(err)) {
+			return false;
+		}
 			
 		return (true);
 		
@@ -656,7 +669,22 @@ boolean openfile ( const ptrfilespec fs, hdlfilenum *fnum, boolean flreadonly ) 
 			return (false);
 			}
 		
-		FSSetNameLocked ( &fsref );
+		FSCatalogInfo catalogInfo;
+		
+		OSErr err = FSGetCatalogInfo(&fsref, kFSCatInfoFinderInfo, &catalogInfo, NULL, NULL, NULL);
+		
+		if (oserror(err)) {
+			return false;
+		}
+		
+		((FileInfo *)&catalogInfo.finderInfo)->finderFlags |= kNameLocked;
+		
+		err = FSSetCatalogInfo(&fsref, kFSCatInfoFinderInfo, &catalogInfo);
+		
+		if (oserror(err)) {
+			return false;
+		}
+	
 		
 		return (true);
 		
@@ -715,10 +743,24 @@ boolean closefile (hdlfilenum fnum) {
 
 			FSRef fsr;
 			
-			err = FileRefNumGetFSRef ( fnum, &fsr );
+			err = FSGetForkCBInfo(fnum, 0, NULL, NULL, NULL, &fsr, NULL);
 			
 			if ( err == noErr ) {
-				FSClearNameLocked ( &fsr );
+				FSCatalogInfo catalogInfo;
+				
+				err = FSGetCatalogInfo(&fsr, kFSCatInfoFinderInfo, &catalogInfo, NULL, NULL, NULL);
+				
+				if (oserror(err)) {
+					return false;
+				}
+				
+				((FileInfo *)&catalogInfo.finderInfo)->finderFlags &= ~kNameLocked;
+				
+				err = FSSetCatalogInfo(&fsr, kFSCatInfoFinderInfo, &catalogInfo);
+				
+				if (oserror(err)) {
+					return false;
+				}
 				}
 			else {
 				//sprintf(s,"Error is %d",err);
@@ -772,7 +814,21 @@ boolean deletefile ( const ptrfilespec fs ) {
 		if ( oserror ( macgetfsref ( fs, &fsref ) ) )
 			return ( false );
 
-		FSClearNameLocked ( &fsref );
+		FSCatalogInfo catalogInfo;
+		
+		OSErr err = FSGetCatalogInfo(&fsref, kFSCatInfoFinderInfo, &catalogInfo, NULL, NULL, NULL);
+		
+		if (oserror(err)) {
+			return false;
+		}
+		
+		((FileInfo *)&catalogInfo.finderInfo)->finderFlags |= kNameLocked;
+		
+		err = FSSetCatalogInfo(&fsref, kFSCatInfoFinderInfo, &catalogInfo);
+		
+		if (oserror(err)) {
+			return false;
+		}
 	
 		return ( ! oserror ( FSDeleteObject ( &fsref ) ) );
 		

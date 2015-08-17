@@ -68,12 +68,6 @@ PBS 08/08/00
 #include "lang.h"
 #include "langinternal.h"
 
-#ifdef MACVERSION
-
-	#include "MoreFilesX.h"
-	
-#endif
-
 
 #define moviestasktime 30
 

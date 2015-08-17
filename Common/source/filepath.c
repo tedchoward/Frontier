@@ -37,7 +37,6 @@
 
 #ifdef MACVERSION
 
-	#include "MoreFilesX.h" // 2006-05-31 creedon
 	#include <CoreFoundation/CFString.h> // 2006-08-10 creedon
 	#include <sys/param.h> // 2006-10-16 creedon
 

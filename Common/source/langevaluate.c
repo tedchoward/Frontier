@@ -48,7 +48,6 @@
 #ifdef MACVERSION
 
 	#include <sys/param.h>
-	#include "MoreFilesX.h"
 	
 #endif
 

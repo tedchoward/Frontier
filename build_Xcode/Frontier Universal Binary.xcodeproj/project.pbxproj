@@ -33,7 +33,6 @@
 		6505996809968C1400410571 /* ioacolorpopup.h in Headers */ = {isa = PBXBuildFile; fileRef = 6515259F072BFC6700411831 /* ioacolorpopup.h */; };
 		6505996909968C1400410571 /* ioa.h in Headers */ = {isa = PBXBuildFile; fileRef = 6515259B072BFC6700411831 /* ioa.h */; };
 		6505996A09968C1400410571 /* pcre.h in Headers */ = {isa = PBXBuildFile; fileRef = 651525C9072BFC6700411831 /* pcre.h */; };
-		6505996B09968C1400410571 /* MoreFilesX.h in Headers */ = {isa = PBXBuildFile; fileRef = 651525C2072BFC6700411831 /* MoreFilesX.h */; };
 		6505996C09968C1400410571 /* frontier.h in Headers */ = {isa = PBXBuildFile; fileRef = 651527B1072BFE0100411831 /* frontier.h */; };
 		6505996D09968C1400410571 /* font.h in Headers */ = {isa = PBXBuildFile; fileRef = 651527B3072BFE0300411831 /* font.h */; };
 		6505996E09968C1400410571 /* appletdefs.h in Headers */ = {isa = PBXBuildFile; fileRef = 651527B5072BFE0400411831 /* appletdefs.h */; };
@@ -81,7 +80,6 @@
 		6505999909968C1400410571 /* mac.h in Headers */ = {isa = PBXBuildFile; fileRef = 6515280E072BFE5E00411831 /* mac.h */; };
 		6505999A09968C1400410571 /* scrap.h in Headers */ = {isa = PBXBuildFile; fileRef = 65152810072BFE6000411831 /* scrap.h */; };
 		6505999B09968C1400410571 /* threads.h in Headers */ = {isa = PBXBuildFile; fileRef = 65152812072BFE6100411831 /* threads.h */; };
-		6505999C09968C1400410571 /* MoreFilesExtras.h in Headers */ = {isa = PBXBuildFile; fileRef = 65152814072BFE6300411831 /* MoreFilesExtras.h */; };
 		6505999D09968C1400410571 /* iacinternal.h in Headers */ = {isa = PBXBuildFile; fileRef = 65152816072BFE6700411831 /* iacinternal.h */; };
 		6505999E09968C1400410571 /* appleticons.h in Headers */ = {isa = PBXBuildFile; fileRef = 65152818072BFE6A00411831 /* appleticons.h */; };
 		6505999F09968C1400410571 /* appletkb.h in Headers */ = {isa = PBXBuildFile; fileRef = 6515281A072BFE6C00411831 /* appletkb.h */; };
@@ -248,7 +246,7 @@
 		65059A4109968C1400410571 /* findinfile.c in Sources */ = {isa = PBXBuildFile; fileRef = 6515257C072BFC6700411831 /* findinfile.c */; };
 		65059A4209968C1400410571 /* fileverbs.c in Sources */ = {isa = PBXBuildFile; fileRef = 6515257B072BFC6700411831 /* fileverbs.c */; };
 		65059A4309968C1400410571 /* filepath.c in Sources */ = {isa = PBXBuildFile; fileRef = 6515257A072BFC6700411831 /* filepath.c */; };
-		65059A4409968C1400410571 /* fileops.c in Sources */ = {isa = PBXBuildFile; fileRef = 65152579072BFC6700411831 /* fileops.c */; };
+		65059A4409968C1400410571 /* fileops.m in Sources */ = {isa = PBXBuildFile; fileRef = 65152579072BFC6700411831 /* fileops.m */; };
 		65059A4509968C1400410571 /* filemp3.c in Sources */ = {isa = PBXBuildFile; fileRef = 65152578072BFC6700411831 /* filemp3.c */; };
 		65059A4609968C1400410571 /* fileloop.c in Sources */ = {isa = PBXBuildFile; fileRef = 65152577072BFC6700411831 /* fileloop.c */; };
 		65059A4809968C1400410571 /* filedialog.c in Sources */ = {isa = PBXBuildFile; fileRef = 65152576072BFC6700411831 /* filedialog.c */; };
@@ -483,7 +481,6 @@
 		65059B2E09968C1400410571 /* maketables.c in Sources */ = {isa = PBXBuildFile; fileRef = 651525C7072BFC6700411831 /* maketables.c */; };
 		65059B2F09968C1400410571 /* pcre.c in Sources */ = {isa = PBXBuildFile; fileRef = 651525C8072BFC6700411831 /* pcre.c */; };
 		65059B3009968C1400410571 /* study.c in Sources */ = {isa = PBXBuildFile; fileRef = 651525CA072BFC6700411831 /* study.c */; };
-		65059B3109968C1400410571 /* MoreFilesX.c in Sources */ = {isa = PBXBuildFile; fileRef = 651525C1072BFC6700411831 /* MoreFilesX.c */; };
 		65059B3209968C1400410571 /* langmath.c in Sources */ = {isa = PBXBuildFile; fileRef = 65B70CDB0797CE4A008C2F1A /* langmath.c */; };
 		65059B3309968C1400410571 /* FastTimes.c in Sources */ = {isa = PBXBuildFile; fileRef = 65B70CE50797CF2D008C2F1A /* FastTimes.c */; };
 		65059B3809968C1400410571 /* Carbon.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 651527B8072BFE0E00411831 /* Carbon.framework */; };
@@ -516,7 +513,7 @@
 		651526A4072BFC6800411831 /* findinfile.c in Sources */ = {isa = PBXBuildFile; fileRef = 6515257C072BFC6700411831 /* findinfile.c */; };
 		651526A5072BFC6800411831 /* fileverbs.c in Sources */ = {isa = PBXBuildFile; fileRef = 6515257B072BFC6700411831 /* fileverbs.c */; };
 		651526A6072BFC6800411831 /* filepath.c in Sources */ = {isa = PBXBuildFile; fileRef = 6515257A072BFC6700411831 /* filepath.c */; };
-		651526A7072BFC6800411831 /* fileops.c in Sources */ = {isa = PBXBuildFile; fileRef = 65152579072BFC6700411831 /* fileops.c */; };
+		651526A7072BFC6800411831 /* fileops.m in Sources */ = {isa = PBXBuildFile; fileRef = 65152579072BFC6700411831 /* fileops.m */; };
 		651526A8072BFC6800411831 /* filemp3.c in Sources */ = {isa = PBXBuildFile; fileRef = 65152578072BFC6700411831 /* filemp3.c */; };
 		651526A9072BFC6800411831 /* fileloop.c in Sources */ = {isa = PBXBuildFile; fileRef = 65152577072BFC6700411831 /* fileloop.c */; };
 		651526AB072BFC6800411831 /* filedialog.c in Sources */ = {isa = PBXBuildFile; fileRef = 65152576072BFC6700411831 /* filedialog.c */; };
@@ -773,8 +770,6 @@
 		651527A9072BFC6900411831 /* clut.r in Rez */ = {isa = PBXBuildFile; fileRef = 651525DA072BFC6700411831 /* clut.r */; };
 		651527AA072BFC6900411831 /* icns.r in Rez */ = {isa = PBXBuildFile; fileRef = 651525DB072BFC6700411831 /* icns.r */; };
 		651527AB072BFC6900411831 /* BNDL.r in Rez */ = {isa = PBXBuildFile; fileRef = 651525D0072BFC6700411831 /* BNDL.r */; };
-		651527AC072BFC6900411831 /* MoreFilesX.c in Sources */ = {isa = PBXBuildFile; fileRef = 651525C1072BFC6700411831 /* MoreFilesX.c */; };
-		651527AD072BFC6900411831 /* MoreFilesX.h in Headers */ = {isa = PBXBuildFile; fileRef = 651525C2072BFC6700411831 /* MoreFilesX.h */; };
 		651527B2072BFE0100411831 /* frontier.h in Headers */ = {isa = PBXBuildFile; fileRef = 651527B1072BFE0100411831 /* frontier.h */; };
 		651527B4072BFE0300411831 /* font.h in Headers */ = {isa = PBXBuildFile; fileRef = 651527B3072BFE0300411831 /* font.h */; };
 		651527B6072BFE0400411831 /* appletdefs.h in Headers */ = {isa = PBXBuildFile; fileRef = 651527B5072BFE0400411831 /* appletdefs.h */; };
@@ -823,7 +818,6 @@
 		6515280F072BFE5E00411831 /* mac.h in Headers */ = {isa = PBXBuildFile; fileRef = 6515280E072BFE5E00411831 /* mac.h */; };
 		65152811072BFE6000411831 /* scrap.h in Headers */ = {isa = PBXBuildFile; fileRef = 65152810072BFE6000411831 /* scrap.h */; };
 		65152813072BFE6100411831 /* threads.h in Headers */ = {isa = PBXBuildFile; fileRef = 65152812072BFE6100411831 /* threads.h */; };
-		65152815072BFE6300411831 /* MoreFilesExtras.h in Headers */ = {isa = PBXBuildFile; fileRef = 65152814072BFE6300411831 /* MoreFilesExtras.h */; };
 		65152817072BFE6700411831 /* iacinternal.h in Headers */ = {isa = PBXBuildFile; fileRef = 65152816072BFE6700411831 /* iacinternal.h */; };
 		65152819072BFE6A00411831 /* appleticons.h in Headers */ = {isa = PBXBuildFile; fileRef = 65152818072BFE6A00411831 /* appleticons.h */; };
 		6515281B072BFE6C00411831 /* appletkb.h in Headers */ = {isa = PBXBuildFile; fileRef = 6515281A072BFE6C00411831 /* appletkb.h */; };
@@ -1021,6 +1015,7 @@
 		9F3A12D8183A6B60007ACBD2 /* mutex.c in Sources */ = {isa = PBXBuildFile; fileRef = 9F3A12D6183A6B60007ACBD2 /* mutex.c */; };
 		9F3A12DA183A6B8D007ACBD2 /* mutex.h in Headers */ = {isa = PBXBuildFile; fileRef = 9F3A12D9183A6B8D007ACBD2 /* mutex.h */; };
 		9F3A12DB183A6B8D007ACBD2 /* mutex.h in Headers */ = {isa = PBXBuildFile; fileRef = 9F3A12D9183A6B8D007ACBD2 /* mutex.h */; };
+		9FAA176D1B824B7F00416D78 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9FAA176C1B824B7F00416D78 /* Cocoa.framework */; };
 		DEA58AB407435A9500BAB271 /* Frontier.icns in Resources */ = {isa = PBXBuildFile; fileRef = DEA58AB307435A9500BAB271 /* Frontier.icns */; };
 /* End PBXBuildFile section */
 
@@ -1049,7 +1044,6 @@
 		65059B800996958700410571 /* BNDL.r */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.rez; name = BNDL.r; path = ../resources/OPML/BNDL.r; sourceTree = SOURCE_ROOT; };
 		65059B810996958700410571 /* icns.r */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.rez; name = icns.r; path = ../resources/OPML/icns.r; sourceTree = SOURCE_ROOT; };
 		65123A7A09D9C107005AB449 /* postlinking.sh */ = {isa = PBXFileReference; comments = "This script is executed by a custom shell script build phase that runs after the linker is done."; fileEncoding = 30; lastKnownFileType = text.script.sh; name = postlinking.sh; path = tools/postlinking.sh; sourceTree = SOURCE_ROOT; };
-		65123A8209D9C14C005AB449 /* megastubs.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = megastubs.c; path = ../Common/stubs/megastubs.c; sourceTree = SOURCE_ROOT; };
 		65123A8509D9C173005AB449 /* kernelverbs.rc */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text; name = kernelverbs.rc; path = ../Common/resources/Win32/kernelverbs.rc; sourceTree = SOURCE_ROOT; };
 		65123A8609D9C173005AB449 /* WinLand.rc */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text; name = WinLand.rc; path = ../Common/resources/Win32/WinLand.rc; sourceTree = SOURCE_ROOT; };
 		6515256D072BFC6700411831 /* appletbits.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = appletbits.c; path = ../FrontierSDK/Toolkits/AppletToolkit/Source/appletbits.c; sourceTree = SOURCE_ROOT; };
@@ -1061,7 +1055,7 @@
 		65152576072BFC6700411831 /* filedialog.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = filedialog.c; path = ../Common/source/filedialog.c; sourceTree = SOURCE_ROOT; };
 		65152577072BFC6700411831 /* fileloop.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = fileloop.c; path = ../Common/source/fileloop.c; sourceTree = SOURCE_ROOT; };
 		65152578072BFC6700411831 /* filemp3.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = filemp3.c; path = ../Common/source/filemp3.c; sourceTree = SOURCE_ROOT; };
-		65152579072BFC6700411831 /* fileops.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = fileops.c; path = ../Common/source/fileops.c; sourceTree = SOURCE_ROOT; };
+		65152579072BFC6700411831 /* fileops.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; name = fileops.m; path = ../Common/source/fileops.m; sourceTree = SOURCE_ROOT; };
 		6515257A072BFC6700411831 /* filepath.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = filepath.c; path = ../Common/source/filepath.c; sourceTree = SOURCE_ROOT; };
 		6515257B072BFC6700411831 /* fileverbs.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = fileverbs.c; path = ../Common/source/fileverbs.c; sourceTree = SOURCE_ROOT; };
 		6515257C072BFC6700411831 /* findinfile.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = findinfile.c; path = ../Common/source/findinfile.c; sourceTree = SOURCE_ROOT; };
@@ -1128,8 +1122,6 @@
 		651525BD072BFC6700411831 /* landreturn.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = landreturn.c; path = ../Common/UserLandIACToolkit/landreturn.c; sourceTree = SOURCE_ROOT; };
 		651525BE072BFC6700411831 /* landsystem7.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = landsystem7.c; path = ../Common/UserLandIACToolkit/landsystem7.c; sourceTree = SOURCE_ROOT; };
 		651525BF072BFC6700411831 /* landverbarray.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = landverbarray.c; path = ../Common/UserLandIACToolkit/landverbarray.c; sourceTree = SOURCE_ROOT; };
-		651525C1072BFC6700411831 /* MoreFilesX.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = MoreFilesX.c; path = ../Common/MoreFilesX/MoreFilesX.c; sourceTree = SOURCE_ROOT; };
-		651525C2072BFC6700411831 /* MoreFilesX.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = MoreFilesX.h; path = ../Common/MoreFilesX/MoreFilesX.h; sourceTree = SOURCE_ROOT; };
 		651525C6072BFC6700411831 /* get.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = get.c; path = ../Common/PCRE/get.c; sourceTree = SOURCE_ROOT; };
 		651525C7072BFC6700411831 /* maketables.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = maketables.c; path = ../Common/PCRE/maketables.c; sourceTree = SOURCE_ROOT; };
 		651525C8072BFC6700411831 /* pcre.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = pcre.c; path = ../Common/PCRE/pcre.c; sourceTree = SOURCE_ROOT; };
@@ -1367,7 +1359,6 @@
 		6515280E072BFE5E00411831 /* mac.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = mac.h; path = ../Common/headers/mac.h; sourceTree = SOURCE_ROOT; };
 		65152810072BFE6000411831 /* scrap.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = scrap.h; path = ../Common/headers/scrap.h; sourceTree = SOURCE_ROOT; };
 		65152812072BFE6100411831 /* threads.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = threads.h; path = ../Common/headers/threads.h; sourceTree = SOURCE_ROOT; };
-		65152814072BFE6300411831 /* MoreFilesExtras.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = MoreFilesExtras.h; path = ../Common/MoreFiles/MoreFilesExtras.h; sourceTree = SOURCE_ROOT; };
 		65152816072BFE6700411831 /* iacinternal.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = iacinternal.h; path = ../FrontierSDK/Toolkits/IACTools/Headers/iacinternal.h; sourceTree = SOURCE_ROOT; };
 		65152818072BFE6A00411831 /* appleticons.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = appleticons.h; path = ../FrontierSDK/Toolkits/AppletToolkit/Headers/appleticons.h; sourceTree = SOURCE_ROOT; };
 		6515281A072BFE6C00411831 /* appletkb.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = appletkb.h; path = ../FrontierSDK/Toolkits/AppletToolkit/Headers/appletkb.h; sourceTree = SOURCE_ROOT; };
@@ -1547,6 +1538,7 @@
 		9F3A12D3183A6B3E007ACBD2 /* MacSocketNetEvents.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = MacSocketNetEvents.c; path = ../Common/source/MacSocketNetEvents.c; sourceTree = SOURCE_ROOT; };
 		9F3A12D6183A6B60007ACBD2 /* mutex.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = mutex.c; path = ../Common/source/mutex.c; sourceTree = SOURCE_ROOT; };
 		9F3A12D9183A6B8D007ACBD2 /* mutex.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = mutex.h; path = ../Common/headers/mutex.h; sourceTree = SOURCE_ROOT; };
+		9FAA176C1B824B7F00416D78 /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = /System/Library/Frameworks/Cocoa.framework; sourceTree = "<absolute>"; };
 		DEA58AB307435A9500BAB271 /* Frontier.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; name = Frontier.icns; path = ../resources/Frontier/Frontier.icns; sourceTree = SOURCE_ROOT; };
 /* End PBXFileReference section */
 
@@ -1573,6 +1565,7 @@
 				5D8F1EF00C25B4AB00927B97 /* libmysqlclient.a in Frameworks */,
 				5D8F1EF10C25B4AB00927B97 /* libz.a in Frameworks */,
 				9F0927D51AB09A8200016C2B /* libsqlite3.0.dylib in Frameworks */,
+				9FAA176D1B824B7F00416D78 /* Cocoa.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1642,7 +1635,6 @@
 			isa = PBXGroup;
 			children = (
 				65123A8509D9C173005AB449 /* kernelverbs.rc */,
-				65123A8209D9C14C005AB449 /* megastubs.c */,
 				65123A8609D9C173005AB449 /* WinLand.rc */,
 			);
 			comments = "These files are only used in the Windows version, so they are not part of any Xcode compilation target. They are just included for reference.";
@@ -1673,7 +1665,6 @@
 				65152599072BFC6700411831 /* ioa */,
 				651525AD072BFC6700411831 /* iowa */,
 				651525B7072BFC6700411831 /* land */,
-				651525C0072BFC6700411831 /* MoreFiles */,
 				651525C5072BFC6700411831 /* PCRE */,
 				651525CB072BFC6700411831 /* pict */,
 				6515269C072BFC6800411831 /* Prefix Headers */,
@@ -1706,7 +1697,7 @@
 				65152576072BFC6700411831 /* filedialog.c */,
 				65152577072BFC6700411831 /* fileloop.c */,
 				65152578072BFC6700411831 /* filemp3.c */,
-				65152579072BFC6700411831 /* fileops.c */,
+				65152579072BFC6700411831 /* fileops.m */,
 				6515257A072BFC6700411831 /* filepath.c */,
 				6515257B072BFC6700411831 /* fileverbs.c */,
 				6515257C072BFC6700411831 /* findinfile.c */,
@@ -1811,14 +1802,6 @@
 				651525BF072BFC6700411831 /* landverbarray.c */,
 			);
 			name = land;
-			sourceTree = "<group>";
-		};
-		651525C0072BFC6700411831 /* MoreFiles */ = {
-			isa = PBXGroup;
-			children = (
-				651525C1072BFC6700411831 /* MoreFilesX.c */,
-			);
-			name = MoreFiles;
 			sourceTree = "<group>";
 		};
 		651525C5072BFC6700411831 /* PCRE */ = {
@@ -2175,6 +2158,7 @@
 				5D8F1EEF0C25B4AB00927B97 /* libz.a */,
 				6515294C072C000900411831 /* QuickTime.framework */,
 				9F0927D41AB09A8200016C2B /* libsqlite3.0.dylib */,
+				9FAA176C1B824B7F00416D78 /* Cocoa.framework */,
 			);
 			name = "External Frameworks and Libraries";
 			sourceTree = "<group>";
@@ -2309,8 +2293,6 @@
 				65152862072BFEAB00411831 /* menuverbs.h */,
 				6515285C072BFEA700411831 /* meprograms.h */,
 				651528B4072BFF0200411831 /* miniwindow.h */,
-				65152814072BFE6300411831 /* MoreFilesExtras.h */,
-				651525C2072BFC6700411831 /* MoreFilesX.h */,
 				65152850072BFE9E00411831 /* mouse.h */,
 				5D8F1E090C25AFC500927B97 /* MySQL */,
 				6515289E072BFEEA00411831 /* notify.h */,
@@ -2435,7 +2417,6 @@
 				6505996809968C1400410571 /* ioacolorpopup.h in Headers */,
 				6505996909968C1400410571 /* ioa.h in Headers */,
 				6505996A09968C1400410571 /* pcre.h in Headers */,
-				6505996B09968C1400410571 /* MoreFilesX.h in Headers */,
 				6505996C09968C1400410571 /* frontier.h in Headers */,
 				6505996D09968C1400410571 /* font.h in Headers */,
 				6505996E09968C1400410571 /* appletdefs.h in Headers */,
@@ -2483,7 +2464,6 @@
 				6505999909968C1400410571 /* mac.h in Headers */,
 				6505999A09968C1400410571 /* scrap.h in Headers */,
 				6505999B09968C1400410571 /* threads.h in Headers */,
-				6505999C09968C1400410571 /* MoreFilesExtras.h in Headers */,
 				6505999D09968C1400410571 /* iacinternal.h in Headers */,
 				6505999E09968C1400410571 /* appleticons.h in Headers */,
 				6505999F09968C1400410571 /* appletkb.h in Headers */,
@@ -2665,7 +2645,6 @@
 				651526D6072BFC6800411831 /* ioacolorpopup.h in Headers */,
 				651526DA072BFC6800411831 /* ioa.h in Headers */,
 				6515279F072BFC6900411831 /* pcre.h in Headers */,
-				651527AD072BFC6900411831 /* MoreFilesX.h in Headers */,
 				651527B2072BFE0100411831 /* frontier.h in Headers */,
 				651527B4072BFE0300411831 /* font.h in Headers */,
 				651527B6072BFE0400411831 /* appletdefs.h in Headers */,
@@ -2713,7 +2692,6 @@
 				6515280F072BFE5E00411831 /* mac.h in Headers */,
 				65152811072BFE6000411831 /* scrap.h in Headers */,
 				65152813072BFE6100411831 /* threads.h in Headers */,
-				65152815072BFE6300411831 /* MoreFilesExtras.h in Headers */,
 				65152817072BFE6700411831 /* iacinternal.h in Headers */,
 				65152819072BFE6A00411831 /* appleticons.h in Headers */,
 				6515281B072BFE6C00411831 /* appletkb.h in Headers */,
@@ -3118,7 +3096,7 @@
 				65059A4109968C1400410571 /* findinfile.c in Sources */,
 				65059A4209968C1400410571 /* fileverbs.c in Sources */,
 				65059A4309968C1400410571 /* filepath.c in Sources */,
-				65059A4409968C1400410571 /* fileops.c in Sources */,
+				65059A4409968C1400410571 /* fileops.m in Sources */,
 				65059A4509968C1400410571 /* filemp3.c in Sources */,
 				65059A4609968C1400410571 /* fileloop.c in Sources */,
 				65059A4809968C1400410571 /* filedialog.c in Sources */,
@@ -3353,7 +3331,6 @@
 				65059B2E09968C1400410571 /* maketables.c in Sources */,
 				65059B2F09968C1400410571 /* pcre.c in Sources */,
 				65059B3009968C1400410571 /* study.c in Sources */,
-				65059B3109968C1400410571 /* MoreFilesX.c in Sources */,
 				65059B3209968C1400410571 /* langmath.c in Sources */,
 				65059B3309968C1400410571 /* FastTimes.c in Sources */,
 				65AA438C09C03C8900A4B237 /* sysshellcall.c in Sources */,
@@ -3381,7 +3358,7 @@
 				651526A4072BFC6800411831 /* findinfile.c in Sources */,
 				651526A5072BFC6800411831 /* fileverbs.c in Sources */,
 				651526A6072BFC6800411831 /* filepath.c in Sources */,
-				651526A7072BFC6800411831 /* fileops.c in Sources */,
+				651526A7072BFC6800411831 /* fileops.m in Sources */,
 				651526A8072BFC6800411831 /* filemp3.c in Sources */,
 				651526A9072BFC6800411831 /* fileloop.c in Sources */,
 				651526AB072BFC6800411831 /* filedialog.c in Sources */,
@@ -3616,7 +3593,6 @@
 				6515279D072BFC6900411831 /* maketables.c in Sources */,
 				6515279E072BFC6900411831 /* pcre.c in Sources */,
 				651527A0072BFC6900411831 /* study.c in Sources */,
-				651527AC072BFC6900411831 /* MoreFilesX.c in Sources */,
 				65B70CDC0797CE4A008C2F1A /* langmath.c in Sources */,
 				65B70CE60797CF2D008C2F1A /* FastTimes.c in Sources */,
 				65AA438B09C03C8900A4B237 /* sysshellcall.c in Sources */,
@@ -3870,13 +3846,10 @@
 		5D4E1D470AAA0B1400DF6890 /* Development */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ARCHS = (
-					ppc,
-					i386,
-				);
+				ARCHS = i386;
 				GCC_VERSION = 4.0;
 				OTHER_CFLAGS = "";
-				SDKROOT = /Developer/SDKs/MacOSX10.4u.sdk;
+				SDKROOT = "$(DEVELOPER_SDK_DIR)/MacOSX10.6.sdk";
 			};
 			name = Development;
 		};

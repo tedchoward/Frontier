@@ -58,12 +58,6 @@
 #include "timedate.h"
 #include "byteorder.h"	/* 2006-04-08 aradke: endianness conversion macros */
 
-#ifdef MACVERSION
-
-	#include "MoreFilesX.h"
-
-#endif
-
 
 
 boolean flparamerrorenabled = true;

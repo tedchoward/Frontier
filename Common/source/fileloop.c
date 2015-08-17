@@ -38,7 +38,6 @@
 
 #ifdef MACVERSION
 
-	#include "MoreFilesX.h"
 
 	typedef struct tyfilelooprecord {
 		

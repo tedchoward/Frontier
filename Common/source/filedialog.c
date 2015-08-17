@@ -31,7 +31,6 @@
 #ifdef MACVERSION
 
 	# include "mac.h"
-	# include "MoreFilesX.h"
 	
 #endif
 
@@ -621,8 +620,8 @@ boolean sfdialog ( tysfverb sfverb, bigstring bsprompt, ptrsftypelist filetypes,
 					
 					fsref = fs->ref;	// try parent for putfile
 					}
-				
-				if (FSRefValid (&fsref)) {
+
+				if (noErr == FSGetCatalogInfo(&fsref, kFSCatInfoNone, NULL, NULL, NULL, NULL)) {
 					
 					OSErr err;
 					AEDesc desc;

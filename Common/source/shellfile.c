@@ -51,7 +51,6 @@
 #ifdef MACVERSION
 
 	#include "mac.h"
-	#include "MoreFilesX.h" // 2006-09-16 creedon
 	#include <uisharing.h>
 	
 #endif

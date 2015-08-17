@@ -53,11 +53,6 @@
 #include "kernelverbdefs.h"
 #include "file.h"
 
-#ifdef MACVERSION
-
-	#include "MoreFilesX.h"
-
-#endif
 
 
 #define menustringlist 166

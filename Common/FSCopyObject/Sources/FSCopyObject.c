@@ -47,7 +47,6 @@
 
 #include "FSCopyObject.h"
 #include "GenLinkedList.h"
-#include "MoreFilesX.h"
 #if !TARGET_API_MAC_OSX
 //#include <UnicodeConverter.h>
 #endif
@@ -283,7 +282,7 @@ static OSErr	IsDropBox			  (	const FSRef			*source,
 
 static OSErr	GetMagicBusyCreateDate(	UTCDateTime			*date );
 
-/*
+
 static OSErr	FSGetVRefNum		  (	const FSRef			*ref,
 										FSVolumeRefNum		*vRefNum );
 
@@ -291,7 +290,6 @@ static OSErr	FSGetVolParms		  (	FSVolumeRefNum		  volRefNum,
 										UInt32				  bufferSize,
 										GetVolParmsInfoBuffer*volParmsInfo,
 										UInt32				 *actualInfoSize );	//	Can Be NULL
-*/
 
 static OSErr	UniStrToPStr		  (	const HFSUniStr255	*uniStr,
 										TextEncoding		 textEncodingHint,
@@ -664,8 +662,17 @@ static OSErr FSUsePBHCopyFile(	const FSRef			*srcFileRef,
 	{
 		if( newSpec != NULL )	/* caller wants an FSSpec, so make it */		
 			myverify_noerr(FSMakeFSSpec( pb.copyParam.ioDstVRefNum, pb.copyParam.ioNewDirID, pb.copyParam.ioCopyName, newSpec));
-		if( newRef != NULL )	/* caller wants an FSRef, so make it */
-			myverify_noerr(FSMakeFSRef( pb.copyParam.ioDstVRefNum, pb.copyParam.ioNewDirID, pb.copyParam.ioCopyName, newRef));
+		if( newRef != NULL ) {	/* caller wants an FSRef, so make it */
+			
+			FSRefParam newRefPb;
+		
+			newRefPb.ioVRefNum = pb.copyParam.ioDstVRefNum;
+			newRefPb.ioDirID = pb.copyParam.ioNewDirID;
+			newRefPb.ioNamePtr = pb.copyParam.ioCopyName;
+			newRefPb.newRef = newRef;
+			
+			myverify_noerr(PBMakeFSRefSync(&newRefPb));
+		}
 	}
 	
 	if( err != paramErr )		/* returning paramErr is ok, it means PBHCopyFileSync was not supported */
@@ -1638,7 +1645,7 @@ static OSErr GetMagicBusyCreateDate( UTCDateTime *date )
 	return err;		
 }
 
-/*
+
 //
 
 static OSErr FSGetVRefNum(	const FSRef		*ref,
@@ -1683,7 +1690,7 @@ static OSErr FSGetVolParms(	FSVolumeRefNum			volRefNum,
 
 	return ( err );
 }
-*/
+
 
 /*****************************************************************************/
 

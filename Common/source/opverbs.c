@@ -63,11 +63,6 @@
 #include "opbuttons.h"
 #include "file.h" // 2006-09-17 creedon
 
-#ifdef MACVERSION
-
-	#include "MoreFilesX.h" // 2006-09-17 creedon
-
-#endif
 
 #ifdef flcomponent
 

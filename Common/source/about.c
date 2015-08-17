@@ -70,7 +70,6 @@ Not too big, kind of sexy, and certainly better than nothing!
 
 
 #ifdef MACVERSION
-	#include "MoreFilesX.h"
 	#define idfrontiericon	128
 #endif
 

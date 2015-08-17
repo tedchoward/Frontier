@@ -50,7 +50,6 @@
 
 #ifdef MACVERSION
 
-	#include "MoreFilesX.h"
 	#define chpathseparator ':'
 	
 #endif
@@ -2713,7 +2712,7 @@ static boolean getposixpathverb ( hdltreenode hp1, tyvaluerecord *vreturned ) {
 		
 		/* convert from c string to bigstring */ {
 		
-			CFStringRef csr = CFStringCreateWithCString ( kCFAllocatorDefault, bs, kCFStringEncodingUTF8 );
+			CFStringRef csr = CFStringCreateWithCString ( kCFAllocatorDefault, (const char *)bs, kCFStringEncodingUTF8 );
 			
 			cfstringreftobigstring ( csr, bs );
 			

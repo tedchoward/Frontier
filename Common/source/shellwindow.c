@@ -52,11 +52,6 @@
 #include "tablestructure.h"
 #include "cancoon.h"
 
-#ifdef MACVERSION
-
-	#include "MoreFilesX.h"
-
-#endif
 
 #ifdef WIN95VERSION
 #include "FrontierWinMain.h"
@@ -469,9 +464,15 @@ short windowgetvnum (WindowPtr w) {
 	
 	#ifdef MACVERSION
 	
-		short vnum;
+		SInt16 vnum;
 	
-		FSGetVRefNum ( &(**hinfo).fspec.ref, &vnum );
+		FSCatalogInfo catalogInfo;
+		
+		OSErr err = FSGetCatalogInfo(&(**hinfo).fspec.ref, kFSCatInfoVolume, &catalogInfo, NULL, NULL, NULL);
+	
+		if (noErr == err) {
+			vnum = catalogInfo.volume;
+		}
 	
 		return ( vnum );
 			
