@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>IDESourceControlProjectFavoriteDictionaryKey</key>
+	<false/>
+	<key>IDESourceControlProjectIdentifier</key>
+	<string>81DC0643-5C5F-45BD-854F-732CD17BE717</string>
+	<key>IDESourceControlProjectName</key>
+	<string>Frontier Universal Binary</string>
+	<key>IDESourceControlProjectOriginsDictionary</key>
+	<dict>
+		<key>29FD95E30E97BF842968D7E61BA0A6B287731CF8</key>
+		<string>github.com:tedchoward/Frontier.git</string>
+	</dict>
+	<key>IDESourceControlProjectPath</key>
+	<string>build_Xcode/Frontier Universal Binary.xcodeproj</string>
+	<key>IDESourceControlProjectRelativeInstallPathDictionary</key>
+	<dict>
+		<key>29FD95E30E97BF842968D7E61BA0A6B287731CF8</key>
+		<string>../../..</string>
+	</dict>
+	<key>IDESourceControlProjectURL</key>
+	<string>github.com:tedchoward/Frontier.git</string>
+	<key>IDESourceControlProjectVersion</key>
+	<integer>111</integer>
+	<key>IDESourceControlProjectWCCIdentifier</key>
+	<string>29FD95E30E97BF842968D7E61BA0A6B287731CF8</string>
+	<key>IDESourceControlProjectWCConfigurations</key>
+	<array>
+		<dict>
+			<key>IDESourceControlRepositoryExtensionIdentifierKey</key>
+			<string>public.vcs.git</string>
+			<key>IDESourceControlWCCIdentifierKey</key>
+			<string>29FD95E30E97BF842968D7E61BA0A6B287731CF8</string>
+			<key>IDESourceControlWCCName</key>
+			<string>Frontier</string>
+		</dict>
+	</array>
+</dict>
+</plist>
