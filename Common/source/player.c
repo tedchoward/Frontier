@@ -76,7 +76,7 @@ typedef struct typlayerrecord {
 	
 	long refcon;
 	} typlayerrecord, *ptrplayerrecord, **hdlplayerrecord;
-#pragma options=reset
+#pragma options align=reset
 
 
 static hdlplayerrecord playerdata = nil;
