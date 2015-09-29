@@ -28,6 +28,8 @@
 #ifndef shelltypesinclude
 #define shelltypesinclude
 
+#include "standard.h"
+
 #ifdef HEADERTRACE
 #pragma message( "**Compiling " __FILE__ )
 #endif
@@ -77,7 +79,7 @@ typedef struct tyscrollbarrecord
 	typedef HMENU hdlmenu;
 #endif
 
-
+#pragma pack(2)
 typedef struct tytextdisplayinfo { 
 
 	short h; /*the horizontal pen position for all lines*/
@@ -92,15 +94,17 @@ typedef struct tytextdisplayinfo {
 	
 	short horizscrollpixels; /*number of pixels to scroll by for each horiz scroll*/
 	} tytextdisplayinfo;
+#pragma options align=reset
 
 
 typedef short **hdlintarray;
 
-
+#pragma pack(2)
 typedef struct typopuprecord { /*this record isn't currently used*/
 	
 	Rect popuprect; /*where the whole popup structure is displayed*/
 	} typopuprecord, *ptrpopuprecord, **hdlpopuprecord;
+#pragma options align=reset
 
 
 typedef OSType tyscraptype;
@@ -151,6 +155,7 @@ typedef enum tykeyflags { /*these match tyclickflags, but apply to keystrokes*/
 	} tykeyflags;
 
 
+#pragma pack(2)
 typedef struct tybuttonstatus {
 	
 	boolean fldisplay; /*should button be displayed at all?*/
@@ -159,6 +164,7 @@ typedef struct tybuttonstatus {
 	
 	boolean flbold; /*if displayed, should text style be bold?*/
 	} tybuttonstatus;
+#pragma options align=reset
 
 
 #ifdef MACVERSION
@@ -176,7 +182,8 @@ typedef struct tybuttonstatus {
 		Reference: Apple Technical Note TN2078 -- Migrating to FSRefs & long Unicode names from FSSpecs
 		http://developer.apple.com/legacy/mac/library/technotes/tn2002/tn2078.html
 	*/
-	
+
+#pragma pack(2)
 	typedef struct tyfilespecflags {
 	
 		//boolean	flvalid;	// true: ref and name have been set -- false: empty filespec
@@ -195,6 +202,7 @@ typedef struct tybuttonstatus {
 		} tyfilespec;
 		
 	typedef tyfilespec *ptrfilespec, **hdlfilespec;
+#pragma options align=reset
 		
 	#endif // MACVERSION
 

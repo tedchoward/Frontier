@@ -27,7 +27,7 @@
 
 #define claybrowserexpandinclude
 
-
+#pragma pack(2)
 typedef struct tyexpandinfo { /*for recursive visit routine*/
 	
 	hdlheadrecord hparent, hnewnode;
@@ -38,7 +38,7 @@ typedef struct tyexpandinfo { /*for recursive visit routine*/
 	
 	boolean flsettmpbits;
 	} tyexpandinfo;
-
+#pragma options align=reset
 
 
 void browserfindinsertionpoint (hdlheadrecord, bigstring, tybrowserinfo *, hdlheadrecord *, tydirection *);

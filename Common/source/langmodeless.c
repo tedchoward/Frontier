@@ -45,7 +45,7 @@
 #include "process.h"
 
 
-
+#pragma pack(2)
 typedef struct tydialogrecord {
 	
 	boolean flactive: 1; /*determines whether items are drawn as active or inactive*/
@@ -68,7 +68,7 @@ typedef struct tydialogrecord {
 	
 	long dialogrefcon; /*optional data for the next layer up*/
 	} tydialogrecord, *ptrdialogrecord, **hdldialogrecord;
-	
+#pragma options align=reset
 
 
 WindowPtr langdialogwindow = nil;

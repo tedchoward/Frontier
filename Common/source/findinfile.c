@@ -39,7 +39,7 @@
 
 #define filebuffersize	(32 * 1024)		/* 2006-04-10 aradke: updated from 1kB to 32kB for speed */
 
-
+#pragma pack(2)
 typedef struct tyopenfile {
 	
 	tyfilespec fs; /*the file specifier*/
@@ -60,6 +60,7 @@ typedef struct tyopenfile {
 	
 	long refcon;
 	} tyopenfile, *ptropenfile, **hdlopenfile;
+#pragma options align=reset
 	
 	
 hdlopenfile hfirstfile = nil; /*header of file list*/

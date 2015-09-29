@@ -68,6 +68,7 @@
 	#define wsUpdateCommand 12
 	#define wsEditCommand 13
 
+#pragma pack(2)
 	typedef struct tyWindowSharingGlobals {
 		
 		ComponentInstance windowserver;
@@ -76,6 +77,7 @@
 		
 		Boolean flcloseallwindows; /*true when server gets an option-click in a window's close box*/
 		} tyWindowSharingGlobals;
+#pragma options align=reset
 	
 	extern tyWindowSharingGlobals wsGlobals;
 
@@ -97,12 +99,14 @@
 	#define msSetScriptErrorCallbackCommand 0x200B
 	#define msSetIdleProcCallbackCommand 0x200C
 
+#pragma pack(2)
 	typedef struct tyMenuSharingGlobals { 
 	
 		ComponentInstance menuserver; 
 		
 		short idinsertafter;
 		} tyMenuSharingGlobals;
+#pragma options align=reset
 
 	extern tyMenuSharingGlobals msGlobals;
 	

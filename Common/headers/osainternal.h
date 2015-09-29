@@ -193,7 +193,7 @@ enum {
 #endif //TARGET_API_MAC_CARBON
 
 
-
+#pragma pack(2)
 typedef struct tyMSglobals { /*Menu Sharing globals, all in one struct*/
 
 	OSType serverid; /*identifier for shared menu server*/
@@ -360,7 +360,7 @@ typedef struct tycomponentglobals { /*a place to store your globals safely*/
 	ComponentRoutineUPP	osaGetCreateProcUPP;
 	#endif
 	} tycomponentglobals, **hdlcomponentglobals;
-
+#pragma options align=reset
 
 typedef pascal ComponentResult (*ComponentRoutine) (ComponentParameters *, Handle);
 

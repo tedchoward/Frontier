@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE plist PUBLIC "-//Apple Computer//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
-<!--    $Id: Info_OPML.plist 560 2006-02-08 19:13:44Z andreradke $    -->
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
 	<key>CFBundleDevelopmentRegion</key>
@@ -46,36 +45,36 @@
 			<array>
 				<string>.root</string>
 			</array>
+			<key>CFBundleTypeName</key>
+			<string>Frontier Root</string>
 			<key>CFBundleTypeOSTypes</key>
 			<array>
 				<string>TABL</string>
 			</array>
-			<key>CFBundleTypeName</key>
-			<string>Frontier Root</string>
 		</dict>
 		<dict>
 			<key>CFBundleTypeExtensions</key>
 			<array>
 				<string>.2clk</string>
 			</array>
+			<key>CFBundleTypeName</key>
+			<string>Frontier Desktop Script (2CLK)</string>
 			<key>CFBundleTypeOSTypes</key>
 			<array>
 				<string>2CLK</string>
 			</array>
-			<key>CFBundleTypeName</key>
-			<string>Frontier Desktop Script (2CLK)</string>
 		</dict>
 		<dict>
 			<key>CFBundleTypeExtensions</key>
 			<array>
 				<string>.card</string>
 			</array>
+			<key>CFBundleTypeName</key>
+			<string>Frontier Iowa Card</string>
 			<key>CFBundleTypeOSTypes</key>
 			<array>
 				<string>CARD</string>
 			</array>
-			<key>CFBundleTypeName</key>
-			<string>Frontier Iowa Card</string>
 		</dict>
 		<dict>
 			<key>CFBundleTypeExtensions</key>
@@ -96,84 +95,84 @@
 			<array>
 				<string>.ftop</string>
 			</array>
+			<key>CFBundleTypeName</key>
+			<string>Frontier Outline</string>
 			<key>CFBundleTypeOSTypes</key>
 			<array>
 				<string>FTop</string>
 			</array>
-			<key>CFBundleTypeName</key>
-			<string>Frontier Outline</string>
 		</dict>
 		<dict>
 			<key>CFBundleTypeExtensions</key>
 			<array>
 				<string>.ftsc</string>
 			</array>
+			<key>CFBundleTypeName</key>
+			<string>Frontier Script</string>
 			<key>CFBundleTypeOSTypes</key>
 			<array>
 				<string>FTsc</string>
 			</array>
-			<key>CFBundleTypeName</key>
-			<string>Frontier Script</string>
 		</dict>
 		<dict>
 			<key>CFBundleTypeExtensions</key>
 			<array>
 				<string>.ftwp</string>
 			</array>
+			<key>CFBundleTypeName</key>
+			<string>Frontier WP Text</string>
 			<key>CFBundleTypeOSTypes</key>
 			<array>
 				<string>FTwp</string>
 			</array>
-			<key>CFBundleTypeName</key>
-			<string>Frontier WP Text</string>
 		</dict>
 		<dict>
 			<key>CFBundleTypeExtensions</key>
 			<array>
 				<string>.ftmb</string>
 			</array>
+			<key>CFBundleTypeName</key>
+			<string>Frontier Menu Bar</string>
 			<key>CFBundleTypeOSTypes</key>
 			<array>
 				<string>FTmb</string>
 			</array>
-			<key>CFBundleTypeName</key>
-			<string>Frontier Menu Bar</string>
 		</dict>
 		<dict>
 			<key>CFBundleTypeExtensions</key>
 			<array>
 				<string>.fttb</string>
-	</array>
+			</array>
+			<key>CFBundleTypeName</key>
+			<string>Frontier Table</string>
 			<key>CFBundleTypeOSTypes</key>
 			<array>
 				<string>FTtb</string>
 			</array>
-			<key>CFBundleTypeName</key>
-			<string>Frontier Table</string>
 		</dict>
 		<dict>
 			<key>CFBundleTypeExtensions</key>
 			<array>
 				<string>.ftpc</string>
 			</array>
+			<key>CFBundleTypeName</key>
+			<string>Frontier Picture</string>
 			<key>CFBundleTypeOSTypes</key>
 			<array>
 				<string>FTpc</string>
 			</array>
-			<key>CFBundleTypeName</key>
-			<string>Frontier Picture</string>
 		</dict>
 		<dict>
 			<key>CFBundleTypeExtensions</key>
 			<array>
 				<string>.ftds</string>
 			</array>
+			<key>CFBundleTypeName</key>
+			<string>Frontier Desktop Script</string>
 			<key>CFBundleTypeOSTypes</key>
 			<array>
 				<string>FTds</string>
 			</array>
-			<key>CFBundleTypeName</key>
-			<string>Frontier Desktop Script</string>
 		</dict>
 	</array>
 	<key>CFBundleExecutable</key>
@@ -183,7 +182,7 @@
 	<key>CFBundleIconFile</key>
 	<string>OPML.icns</string>
 	<key>CFBundleIdentifier</key>
-	<string>com.scripting.OPML</string>
+	<string>$(PRODUCT_BUNDLE_IDENTIFIER)</string>
 	<key>CFBundleInfoDictionaryVersion</key>
 	<string>6.0</string>
 	<key>CFBundleName</key>

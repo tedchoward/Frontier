@@ -53,6 +53,7 @@
 
 static void langerroractivate (boolean flactivate); /*forward*/
 
+#pragma pack(2)
 typedef struct tylangerrorrecord {
 	
 	bigstring bserror; /*the error message*/
@@ -75,7 +76,8 @@ typedef struct tylangerrorrecord {
 	
 	boolean flactive: 1; /*determines whether message is drawn as active or inactive*/
 	} tylangerrorrecord, *ptrlangerrorrecord, **hdllangerrorrecord;
-	
+#pragma options align=reset
+
 
 WindowPtr langerrorwindow = nil;
 

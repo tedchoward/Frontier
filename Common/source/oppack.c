@@ -37,13 +37,14 @@
 #include "opinternal.h"
 #include "byteorder.h"	/* 2006-04-08 aradke: endianness conversion macros */
 
-
+#pragma pack(2)
 typedef struct tylinetableitem {
 	
 	short flags;
 	
 	long lenrefcon; /*number of bytes that follow -- the refcon information*/
 	} tylinetableitem, *ptrlinetable, **hdllinetable;
+#pragma options align=reset
 
 typedef enum tylinetableitemflags {
 
@@ -97,7 +98,7 @@ typedef enum tylinetableitemflags {
 
 #define hibyte(x) (x & 0xff00)
 	
-	
+#pragma pack(2)
 typedef struct tyversion2diskheader {
 	
 	short versionnumber; /*important, this structure is saved on disk*/
@@ -157,6 +158,7 @@ typedef struct tyoppackinfo {
 	
 	boolean flpackcomments;
 	} tyoppackinfo, *ptroppackinfo;
+#pragma options align=reset
 
 
 static boolean outtablevisit (hdlheadrecord hnode, ptrvoid refcon) {

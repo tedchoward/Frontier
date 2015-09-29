@@ -46,10 +46,12 @@
 #endif
 
 
+#pragma pack(2)
 typedef struct tyValidationOrder {
 	short item;
 	short type;
 } tyValidationOrder, * tyValidationOrderPtr;
+#pragma options align=reset
 
 typedef unsigned long tyCharacterAttributes;
 
@@ -108,6 +110,7 @@ static short daysInMonthsArray[] = {31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 
 #define VALFLAG_ISDOLLARS	(0x1000)
 #define VALFLAG_ISCENTS 	(0x2000)
 
+#pragma pack(2)
 typedef struct tyvalidationtoken
    {
    short ty;
@@ -116,6 +119,7 @@ typedef struct tyvalidationtoken
    long val;
    unsigned long flag;
    } tyvalidationtoken, * tyvalidationtokenptr;
+#pragma options align=reset
 
 
 #ifdef WIN95VERSION
@@ -125,6 +129,7 @@ typedef struct tyvalidationtoken
 	static LONGLONG gPerformanceFreq = 0;  /* for getmilliseconds() */
 #endif
 
+#pragma pack(2)
 typedef struct tydaterec {
 	short year;
 	short month;
@@ -141,6 +146,7 @@ typedef struct tyvalidationerror {
 	long stringPosition;
 	char * auxilaryPointer;
 	} tyvalidationerror, * tyvalidationerrorptr;
+#pragma options align=reset
 
 
 #ifdef WIN95VERSION

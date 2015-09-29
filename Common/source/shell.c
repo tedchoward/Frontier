@@ -671,7 +671,7 @@ static boolean shellgetevent (void) {
 	register boolean fl;
 	register unsigned long sleep;
 	boolean flcloseallwindows;
-	extern boolean isModelessCardEvent (EventRecord *, boolean *);	// can't #include iowaruntime.h here
+//	extern boolean isModelessCardEvent (EventRecord *, boolean *);	// can't #include iowaruntime.h here
 
 	
 	if (shelleventsblocked ()) /*all events are blocked -- don't ask the OS for any*/
@@ -704,7 +704,7 @@ static boolean shellgetevent (void) {
 		if (landeventfilter (&shellevent)) /*event consumed by IAC toolkit*/
 			fl = false;
 	
-	#ifdef MACVERSION
+	#ifdef iowaRuntime
 	
 		/*
 		if (uisHandleEvent (&shellevent, &flcloseallwindows)) // event consumed by window sharing server

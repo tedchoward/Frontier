@@ -30,10 +30,12 @@
 
 /*typedefs*/
 
+#pragma pack(2)
 typedef struct tylinkedlistrecord {
 	
 	struct tylinkedlistrecord **hnext;
 	} tylinkedlistrecord, *ptrlinkedlist, **hdllinkedlist;
+#pragma options align=reset
 
 
 /*prototypes*/

@@ -1377,12 +1377,14 @@ static boolean needassignmentresult (hdltreenode hp) {
 
 #define newparams
 
+#pragma pack(2)
 	typedef struct typaraminfo {
 		
 		byte evalparam1;
 		
 		byte evalparam2;
 		} typaraminfo;
+#pragma options align=reset
 	
 	#define nope ((byte) -1)
 	

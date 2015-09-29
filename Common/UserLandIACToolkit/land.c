@@ -47,13 +47,13 @@
 	#define landsetlandglobals(x)	(hlandglobals = x)
 	#define landgetlandglobals()	(hlandglobals)
 
-
+#pragma pack(2)
 typedef struct tytransportinfo { 
 	
 	hdlprocessthread hthread; /*must be first field*/
 	
 	} tytransportinfo, *ptrtransportinfo, **hdltransportinfo;
-
+#pragma options align=reset
 
 
 static THz landzone;

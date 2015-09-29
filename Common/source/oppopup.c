@@ -77,6 +77,7 @@ short currmenuid;
 
 #if MACVERSION
 
+#pragma pack(2)
 	typedef struct typopupinfo {
 
 		hdlmenu hmenu;
@@ -91,7 +92,7 @@ short currmenuid;
 		
 		short currstackitem;
 		} typopupmenustack, *ptrpopupmenustack, **hdlpopupmenustack;
-
+#pragma options align=reset
 
 	typopupmenustack popupmenustack;
 

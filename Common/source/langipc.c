@@ -97,7 +97,7 @@ enum {
 #endif
 	
 
-
+#pragma pack(2)
 typedef struct tyipcaddress {
 	
 	OSType appid;
@@ -118,6 +118,7 @@ typedef struct tyipcaddress {
 	
 	tynetworkaddress netaddress; /*will be null desciptor if not on network*/
 	} tyipcaddress;
+#pragma options align=reset
 
 
 typrocessid langipcself;

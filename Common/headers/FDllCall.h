@@ -47,11 +47,13 @@ typedef unsigned long FourCharCode;
 
 typedef FourCharCode OSType;
 
+#pragma pack(2)
 typedef struct tyPoint
 	{
 	short	v;
 	short h;
 	} Point, *PointPtr;
+#pragma options align=reset
 
 typedef RECT Rect;
 
@@ -232,6 +234,7 @@ typedef struct odbValueRecord {
 #define xCALLBACK CALLBACK
 #endif
 
+#pragma pack(2)
 typedef struct tyXDLLProcTable {
 	Handle (xCALLBACK *xMemAlloc) (long sz);
 	Handle (xCALLBACK *xMemResize)(Handle m, long sz);
@@ -282,10 +285,11 @@ typedef struct tyXDLLProcTable {
 	odbBool (xCALLBACK *xThreadYield) (); /* 2003-04-22 AR */
 	odbBool (xCALLBACK *xThreadSleep) (long sleepticks); /* 2003-04-22 AR */
 	} XDLLProcTable;
-
+#pragma options align=reset
 
 #define maxdllparams 16
 
+#pragma pack(2)
 typedef struct tydllparamblock {
 	
 	long ctparams;
@@ -302,6 +306,7 @@ typedef struct tydllparamblock {
 	
 	unsigned char errormessage [256]; // c string on pc, p string on mac
 	} tydllparamblock;
+#pragma options align=reset
 
 
 typedef odbBool (xCALLBACK * tyDLLEXTROUTINE) (tydllparamblock * data, XDLLProcTable * proctable);

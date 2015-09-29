@@ -50,6 +50,7 @@
 	#include "aeutils.h" /*PBS 03/14/02: AE OS X fix.*/
 #endif
 
+#pragma pack(2)
 typedef struct tydisksymbolrecord {
 	
 	long ixkey; /*in the string handle, where is this symbol's name?*/
@@ -113,7 +114,7 @@ typedef struct tydiskvaluerecord {		/*4.0.1b1 dmb*/
 	
 	dbaddress adr;	/*addres of actual scalar value*/
 	} tydiskvaluerecord;
-
+#pragma options align=reset
 
 
 hdlhashtable currenthashtable = nil;
@@ -2502,13 +2503,14 @@ static void hashreporterror (short iderror, bigstring bsname, bigstring bserror)
 		lang2paramerror (iderror, bsname, bserror);
 	} /*hashbuilderrormessage*/
 
-
+#pragma pack(2)
 typedef struct typackinforecord {
 
 	handlestream s1;
 	handlestream s2;
 	boolean flmustsave;
 	} typackinforecord;
+#pragma options align=reset
 
 
 static boolean hashpackvisit (bigstring bsname, hdlhashnode hnode, tyvaluerecord val, ptrvoid refcon) {

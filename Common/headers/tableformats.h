@@ -59,7 +59,7 @@
 
 
 #define maxtablecols 3
-
+#pragma pack(2)
 typedef struct tytableformats { /*one of these for every window that's open*/
 	
 	hdlhashtable htable; // the parent table we are displaying
@@ -231,7 +231,7 @@ typedef struct tyversion2tablediskrecord { /*packed version of tableformats, sui
 	
 	short growtharea [8];
 	} tyversion2tablediskrecord, *ptrversion2tablediskrecord, **hdlversion2tablediskrecord;
-	
+#pragma options align=reset
 
 /*globals*/
 	

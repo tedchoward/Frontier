@@ -31,13 +31,14 @@
 #include "landinternal.h"
 
 
-
+#pragma pack(2)
 typedef struct tyqueuerecord {
 	
 	Handle hdata;
 	
 	struct tyqueuerecord **hnext;
 	} tyqueuerecord, *ptrqueuerecord, **hdlqueuerecord;
+#pragma options align=reset
 
 
 boolean landpushqueue (Handle h) {

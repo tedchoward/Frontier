@@ -106,7 +106,8 @@ typedef unsigned long tyverbclass;
 typedef unsigned long tyverbtoken;
 
 typedef short tysystem6processid;
-	
+
+#pragma pack(2)
 typedef struct tyverbarrayelement {
 	
 	tyverbtoken token;
@@ -115,6 +116,7 @@ typedef struct tyverbarrayelement {
 	
 	boolean flfasthandler;
 	} tyverbarrayelement;
+#pragma options align=reset
 
 typedef tyverbarrayelement tyverbarray [1];
 
@@ -172,13 +174,14 @@ typedef enum typaramtype {
 	objectspectype = cObjectSpecifier /*a Mac object specifier, for Frontier, not fully supported in Toolkit*/
 	} typaramtype;
 
-
+#pragma pack(2)
 typedef struct typaramrecord {
 	
 	typaramkeyword key; /*parameter id, allows optional params; order not important*/
 	
 	AEDesc desc; /*a type and handle*/
 	} typaramrecord, *ptrparamrecord;
+#pragma options align=reset
 
 #if 0
 
@@ -287,7 +290,7 @@ typedef union typaramvalue {
 	AEDesc objectdescvalue;
 	} typaramvalue;
 	
-	
+#pragma pack(2)
 typedef struct typaramrecord {
 	
 	typaramtype type; /*boolean, short, long, etc.*/
@@ -296,10 +299,11 @@ typedef struct typaramrecord {
 	
 	typaramvalue val; /*a char, long, or a handle to a more complex type*/
 	} typaramrecord, *ptrparamrecord;
+#pragma options align=reset
 
 #endif
 
-
+#pragma pack(2)
 typedef struct tyverbrecord {
 	
 	tyverbclass verbclass; /*4-byte class, often same as receiver id*/
@@ -336,7 +340,7 @@ typedef struct tyverbrecord {
 	
 	long landrefcon; /*for client use*/
 	} tyverbrecord, *ptrverbrecord, **hdlverbrecord;
-
+#pragma options align=reset
 
 typedef pascal boolean (*landverbrecordcallback) (hdlverbrecord);
 
@@ -350,13 +354,14 @@ typedef enum tytransport { /*indicates which transport layer is active*/
 	/*room for support of other IAC protocols in our super-protocol*/
 	} tytransport;
 
-
+#pragma pack(2)
 typedef struct tymacnetglobals { /*for mac system 7 networked messages*/
 	
 	boolean	flhavebrowsed;
 	
 	tyapplicationid idforbrowser;
 	} tymacnetglobals;
+
 
 
 typedef struct tynetworkaddress {
@@ -371,9 +376,11 @@ typedef struct tynetworkaddress {
 	PortInfoRec	port;
 	*/
 	} tynetworkaddress;
+#pragma options align=reset
 	
 #ifndef __MENUSHARING__
 
+#pragma pack(2)
 typedef struct tyruntimemenurecord { /*structures to support Frontier menu sharing*/
 	
 	short idmenu;
@@ -384,7 +391,7 @@ typedef struct tyruntimemenurecord { /*structures to support Frontier menu shari
 	
 	MenuHandle hmenu;
 	} tyruntimemenurecord;
-	
+#pragma options align=reset
 	
 typedef tyruntimemenurecord tymenuarray [1];
 
@@ -392,6 +399,7 @@ typedef tymenuarray **hdlmenuarray;
 
 #endif
 
+#pragma pack(2)
 typedef struct tymaceventsettings { /*for system 7, info for sending events*/
 	
 	long timeoutticks; /*the timeout amount*/
@@ -481,7 +489,7 @@ typedef struct tylandglobals {
 	OSErr landerrorcode; /*error code that caused land call to return false*/
 	
 	} tylandglobals, *ptrlandglobals, **hdllandglobals;
-
+#pragma options align=reset
 
 /*verbs of this class are automatically handled by UserLand Toolkits*/
 

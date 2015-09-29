@@ -35,10 +35,12 @@
 
 /*typedefs*/
 
+#pragma pack(2)
 typedef struct tylaunchcallbacks {
 	
 	callback waitcallback; /*called while waiting for process manager change to take effect*/
 	} tylaunchcallbacks;
+#pragma options align=reset
 
 
 /*globals*/

@@ -718,7 +718,7 @@ static pascal OSAError osaGetCreateProc (
 #define kOSAScriptIsBeingRecorded		'recd'
 	// Selector returns boolean.
 
-
+#pragma pack(2)
 typedef struct tyservercomponent {
 	
 	struct tyservercomponent **hnext;
@@ -736,6 +736,7 @@ typedef struct tyclientlist {
 	hdlcomponentglobals hfirst;
 	
 	} tyclientlist, **hdlclientlist;
+#pragma options align=reset
 
 
 enum { /*recording strings*/
@@ -804,13 +805,14 @@ typedef struct tystubrecord {
 	} tystubrecord, **hdlstubrecord;
 */
 
-
+#pragma pack(2)
 typedef struct tystylerecord {
 	
 	short ctstyles;
 	
 	ScrpSTElement styles [1];
 	} tystylerecord;
+#pragma options align=reset
 
 
 static THz homezone;

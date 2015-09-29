@@ -49,6 +49,7 @@
 #define signaturestring (ptrstring) "\x12" "packed binary data"
 
 
+#pragma pack(2)
 typedef struct tyoldpackedvalue {
 	
 	byte sigbytes [ctsigbytes]; /*a signature -- keeps errors from causing crashes*/
@@ -59,12 +60,14 @@ typedef struct tyoldpackedvalue {
 	} tyoldpackedvalue, *ptroldpackedvalue, **hdloldpackedvalue;
 
 
+
 typedef struct typackedvalue {
 	
 	OSType typeid;
 	
 	/*depending on type, any number of bytes following contain the value data*/
 	} typackedvalue, *ptrpackedvalue, **hdlpackedvalue;
+#pragma options align=reset
 
 /*
 

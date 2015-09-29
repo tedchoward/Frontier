@@ -799,7 +799,7 @@ typedef memory_ref	pgHyphenInfoRef;	/* Hyphenation extension */
 
 
 /**********************  Paige data structures ********************/
-
+#pragma pack(2)
 
 /* Coordinate or "Point" */
 
@@ -1941,7 +1941,7 @@ struct style_walk {
 	long				max_styles;		/* Used to detect overrun in debug mode */
 	long				max_pars;		/* Used to detect overrun in debug mode */
 };
-
+#pragma options align=reset
 /* Inline macros for "GetDefault..." style, para, font: */
 
 #define pgGetDefaultPar(pg, def_par)  pgGetParInfoRec(pg, 0, def_par)

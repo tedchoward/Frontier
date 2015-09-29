@@ -97,7 +97,7 @@ typedef void (*wpvoidcallback) (void);
 
 typedef unsigned long tywpflags;
 
-
+#pragma pack(2)
 typedef struct tywprecord {
 	
 	void * wpbuffer; /*really as WSHandle; untyped here to avoid includes*/
@@ -170,6 +170,7 @@ typedef struct tywprecord {
 	
 	boolean fleditingnow; //between pre- and postedit?
 	} tywprecord;
+#pragma options align=reset
 
 
 extern WindowPtr wpwindow;

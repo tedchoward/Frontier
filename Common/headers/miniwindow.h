@@ -59,6 +59,7 @@ typedef boolean (*miniloadstringcallback) (short, Handle *);
 typedef boolean (*minitexthitcallback) (Point);
 	
 
+#pragma pack(2)
 typedef struct tyminirecord {
 	
 	short idconfig; /*resource number for config that governs this window*/
@@ -127,6 +128,7 @@ typedef struct tyminirecord {
 	
 	long minirefcon; /*optional data for the next layer up*/
 	} tyminirecord, *ptrminirecord, **hdlminirecord;
+#pragma options align=reset
 
 
 // globals
