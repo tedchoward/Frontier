@@ -146,7 +146,7 @@ boolean ploticonfromodb (const Rect *r, short align, short transform, bigstring 
 	disposehandle((Handle) iconHand);
 	
 	return theErr == noErr;
-#else if defined (WIN95VERSION)
+#elif defined (WIN95VERSION)
 	return FALSE;
 #endif
 }
@@ -168,7 +168,10 @@ OSStatus loadicondatafromodb(bigstring bsadricon, bigstring bsicondatatype, Hand
 	flexpanded = langexpandtodotparams (bsadricon, &ht, bsname);
 	enablelangerror ();
 	pophashtable ();
-	
+    
+    if (!flexpanded) {
+        return resNotFound;
+    }
 	
 	fllookup = hashtablelookup (ht, bsicondatatype, &iconvalue, &hn);
 	copyhandle (iconvalue.data.binaryvalue, hicon);
