@@ -9,7 +9,7 @@
 		<dict>
 			<key>CFBundleTypeExtensions</key>
 			<array>
-				<string>.opml</string>
+				<string>opml</string>
 			</array>
 			<key>CFBundleTypeIconFile</key>
 			<string>OPMLdoc.icns</string>
@@ -27,6 +27,8 @@
 			<string>Editor</string>
 			<key>LSIsAppleDefaultForType</key>
 			<true/>
+			<key>LSTypeIsPackage</key>
+			<integer>0</integer>
 		</dict>
 		<dict>
 			<key>CFBundleTypeExtensions</key>
@@ -39,11 +41,15 @@
 			<array>
 				<string>****</string>
 			</array>
+			<key>CFBundleTypeRole</key>
+			<string>Editor</string>
+			<key>LSTypeIsPackage</key>
+			<integer>0</integer>
 		</dict>
 		<dict>
 			<key>CFBundleTypeExtensions</key>
 			<array>
-				<string>.root</string>
+				<string>root</string>
 			</array>
 			<key>CFBundleTypeName</key>
 			<string>Frontier Root</string>
@@ -51,11 +57,15 @@
 			<array>
 				<string>TABL</string>
 			</array>
+			<key>CFBundleTypeRole</key>
+			<string>Editor</string>
+			<key>LSTypeIsPackage</key>
+			<integer>0</integer>
 		</dict>
 		<dict>
 			<key>CFBundleTypeExtensions</key>
 			<array>
-				<string>.2clk</string>
+				<string>2clk</string>
 			</array>
 			<key>CFBundleTypeName</key>
 			<string>Frontier Desktop Script (2CLK)</string>
@@ -63,11 +73,15 @@
 			<array>
 				<string>2CLK</string>
 			</array>
+			<key>CFBundleTypeRole</key>
+			<string>Editor</string>
+			<key>LSTypeIsPackage</key>
+			<integer>0</integer>
 		</dict>
 		<dict>
 			<key>CFBundleTypeExtensions</key>
 			<array>
-				<string>.card</string>
+				<string>card</string>
 			</array>
 			<key>CFBundleTypeName</key>
 			<string>Frontier Iowa Card</string>
@@ -75,11 +89,15 @@
 			<array>
 				<string>CARD</string>
 			</array>
+			<key>CFBundleTypeRole</key>
+			<string>Editor</string>
+			<key>LSTypeIsPackage</key>
+			<integer>0</integer>
 		</dict>
 		<dict>
 			<key>CFBundleTypeExtensions</key>
 			<array>
-				<string>.fatp</string>
+				<string>fatp</string>
 			</array>
 			<key>CFBundleTypeName</key>
 			<string>Frontier Fat Page</string>
@@ -89,11 +107,15 @@
 				<string>.FAT</string>
 				<string>FAT </string>
 			</array>
+			<key>CFBundleTypeRole</key>
+			<string>Editor</string>
+			<key>LSTypeIsPackage</key>
+			<integer>0</integer>
 		</dict>
 		<dict>
 			<key>CFBundleTypeExtensions</key>
 			<array>
-				<string>.ftop</string>
+				<string>ftop</string>
 			</array>
 			<key>CFBundleTypeName</key>
 			<string>Frontier Outline</string>
@@ -101,11 +123,15 @@
 			<array>
 				<string>FTop</string>
 			</array>
+			<key>CFBundleTypeRole</key>
+			<string>Editor</string>
+			<key>LSTypeIsPackage</key>
+			<integer>0</integer>
 		</dict>
 		<dict>
 			<key>CFBundleTypeExtensions</key>
 			<array>
-				<string>.ftsc</string>
+				<string>ftsc</string>
 			</array>
 			<key>CFBundleTypeName</key>
 			<string>Frontier Script</string>
@@ -113,11 +139,15 @@
 			<array>
 				<string>FTsc</string>
 			</array>
+			<key>CFBundleTypeRole</key>
+			<string>Editor</string>
+			<key>LSTypeIsPackage</key>
+			<integer>0</integer>
 		</dict>
 		<dict>
 			<key>CFBundleTypeExtensions</key>
 			<array>
-				<string>.ftwp</string>
+				<string>ftwp</string>
 			</array>
 			<key>CFBundleTypeName</key>
 			<string>Frontier WP Text</string>
@@ -125,11 +155,15 @@
 			<array>
 				<string>FTwp</string>
 			</array>
+			<key>CFBundleTypeRole</key>
+			<string>Editor</string>
+			<key>LSTypeIsPackage</key>
+			<integer>0</integer>
 		</dict>
 		<dict>
 			<key>CFBundleTypeExtensions</key>
 			<array>
-				<string>.ftmb</string>
+				<string>ftmb</string>
 			</array>
 			<key>CFBundleTypeName</key>
 			<string>Frontier Menu Bar</string>
@@ -137,11 +171,15 @@
 			<array>
 				<string>FTmb</string>
 			</array>
+			<key>CFBundleTypeRole</key>
+			<string>Editor</string>
+			<key>LSTypeIsPackage</key>
+			<integer>0</integer>
 		</dict>
 		<dict>
 			<key>CFBundleTypeExtensions</key>
 			<array>
-				<string>.fttb</string>
+				<string>fttb</string>
 			</array>
 			<key>CFBundleTypeName</key>
 			<string>Frontier Table</string>
@@ -149,11 +187,15 @@
 			<array>
 				<string>FTtb</string>
 			</array>
+			<key>CFBundleTypeRole</key>
+			<string>Editor</string>
+			<key>LSTypeIsPackage</key>
+			<integer>0</integer>
 		</dict>
 		<dict>
 			<key>CFBundleTypeExtensions</key>
 			<array>
-				<string>.ftpc</string>
+				<string>ftpc</string>
 			</array>
 			<key>CFBundleTypeName</key>
 			<string>Frontier Picture</string>
@@ -161,11 +203,15 @@
 			<array>
 				<string>FTpc</string>
 			</array>
+			<key>CFBundleTypeRole</key>
+			<string>Editor</string>
+			<key>LSTypeIsPackage</key>
+			<integer>0</integer>
 		</dict>
 		<dict>
 			<key>CFBundleTypeExtensions</key>
 			<array>
-				<string>.ftds</string>
+				<string>ftds</string>
 			</array>
 			<key>CFBundleTypeName</key>
 			<string>Frontier Desktop Script</string>
@@ -173,6 +219,10 @@
 			<array>
 				<string>FTds</string>
 			</array>
+			<key>CFBundleTypeRole</key>
+			<string>Editor</string>
+			<key>LSTypeIsPackage</key>
+			<integer>0</integer>
 		</dict>
 	</array>
 	<key>CFBundleExecutable</key>
