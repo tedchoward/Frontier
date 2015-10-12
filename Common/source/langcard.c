@@ -44,7 +44,7 @@
 #include "shellhooks.h"
 #include "shellmenu.h"
 #include "lang.h"
-#include "langinternal.h"d
+#include "langinternal.h"
 #include "langipc.h"
 #include "process.h"
 #ifdef iowaRuntime
