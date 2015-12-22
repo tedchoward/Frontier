@@ -54,10 +54,10 @@
 #define	APP_SUBMINOR_VERSION_BCD	0x20	/* sub and minor version in BCD notation */
 
 #define	APP_STAGE_CODE				0x20	/* dev = 0x20, alpha = 0x40, beta = 0x60, final = 0x80 */
-#define	APP_REVISION_LEVEL			0      /* for non-final releases only */
-#define	APP_BUILD_NUMBER			0      /* increment by one for every release, final or not */
+#define	APP_REVISION_LEVEL			1      /* for non-final releases only */
+#define	APP_BUILD_NUMBER			1      /* increment by one for every release, final or not */
 
-#define	APP_VERSION_STRING			"10.2d0"
+#define	APP_VERSION_STRING			"10.2d1"
 
 
 

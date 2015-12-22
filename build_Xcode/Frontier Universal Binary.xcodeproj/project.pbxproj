@@ -819,6 +819,10 @@
 		9F88F48F1BD99AB600C32CFB /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 9F88F4911BD99AB600C32CFB /* Localizable.strings */; };
 		9FAA176D1B824B7F00416D78 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9FAA176C1B824B7F00416D78 /* Cocoa.framework */; };
 		9FAA17B41B82592900416D78 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9FAA176C1B824B7F00416D78 /* Cocoa.framework */; };
+		9FE775141C28A0A8003D6066 /* MacDateHelpers.m in Sources */ = {isa = PBXBuildFile; fileRef = 9FE775131C28A0A8003D6066 /* MacDateHelpers.m */; };
+		9FE775151C28A0A8003D6066 /* MacDateHelpers.m in Sources */ = {isa = PBXBuildFile; fileRef = 9FE775131C28A0A8003D6066 /* MacDateHelpers.m */; };
+		9FE775181C28A156003D6066 /* MacDateHelpers.h in Headers */ = {isa = PBXBuildFile; fileRef = 9FE775171C28A108003D6066 /* MacDateHelpers.h */; };
+		9FE775191C28A15E003D6066 /* MacDateHelpers.h in Headers */ = {isa = PBXBuildFile; fileRef = 9FE775171C28A108003D6066 /* MacDateHelpers.h */; };
 		DEA58AB407435A9500BAB271 /* Frontier.icns in Resources */ = {isa = PBXBuildFile; fileRef = DEA58AB307435A9500BAB271 /* Frontier.icns */; };
 /* End PBXBuildFile section */
 
@@ -1243,6 +1247,8 @@
 		9F3A12D9183A6B8D007ACBD2 /* mutex.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = mutex.h; path = ../Common/headers/mutex.h; sourceTree = SOURCE_ROOT; };
 		9F88F4901BD99AB600C32CFB /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/Localizable.strings; sourceTree = "<group>"; };
 		9FAA176C1B824B7F00416D78 /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = /System/Library/Frameworks/Cocoa.framework; sourceTree = "<absolute>"; };
+		9FE775131C28A0A8003D6066 /* MacDateHelpers.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = MacDateHelpers.m; path = ../Common/source/MacDateHelpers.m; sourceTree = "<group>"; };
+		9FE775171C28A108003D6066 /* MacDateHelpers.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = MacDateHelpers.h; path = ../Common/headers/MacDateHelpers.h; sourceTree = "<group>"; };
 		DEA58AB307435A9500BAB271 /* Frontier.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; name = Frontier.icns; path = ../resources/Frontier/Frontier.icns; sourceTree = SOURCE_ROOT; };
 /* End PBXFileReference section */
 
@@ -1526,6 +1532,7 @@
 				651525E8072BFC6700411831 /* services.c */,
 				651525E9072BFC6700411831 /* uisharing.c */,
 				651525EA072BFC6700411831 /* zoom.c */,
+				9FE775131C28A0A8003D6066 /* MacDateHelpers.m */,
 			);
 			name = mac;
 			sourceTree = "<group>";
@@ -1787,6 +1794,7 @@
 		65AF8D1A074159FC007C3205 /* Include Files */ = {
 			isa = PBXGroup;
 			children = (
+				9FE775161C28A0F0003D6066 /* mac */,
 				9F3A12D9183A6B8D007ACBD2 /* mutex.h */,
 				65152878072BFEC900411831 /* about.h */,
 				651527C8072BFE2500411831 /* aeutils.h */,
@@ -1966,6 +1974,14 @@
 			name = "Include Files";
 			sourceTree = "<group>";
 		};
+		9FE775161C28A0F0003D6066 /* mac */ = {
+			isa = PBXGroup;
+			children = (
+				9FE775171C28A108003D6066 /* MacDateHelpers.h */,
+			);
+			name = mac;
+			sourceTree = "<group>";
+		};
 		BB3B83610730603C0049D0C1 /* Resources */ = {
 			isa = PBXGroup;
 			children = (
@@ -1984,6 +2000,7 @@
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				9FE775191C28A15E003D6066 /* MacDateHelpers.h in Headers */,
 				6505996A09968C1400410571 /* pcre.h in Headers */,
 				6505996C09968C1400410571 /* frontier.h in Headers */,
 				6505996D09968C1400410571 /* font.h in Headers */,
@@ -2166,6 +2183,7 @@
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				9FE775181C28A156003D6066 /* MacDateHelpers.h in Headers */,
 				6515279F072BFC6900411831 /* pcre.h in Headers */,
 				651527B2072BFE0100411831 /* frontier.h in Headers */,
 				651527B4072BFE0300411831 /* font.h in Headers */,
@@ -2679,6 +2697,7 @@
 				65059ADA09968C1400410571 /* langdialog.c in Sources */,
 				65059ADB09968C1400410571 /* langdate.c in Sources */,
 				65059ADC09968C1400410571 /* langcard.c in Sources */,
+				9FE775151C28A0A8003D6066 /* MacDateHelpers.m in Sources */,
 				65059ADD09968C1400410571 /* langcallbacks.c in Sources */,
 				65059ADE09968C1400410571 /* lang.c in Sources */,
 				65059ADF09968C1400410571 /* langparser.c in Sources */,
@@ -2889,6 +2908,7 @@
 				65152748072BFC6800411831 /* langdialog.c in Sources */,
 				65152749072BFC6800411831 /* langdate.c in Sources */,
 				6515274A072BFC6800411831 /* langcard.c in Sources */,
+				9FE775141C28A0A8003D6066 /* MacDateHelpers.m in Sources */,
 				6515274B072BFC6800411831 /* langcallbacks.c in Sources */,
 				6515274C072BFC6800411831 /* lang.c in Sources */,
 				6515274D072BFC6800411831 /* langparser.c in Sources */,
