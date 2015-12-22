@@ -211,6 +211,13 @@ boolean langerrormessage (bigstring bs) {
 	
 	4.1b3 dmb: added call to new langseterrorcallbackline for stack tracing (on error)
 	*/
+    
+#ifdef MACVERSION
+    char cs[stringlength(bs)];
+    copyptocstring(bs, cs);
+    fprintf(stderr, "%s\n", cs);
+#endif
+    
 	
 	if (!langerrorenabled ())
 		return (true);

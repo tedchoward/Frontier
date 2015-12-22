@@ -815,6 +815,8 @@
 		9F3A12D8183A6B60007ACBD2 /* mutex.c in Sources */ = {isa = PBXBuildFile; fileRef = 9F3A12D6183A6B60007ACBD2 /* mutex.c */; };
 		9F3A12DA183A6B8D007ACBD2 /* mutex.h in Headers */ = {isa = PBXBuildFile; fileRef = 9F3A12D9183A6B8D007ACBD2 /* mutex.h */; };
 		9F3A12DB183A6B8D007ACBD2 /* mutex.h in Headers */ = {isa = PBXBuildFile; fileRef = 9F3A12D9183A6B8D007ACBD2 /* mutex.h */; };
+		9F88F48E1BD99AB600C32CFB /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 9F88F4911BD99AB600C32CFB /* Localizable.strings */; };
+		9F88F48F1BD99AB600C32CFB /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 9F88F4911BD99AB600C32CFB /* Localizable.strings */; };
 		9FAA176D1B824B7F00416D78 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9FAA176C1B824B7F00416D78 /* Cocoa.framework */; };
 		9FAA17B41B82592900416D78 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9FAA176C1B824B7F00416D78 /* Cocoa.framework */; };
 		DEA58AB407435A9500BAB271 /* Frontier.icns in Resources */ = {isa = PBXBuildFile; fileRef = DEA58AB307435A9500BAB271 /* Frontier.icns */; };
@@ -1239,6 +1241,7 @@
 		9F3A12D3183A6B3E007ACBD2 /* MacSocketNetEvents.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = MacSocketNetEvents.c; path = ../Common/source/MacSocketNetEvents.c; sourceTree = SOURCE_ROOT; };
 		9F3A12D6183A6B60007ACBD2 /* mutex.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = mutex.c; path = ../Common/source/mutex.c; sourceTree = SOURCE_ROOT; };
 		9F3A12D9183A6B8D007ACBD2 /* mutex.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = mutex.h; path = ../Common/headers/mutex.h; sourceTree = SOURCE_ROOT; };
+		9F88F4901BD99AB600C32CFB /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/Localizable.strings; sourceTree = "<group>"; };
 		9FAA176C1B824B7F00416D78 /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = /System/Library/Frameworks/Cocoa.framework; sourceTree = "<absolute>"; };
 		DEA58AB307435A9500BAB271 /* Frontier.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; name = Frontier.icns; path = ../resources/Frontier/Frontier.icns; sourceTree = SOURCE_ROOT; };
 /* End PBXFileReference section */
@@ -1966,6 +1969,7 @@
 		BB3B83610730603C0049D0C1 /* Resources */ = {
 			isa = PBXGroup;
 			children = (
+				9F88F4911BD99AB600C32CFB /* Localizable.strings */,
 				DEA58AB307435A9500BAB271 /* Frontier.icns */,
 				65059B760996945100410571 /* OPML.icns */,
 				65059B770996945100410571 /* OPMLdoc.icns */,
@@ -2400,7 +2404,7 @@
 		65152560072BFC6500411831 /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastUpgradeCheck = 0700;
+				LastUpgradeCheck = 0710;
 			};
 			buildConfigurationList = 5D4E1D460AAA0B1400DF6890 /* Build configuration list for PBXProject "Frontier Universal Binary" */;
 			compatibilityVersion = "Xcode 3.2";
@@ -2429,6 +2433,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				65059B780996945100410571 /* OPML.icns in Resources */,
+				9F88F48F1BD99AB600C32CFB /* Localizable.strings in Resources */,
 				65059B790996945100410571 /* OPMLdoc.icns in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -2438,6 +2443,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				DEA58AB407435A9500BAB271 /* Frontier.icns in Resources */,
+				9F88F48E1BD99AB600C32CFB /* Localizable.strings in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -2983,6 +2989,17 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXSourcesBuildPhase section */
+
+/* Begin PBXVariantGroup section */
+		9F88F4911BD99AB600C32CFB /* Localizable.strings */ = {
+			isa = PBXVariantGroup;
+			children = (
+				9F88F4901BD99AB600C32CFB /* en */,
+			);
+			name = Localizable.strings;
+			sourceTree = "<group>";
+		};
+/* End PBXVariantGroup section */
 
 /* Begin XCBuildConfiguration section */
 		5D4E1D3F0AAA0B1400DF6890 /* Development */ = {

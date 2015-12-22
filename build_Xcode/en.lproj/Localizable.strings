@@ -1,0 +1,680 @@
+/* 
+  Localizable.strings
+  Frontier Universal Binary
+
+  Created by Ted Howard on 10/22/15.
+
+*/
+
+/* Defaults */
+"129.1" = "OPML";
+"129.2" = "Untitled";
+"129.3" = "Untitled";
+"129.4" = "Select a database file:";
+"129.5" = "";
+"129.6" = "opml.root";
+"129.7" = "Open a file:";
+
+/* Interface */
+"130.1" = "Script";
+"130.2" = "Zoom";
+"130.3" = "Can’t access printing resources.  Make sure that a printer has been selected with the Chooser.";
+"130.4" = "Cmd";
+"130.5" = "Set Command Key…";
+"130.6" = "Command Key:";
+"130.7" = "Internal error#^0.  Please report to <http://groups.yahoo.com/group/frontierkernel/>";
+"130.8" = "; ";
+"130.9" = "Cancel";
+"130.10" = "Script for “^0”";
+"130.11" = "Font Size:";
+"130.12" = "K";
+"130.13" = "Leading:";
+"130.14" = ",";
+"130.15" = "Out of memory";
+"130.16" = "Save";
+"130.17" = "Save Database";
+"130.18" = "Save As…";
+"130.19" = "Save a Copy…";
+"130.20" = "This database was created by an older version of Frontier and must be converted. Proceed?";
+
+/* Error Info */
+"131.1" = "Go To";
+"131.2" = "Error Info";
+"131.3" = "";
+
+/* Font Names */
+"132.1" = "Palatino";
+"132.2" = "Geneva";
+"132.3" = "Helvetica";
+"132.4" = "Chicago";
+
+/* QuickScript */
+"133.1" = "Run";
+"133.2" = "Quick Script";
+
+/* Undo */
+"134.1" = "Can’t Undo";
+"134.2" = "Undo ";
+"134.3" = "Redo ";
+"134.4" = "Cut";
+"134.5" = "Copy";
+"134.6" = "Paste";
+"134.7" = "Clear";
+"134.8" = "Typing";
+"134.9" = "Move";
+"134.10" = "Sort";
+"134.11" = "Promote";
+"134.12" = "Demote";
+"134.13" = "Deletion";
+"134.14" = "Formatting";
+
+/* Directions */
+"135.1" = "nodirection";
+"135.2" = "up";
+"135.3" = "down";
+"135.4" = "left";
+"135.5" = "right";
+"135.6" = "flatup";
+"135.7" = "flatdown";
+"135.8" = "sorted";
+"135.9" = "pageup";
+"135.10" = "pagedown";
+"135.11" = "pageleft";
+"135.12" = "pageright";
+"135.13" = "";
+
+/* IAC Toolkit Errors */
+"136.1" = "Not enough parameters to evaluate verb message.";
+"136.2" = "Incorrect type for verb parameter";
+"136.3" = "The verb is undefined";
+"136.4" = "The application isn’t set up to handle verb messages";
+"136.5" = "Out of memory";
+"136.6" = "Operation cancelled by user";
+"136.7" = "Can’t perform operation because no file is open";
+
+/* Stack names */
+"137.1" = "hash table";
+"137.2" = "error info";
+"137.3" = "source code";
+"137.4" = "locals";
+"137.5" = "application";
+
+/* lang UI */
+"138.1" = "  If you intended to call the script, you must include parenthesis after the script name.";
+"138.2" = "^0 on “^1”";
+"138.3" = "<unavailable>";
+"138.4" = "the application whose ID is ";
+"138.5" = "appInfo";
+"138.6" = "id";
+"138.7" = "name";
+"138.8" = " on the network";
+"138.9" = "";
+"138.10" = "There are no statements in this script to ^0.";
+"138.11" = "This script has no statements in its body.  To ^0 “^1”, add a statement below the script that calls it with the appropriate parameter list.";
+"138.12" = "  If you intended to take its address, use the '@' operator.";
+"138.13" = "UserTalk";
+"138.14" = "anonymous";
+"138.15" = "apple event ['^0', '^1'] from “^2”";
+
+/* System scripts */
+"139.1" = "edit (@system.misc.menubar)";
+"139.2" = "edit (@root)";
+"139.3" = "window.quickscript ()";
+"139.4" = "system.misc.techsupport ()";
+"139.5" = "Frontier.finder2click(\"^0\")";
+"139.6" = "Frontier.finderToFront = ^0";
+"139.7" = "Frontier.clickers.typeXXXX";
+"139.8" = "system.callbacks.control2click(“^0”)";
+"139.9" = "if defined(system.callbacks.cmd2click){system.callbacks.cmd2click(“^0”)}else{edit(“^0”)}";
+"139.10" = "system.callbacks.option2click(“^0”)";
+"139.11" = "if defined(system.callbacks){system.callbacks.openWindow(“^0”);}";
+"139.12" = "system.callbacks.saveWindow(“^0”,^1)";
+"139.13" = "system.callbacks.closeWindow(“^0”)";
+"139.14" = "system.callbacks.compileChangedScript(address(“^0”))";
+"139.15" = "system.startup.firsttime||(Frontier.version()<2.1)||defined(nothreads)";
+"139.16" = "webBrowser.openURL(“^0”);webBrowser.bringToFront ()";
+"139.17" = "user.html.prefs.iso8859map";
+"139.18" = "user.prefs.fonts.^0Font";
+"139.19" = "user.prefs.expertMode";
+"139.20" = "Frontier.setExpertMode(^0)";
+"139.21" = "user.prefs.requiredeclarations";
+"139.22" = "if defined(system.callbacks){system.callbacks.suspend();}";
+"139.23" = "if defined(system.callbacks){system.callbacks.resume();}";
+"139.24" = "user.prefs.search.xxx";
+"139.25" = "user.prefs.agentsenabled";
+"139.26" = "user.prefs.autosave";
+"139.27" = "system.temp.Frontier.startingUp";
+"139.28" = "user.webserver.prefs.flWaitDuringStartup";
+"139.29" = "user.webserver.prefs.flStats";
+"139.30" = "user.inetd.shutdown";
+"139.31" = "Frontier.tools.windowTypes.isFileMenuItemEnabled(“^0”)";
+"139.32" = "pike.getFileMenuItemName(“^0”)";
+"139.33" = "Frontier.tools.windowTypes.runFileMenuScript(“^0”)";
+"139.34" = "if defined(system.callbacks.opStruct2Click){return(system.callbacks.opStruct2Click())}else{return(false)}";
+"139.35" = "if defined(system.callbacks.opReturnKey){return(system.callbacks.opReturnKey())}else{return(false)}";
+"139.36" = "if defined(system.callbacks.opExpand){return(system.callbacks.opExpand())}else{return(false)}";
+"139.37" = "if defined(system.callbacks.opCollapse){return(system.callbacks.opCollapse())}else{return(false)}";
+"139.38" = "if defined(system.callbacks.opCursorMoved){return(system.callbacks.opCursorMoved())}else{return(false)}"; /*7.0b6 PBS: opCursorMoved callback*/
+"139.39" = "if defined(system.callbacks.opRightClick){return(system.callbacks.opRightClick())}else{return(false)}"; /*7.0b11 PBS: opRightClick callback*/
+"139.40" = "Frontier.tools.windowTypes.runEditMenuScript(“^0”)";
+"139.41" = "Frontier.tools.windowTypes.isFileMenuItemChecked(“^0”)";
+"139.42" = "if defined(system.callbacks.opInsert){return(system.callbacks.opInsert())}else{return(false)}";
+"139.43" = "if defined(system.callbacks.systemTrayIconRightClick){return(system.callbacks.systemTrayIconRightClick())}else{return(false)}";
+"139.44" = "user.prefs.openRecentMenu.items.xxx";
+"139.45" = "user.prefs.flReplaceDialogExpertMode";
+"139.46" = "Frontier.tools.windowTypes.runOpenRecentMenuScript (\"^0\")";
+
+/* DB Stats */
+"140.1" = "Database Stats";
+"140.2" = "nodes in the release list";
+"140.3" = "bytes released";
+"140.4" = "nodes in the avail list";
+"140.5" = "bytes free";
+"140.6" = "largest free node";
+"140.7" = "header/trailer inconsistencies";
+"140.8" = "sequentially, nodes free";
+"140.9" = "bytes free";
+"140.10" = "nodes in use";
+"140.11" = "bytes in use";
+"140.12" = "logically, nodes in use";
+"140.13" = "bytes in use";
+"140.14" = "orphaned bytes";
+"140.15" = "error reading header of released node";
+"140.16" = "error reading header of used node";
+"140.17" = "a free block is in use";
+"140.18" = "error reading free node";
+"140.19" = "error getting end of file";
+"140.20" = "error reading sequential header";
+"140.21" = "error reading sequential trailer";
+"140.22" = "header/trailer info disagrees";
+"140.23" = "free list shadow out of synch";
+
+/* alerts */
+"141.1" = "The version number of this database file is not recognized by this version of Frontier.";
+"141.2" = "That name is too long.  Item names can have up to 255 characters";
+"141.3" = "That name is already in use.  Please use a different name";
+"141.4" = "A fresh copy of the file could not be opened.";
+"141.5" = "Can't paste this Clipboard type here.";
+"141.6" = "Not enough memory available to run Frontier.";
+"141.7" = "Frontier cannot run on systems older than System 7.0.";
+"141.8" = "The Thread Manager is not installed.  Some features will be unavailable.";
+
+/* special folder */
+"142.1" = "system";
+"142.2" = "desktop";
+"142.3" = "trash";
+"142.4" = "shared";
+"142.5" = "printmonitor";
+"142.6" = "startup";
+"142.7" = "apple";
+"142.8" = "control";
+"142.9" = "extensions";
+"142.10" = "preferences";
+"142.11" = "temporary";
+"142.12" = "fonts";
+
+/* sort popup */
+"156.1" = "Sort By Name";
+"156.2" = "Sort By Value";
+"156.3" = "Sort By Kind";
+"156.4" = "Sort:";
+
+/* kind popup */
+"157.1" = "Boolean";
+"157.2" = "Character";
+"157.3" = "Number";
+"157.4" = "Float";
+"157.5" = "Date";
+"157.6" = "Direction";
+"157.7" = "String";
+"157.8" = "-";
+"157.9" = "String4";
+"157.10" = "Enumerator";
+"157.11" = "File Specifier";
+"157.12" = "Alias";
+"157.13" = "Object Specifier";
+"157.14" = "Address";
+"157.15" = "-";
+"157.16" = "Table";
+"157.17" = "WP-Text";
+"157.18" = "Picture";
+"157.19" = "Outline";
+"157.20" = "Script";
+"157.21" = "MenuBar";
+"157.22" = "-";
+"157.23" = "List";
+"157.24" = "Record";
+"157.25" = "Binary";
+"157.26" = "Kind:";
+
+/* lang misc */
+"158.1" = "unknown";
+"158.2" = "error";
+"158.3" = "on disk";
+"158.4" = "1 node";
+"158.5" = "^0 nodes";
+"158.6" = "token = ";
+"158.7" = "breakpoint";
+"158.8" = "level";
+"158.9" = "enum";
+"158.10" = "number";
+"158.11" = "(none)";
+"158.12" = "(nil)";
+"158.13" = "nil";
+
+/* OP UI */
+"159.1" = "outline";
+"159.2" = "script";
+"159.3" = "1 line";
+"159.4" = "^0 lines";
+
+/* interface UI */
+"161.1" = "interface";
+"161.2" = "«interface»";
+"161.3" = "1 byte";
+"161.4" = "^0 bytes";
+"161.5" = "error";
+
+/* WP UI */
+"164.1" = "wp text";
+"164.2" = "1 character";
+"164.3" = "^0 characters";
+
+/* Table UI */
+"165.1" = "system table";
+"165.2" = "table";
+"165.3" = "1 item";
+"165.4" = "^0 items";
+"165.5" = " copy";
+"165.6" = "pasted text";
+"165.7" = "pasted ";
+"165.8" = "Paste as:";
+"165.9" = "???";
+"165.10" = "Name";
+"165.11" = "Value";
+"165.12" = "Kind";
+"165.13" = "xml";
+
+/* Menu UI */
+"166.1" = "menu bar";
+"166.2" = "1 item";
+"166.3" = "^0 items";
+
+/* Pict UI */
+"167.1" = "picture";
+"167.2" = "«picture»";
+"167.3" = "1 byte";
+"167.4" = "^0 bytes";
+"167.5" = "error";
+
+"256" = "Frontier™";
+
+/* DB errors */
+"256.1" = "File was created by an incompatible version of this program.";
+"256.2" = "Internal database error: attempted to read a free block. Try to Save a Copy and relaunch with the new database.";
+"256.3" = "This database has a damaged free list. Use the Save a Copy command to create a new, compacted database.";
+"256.4" = "This database has an inconsistent list of free blocks. Use the Save a Copy command to create a new, compacted database.";
+"256.5" = "Internal database error: attempted to assign to a free block. Try to Save a Copy and relaunch with the new database.";
+"256.6" = "Internal database error: attempted to grow the file beyond the maximum database size.";
+"256.7" = "Internal database error: attempted to release a free block.";
+"256.8" = "Internal database error: attempted to release an invalid block.";
+"256.9" = "Internal database error: attempted to merge with an invalid block.";
+
+/* Lang Errors */
+"257.1" = "Unknown error.";
+"257.2" = "Can’t coerce the string “^0” into a string4 because it isn’t four characters long.";
+"257.3" = "Can’t call “^0” because the only script it contains is named “^1”";
+"257.4" = "Can’t coerce the string “^0” into a character because it isn’t exactly one character long.";
+"257.5" = "Can’t coerce the string “^0” into a number because it contains non-numeric characters.";
+"257.6" = "Can’t evaluate the expression because the name “^0” hasn’t been defined.";
+"257.7" = "Can’t call “^0” because there aren’t enough parameters.";
+"257.8" = "Internal error -- unexpected opcode encountered (^0).";
+"257.9" = "Can’t call the script because the name “^0” hasn’t been defined.";
+"257.10" = "Can’t delete “^0” because it hasn’t been defined.";
+"257.11" = "“^0” is too big a number to convert to a character.  Maximum is 255.";
+"257.12" = "“^0” is too big a number to convert to an integer.  Maximum is 32767.";
+"257.13" = "“^0” is too small a number to convert to an integer.  Minimum is -32768.";
+"257.14" = "String constant isn’t correctly specified.  Must be of the form \"abcd\".";
+"257.15" = "Character constant isn’t correctly specified.  Must be of the form 'c'.";
+"257.16" = "Can’t compile this script because “^0” is an illegal character.";
+"257.17" = "String must be either \"true\" or \"false\".";
+"257.18" = "Can’t divide by zero.";
+"257.19" = "Can’t compile this script because of a ^0.";
+"257.20" = "The expression is too big. Try breaking it up into several statements.";
+"257.21" = "An expression is not allowed here; a variable name is required.";
+"257.22" = "Can’t create a new local named “^0” because there is already a local with that name.";
+"257.23" = "Can’t coerce the value to a 16-bit number.";
+"257.24" = "Can’t coerce the value to an 8-bit character.";
+"257.25" = "Can’t coerce the value to a 32-bit number.";
+"257.26" = "Can’t coerce the value to a date.";
+"257.27" = "Can’t coerce the value to a string.";
+"257.28" = "Can’t coerce the value to a true or false “Boolean” value.";
+"257.29" = "Can’t call “^0” because it isn’t a script.";
+"257.30" = "Can’t call “^0” because there are too many parameters.";
+"257.31" = "Can’t do replacement because the target window is not in edit mode.";
+"257.32" = "Address value doesn’t refer to a valid table.";
+"257.33" = "“^0” reported the following error:  “^2”.";
+"257.34" = "Can’t send the message because ^1“^0” isn’t running or isn’t IAC-aware.";
+"257.35" = "Assignment over existing ^0 object “^1” is not allowed.  Delete the object first, or use table.assign to override protection.";
+"257.36" = "Can’t coerce the value to a binary value.";
+"257.37" = "Can’t coerce a ^0 value to a ^1.";
+"257.38" = "Can't take the negative of this type of value.";
+"257.39" = "The logical ‘not’ operation is not supported with this type of value.";
+"257.40" = "The “^0” verb only operates on agents.  This script is not running as an agent.";
+"257.41" = "A “direction” is required here.  Examples include up, down, left, right and nodirection.";
+"257.42" = "The indicated list was not a binary value of the appropriate type.";
+"257.43" = "A string4 keyword or a numeric index was expected here.";
+"257.44" = "“^0” is too big a number to work with.  Maximum is 2147483647.";
+"257.45" = "Couldn’t complete the message to ^1“^0” because of the following error:  “^2”.";
+"257.46" = "Can’t find a sub-table named “^0”.";
+"257.47" = "Error in kernel call.  The verb  “^0” does not exist, or isn’t set up to handle messages.";
+"257.48" = "Array references can only be applied to tables, strings, lists and records.  “^0” is a ^1.";
+"257.49" = "Array index is out of range.  The ^1 “^0” doesn’t have an item #^2.";
+"257.50" = "Can’t evaluate the array reference because the ^1 “^0” has no item named “^2”.";
+"257.51" = "Can’t determine the size of this value.";
+"257.52" = "The table index is out of range.  There is no item #^0.";
+"257.53" = "A positive number was expected, but a negative number was given.";
+"257.54" = "Can’t pack this type of value.";
+"257.55" = "Can’t unpack this type of binary value.";
+"257.56" = "Can’t unpack.  You can only unpack binary values.";
+"257.57" = "Internal error -- can’t pack unknown type of external value.";
+"257.58" = "Error encountered unpacking the object.";
+"257.59" = "Can’t send the message because the application “^0” isn’t running^1.";
+"257.60" = "Can’t coerce “^0” to an address because it doesn't specify a valid object in the database structure.";
+"257.61" = "Can’t send any messages because IAC initialization failed.";
+"257.62" = "Can’t use “^0” in a with statement because it isn’t a table.";
+"257.63" = "Can’t get the address of “^0” because it isn’t in the object database structure.";
+"257.64" = "Can’t return a ^0 as the result of a script.^1";
+"257.65" = "Can’t pass a ^0 as a parameter to a script.^1";
+"257.66" = "Assignment of a ^0 to another value is not allowed.  Use table.assign instead.^1";
+"257.67" = "The “^0” verb can only be called by a trap script handling an incoming event.  This script is not handling an event.";
+"257.68" = "The “^0” verb can only be called by a dialog item hit callback script.  This script is not handling a dialog item hit.";
+"257.69" = "Couldn’t open a dialog with that id (^0).  The DLOG or DITL resource is probably missing.";
+"257.70" = "Item number is out of range.  The dialog doesn’t have an item #^0.";
+"257.71" = "Can’t nest more than three modal dialogs.";
+"257.72" = "This operation is not supported for ^0 values.^1";
+"257.73" = "Addition is not supported between values of this type.";
+"257.74" = "Subtraction is not supported between values of this type.";
+"257.75" = "Multiplication is not supported between values of this type.";
+"257.76" = "Division is not supported between values of this type.";
+"257.77" = "The “modulus” operation is not supported between values of this type.";
+"257.78" = "Comparison is not supported between these two values.";
+"257.79" = "Can’t specify more than ^0 tables in a single with statement. Try nesting two or more with statements instead.";
+"257.80" = "Stack overflow:  ^0 stack.  If your script is recursive, make sure that it’s terminating.";
+"257.81" = "Can’t send this type of value in an IAC message.";
+"257.82" = "Can’t run the card “^0”.";
+"257.83" = "Can’t coerce the binary value to this type because it isn’t exactly ^0 bytes long.";
+"257.84" = "Can’t coerce the string “^0” into a point because it isn’t in the form “h, v”.";
+"257.85" = "Can’t coerce the string “^0” into a rectangle because it isn’t in the form “top, left, bottom, right”.";
+"257.86" = "Can’t coerce the string “^0” into an RGB because it isn’t in the form “red, green, blue”.";
+"257.87" = "Can’t coerce the string “^0” into a pattern because it isn’t in the form of an 8-byte hexidecimal number.";
+"257.88" = "The string “^0” isn’t a valid file specification.";
+"257.89" = "Can’t coerce the string “^0” into an alias because it isn’t a valid file system path.";
+"257.90" = "Random number lower bound is greater than the upper bound.";
+"257.91" = "Can’t operate on alias value because the system software in use does not support aliases.";
+"257.92" = "Can’t operate on object specifier value because the system software in use does not support Apple events.";
+"257.93" = "“^0” is not a supported key format specification.  Valid formats are 'name', 'indx' and 'prop'.";
+"257.94" = "Can’t perform the operation because the address of a binary value is required here.";
+"257.95" = "Can’t coerce the string “^0” into a floating point number because it isn’t in the form “1.234”.";
+"257.96" = "Can’t call “^0” as an XCMD because it isn’t a binary value with binary type 'XCMD' or 'XFCN'.";
+"257.97" = "Can’t call “^0” as a UCMD because it isn’t a binary value with binary type 'UCMD'.";
+"257.98" = "Can’t run “^0” as a card because it isn’t a binary value with binary type 'CARD'.";
+"257.99" = "A range of items can’t be specified here.";
+"257.100" = "Can’t interpret this object specification.";
+"257.101" = "Can’t open the scripting component whose ID is '^0'.";
+"257.102" = "Can’t call “^0” from the background; the clipboard contents are only valid for the frontmost application.";
+"257.103" = "Can’t coerce the list value to this type because it doesn’t contain at least ^0 items.";
+"257.104" = "A named item can’t be specified here.";
+"257.105" = "Can’t call the script “^0” because it doesn’t define a parameter named “^1”";
+"257.106" = "Can’t call the script “^0” because the parameter “^1” has already been given a value.";
+"257.107" = "Can’t coerce the binary value to this type because its binaryType isn’t '^0'.";
+"257.108" = "Can’t perform this operation because the Component Manager is not installed.";
+"257.109" = "Bit number must be between 0 and 31.";
+"257.110" = "Can’t interpret “^0” as a network volume specification because it isn’t in the form “zone:machine:volume”.";
+"257.111" = "Can’t perform the operation because no file is open.";
+"257.112" = "Can’t coerce “^0” to a long because it isn’t in the range -2147483648 to 2147483647";
+"257.113" = "Semaphore timer expired after ^0 sixtieths of a second.";
+"257.114" = "The thread whose ID is ^0 does not exist.";
+"257.115" = "Can’t call “^0” because the database “^1” has not been opened.";
+"257.116" = "Can’t call “^0” because the database “^1” was opened for reading only.";
+"257.117" = "Can’t call the verb “^0”  because it isn't implemented on this platform.";
+"257.118" = "Can’t open this file because a database has not been opened.";
+"257.119" = "Can’t target “^0” because it doesn’t specify a window.";
+"257.120" = "Can’t reference the value because a nil address was given.";
+"257.121" = "Can’t load the table “^0” into memory because an error was encountered: “^1”.";
+"257.122" = "Can’t call “^0” because the file “^1” has not been opened.";
+"257.123" = "Can’t call “^0” because the library “^1” couldn’t be loaded.";
+"257.124" = "Can’t call “^0” because the ProcInfo resource could not be found in library “^1”.";
+"257.125" = "Can’t call “^0” because that name wasn’t found in the library “^1”.";
+"257.126" = "Can’t call “^0” because that name wasn’t found in the ProcInfo resource of library “^1”.";
+"257.127" = "Can’t get the “^0” attribute because the table doesn’t have a sub-table named /atts.";
+"257.128" = "Can’t get the “^0” attribute because the table doesn’t an attribute with that name.";
+"257.129" = "Can’t get the address of “^0” because the table doesn’t have an object with that name.";
+"257.130" = "Poorly formed XML text, ^0.";
+"257.131" = "Can’t compile the XML text; xml:namespace must have “ns” and “prefix” attributes.";
+"257.132" = "Can’t decompile XML because “^0” is not a table.";
+"257.133" = "Can’t process the request because a value of type “^0” can’t be represented in XML-Data at this time.";
+"257.134" = "Error packing “^0”: ^1";
+"257.135" = "Error unpacking “^0”: ^1";
+"257.136" = "Error evaluating #^0: ^1.";
+"257.137" = "Empty sub-outline in “^0” #define directive.";
+"257.138" = "Can’t create item “^0.^1” because “^1” is an illegal name.";
+"257.139" = "Can’t save the database because there was an ^0.";
+"257.140" = "Can’t rename “^0” as “^1” because an item with that name already exists.";
+"257.141" = "Can’t encode “^0” as an IP address because it isn’t in the form “0.0.0.0”.";
+"257.142" = "Can’t decode “^0” as an IP address.";
+"257.143" = "Can’t ^0 the specified window because it doesn't exist.";
+"257.144" = "Can't parse the address because of a syntax error.";
+"257.145" = "Can't split the URL because it is not of the form 'http://www.server.com/hello.html'.";
+"257.146" = "Can't generate the OPML text because the cloud table is incomplete. “^0” is missing or not recognized.";
+"257.147" = "Can't process the outline because the XML cloud element is incomplete.";
+"257.148" = "[Bitshift error message missing.]";
+"257.149" = "Can’t load library because the ProcInfo resource could not be found in library “^0”.";
+"257.150" = "Can't compile regular expression because ^0 at character #^1.";
+"257.151" = "Can't call re.^0 because the compiled regular expression is invalid.";
+"257.152" = "Can't do re.^0 because an internal regexp error occurred (code ^1).";
+"257.153" = "Can't do re.^0 because the replacement string contains a bad group name at character #^1.";
+"257.154" = "Can't do re.^0 because the replacement string contains a non-existant group number at character #^1.";
+"257.155" = "Can't do re.^0 because the replacement string contains a non-existant group name at character #^1.";
+"257.156" = "Can't do re.^0 because the groups list contains a non-existant group name at position #^1.";
+"257.157" = "Can't execute command because an internal regexp error occurred (code ^0).";
+"257.158" = "Can't execute command because the replacement string contains a bad group name at character #^0.";
+"257.159" = "Can't execute command because the replacement string contains a non-existant group number at character #^0.";
+"257.160" = "Can't execute command because the replacement string contains a non-existant group name at character #^0.";
+"257.161" = "An item named “^0” already exists."; // Replace it or create a duplicate?"; // 2005-09-26 creedon
+"257.162" = "Can't run shell command because the shell \042^0\042 was not found."; // 2006-03-10 aradke
+"257.163" = "Can't open database: ^0."; // 2007-10-11 creedon: cribbed from WinLand.rc
+"257.164" = "Database error: ^0."; // 2007-10-11 creedon: cribbed from WinLand.rc
+"257.165" = "Can't compile query ^0."; // 2007-10-11 creedon
+
+/* Mac Errors */
+"258.1" = "The “^0” folder is full.";
+"258.2" = "The disk is full.";
+"258.3" = "Couldn’t find the disk volume.";
+"258.4" = "There was a media error.";
+"258.5" = "The file name “^0” is illegal.";
+"258.6" = "The file “^0” is not open.";
+"258.7" = "We attempted to read beyond the end of the file.";
+"258.8" = "We tried to position to before start of file.";
+"258.9" = "Memory is full or information from the file won’t fit in memory.";
+"258.10" = "Too many files are open.";
+"258.11" = "The file “^0” wasn’t found.";
+"258.12" = "The disk is write-protected.";
+"258.13" = "The file “^0” is locked.";
+"258.14" = "The volume is locked.";
+"258.15" = "The file “^0” is busy.";
+"258.16" = "A file with the name “^0” already exists.";
+"258.17" = "The file “^0” is already open with write permission.";
+"258.18" = "Error in user parameter list for file system call.";
+"258.19" = "Internal error, refnum error.";
+"258.20" = "Internal error, get-file-position error.";
+"258.21" = "The volume is not on-line, it was ejected.";
+"258.22" = "Internal error, permissions error on file open.";
+"258.23" = "Internal error, driver volume already on-line at MountVol.";
+"258.24" = "Internal error, no such drive, tried to mount a bad drive number.";
+"258.25" = "The diskette is not a Macintosh diskette.  Sorry!";
+"258.26" = "The volume belongs to an external file system.";
+"258.27" = "Error renaming the file “^0”.";
+"258.28" = "Disk error, bad master directory block.";
+"258.29" = "Write permissions error.";
+"258.30" = "Drive not installed.";
+"258.31" = "Read/write requested for an off-line drive.";
+"258.32" = "Couldn’t find 5 nibbles in 200 tries.";
+"258.33" = "Couldn’t find valid address mark.";
+"258.34" = "Read verify compare failed.";
+"258.35" = "Address mark checksum didn’t check.";
+"258.36" = "Bad address mark bit slip nibbles.";
+"258.37" = "Couldn’t find a data mark header.";
+"258.38" = "Bad data mark checksum.";
+"258.39" = "Bad data mark bit slip nibbles.";
+"258.40" = "Write underrun.";
+"258.41" = "Step handshake failed.";
+"258.42" = "Track 0 detect doesn’t change.";
+"258.43" = "Unable to initialize IWM.";
+"258.44" = "Tried to read second side on a one-side drive.";
+"258.45" = "Unable to correctly adjust disk speed.";
+"258.46" = "Track number wrong at address mark.";
+"258.47" = "Sector number never found on a track.";
+"258.48" = "The folder “^0” wasn’t found.";
+"258.49" = "No free WDCB available.";
+"258.50" = "Move into offspring error.";
+"258.51" = "Wrong volume type, can’t work under MFS.";
+"258.52" = "Resource not found.";
+"258.53" = "Resource file not found.";
+"258.54" = "AddResource failed.";
+"258.55" = "RmveResource failed.";
+"258.56" = "Attribute does not permit operation.";
+"258.57" = "Map does not permit operation.";
+"258.58" = "Desk scrap isn’t initialized.";
+"258.59" = "Scrap manager noTypeErr.";
+"258.60" = "Out of memory.";
+"258.61" = "Internal error, master pointer is nil.";
+"258.62" = "Internal error, attempted to operate on a free block.";
+"258.63" = "Internal error, can’t purge a locked or non-purgable block.";
+"258.64" = "Internal error, memory block is locked.";
+"258.65" = "Invalid item specification for this list.";
+"258.66" = "The list index was out of range.";
+"258.67" = "Invalid descriptor list.";
+"258.68" = "Operation involving a list item failed.";
+"258.69" = "Verb not handled.";
+"258.70" = "No reply was received within the timeout period.";
+"258.71" = "Waiting was cancelled by the user.";
+"258.72" = "The application isn’t running or isn’t IAC-aware.";
+"258.73" = "Encountered an unexpected data type.";
+"258.74" = "The specified descriptor wasn’t found.";
+"258.75" = "Can’t interpret the object specification.";
+"258.76" = "The specified object wasn’t found.";
+"258.77" = "Access to “^0” was denied.";
+"258.78" = "The specified server wasn’t found on the network.";
+"258.79" = "Unknown user, or logon is disabled.";
+"258.80" = "The password was not accepted by the server.";
+"258.81" = "Can’t log on to a server that is running on the same machine.";
+"258.82" = "An error was encountered handling the event.";
+"258.83" = "The index is too large.";
+"258.84" = "Can’t accept the event because a transaction is in progress.";
+"258.85" = "That value is not modifiable.";
+"258.86" = "A single object must be specified for this operation.";
+"258.87" = "A newer version of the Apple Event Manager is required for this operation.";
+"258.88" = "An error occurred executing the script.";
+"258.89" = "Can’t apply this operation to objects of this type.";
+"258.90" = "The connection is no longer valid.";
+"258.91" = "Can’t complete the operation because user interaction is not allowed.";
+"258.92" = "The source code is not available.";
+"258.93" = "Mac OS Error: ^0.";
+
+/* OP Errors */
+"259.1" = "Can’t do “op.^0” because the target window does not contain an outline.";
+"259.2" = "Internal error running “op.^0”.";
+"259.3" = "The address of an outline was expected here.";
+"259.4" = "The address of a script was expected here.";
+"259.5" = "Can’t use “op.^0” on a menubar.  Menubars use outline links for scripts, which can be accessed with “menu.getScript” and “menu.setScript”.";
+"259.6" = "Can’t use “op.^0” on a table. Tables use outline links to store information about the object database.";
+
+/* WP Verb Errors */
+"264.1" = "Can’t do “wp.^0” because the target window is not in edit mode, or does not contain editable text.";
+"264.2" = "The address of a wptext object was expected here.";
+
+/* Table Verb Errors */
+"265.1" = "Can’t do “table.^0” because the target window does not contain a table.";
+"265.2" = "Internal error running “table.^0”.";
+"265.3" = "The address of a table was expected here.";
+
+/* Menu Verb Errors */
+"266.1" = "Can’t do “menu.^0” because the target window does not contain a menubar.";
+"266.2" = "The address of a menubar was expected here.";
+
+/* PICT Errors */
+"267.1" = "Can’t do “pict.^0” because the target window does not contain a picture.";
+"267.2" = "The address of a picture was expected here.";
+
+/* File Errors */
+"262.1" = "Internal error running “file.^0”.";
+
+/* String Errors */
+"263.1" = "Internal error running “string.^0”.";
+"263.2" = "Can't convert character set because of an unknown error.";
+/* Mac OSStatus: kTextUnsupportedEncodingErr */
+"263.3" = "Can't convert character set  because “^0” is not supported.";
+/* Mac OSStatus: kTextMalformedInputErr */
+"263.4" = "Can't convert character set because the text contains a sequence that is not legal in the specified character set (^0).";
+/* Mac OSStatus: kTextUndefinedElementErr */
+"263.5" = "Can't convert character set because the text contains a code point that is undefined in the specified character set (^0).";
+/* Mac OSStatus: kTECNoConversionPathErr */
+"263.6" = "Can't convert character set because there is no way to convert from “^0” to “^1”.";
+/* Mac OSStatus: kTECPartialCharErr */
+"263.7" = "Can't convert character set because the text ends in the middle of a multibyte character.";
+
+/* Window Errors */
+"268.1" = "Internal error running “window.^0”.";
+
+/* Math Errors */
+"269.1" = "Internal error running \"math.^0\".";
+
+/* Script Window Buttons */
+"300.1" = "Run";
+"300.2" = "Debug";
+"300.3" = "Record";
+"300.4" = "Step";
+"300.5" = "In";
+"300.6" = "Out";
+"300.7" = "Follow";
+"300.8" = "Go";
+"300.9" = "Stop";
+"300.10" = "Kill";
+"300.11" = "Lookup";
+"300.12" = "Compile";
+
+/* Outline Window Buttons */
+"301.1" = "Synthetic";
+
+/* Home Window Buttons */
+"302.1" = "Menu Bar";
+"302.2" = "Object DB";
+"302.3" = "Quick Script";
+"302.4" = "Tech Support";
+
+"512" = "Oh the buzzing of the bees.";
+
+/* component */
+"512.1" = "Frontier";
+"512.2" = "UserTalk";
+"512.3" = "Frontier UserTalk scripting component";
+"512.4" = "Frontier Menu Sharing component";
+"512.5" = "Frontier Window Sharing component";
+
+/* recording */
+"513.1" = "null";
+"513.2" = "after";
+"513.3" = "before";
+"513.4" = "beginningOf";
+"513.5" = "endOf";
+"513.6" = "replace";
+"513.7" = "insertionLoc";
+"513.8" = "with objectModel";
+"513.9" = "\tbringToFront ();";
+"513.10" = "\tsys.bringAppToFront ('^0');";
+"513.11" = "id";
+"513.12" = "\tappleEvent (^0, '^1', '^2'";
+"513.13" = "«no verb table found for “^0”";
+"513.14" = "There are ^0 clients connected to Frontier’s UserTalk component.  Quit anyway?";
+"513.15" = "The application “^0” is connected to Frontier’s UserTalk component.  Quit anyway?";

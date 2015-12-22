@@ -142,7 +142,7 @@ void shellerrormessage (bigstring bs) {
 	here.  this allows errors to be rechannelled, for instance to the 
 	langerror dialog window.
 	*/
-	
+    
 	if (!shellcallerrorhooks (bs))
 		return;
 	

@@ -1215,14 +1215,12 @@ boolean filesetvisible (const ptrfilespec fs, boolean flvisible) {
 		if (oserror (macgetfsref (fs, &fsref)))
 			return (false);
 	
-		NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
+        @autoreleasepool {
+            CFURLRef fileUrl = CFURLCreateFromFSRef(kCFAllocatorDefault, &fsref);
+            [(NSURL *)fileUrl setResourceValue:@(!flvisible) forKey:NSURLIsHiddenKey error:NULL];
+            CFRelease(fileUrl);
+        }
 		
-		CFURLRef fileUrl = CFURLCreateFromFSRef(kCFAllocatorDefault, &fsref);
-		[(NSURL *)fileUrl setResourceValue:[NSNumber numberWithBool:!flvisible] forKey:NSURLIsHiddenKey error:NULL]; 
-		CFRelease(fileUrl);
-		
-		[pool release];
-				
 		touchparentfolder (fs);
 		
 	#endif	
