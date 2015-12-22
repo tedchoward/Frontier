@@ -33,11 +33,12 @@
 
 #endif
 
-
+#pragma pack(2)
 typedef struct tyscrollinfo {
 	
 	long min, max, cur, pag;
 	} tyscrollinfo, *ptrscrollinfo;
+#pragma options align=reset
 
 
 /*prototypes*/

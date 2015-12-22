@@ -28,6 +28,7 @@
 #ifndef timedateinclude
 #define timedateinclude
 
+#pragma pack(2)
 typedef struct tyinternationalinfo {
 	char * longDaysOfWeek[10];
 	char * shortDaysOfWeek[10];
@@ -52,6 +53,7 @@ typedef struct tyinternationalinfo {
 	short numberOfYears;
 	boolean defaultTimeFormat;	//false = 12hour
 	} tyinternationalinfo, * tyinternationalinfoptr;
+#pragma options align=reset
 
 
 #ifdef MACVERSION

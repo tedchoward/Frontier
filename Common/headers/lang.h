@@ -287,7 +287,7 @@ typedef enum tyvaluetype { /*use care -- these are saved on disk inside symbol t
 	
 	} tyvaluetype;
 
-
+#pragma pack(2)
 typedef struct tydiskvalue {	/*4.0.2b1 dmb*/
 
 	dbaddress adr;
@@ -698,7 +698,7 @@ typedef struct tablestack {
 	hdlhashtable stack [cthashtables];
 	} tytablestack, *ptrtablestack, **hdltablestack;
 
-
+#pragma options align=reset
 /*globals*/	
 
 extern boolean flscriptrunning; /*if true, a script is currently executing in this thread*/

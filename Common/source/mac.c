@@ -265,8 +265,9 @@ boolean installgestaltfunction (void) {
 
 void WriteToConsole (char *s)
 {
-
-	CFShow(CFStringCreateWithCString(NULL,s,kCFStringEncodingMacRoman));
+    CFStringRef logStr = CFStringCreateWithCString(NULL,s,kCFStringEncodingMacRoman);
+	CFShow(logStr);
+    CFRelease(logStr);
 		
 }
 

@@ -71,10 +71,12 @@ PBS 08/08/00
 
 #define moviestasktime 30
 
+#pragma pack(2)
 typedef struct typlayerrecord {
 	
 	long refcon;
 	} typlayerrecord, *ptrplayerrecord, **hdlplayerrecord;
+#pragma options align=reset
 
 
 static hdlplayerrecord playerdata = nil;

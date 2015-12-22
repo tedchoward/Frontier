@@ -92,7 +92,8 @@ extern short tableverberrornum; /*selects an error message from a low-level rout
 	typedef tyexternalvariable tytablevariable, *ptrtablevariable, **hdltablevariable;
 
 #else
-	
+
+#pragma pack(2)
 typedef struct tytablevariable {
 	
 	unsigned short id; /*tyexternalid: managed by langexternal.c*/
@@ -113,6 +114,7 @@ typedef struct tytablevariable {
 
 	dbaddress oldaddress; /*last place this table was stored in db*/
 	} tytablevariable, *ptrtablevariable, **hdltablevariable;
+#pragma options align=reset
 
 #endif
 

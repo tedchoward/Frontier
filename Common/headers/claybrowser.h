@@ -52,7 +52,7 @@
 	typedef hdldatabaserecord tybrowservol;
 	
 	typedef hdlhashtable tybrowserdir;
-	
+#pragma pack(2)
 	typedef struct tybrowserspec {
 		
 		tybrowservol vRefNum;
@@ -61,6 +61,7 @@
 		
 		bigstring name;
 		} tybrowserspec, *ptrbrowserspec;
+#pragma options align=reset
 
 #endif
 
@@ -76,7 +77,7 @@
 
 #endif
 
-
+#pragma pack(2)
 typedef struct tybrowserinfo { /*one of these is linked into each browser window headrecord*/
 
 	boolean flfolder; /*if true, it's a folder*/
@@ -119,7 +120,7 @@ typedef struct tybrowserinfo { /*one of these is linked into each browser window
 	
 	#endif
 	} tybrowserinfo;
-
+#pragma options align=reset
 
 typedef boolean (*tyclayfileloopcallback) (bigstring, tybrowserinfo *, long);
 

@@ -28,7 +28,7 @@
 #define kbinclude /*so other includes can tell if we've been loaded*/
 
 
-
+#pragma pack(2)
 typedef struct tykeystrokerecord {
 
 	unsigned char chkb;
@@ -45,7 +45,7 @@ typedef struct tykeystrokerecord {
 	
 	tydirection keydirection; 
 	} tykeystrokerecord, *ptrkeystrokerecord, **hdlkeystrokerecord;
-
+#pragma options align=reset
 
 extern tykeystrokerecord keyboardstatus;
 

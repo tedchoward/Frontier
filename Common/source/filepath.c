@@ -84,8 +84,10 @@
 			err = FSGetCatalogInfo (&fsrefnomad, kFSCatInfoNodeID, &catalogInfo, &names[n], NULL, &fsrefnomad);
 			}
 			
-		if (err != noErr)
+        if (err != noErr) {
+            CFRelease(ioPath);
 			return (false);
+        }
 			
 		for (i = n - 1; i >= 0; --i) {
 

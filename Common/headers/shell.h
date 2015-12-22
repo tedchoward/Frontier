@@ -121,6 +121,7 @@ enum { /*indexes of trial errors*/
 
 /*typedefs*/
 
+#pragma pack(2)
 typedef struct tywindowposition {
 	
 	Rect windowrect;
@@ -281,6 +282,7 @@ typedef struct tywindowinfo { /*one of these records is linked into every window
 	
 	boolean fldisposewhenpopped: 1; //if true, dispose was called while we were pushed
 	} tywindowinfo, *ptrwindowinfo, **hdlwindowinfo;
+#pragma options align=reset
 
 
 typedef boolean (*shellcallback) (void);
@@ -336,6 +338,7 @@ typedef boolean (*shellzoomwindowcallback) (hdlwindowinfo, boolean);
 typedef boolean (*shelldatabasecallback) (struct tydatabaserecord ***);
 
 
+#pragma pack(2)
 typedef struct tyshellglobals {
 	
 	WindowPtr *windowholder; /*the caller's global window record*/
@@ -487,6 +490,7 @@ typedef struct tyshellglobals {
 	shellzoomwindowcallback zoomwindowroutine;
 	
 	} tyshellglobals, *ptrcallbacks;
+#pragma options align=reset
 
 /*
 shellevent, shellwindow and shellwindowinfo provide information for the shell 

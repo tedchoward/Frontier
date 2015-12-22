@@ -62,6 +62,7 @@
 
 #define ctprocesses 5 /*we can remember nested processes up to 5 levels deep*/
 
+#pragma pack(2)
 typedef struct typrocessstackrecord {
 	
 	hdlprocessrecord hprocess;
@@ -199,7 +200,7 @@ typedef struct tythreadglobals {
 	boolean flcominitialized;
 
 	} tythreadglobals, *ptrthreadglobals, **hdlthreadglobals;
-
+#pragma options align=reset
 
 /*globals*/
 

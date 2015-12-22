@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE plist PUBLIC "-//Apple Computer//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
-<!--    $Id: Info_OPML.plist 560 2006-02-08 19:13:44Z andreradke $    -->
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
 	<key>CFBundleDevelopmentRegion</key>
@@ -10,7 +9,7 @@
 		<dict>
 			<key>CFBundleTypeExtensions</key>
 			<array>
-				<string>.opml</string>
+				<string>opml</string>
 			</array>
 			<key>CFBundleTypeIconFile</key>
 			<string>OPMLdoc.icns</string>
@@ -28,6 +27,8 @@
 			<string>Editor</string>
 			<key>LSIsAppleDefaultForType</key>
 			<true/>
+			<key>LSTypeIsPackage</key>
+			<integer>0</integer>
 		</dict>
 		<dict>
 			<key>CFBundleTypeExtensions</key>
@@ -40,47 +41,63 @@
 			<array>
 				<string>****</string>
 			</array>
+			<key>CFBundleTypeRole</key>
+			<string>Editor</string>
+			<key>LSTypeIsPackage</key>
+			<integer>0</integer>
 		</dict>
 		<dict>
 			<key>CFBundleTypeExtensions</key>
 			<array>
-				<string>.root</string>
+				<string>root</string>
 			</array>
+			<key>CFBundleTypeName</key>
+			<string>Frontier Root</string>
 			<key>CFBundleTypeOSTypes</key>
 			<array>
 				<string>TABL</string>
 			</array>
-			<key>CFBundleTypeName</key>
-			<string>Frontier Root</string>
+			<key>CFBundleTypeRole</key>
+			<string>Editor</string>
+			<key>LSTypeIsPackage</key>
+			<integer>0</integer>
 		</dict>
 		<dict>
 			<key>CFBundleTypeExtensions</key>
 			<array>
-				<string>.2clk</string>
+				<string>2clk</string>
 			</array>
+			<key>CFBundleTypeName</key>
+			<string>Frontier Desktop Script (2CLK)</string>
 			<key>CFBundleTypeOSTypes</key>
 			<array>
 				<string>2CLK</string>
 			</array>
-			<key>CFBundleTypeName</key>
-			<string>Frontier Desktop Script (2CLK)</string>
+			<key>CFBundleTypeRole</key>
+			<string>Editor</string>
+			<key>LSTypeIsPackage</key>
+			<integer>0</integer>
 		</dict>
 		<dict>
 			<key>CFBundleTypeExtensions</key>
 			<array>
-				<string>.card</string>
+				<string>card</string>
 			</array>
+			<key>CFBundleTypeName</key>
+			<string>Frontier Iowa Card</string>
 			<key>CFBundleTypeOSTypes</key>
 			<array>
 				<string>CARD</string>
 			</array>
-			<key>CFBundleTypeName</key>
-			<string>Frontier Iowa Card</string>
+			<key>CFBundleTypeRole</key>
+			<string>Editor</string>
+			<key>LSTypeIsPackage</key>
+			<integer>0</integer>
 		</dict>
 		<dict>
 			<key>CFBundleTypeExtensions</key>
 			<array>
-				<string>.fatp</string>
+				<string>fatp</string>
 			</array>
 			<key>CFBundleTypeName</key>
 			<string>Frontier Fat Page</string>
@@ -90,90 +107,122 @@
 				<string>.FAT</string>
 				<string>FAT </string>
 			</array>
+			<key>CFBundleTypeRole</key>
+			<string>Editor</string>
+			<key>LSTypeIsPackage</key>
+			<integer>0</integer>
 		</dict>
 		<dict>
 			<key>CFBundleTypeExtensions</key>
 			<array>
-				<string>.ftop</string>
+				<string>ftop</string>
 			</array>
+			<key>CFBundleTypeName</key>
+			<string>Frontier Outline</string>
 			<key>CFBundleTypeOSTypes</key>
 			<array>
 				<string>FTop</string>
 			</array>
-			<key>CFBundleTypeName</key>
-			<string>Frontier Outline</string>
+			<key>CFBundleTypeRole</key>
+			<string>Editor</string>
+			<key>LSTypeIsPackage</key>
+			<integer>0</integer>
 		</dict>
 		<dict>
 			<key>CFBundleTypeExtensions</key>
 			<array>
-				<string>.ftsc</string>
+				<string>ftsc</string>
 			</array>
+			<key>CFBundleTypeName</key>
+			<string>Frontier Script</string>
 			<key>CFBundleTypeOSTypes</key>
 			<array>
 				<string>FTsc</string>
 			</array>
-			<key>CFBundleTypeName</key>
-			<string>Frontier Script</string>
+			<key>CFBundleTypeRole</key>
+			<string>Editor</string>
+			<key>LSTypeIsPackage</key>
+			<integer>0</integer>
 		</dict>
 		<dict>
 			<key>CFBundleTypeExtensions</key>
 			<array>
-				<string>.ftwp</string>
+				<string>ftwp</string>
 			</array>
+			<key>CFBundleTypeName</key>
+			<string>Frontier WP Text</string>
 			<key>CFBundleTypeOSTypes</key>
 			<array>
 				<string>FTwp</string>
 			</array>
-			<key>CFBundleTypeName</key>
-			<string>Frontier WP Text</string>
+			<key>CFBundleTypeRole</key>
+			<string>Editor</string>
+			<key>LSTypeIsPackage</key>
+			<integer>0</integer>
 		</dict>
 		<dict>
 			<key>CFBundleTypeExtensions</key>
 			<array>
-				<string>.ftmb</string>
+				<string>ftmb</string>
 			</array>
+			<key>CFBundleTypeName</key>
+			<string>Frontier Menu Bar</string>
 			<key>CFBundleTypeOSTypes</key>
 			<array>
 				<string>FTmb</string>
 			</array>
-			<key>CFBundleTypeName</key>
-			<string>Frontier Menu Bar</string>
+			<key>CFBundleTypeRole</key>
+			<string>Editor</string>
+			<key>LSTypeIsPackage</key>
+			<integer>0</integer>
 		</dict>
 		<dict>
 			<key>CFBundleTypeExtensions</key>
 			<array>
-				<string>.fttb</string>
-	</array>
+				<string>fttb</string>
+			</array>
+			<key>CFBundleTypeName</key>
+			<string>Frontier Table</string>
 			<key>CFBundleTypeOSTypes</key>
 			<array>
 				<string>FTtb</string>
 			</array>
-			<key>CFBundleTypeName</key>
-			<string>Frontier Table</string>
+			<key>CFBundleTypeRole</key>
+			<string>Editor</string>
+			<key>LSTypeIsPackage</key>
+			<integer>0</integer>
 		</dict>
 		<dict>
 			<key>CFBundleTypeExtensions</key>
 			<array>
-				<string>.ftpc</string>
+				<string>ftpc</string>
 			</array>
+			<key>CFBundleTypeName</key>
+			<string>Frontier Picture</string>
 			<key>CFBundleTypeOSTypes</key>
 			<array>
 				<string>FTpc</string>
 			</array>
-			<key>CFBundleTypeName</key>
-			<string>Frontier Picture</string>
+			<key>CFBundleTypeRole</key>
+			<string>Editor</string>
+			<key>LSTypeIsPackage</key>
+			<integer>0</integer>
 		</dict>
 		<dict>
 			<key>CFBundleTypeExtensions</key>
 			<array>
-				<string>.ftds</string>
+				<string>ftds</string>
 			</array>
+			<key>CFBundleTypeName</key>
+			<string>Frontier Desktop Script</string>
 			<key>CFBundleTypeOSTypes</key>
 			<array>
 				<string>FTds</string>
 			</array>
-			<key>CFBundleTypeName</key>
-			<string>Frontier Desktop Script</string>
+			<key>CFBundleTypeRole</key>
+			<string>Editor</string>
+			<key>LSTypeIsPackage</key>
+			<integer>0</integer>
 		</dict>
 	</array>
 	<key>CFBundleExecutable</key>
@@ -183,7 +232,7 @@
 	<key>CFBundleIconFile</key>
 	<string>OPML.icns</string>
 	<key>CFBundleIdentifier</key>
-	<string>com.scripting.OPML</string>
+	<string>$(PRODUCT_BUNDLE_IDENTIFIER)</string>
 	<key>CFBundleInfoDictionaryVersion</key>
 	<string>6.0</string>
 	<key>CFBundleName</key>

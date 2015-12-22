@@ -199,13 +199,14 @@ boolean mereleaserefconroutine (hdlheadrecord hnode, boolean fldisk) {
 	return (true);
 	} /*mereleaserefconroutine*/
 
-
+#pragma pack(2)
 typedef struct typackinfo {
 
 	Handle hpackedscripts; /*for pack/unpackscriptvisit routines*/
 
 	long ixpackedscripts; /*for unpacking only*/
 	} typackinfo, *ptrpackinfo;
+#pragma options align=reset
 
 
 static boolean mesavescriptvisit (hdlheadrecord hnode, ptrvoid refcon) {

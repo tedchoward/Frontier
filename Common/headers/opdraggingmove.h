@@ -36,6 +36,7 @@
 
 #define draggingscrollrate 2 /*max scroll rate is 30 lines per second*/
 
+#pragma pack(2)
 typedef struct tyhotspot {
 	
 	Point pt; /*the mouse point that determined the rect*/
@@ -52,6 +53,7 @@ typedef struct tyhotspot {
 	
 	Handle sourcewindowhandle, destwindowhandle;
 	} tyhotspot;
+#pragma options align=reset
 
 
 extern void operasehotspot (tyhotspot *hotspot);

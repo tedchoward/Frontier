@@ -44,7 +44,7 @@
 #include "langipc.h"
 
 
-
+#pragma pack(2)
 typedef struct tymenulistrecord {
 	
 	long id; /*this list's key is the program id*/
@@ -55,6 +55,7 @@ typedef struct tymenulistrecord {
 	
 	struct tymenulistrecord **nextlist;
 	} tymenulistrecord, **hdlmenulistrecord;
+#pragma options align=reset
 
 
 static hdlmenulistrecord hmenulist = nil;

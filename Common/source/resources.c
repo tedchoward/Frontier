@@ -43,23 +43,23 @@
 
 
 boolean getstringlist (short listnum, short id, bigstring bs) {
-#ifdef MACVERSION	
-	/*
-	the Mac routine GetIndString doesn't set ResError false when we fall off
-	the end of the indicated list, so we return false if the returned string
-	is of zero length.
-	*/
-	
-	#if 0 //#ifdef fldebug	/* 2006-04-16 aradke: disabled for Mac Intel build */
-	
-	if (GetResource ('STR#', listnum) == nil)
-		DebugStr ("\pmissing STR# resource");
-	
-	#endif
-	
-	GetIndString (bs, listnum, id);
-	
-	return (stringlength (bs) > 0);
+#ifdef MACVERSION
+    
+    CFStringRef stringKey = CFStringCreateWithFormat(kCFAllocatorDefault, NULL, CFSTR("%d.%d"), listnum, id);
+    CFBundleRef mainBundle = CFBundleGetMainBundle();
+    CFStringRef stringValue = CFBundleCopyLocalizedString(mainBundle, stringKey, CFSTR("[string not found]"), CFSTR("Localizable"));
+    
+    if (CFStringCompare(stringValue, CFSTR("[string not found]"), (CFStringCompareFlags) 0) == kCFCompareEqualTo) {
+        fprintf(stderr, "string resource not found %d.%d\n", listnum, id);
+        setemptystring(bs);
+    } else {
+        CFStringGetPascalString(stringValue, bs, sizeof(bigstring), kCFStringEncodingMacRoman);
+    }
+    
+    CFRelease(stringValue);
+    CFRelease(stringKey);
+    
+    return stringlength(bs) > 0;
 #endif
 
 #ifdef WIN95VERSION

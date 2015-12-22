@@ -72,7 +72,7 @@
 
 typedef DescType **hdldesctype;
 
-
+#pragma pack(2)
 typedef struct tysys7transportinfo { 
 	
 	hdlprocessthread hthread; /*must be first field*/
@@ -113,6 +113,7 @@ typedef struct tysys7transportinfo {
 typedef struct tylandprocessvisitinfo {
 	tyapplicationid idrunningprocess;
 	} tylandprocessvisitinfo;
+#pragma options align=reset
 
 typedef struct tylandprocessvisitinfo *tylandprocessvisitinfoptr;
 

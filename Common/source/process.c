@@ -113,11 +113,12 @@ static void _leavecriticalprocesssection (void) {
 
 #endif
 
-
+#pragma pack(2)
 typedef struct tythreadlist {
 	
 	hdlthreadglobals hfirst;
 	} tythreadlist, **hdlthreadlist;
+#pragma options align=reset
 
 
 static hdlthreadlist processthreadlist;

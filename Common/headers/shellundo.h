@@ -29,7 +29,7 @@
 
 
 
-
+#pragma pack(2)
 typedef struct tystack {
 
 	short topstack;
@@ -103,6 +103,7 @@ typedef struct tyundostack {
 		
 	#endif
 	} tyundostack, *ptrundostack, **hdlundostack;
+#pragma options align=reset
 
 
 /*function prototypes*/

@@ -38,6 +38,7 @@
 #include "timedate.h"
 
 #ifdef MACVERSION
+    #include "MacDateHelpers.h"
 	#define tydate DateTimeRec
 #endif
 
@@ -108,6 +109,7 @@ static short daysInMonthsArray[] = {31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 
 #define VALFLAG_ISDOLLARS	(0x1000)
 #define VALFLAG_ISCENTS 	(0x2000)
 
+#pragma pack(2)
 typedef struct tyvalidationtoken
    {
    short ty;
@@ -116,6 +118,7 @@ typedef struct tyvalidationtoken
    long val;
    unsigned long flag;
    } tyvalidationtoken, * tyvalidationtokenptr;
+#pragma options align=reset
 
 
 #ifdef WIN95VERSION
@@ -125,6 +128,7 @@ typedef struct tyvalidationtoken
 	static LONGLONG gPerformanceFreq = 0;  /* for getmilliseconds() */
 #endif
 
+#pragma pack(2)
 typedef struct tydaterec {
 	short year;
 	short month;
@@ -141,6 +145,7 @@ typedef struct tyvalidationerror {
 	long stringPosition;
 	char * auxilaryPointer;
 	} tyvalidationerror, * tyvalidationerrorptr;
+#pragma options align=reset
 
 
 #ifdef WIN95VERSION
@@ -525,8 +530,9 @@ void GetDateTime (long * secs) {
 
 
 void timestamp (long *ptime) {
-	
-	GetDateTime ((unsigned long *) ptime);
+    
+    *ptime = (CFAbsoluteTimeGetCurrent() + kCFAbsoluteTimeIntervalSince1904);
+    
 	} /*timestamp*/
 	
 	
@@ -535,10 +541,8 @@ unsigned long timenow (void) {
 	/*
 	2.1b4 dmb; more convenient than timestamp for most callers
 	*/
-	
-	unsigned long now;
-	
-	GetDateTime (&now);
+    
+    unsigned long now = (CFAbsoluteTimeGetCurrent() + kCFAbsoluteTimeIntervalSince1904);
 	
 	return (now);
 	} /*timenow*/
@@ -552,7 +556,8 @@ boolean setsystemclock (unsigned long secs) {
 	*/
 
 	#ifdef MACVERSION
-		return (!oserror (SetDateTime (secs)));
+    
+		return (!oserror(unsupportedOSErr));
 	#endif
 
 	#ifdef WIN95VERSION
@@ -610,10 +615,14 @@ timelessthan (
 boolean timetotimestring (unsigned long ptime, bigstring bstime, boolean flwantseconds) {
 
 #ifdef MACVERSION
-	//Code change by Timothy Paustian Sunday, June 25, 2000 9:45:30 PM
-	//updated call for carbon, the nil parameter says use the current script
-	//for formatting the time.
-	TimeString (ptime, flwantseconds, bstime, nil);
+    
+        CFLocaleRef locale = CFLocaleCopyCurrent();
+        CFDateFormatterRef timeFormatter = CFDateFormatterCreate(kCFAllocatorDefault, locale, kCFDateFormatterNoStyle, flwantseconds ? kCFDateFormatterMediumStyle : kCFDateFormatterShortStyle);
+        CFStringRef timeString = CFDateFormatterCreateStringWithAbsoluteTime(kCFAllocatorDefault, timeFormatter, ptime - kCFAbsoluteTimeIntervalSince1904);
+        CFStringGetPascalString(timeString, bstime, sizeof(bigstring), kCFStringEncodingMacRoman);
+        CFRelease(timeString);
+        CFRelease(timeFormatter);
+        CFRelease(locale);
 
 		return (true);
 	#endif
@@ -638,12 +647,19 @@ boolean timetotimestring (unsigned long ptime, bigstring bstime, boolean flwants
 
 boolean timetodatestring (unsigned long ptime, bigstring bsdate, boolean flabbreviate) {
 
-#ifdef MACVERSION
-	//Code change by Timothy Paustian Sunday, June 25, 2000 9:45:49 PM
-	//Updated call for carbon
-	DateString (ptime, flabbreviate? abbrevDate : shortDate, bsdate, nil);
+    #ifdef MACVERSION
 
-	return (true);
+        CFLocaleRef locale = CFLocaleCopyCurrent();
+        CFDateFormatterRef formatter = CFDateFormatterCreate(kCFAllocatorDefault, locale, flabbreviate ? kCFDateFormatterMediumStyle : kCFDateFormatterShortStyle, kCFDateFormatterNoStyle);
+        CFStringRef dateString = CFDateFormatterCreateStringWithAbsoluteTime(kCFAllocatorDefault, formatter, ptime - kCFAbsoluteTimeIntervalSince1904);
+        
+        CFStringGetPascalString(dateString, bsdate, sizeof(bigstring), kCFStringEncodingMacRoman);
+        
+        CFRelease(dateString);
+        CFRelease(formatter);
+        CFRelease(locale);
+
+        return (true);
 	#endif
 
 	#ifdef WIN95VERSION
@@ -678,72 +694,36 @@ boolean stringtotime (bigstring bsdate, unsigned long *ptime) {
 	*/
 	
 	#ifdef MACVERSION
+    
+        boolean flUseGMT = false;
+        long idx;
+        
+        idx = stringlength (bsdate);
+        
+        while (getstringcharacter(bsdate, idx-1) == ' ')
+            --idx;
+        
+        if (idx > 3) {
+            if ((getstringcharacter(bsdate, idx - 3) == 'G') && (getstringcharacter(bsdate, idx - 2) == 'M') && (getstringcharacter(bsdate, idx -1) == 'T')) {
+                flUseGMT = true;
+            }
+        }
+        
+        *ptime = 0; /*default return value*/
 
-		Ptr p = (Ptr) bsdate + 1;
-		long n = stringlength (bsdate);
-		long used = 0;
-		DateCacheRecord cache;
-		LongDateRec longdate;
-		boolean flgotdate;
-		boolean flgottime;
-		DateTimeRec shortdate;
-		boolean flUseGMT = false;
-		long idx;
-		
-		idx = stringlength (bsdate);
-
-		while (getstringcharacter(bsdate, idx-1) == ' ')
-			--idx;
-
-		if (idx > 3) {
-			if ((getstringcharacter(bsdate, idx - 3) == 'G') && (getstringcharacter(bsdate, idx - 2) == 'M') && (getstringcharacter(bsdate, idx -1) == 'T')) {
-				flUseGMT = true;
-				}
-			}
-
-		*ptime = 0; /*default return value*/
-		
-		clearbytes (&longdate, sizeof (longdate));
-		
-		if (InitDateCache (&cache) != noErr) /*must do this before calling StringToDate*/
-			return (false);
-		
-		flgotdate = ((StringToDate (p, n, &cache, &used, &longdate) & fatalDateTime) == 0);
-		
-		flgottime = ((StringToTime (p + used, n - used, &cache, &used, &longdate) & fatalDateTime) == 0);
-		
-		if (!flgotdate && !flgottime) /*nuthin' doin'*/
-			return (false);
-		
-		if (flgotdate) {
-		
-			shortdate.day = longdate.ld.day;
-			
-			shortdate.month = longdate.ld.month;
-			
-			shortdate.year = longdate.ld.year;
-			}
-		else {
-			
-			SecondsToDate (0, &shortdate);
-			
-			/*
-			GetTime (&shortdate);
-			*/
-			}
-		
-		shortdate.hour = longdate.ld.hour; /*time fields will be zero if !flgottime*/
-		
-		shortdate.minute = longdate.ld.minute;
-		
-		shortdate.second = longdate.ld.second;
-		
-		DateToSeconds (&shortdate, ptime);
-
-		if (flUseGMT) {
-			adjustforcurrenttimezone (ptime);
-			}
-		
+        
+        CFStringRef dateString = CFStringCreateWithPascalString(kCFAllocatorDefault, bsdate, kCFStringEncodingMacRoman);
+        CFAbsoluteTime absoluteTime = stringToDate(dateString);
+        CFRelease(dateString);
+        if (absoluteTime > 0) {
+            *ptime = (absoluteTime + kCFAbsoluteTimeIntervalSince1904);
+            if (flUseGMT) {
+                adjustforcurrenttimezone (ptime);
+            }
+            return true;
+        } else {
+            return false;
+        }
 	#endif
 
 	#ifdef WIN95VERSION
@@ -897,44 +877,9 @@ long datetimetoseconds (short day, short month, short year, short hour, short mi
 	*/
 
 	#ifdef MACVERSION
+    
+        unsigned long secs = convertDateTimeToSeconds(day, month, year, hour, minute, second) + kCFAbsoluteTimeIntervalSince1904;
 
-		DateTimeRec date;
-		unsigned long secs;
-		
-		if (year < 100) { /*use script manager's StringToDate heuristic -- pg 188 in § docs*/
-			
-			long thisyear, lcentury;
-			
-			GetTime (&date);
-			
-			thisyear = date.year % 100;
-			
-			lcentury = date.year - thisyear;
-			
-			if ((thisyear <= 10) && (year >= 90)) /*assume last century*/
-				lcentury -= 100;
-			else
-				if ((thisyear >= 90) && (year <= 10)) /*assume next century*/
-					lcentury += 100;
-			
-			year += lcentury;
-			}
-		
-		clearbytes (&date, sizeof (date));
-		
-		date.day = day;
-		
-		date.month = month;
-		
-		date.year = year;
-		
-		date.hour = hour;
-		
-		date.minute = minute;
-		
-		date.second = second;
-		
-		DateToSeconds (&date, &secs);
 	#endif
 
 	#ifdef WIN95VERSION
@@ -1013,22 +958,10 @@ long datetimetoseconds (short day, short month, short year, short hour, short mi
 void secondstodatetime (long secs, short *day, short *month, short *year, short *hour, short *minute, short *second) {
 	
 	#ifdef MACVERSION
-
-		DateTimeRec date;
-		
-		SecondsToDate (secs, &date);
-		
-		*day = date.day;
-		
-		*month = date.month;
-		
-		*year = date.year;
-		
-		*hour = date.hour;
-		
-		*minute = date.minute;
-		
-		*second = date.second;
+    
+        CFAbsoluteTime timeInterval = ((uint32_t) secs) - kCFAbsoluteTimeIntervalSince1904;
+        
+        convertSecondsToDateTime(timeInterval, day, month, year, hour, minute, second);
 	#endif
 
 	#ifdef WIN95VERSION
@@ -1058,12 +991,9 @@ void secondstodatetime (long secs, short *day, short *month, short *year, short 
 void secondstodayofweek (long secs, short *dayofweek) {
 	
 	#ifdef MACVERSION
-
-		DateTimeRec date;
-		
-		SecondsToDate (secs, &date);
-		
-		*dayofweek = date.dayOfWeek;
+    
+        CFAbsoluteTime timeInterval = ((uint32_t)secs) - kCFAbsoluteTimeIntervalSince1904;
+        *dayofweek = convertSecondsToDayOfWeek(timeInterval);
 	#endif
 
 	#ifdef WIN95VERSION
@@ -1142,30 +1072,11 @@ unsigned long nextmonth(unsigned long date) {
 	*/
 	
 	#ifdef MACVERSION
+    
+        CFAbsoluteTime timeInterval = date - kCFAbsoluteTimeIntervalSince1904;
+        CFAbsoluteTime incrementedTime = incrementDateByMonth(timeInterval, 1);
 
-		DateTimeRec daterec;
-		short maxday;
-		
-		SecondsToDate (date, &daterec);
-		
-		if (daterec.month < 12) {
-			++daterec.month;
-			}
-		else {
-			daterec.month = 1;
-			++daterec.year;
-			}
-		
-		maxday = daysInMonth(daterec.month, daterec.year);
-		
-		if (daterec.day > maxday)
-			daterec.day = maxday;
-		
-		fixdate (&daterec);
-
-		DateToSeconds (&daterec, &date);
-
-		return (date);
+		return (incrementedTime + kCFAbsoluteTimeIntervalSince1904);
 	#endif
 
 	#ifdef WIN95VERSION
@@ -1201,18 +1112,11 @@ unsigned long nextmonth(unsigned long date) {
 
 unsigned long nextyear(unsigned long date) {
 	#ifdef MACVERSION
+    
+        CFAbsoluteTime timeInterval = date - kCFAbsoluteTimeIntervalSince1904;
+        CFAbsoluteTime incrementedTime = incrementDateByYear(timeInterval, 1);
 
-		DateTimeRec daterec;
-		
-		SecondsToDate (date, &daterec);
-		
-		++daterec.year;
-
-		fixdate (&daterec);
-
-		DateToSeconds (&daterec, &date);
-
-		return (date);
+		return (incrementedTime + kCFAbsoluteTimeIntervalSince1904);
 	#endif
 
 	#ifdef WIN95VERSION
@@ -1241,30 +1145,11 @@ unsigned long prevmonth(unsigned long date) {
 	*/
 	
 	#ifdef MACVERSION
+    
+        CFAbsoluteTime timeInterval = date - kCFAbsoluteTimeIntervalSince1904;
+        CFAbsoluteTime incrementedTime = incrementDateByMonth(timeInterval, -1);
 
-		DateTimeRec daterec;
-		short maxday;
-		
-		SecondsToDate (date, &daterec);
-		
-		if (daterec.month > 1) {
-			--daterec.month;
-			}
-		else {
-			daterec.month = 12;
-			--daterec.year;
-			}
-
-		maxday = daysInMonth(daterec.month, daterec.year);
-		
-		if (daterec.day > maxday)
-			daterec.day = maxday;
-		
-		fixdate (&daterec);
-
-		DateToSeconds (&daterec, &date);
-
-		return (date);
+		return (incrementedTime + kCFAbsoluteTimeIntervalSince1904);
 	#endif
 
 	#ifdef WIN95VERSION
@@ -1300,18 +1185,11 @@ unsigned long prevmonth(unsigned long date) {
 
 unsigned long prevyear(unsigned long date) {
 	#ifdef MACVERSION
+    
+        CFAbsoluteTime timeInterval = date - kCFAbsoluteTimeIntervalSince1904;
+        CFAbsoluteTime incrementedTime = incrementDateByYear(timeInterval, 1);
 
-		DateTimeRec daterec;
-		
-		SecondsToDate (date, &daterec);
-		
-		--daterec.year;
-
-		fixdate (&daterec);
-
-		DateToSeconds (&daterec, &date);
-
-		return (date);
+		return (incrementedTime + kCFAbsoluteTimeIntervalSince1904);
 	#endif
 
 	#ifdef WIN95VERSION
@@ -1335,20 +1213,12 @@ unsigned long prevyear(unsigned long date) {
 
 unsigned long firstofmonth(unsigned long date) {
 	#ifdef MACVERSION
+    
+        CFAbsoluteTime timeInterval = date - kCFAbsoluteTimeIntervalSince1904;
+        CFAbsoluteTime newTime = getFirstDayOfMonth(timeInterval);
+        
+        return newTime + kCFAbsoluteTimeIntervalSince1904;
 
-		DateTimeRec daterec;
-		
-		SecondsToDate (date, &daterec);
-		
-		daterec.day  = 1;
-
-		daterec.hour = 0;
-		daterec.minute = 0;
-		daterec.second = 0;
-
-		DateToSeconds (&daterec, &date);
-
-		return (date);
 	#endif
 
 	#ifdef WIN95VERSION
@@ -1375,20 +1245,12 @@ unsigned long firstofmonth(unsigned long date) {
 
 unsigned long lastofmonth(unsigned long date) {
 	#ifdef MACVERSION
+    
+        CFAbsoluteTime timeInterval = date - kCFAbsoluteTimeIntervalSince1904;
+        CFAbsoluteTime newTime = getLastDayOfMonth(timeInterval);
+        
+        return newTime + kCFAbsoluteTimeIntervalSince1904;
 
-		DateTimeRec daterec;
-		
-		SecondsToDate (date, &daterec);
-		
-		daterec.day  = daysInMonth(daterec.month, daterec.year);
-
-		daterec.hour = 0;
-		daterec.minute = 0;
-		daterec.second = 0;
-
-		DateToSeconds (&daterec, &date);
-
-		return (date);
 	#endif
 
 	#ifdef WIN95VERSION
@@ -1414,11 +1276,20 @@ unsigned long lastofmonth(unsigned long date) {
 	} /*lastofmonth*/
 
 
+#define DATE_STRING(date, bs, format) \
+    CFLocaleRef locale = CFLocaleCopyCurrent();\
+    CFDateFormatterRef formatter = CFDateFormatterCreate(kCFAllocatorDefault, locale, format, kCFDateFormatterNoStyle);\
+    CFAbsoluteTime timeInterval = date - kCFAbsoluteTimeIntervalSince1904;\
+    CFStringRef dateString = CFDateFormatterCreateStringWithAbsoluteTime(kCFAllocatorDefault, formatter, timeInterval);\
+    CFStringGetPascalString(dateString, bs, sizeof(bigstring), kCFStringEncodingMacRoman);\
+    CFRelease(dateString);\
+    CFRelease(formatter);\
+    CFRelease(locale);\
+
+
 void shortdatestring (unsigned long date, bigstring bs) {
 	#ifdef MACVERSION
-		//Code change by Timothy Paustian Sunday, June 25, 2000 9:48:03 PM
-		//Updated for carbon
-		DateString (date, shortDate, bs, nil);
+        DATE_STRING(date, bs, kCFDateFormatterShortStyle)
 	#endif
 
 	#ifdef WIN95VERSION
@@ -1428,9 +1299,7 @@ void shortdatestring (unsigned long date, bigstring bs) {
 
 void longdatestring (unsigned long date, bigstring bs) {
 	#ifdef MACVERSION
-		//Code change by Timothy Paustian Sunday, June 25, 2000 9:48:20 PM
-		//Updated for Carbon
-		DateString (date, longDate, bs, nil);
+        DATE_STRING(date, bs, kCFDateFormatterLongStyle)
 	#endif
 
 	#ifdef WIN95VERSION
@@ -1440,9 +1309,7 @@ void longdatestring (unsigned long date, bigstring bs) {
 
 void abbrevdatestring (unsigned long date, bigstring bs) {
 	#ifdef MACVERSION
-		//Code change by Timothy Paustian Sunday, June 25, 2000 9:48:36 PM
-		//updated for carbon
-		DateString (date, abbrevDate, bs, nil);
+        DATE_STRING(date, bs, kCFDateFormatterMediumStyle)
 	#endif
 
 	#ifdef WIN95VERSION

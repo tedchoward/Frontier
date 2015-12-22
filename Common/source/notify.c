@@ -38,7 +38,7 @@
 #include "versions.h"
 
 
-
+#pragma pack(2)
 typedef struct tyiconfamily {
 	
 	Handle hicl1, hicl4, hicl8, hmskl;
@@ -47,6 +47,7 @@ typedef struct tyiconfamily {
 	
 	long unknown1, unknown2;
 	} tyiconfamily, **hdliconfamily;
+#pragma options align=reset
 
 
 boolean notifyuser (bigstring bsmessage) {

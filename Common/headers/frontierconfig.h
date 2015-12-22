@@ -69,7 +69,7 @@
 
 #define typeunknown '\?\?\?\?'
 
-
+#pragma pack(2)
 typedef struct tyconfigrecord {
 
 	short flhorizscroll; /*window has horiz scrollbar?*/
@@ -122,7 +122,7 @@ typedef struct tyconfigrecord {
 	
 	Rect defaultwindowrect; /*new windows come up in this spot*/
 	} tyconfigrecord, *ptrconfigrecord, **hdlconfigrecord;
-
+#pragma options align=reset
 
 /*global variables*/
 

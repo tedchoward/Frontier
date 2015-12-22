@@ -1248,11 +1248,12 @@ boolean listdeletevalue (tyvaluerecord *vlist, bigstring bsname, register tyvalu
 	return (fl);
 	} /*listdeletevalue*/
 
-
+#pragma pack(2)
 typedef struct tylangvisitlistinfo {
 	ptrvoid refcon;
 	langvisitlistvaluescallback visit;
 	} tylangvisitlistinfo;
+#pragma options align=reset
 
 
 static boolean langvisitlistvaluesvisit (Handle hdata, ptrstring bskey, ptrvoid refcon) {

@@ -42,13 +42,14 @@
 
 #define maxnesteddialogs 3
 
+#pragma pack(2)
 typedef struct tydialogglobals {
 	
 	hdltreenode hcode; /*itemhit callback function call code tree*/
 	
 	DialogPtr pdialog; /*the dialog itself*/
 	} tydialogglobals;
-
+#pragma options align=reset
 
 DialogPtr langmodaldialog = nil;
 

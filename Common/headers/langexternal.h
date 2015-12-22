@@ -84,7 +84,7 @@ typedef enum tyexternalid { /*11/17/90 DW: order determines sort order when view
 	ctexternalprocessors
 	} tyexternalid;
 
-
+#pragma pack(2)
 typedef struct typrocessorcallbacks { /*this structure isn't currently used*/
 	
 	callback loadroutine;
@@ -115,11 +115,13 @@ typedef struct typrocessorcallbacks { /*this structure isn't currently used*/
 	
 	long processorrefcon;
 	} typrocessorcallbacks, *ptrprocessorcallbacks;
+#pragma options align=reset
 
 /*
 	11/15/01 dmb: added flags for various external types so they can use this record,
 	without having to add a bunch of macros to preserve existing code.
 */
+#pragma pack(2)
 typedef struct tyexternalvariable {
 	
 	unsigned short id;	/*tyexternalid*/
@@ -154,7 +156,7 @@ typedef struct tyexternalvariable {
 
 #endif
 	} tyexternalvariable, *ptrexternalvariable, **hdlexternalvariable;
-
+#pragma options align=reset
 
 typedef hdlexternalvariable hdlexternalhandle;
 
@@ -167,7 +169,7 @@ typedef struct tyexternalhandle {
 	} tyexternalhandle, *ptrexternalhandle, **hdlexternalhandle;
 */
 
-
+#pragma pack(2)
 typedef struct tydiskexternalhandle {
 	
 	short versionnumber; /*this structure is stored on disk*/
@@ -183,7 +185,7 @@ typedef struct tydiskexternalhandle {
 	#endif
 
 	} tydiskexternalhandle;
-
+#pragma options align=reset
 #define externaldiskversionnumber 1
 
 

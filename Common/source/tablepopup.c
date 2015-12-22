@@ -53,7 +53,6 @@
 #include "tablestructure.h"
 #include "tableverbs.h"
 #include "claybrowser.h"
-#include "iowaverbs.h" /*3/18/92 dmb*/
 
 
 
@@ -78,13 +77,14 @@
 #define firstefptype outlinevaluetype
 
 
-
+#pragma pack(2)
 typedef struct tykindmenuinfo {
 	
 	//byte *bsitem; /*the text of the menu item*/
 	
 	tyvaluetype type; /*the associated value type*/
 	} tykindmenuinfo;
+#pragma options align=reset
 
 
 static tykindmenuinfo kindmenuinfo [] = { /*menu contents, in menu order*/
@@ -645,12 +645,13 @@ boolean tablesetitemname (hdlhashtable ht, bigstring bsname, hdlheadrecord headn
 	} /*tablesetitemname*/
 
 
-
+#pragma pack(2)
 typedef struct typopupkindinfo {
 	bigstring bstitle;
 	short zoomkind;
 	boolean flkindok;
 	} typopupkindinfo;
+#pragma options align=reset
 
 
 #ifdef MACVERSION
@@ -825,12 +826,14 @@ boolean tablepopupkinddialog (void) {
 	} /*tablepopupkinddialog*/
 
 
+#pragma pack(2)
 typedef struct tyancestor {
 	
 	hdlhashtable htable;
 	
 	hdlhashnode hnode;
 	} tyancestor, tyancestry [];
+#pragma options align=reset
 
 
 typedef tyancestry *ptrancestry, **hdlancestry;

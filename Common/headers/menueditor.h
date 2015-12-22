@@ -84,6 +84,7 @@
 	#define cmdkeypopupwidth 60
 #endif
 
+#pragma pack(2)
 typedef struct tysavedmenuinfo { 
 	
 	short versionnumber; /*this structure is saved on disk*/
@@ -108,6 +109,7 @@ typedef struct tysavedmenuinfo {
 	
 	char waste [42]; /*room to grow*/
 	} tysavedmenuinfo;
+#pragma options align=reset
 
 #ifdef MACVERSION
 	#define flautosmash_mask 0x8000
@@ -117,6 +119,7 @@ typedef struct tysavedmenuinfo {
 	#define flautosmash_mask 0x0080
 #endif
 
+#pragma pack(2)
 typedef struct tyOLD42savedmenuinfo { 
 	
 	short versionnumber; /*this structure is saved on disk*/
@@ -141,19 +144,23 @@ typedef struct tyOLD42savedmenuinfo {
 	
 	char waste [42]; /*room to grow*/
 	} tyOLD42savedmenuinfo;
+#pragma options align=reset
 
 
 #if flruntime
 
+#pragma pack(2)
 	typedef struct tymenurecord {
 		
 		hdloutlinerecord menuoutline; /*the display of the menubar structure*/
 		
 		tysavedmenuinfo menuinfo;
 		} tymenurecord, *ptrmenurecord, **hdlmenurecord;
+#pragma options align=reset
 
 #else
 
+#pragma pack(2)
 	typedef struct tymenurecord {
 		
 		hdloutlinerecord menuoutline; /*the display of the menubar structure*/
@@ -206,9 +213,11 @@ typedef struct tyOLD42savedmenuinfo {
 		
 		long menurefcon; /*for use by application, menueditor doesn't touch it, but menuverbs does*/
 		} tymenurecord, *ptrmenurecord, **hdlmenurecord;
+#pragma options align=reset
 	
 #endif
 
+#pragma pack(2)
 typedef struct tylinkeditem {
 	
 	dbaddress adrlink;
@@ -225,6 +234,7 @@ typedef struct tymenuiteminfo { /*linked into the refcon handle in each node*/
 	
 	tylinkeditem linkedscript;
 	} tymenuiteminfo, *ptrmenuiteminfo, **hdlmenuiteminfo;
+#pragma options align=reset
 
 
 /*globals*/

@@ -392,7 +392,7 @@ so the odb calls mess with out global data. so we need to protect it.
 
 #endif
 
-
+#pragma pack(2)
 typedef struct tyodblistrecord {
 	
 	struct tyodblistrecord **hnext;
@@ -406,7 +406,7 @@ typedef struct tyodblistrecord {
 	odbref odb;
 	
 	} tyodbrecord, *ptrodbrecord, **hdlodbrecord;
-
+#pragma options align=reset
 
 static hdlodbrecord hodblist = nil;
 

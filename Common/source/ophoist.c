@@ -32,13 +32,14 @@
 #include "opinternal.h"
 
 
-
+#pragma pack(2)
 typedef struct tyrestorablehoist {
 	
 	hdlheadrecord hhoisted; /*the head that was hoisted, whose subs are the summits*/
 	
 	hdlheadrecord hcursor; /*the location of the bar cursor*/
 	} tyrestorablehoist;
+#pragma options align=reset
 	
 
 tyrestorablehoist savedhoists [cthoists]; /*for saving and restoring the hoist state*/

@@ -56,12 +56,12 @@
 
 #if !defined (fliowa) && !defined (iowaRuntime)
 
-static boolean langruncard (hdltreenode hparam1, boolean flmodal, tyvaluerecord *vreturned) {
+boolean langruncard (hdltreenode hparam1, boolean flmodal, tyvaluerecord *vreturned) {
 	
 	return (false);
 	} /*langruncard*/
 
-static boolean langismodalcard (hdltreenode hparam1, tyvaluerecord *vreturned) {
+boolean langismodalcard (hdltreenode hparam1, tyvaluerecord *vreturned) {
 	
 	return (false);
 	} /*langismodalcard*/

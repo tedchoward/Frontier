@@ -49,15 +49,15 @@
 #define	APP_MAJOR_VERSION			10
 #define	APP_MAJOR_VERSION_BCD		0x10	/* major version in BCD notation */
 
-#define	APP_SUB_VERSION			1
+#define	APP_SUB_VERSION             2
 #define	APP_MINOR_VERSION			0
-#define	APP_SUBMINOR_VERSION_BCD		0x10	/* sub and minor version in BCD notation */
+#define	APP_SUBMINOR_VERSION_BCD	0x20	/* sub and minor version in BCD notation */
 
-#define	APP_STAGE_CODE				0x60	/* dev = 0x20, alpha = 0x40, beta = 0x60, final = 0x80 */
-#define	APP_REVISION_LEVEL			21	/* for non-final releases only */
-#define	APP_BUILD_NUMBER			21	/* increment by one for every release, final or not */
+#define	APP_STAGE_CODE				0x20	/* dev = 0x20, alpha = 0x40, beta = 0x60, final = 0x80 */
+#define	APP_REVISION_LEVEL			1      /* for non-final releases only */
+#define	APP_BUILD_NUMBER			1      /* increment by one for every release, final or not */
 
-#define	APP_VERSION_STRING			"10.1b21"
+#define	APP_VERSION_STRING			"10.2d1"
 
 
 
@@ -69,11 +69,11 @@
 	/* version info for RADIO targets (formerly known as PIKE) */
 	
 	#define	APPNAME					"Radio"
-	#define	APP_COPYRIGHT_HOLDER		"UserLand Software, Inc"
+	#define	APP_COPYRIGHT_HOLDER	"UserLand Software, Inc"
 	
 	#define	bs_APP_NAME				BIGSTRING ("\x05" "Radio")
-	#define	bs_APP_SLOGAN				BIGSTRING ("\x2b" "The power of Web publishing on your desktop")
-	#define	bs_APP_COPYRIGHT			BIGSTRING ("\x23" "© " APP_COPYRIGHT_FROM "-" APP_COPYRIGHT_TILL " UserLand Software, Inc.")
+	#define	bs_APP_SLOGAN			BIGSTRING ("\x2b" "The power of Web publishing on your desktop")
+	#define	bs_APP_COPYRIGHT		BIGSTRING ("\x23" "© " APP_COPYRIGHT_FROM "-" APP_COPYRIGHT_TILL " UserLand Software, Inc.")
 	#define	bs_APP_URL				BIGSTRING ("\x26" "http://frontierkernel.sourceforge.net/")
 
 #else
@@ -82,11 +82,11 @@
 	
 	#define	APPNAME					"OPML"
 	
-	#define	APP_COPYRIGHT_HOLDER		"Scripting News, Inc"
+	#define	APP_COPYRIGHT_HOLDER	"Scripting News, Inc"
 	
 	#define	bs_APP_NAME				BIGSTRING ("\x04" "OPML")
-	#define	bs_APP_SLOGAN				BIGSTRING ("\x25" "Powerful OPML editing on your desktop")
-	#define	bs_APP_COPYRIGHT			BIGSTRING ("\x20" "© " APP_COPYRIGHT_FROM "-" APP_COPYRIGHT_TILL " Scripting News, Inc.")
+	#define	bs_APP_SLOGAN			BIGSTRING ("\x25" "Powerful OPML editing on your desktop")
+	#define	bs_APP_COPYRIGHT		BIGSTRING ("\x20" "© " APP_COPYRIGHT_FROM "-" APP_COPYRIGHT_TILL " Scripting News, Inc.")
 	#define	bs_APP_URL				BIGSTRING ("\x18" "http://support.opml.org/")
 		
 #endif
@@ -95,11 +95,11 @@
 	/* version info for FRONTIER targets */
 	
 	#define	APPNAME					"Frontier"
-	#define	APP_COPYRIGHT_HOLDER		"Frontier Kernel Project"
+	#define	APP_COPYRIGHT_HOLDER	"Frontier Kernel Project"
 	
 	#define	bs_APP_NAME				BIGSTRING ("\x08" "Frontier")
-	#define	bs_APP_SLOGAN				BIGSTRING ("\x25" "Powerful cross-platform web scripting")
-	#define	bs_APP_COPYRIGHT			BIGSTRING ("\x23" "© " APP_COPYRIGHT_FROM "-" APP_COPYRIGHT_TILL " Frontier Kernel Project")
+	#define	bs_APP_SLOGAN			BIGSTRING ("\x25" "Powerful cross-platform web scripting")
+	#define	bs_APP_COPYRIGHT		BIGSTRING ("\x23" "© " APP_COPYRIGHT_FROM "-" APP_COPYRIGHT_TILL " Frontier Kernel Project")
 	#define	bs_APP_URL				BIGSTRING ("\x26" "http://frontierkernel.sourceforge.net/")
 		
 #endif
@@ -108,5 +108,5 @@
 #define	APP_COPYRIGHT		APP_COPYRIGHT_FROM "-" APP_COPYRIGHT_TILL " " APP_COPYRIGHT_HOLDER
 
 #define	APPNAME_SHORT		APPNAME	/* 2006-02-04 aradke */
-#define	APPNAME_TM		APPNAME	/* 2005-01-12 aradke: app names no longer include trademark character */
+#define	APPNAME_TM          APPNAME	/* 2005-01-12 aradke: app names no longer include trademark character */
 

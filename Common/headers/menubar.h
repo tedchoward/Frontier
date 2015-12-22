@@ -48,7 +48,7 @@
 
 #define ctmenubarstack 50 /*maximum number of menus stacked in each menubar outline*/
 
-
+#pragma pack(2)
 typedef struct tymenubarstackelement {
 
 	hdlmenu hmenu; /*the menu data structure itself*/
@@ -65,8 +65,9 @@ typedef struct tymenubarstackelement {
 	
 	short ctbaseitems; /*if flbuiltin, number of items that were already there*/
 	} tymenubarstackelement;
+#pragma options align=reset
 
-
+#pragma pack(2)
 typedef struct tymenubarstack {
 	
 	struct tymenubarstack **hnext; /*linked list of these*/
@@ -85,8 +86,10 @@ typedef struct tymenubarstack {
 	
 	tymenubarstackelement stack [ctmenubarstack];
 	} tymenubarstack, *ptrmenubarstack, **hdlmenubarstack;
+#pragma options align=reset
 
 
+#pragma pack(2)
 typedef struct tymenubarlist {
 	
 	hdlmenubarstack hfirst; /*linked list of these*/
@@ -97,18 +100,21 @@ typedef struct tymenubarlist {
 	
 	byte menubitmap [(maxmenus / 8) + 1]; /*assume eight bits per byte*/
 	} tymenubarlist, *ptrmenubarlist, **hdlmenubarlist;
+#pragma options align=reset
 
 
 typedef boolean (*menubarchangedcallback)(hdloutlinerecord);
 
 typedef byte (*menubarcmdkeycallback)(hdlheadrecord);
 
+#pragma pack(2)
 typedef struct tymenubarcallbacks {
 	
 	menubarchangedcallback menubarchangedroutine;
 	
 	menubarcmdkeycallback getcmdkeyroutine;
 	} tymenubarcallbacks;
+#pragma options align=reset
 
 
 /*globals*/

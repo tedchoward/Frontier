@@ -36,6 +36,7 @@
 
 /*typedefs*/
 
+#pragma pack(2)
 typedef struct tymemoryconfig {
 	
 	long minstacksize; /*minimum stack space required*/
@@ -48,6 +49,7 @@ typedef struct tymemoryconfig {
 	
 	long reserved;
 	} tymemoryconfig, **hdlmemoryconfig;
+#pragma options align=reset
 
 
 /*globals*/
