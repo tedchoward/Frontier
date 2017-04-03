@@ -35,7 +35,7 @@
 
 #define TARGET_API_MAC_OS8		0	/* see ConditionalMacros.h */
 #define TARGET_API_MAC_CARBON	1
-#define TARGET_API_MAC_OSX		0
+//#define TARGET_API_MAC_OSX		1
 
 #define FRONTIER_FRAMEWORK_INCLUDES	1
 

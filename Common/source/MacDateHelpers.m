@@ -273,7 +273,7 @@ CFAbsoluteTime incrementDateByDay(CFAbsoluteTime time, int16_t days) {
     NSDateComponents *components = [[NSDateComponents alloc] init];
     [components setDay:days];
     
-    NSDate *newDate = [calendar dateByAddingComponents:components toDate:(NSDate *)date options:NULL];
+    NSDate *newDate = [calendar dateByAddingComponents:components toDate:(NSDate *)date options:0];
     [components release];
     CFRelease(date);
     
@@ -294,7 +294,7 @@ CFAbsoluteTime incrementDateByMonth(CFAbsoluteTime time, int16_t months) {
     NSDateComponents *components = [[NSDateComponents alloc] init];
     [components setMonth:months];
     
-    NSDate *newDate = [calendar dateByAddingComponents:components toDate:(NSDate *)date options:NULL];
+    NSDate *newDate = [calendar dateByAddingComponents:components toDate:(NSDate *)date options:0];
     [components release];
     CFRelease(date);
     
@@ -314,7 +314,7 @@ CFAbsoluteTime incrementDateByYear(CFAbsoluteTime time, int16_t years) {
     NSDateComponents *components = [[NSDateComponents alloc] init];
     [components setYear:years];
     
-    NSDate *newDate = [calendar dateByAddingComponents:components toDate:(NSDate *)date options:NULL];
+    NSDate *newDate = [calendar dateByAddingComponents:components toDate:(NSDate *)date options:0];
     [components release];
     CFRelease(date);
     

@@ -33,8 +33,17 @@
 #include "shellprivate.h"
 #include "frontierstart.h"
 
-int main (void) {
-	
+#ifdef TARGET_API_MAC_OSX
+#import <Foundation/Foundation.h>
+#import <AppKit/NSApplication.h>
+#endif
+
+int main (int argc, const char *argv[]) {
+#ifdef TARGET_API_MAC_OSX
+    NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
+    NSApplicationLoad();
+#endif
+    
 	boolean fl;
 	
 	if (!shellinit ())
@@ -48,6 +57,10 @@ int main (void) {
 	
 	if (fl)
 		shellmaineventloop ();
+        
+#ifdef TARGET_API_MAC_OSX
+    [pool release];
+#endif
 	
 	return (0);
 	} /*mainstart*/

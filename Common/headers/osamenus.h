@@ -67,10 +67,6 @@
 
 extern OSAError osageterror (void); /*osacomponent.c*/
 
-extern THz osasethomezone (hdlcomponentglobals);
-	
-extern THz osasetclientzone (hdlcomponentglobals);
-
 extern pascal OSErr osadefaultactiveproc (long);
 
 extern pascal OSAError osaDispose (hdlcomponentglobals, OSAID);

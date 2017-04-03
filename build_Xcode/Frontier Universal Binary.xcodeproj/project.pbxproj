@@ -233,7 +233,7 @@
 		65059A9709968C1400410571 /* menu.c in Sources */ = {isa = PBXBuildFile; fileRef = 651525FC072BFC6700411831 /* menu.c */; };
 		65059A9809968C1400410571 /* memory.c in Sources */ = {isa = PBXBuildFile; fileRef = 651525FB072BFC6700411831 /* memory.c */; };
 		65059A9909968C1400410571 /* md5.c in Sources */ = {isa = PBXBuildFile; fileRef = 651525FA072BFC6700411831 /* md5.c */; };
-		65059A9A09968C1400410571 /* main.c in Sources */ = {isa = PBXBuildFile; fileRef = 651525F9072BFC6700411831 /* main.c */; };
+		65059A9A09968C1400410571 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 651525F9072BFC6700411831 /* main.m */; };
 		65059A9B09968C1400410571 /* mac.c in Sources */ = {isa = PBXBuildFile; fileRef = 651525E6072BFC6700411831 /* mac.c */; };
 		65059A9C09968C1400410571 /* launch.c in Sources */ = {isa = PBXBuildFile; fileRef = 651525F8072BFC6700411831 /* launch.c */; };
 		65059A9D09968C1400410571 /* services.c in Sources */ = {isa = PBXBuildFile; fileRef = 651525E8072BFC6700411831 /* services.c */; };
@@ -450,7 +450,7 @@
 		65152705072BFC6800411831 /* menu.c in Sources */ = {isa = PBXBuildFile; fileRef = 651525FC072BFC6700411831 /* menu.c */; };
 		65152706072BFC6800411831 /* memory.c in Sources */ = {isa = PBXBuildFile; fileRef = 651525FB072BFC6700411831 /* memory.c */; };
 		65152707072BFC6800411831 /* md5.c in Sources */ = {isa = PBXBuildFile; fileRef = 651525FA072BFC6700411831 /* md5.c */; };
-		65152708072BFC6800411831 /* main.c in Sources */ = {isa = PBXBuildFile; fileRef = 651525F9072BFC6700411831 /* main.c */; };
+		65152708072BFC6800411831 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 651525F9072BFC6700411831 /* main.m */; };
 		65152709072BFC6800411831 /* mac.c in Sources */ = {isa = PBXBuildFile; fileRef = 651525E6072BFC6700411831 /* mac.c */; };
 		6515270A072BFC6800411831 /* launch.c in Sources */ = {isa = PBXBuildFile; fileRef = 651525F8072BFC6700411831 /* launch.c */; };
 		6515270B072BFC6800411831 /* services.c in Sources */ = {isa = PBXBuildFile; fileRef = 651525E8072BFC6700411831 /* services.c */; };
@@ -817,8 +817,8 @@
 		9F3A12DB183A6B8D007ACBD2 /* mutex.h in Headers */ = {isa = PBXBuildFile; fileRef = 9F3A12D9183A6B8D007ACBD2 /* mutex.h */; };
 		9F88F48E1BD99AB600C32CFB /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 9F88F4911BD99AB600C32CFB /* Localizable.strings */; };
 		9F88F48F1BD99AB600C32CFB /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 9F88F4911BD99AB600C32CFB /* Localizable.strings */; };
-		9FAA176D1B824B7F00416D78 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9FAA176C1B824B7F00416D78 /* Cocoa.framework */; };
-		9FAA17B41B82592900416D78 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9FAA176C1B824B7F00416D78 /* Cocoa.framework */; };
+		9FB8B6911D33F9DE00FCDAA9 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9FB8B6901D33F9DE00FCDAA9 /* Cocoa.framework */; };
+		9FB8B6921D33F9FA00FCDAA9 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9FB8B6901D33F9DE00FCDAA9 /* Cocoa.framework */; };
 		9FE775141C28A0A8003D6066 /* MacDateHelpers.m in Sources */ = {isa = PBXBuildFile; fileRef = 9FE775131C28A0A8003D6066 /* MacDateHelpers.m */; };
 		9FE775151C28A0A8003D6066 /* MacDateHelpers.m in Sources */ = {isa = PBXBuildFile; fileRef = 9FE775131C28A0A8003D6066 /* MacDateHelpers.m */; };
 		9FE775181C28A156003D6066 /* MacDateHelpers.h in Headers */ = {isa = PBXBuildFile; fileRef = 9FE775171C28A108003D6066 /* MacDateHelpers.h */; };
@@ -913,7 +913,7 @@
 		651525F6072BFC6700411831 /* icon.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = icon.c; path = ../Common/source/icon.c; sourceTree = SOURCE_ROOT; };
 		651525F7072BFC6700411831 /* kb.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = kb.c; path = ../Common/source/kb.c; sourceTree = SOURCE_ROOT; };
 		651525F8072BFC6700411831 /* launch.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = launch.c; path = ../Common/source/launch.c; sourceTree = SOURCE_ROOT; };
-		651525F9072BFC6700411831 /* main.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = main.c; path = ../Common/source/main.c; sourceTree = SOURCE_ROOT; };
+		651525F9072BFC6700411831 /* main.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; name = main.m; path = ../Common/source/main.m; sourceTree = SOURCE_ROOT; };
 		651525FA072BFC6700411831 /* md5.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = md5.c; path = ../Common/source/md5.c; sourceTree = SOURCE_ROOT; };
 		651525FB072BFC6700411831 /* memory.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = memory.c; path = ../Common/source/memory.c; sourceTree = SOURCE_ROOT; };
 		651525FC072BFC6700411831 /* menu.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = menu.c; path = ../Common/source/menu.c; sourceTree = SOURCE_ROOT; };
@@ -1246,7 +1246,7 @@
 		9F3A12D6183A6B60007ACBD2 /* mutex.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = mutex.c; path = ../Common/source/mutex.c; sourceTree = SOURCE_ROOT; };
 		9F3A12D9183A6B8D007ACBD2 /* mutex.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = mutex.h; path = ../Common/headers/mutex.h; sourceTree = SOURCE_ROOT; };
 		9F88F4901BD99AB600C32CFB /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/Localizable.strings; sourceTree = "<group>"; };
-		9FAA176C1B824B7F00416D78 /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = /System/Library/Frameworks/Cocoa.framework; sourceTree = "<absolute>"; };
+		9FB8B6901D33F9DE00FCDAA9 /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = System/Library/Frameworks/Cocoa.framework; sourceTree = SDKROOT; };
 		9FE775131C28A0A8003D6066 /* MacDateHelpers.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = MacDateHelpers.m; path = ../Common/source/MacDateHelpers.m; sourceTree = "<group>"; };
 		9FE775171C28A108003D6066 /* MacDateHelpers.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = MacDateHelpers.h; path = ../Common/headers/MacDateHelpers.h; sourceTree = "<group>"; };
 		DEA58AB307435A9500BAB271 /* Frontier.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; name = Frontier.icns; path = ../resources/Frontier/Frontier.icns; sourceTree = SOURCE_ROOT; };
@@ -1257,7 +1257,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				9FAA17B41B82592900416D78 /* Cocoa.framework in Frameworks */,
+				9FB8B6911D33F9DE00FCDAA9 /* Cocoa.framework in Frameworks */,
 				65059B3809968C1400410571 /* Carbon.framework in Frameworks */,
 				65059B3909968C1400410571 /* ApplicationServices.framework in Frameworks */,
 				65059B3A09968C1400410571 /* QuickTime.framework in Frameworks */,
@@ -1269,6 +1269,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				9FB8B6921D33F9FA00FCDAA9 /* Cocoa.framework in Frameworks */,
 				651527B9072BFE0E00411831 /* Carbon.framework in Frameworks */,
 				6515294B072C000500411831 /* ApplicationServices.framework in Frameworks */,
 				6515294D072C000900411831 /* QuickTime.framework in Frameworks */,
@@ -1276,7 +1277,6 @@
 				5D8F1EF00C25B4AB00927B97 /* libmysqlclient.a in Frameworks */,
 				5D8F1EF10C25B4AB00927B97 /* libz.a in Frameworks */,
 				9F0927D51AB09A8200016C2B /* libsqlite3.0.dylib in Frameworks */,
-				9FAA176D1B824B7F00416D78 /* Cocoa.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1494,7 +1494,7 @@
 				651525F6072BFC6700411831 /* icon.c */,
 				651525F7072BFC6700411831 /* kb.c */,
 				651525F8072BFC6700411831 /* launch.c */,
-				651525F9072BFC6700411831 /* main.c */,
+				651525F9072BFC6700411831 /* main.m */,
 				651525FB072BFC6700411831 /* memory.c */,
 				651525FC072BFC6700411831 /* menu.c */,
 				651525FD072BFC6700411831 /* mouse.c */,
@@ -1771,6 +1771,7 @@
 		651527B7072BFE0E00411831 /* External Frameworks and Libraries */ = {
 			isa = PBXGroup;
 			children = (
+				9FB8B6901D33F9DE00FCDAA9 /* Cocoa.framework */,
 				6515294A072C000500411831 /* ApplicationServices.framework */,
 				651527B8072BFE0E00411831 /* Carbon.framework */,
 				5D8F1EEE0C25B4AB00927B97 /* libmysqlclient.a */,
@@ -1778,7 +1779,6 @@
 				5D8F1EEF0C25B4AB00927B97 /* libz.a */,
 				6515294C072C000900411831 /* QuickTime.framework */,
 				9F0927D41AB09A8200016C2B /* libsqlite3.0.dylib */,
-				9FAA176C1B824B7F00416D78 /* Cocoa.framework */,
 			);
 			name = "External Frameworks and Libraries";
 			sourceTree = "<group>";
@@ -2422,7 +2422,7 @@
 		65152560072BFC6500411831 /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastUpgradeCheck = 0710;
+				LastUpgradeCheck = 0830;
 			};
 			buildConfigurationList = 5D4E1D460AAA0B1400DF6890 /* Build configuration list for PBXProject "Frontier Universal Binary" */;
 			compatibilityVersion = "Xcode 3.2";
@@ -2631,7 +2631,7 @@
 				65059A9709968C1400410571 /* menu.c in Sources */,
 				65059A9809968C1400410571 /* memory.c in Sources */,
 				65059A9909968C1400410571 /* md5.c in Sources */,
-				65059A9A09968C1400410571 /* main.c in Sources */,
+				65059A9A09968C1400410571 /* main.m in Sources */,
 				65059A9B09968C1400410571 /* mac.c in Sources */,
 				65059A9C09968C1400410571 /* launch.c in Sources */,
 				65059A9D09968C1400410571 /* services.c in Sources */,
@@ -2842,7 +2842,7 @@
 				65152705072BFC6800411831 /* menu.c in Sources */,
 				65152706072BFC6800411831 /* memory.c in Sources */,
 				65152707072BFC6800411831 /* md5.c in Sources */,
-				65152708072BFC6800411831 /* main.c in Sources */,
+				65152708072BFC6800411831 /* main.m in Sources */,
 				65152709072BFC6800411831 /* mac.c in Sources */,
 				6515270A072BFC6800411831 /* launch.c in Sources */,
 				6515270B072BFC6800411831 /* services.c in Sources */,
@@ -3219,8 +3219,25 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				ENABLE_TESTABILITY = YES;
-				MACOSX_DEPLOYMENT_TARGET = 10.4;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 10.6;
 				ONLY_ACTIVE_ARCH = YES;
 				SDKROOT = macosx10.6;
 			};
@@ -3230,7 +3247,24 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
-				MACOSX_DEPLOYMENT_TARGET = 10.4;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 10.6;
 				SDKROOT = macosx10.6;
 			};
 			name = Deployment;

@@ -218,7 +218,7 @@ typedef unsigned char Str255[258];
 
 /*#define nil 0L*/
 
-#define private static /*use "private" when a value or routine should not be seen outside the file it appears in*/
+/*#define private static */ /*use "private" when a value or routine should not be seen outside the file it appears in*/
 
 
 /*types*/

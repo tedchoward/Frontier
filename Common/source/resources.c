@@ -587,7 +587,7 @@ boolean saveresourcehandle (const ptrfilespec fs, ResType type, short id, bigstr
 static for push/popresourcefile
 */
 
-private short newrnum, oldrnum;
+static short newrnum, oldrnum;
 
 #ifdef MACVERSION
 
