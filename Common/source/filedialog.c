@@ -732,7 +732,11 @@ boolean sfdialog ( tysfverb sfverb, bigstring bsprompt, ptrsftypelist filetypes,
 		
 		options.clientName = CFStringCreateWithCString (kCFAllocatorDefault, APPNAME_SHORT, kCFStringEncodingMacRoman);
 
-		options.message = CFStringCreateWithPascalString (kCFAllocatorDefault, prompt, kCFStringEncodingMacRoman);
+    if (prompt != nil) {
+      options.message = CFStringCreateWithPascalString (kCFAllocatorDefault, prompt, kCFStringEncodingMacRoman);
+    } else {
+      options.message = CFSTR("");
+    }
 		
 		disablelangerror();
 		
@@ -859,7 +863,7 @@ boolean sfdialog ( tysfverb sfverb, bigstring bsprompt, ptrsftypelist filetypes,
 		context.filtertypes = filetypes;
 		context.filecreator = filecreator;
 		
-		if ((dialogtype == sfgetfileid)) { // translate into a type list NavServices understands
+		if (dialogtype == sfgetfileid) { // translate into a type list NavServices understands
 		
 			if ((filetypes != NULL) || (filecreator != kNavGenericSignature)) {
 				
