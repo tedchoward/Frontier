@@ -681,11 +681,7 @@ boolean browserpredrag (hdlheadrecord *htarget, tydirection *dragdir) {
 		
 		opcleartmpbits ();
 		
-		#ifdef MACVERSION
 			parsedialogstring (BIGSTRING ("\x3b" "Can’t move “^0” here because it would replace its ancestor."), bsunsafe, nil, nil, nil, bsmsg);
-		#else
-			parsedialogstring (BIGSTRING ("\x3b" "Can't move \"^0\" here because it would replace its ancestor."), bsunsafe, nil, nil, nil, bsmsg);
-		#endif
 		
 		alertdialog (bsmsg);
 		

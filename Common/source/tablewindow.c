@@ -294,9 +294,6 @@ static void tableverbresize (void) {
 		
 		tablerecalccolwidths (false); // 5.0a5 dmb: don't insist on recalc
 				
-		#ifdef WIN95VERSION
-			opupdatenow ();
-		#endif
 		}
 	} /*tableverbresize*/
 
@@ -600,16 +597,6 @@ static boolean tableverbkeystroke (void) {
 
 	boolean flcmdkey = keyboardstatus.flcmdkey;
 	
-	#ifdef WIN95VERSION
-		if ((keyboardstatus.chkb == chbackspace) && (keyboardstatus.flshiftkey || !opistextmode ())) {
-			
-			if (keyboardstatus.flshiftkey || !opmotionkey (left, 1, false))	//can't move to parent*/
-				if (!tablesurface ())			//can't surface to parent
-					shellouch ();
-			
-			return (true);
-			}
-	#endif
 	
 	if ((keyboardstatus.chkb == chreturn) && opistextmode ()) {
 		

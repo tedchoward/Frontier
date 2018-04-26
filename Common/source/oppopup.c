@@ -67,15 +67,7 @@ static boolean oppopupruncallbackscript (tyvaluerecord *val);
 
 short currmenuid;
 
-#ifdef WIN95VERSION
 
-	static unsigned long popupstartticks = 0; /*7.0b27 PBS: when menu was started. Used to make sure menu appeared minimum amount of ticks.*/
-
-	static unsigned long popupticksminimum = 20; /*7.0b27 PBS*/
-
-#endif
-
-#if MACVERSION
 
 #pragma pack(2)
 	typedef struct typopupinfo {
@@ -96,12 +88,10 @@ short currmenuid;
 
 	typopupmenustack popupmenustack;
 
-#endif
 
 
 static void oppopupresetmenustack (void) {
 	
-	#if MACVERSION
 
 		popupmenustack.currstackitem = -1;
 		
@@ -109,7 +99,6 @@ static void oppopupresetmenustack (void) {
 		
 		popupmenustack.popupmenus [0].id = 0;
 	
-	#endif
 	} /*oppopupresetmenustack*/
 
 
@@ -119,7 +108,6 @@ static void oppopupdisposemenusinstack (void) {
 	Dispose and delete all menus in popup menu stack.
 	*/
 	
-	#if MACVERSION
 	
 		short ix = popupmenustack.currstackitem;
 		short i, id;
@@ -143,13 +131,11 @@ static void oppopupdisposemenusinstack (void) {
 				disposemenu (hmenu);
 			} /*for*/
 			
-	#endif
 	} /*oppopupdisposemenusinstack*/
 
 
 static boolean oppopupaddtomenustack (hdlmenu hmenu, short idsubmenu) {
 
-	#if MACVERSION
 
 		short ix = popupmenustack.currstackitem + 1;
 		
@@ -162,7 +148,6 @@ static boolean oppopupaddtomenustack (hdlmenu hmenu, short idsubmenu) {
 		
 		popupmenustack.popupmenus [ix].id = idsubmenu;
 	
-	#endif
 
 	return (true);	
 	} /*oppopupaddtomenustack*/
@@ -179,9 +164,7 @@ static void oppopupinsertsubmenu (hdlmenu hmenu, short itemnumber, hdlheadrecord
 
 	hsubmenu = Newmenu (idsubmenu, BIGSTRING (""));
 	
-#if MACVERSION
 	InsertMenu (hsubmenu, -1);
-#endif
 	
 	opbuildpopupmenu (hnode, hsubmenu);
 	
@@ -380,12 +363,6 @@ static boolean oppopupselect (hdlmenu hmenu, short itemselected) {
 	if (oppopupmenubar == nil)
 		return (false);
 
-	#ifdef WIN95VERSION /*7.0b27 PBS: enforce minimum menu display time.*/
-
-		if ((gettickcount () - popupticksminimum) < popupstartticks)
-			return (false);
-
-	#endif
 
 	oppopupmenubar = nil;
 
@@ -454,15 +431,6 @@ boolean oprmousedown (Point pt, tyclickflags flags) {
 
 	linerect.left = pt.h - 5; /*relative to cursor*/
 
-	#ifdef WIN95VERSION /*7.0b26 PBS: wait for the mouse to come back up -- Windows UI standard*/
-
-		while (rightmousestilldown ()) {
-
-			true;
-			} /*while*/
-
-		popupstartticks = gettickcount ();
-	#endif
 	
 	popupmenuhit (linerect, false, &opfillpopup, &oppopupselect);
 	

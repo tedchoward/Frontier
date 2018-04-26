@@ -28,12 +28,10 @@
 #include "frontier.h"
 #include "standard.h"
 
-#ifdef MACVERSION
 
 	#include <land.h>
 	#include "mac.h"
 
-#endif
 
 #include "error.h"
 #include "memory.h"
@@ -42,11 +40,8 @@
 #include "launch.h"
 #include "threads.h"
 
-#if TARGET_API_MAC_CARBON == 1 /*PBS 03/14/02: AE OS X fix.*/
 	#include "aeutils.h"
-#endif
 
-#ifdef MACVERSION
 
 #pragma pack(2)
 typedef struct typrocessvisitinfo { /*2002-11-14 AR: for providing context to visitprocesses callbacks*/
@@ -71,851 +66,17 @@ typedef struct typrocessvisitinfo *typrocessvisitinfoptr;
 	(x)->fsprocess = NULL;		\
 	} while(0)
 
-#endif
 
 tylaunchcallbacks launchcallbacks = {nil};
 
 #define maxwait 120 /*never wait more than 2 seconds for a stransition to occur*/
 
 
-#ifdef WIN95VERSION
-typedef struct tyWINPROCESSINFO
-	{
-	struct tyWINPROCESSINFO ** next;
-	bigstring ModName;
-	bigstring ExeName;
-	DWORD processID;
-	HWND windowHandle;
-	boolean isWindowVisible;
-	} WINPROCESSINFO;
 
-typedef struct tyWINPROCESSHEADER
-	{
-	long count;
-	long platform;			//0 for win95; 1 for winNT
-	long windowCount;
-	HWND windowList[1024];
-	WINPROCESSINFO ** head;
-	} WINPROCESSHEADER;
-
-
-// Type definitions for pointers to call tool help functions. 
-typedef BOOL (WINAPI *MODULEWALK)(HANDLE hSnapshot, LPMODULEENTRY32 lpme);
-typedef BOOL (WINAPI *PROCESSWALK)(HANDLE hSnapshot, LPPROCESSENTRY32 lppe); 
-typedef HANDLE (WINAPI *CREATESNAPSHOT)(DWORD dwFlags, DWORD th32ProcessID); 
- 
-// File scope globals. These pointers are declared because of the need 
-// to dynamically link to the functions.  They are exported only by 
-// the Windows 95 kernel. Explicitly linking to them will make this 
-// application unloadable in Microsoft(R) Windows NT(TM) and will 
-// produce an ugly system dialog box. 
-static CREATESNAPSHOT pCreateToolhelp32Snapshot = NULL; 
-static MODULEWALK  pModule32First  = NULL;
-static MODULEWALK  pModule32Next   = NULL;
-static PROCESSWALK pProcess32First = NULL; 
-static PROCESSWALK pProcess32Next  = NULL; 
- 
-// Function that initializes tool help functions. 
-static BOOL InitToolhelp32 (void) 
-	{ 
-    BOOL   bRet  = FALSE; 
-    HANDLE hKernel = NULL; 
- 
-	if ((pCreateToolhelp32Snapshot != NULL) && 
-		(pModule32First != NULL) && (pModule32Next != NULL) &&
-		(pProcess32First != NULL) && (pProcess32Next != NULL))
-		return (true);  /*already done*/
-
-
-    // Obtain the module handle of the kernel to retrieve addresses of 
-    // the tool helper functions. 
-    hKernel = GetModuleHandle("KERNEL32.DLL"); 
- 
-    if (hKernel) { 
-        pCreateToolhelp32Snapshot = (CREATESNAPSHOT)GetProcAddress(hKernel, "CreateToolhelp32Snapshot"); 
- 
-        pModule32First  = (MODULEWALK)GetProcAddress(hKernel, "Module32First");
-        pModule32Next   = (MODULEWALK)GetProcAddress(hKernel, "Module32Next");
-
-        pProcess32First = (PROCESSWALK)GetProcAddress(hKernel, "Process32First"); 
-        pProcess32Next  = (PROCESSWALK)GetProcAddress(hKernel, "Process32Next"); 
- 
-        // All addresses must be non-NULL to be successful. 
-        // If one of these addresses is NULL, one of 
-        // the needed lists cannot be walked. 
-        bRet =  pProcess32First && 
-                pProcess32Next &&
-				pModule32First &&
-				pModule32Next &&
-                pCreateToolhelp32Snapshot; 
-		} 
-    else 
-        bRet = FALSE; // could not even get the module handle of kernel 
- 
-    return bRet; 
-	} /*InitToolhelp32*/
-
-
-// Type definitions for pointers to call PSAPI. 
-typedef BOOL (WINAPI *PSAPIENUMPROCESS)(DWORD * lpidProcess, DWORD cb, DWORD * cbNeeded);
-typedef BOOL (WINAPI *PSAPIENUMPROCESSMODULES)(HANDLE hProcess, HMODULE * lphModule, DWORD cb, LPDWORD lpcbNeeded); 
-typedef DWORD (WINAPI *PSAPIGETMODULENAME)(HANDLE hProcess, HMODULE hModule, LPSTR lpName, DWORD nSize); 
- 
-// File scope globals. These pointers are declared because of the need 
-// to dynamically link to the functions.  They are exported only by 
-// the Windows NT PSAPI.DLL. Explicitly linking to them will make this 
-// application unloadable in Microsoft(R) Windows 95(TM) and will 
-// produce an ugly system dialog box. 
-static PSAPIENUMPROCESS pEnumProcesses = NULL; 
-static PSAPIENUMPROCESSMODULES  pEnumProcessModules  = NULL;
-static PSAPIGETMODULENAME pGetModuleBaseName   = NULL;
-static PSAPIGETMODULENAME pGetModuleFileNameEx = NULL; 
-
-// Function that initializes Process Apps functions. 
-static BOOL InitToolhelpNT (void) 
-	{ 
-    BOOL   bRet  = FALSE; 
-    HANDLE hKernel = NULL; 
- 
-	if ((pEnumProcesses != NULL) && 
-		(pEnumProcessModules != NULL) && (pGetModuleBaseName != NULL) &&
-		(pGetModuleFileNameEx != NULL))
-		return (true);  /*already done*/
-
-
-    // Obtain the module handle of the kernel to retrieve addresses of 
-    // the tool helper functions. 
-    hKernel = LoadLibrary("PSAPI.DLL"); 
- 
-    if (hKernel){ 
-        pEnumProcesses = (PSAPIENUMPROCESS)GetProcAddress(hKernel, "EnumProcesses"); 
-        pEnumProcessModules  = (PSAPIENUMPROCESSMODULES)GetProcAddress(hKernel, "EnumProcessModules");
-
-        pGetModuleBaseName = (PSAPIGETMODULENAME)GetProcAddress(hKernel, "GetModuleBaseNameA"); 
-        pGetModuleFileNameEx  = (PSAPIGETMODULENAME)GetProcAddress(hKernel, "GetModuleFileNameExA"); 
- 
-        // All addresses must be non-NULL to be successful. 
-        // If one of these addresses is NULL, one of 
-        // the needed lists cannot be walked. 
-        bRet =  pEnumProcesses && 
-                pEnumProcessModules &&
-				pGetModuleBaseName &&
-				pGetModuleFileNameEx; 
-    } 
-    else 
-        bRet = FALSE; // could not even get the module handle of kernel 
- 
-    return bRet; 
-} 
-
-
-
-//
-//  FUNCTION: GetModuleNameFromExe(LPCSTR, LPSTR, WORD)
-//
-//  PURPOSE:  Retrieves the module name of a Win16 app or DLL from its
-//            excutable file.
-//
-//  PARAMETERS:
-//    szFileName   - Executable file (.EXE or .DLL) from which to retrieve 
-//                   module name
-//    szModuleName - Points to buffer that receives the module name
-//    cbLen        - Specifies maximum length of szModuleName including NULL
-//
-//  RETURN VALUE:
-//    TRUE if the module name was succesfully copied into szModuleName.
-//    FALSE if it wasn't killed.
-//
-//  COMMENTS:
-//    Works for Win16 New Executable files only.
-//
-
-static BOOL GetModuleNameFromExe (LPCSTR szFileName, LPSTR szModuleName, WORD cbLen)
-{
-
-#ifdef _MSC_VER
-
-    BOOL              bResult      = FALSE;
-    HANDLE            hFile        = NULL;
-    HANDLE            hFileMapping = NULL;
-    PIMAGE_OS2_HEADER pNEHdr       = NULL;
-    PIMAGE_DOS_HEADER pDosExeHdr   = NULL;
-
-    // Open the file as read-only.  (This file may be opened already by the
-    // system if it is an application or DLL that is currently loaded.)
-    // Create a read-only file mapping and map a read-only view of the file.
-    // If we can't open the file for some reason, then return FALSE.
-  
-    hFile = CreateFile(szFileName,
-                       GENERIC_READ,
-                       FILE_SHARE_READ|FILE_SHARE_WRITE,
-                       NULL,
-                       OPEN_EXISTING,
-                       0,
-                       NULL);
- 
-    if (hFile == INVALID_HANDLE_VALUE)
-        return FALSE;
- 
-    hFileMapping = CreateFileMapping(hFile, NULL, PAGE_READONLY, 0, 0, NULL);
-    if (hFileMapping == NULL)
-    {
-        verify (CloseHandle(hFile));
-        return FALSE;
-    }
- 
-    pDosExeHdr = (PIMAGE_DOS_HEADER)MapViewOfFile (hFileMapping,
-                                                   FILE_MAP_READ,
-                                                   0,
-                                                   0,
-                                                   0);
-    if (!pDosExeHdr)
-    {
-        verify (CloseHandle(hFileMapping));
-        verify (CloseHandle(hFile));
-        return FALSE;
-    }
- 
-    __try
-    {
-        // Go to the beginning of the NE header.
-        pNEHdr =
-           (PIMAGE_OS2_HEADER)((LPSTR)pDosExeHdr + pDosExeHdr -> e_lfanew);
- 
-        // Check to make sure that the file has DOS and NE EXE headers
-        if (pDosExeHdr -> e_magic == IMAGE_DOS_SIGNATURE
-            && pNEHdr -> ne_magic == IMAGE_OS2_SIGNATURE)
-        {
-            lstrcpyn (szModuleName, (LPSTR)pNEHdr + pNEHdr -> ne_restab +1,  
-                      min((BYTE)*((LPSTR)pNEHdr + pNEHdr -> ne_restab) + 1, 
-                          cbLen));
-            bResult = TRUE;
-        }
-        else
-            bResult = FALSE;
- 
-    }
-    __except (EXCEPTION_EXECUTE_HANDLER)
-    {
-        // If an access violation occurs in the try block, we know the file
-        // is not a NE file because it is too small to have a NE header, or
-        // the offset of the NE header isn't close to being correct.
-        bResult = FALSE;
-    }
- 
-    // Clean up file mapping, all views of file mapping, and close the
-    // file.
-    UnmapViewOfFile(pDosExeHdr);
-    verify (CloseHandle(hFileMapping));
-    verify (CloseHandle(hFile));
- 
-    return bResult;
-
-#else
-	
-	/*
-	2002-11-10 AR: The Metrowerks Codewarrior compiler for x86 does not appear
-	to support the __try/__except statements used in the implementation above.
-	Since it is probably not a good idea to use the same file-mapped i/o code
-	as above without being able to catch access violations, we simply rewrote
-	the code to use simple SetFilePointer and ReadFile calls.
-	*/
-
-	BOOL				bResult		= FALSE;
-	HANDLE				hFile		= NULL;
-	IMAGE_DOS_HEADER	sDosHeader;
-	IMAGE_OS2_HEADER	sOs2Header;
-	DWORD				nResult;
-	BYTE				nLength;
-	long				nBytesToRead;
-	long				nBytesRead;	
-
-	// Open the file as read-only.  (This file may be opened already by the
-	// system if it is an application or DLL that is currently loaded.)
-	// If we can't open the file for some reason, then return FALSE.
-
-	hFile = CreateFile(szFileName,
-						GENERIC_READ,
-						FILE_SHARE_READ|FILE_SHARE_WRITE,
-						NULL,
-						OPEN_EXISTING,
-						0,
-						NULL);
- 
-	if (hFile == INVALID_HANDLE_VALUE)
-		return FALSE;
-
-	/* read IMAGE_DOS_HEADER from beginning of file */
-	
-	nBytesToRead = sizeof(sDosHeader);
-	
-	nResult = ReadFile (hFile, &sDosHeader, nBytesToRead, &nBytesRead, NULL);
-	
-	if (!nResult || nBytesRead != nBytesToRead)
-		goto EXIT;
-
-	/* make sure the data has got the magic signature */
-	
-	if (sDosHeader.e_magic != IMAGE_DOS_SIGNATURE)
-		goto EXIT;
-	
-	/* read IMAGE_OS2_HEADER */
-	
-	nResult = SetFilePointer (hFile, sDosHeader.e_lfanew, NULL, FILE_BEGIN);
-	
-	if (nResult == INVALID_SET_FILE_POINTER)
-		goto EXIT;
-	
-	nBytesToRead = sizeof(sOs2Header);
-
-	nResult = ReadFile (hFile, &sOs2Header, nBytesToRead, &nBytesRead, NULL);
-	
-	if (!nResult || nBytesRead != nBytesToRead)
-		goto EXIT;
-
-	/* make sure the data has got the magic signature */
-	
-	if (sOs2Header.ne_magic != IMAGE_OS2_SIGNATURE)
-		goto EXIT;
-	
-	/* read module name from file, first byte is length of name excl. trailing nil */
-	
-	nResult = SetFilePointer (hFile, sDosHeader.e_lfanew + sOs2Header.ne_restab, NULL, FILE_BEGIN);
-	
-	if (nResult == INVALID_SET_FILE_POINTER)
-		goto EXIT;
-	
-	nBytesToRead = 1;
-
-	nResult = ReadFile (hFile, &nLength, nBytesToRead, &nBytesRead, NULL);
-	
-	if (!nResult || nBytesRead != nBytesToRead)
-		goto EXIT;
-
-	nBytesToRead = min(nLength+1, cbLen);
-	
-	nResult = ReadFile (hFile, &szModuleName, nBytesToRead, &nBytesRead, NULL);
-	
-	if (!nResult || nBytesRead != nBytesToRead)
-		goto EXIT;
-	
-	bResult = TRUE;
-
-EXIT:
-
-	verify (CloseHandle(hFile));
-
-	return bResult;
-
-#endif
-}
- 
-
-//
-//  FUNCTION: GetProcessModule(DWORD, DWORD, LPMODULEENTRY32, DWORD)
-//
-//  PURPOSE:  Given a Process ID and module ID, return its module information.
-//
-//  PARAMETERS:
-//    dwPID      - ID of process that owns the module we want information 
-//                 about.
-//    dwModuleID - ToolHelp32 ID of the module within the process
-//    lpMe32     - Structure to return data about the module we want
-//    cbMe32     - Size of the buffer pointed to by lpMe32--to make sure we 
-//                 don't copy too much data into lpMe32.
-//
-//  RETURN VALUE:
-//    TRUE if it returns information about the specifed module.
-//    FALSE if it could not enumerate the modules in the process, or the
-//          module is not found in the process.
-//
-//  COMMENTS:
-//
-
-static BOOL GetProcessModule (DWORD           dwPID, 
-                       DWORD           dwModuleID, 
-                       LPMODULEENTRY32 lpMe32, 
-                       DWORD           cbMe32)
-{   
-    BOOL          bRet        = FALSE;
-    BOOL          bFound      = FALSE;
-    HANDLE        hModuleSnap = NULL;
-    MODULEENTRY32 me32        = {0};
-
-    // Take a snapshot of all modules in the specified process.
-    hModuleSnap = pCreateToolhelp32Snapshot(TH32CS_SNAPMODULE, dwPID);
-    if (hModuleSnap == (HANDLE)-1)
-        return (FALSE);
-
-    // Size of the MODULEENTRY32 structure must be initialized before use!
-    me32.dwSize = sizeof(MODULEENTRY32);
-
-    // Walk the module list of the process and find the module we are 
-    // interested in.  Then, copy the information to the buffer pointed to
-    // by lpMe32 so that we can return it to the caller.
-    if (pModule32First(hModuleSnap, &me32))
-    {
-        do 
-        {
-            if (me32.th32ModuleID == dwModuleID)
-            {
-                CopyMemory (lpMe32, &me32, cbMe32);
-                bFound = TRUE;
-            }
-        }
-        while (!bFound && pModule32Next(hModuleSnap, &me32));
-
-        bRet = bFound;   // If this sets bRet to FALSE, then dwModuleID 
-                         // no longer exsists in the specified process.
-    }
-    else
-        bRet = FALSE;    // Couldn't walk module list.
-
-    // Don't forget to clean up the snapshot object...
-    verify (CloseHandle (hModuleSnap));
-
-    return (bRet);
-	} /*GetProcessModule*/
-
-
-static WINPROCESSINFO ** getprocessinfofrompid (WINPROCESSHEADER * ph, DWORD pid) {
-	WINPROCESSINFO ** entry;
-
-	entry = ph->head;
-
-	while (entry != NULL) {
-		if ((**entry).processID == pid)
-			return (entry);
-
-		entry = (**entry).next;
-		}
-
-	return (NULL);
-	} /*getprocessinfofrompid*/
-
-
-//static WINPROCESSINFO ** getprocessinfofromhwnd (WINPROCESSHEADER * ph, HWND hwnd) {
-//	WINPROCESSINFO ** entry;
-//
-//	entry = ph->head;
-//
-//	while (entry != NULL) {
-//		if ((**entry).windowHandle == hwnd)
-//			return (entry);
-//
-//		entry = (**entry).next;
-//		}
-//
-//	return (NULL);
-//	} /*getprocessinfofromhwnd*/
-//
-
-static WINPROCESSINFO ** getprocessinfofromwintitle (WINPROCESSHEADER * ph, bigstring bsname) {
-	WINPROCESSINFO ** entry;
-	char wintitle[258];
-	short i;
-	DWORD pid;
-
-	releasethreadglobals ();
-
-	for (i = 0; i < ph->windowCount; i++) {
-		if (GetWindowText (ph->windowList[i], stringbaseaddress (wintitle), 256)) {
-			setstringlength (wintitle, strlen(stringbaseaddress(wintitle)));
-
-			if (equalidentifiers (wintitle, bsname)) {
-				GetWindowThreadProcessId (ph->windowList[i], &pid);
-
-				entry = getprocessinfofrompid (ph, pid);
-
-				if (entry != NULL) {
-					(**entry).windowHandle = ph->windowList[i];
-					(**entry).isWindowVisible = IsWindowVisible (ph->windowList[i]);
-					}
-
-				grabthreadglobals ();
-				return (entry);
-				}
-			}
-		}
-
-	grabthreadglobals ();
-	return (NULL);
-	} /*getprocessinfofromwintitle*/
-
-
-static WINPROCESSINFO ** getprocessinfofrommodname (WINPROCESSHEADER * ph, bigstring bsname) {
-	WINPROCESSINFO ** entry;
-
-	entry = ph->head;
-
-	while (entry != NULL) {
-		if (equalidentifiers ((**entry).ModName, bsname))
-			return (entry);
-
-		entry = (**entry).next;
-		}
-
-	return (NULL);
-	} /*getprocessinfofrommodname*/
-
-
-static WINPROCESSINFO ** getprocessinfofromexepath (WINPROCESSHEADER * ph, bigstring bspath) {
-	WINPROCESSINFO ** entry;
-
-	entry = ph->head;
-
-	while (entry != NULL) {
-		if (equalidentifiers ((**entry).ExeName, bspath))
-			return (entry);
-
-		entry = (**entry).next;
-		}
-
-	return (NULL);
-	} /*getprocessinfofromexepath*/
-
-
-static BOOL CALLBACK winHandleEnumProc (HWND hwnd, LPARAM lparam) {
-	WINPROCESSHEADER * listheader;
-	DWORD pid;
-	WINPROCESSINFO ** pe;
-
-	listheader = (WINPROCESSHEADER *) lparam;
-
-//	releasethreadglobals ();
-		
-	if (listheader->windowCount < 1024) {
-		listheader->windowList[listheader->windowCount] = hwnd;
-
-		++listheader->windowCount;
-		}
-
-	GetWindowThreadProcessId (hwnd, &pid);
-
-	pe = getprocessinfofrompid (listheader, pid);
-
-	if (pe != NULL) {
-		if ((**pe).windowHandle != NULL) {
-			if (! (**pe).isWindowVisible) {
-				if (IsWindowVisible (hwnd)) {
-					(**pe).windowHandle = hwnd;
-
-					(**pe).isWindowVisible = true;
-					}
-				}
-			}
-		else {
-			(**pe).isWindowVisible = IsWindowVisible (hwnd);
-
-			(**pe).windowHandle = hwnd;
-			}
-		}
-
-//	grabthreadglobals ();
-
-	return (true);  /* keep enumerating */
-	} /*winHandleEnumProc*/
-
-
-static WINPROCESSINFO ** addentrytolist (WINPROCESSHEADER * ph) {
-
-	WINPROCESSINFO * entry;
-	WINPROCESSINFO ** entryHandle;
-
-	newhandle (sizeof(WINPROCESSINFO), (Handle *)&entryHandle);
-
-	assert (entryHandle);
-
-	lockhandle ((Handle)entryHandle);
-
-	entry = *entryHandle;
-
-	ph->count += 1;
-
-	entry->next = ph->head;
-	entry->windowHandle = NULL;
-	entry->isWindowVisible = false;
-
-	ph->head = entryHandle;
-
-	unlockhandle ((Handle)entryHandle);
-
-	return (entryHandle);
-	} /*addentrytolist*/
-
-
-static void addprocesstolist (WINPROCESSHEADER * ph, PROCESSENTRY32 * pe) {
-
-	WINPROCESSINFO * entry;
-	WINPROCESSINFO ** entryHandle;
-	MODULEENTRY32 me32;
-	BOOL bGotModule;
-
-	entryHandle = addentrytolist (ph);
-
-	assert (entryHandle);
-
-	lockhandle ((Handle)entryHandle);
-
-	entry = *entryHandle;
-
-	entry->processID = pe->th32ProcessID;
-
-	copyctopstring (pe->szExeFile, entry->ExeName);
-
-    bGotModule = GetProcessModule(pe->th32ProcessID, 
-                                  pe->th32ModuleID, 
-                                  &me32, 
-                                  sizeof(MODULEENTRY32));
-	if (bGotModule)
-		{
-
-		// Test to see if the app is a Win16 or Win32 app.  If the
-		// file name returned in the PROCESSENTRY32 and MODULEENTRY32
-		// structures are equal, then we have a Win32 app, otherwise,
-		// we have a Win16 app.  
-
-		if (!lstrcmpi (pe->szExeFile, me32.szExePath))
-			{
-			// Win32 app, use MODULENETRY32 module name
-			copyctopstring(me32.szModule, entry->ModName);
-			}
-		else
-			{
-			// Win16 app, get module name out of EXE header of file
-			if (!GetModuleNameFromExe (pe->szExeFile, stringbaseaddress(entry->ModName),
-									   sizeof(entry->ModName) - 1))
-				{
-				// If we can't get the module name for some reason, at
-				// least put something in the module name.
-				copyctopstring(me32.szModule, entry->ModName);
-				}
-			else {
-				setstringlength (entry->ModName, strlen(stringbaseaddress(entry->ModName)));
-				}
-			}
-		}
-
-	unlockhandle ((Handle)entryHandle);
-	} /*addprocesstolist*/
-
-		
-static void cleanProcessHeader (WINPROCESSHEADER * ph) {
-
-	WINPROCESSINFO ** entry;
-	WINPROCESSINFO ** next;
-
-	entry = ph->head;
-
-	while (entry != NULL) {
-		next = (**entry).next;
-		disposehandle((Handle)entry);
-		entry = next;
-		}
-
-	ph->count = 0;
-	ph->windowCount = 0;
-	ph->head = NULL;
-	} /*cleanProcessHeader*/
-
-static void AddNTProcessInfo (WINPROCESSHEADER * listheader, DWORD processID) {
-    char szProcessName[MAX_PATH] = "unknown";
-    char szProcessPath[MAX_PATH] = "unknown";
-	WINPROCESSINFO * entry;
-	WINPROCESSINFO ** entryHandle;
-
-    // Get a handle to the process.
-
-    HANDLE hProcess = OpenProcess( PROCESS_QUERY_INFORMATION |
-                                   PROCESS_VM_READ,
-                                   FALSE, processID );
-
-    // Get the process name.
-
-    if (hProcess)
-		{
-        HMODULE hMod;
-        DWORD cbNeeded;
-
-        if (pEnumProcessModules (hProcess, &hMod, sizeof(hMod), &cbNeeded) )
-			{
-            pGetModuleBaseName( hProcess, hMod, szProcessName, 
-                               sizeof(szProcessName) );
-            pGetModuleFileNameEx( hProcess, hMod, szProcessPath, 
-                               sizeof(szProcessPath) );
-			}
-		else {
-			if (processID == 2) { /* This is the System process */
-				strcpy (szProcessName, "System.exe");
-				strcpy (szProcessPath, "System.exe");
-				}
-			}
-
-	    verify (CloseHandle( hProcess ));
-		}
-	else {
-		if (processID == 0) { /* This is the System Idle process */
-			processID = -2;  /* We alter it so zero is not used */
-			strcpy (szProcessName, "System Idle Process");
-			strcpy (szProcessPath, "Idle.exe");
-			}
-		}
-
-	entryHandle = addentrytolist (listheader);
-
-	assert (entryHandle);
-
-	lockhandle ((Handle)entryHandle);
-
-	entry = *entryHandle;
-
-	entry->processID = processID;
-	copyctopstring (szProcessPath, entry->ExeName);
-	copyctopstring (szProcessName, entry->ModName);
-
-	unlockhandle ((Handle)entryHandle);
-	} /*AddNTProcessInfo*/
-
-static boolean enumWinNTProcesses (WINPROCESSHEADER * listheader) {
-
-    // Get the list of process identifiers.
-
-    DWORD aProcesses[1024], cbNeeded, cProcesses;
-    unsigned int i;
-	boolean res;
-
-	res = false;
-
-	if (InitToolhelpNT() == false)
-		return (false);
-
- 	releasethreadglobals ();
-	if (pEnumProcesses (aProcesses, sizeof(aProcesses), &cbNeeded ) ) {
-
-		// Calculate how many process identifiers were returned.
-
-		cProcesses = cbNeeded / sizeof(DWORD);
-
-		// Add processes to list.
-
-		for ( i = 0; i < cProcesses; i++ )
-			AddNTProcessInfo(listheader, aProcesses[i]);
-
-
-		EnumWindows (winHandleEnumProc, (LPARAM)listheader);
-
-		res = true;
-		}
-
-	grabthreadglobals ();
-
-	return (res);
-	} /*enumWinNTProcesses*/
-
-
-static boolean enumWin95Processes (WINPROCESSHEADER * listheader) {
-
-	HANDLE snapHandle;
-	PROCESSENTRY32 pe;
-
-	if (InitToolhelp32() == false)
-		return (false);
-
-	snapHandle = pCreateToolhelp32Snapshot (TH32CS_SNAPPROCESS, 0);
-
-	if (snapHandle == (HANDLE) -1)
-		return (false);
-
-	if (snapHandle != NULL) {
-		pe.dwSize = sizeof(PROCESSENTRY32);
-
-		if (pProcess32First (snapHandle, &pe)) {
-
-			do {
-				addprocesstolist (listheader, &pe);
-				pe.dwSize = sizeof(PROCESSENTRY32);
-				}
-				while (pProcess32Next (snapHandle, &pe));
-
-			releasethreadglobals ();
-		
-			EnumWindows (winHandleEnumProc, (LPARAM)listheader);
-			
-			grabthreadglobals ();
-
-			verify (CloseHandle (snapHandle));
-			return (true);
-			}
-
-		verify (CloseHandle (snapHandle));
-		}
-
-	return (false);
-	} /*enumWin95Processes*/
-
-
-static boolean enumWinProcesses (WINPROCESSHEADER * listheader) {
-	OSVERSIONINFO vi;
-
-	listheader->count = 0;
-	listheader->windowCount = 0;
-	listheader->head = NULL;
-
-	vi.dwOSVersionInfoSize = sizeof (OSVERSIONINFO);
-
-	GetVersionEx (&vi);
-
-	if (vi.dwPlatformId == VER_PLATFORM_WIN32_NT) {
-		listheader->platform = 1;
-		return (enumWinNTProcesses (listheader));
-		}
-
-	listheader->platform = 0;
-	return (enumWin95Processes (listheader));
-	} /*enumWinProcesses*/
-
-#endif
-
-#ifdef MACVERSION
 
 	static boolean system7apprunning (OSType *, bigstring, typrocessid *);
 	
-#endif
 
-#ifdef WIN95VERSION
-
-	static boolean systemWinLaunch (const ptrfilespec fsapp, const ptrfilespec fsdoc, boolean flbringtofront) {
-		char appname[258];
-		char commandline [514];
-		STARTUPINFO si;
-	//	PROCESS_INFORMATION pi;
-
-
-		copystring (fsname (fsapp), appname);
-
-		nullterminate (appname);
-
-		if (fsdoc != nil)
-			copystring (fsname (fsdoc), commandline);
-		else
-			setemptystring (commandline);
-
-		nullterminate (commandline);
-
-		si.cb = sizeof(STARTUPINFO);
-		si.lpReserved = NULL;
-		si.lpDesktop = NULL;
-		si.lpTitle = NULL;
-		si.dwFlags = 0;
-		si.cbReserved2 = 0;
-		si.lpReserved2 = NULL;
-	//	return (CreateProcess (stringbaseaddress (appname), stringbaseaddress (commandline), NULL, NULL, false, CREATE_DEFAULT_ERROR_MODE,
-	//					NULL, NULL, &si, &pi));
-
-		return (ShellExecute (NULL, "open", stringbaseaddress (appname), stringbaseaddress (commandline), "", SW_SHOWNORMAL) > (HINSTANCE)32); 
-		}
-		
-#endif
 
 
 boolean launchapplication ( const ptrfilespec fsapp, const ptrfilespec fsdoc, boolean flbringtofront ) {
@@ -926,7 +87,6 @@ boolean launchapplication ( const ptrfilespec fsapp, const ptrfilespec fsdoc, bo
 	
 	setfserrorparam ( fsapp ); // in case error message takes a filename parameter
 	
-	#ifdef MACVERSION
 	
 		LSLaunchFSRefSpec launchspec;
 		FSRef fsrefapp, fsrefdoc;
@@ -959,18 +119,11 @@ boolean launchapplication ( const ptrfilespec fsapp, const ptrfilespec fsdoc, bo
 		
 		return ( false );
 	
-	#endif
 		
-	#ifdef WIN95VERSION
-	
-		return (systemWinLaunch (fsapp, fsdoc, flbringtofront));
-		
-	#endif
 	
 	} // launchapplication
 
 
-#ifdef MACVERSION
 
 	static boolean visitprocesses (boolean (*visitroutine) (typrocessvisitinfoptr, ProcessInfoRec *), typrocessvisitinfoptr visitinfo) {
 		
@@ -1003,9 +156,7 @@ boolean launchapplication ( const ptrfilespec fsapp, const ptrfilespec fsdoc, bo
 		return (true);
 		} /*visitprocesses*/
 	
-#endif
 
-#ifdef MACVERSION
 
 	static boolean matchprocess (bigstring bsprocess, ProcessInfoRec *processinfo) {
 		
@@ -1048,7 +199,6 @@ boolean launchapplication ( const ptrfilespec fsapp, const ptrfilespec fsdoc, bo
 		if (equalidentifiers (bsprocess, ( *processinfo ).processName))
 			return (true);
 		
-		#if TARGET_API_MAC_CARBON
 		
 			{
 			bigstring bsprocessminussuffix;
@@ -1064,7 +214,6 @@ boolean launchapplication ( const ptrfilespec fsapp, const ptrfilespec fsdoc, bo
 						return (true);
 			}
 		
-		#endif
 		
 		if (stringtoostype (bsprocess, &id))
 			return (id == ( *processinfo ).processSignature);
@@ -1072,10 +221,8 @@ boolean launchapplication ( const ptrfilespec fsapp, const ptrfilespec fsdoc, bo
 		return (false);
 		} // matchprocess
 	
-#endif
 
 
-#ifdef MACVERSION
 static boolean activateprocess (ProcessSerialNumber psn) {
 	
 	/*
@@ -1092,10 +239,6 @@ static boolean activateprocess (ProcessSerialNumber psn) {
 	
 	long startticks;
 	
-#if defined(TARGET_API_MAC_OS8) && (TARGET_API_MAC_OS8 == 1)
-	if (oserror (WakeUpProcess (&psn)))
-		return (false);
-#endif
 	
 	if (oserror (SetFrontProcess (&psn)))
 		return (false);
@@ -1125,10 +268,8 @@ static boolean activateprocess (ProcessSerialNumber psn) {
 	
 	return (true);
 	} /*activateprocess*/
-#endif
 
 
-#ifdef MACVERSION
 static boolean processactivatevisit (typrocessvisitinfoptr visitinfo, ProcessInfoRec *processinfo) {
 	
 	/*
@@ -1144,10 +285,8 @@ static boolean processactivatevisit (typrocessvisitinfoptr visitinfo, ProcessInf
 	
 	return (true); /*keep visiting*/
 	} /*processactivatevisit*/
-#endif
 
 
-#ifdef MACVERSION
 static boolean system7activate (bigstring bsprogram) {
 	
 	/*
@@ -1175,14 +314,10 @@ static boolean system7activate (bigstring bsprogram) {
 	
 	return (!visitprocesses (&processactivatevisit, &info));
 	} /*system7activate*/
-#endif
 
 
-#ifdef MACVERSION
 static boolean system6activate (bigstring bsprogram) {
-#	if TARGET_API_MAC_CARBON == 1
 #		pragma unused (bsprogram)
-#	endif
 
 #	ifdef flsystem6
 
@@ -1199,7 +334,6 @@ static boolean system6activate (bigstring bsprogram) {
 	
 	return (true);
 	} /*system6activate*/
-#endif
 
 boolean activateapplication (bigstring bsprogram) {
 	
@@ -1211,7 +345,6 @@ boolean activateapplication (bigstring bsprogram) {
 	has permission to set the foreground window.
 	*/
 	
-#ifdef MACVERSION
 	boolean flsystem7;
 	
 	//Code change by Timothy Paustian Friday, June 9, 2000 2:36:02 PM
@@ -1224,72 +357,10 @@ boolean activateapplication (bigstring bsprogram) {
 		return (system7activate (bsprogram));
 	else
 		return (system6activate (bsprogram));
-#endif
 
-#ifdef WIN95VERSION
-	WINPROCESSHEADER listheader;
-	WINPROCESSINFO ** entry;
-	boolean res;
-	int currthreadid, winthreadid;
-	HWND hcurrwnd;
-
-	res = false;
-
-	enumWinProcesses (&listheader);
-
-	if ((bsprogram == NULL) || (stringlength (bsprogram) == 0)) {
-		entry = getprocessinfofrompid (&listheader, GetCurrentProcessId());
-		}
-	else
-		{
-		entry = getprocessinfofrommodname (&listheader, bsprogram);
-
-		if (entry == NULL)
-			entry = getprocessinfofromwintitle (&listheader, bsprogram);
-
-		if (entry == NULL) {
-			entry = getprocessinfofromexepath (&listheader, bsprogram);
-			}
-		}
-
-	if (entry != NULL) {
-		WINDOWPLACEMENT wp;
-
-		releasethreadglobals();
-
-		wp.length = sizeof(WINDOWPLACEMENT);
-		if (GetWindowPlacement ((**entry).windowHandle, &wp))
-			if (wp.showCmd == SW_SHOWMINIMIZED) {
-				wp.showCmd = SW_RESTORE;
-				SetWindowPlacement ((**entry).windowHandle, &wp);
-				}
-
-		currthreadid = GetCurrentThreadId ();
-
-		hcurrwnd = GetForegroundWindow ();
-   
-		winthreadid = GetWindowThreadProcessId (hcurrwnd, nil);
-
-		if (currthreadid != winthreadid)
-
-			AttachThreadInput (currthreadid, winthreadid, true);
-
-		res = SetForegroundWindow((**entry).windowHandle);
-		
-		if (currthreadid != winthreadid)
-
-			AttachThreadInput (currthreadid, winthreadid, false);
-
-		grabthreadglobals();
-		}
-
-	cleanProcessHeader (&listheader);
-	return (res);
-#endif
 	} /*activateapplication*/
 
 
-#ifdef MACVERSION
 static boolean processcreatorvisit (typrocessvisitinfoptr visitinfo, ProcessInfoRec *processinfo) {
 	
 	if (processinfo->processSignature == visitinfo->idprocess) {
@@ -1324,11 +395,9 @@ static boolean processcreatorvisit (typrocessvisitinfoptr visitinfo, ProcessInfo
 		return (false); /*stop visiting*/
 		}
 	} /*processcreatorvisit*/
-#endif
 
 
 
-#ifdef MACVERSION
 static boolean system7apprunning (OSType *idapp, bigstring appname, typrocessid *psn) {
 
 	/*
@@ -1353,7 +422,6 @@ static boolean system7apprunning (OSType *idapp, bigstring appname, typrocessid 
 	
 	return (true);
 	} /*system7apprunning*/
-#endif
 
 
 #ifdef flsystem6
@@ -1369,7 +437,6 @@ static boolean system6apprunning (OSType *appid, bigstring appname) {
 
 boolean findrunningapplication (OSType *appid, bigstring appname, typrocessid *psn) {
 	
-#ifdef MACVERSION
 	/*
 	this is really a system7-only routine.  under system 6, we always return true.
 	
@@ -1392,38 +459,10 @@ boolean findrunningapplication (OSType *appid, bigstring appname, typrocessid *p
 	#endif
 	
 		return (system7apprunning (appid, appname, psn));
-#endif
 
-#ifdef WIN95VERSION
-	WINPROCESSHEADER listheader;
-	WINPROCESSINFO ** entry;
-	boolean res;
-
-	res = false;
-
-	enumWinProcesses (&listheader);
-
-	entry = getprocessinfofrommodname (&listheader, appname);
-
-	if (entry == NULL)
-		entry = getprocessinfofromwintitle (&listheader, appname);
-
-	if (entry == NULL) {
-		entry = getprocessinfofromexepath (&listheader, appname);
-		}
-
-	if (entry != NULL) {
-		res = true;
-		}
-
-	cleanProcessHeader (&listheader);
-	return (res);
-#pragma message ("WIN95 findrunningapplication does not handle appid")
-#endif
 	} /*findrunningapplication*/
 
 
-#ifdef MACVERSION
 
 	static boolean system7frontprogram (bigstring bsprogram, boolean flfullpath) {
 		
@@ -1465,50 +504,17 @@ boolean findrunningapplication (OSType *appid, bigstring appname, typrocessid *p
 		
 		} // system7frontprogram
 	
-#endif
 
 
 boolean getfrontapplication (bigstring bsprogram, boolean flfullpath) {
 
-#ifdef MACVERSION	
 
 		return (system7frontprogram (bsprogram, flfullpath));
 	
-#endif
 
-#ifdef WIN95VERSION
-	WINPROCESSHEADER listheader;
-	WINPROCESSINFO ** entry;
-	boolean res;
-	DWORD pid;
-
-	res = false;
-
-	enumWinProcesses (&listheader);
-
-	GetWindowThreadProcessId (GetForegroundWindow(), &pid);
-
-	entry = getprocessinfofrompid (&listheader, pid);
-
-	if (entry != NULL) {
-		if (flfullpath) {
-			copystring ((**entry).ExeName, bsprogram);
-			}
-		else
-			{
-			copystring ((**entry).ModName, bsprogram);
-			}
-
-		res = true;
-		}
-
-	cleanProcessHeader (&listheader);
-	return (res);
-#endif
 	} /*getfrontapplication*/
 
 
-#ifdef MACVERSION
 static boolean processcountvisit (typrocessvisitinfoptr visitinfo, ProcessInfoRec *processinfo) {
 	
 	visitinfo->ctprocesses++;
@@ -1522,7 +528,6 @@ static boolean processcountvisit (typrocessvisitinfoptr visitinfo, ProcessInfoRe
 	
 	return (true); /*keep visiting*/
 	} /*processcountvisit*/
-#endif
 
 
 short countapplications (void) {
@@ -1532,7 +537,6 @@ short countapplications (void) {
 	context to the processcountvisit callback routine
 	*/
 		
-#ifdef MACVERSION
 	typrocessvisitinfo info;
 	boolean flsystem7;
 	//Code change by Timothy Paustian Friday, June 9, 2000 2:36:02 PM
@@ -1552,19 +556,7 @@ short countapplications (void) {
 	visitprocesses (&processcountvisit, &info);
 	
 	return (info.ctprocesses);
-#endif
 
-#ifdef WIN95VERSION
-	WINPROCESSHEADER listheader;
-	short count;
-
-	enumWinProcesses (&listheader);
-
-	count = (short)listheader.count;
-
-	cleanProcessHeader (&listheader);
-	return (count);
-#endif
 	} /*countapplications*/
 
 
@@ -1575,7 +567,6 @@ boolean getnthapplication (short n, bigstring bsprogram) {
 	context to the processcountvisit callback routine
 	*/
 	
-#ifdef MACVERSION
 	typrocessvisitinfo info;
 	boolean flsystem7;
 	//Code change by Timothy Paustian Friday, June 9, 2000 2:36:02 PM
@@ -1595,42 +586,10 @@ boolean getnthapplication (short n, bigstring bsprogram) {
 	info.bsprocess = bsprogram; /*point to caller's storage*/
 	
 	return (!visitprocesses (&processcountvisit, &info));
-#endif
 
-#ifdef WIN95VERSION
-	WINPROCESSHEADER listheader;
-	WINPROCESSINFO ** entry;
-	boolean res;
-
-	res = false;
-
-	enumWinProcesses (&listheader);
-
-	entry = listheader.head;
-
-	while ((n > 1) && (entry != NULL)) {
-		entry = (**entry).next;
-		--n;
-		}
-
-	setstringlength (bsprogram, 0);
-
-	if (entry != NULL) {
-		copystring ((**entry).ModName, bsprogram);
-
-		if (stringlength(bsprogram) == 0)
-			copystring ((**entry).ExeName, bsprogram);
-
-		res = true;
-		}
-
-	cleanProcessHeader (&listheader);
-	return (res);
-#endif
 	} /*getnthapplication*/
 
 
-#ifdef MACVERSION
 
 	static boolean getprocesspathvisit ( typrocessvisitinfoptr visitinfo, ProcessInfoRec *processinfo ) {
 		
@@ -1657,7 +616,6 @@ boolean getnthapplication (short n, bigstring bsprogram) {
 		
 		} // getprocesspathvisit
 		
-#endif
 
 
 boolean getapplicationfilespec (bigstring bsprogram, ptrfilespec fs) {
@@ -1681,7 +639,6 @@ boolean getapplicationfilespec (bigstring bsprogram, ptrfilespec fs) {
 	// 5.0.2b21 dmb: clear unused fields on Win
 	//
 
-	#ifdef MACVERSION
 	
 		typrocessvisitinfo info;
 		boolean flsystem7;
@@ -1753,79 +710,13 @@ boolean getapplicationfilespec (bigstring bsprogram, ptrfilespec fs) {
 		
 		return (!visitprocesses (&getprocesspathvisit, &info));
 		
-	#endif
 
-	#ifdef WIN95VERSION
-	
-		WINPROCESSHEADER listheader;
-		WINPROCESSINFO ** entry;
-		boolean res;
-		char curpath[256];
-		short len;
-	//	OSVERSIONINFO osinfo;
-
-	//	osinfo.dwOSVersionInfoSize = sizeof (OSVERSIONINFO);
-
-	//	GetVersionEx (&osinfo);
-
-	//	if (osinfo.dwPlatformId == VER_PLATFORM_WIN32_NT)
-
-		res = false;
-		
-		clearbytes (fs, sizeof (*fs));
-
-		if ((bsprogram == NULL) || (stringlength (bsprogram) == 0)) {
-
-			len = (short)GetModuleFileName (NULL, curpath, sizeof(curpath));
-
-			if (len > 0) {
-				curpath[len] = 0;  //ensure null termination
-				copyctopstring (curpath, fsname(fs));
-				res = true;
-				return (res);
-				}
-			}
-		
-		enumWinProcesses (&listheader);
-
-		if ((bsprogram == NULL) || (stringlength (bsprogram) == 0)) {
-			entry = getprocessinfofrompid (&listheader, GetCurrentProcessId());
-			}
-		else
-			{
-			entry = getprocessinfofrommodname (&listheader, bsprogram);
-
-			if (entry == NULL)
-				entry = getprocessinfofromwintitle (&listheader, bsprogram);
-
-			if (entry == NULL)
-				entry = getprocessinfofromexepath (&listheader, bsprogram);
-			}
-
-		setstringlength (fsname(fs), 0);
-
-		if (entry != NULL) {
-			copystring ((**entry).ExeName, fsname(fs));
-			res = true;
-			}
-	//	else {
-	//		GetCurrentDirectory (256, curpath);
-	//		strcat (curpath, "\\Frontier.exe");
-	//		copyctopstring (curpath, fsname(fs));
-	//		res = true;
-	//		}
-
-		cleanProcessHeader (&listheader);
-		return (res);
-		
-	#endif
 	
 	} // getapplicationfilespec
 
 
 boolean executeresource (ResType type, short id, bigstring bsname) {
 	
-#ifdef MACVERSION
 	/*
 	if bsname is nil, get the resource by id; otherwise, ignore the id.
 	
@@ -1855,17 +746,7 @@ boolean executeresource (ResType type, short id, bigstring bsname) {
 	//we can just call the routine directly. I think.
 	#elif TARGET_RT_MAC_CFM
 	
-	#if TARGET_API_MAC_CARBON == 1
 		(*(pascal void (*) (void)) hcode) ();
-	#else
-	{
-		UniversalProcPtr upp = NewRoutineDescriptor ((ProcPtr) *hcode, kPascalStackBased, kM68kISA);
-		
-		CallUniversalProc (upp, kPascalStackBased);
-		
-		DisposeRoutineDescriptor (upp);
-	}
-	#endif
 		
 	#else
 	
@@ -1878,16 +759,10 @@ boolean executeresource (ResType type, short id, bigstring bsname) {
 	ReleaseResource (hcode);
 	
 	return (true);
-#endif
 
-#ifdef WIN95VERSION
-	/* not supported */
-	return (false);
-#endif
 	} /*executeresource*/
 
 
-#ifdef MACVERSION
 OSType getprocesscreator (void) {
 	
 	/*
@@ -1910,20 +785,14 @@ OSType getprocesscreator (void) {
 	
 	return (info.processSignature);
 	} /*getprocesscreator*/
-#endif
 
 
 typrocessid getcurrentprocessid (void) {
 	
 	ProcessSerialNumber psn;
 	
-#ifdef MACVERSION
 	GetCurrentProcess (&psn);
-#endif
 
-#ifdef WIN95VERSION
-	psn = GetCurrentProcessId();
-#endif
 	
 	return (psn);
 	} /*getcurrentprocessid*/
@@ -1933,7 +802,6 @@ boolean iscurrentapplication (typrocessid psn) {
 	
 	ProcessSerialNumber currentpsn;
 	
-#ifdef MACVERSION
 	Boolean flsame;
 	OSErr err;
 
@@ -1942,18 +810,11 @@ boolean iscurrentapplication (typrocessid psn) {
 	err = SameProcess (&psn, &currentpsn, &flsame);
 	
 	return ((err == noErr) && flsame);
-#endif
 	
-#ifdef WIN95VERSION
-	currentpsn = GetCurrentProcessId();
-
-	return (currentpsn == psn);
-#endif
 	} /*iscurrentapplication*/
 
 boolean isfrontapplication (typrocessid psn) {
 
-#ifdef MACVERSION
 	ProcessSerialNumber frontpsn;
 	Boolean flsame;
 	OSErr err;
@@ -1963,34 +824,10 @@ boolean isfrontapplication (typrocessid psn) {
 	err = SameProcess (&psn, &frontpsn, &flsame);
 	
 	return ((err == noErr) && flsame);
-#endif
 
-#ifdef WIN95VERSION
-	WINPROCESSHEADER listheader;
-	WINPROCESSINFO ** entry;
-	boolean res;
-	DWORD pid;
-
-	res = false;
-
-	enumWinProcesses (&listheader);
-
-	entry = getprocessinfofrompid (&listheader, psn);
-
-	if (entry != NULL) {
-		GetWindowThreadProcessId (GetForegroundWindow(), &pid);
-
-		if ((**entry).processID == pid)
-			res = true;
-		}
-
-	cleanProcessHeader (&listheader);
-	return (res);
-#endif
 	} /*isfrontapplication*/
 
 
-#ifdef MACVERSION
 boolean activateapplicationwindow (typrocessid psn, WindowPtr w) {
 	
 	/*
@@ -2025,7 +862,6 @@ boolean activateapplicationwindow (typrocessid psn, WindowPtr w) {
 	
 	return (true); /***/
 	} /*activateapplicationwindow*/
-#endif
 
 /* above not supported for MS Windows */
 

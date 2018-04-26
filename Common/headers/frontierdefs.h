@@ -33,25 +33,8 @@
 #define __FRONTIERDEFS_H__
 
 
-#ifdef WIN95VERSION
-	#define FRONTIERCOM 1
-
-	#ifndef OPMLEDITOR
-		#define FRONTIERWEB 0
-	#else //OPMLEDITOR
-		#define FRONTIERWEB 1	/* 2006-02-05 aradke: enable HTML display in main window background */
-	#endif // OPMLEDITOR
-
-	#undef winhybrid
-	#define fljustpacking 0
-	#undef flcomponent
-	#define gray3Dlook 1
-	#define noextended 1
-	#define NEWFILESPECTYPE 1	
-#endif /* WIN95VERSION */
 
 
-#ifdef MACVERSION
 	#define flcomponent 1
 	#ifdef __powerc
 		#define noextended 1
@@ -60,7 +43,6 @@
 	#else
 		#define noextended 0
 	#endif
-#endif /* MACVERSION */
 
 
 #undef MEMTRACKER		/* define as 1 to enable tracking of memory allocations */
@@ -86,7 +68,6 @@
 #undef fltracklocaladdresses		/*2004-12-08 aradke: disable [buggy] code for tracking deleted local addresses*/
 
 
-#ifdef MACVERSION
 	#undef macBirdRuntime
 	#undef appRunsCards			/*for Applet Toolkit, Iowa Runtime is baked in*/
 	#undef iowaRuntimeInApp	/*iowa code knows it's in an app*/
@@ -94,17 +75,7 @@
 	#undef cmdPeriodKillsCard
 	#undef IOAinsideApp		/*all the IOA's are baked into the app*/
 	#undef coderesource			/*we're not running inside a code resource*/
-#endif
 
-#ifdef WIN95VERSION
-	#undef macBirdRuntime
-	#undef appRunsCards			/*for Applet Toolkit, Iowa Runtime is baked in*/
-	#undef iowaRuntimeInApp		/*iowa code knows it's in an app*/
-	#undef iowaRuntime			/*iowa code knows it's not compiling in Card Editor*/
-	#undef cmdPeriodKillsCard
-	#undef IOAinsideApp			/*all the IOA's are baked into the app*/
-	#undef coderesource			/*we're not running inside a code resource*/
-#endif
 
 
 #define Rez true

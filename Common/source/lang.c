@@ -773,9 +773,6 @@ boolean langrun (Handle htext, tyvaluerecord *val) {
 	unsigned short savelines = ctscanlines;
 	unsigned short savechars = ctscanchars;
 	
-#ifdef WIN95VERSION
-checkthreadglobals ();
-#endif
 
 	setbooleanvalue (false, val);
 	
@@ -955,18 +952,13 @@ boolean langrunhandletraperror (Handle htext, bigstring bsresult, bigstring bser
 	for iowascript.c: more closely emulate the effect of doing 
 	an OSA DoScript.
 	*/
-#ifdef MACVERSION	
 	boolean fl;
 	langerrormessagecallback savecallback;
 	ptrvoid saverefcon;
 	GrafPtr saveport;
 	//Code change by Timothy Paustian Wednesday, June 14, 2000 4:32:31 PM
 	//Changed to Opaque call for Carbon
-	#if TARGET_API_MAC_CARBON == 1
 	saveport = GetQDGlobalsThePort();
-	#else
-	saveport = quickdrawglobal (thePort);
-	#endif
 	
 	savecallback = langcallbacks.errormessagecallback;
 	
@@ -990,21 +982,13 @@ boolean langrunhandletraperror (Handle htext, bigstring bsresult, bigstring bser
 	//Changed to Opaque call for Carbon
 	{
 	GrafPtr thePort;
-	#if TARGET_API_MAC_CARBON == 1
 	thePort = GetQDGlobalsThePort();
-	#else
-	thePort = quickdrawglobal (thePort);
-	#endif
 	
 	if (thePort != saveport)
 		SetPort (saveport);
 	}
 	return (fl);
-#endif
 
-#ifdef WIN95VERSION
-	return (false);
-#endif
 	} /*langrunhandletraperror*/
 
 

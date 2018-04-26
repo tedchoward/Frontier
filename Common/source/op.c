@@ -810,13 +810,11 @@ boolean opmousedown (Point pt, tyclickflags flags) {
 	long i;
 	Rect r;
 
-#ifdef MACVERSION /*7.0b11 PBS: check for ctrl-clicking on Macs*/
 
 	if (keyboardstatus.ctmodifiers && keyboardstatus.flcontrolkey)
 
 		return (oprmousedown (pt, flags)); /*Call right-click routine.*/
 
-#endif
 	
 	if (!pointinrect (pt, (**ho).outlinerect))
 		return (false);
@@ -1316,15 +1314,6 @@ boolean opkeystroke (void) {
 	boolean flpostcollapse = false;
 	boolean fldidsomething = false;
 	
-	#ifdef WIN95VERSION
-		if (keyboardstatus.flcmdkey) {
-			
-			if ((keyboardstatus.ctmodifiers == 1) && (dir == up || dir == down))
-				return (opscroll (oppositdirection (dir), false, 1));
-
-			floption = true;
-			}
-	#endif
 
 	opdirtyview ();
 	

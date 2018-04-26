@@ -25,13 +25,8 @@
 
 ******************************************************************************/
 
-#ifdef MACVERSION 
 	#include <standard.h>
-#endif
 
-#ifdef WIN95VERSION 
-	#include "standard.h"
-#endif
 
 #include "config.h"
 #include "dialogs.h"
@@ -58,11 +53,7 @@
 #include "wpengine.h"
 #include "scripts.h"
 #include "kernelverbdefs.h"
-#if MACVERSION
 	#include "osacomponent.h"
-#else
-	#define havecomponentmanager() (false)
-#endif
 
 
 

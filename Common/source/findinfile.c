@@ -208,11 +208,9 @@ static boolean fileopener (const ptrfilespec fs, hdlopenfile *hfile, hdlfilenum 
 	if (!fl)
 		fl = openfile (fs, fnum, true);
 
-	#ifdef MACVERSION
 	
 		setfserrorparam ( fs );
 		
-	#endif
 	
 	#ifdef WIN95VERSIOBN
 
@@ -946,12 +944,7 @@ boolean fifwriteline (const ptrfilespec fs, Handle linestring) {
 	write a line at the end of the indicated file.
 	*/
 	
-	#ifdef WIN95VERSION
-		byte bseol [] = "\002\r\n";
-	#endif
-	#ifdef MACVERSION
 		byte bseol [] = "\001\r";
-	#endif
 	
 	if (!pushtexthandle (bseol, linestring))
 		return (false);

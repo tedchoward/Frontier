@@ -33,9 +33,7 @@ quickdraw.c -- code which builds on top of basic quickdraw operations.
 #include "frontier.h"
 #include "standard.h"
 
-#ifdef MACVERSION
 	#include "mac.h"
-#endif
 
 #include "font.h"
 #include "memory.h"
@@ -47,27 +45,11 @@ quickdraw.c -- code which builds on top of basic quickdraw operations.
 #include "byteorder.h"	/* 2006-04-08 aradke: endianness conversion macros */
 
 
-#ifdef WIN95VERSION
-	#include "FrontierWinMain.h"  // 2006-03-28 SMD, for getstatusbarheight()
-	HWND getcurrentwindow();
-	HBRUSH getcurrentbrush();
-	extern HINSTANCE hInst;
-	short gPenPositionX;
-	short gPenPositionY;
-#endif
 
-#ifdef MACVERSION
 	#define stockgray gray
 	#define stockblack black
 	#define getstockpattern(x) qd.x
-#endif
 
-#ifdef WIN95VERSION
-	#define stockgray GRAY_BRUSH
-	#define stockblack BLACK_BRUSH
-	#define getstockpattern(x) GetStockObject(x)
-	#define WINRGB(rgb) RGB((rgb).red >> 8,(rgb).green >> 8, (rgb).blue >> 8)
-#endif
 
 RGBColor whitecolor = {65535, 65535, 65535};
 
@@ -142,24 +124,14 @@ static CGrafPtr portstack [ctports];
 static hdlregion clipstack [ctclip];
 static tystylerecord stylestack [ctstyle];
 
-#ifdef MACVERSION
 	static PenState penstack [ctpens];
 	static RGBColor forecolorstack [ctforecolors];
 	static RGBColor backcolorstack [ctbackcolors];
-#endif
 
-#ifdef WIN95VERSION
-	static HPEN penstack[ctpens];
-	static COLORREF forecolor;
-	static COLORREF backcolor = (COLORREF) (COLOR_BTNFACE + 1); //should agree with class back brush in FrontierWinMain
-	static COLORREF forecolorstack [ctforecolors];
-	static COLORREF backcolorstack [ctbackcolors];
-#endif
 
 
 static hdlregion scratchrgn;
 
-#ifdef MACVERSION
 	static CGrafPtr scratchport;
 	//Code change by Timothy Paustian Friday, May 5, 2000 9:50:05 PM
 	//Changed to Opaque call for Carbon
@@ -168,23 +140,7 @@ static hdlregion scratchrgn;
 	//CGrafPtr. This may be deadly. I will test this.
 	#define inscratchport() (getcurrentDC() == scratchport)
 
-#endif
 
-#ifdef WIN95VERSION
-	static HDC scratchport;
-	HWND currentport;
-	HDC currentportDC;
-	static short winportpushed = 0;
-	HBRUSH currentwindowbrush;
-	static BOOL winclipstack [ctclip]; // return values from GetClipRgn
-	//Code change by Timothy Paustian Friday, May 5, 2000 9:50:05 PM
-	//Changed to Opaque call for Carbon
-	//I had to change this because carbon will not allow
-	//GrafPorts (revealing the structure) you have to use a 
-	//GrafPtr. I don't think I did anything here.
-	#define inscratchport() (getcurrentDC() == scratchport) //07/06/2000 AR: getcurrentDC returns a HDC, so compare with scratchport instead of &scratchpart
-
-#endif
 
 
 /*Forward*/
@@ -192,121 +148,28 @@ static hdlregion scratchrgn;
 static short maxdepth (Rect *r);
 
 
-#ifdef WIN95VERSION
-
-HBRUSH getcurrentbrush() {
-
-	return (currentwindowbrush);
-	} /*getcurrentbrush*/
-
-
-HDC getcurrentDC (void) {
-	
-	return (currentportDC);
-	} /*getcurrentDC*/
-
-
-boolean winpushport (WindowPtr w, HDC hdc) {
-	
-	if (topport >= ctports) {
-		
-		shellinternalerror (idportstackfull, BIGSTRING ("\x13" "port stack overflow"));
-		
-		return (false);
-		}
-	
-	assert (winportpushed == 0);
-
-	portstack [topport++] = currentport;
-	
-	if (currentport != NULL)
-		ReleaseDC (currentport, currentportDC);
-	
-	currentport = w;
-	
-	currentportDC = hdc;
-	
-	++winportpushed;
-	
-	checkdepth (topport, maxport);
-	
-	return (true);
-	} /*winpushport*/
-
-
-boolean winpopport () {
-	
-	currentport = NULL;
-	
-	currentportDC = NULL;
-	
-	--winportpushed;
-	
-	return (popport ());
-	} /*winpopport*/
-
-#endif
 
 
 short getmenubarheight (void) {
-#ifdef MACVERSION	
 	return (GetMBarHeight ()); /*call Script Manager routine*/
-#endif
 
-#ifdef WIN95VERSION
-	return (GetSystemMetrics (SM_CYMENUSIZE));
-#endif
 	} /*getmenubarheight*/
 
 
 GrafPtr getport (void) {
 
-	#ifdef MACVERSION	
 		//Code change by Timothy Paustian Friday, June 9, 2000 9:57:48 PM
 		//Changed to Opaque call for Carbon
 		//This is weird, Shouldn't this be calling GetPort()?
-		#if TARGET_API_MAC_CARBON == 1
 		return GetQDGlobalsThePort();
-		#else
-		return (quickdrawglobal (thePort));
-		#endif
-	#endif
 
-	#ifdef WIN95VERSION
-		return (currentport);
-	#endif
 	} /*getport*/
 
 
 void setport (GrafPtr port) {
 
-	#ifdef MACVERSION	
 		SetPort (port);
-	#endif
 
-	#ifdef WIN95VERSION
-		if (winportpushed)
-			return;
-
-		if (port != currentport) {
-			
-			if (currentport != NULL) {
-				
-				ReleaseDC (currentport, currentportDC);
-				
-				currentport = NULL;
-				
-				currentportDC = NULL;
-				}
-			
-			if (port != NULL) {
-				
-				currentport = port;
-				
-				currentportDC = GetDC (port);
-				}
-			}
-	#endif
 	} /*setport*/
 		
 
@@ -322,7 +185,6 @@ boolean pushport (CGrafPtr p) {
 		return (false);
 		}
 	
-	#ifdef MACVERSION
 		//Code change by Timothy Paustian Friday, June 9, 2000 9:58:19 PM
 		//Changed to Opaque call for Carbon
 		//Comment by Timothy Paustian Wednesday, July 12, 2000 12:57:04 PM
@@ -330,11 +192,7 @@ boolean pushport (CGrafPtr p) {
 		//to find out why.
 		{
 		CGrafPtr	theGlobalPort = nil;
-		#if TARGET_API_MAC_CARBON == 1
 		theGlobalPort = GetQDGlobalsThePort();
-		#else
-		theGlobalPort = quickdrawglobal (thePort);
-		#endif
 		
 		portstack [topport++] = theGlobalPort;
 		
@@ -344,12 +202,7 @@ boolean pushport (CGrafPtr p) {
 			GetFontInfo (&globalfontinfo);
 			}
 		}
-	#endif
 
-	#ifdef WIN95VERSION
-		portstack [topport++] = currentport;
-		setport (p);
-	#endif
 	
 	checkdepth (topport, maxport);
 
@@ -374,16 +227,11 @@ boolean popport (void) {
 	
 	p = portstack [--topport];
 	
-	#ifdef MACVERSION
 	{
 		//Code change by Timothy Paustian Friday, June 9, 2000 10:01:35 PM
 		//Changed to Opaque call for Carbon
 		CGrafPtr	theQDPort = 
-		#if TARGET_API_MAC_CARBON == 1
 		GetQDGlobalsThePort();
-		#else
-		quickdrawglobal (thePort);
-		#endif
 		
 		if ((p != nil) && (p != theQDPort)) {
 			
@@ -392,11 +240,7 @@ boolean popport (void) {
 			GetFontInfo (&globalfontinfo);
 			}
 	}
-	#endif
 	
-	#ifdef WIN95VERSION
-		setport (p);
-	#endif
 	
 	return (true);
 	} /*popport*/
@@ -407,21 +251,12 @@ boolean pushscratchport (void) {
 	/*
 	2.1b4 dmb: call this when a port is needed, but no window is available
 	*/
-	#ifdef MACVERSION
 	//Code change by Timothy Paustian Monday, August 21, 2000 4:31:49 PM
 	//Must pass a CGrafPtr to pushport on OS X to avoid a crash
 	CGrafPtr	thePort;
-	#if TARGET_API_MAC_CARBON == 1
 	thePort = scratchport; /* hra: scratchport is already a CGrafPtr, not a WindowPtr */
-	#else
-	thePort = (CGrafPtr)scratchport;
-	#endif
 		
 	return pushport (thePort);
-	#endif
-	#ifdef WIN95VERSION
-		return (pushport (currentport));
-	#endif
 	} /*pushscratchport*/
 
 
@@ -429,9 +264,7 @@ boolean pushscratchport (void) {
 
 boolean pushcliprgn (hdlregion rgnclip, boolean flomit) {
 
-	#ifdef MACVERSION	
 	register hdlregion rgn;
-	#endif
 	
 	if (topclip >= ctclip) {
 		
@@ -440,7 +273,6 @@ boolean pushcliprgn (hdlregion rgnclip, boolean flomit) {
 		return (false);
 		}
 	
-	#ifdef MACVERSION	
 		rgn = clipstack [topclip++];
 		
 		GetClip (rgn);
@@ -451,14 +283,6 @@ boolean pushcliprgn (hdlregion rgnclip, boolean flomit) {
 			SectRgn (rgn, rgnclip, scratchrgn);
 		
 		SetClip (scratchrgn);
-	#endif
-	#ifdef WIN95VERSION
-		winclipstack [topclip] = GetClipRgn (getcurrentDC(), clipstack [topclip]);
-		
-		topclip++;
-		
-		ExtSelectClipRgn (getcurrentDC(), rgnclip, flomit?RGN_DIFF:RGN_AND); // 5.13.97 dmb: was OR
-	#endif	
 	
 	checkdepth (topclip, maxclip);
 
@@ -468,21 +292,10 @@ boolean pushcliprgn (hdlregion rgnclip, boolean flomit) {
 
 boolean pushclip (Rect r) {
 
-#ifdef MACVERSION	
 	RectRgn (scratchrgn, &r);
 	
 	return (pushcliprgn (scratchrgn, false));
-#endif
 
-#ifdef WIN95VERSION
-	hdlregion rgn;
-	boolean res;
-
-	rgn = CreateRectRgn (r.left, r.top, r.right, r.bottom);
-	res = pushcliprgn (rgn, false);
-	DeleteObject (rgn);
-	return (res);
-#endif
 	} /*pushclip*/
 
 
@@ -507,26 +320,9 @@ boolean superpushclip (Rect r) {
 		return (false);
 		}
 
-#ifdef MACVERSION	
 	GetClip (clipstack [topclip++]);
 
 	ClipRect (&r);
-#endif	
-#ifdef WIN95VERSION
-	{
-	hdlregion rgn;
-
-	winclipstack [topclip] = GetClipRgn (getcurrentDC(), clipstack [topclip]);
-	
-	topclip++;
-	
-	rgn = CreateRectRgn (r.left, r.top, r.right, r.bottom);
-	
-	SelectClipRgn (getcurrentDC(), rgn);
-	
-	DeleteObject (rgn);
-	}
-#endif
 
 	checkdepth (topclip, maxclip);
 
@@ -541,7 +337,6 @@ boolean pushvalidrgnclip (void) {
 	that has a pending update; i.e. clip to the valid part of the window.
 	*/
 	
-#ifdef MACVERSION
 	//Code change by Timothy Paustian Monday, May 1, 2000 9:47:33 PM
 	//Changed to Opaque call for Carbon
 	//we are assuming that scratchrgn has already been allocated.
@@ -560,18 +355,7 @@ boolean pushvalidrgnclip (void) {
 	globaltolocalrgn (scratchrgn);
 	
 	return (pushcliprgn (scratchrgn, true));
-#endif
 
-#ifdef WIN95VERSION
-	hdlregion rgn;
-	boolean res;
-
-	rgn = CreateRectRgn (0,0,1,1);
-	GetUpdateRgn (getcurrentwindow(), rgn, false);
-	res = pushcliprgn (rgn, true);
-	DeleteObject (rgn);
-	return (res);
-#endif
 	} /*pushvalidrgnclip*/
 
 
@@ -580,22 +364,10 @@ boolean pushemptyclip (void) {
 	/*
 	set up the clip region so that no display will occur
 	*/
-#ifdef MACVERSION	
 	SetEmptyRgn (scratchrgn);
 	
 	return (pushcliprgn (scratchrgn, false));
-#endif
 
-#ifdef WIN95VERSION
-	hdlregion rgn;
-	boolean res;
-
-	rgn = CreateRectRgn (0,0,1,1);
-	CombineRgn (rgn, rgn, rgn, RGN_XOR);
-	res = pushcliprgn (rgn, false);
-	DeleteObject (rgn);
-	return (res);
-#endif
 	} /*pushemptyclip*/
 
 
@@ -608,15 +380,7 @@ boolean popclip (void) {
 		return (false);
 		}
 	
-#ifdef MACVERSION
 	SetClip (clipstack [--topclip]);
-#endif	
-#ifdef WIN95VERSION
-	if (winclipstack [--topclip])
-		SelectClipRgn (getcurrentDC(), clipstack [topclip]);
-	else
-		SelectClipRgn (getcurrentDC(), NULL);
-#endif	
 	return (true);
 	} /*popclip*/
 
@@ -669,45 +433,6 @@ boolean popstyle (void) {
 	} /*popstyle*/
 
 
-#ifdef WIN95VERSION
-
-static boolean equalcolors (const RGBColor *rgb1, const RGBColor *rgb2) {
-	
-	return (memcmp (rgb1, rgb2, sizeof (RGBColor)) == 0);
-	} /*equalcolors*/
-
-
-static COLORREF wincolorref (const RGBColor *rgb) {
-	
-	/*
-	5.0b7 dmb: map the stock quickdraw.c color values to the system
-	color values, if there's a match, or just a win rgb
-	*/
-	
-	if (equalcolors (rgb, &whitecolor))
-		return GetSysColor (COLOR_WINDOW);
-	
-	if (equalcolors (rgb, &blackcolor))
-		return GetSysColor (COLOR_WINDOWTEXT);
-	
-	if (equalcolors (rgb, &graycolor))
-		return GetSysColor (COLOR_BTNFACE);
-	
-	if (equalcolors (rgb, &darkgraycolor))
-		return GetSysColor (COLOR_3DDKSHADOW);
-
-	/*
-	if (equalcolors (rgb, &mediumgraycolor))
-		return GetSysColor(COLOR_WINDOW);
-	*/
-	
-	if (equalcolors (rgb, &lightgraycolor))
-		return GetSysColor (COLOR_BTNHIGHLIGHT);
-
-	return (WINRGB (*rgb));
-	} /*wincolorref*/
-
-#endif
 
 
 boolean pushforecolor (const RGBColor *rgb) {
@@ -721,7 +446,6 @@ boolean pushforecolor (const RGBColor *rgb) {
 			return (false);
 			}
 	
-		#ifdef MACVERSION			
 			GetForeColor (&forecolorstack [topforecolor++]);
 					
 			/*
@@ -732,18 +456,7 @@ boolean pushforecolor (const RGBColor *rgb) {
 				RGBColor rgbcopy = *rgb;
 				RGBForeColor (&rgbcopy);
 				}
-		#endif
 
-		#ifdef WIN95VERSION
-			{
-			HDC hdc = getcurrentDC ();
-			HPEN colorpen = CreatePen (PS_SOLID, 1, wincolorref (rgb));
-			
-			penstack[toppen++] = SelectObject (hdc, colorpen);
-			
-			forecolorstack [topforecolor++] = SetTextColor (hdc, wincolorref (rgb));
-			}
-		#endif
 		}
 		
 	return (true);
@@ -761,15 +474,8 @@ boolean popforecolor (void) {
 			return (false);
 			}
 		
-		#ifdef MACVERSION		
 			RGBForeColor (&forecolorstack [--topforecolor]);
-		#endif
 		
-		#ifdef WIN95VERSION
-			SetTextColor (getcurrentDC(), forecolorstack [--topforecolor]);
-			
-			poppen ();
-		#endif
 		}
 	
 	return (true);
@@ -792,7 +498,6 @@ boolean pushbackcolor (const RGBColor *rgb) {
 			return (false);
 			}
 		
-		#ifdef MACVERSION
 			GetBackColor (&backcolorstack [topbackcolor++]);
 			
 			/*
@@ -804,13 +509,7 @@ boolean pushbackcolor (const RGBColor *rgb) {
 				
 				RGBBackColor (&rgbcopy);
 				}
-		#endif
 
-		#ifdef WIN95VERSION
-			backcolor = wincolorref (rgb);
-			
-			backcolorstack [topbackcolor++] = SetBkColor (getcurrentDC (), backcolor);
-		#endif
 		}
 		
 	return (true);
@@ -827,15 +526,8 @@ boolean popbackcolor (void) {
 			
 			return (false);
 			}
-		#ifdef MACVERSION		
 			RGBBackColor (&backcolorstack [--topbackcolor]);
-		#endif
 
-		#ifdef WIN95VERSION
-			backcolor = backcolorstack [--topbackcolor];
-			
-			SetBkColor (getcurrentDC(), backcolor);
-		#endif
 		}
 	
 	return (true);
@@ -862,13 +554,8 @@ boolean pushpen (void) {
 	if (toppen >= ctpens)
 		return (false);
 	
-	#ifdef MACVERSION	
 		GetPenState (&penstack [toppen++]);
-	#endif
 		
-	#ifdef WIN95VERSION
-		penstack[toppen++] = SelectObject (getcurrentDC(), GetStockObject (NULL_PEN));
-	#endif
 
 	checkdepth (toppen, maxpen);
 	
@@ -891,13 +578,8 @@ boolean poppen (void) {
 		return (false);
 		}
 
-	#ifdef MACVERSION	
 		SetPenState (&penstack [--toppen]);
-	#endif
 
-	#ifdef WIN95VERSION
-		DeleteObject (SelectObject (getcurrentDC(), penstack [--toppen]));
-	#endif
 
 	return (true);
 	} /*poppen*/
@@ -905,26 +587,14 @@ boolean poppen (void) {
 	
 void getpenpoint (Point *pt) {
 	
-#ifdef MACVERSION	
 	GetPen (pt);
-#endif
 
-#ifdef WIN95VERSION
-	(*pt).h = gPenPositionX;
-
-	(*pt).v = gPenPositionY;
-#endif
 	} /*getpenpoint*/
 	
 	
 boolean equalpoints (Point pt1, Point pt2) {
-#ifdef MACVERSION	
 	return (EqualPt (pt1, pt2));
-#endif
 
-#ifdef WIN95VERSION
-	return ((pt1.v == pt2.v) && (pt1.h == pt2.h));
-#endif
 	} /*equalpoints*/
 
 
@@ -940,15 +610,8 @@ void movepento (short h, short v) {
 	move the pen to the indicated position.
 	*/
 	
-#ifdef MACVERSION
 	MoveTo (h, v);
-#endif
 
-#ifdef WIN95VERSION
-	MoveToEx (getcurrentDC(), h, v, NULL);
-	gPenPositionX = h;
-	gPenPositionY = v;
-#endif
 	} /*movepento*/
 	
 	
@@ -959,22 +622,14 @@ void pendrawline (short h, short v) {
 	effect, the pen moves to the endpoint of the line.
 	*/
 	
-#ifdef MACVERSION
 	LineTo (h, v);
-#endif
 
-#ifdef WIN95VERSION
-	LineTo (getcurrentDC(), h, v);
-	gPenPositionX = h;
-	gPenPositionY = v;
-#endif
 	} /*pendrawline*/
 	
 //Code change by Timothy Paustian Saturday, April 29, 2000 9:32:15 PM
 //Changed for UH 3.3.1 conclicts with drawstring in QuickDrawText.h
 static void Drawstring (bigstring bs, boolean fldisabled) {
 
-#ifdef MACVERSION
 	if (fldisabled)
 		TextMode (grayishTextOr);
 	
@@ -982,40 +637,7 @@ static void Drawstring (bigstring bs, boolean fldisabled) {
 	
 	if (fldisabled)
 		TextMode (srcOr);
-#endif
 
-#ifdef WIN95VERSION
-	RECT r;
-	HDC hdc = getcurrentDC();
-
-	r.top = gPenPositionY - globalfontinfo.ascent;
-	r.left = gPenPositionX;
-	r.bottom = gPenPositionY + globalfontinfo.descent + globalfontinfo.leading;
-	r.right = r.left + 2048;
-
-	setWindowsFont();
-	
-	if (stringlength (bs) > 0) {
-		
-		int savebkmode = GetBkMode (hdc);
-		
-		SetBkMode (hdc, TRANSPARENT);
-
-		DrawText (hdc, stringbaseaddress (bs), stringlength (bs), &r, DT_CALCRECT | DT_SINGLELINE | DT_NOPREFIX);
-		
-		if (fldisabled)
-			GrayString (hdc, GetStockObject(BLACK_BRUSH) /*NULL*/, NULL, (LPARAM) stringbaseaddress(bs), stringlength (bs), 
-				r.left, r.top, r.right - r.left, r.bottom - r.top);
-		else
-			DrawText (hdc, stringbaseaddress (bs), stringlength (bs), &r, DT_NOCLIP | DT_NOPREFIX);
-		
-		SetBkMode (hdc, savebkmode);
-
-		gPenPositionX = r.right;
-		}
-	
-	clearWindowsFont();
-#endif
 	} /*drawstring*/
 
 
@@ -1025,13 +647,8 @@ void pendrawstring (bigstring bs) {
 	draw a string at the current pen position.  side-effect, the pen moves
 	to point just after the last character drawn.
 	*/
-#ifdef MACVERSION	
 	DrawString (bs);
-#endif
 
-#ifdef WIN95VERSION
-	Drawstring (bs, false);
-#endif
 	} /*pendrawstring*/
 
 
@@ -1050,24 +667,8 @@ short stringpixels (bigstring bs) {
 	5.0a17 dmb: use DrawText to more closely reflect the width of drawn text.
 	*/
 
-#ifdef MACVERSION
 	return (StringWidth (bs));
-#endif
 
-#ifdef WIN95VERSION
-	RECT r;
-	
-	r.top = 0;
-	r.left = 0;
-	r.bottom = globalfontinfo.ascent + globalfontinfo.descent + globalfontinfo.leading;
-	r.right = 0;
-	
-	setWindowsFont();
-	// GetTextExtentPoint32 (getcurrentDC(), stringbaseaddress(bs), stringlength(bs), &stringSize); 
-	DrawText (getcurrentDC(), stringbaseaddress (bs), stringlength (bs), &r, DT_SINGLELINE | DT_CALCRECT | DT_NOPREFIX);
-	clearWindowsFont();
-	return ((short)r.right);
-#endif
 	} /*stringpixels*/
 
 
@@ -1099,21 +700,15 @@ void centerrect (Rect *rcentered, Rect rcontains) {
 
 
 boolean havecolorquickdraw (void) {
-#ifdef MACVERSION	
 	//Code change by Timothy Paustian Friday, June 9, 2000 2:36:02 PM
 	//Changed because using SysEnvisons and SysEnvRec is like Really old style
 	//This was changed to Gestalt calls with two new globals see mac.c initmacintosh
 	return gHasColorQD;
-#endif
 
-#ifdef WIN95VERSION
-	return (true);  
-#endif
 	} /*havecolorquickdraw*/
 
 
 void getcurrentscreenbounds (Rect *r) {
-#ifdef MACVERSION	
 	/*
 	instead of using screenBits.bounds, call this routine to find out 
 	the bounding global rectangle for the current monitor.
@@ -1129,11 +724,7 @@ void getcurrentscreenbounds (Rect *r) {
 	//Code change by Timothy Paustian Friday, June 9, 2000 10:05:41 PM
 	//Changed to Opaque call for Carbon
 	BitMap	screenBits;
-	#if TARGET_API_MAC_CARBON == 1
 	GetQDGlobalsScreenBits(&screenBits);
-	#else
-	screenBits = qd.screenBits;
-	#endif
 	
 	*r = screenBits.bounds; /*default: use the old standby...*/
 	
@@ -1143,11 +734,7 @@ void getcurrentscreenbounds (Rect *r) {
 	//Must pass a CGrafPtr to pushport on OS X to avoid a crash
 	{
 	CGrafPtr	thePort;
-	#if TARGET_API_MAC_CARBON == 1
 	thePort = GetWindowPort(w);
-	#else
-	thePort = (CGrafPtr)w;
-	#endif
 	
 	pushport (thePort);
 	}
@@ -1181,23 +768,11 @@ void getcurrentscreenbounds (Rect *r) {
 	
 	if (flmenubar)
 		(*r).top += getmenubarheight ();
-#endif
 
-#ifdef WIN95VERSION
-/*
-//Use GetSystemMetrics
-	r->top = 0;
-	r->left = 0;
-	r->right = GetSystemMetrics (SM_CXFULLSCREEN);
-	r->bottom = GetSystemMetrics (SM_CYFULLSCREEN);
-*/
-	getdesktopbounds (r);
-#endif
 	} /*getcurrentscreenbounds*/
 
 
 void getwindowscreenbounds (const Rect *rwindow, Rect *r) {
-#ifdef MACVERSION	
 	/*
 	instead of using screenBits.bounds, call this routine to find out 
 	the bounding global rectangle for the monitor containing the 
@@ -1223,11 +798,7 @@ void getwindowscreenbounds (const Rect *rwindow, Rect *r) {
 	//Code change by Timothy Paustian Friday, June 9, 2000 10:05:50 PM
 	//Changed to Opaque call for Carbon
 	BitMap	screenBits;
-	#if TARGET_API_MAC_CARBON == 1
 	GetQDGlobalsScreenBits(&screenBits);
-	#else
-	screenBits = qd.screenBits;
-	#endif
 	
 	*r = screenBits.bounds; /*default return value, if no window open, or error*/
 	
@@ -1273,18 +844,7 @@ void getwindowscreenbounds (const Rect *rwindow, Rect *r) {
 		hdevice = GetNextDevice (hdevice); /*advance to next device in list*/
 		} /*while*/
 	
-#endif
 
-#ifdef WIN95VERSION
-/*
-//Use GetSystemMetrics
-	r->top = 0;
-	r->left = 0;
-	r->right = GetSystemMetrics (SM_CXFULLSCREEN);
-	r->bottom = GetSystemMetrics (SM_CYFULLSCREEN);
-*/
-	getdesktopbounds (r);
-#endif
 	} /*getwindowscreenbounds*/
 
 
@@ -1326,11 +886,9 @@ void centerbuttonstring (const Rect *r, bigstring bs, boolean fldisabled) {
 	if (v > (*r).top) /*9/10/91*/
 		v--;
 	
-	#if TARGET_API_MAC_CARBON
 	
 		v--;
 		
-	#endif
 	
 	movepento (h, v + globalfontinfo.ascent);
 	
@@ -1343,47 +901,19 @@ void centerbuttonstring (const Rect *r, bigstring bs, boolean fldisabled) {
 
 
 void grayrect (Rect r) {
-#ifdef MACVERSION		
 	pushpen ();
 	
 	PenMode (patBic);
 	{
-	#if TARGET_API_MAC_CARBON == 1
 	
 	Pattern	gray;
 	GetQDGlobalsGray(&gray);
 	PenPat(&gray);
-	#else
-	PenPat (&qd.gray);
-	
-	#endif
 	}
 	PaintRect (&r);
 	
 	poppen ();
-#endif
 
-#ifdef WIN95VERSION
-	/*
-	HDC hdc = getcurrentDC ();
-	int oldROP2;
-	HPEN oldpen, graypen;
-	
-	oldROP2 = SetROP2 (hdc, R2_BLACK);
-	
-	graypen = CreatePen (PS_DOT, 0, 0);
-	
-	oldpen = SelectObject (hdc, graypen);
-
-	fillrect (r, getstockpattern (stockgray));
-	
-	SelectObject (hdc, oldpen);
-	
-	SetROP2 (hdc, oldROP2);
-	
-	DeleteObject (graypen);
-	*/
-#endif
 	} /*grayrect*/
 	
 	
@@ -1463,7 +993,6 @@ boolean issubrect (Rect r1, Rect r2) {
 
 
 void globaltolocalrgn (hdlregion rgn) {
-#ifdef MACVERSION	
 	Point pt;
 	
 	SetPt (&pt, 0, 0);
@@ -1471,7 +1000,6 @@ void globaltolocalrgn (hdlregion rgn) {
 	GlobalToLocal (&pt);
 	
 	OffsetRgn (rgn, pt.h, pt.v);
-#endif
 	} /*globaltolocalrgn*/
 	
 	
@@ -1480,17 +1008,12 @@ void localtoglobalrect (WindowPtr w, Rect *r) {
 	/*
 	convert the rectangle inside w to global coordinates on the desktop.
 	*/
-#ifdef MACVERSION	
 	register Rect *x = r;
 	Point p1, p2;
 	//Code change by Timothy Paustian Monday, August 21, 2000 4:31:49 PM
 	//Must pass a CGrafPtr to pushport on OS X to avoid a crash
 	CGrafPtr	thePort;
-	#if TARGET_API_MAC_CARBON == 1
 	thePort = GetWindowPort(w);
-	#else
-	thePort = (CGrafPtr)w;
-	#endif
 		
 	pushport (thePort);
 	
@@ -1505,102 +1028,36 @@ void localtoglobalrect (WindowPtr w, Rect *r) {
 	Pt2Rect (p1, p2, x);
 	
 	popport ();
-#endif
 
-#ifdef WIN95VERSION
-	/*
-	for points, global means screen coordinates.
-	for rects, global means frame-relative coordinates
-	*/
-
-	POINT winpt;
-	
-	winpt.x = (*r).left;
-	winpt.y = (*r).top;
-	
-//	ClientToScreen (w, &winpt);
-	MapWindowPoints (w, shellframewindow, &winpt, 1);
-	
-	offsetrect (r, winpt.x - (*r).left, winpt.y - (*r).top);
-#endif
 	} /*localtoglobalrect*/
 	
 	
 void globaltolocalpoint (WindowPtr w, Point *pt) {
-#ifdef MACVERSION	
 	//Code change by Timothy Paustian Monday, August 21, 2000 4:31:49 PM
 	//Must pass a CGrafPtr to pushport on OS X to avoid a crash
 	CGrafPtr	thePort;
-	#if TARGET_API_MAC_CARBON == 1
 	thePort = GetWindowPort(w);
-	#else
-	thePort = (CGrafPtr)w;
-	#endif
 		
 	pushport (thePort);
 	
 	GlobalToLocal (pt);
 	
 	popport ();
-#endif
-#ifdef WIN95VERSION
-	/*
-	for points, global means screen coordinates.
-	for rects, global means frame-relative coordinates
-	*/
-
-	POINT winpt;
-	
-	winpt.x = (*pt).h;
-	winpt.y = (*pt).v;
-	
-	ScreenToClient (w, &winpt);
-//	MapWindowPoints (shellframewindow, w, &winpt, 1);
-	
-	(*pt).h = (short)winpt.x;
-	(*pt).v = (short)winpt.y;
-#endif
 	} /*globaltolocalpoint*/
 	
 	
 void localtoglobalpoint (WindowPtr w, Point *pt) {
-#ifdef MACVERSION	
 	//Code change by Timothy Paustian Monday, August 21, 2000 4:31:49 PM
 	//Must pass a CGrafPtr to pushport on OS X to avoid a crash
 	CGrafPtr	thePort;
-	#if TARGET_API_MAC_CARBON == 1
 	thePort = GetWindowPort(w);
-	#else
-	thePort = (CGrafPtr)w;
-	#endif
 		
 	pushport (thePort);
 	
 	LocalToGlobal (pt);
 	
 	popport ();
-#endif
 
-#ifdef WIN95VERSION
-	/*
-	for points, global means screen coordinates. we're probably
-	talking about the mouse position
-
-	for rects, global means frame-relative coordinates. we're probably
-	talking about a window position
-	*/
-
-	POINT winpt;
-	
-	winpt.x = (*pt).h;
-	winpt.y = (*pt).v;
-	
-	ClientToScreen (w, &winpt);
-//	MapWindowPoints (w, shellframewindow, &winpt, 1);
-	
-	(*pt).h = (short)winpt.x;
-	(*pt).v = (short)winpt.y;
-#endif
 	} /*localtoglobalpoint*/
 	
 
@@ -1657,26 +1114,18 @@ void dropshadowrect (Rect r, short width, boolean flerase) {
 	if (flerase) {
 		//Code change by Timothy Paustian Friday, June 9, 2000 10:10:25 PM
 		//Changed to Opaque call for Carbon
-		#if TARGET_API_MAC_CARBON == 1
 			Pattern gray;
 			
 			GetQDGlobalsGray(&gray);
 			
 			fillrect (rfill, gray);
-		#else
-			fillrect (rfill, getstockpattern (stockgray));
-		#endif
 		}
 	else {
-		#if TARGET_API_MAC_CARBON == 1
 			Pattern black;
 
 			GetQDGlobalsBlack(&black);
 			
 			fillrect (rfill, black);
-		#else
-			fillrect (rfill, getstockpattern (stockblack));
-		#endif
 		}
 
 							
@@ -1693,36 +1142,26 @@ void dropshadowrect (Rect r, short width, boolean flerase) {
 	if (flerase) {
 		//Code change by Timothy Paustian Friday, June 9, 2000 10:10:25 PM
 		//Changed to Opaque call for Carbon
-		#if TARGET_API_MAC_CARBON == 1
 			Pattern gray;
 
 			GetQDGlobalsGray(&gray);
 			
 			fillrect (rfill, gray);
-		#else
-			fillrect (rfill, getstockpattern (stockgray));
-		#endif
 		}
 	else {
-		#if TARGET_API_MAC_CARBON == 1
 			Pattern black;
 
 			GetQDGlobalsBlack(&black);
 			
 			fillrect (rfill, black);
-		#else
-			fillrect (rfill, getstockpattern (stockblack));
-		#endif
 		}
 	} /*dropshadowrect*/
 
 
 void smashrect (Rect r) {
-#ifdef MACVERSION		
 	EraseRect (&r);
 	//Code change by Timothy Paustian Friday, June 9, 2000 10:13:24 PM
 	//Changed to Opaque call for Carbon
-	#if TARGET_API_MAC_CARBON == 1
 	//Will GetFrontWindowOfClass do what we want. I hope so.
 	{
 	WindowRef w;	
@@ -1732,24 +1171,12 @@ void smashrect (Rect r) {
 		
 	InvalWindowRect(w, &r);
 	}
-	#else
-	InvalRect (&r);
-	#endif
-#endif
-#ifdef WIN95VERSION
-	RECT winrect;
-	recttowinrect (&r, &winrect);
-	InvalidateRect (getcurrentwindow(), &winrect, true);
-
-#endif
 	} /*smashrect*/
 	
 
 void invalrect (Rect r) {
-#ifdef MACVERSION	
 	//Code change by Timothy Paustian Friday, June 9, 2000 10:13:24 PM
 	//Changed to Opaque call for Carbon
-	#if TARGET_API_MAC_CARBON == 1
 	//Will GetFrontWindowOfClass do what we want. I hope so.
 	//InvalWindowRect(GetFrontWindowOfClass(kAllWindowClasses, false), &r);
 	{
@@ -1760,16 +1187,6 @@ void invalrect (Rect r) {
 		
 	InvalWindowRect(w, &r);
 	}
-	#else
-	InvalRect (&r);
-	#endif
-#endif
-#ifdef WIN95VERSION
-	RECT winrect;
-	recttowinrect (&r, &winrect);
-	InvalidateRect (getcurrentwindow(), &winrect, false);
-
-#endif
 	} /*invalrect*/
 	
 	
@@ -1778,11 +1195,7 @@ void invalwindowrect (WindowPtr w, Rect r) {
 	//Code change by Timothy Paustian Monday, August 21, 2000 4:31:49 PM
 	//Must pass a CGrafPtr to pushport on OS X to avoid a crash
 	CGrafPtr	thePort;
-	#if TARGET_API_MAC_CARBON == 1
 	thePort = GetWindowPort(w);
-	#else
-	thePort = (CGrafPtr)w;
-	#endif
 		
 	pushport (thePort);
 	
@@ -1793,45 +1206,14 @@ void invalwindowrect (WindowPtr w, Rect r) {
 
 
 void validrect (Rect r) {
-#ifdef MACVERSION	
-	#if TARGET_API_MAC_CARBON == 1
 	//ValidWindowRect(GetFrontWindowOfClass(kAllWindowClasses, false), &r);
 	ValidWindowRect (shellwindow, &r);
-	#else
-	ValidRect (&r);
-	#endif
-#endif
-#ifdef WIN95VERSION
-	RECT winrect;
-	recttowinrect (&r, &winrect);
-	ValidateRect (getcurrentwindow(), &winrect);
-#endif
 	} /*validrect*/
 
 
 void eraserect (Rect r) {
 
-#ifdef MACVERSION	
 	EraseRect (&r);
-#endif
-#ifdef WIN95VERSION
-	RECT winrect;
-	recttowinrect (&r, &winrect);
-
-	if (!isemptyrect (r)) {
-		
-		if (topbackcolor > 0) {
-
-			HBRUSH brush = CreateSolidBrush (GetBkColor (getcurrentDC()));
-			FillRect (getcurrentDC(), &winrect, brush);
-			DeleteObject (brush);
-			}
-		else
-			FillRect (getcurrentDC(), &winrect, (HBRUSH) (COLOR_BTNFACE + 1));	// );GetStockObject(WHITE_BRUSH)
-		
-	//	FillRect (getcurrentDC(), &winrect, (HBRUSH) backcolor);
-		}
-#endif
 	} /*eraserect*/
 	
 
@@ -1870,17 +1252,8 @@ void framerect (Rect r) {
 		if (isemptyrect (r))
 			return;
 
-		#ifdef MACVERSION	
 			FrameRect (&r);
-		#endif
 
-		#ifdef WIN95VERSION
-		{
-			RECT winrect;
-			recttowinrect (&r, &winrect);
-			FrameRect (getcurrentDC(), &winrect, getcurrentbrush());
-		}
-		#endif
 	#endif
 	} /*framerect*/
 
@@ -1891,7 +1264,6 @@ void drawthemeborder (Rect r, Rect rcontent) {
 	7.0b52 PBS: draw the "scan line" theme border on OS X.
 	*/
 	
-	#if TARGET_API_MAC_CARBON == 1
 	
 		//register hdlminirecord hm = minidata;
 		//register hdlwindowinfo hw = miniwindowinfo;
@@ -1931,50 +1303,29 @@ void drawthemeborder (Rect r, Rect rcontent) {
 		
 		poppen ();
 
-	#endif
 	
 	}
 
 
 void setgraypen (void) {
-#ifdef MACVERSION	
 	//Code change by Timothy Paustian Friday, June 9, 2000 10:22:55 PM
 	//Changed to Opaque call for Carbon
-	#if TARGET_API_MAC_CARBON == 1
 	Pattern gray;
 	PenPat(GetQDGlobalsGray(&gray));
-	#else
-	PenPat (&qd.gray);
-	#endif
-#endif
 
-#ifdef WIN95VERSION
-	HPEN graypen;
-
-	currentwindowbrush = GetStockObject (GRAY_BRUSH);
-	
-	graypen = CreatePen (PS_SOLID, 0, RGB (0x7f, 0x7f, 0x7f));
-
-	SelectObject (getcurrentDC(), graypen);
-
-	assert (toppen > 0); // assume caller has pushed a pen
-#endif
 	} /*setgraypen*/
 
 
 void setthemepen (const short brush, Rect r, boolean flupdate) {
 
-	#if TARGET_API_MAC_CARBON == 1
 	
 		SetThemePen (brush, maxdepth (&r), flupdate);
 				
-	#endif
 	} /*setthemepen*/
 
 
 void graydrawline (short h, short v) {
 
-#ifdef MACVERSION		
 	pushpen ();
 	
 	setgraypen (); 
@@ -1984,35 +1335,11 @@ void graydrawline (short h, short v) {
 	LineTo (h, v);
 	
 	poppen ();
-#endif
 
-#ifdef WIN95VERSION
-	HDC hdc = getcurrentDC ();
-	int oldROP2;
-	HPEN oldpen, graypen;
-	
-	oldROP2 = SetROP2 (hdc, R2_XORPEN);
-	
-	graypen = CreatePen (PS_DOT, 0, 0);
-	
-	oldpen = SelectObject (hdc, graypen);
-
-	LineTo (hdc, h, v);
-	
-	SelectObject (hdc, oldpen);
-	
-	SetROP2 (hdc, oldROP2);
-	
-	DeleteObject (graypen);
-
-	gPenPositionX = h;
-	gPenPositionY = v;
-#endif
 	} /*graydrawline*/
 
 
 void grayframerect (Rect r) {
-	#ifdef MACVERSION		
 		pushpen ();
 		
 		setgraypen ();
@@ -2020,20 +1347,7 @@ void grayframerect (Rect r) {
 		FrameRect (&r);
 		
 		poppen ();
-	#endif
 
-	#ifdef WIN95VERSION
-		RECT winrect;
-		HGDIOBJ brush;
-
-		recttowinrect (&r, &winrect);
-
-		brush = GetStockObject (GRAY_BRUSH);
-
-		FrameRect (getcurrentDC(), &winrect, brush);
-
-		DeleteObject (brush); //Not needed, but not harmful - keep code complete
-	#endif
 	} /*grayframerect*/
 
 
@@ -2043,7 +1357,6 @@ void grayframerrgn (hdlregion rgn) {
 	5.0b8 dmb: use xor rop2 so wp selrgn can be inverted
 	*/
 	
-	#ifdef MACVERSION	
 		pushpen ();
 		
 		setgraypen ();
@@ -2053,45 +1366,20 @@ void grayframerrgn (hdlregion rgn) {
 		FrameRgn (rgn);
 		
 		poppen ();
-	#endif
 
-	#ifdef WIN95VERSION
-		HDC hdc = getcurrentDC();
-		HGDIOBJ brush;
-		int oldROP2;
-
-		brush = GetStockObject (GRAY_BRUSH);
-		
-		oldROP2 = SetROP2 (hdc, R2_XORPEN);
-
-		FrameRgn (hdc, rgn, brush, 1, 1);
-
-		SetROP2 (hdc, oldROP2);
-
-		DeleteObject (brush); //Not needed, but not harmful - keep code complete
-	#endif
 	} /*grayframerrgn*/
 
 
 void fillrect (Rect r, xppattern pat) {
-	#ifdef MACVERSION
 		qdfillrect (&r, &pat);
-	#endif
 
-	#ifdef WIN95VERSION
-		RECT winrect;
-		recttowinrect (&r, &winrect);
-		FillRect (getcurrentDC(), &winrect, pat);
-	#endif
 	} /*fillrect*/
 
 
-#ifdef MACVERSION
 void paintrect (Rect r) {
 	
 	PaintRect (&r);
 	} /*paintrect*/
-#endif	
 
 
 void frame3sides (Rect r) {
@@ -2104,7 +1392,6 @@ void frame3sides (Rect r) {
 	areas
 	*/
 	
-	#ifdef MACVERSION
 	--r.bottom;
 	
 	movepento (r.right, r.top); 
@@ -2115,7 +1402,6 @@ void frame3sides (Rect r) {
 	
 	pendrawline (r.right, r.bottom); /*draw bottom of box*/
 	
-	#if TARGET_API_MAC_CARBON == 1
 	
 		{
 		Rect rwindow;
@@ -2157,25 +1443,8 @@ void frame3sides (Rect r) {
 		}
 	
 	
-	#endif
 	
-	#endif
 
-	#ifdef WIN95VERSION
-	--r.right;
-
-	--r.bottom;
-
-	movepento (r.right, r.top); 
-	
-	pendrawline (r.left, r.top); /*draw top of box*/
-	
-	pendrawline (r.left, r.bottom); /*draw left side of box*/
-	
-	pendrawline (r.right, r.bottom); /*draw bottom of box*/
-	
-	pendrawline (r.right, r.top); /*draw right of box*/
-	#endif
 	} /*frame3sides*/
 	
 
@@ -2188,17 +1457,8 @@ void eraseandframerect (Rect r) {
 
 
 void invertrect (Rect r) {
-#ifdef MACVERSION	
 	InvertRect (&r);
-#endif
 
-#ifdef WIN95VERSION
-	RECT winrect;
-
-	recttowinrect (&r, &winrect);
-
-	InvertRect (getcurrentDC(), &winrect);
-#endif
 	} /*invertrect*/	
 	
 #endif
@@ -2219,51 +1479,18 @@ void setrect (Rect *rset, short top, short pleft, short bottom, short pright) {
 	
 
 void insetrect (Rect *r, short dh, short dv) {
-#ifdef MACVERSION	
 	InsetRect (r, dh, dv);
-#endif
-#ifdef WIN95VERSION
-	RECT winrect;
-
-	recttowinrect (r, &winrect);
-
-	InflateRect (&winrect, dh*-1, dv*-1);
-
-	winrecttorect (&winrect, r);
-#endif
 	} /*insetrect*/
 	
 
 void offsetrect (Rect *r, short dh, short dv) {
-#ifdef MACVERSION	
 	OffsetRect (r, dh, dv);
-#endif
-#ifdef WIN95VERSION
-	RECT winrect;
-
-	recttowinrect (r, &winrect);
-
-	OffsetRect (&winrect, dh, dv);
-
-	winrecttorect (&winrect, r);
-#endif
 	} /*offsetrect*/
 	
 
 boolean pointinrect (Point pt, Rect r) {
 
-	#ifdef MACVERSION	
 		return (PtInRect (pt, &r));
-	#endif
-	#ifdef WIN95VERSION
-		RECT winrect;
-		POINT winpoint;
-
-		recttowinrect (&r, &winrect);
-		winpoint.x = pt.h;
-		winpoint.y = pt.v;
-		return (PtInRect (&winrect, winpoint));
-	#endif
 	} /*pointinrect*/
 
 #if !flruntime
@@ -2278,7 +1505,6 @@ void scrollrect (Rect r, short dh, short dv) {
 	
 	register hdlregion rgn;
 	
-#ifdef MACVERSION
 	rgn = NewRgn ();
 	
 	/*7.1b19 PBS: Call QDerror: you're supposed to check. Plus Eric Soroos is getting crashes in ScrollRect I can't explain.*/
@@ -2288,7 +1514,6 @@ void scrollrect (Rect r, short dh, short dv) {
 		
 	ScrollRect (&r, dh, dv, rgn);
 	
-	#if TARGET_API_MAC_CARBON == 1
 	//InvalWindowRgn(GetFrontWindowOfClass(kAllWindowClasses, false), rgn);
 	{
 	WindowRef w;	
@@ -2299,57 +1524,8 @@ void scrollrect (Rect r, short dh, short dv) {
 	InvalWindowRgn (w, rgn);
 	}
 	
-	#else
-	InvalRgn (rgn);
-	#endif
 	DisposeRgn (rgn);
-#endif
 	
-#ifdef WIN95VERSION
-	RECT winrect, updaterect, cliprect, smashedrect;
-	
-	recttowinrect (&r, &winrect);
-	smashedrect = winrect;
-	
-	if (dv > 0) {
-		winrect.bottom -= dv;
-		
-		smashedrect.bottom = r.top + dv;
-		}
-	else {
-		winrect.top -= dv;
-		
-		if (dv)
-			smashedrect.top = r.bottom + dv;
-		}
-
-	if (dh > 0) {
-		winrect.right -= dh;
-
-		smashedrect.right = r.left + dh;
-		}
-	else {
-		winrect.left -= dh;
-
-		if (dh)
-			smashedrect.left = r.right + dh;
-		}
-	
-	rgn = CreateRectRgn (r.left, r.top, r.right, r.bottom); // default update region
-	
-	if (winrect.bottom > winrect.top && winrect.right > winrect.left) {
-		
-		GetClipBox (currentportDC, &cliprect);
-		
-		ScrollDC (currentportDC, dh, dv, &winrect, &cliprect, rgn, &updaterect);
-		}
-	
-	InvalidateRgn (currentport, rgn, false); // region calc'ed by ScrollDC
-	
-	DeleteObject (rgn);
-
-	InvalidateRect (currentport, &smashedrect, false); // region we know to need painting
-#endif
 
 	} /*scrollrect*/
 
@@ -2374,20 +1550,8 @@ void unionrect (Rect r1, Rect r2, Rect *runion) {
 	destination.
 	*/
 
-	#ifdef MACVERSION	
 		UnionRect (&r1, &r2, runion);
-	#endif
 	
-	#ifdef WIN95VERSION
-		RECT winrect1, winrect2, windestrect;
-
-		recttowinrect (&r1, &winrect1);
-		recttowinrect (&r2, &winrect2);
-
-		UnionRect (&windestrect, &winrect1, &winrect2);
-
-		winrecttorect (&windestrect, runion);
-	#endif
 	} /*unionrect*/
 	
 	
@@ -2400,22 +1564,7 @@ boolean intersectrect (Rect r1, Rect r2, Rect *rintersection) {
 	because their intersection rectangle (really, in this case, an intersection 
 	line or point) does not enclose any bits on the bitMap.	
 	*/
-#ifdef MACVERSION	
 	return (SectRect (&r1, &r2, rintersection));
-#endif
-#ifdef WIN95VERSION
-	RECT winrect1, winrect2, windestrect;
-	boolean res;
-
-	recttowinrect (&r1, &winrect1);
-	recttowinrect (&r2, &winrect2);
-
-	res = IntersectRect (&windestrect, &winrect1, &winrect2);
-
-	winrecttorect (&windestrect, rintersection);
-
-	return (res);
-#endif
 	} /*intersectrect*/
 
 
@@ -2428,7 +1577,6 @@ void getdesktopbounds (Rect *r) {
 	call this routine when you want to limit a rectangle not to the
 	current monitor, but to the entire desktop.
 	*/
-#ifdef MACVERSION
 	//Code change by Timothy Paustian Monday, May 1, 2000 9:57:24 PM
 	//Changed to Opaque call for Carbon
 	//This is probably not the best way to do this, but it works.
@@ -2441,22 +1589,7 @@ void getdesktopbounds (Rect *r) {
 	//old code
 	*r = (**LMGetGrayRgn ()).rgnBBox;
 	#endif
-#endif
 
-#ifdef WIN95VERSION
-/*
-//Use GetSystemMetrics
-	r->top = 0;
-	r->left = 0;
-	r->right = GetSystemMetrics (SM_CXFULLSCREEN);
-	r->bottom = GetSystemMetrics (SM_CYFULLSCREEN);
-*/
-	getlocalwindowrect (shellframewindow, r);
-
-	localtoglobalrect (shellframewindow, r);
-	
-	(*r).bottom -= getstatusbarheight();  // 2006-03-28 SMD
-#endif
 	} /*getdesktopbounds*/
 
 
@@ -2547,7 +1680,6 @@ static void accountfortitlebar (WindowPtr w, Rect *rconstrain) {
 	if w is a window with a titlebar, tighten the contraining rect to 
 	account for the titlebar's height
 	*/
-	#ifdef MACVERSION	
 		//Code change by Timothy Paustian Monday, May 1, 2000 10:10:10 PM
 		//Changed to Opaque call for Carbon
 		short variant = 0;
@@ -2575,13 +1707,7 @@ static void accountfortitlebar (WindowPtr w, Rect *rconstrain) {
 			(*rconstrain).top += titleheight;
 			*/
 			//}*/
-	#endif
 
-	#ifdef WIN95VERSION
-		#define titlebarheight 20
-
-		(*rconstrain).top += titlebarheight;
-	#endif
 	} /*accountfortitlebar*/
 
 
@@ -2637,7 +1763,6 @@ boolean constraintoscreenbounds (WindowPtr w, boolean flcurrentscreen, Rect *rpa
 	return (constraintorect (rparam, rscreen, false)); /*4.1b7 dmb: flcenter parm was true*/
 	} /*constraintoscreenbounds*/
 
-#ifdef MACVERSION
 boolean pushdesktopport (CGrafPtr port) {
 	
 	/*
@@ -2665,11 +1790,7 @@ boolean pushdesktopport (CGrafPtr port) {
 		
 	pushport (nil); /*save current port, don't SetPort*/
 	
-	#if TARGET_API_MAC_CARBON == 1
 	 p = CreateNewPort();
-	#else
-	OpenPort (p); /*also makes it the current port*/
-	#endif
 	grayrgn = GetGrayRgn ();
 	
 	#if ACCESSOR_CALLS_ARE_FUNCTIONS == 1
@@ -2695,15 +1816,10 @@ void popdesktopport (CGrafPtr port) {
 	popport ();
 	//Code change by Timothy Paustian Friday, June 16, 2000 2:51:11 PM
 	//Changed to Opaque call for Carbon
-	#if TARGET_API_MAC_CARBON == 1
 	DisposePort(port);
-	#else	
-	ClosePort (port);
-	#endif
 		
 	
 	} /*popdesktopport*/
-#endif
 
 
 void getmainscreenrect (Rect *r) {
@@ -2730,9 +1846,6 @@ void getsystemoriginrect (Rect *r) {
 	
 	register short h, v;
 	Rect rbounds;
-	#ifdef WIN95VERSION
-		RECT winrect;
-	#endif
 	
 	getcurrentscreenbounds (&rbounds);
 	
@@ -2744,13 +1857,7 @@ void getsystemoriginrect (Rect *r) {
 	v = getmenubarheight ();
 	*/
 	
-	#ifdef MACVERSION
 		SetRect (r, h, v, h, v); /*approximate location of Apple menu*/
-	#endif
-	#ifdef WIN95VERSION
-		SetRect (&winrect, h, v, h, v);
-		winrecttorect (&winrect, r);
-	#endif
 	} /*getsystemoriginrect*/
 
 
@@ -2760,7 +1867,6 @@ static short maxdepth (Rect *r) {
 	5.0b8 dmb: fixed Windows vesion
 	*/
 
-	#ifdef MACVERSION	
 		GDHandle hdldevice;
 		
 		if (!systemhascolor ())
@@ -2772,23 +1878,7 @@ static short maxdepth (Rect *r) {
 			return (1);
 		
 		return ((**(**hdldevice).gdPMap).pixelSize);
-	#endif
 
-	#ifdef WIN95VERSION
-		HDC hdc;
-		short depth;
-		
-		hdc = GetDC(GetTopWindow(NULL));
-		
-		if ((GetDeviceCaps (hdc, RASTERCAPS) & RC_PALETTE) != 0)
-			depth = GetDeviceCaps (hdc, COLORRES);
-		else
-			depth = 4;
-
-		ReleaseDC (GetTopWindow(NULL), hdc);
-		
-		return (depth);
-	#endif
 	} /*maxdepth*/
 
 
@@ -2801,28 +1891,18 @@ boolean colorenabled (void) {
 	if (!systemhascolor ())
 		return (false);
 	
-	#ifdef MACVERSION
 		//Code change by Timothy Paustian Friday, June 9, 2000 10:28:39 PM
 		//Changed to Opaque call for Carbon
-		#if TARGET_API_MAC_CARBON == 1
 		{
 		BitMap	screenBits;
 		GetQDGlobalsScreenBits(&screenBits);
 		return (maxdepth(&(screenBits).bounds) > 1);
 		}
-		#else
-		return (maxdepth (&quickdrawglobal (screenBits).bounds) > 1);
-		#endif
-	#endif
-	#ifdef WIN95VERSION
-		return (maxdepth (NULL) > 1);
-	#endif
 	} /*colorenabled*/
 
 
 short iscolorport (CGrafPtr pport) {
 
-	#ifdef MACVERSION
 		//Code change by Timothy Paustian Monday, May 1, 2000 10:17:59 PM
 		//Changed to Opaque call for Carbon
 		#if ACCESSOR_CALLS_ARE_FUNCTIONS == 1
@@ -2831,37 +1911,17 @@ short iscolorport (CGrafPtr pport) {
 		//old code
 		return ((*(CGrafPtr) pport).portVersion < 0);
 		#endif
-	#endif
-	#ifdef WIN95VERSION
-		return (true);
-	#endif
 	} /*iscolorport*/
 
 
 void fillcolorrect (Rect r, short idppat) {
 
-	#ifdef MACVERSION	
 		PixPatHandle hppat = GetPixPat (idppat);
 		
 		FillCRect (&r, hppat);
 		
 		DisposePixPat (hppat);
-	#endif
 
-	#ifdef WIN95VERSION
-		RECT winrect;
-		HBRUSH hBrush;
-		HBITMAP hBitmap;
-
-		hBitmap = LoadBitmap (hInst, MAKEINTRESOURCE(idppat));
-		hBrush = CreatePatternBrush (hBitmap);
-		recttowinrect (&r, &winrect);
-
-		FillRect (getcurrentDC(), &winrect, hBrush);
-
-		DeleteObject (hBrush);
-		DeleteObject (hBitmap);
-	#endif
 	} /*fillcolorrect*/
 
 
@@ -2907,32 +1967,18 @@ static boolean getcolorfromindex (short index, RGBColor *rgb) {
 
 boolean systemhascolor (void) {
 
-	#ifdef MACVERSION
 		long templong;
 		if (!gestalt (gestaltQuickdrawVersion, &templong))
 			return (false);
 		
 		return (templong >= gestalt8BitQD);
-	#endif
-	#ifdef WIN95VERSION
-		return (true);  //8 bit color required for windows...
-	#endif
 	} /*systemhascolor*/
 
 
 boolean rectinregion (Rect r, hdlregion rgn) {
 
-	#ifdef MACVERSION
 		return (RectInRgn (&r, rgn));
-	#endif
 
-	#ifdef WIN95VERSION
-		RECT winrect;
-
-		recttowinrect (&r, &winrect);
-
-		return (RectInRegion (rgn, &winrect));
-	#endif
 	} /*rectinregion*/
 
 
@@ -2958,7 +2004,6 @@ void initquickdraw (void) {
 	
 	assert (sizeof(diskrgb) == 6);
 	
-	#ifdef MACVERSION
 		for (ix = 0; ix < ctclip; ix++)
 			clipstack [ix] = NewRgn ();
 		
@@ -2973,17 +2018,7 @@ void initquickdraw (void) {
 		scratchport = NewPtr(sizeof(CGrafPort));
 		OpenPort (scratchport);
 		#endif
-	#endif
 
-	#ifdef WIN95VERSION
-		for (ix = 0; ix < ctclip; ix++)
-			clipstack [ix] = CreateRectRgn (0,0,1,1);
-		
-		scratchrgn = CreateRectRgn (0,0,1,1);
-		currentwindowbrush = GetStockObject (BLACK_BRUSH);
-		gPenPositionX = 0;
-		gPenPositionY = 0;
-	#endif
 	} /*initquickdraw*/
 
 

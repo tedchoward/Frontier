@@ -27,13 +27,8 @@
 
 #define configinclude /*so other includes can tell if we've been loaded*/
 
-#ifdef MACVERSION 
 #include <standard.h>
-#endif
 
-#ifdef WIN95VERSION 
-#include "standard.h"
-#endif
 
 /*resnums of 'cnfg' resources for window types*/
 
@@ -59,7 +54,6 @@
 
 
 typedef struct tyconfigrecord {
-#ifdef MACVERSION	
 	boolean flhorizscroll: 1; /*window has horiz scrollbar?*/
 	
 	boolean flvertscroll: 1;
@@ -91,41 +85,7 @@ typedef struct tyconfigrecord {
 	boolean fldontconsumefrontclicks: 1; 
 	
 	boolean flcolorwindow: 1; 
-#endif
 	
-#ifdef WIN95VERSION
-	short flhorizscroll; /*window has horiz scrollbar?*/
-	
-	short flvertscroll;
-	
-	short flwindowfloats; /*is it a floating palette window?*/
-	
-	short flmessagearea; /*allocate space for a message area?*/
-	
-	short flinsetcontentrect; /*if true we inset by 3 pixels*/
-	
-	short flnewonlaunch;
-	
-	short flopenresfile;
-	
-	short fldialog; /*do a GetNewDialog on creating one of these windows?*/
-	
-	short flgrowable; /*provide a grow box for window*/
-	
-	short flcreateonnew;
-	
-	short flwindoidscrollbars;
-	
-	short flstoredindatabase;
-	
-	short flparentwindowhandlessave;
-	
-	short fleraseonresize;
-	
-	short fldontconsumefrontclicks; 
-	
-	short flcolorwindow; 
-#endif
 
 
 	short messageareafraction;

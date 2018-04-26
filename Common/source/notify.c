@@ -69,7 +69,6 @@ boolean notifyuser (bigstring bsmessage) {
 	so we'll go with Whatever for the moment.
 	*/
 	
-#ifdef MACVERSION
 
 	NMRecPtr pb;
 	tyiconfamily icons;
@@ -78,7 +77,6 @@ boolean notifyuser (bigstring bsmessage) {
 
 	#define systemevents (osMask | updateMask | activMask | highLevelEventMask)
 
-	#if TARGET_API_MAC_CARBON == 1
 	
 		{
 		
@@ -90,7 +88,6 @@ boolean notifyuser (bigstring bsmessage) {
 			return (err == noErr);
 		}
 	
-	#endif
 	
 	pb = (NMRecPtr) NewPtrClear (longsizeof (NMRec));
 	
@@ -158,33 +155,7 @@ boolean notifyuser (bigstring bsmessage) {
 	DisposePtr ((Ptr) pb);
 
 	return (fl && (errcode == noErr));
-#endif
 
-#ifdef WIN95VERSION
-	char s [256];
-	short itemnumber;
-
-	copyptocstring (bsmessage, s);
-
-	releasethreadglobals ();
-
-//#ifdef PIKE
-//
-//	/*7.0d8 PBS: name change to Radio UserLand*/
-//
-//	itemnumber = MessageBox (hwndMDIClient, s, "Radio UserLand", MB_OK | MB_ICONINFORMATION | MB_APPLMODAL);
-//
-//#else
-
-/* 9.1b3 JES: APPNAME macro is defined in versions.h for both Radio and Frontier -- use instead of hard-coded string */
-itemnumber = MessageBox (hwndMDIClient, s, APPNAME, MB_OK | MB_ICONINFORMATION | MB_APPLMODAL);
-
-//#endif
-
-	grabthreadglobals ();
-	
-	return (itemnumber == IDOK);
-#endif
 	} /*notifyuser*/
 
 

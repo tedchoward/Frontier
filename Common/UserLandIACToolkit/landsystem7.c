@@ -34,9 +34,7 @@
 #include "langinternal.h"
 #include "process.h"
 
-#if TARGET_API_MAC_CARBON == 1 /*PBS 03/14/02: AE OS X fix.*/
 	#include "aeutils.h" /*PBS 03/14/02: AE OS X fix.*/
-#endif
 
 #ifdef flcomponent
 	
@@ -652,13 +650,8 @@ static pascal OSErr landsystem7handleevent (AppleEvent *message, AppleEvent *rep
 #if !TARGET_RT_MAC_CFM
 	#define landsystem7handleeventUPP ((AEEventHandlerUPP) landsystem7handleevent)
 #else
-	#if !TARGET_API_MAC_CARBON
-		static RoutineDescriptor landsystem7handleeventDesc = BUILD_ROUTINE_DESCRIPTOR (uppAEEventHandlerProcInfo, landsystem7handleevent);
-		#define landsystem7handleeventUPP (&landsystem7handleeventDesc)
-	#else
 		AEEventHandlerUPP	landsystem7handleeventDesc = nil;
 		#define landsystem7handleeventUPP (landsystem7handleeventDesc)
-	#endif
 #endif
 
 
@@ -672,33 +665,6 @@ static pascal boolean replyidvisit (Handle htinfo, long id) {
 
 static pascal OSErr targettoprocessinfo (const TargetID *target, ProcessSerialNumber *psn, FSSpec *fs, OSType *signature) {
 	
-	#if !TARGET_API_MAC_CARBON
-	ProcessInfoRec info;
-	OSErr ec;
-	
-	if ((*target).location.locationKindSelector == ppcNoLocation) { /*local program*/
-		
-		ec = GetProcessSerialNumberFromPortName ((PPCPortPtr) &(*target).name, psn);
-		
-		if (ec != noErr)
-			return (ec);
-		
-		info.processInfoLength = (long) sizeof (info);
-		
-		info.processName = nil;
-		
-		info.processAppSpec = fs;
-		
-		ec = GetProcessInformation (psn, &info);
-		
-		if (ec != noErr)
-			return (ec);
-		
-		*signature = info.processSignature;
-		}
-		
-	else { /*not a local program*/
-	#endif
 
 		clearbytes (psn, sizeof (ProcessSerialNumber));
 		
@@ -709,9 +675,6 @@ static pascal OSErr targettoprocessinfo (const TargetID *target, ProcessSerialNu
 		else
 			BlockMove ((Ptr) (*target).name.u.portTypeStr + 1, (Ptr) signature, 4L); /*kloooge*/
 	
-	#if !TARGET_API_MAC_CARBON
-	}
-	#endif
 
 	
 	return (noErr);
@@ -1036,15 +999,9 @@ static pascal Boolean landsystem7idleroutine (EventRecord *ev, long *sleep, RgnH
 	#define landsystem7idleUPP (&landsystem7idleroutine)
 	
 	
-#elif TARGET_API_MAC_CARBON == 1
-
-	AEIdleUPP landsystem7idleUPP;
-	
 #else
 
-	static RoutineDescriptor landsystem7idleDesc = BUILD_ROUTINE_DESCRIPTOR (uppAEIdleProcInfo, landsystem7idleroutine);
-	
-	#define landsystem7idleUPP (&landsystem7idleDesc)
+	AEIdleUPP landsystem7idleUPP;
 	
 #endif
 
@@ -1171,11 +1128,9 @@ boolean landsystem7send (hdlverbrecord hverb, hdlverbrecord *hvalues) {
 		
 		#endif
 		
-		#if TARGET_API_MAC_CARBON == 1
 		
 			DisposeAEIdleUPP (landsystem7idleUPP);
 		
-		#endif
 		
 		landsystem7getlongattr (&message, keyReturnIDAttr, typeLongInteger, &id); /*before disposal*/
 		}
@@ -1406,11 +1361,7 @@ boolean landsystem7eventfilter (EventRecord *ev) {
 		OSErr errcode;
 		//Code change by Timothy Paustian Monday, June 26, 2000 3:45:05 PM
 		//A5 worlds make no sense on PPC so why pass this as our refcon
-		#if TARGET_API_MAC_CARBON == 1
 		errcode = AEInstallEventHandler (class, token, handler, (long) nil, true);
-		#else
-		errcode = AEInstallEventHandler (class, token, handler, (long) LMGetCurrentA5 (), true);
-		#endif
 		
 		return (errcode == noErr);
 		} /*landsystem7installfasthandler*/
@@ -1421,29 +1372,17 @@ boolean landsystem7eventfilter (EventRecord *ev) {
 		/*
 		little layer to make code prettier
 		*/
-		#if TARGET_API_MAC_CARBON == 1
 
 			return (landsystem7installhandlerUPP (class, id, NewAEEventHandlerUPP ((AEEventHandlerProcPtr) handler)));
 		
-		#else
-
-			return (landsystem7installhandlerUPP (class, id, NewAEEventHandlerProc ((AEEventHandlerProcPtr) handler)));
-		
-		#endif
 		} /*landsystem7installhandler*/
 	
 	
 	pascal boolean landsystem7installfasthandler (tyverbclass class, tyverbtoken token, tyeventhandler handler) {
 		
-		#if TARGET_API_MAC_CARBON == 1
 	
 			return (landsystem7installfasthandlerUPP (class, token, NewAEEventHandlerUPP ((AEEventHandlerProcPtr) handler)));
 		
-		#else
-
-			return (landsystem7installfasthandlerUPP (class, token, NewAEEventHandlerProc ((AEEventHandlerProcPtr) handler)));
-		
-		#endif
 		} /*landsystem7installfasthandler*/
 
 	
@@ -1493,11 +1432,7 @@ boolean landsystem7eventfilter (EventRecord *ev) {
 		
 		if (AEGetEventHandler (class, token, &handler, &refcon, true) != errAEHandlerNotFound) {
 			
-			#if TARGET_API_MAC_CARBON == 1
 			if(refcon == (long) 'LAND'){
-			#else
-			if (refcon == (long) LMGetCurrentA5 ()) { /*it's our handler*/
-			#endif
 			
 				AERemoveEventHandler (class, token, handler, true);
 				//I need to dispose of these handlers
@@ -1531,25 +1466,13 @@ pascal boolean landsystem7pushparam (AERecord *evt, typaramtype type, Handle hva
 		
 		desc.descriptorType = type;
 		
-		#if TARGET_API_MAC_CARBON == 1 /*PBS 03/14/02: AE OS X fix.*/
 		
 			newdescwithhandle (&desc, type, hval);
 			
-		#else
 		
-			desc.dataHandle = hval;
-		
-		#endif
-		
-		#if TARGET_API_MAC_CARBON == 1 /*PBS 03/14/02: AE OS X fix.*/
 
 			if (AEGetDescDataSize (evt) > 0) /*instead of checking that's it null*/
 		
-		#else
-		
-			if ((*evt).dataHandle != NULL)	// 4.0b7 dmb: make sure it's not a null reply
-		
-		#endif
 		
 			err = AEPutParamDesc (evt, key, &desc);
 		
@@ -1558,15 +1481,9 @@ pascal boolean landsystem7pushparam (AERecord *evt, typaramtype type, Handle hva
 		}
 	else {
 		
-		#if TARGET_API_MAC_CARBON == 1 /*PBS 03/14/02: AE OS X fix.*/
 
 			if (AEGetDescDataSize (evt) > 0) /*instead of checking that's it null*/
 			
-		#else
-		
-			if ((*evt).dataHandle != NULL)	// 4.0b7 dmb: make sure it's not a null reply
-		
-		#endif
 		
 			err = AEPutParamPtr (evt, key, type, pval, len);
 		}
@@ -1749,9 +1666,6 @@ boolean landsystem7init (void) {
 
 	#ifdef flcomponent
 	
-		#if !TARGET_API_MAC_CARBON
-		RememberA5 ();
-		#endif /*for event handlers, browser hook*/
 	
 	#endif
 	
@@ -1779,15 +1693,9 @@ boolean landsystem7init (void) {
 	if (!landsystem7installhandler (kCoreEventClass, kAEQuitApplication, landsystem7quitapproutine))
 		return (false);
 	
-	#if TARGET_API_MAC_CARBON == 1
 	
 		AEInstallCoercionHandler ('itxt', 'TEXT', (AECoercionHandlerUPP) NewAECoercePtrUPP (whyinternational), 0, false, false);
 	
-	#else
-	
-		AEInstallCoercionHandler ('itxt', 'TEXT', (AECoercionHandlerUPP) NewAECoercePtrProc (whyinternational), 0, false, false);
-	
-	#endif
 	
 	return (true);
 	} /*landsystem7init*/

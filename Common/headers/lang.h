@@ -309,12 +309,7 @@ typedef union tyvaluedata {
 	
 	unsigned long datevalue;
 	
-#ifdef MACVERSION
 	tydirection dirvalue;
-#endif
-#ifdef WIN95VERSION
-	byte dirvalue;
-#endif
 
 	OSType ostypevalue;
 	

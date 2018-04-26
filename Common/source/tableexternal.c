@@ -477,12 +477,10 @@ boolean tableedit (hdlexternalvariable hvariable, hdlwindowinfo hparent, ptrfile
 	
 		(**hi).fspec = *fs;
 		
-		#ifdef MACVERSION
 		
 			if (macfilespecisresolvable (fs))
 				SetWindowProxyCreatorAndType (w, 'LAND', 'FTtb', kOnSystemDisk);
 				
-		#endif
 		
 		}
 	
@@ -509,11 +507,9 @@ boolean tableedit (hdlexternalvariable hvariable, hdlwindowinfo hparent, ptrfile
 	
 	windowzoom (w);
 	
-	#ifdef MACVERSION
 	
 		shellupdatewindow (w);	
 	
-	#endif
 	
 	return (true);
 	

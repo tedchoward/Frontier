@@ -304,9 +304,7 @@ static void langerrorupdate (void) {
 	/*
 	eraserect ((**hw).contentrect);
 	*/
-	#if TARGET_API_MAC_CARBON == 1
 		drawthemeborder ((**langerrordata).textrect, (**langerrorwindowinfo).contentrect);
-	#endif
 
 	langerrordrawicon (false);
 	
@@ -325,9 +323,7 @@ static void langerrorupdate (void) {
 	//Timothy Paustian 10/5/00
 	//For some reason the buffer is not being flushed for this window.
 	//This should fix it.
-	#if TARGET_API_MAC_CARBON == 1
 		QDFlushPortBuffer (GetWindowPort (langerrorwindow), nil);
-	#endif
 
 	#ifdef gray3Dlook
 		popbackcolor ();
@@ -347,9 +343,7 @@ static void langerroractivate (boolean flactivate) {
 	
 	langerrorframetext ();
 	
-	#if TARGET_API_MAC_CARBON == 1
 		drawthemeborder ((**langerrordata).textrect, (**langerrorwindowinfo).contentrect);
-	#endif
 
 	langerrordrawicon (false);
 	} /*langerroractivate*/

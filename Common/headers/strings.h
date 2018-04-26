@@ -162,21 +162,9 @@ extern void copyptocstring (const bigstring, char *);
 
 extern void copyctopstring (const char *, bigstring);
 
-#ifdef WIN95VERSION
-extern boolean copyWideToPString (const wchar_t *, bigstring);
-extern boolean copyPStringToWide (bigstring, long *, wchar_t *);
-extern void copyrezstring (const bigstring, bigstring);
-#endif
 
-#ifdef WIN95VERSION
-	#ifdef __MWERKS__
-		extern ULONG wcslen(const unsigned short*);	// JES 12/04/2002: Make strings.c compile in CW8
-	#endif											// AR 10/17/2004: ...but don't break the MS VC6 build
-#endif
 
-#ifdef MACVERSION
 #define copyrezstring(a,b) copystring(a,b)
-#endif
 
 extern void copyheapstring (hdlstring, bigstring);
 

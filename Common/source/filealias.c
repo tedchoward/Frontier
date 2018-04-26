@@ -250,62 +250,10 @@ static Boolean CopyDriverIcon(const FSSpec* volSpec, short destRefnum, short des
 	//by the file verb, make alias. We could use a script to do this, there has to be a better way.
 	//check call. I think this is just not going to be implemented in the carbon version.
 	//not a big deal IMHO.
-	#if TARGET_API_MAC_CARBON == 1
 	#pragma unused(volSpec)
 	#pragma unused(destRefnum)
 	#pragma unused(destID)
 	return false;
-	#else
-		
-	HParamBlockRec	pb;
-	ParamBlockRec	cpb;
-	OSErr			err;
-	Handle			h;
-
-	if (!FSpIsVolume(volSpec))
-		return false;
-
-	pb.volumeParam.ioNamePtr = NULL;
-	pb.volumeParam.ioVRefNum = volSpec->vRefNum;
-	pb.volumeParam.ioVolIndex = 0;
-
-	err = PBHGetVInfoSync(&pb);
-
-	if (err != noErr)
-		return false;
-
-	// set up for Control call
-	cpb.cntrlParam.ioCRefNum = pb.volumeParam.ioVDRefNum;
-	cpb.cntrlParam.ioVRefNum = pb.volumeParam.ioVDrvInfo;
-	
-		// first try csCode 22
-	cpb.cntrlParam.csCode = 22;
-	
-	err = PBControlSync (&cpb);
-	
-	if (err != noErr) {
-			// try csCode 21;
-		cpb.cntrlParam.csCode = 21;
-		err = PBControlSync(&cpb);
-	}
-	
-	if (err != noErr) return false;
-
-	h = NewHandle(kLargeIconSize);		// size of ICN#
-	if (h == NULL) return false;
-	
-		// copy ICN# into handle
-	BlockMove(*(Ptr*)&cpb.cntrlParam.csParam, *h, kLargeIconSize);
-
-	UseResFile(destRefnum);
-	AddResource(h, large1BitMask, destID, "\p");
-	err = ResError();
-	
-	if (err != noErr)
-		DisposeHandle(h);
-		
-	return err == noErr;
-	#endif
 		
 }
 

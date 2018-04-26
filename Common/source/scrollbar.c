@@ -36,17 +36,11 @@
 #include "threads.h"
 
 
-#ifdef MACVERSION
 #define scrollbarpopclip() popclip()
-#endif
-#ifdef WIN95VERSION
-#define scrollbarpopclip()
-#endif
 
 static boolean flmacproportionalthumbs = false; /*7.0b18 PBS*/
 
 static boolean scrollbarpushclip (hdlscrollbar hscrollbar) {
-#ifdef MACVERSION	
 	/*
 	11/19/90 DW: patch things up for the table displayer, and perhaps others in
 	the future.  if the scrollbar is of trivial height, we disable the drawing
@@ -70,16 +64,11 @@ static boolean scrollbarpushclip (hdlscrollbar hscrollbar) {
 		r.bottom = r.top;
 		
 	return (superpushclip (r));
-#endif
 
-#ifdef WIN95VERSION
-	return (true);
-#endif
 	} /*scrollbarpushclip*/
 	
 	
 void validscrollbar (hdlscrollbar hscrollbar) {
-#ifdef MACVERSION
 	register hdlscrollbar h = hscrollbar;
 	//Code change by Timothy Paustian Friday, May 5, 2000 10:13:48 PM
 	//Changed to Opaque call for Carbon
@@ -101,12 +90,10 @@ void validscrollbar (hdlscrollbar hscrollbar) {
 	#endif
 		
 	
-#endif
 	} /*validscrollbar*/
 	
 	
 boolean pointinscrollbar (Point pt, hdlscrollbar hscrollbar) {
-#ifdef MACVERSION
 	register hdlscrollbar h = hscrollbar;
 	Rect contrlRect;
 	
@@ -122,10 +109,6 @@ boolean pointinscrollbar (Point pt, hdlscrollbar hscrollbar) {
 	#endif
 	return (pointinrect (pt, contrlRect));
 	
-#endif
-#ifdef WIN95VERSION
-	return (false);
-#endif
 	} /*pointinscrollbar*/
 	
 	
@@ -134,7 +117,6 @@ void enablescrollbar (hdlscrollbar hscrollbar) {
 	if (hscrollbar == nil) /*defensive driving*/
 		return;
 
-#ifdef MACVERSION
 	scrollbarpushclip (hscrollbar);
 		
 	HiliteControl (hscrollbar, 0);
@@ -142,10 +124,6 @@ void enablescrollbar (hdlscrollbar hscrollbar) {
 	validscrollbar (hscrollbar);
 	
 	scrollbarpopclip ();
-#endif
-#ifdef WIN95VERSION
-	EnableScrollBar ((*hscrollbar)->hWnd, (*hscrollbar)->item, ESB_ENABLE_BOTH);	
-#endif
 	} /*enablescrollbar*/
 	
 	
@@ -154,36 +132,17 @@ void disablescrollbar (hdlscrollbar hscrollbar) {
 	if (hscrollbar == nil) /*defensive driving*/
 		return;
 		
-#ifdef MACVERSION
 
-	#if TARGET_API_MAC_CARBON == 1
 		
 		DeactivateControl (hscrollbar);
 
-	#else	
-		scrollbarpushclip (hscrollbar);
-			
-		HiliteControl (hscrollbar, -1);
-		
-		validscrollbar (hscrollbar);
-		
-		scrollbarpopclip ();
-		
-	#endif
 	
-#endif
-#ifdef WIN95VERSION
-	EnableScrollBar ((*hscrollbar)->hWnd, (*hscrollbar)->item, ESB_DISABLE_BOTH);	
-#endif
 	} /*disablescrollbar*/
 	
 	
 void getscrollbarinfo (hdlscrollbar hscrollbar, tyscrollinfo *scrollinfo) {
 	
 	register hdlscrollbar h = hscrollbar;
-#ifdef WIN95VERSION
-	SCROLLINFO si;
-#endif
 	
 	if (h == nil) { /*defensive driving*/
 		
@@ -191,7 +150,6 @@ void getscrollbarinfo (hdlscrollbar hscrollbar, tyscrollinfo *scrollinfo) {
 		
 		return;
 		}
-#ifdef MACVERSION	
 	(*scrollinfo).min = GetControlMinimum (h);
 	
 	(*scrollinfo).max = GetControlMaximum (h);
@@ -199,21 +157,6 @@ void getscrollbarinfo (hdlscrollbar hscrollbar, tyscrollinfo *scrollinfo) {
 	(*scrollinfo).cur = GetControlValue (h);
 
 	(*scrollinfo).pag = 0;
-#endif
-#ifdef WIN95VERSION
-	si.cbSize = sizeof(SCROLLINFO);
-	si.fMask = SIF_ALL;
-
-	if (GetScrollInfo ((*hscrollbar)->hWnd, (*hscrollbar)->item, &si)) {
-		(*scrollinfo).cur = si.nPos;
-		(*scrollinfo).min = si.nMin;
-		(*scrollinfo).max = si.nMax - si.nPage + 1;
-		(*scrollinfo).pag = si.nPage;
-		}
-	else  {
-		clearbytes (scrollinfo, sizeof (tyscrollinfo));
-		}
-#endif
 	} /*getscrollbarinfo*/
 	
 	
@@ -232,7 +175,6 @@ void showscrollbar (hdlscrollbar hscrollbar) {
 	if (hscrollbar == nil) /*defensive driving*/
 		return;
 		
-#ifdef MACVERSION	
 	scrollbarpushclip (hscrollbar);
 		
 	ShowControl (hscrollbar); /*no effect if scrollbar is already visible, according to IM-1*/
@@ -240,14 +182,6 @@ void showscrollbar (hdlscrollbar hscrollbar) {
 	scrollbarpopclip ();
 	
 	/*don't validate the scrollbar rect, ShowControl might not draw it...*/
-#endif
-#ifdef WIN95VERSION
-	releasethreadglobals ();
-
-	ShowScrollBar ((*hscrollbar)->hWnd, (*hscrollbar)->item, TRUE);	
-	
-	grabthreadglobals ();
-#endif
 	} /*showscrollbar*/
 	
 	
@@ -256,7 +190,6 @@ void hidescrollbar (hdlscrollbar hscrollbar) {
 	if (hscrollbar == nil) /*defensive driving*/
 		return;
 		
-	#ifdef MACVERSION	
 
 		{
 		Rect contrlRect;
@@ -283,17 +216,7 @@ void hidescrollbar (hdlscrollbar hscrollbar) {
 		invalrect (contrlRect);
 			}
 
-	#endif
 
-	#ifdef WIN95VERSION
-
-		releasethreadglobals ();
-
-		ShowScrollBar ((*hscrollbar)->hWnd, (*hscrollbar)->item, FALSE);	
-		
-		grabthreadglobals ();
-
-	#endif
 	} /*hidescrollbar*/
 	
 
@@ -308,7 +231,6 @@ void drawscrollbar (hdlscrollbar hscrollbar) {
 	if (h == nil) /*defensive driving*/
 		return;
 
-#ifdef MACVERSION	
 		
 	scrollbarpushclip (h);
 	
@@ -317,17 +239,7 @@ void drawscrollbar (hdlscrollbar hscrollbar) {
 	scrollbarpopclip ();
 	
 	validscrollbar (h);
-#endif
 
-#ifdef WIN95VERSION
-
-	releasethreadglobals (); /*7.0b20 PBS: release and grab thread globals*/
-
-	SendMessage ((**hscrollbar).hWnd, WM_NCPAINT, 1, 0);
-
-	grabthreadglobals ();
-
-#endif
 	} /*drawscrollbar*/
 	
 	
@@ -377,9 +289,6 @@ void setscrollbarinfo (hdlscrollbar hscrollbar, const tyscrollinfo *scrollinfo) 
 	register hdlscrollbar h = hscrollbar;
 	tyscrollinfo curinfo;
 	
-#ifdef WIN95VERSION
-	SCROLLINFO si;
-#endif
 	
 	if (h == nil) /*defensive driving*/
 		return;
@@ -389,7 +298,6 @@ void setscrollbarinfo (hdlscrollbar hscrollbar, const tyscrollinfo *scrollinfo) 
 	if (((*scrollinfo).min == curinfo.min) && ((*scrollinfo).max == curinfo.max) && ((*scrollinfo).cur == curinfo.cur))
 		return; /*nothing to do*/
 	
-#ifdef MACVERSION
 	pushemptyclip (); /*disable drawing*/
 	
 	SetControlMaximum (h, min (infinity, (*scrollinfo).max));
@@ -409,27 +317,11 @@ void setscrollbarinfo (hdlscrollbar hscrollbar, const tyscrollinfo *scrollinfo) 
 	scrollbarpopclip ();
 	
 	displayscrollbar (h);
-#endif
 
-#ifdef WIN95VERSION
-	si.cbSize = sizeof(SCROLLINFO);
-	si.fMask = SIF_RANGE | SIF_POS | SIF_DISABLENOSCROLL | SIF_PAGE;
-	si.nPos = (*scrollinfo).cur;
-	si.nMin = (*scrollinfo).min;
-	si.nMax = (*scrollinfo).max + (*scrollinfo).pag - 1;
-	si.nPage = (*scrollinfo).pag;
-
-	releasethreadglobals ();
-
-	SetScrollInfo ((*hscrollbar)->hWnd, (*hscrollbar)->item, &si, TRUE);
-	
-	grabthreadglobals ();
-#endif
 	} /*setscrollbarinfo*/
 	
 
 void setscrollbarcurrent (hdlscrollbar hscrollbar, long current) {
-#ifdef MACVERSION
 	register hdlscrollbar h = hscrollbar;
 	
 	if (h == nil) /*defensive driving*/
@@ -440,39 +332,19 @@ void setscrollbarcurrent (hdlscrollbar hscrollbar, long current) {
 	SetControlValue (h, min (infinity, current));
 	
 	scrollbarpopclip ();
-#endif
-#ifdef WIN95VERSION
-	SCROLLINFO si;
-
-	si.cbSize = sizeof(SCROLLINFO);
-	si.fMask = SIF_POS;
-	si.nPos = current;
-
-	releasethreadglobals ();
-
-	SetScrollInfo ((*hscrollbar)->hWnd, (*hscrollbar)->item, &si, TRUE);
-	
-	grabthreadglobals ();
-#endif
 	} /*setscrollbarcurrent*/
 
 
 short getscrollbarwidth (void) {
-#ifdef MACVERSION	
 	if (config.flwindoidscrollbars)
 		return (13);
 	else
 		return (16); /*standard Macintosh scrollbars*/
-#endif
-#ifdef WIN95VERSION
-	return (0);  /*handled by system */
-#endif
 	} /*getscrollbarwidth*/
 
 
 
 boolean newscrollbar (WindowPtr w, boolean flvert, hdlscrollbar *hscrollbar) {
-#ifdef MACVERSION
 	
 	/*
 	create a new scroll bar linked into the control list of the indicated
@@ -500,34 +372,18 @@ boolean newscrollbar (WindowPtr w, boolean flvert, hdlscrollbar *hscrollbar) {
 		}
 	
 	*hscrollbar = GetNewControl (resnum, w);
-#endif
-#ifdef WIN95VERSION
-	hdlscrollbar h;
-	h = (hdlscrollbar) NewHandle (sizeof(scrollbarrecord));
-	if (h != NULL) {
-		(*h)->hWnd = w;
-		(*h)->item = flvert?SB_VERT:SB_HORZ;
-		}
-	*hscrollbar = h;
-#endif
 	return ((*hscrollbar) != nil);
 	} /*newscrollbar*/
 	
 	
 void disposescrollbar (hdlscrollbar hscrollbar) {
-#ifdef MACVERSION	
 	register hdlscrollbar h = hscrollbar;
 	
 	if (h != nil)
 		DisposeControl (h);
-#endif
-#ifdef WIN95VERSION
-	DisposeHandle ((Handle) hscrollbar);
-#endif
 	} /*disposescrollbar*/
 	
 
-#ifdef MACVERSION	
 void getscrollbarrect (hdlscrollbar hscrollbar, Rect *r) {
 
 	register hdlscrollbar h = hscrollbar;
@@ -548,12 +404,10 @@ void getscrollbarrect (hdlscrollbar hscrollbar, Rect *r) {
 	else
 		zerorect (r);
 	} /*getscrollbarrect*/
-#endif	
 	
 	
 void setscrollbarrect (hdlscrollbar hscrollbar, Rect r) {
 
-#ifdef MACVERSION	
 	register hdlscrollbar h = hscrollbar;
 	
 	if (h != nil) {
@@ -564,11 +418,9 @@ void setscrollbarrect (hdlscrollbar hscrollbar, Rect r) {
 		
 		MoveControl (h, r.left, r.top);
 		}
-#endif
 	} /*setscrollbarrect*/
 	
 void scrollbarflushright (Rect r, hdlscrollbar hscrollbar) {
-#ifdef MACVERSION	
 	register hdlscrollbar h = hscrollbar;
 	register short width;
 	
@@ -582,12 +434,10 @@ void scrollbarflushright (Rect r, hdlscrollbar hscrollbar) {
 	SizeControl (h, width, r.bottom - r.top + 2);
 	
 	MoveControl (h, r.right - width + 1, r.top - 1);
-#endif
 	} /*scrollbarflushright*/
 	
 	
 void scrollbarflushbottom (Rect r, hdlscrollbar hscrollbar) {
-#ifdef MACVERSION	
 	register hdlscrollbar h = hscrollbar;
 	register short width;
 	
@@ -601,11 +451,9 @@ void scrollbarflushbottom (Rect r, hdlscrollbar hscrollbar) {
 	SizeControl (hscrollbar, r.right - r.left, width);
 		
 	MoveControl (hscrollbar, r.left, r.bottom - width + 1);
-#endif
 	} /*scrollbarflushbottom*/
 	
 
-#ifdef MACVERSION	
 boolean findscrollbar (Point pt, WindowPtr w, hdlscrollbar *hscrollbar, short *scrollbarpart) {
 	
 	*scrollbarpart = FindControl (pt, w, hscrollbar);
@@ -682,7 +530,6 @@ boolean scrollbarhit (hdlscrollbar hscrollbar, short part, boolean *flup, boolea
 	return (false); /*fell through the switch statement*/
 	} /*scrollbarhit*/
 	
-#endif
 
 boolean initscrollbars (void) {
 	

@@ -53,9 +53,6 @@
 #include "cancoon.h"
 
 
-#ifdef WIN95VERSION
-#include "FrontierWinMain.h"
-#endif
 
 
 
@@ -79,11 +76,7 @@ void shellinvalcontent (hdlwindowinfo hinfo) {
 	//Code change by Timothy Paustian Monday, August 21, 2000 4:31:49 PM
 	//Must pass a CGrafPtr to pushport on OS X to avoid a crash
 	CGrafPtr	thePort;
-	#if TARGET_API_MAC_CARBON == 1
 	thePort = GetWindowPort((**hinfo).macwindow);
-	#else
-	thePort = (CGrafPtr)(**hinfo).macwindow;
-	#endif
 		
 	pushport (thePort);
 	
@@ -123,64 +116,10 @@ boolean shellgetgrowiconrect (hdlwindowinfo hinfo, Rect *r) {
 
 void shelldrawgrowicon (hdlwindowinfo hinfo) {
 
-#	ifdef MACVERSION
-#		if TARGET_API_MAC_CARBON == 1
 #			pragma unused (hinfo)
 
 	return;
 
-#	else
-			
-			Rect r;
-			
-			if (shellgetgrowiconrect (hinfo, &r)) {
-				
-				register WindowPtr w = (**hinfo).macwindow;
-				boolean flnoframe; // 5.0a3 dmb: should add new config flag
-				
-				//Code change by Timothy Paustian Monday, August 21, 2000 4:31:49 PM
-				//Must pass a CGrafPtr to pushport on OS X to avoid a crash
-				{
-				CGrafPtr	thePort;
-				#if TARGET_API_MAC_CARBON == 1
-				thePort = GetWindowPort(w);
-				#else
-				thePort = (CGrafPtr)w;
-				#endif
-					
-				pushport (thePort);
-				}
-				
-				flnoframe = (**hinfo).configresnum == idaboutconfig;
-				
-				if (flnoframe)
-					insetrect (&r, 1, 1); /*don't wan't to erase its frame*/
-				
-				pushclip (r);
-				
-				if ((**hinfo).flwindowactive)
-					DrawGrowIcon (w);
-				
-				else {
-					
-					if (!flnoframe) {
-					
-						framerect (r);
-						
-						insetrect (&r, 1, 1); /*don't wan't to erase its frame*/
-						}
-					
-					eraserect (r);
-					}
-				
-				validrect (r);
-				
-				popclip ();
-				
-				popport ();
-				}
-		#endif
-	#endif
 
 	} /*shelldrawgrowicon*/
 
@@ -226,7 +165,6 @@ boolean isshellwindow (WindowPtr wptr) {
 	if (w == nil)
 		return (false);
 	
-#ifdef MACVERSION
 	//Code change by Timothy Paustian Saturday, April 29, 2000 11:12:22 PM
 	//Changed to Opaque call for Carbon
 	if(GetWindowKind(w) <= 0)
@@ -234,7 +172,6 @@ boolean isshellwindow (WindowPtr wptr) {
 	//old code
 	//if ((*(WindowPeek) w).windowKind <= 0)
 	//	return (false);
-#endif
 	
 	nomad = hfirstwindow;
 	
@@ -369,7 +306,6 @@ boolean shellgetwindowrect (hdlwindowinfo hinfo, Rect *r) {
 	if (hinfo == nil)
 		return (false);
 		
-#ifdef MACVERSION
 	
 	//Code change by Timothy Paustian Saturday, April 29, 2000 11:16:53 PM
 	//Changed to Opaque call for Carbon
@@ -382,12 +318,7 @@ boolean shellgetwindowrect (hdlwindowinfo hinfo, Rect *r) {
 	//old code
 	*r = (*(**hinfo).macwindow).portRect; 
 	#endif
-#endif
 
-#ifdef WIN95VERSION
-	
-	GetClientRect ((**hinfo).macwindow, r);
-#endif
 
 	return (true);
 	} /*shellgetwindowrect*/
@@ -462,7 +393,6 @@ short windowgetvnum (WindowPtr w) {
 	if (!getwindowinfo (w, &hinfo))
 		return (0);
 	
-	#ifdef MACVERSION
 	
 		SInt16 vnum;
 	
@@ -476,13 +406,7 @@ short windowgetvnum (WindowPtr w) {
 	
 		return ( vnum );
 			
-	#endif
 
-	#ifdef WIN95VERSION
-	
-		return -1; // *** need new field?
-		
-	#endif
 	
 	} // windowgetvnum
 	
@@ -708,24 +632,13 @@ void getdefaultwindowrect (Rect *rdefault) {
 	Rect rdesktop;
 	register short h, v;
 	
-#ifdef MACVERSION
-	#if TARGET_API_MAC_CARBON == 1
 		{
 		BitMap	screenBits;
 		GetQDGlobalsScreenBits(&screenBits);
 		rdesktop = r = screenBits.bounds;
 		}
-		#else
-		rdesktop = r = qd.screenBits.bounds;
-	#endif
 		
-#endif
 
-#ifdef WIN95VERSION
-	getglobalwindowrect (shellframewindow, &rdesktop);
-
-	r = rdesktop;
-#endif
 	
 	width = r.right - r.left;
 	
@@ -1743,19 +1656,9 @@ boolean newshellwindow (WindowPtr *wnew, hdlwindowinfo *hnew, tywindowposition *
 	register WindowPtr w;
 	register hdlwindowinfo hinfo = nil;
 	hdlscrollbar vertbar = nil, horizbar = nil;
-#ifdef WIN95VERSION
-	tyconfigrecord origconfig = config;
-	tyshellglobals origglobals = shellglobals;
-	GrafPtr saveport = getport ();
-#endif
 	
 	w = getnewwindow (config.templateresnum, config.fldialog, &(*wpos).windowrect);
 	
-#ifdef WIN95VERSION
-	config = origconfig;
-	shellglobals = origglobals;
-	setport (saveport);
-#endif
 	
 	*wnew = w; /*copy into returned value*/
 	
@@ -1848,11 +1751,7 @@ boolean newfilewindow ( const ptrfilespec fspec, hdlfilenum fnum, short rnum, bo
 	//Must pass a CGrafPtr to pushport on OS X to avoid a crash
 	{
 	CGrafPtr	thePort;
-	#if TARGET_API_MAC_CARBON == 1
 	thePort = GetWindowPort(w);
-	#else
-	thePort = (CGrafPtr)w;
-	#endif
 		
 	pushport (thePort);
 	}	
@@ -1986,11 +1885,7 @@ boolean newchildwindow (short idtype, hdlwindowinfo hparentinfo, Rect * rwindow,
 	//Must pass a CGrafPtr to pushport on OS X to avoid a crash
 	{
 	CGrafPtr	thePort;
-	#if TARGET_API_MAC_CARBON == 1
 	thePort = GetWindowPort(w);
-	#else
-	thePort = (CGrafPtr)w;
-	#endif
 		
 	pushport (thePort);
 	}
@@ -2027,17 +1922,10 @@ boolean newchildwindow (short idtype, hdlwindowinfo hparentinfo, Rect * rwindow,
 		
 		// do we need to do this?
 		
-		#ifdef MACVERSION
 		
 			bigstringtofsname (bstitle, &(**hinfo).fspec.name);
 				
-		#endif // MACVERSION
 
-		#ifdef WIN95VERSION
-
-			copystring ( bstitle, fsname ( &( **hinfo ).fspec ) );
-
-		#endif // WIN95VERSION
 
 		}
 	
@@ -2185,22 +2073,16 @@ boolean zoomfilewindow (WindowPtr w) {
 	
 	if ((**hinfo).flhidden) {
 		
-		#ifdef WIN95VERSION
-			//windowsendtoback (w);
-			windowbringtofront (getnextwindow (w));
-		#endif
 		}
 	else {
 		
 		zoomfromorigin (w); /*zoom and then show the window*/
 		
-		#ifdef MACVERSION
 			shelldrawgrowicon (hinfo);
 			
 			showscrollbar ((**hinfo).vertscrollbar); 
 			
 			showscrollbar ((**hinfo).horizscrollbar);
-		#endif
 		}
 	
 	return (true);
@@ -2420,7 +2302,6 @@ boolean shellzoomwindow (hdlwindowinfo hinfo, boolean flzoomin) {
 	//Changed to Opaque call for Carbon
 
 	
-#ifdef MACVERSION
 	Rect	rectToErase;
 	short part;
 	//WStateData **hstatedata;
@@ -2432,7 +2313,6 @@ boolean shellzoomwindow (hdlwindowinfo hinfo, boolean flzoomin) {
 
 	//if (hstatedata == nil)
 	//	return (false);
-#endif
 	
 	shellpushglobals (w);
 	
@@ -2445,15 +2325,11 @@ boolean shellzoomwindow (hdlwindowinfo hinfo, boolean flzoomin) {
 	
 	getglobalwindowrect (w, &rwindow); /*current state*/
 	
-#ifdef MACVERSION
 	//Code change by Timothy Paustian Saturday, April 29, 2000 11:30:25 PM
 	//Changed to Opaque call for Carbon
 	GetWindowStandardState(w, &rzoom);
 	//old code
 	//rzoom = (**hstatedata).stdState; /*last calculated "zoomed out" state*/
-#else
-	rzoom = (**h).zoomedrect;
-#endif
 
 //	if (rzoom.top > 0)
 //		flzoom = false;
@@ -2478,11 +2354,6 @@ boolean shellzoomwindow (hdlwindowinfo hinfo, boolean flzoomin) {
 		
 		rcontent = (**h).contentrect;
 		
-		#ifdef WIN95VERSION
-			width += (rwindow.right - rwindow.left) - (rcontent.right - rcontent.left);
-
-			height += (rwindow.bottom - rwindow.top) - (rcontent.bottom - rcontent.top);
-		#endif
 
 		width -= (rcontent.right - rcontent.left);
 		
@@ -2523,18 +2394,13 @@ boolean shellzoomwindow (hdlwindowinfo hinfo, boolean flzoomin) {
 		if ((rfull.bottom - rfull.top) <= (rzoom.bottom - rzoom.top)) /*can fit full vert*/
 			flscrollup = true;
 		
-		#ifdef MACVERSION
 			//Code change by Timothy Paustian Saturday, April 29, 2000 11:31:20 PM
 			//Changed to Opaque call for Carbon
 			SetWindowStandardState(w, &rzoom);
 			//old code
 			//(**hstatedata).stdState = rzoom;
-		#else
-			(**h).zoomedrect = rzoom;  /* 2006-03-28 SMD fixed, was rwindow */
-		#endif
 		}
 	
-	#ifdef MACVERSION
 		if (equalrects (rwindow, rzoom)) /*we're zoomed out*/
 			part = inZoomIn;
 		else
@@ -2565,22 +2431,6 @@ boolean shellzoomwindow (hdlwindowinfo hinfo, boolean flzoomin) {
 			if (flscrollup) /*can fit full vert*/
 				(*shellglobals.scrollroutine) (up, false, -(**h).vertscrollinfo.cur);
 			}
-	#else
-		if (!equalrects (rwindow, rzoom) || rprevstate.top == 0) { /*we're not already zoomed*/
-//		if (flzoom) {
-			shellmoveandsizewindow (h, rzoom);
-			(**h).zoomedrect = rwindow;
-			//(**h).zoomedrect.top += 20000;
-			}
-		else
-			shellmoveandsizewindow (h, rprevstate);
-
-		if (flscrollleft) /*can fit full horiz*/
-			(*shellglobals.scrollroutine) (left, false, -(**h).horizscrollinfo.cur);
-		
-		if (flscrollup) /*can fit full vert*/
-			(*shellglobals.scrollroutine) (up, false, -(**h).vertscrollinfo.cur);
-	#endif
 	
 	shellpopglobals ();
 	
@@ -2627,11 +2477,7 @@ boolean drawwindowmessage (WindowPtr wptr) {
 	//Must pass a CGrafPtr to pushport on OS X to avoid a crash
 	{
 	CGrafPtr	thePort;
-	#if TARGET_API_MAC_CARBON == 1
 	thePort = GetWindowPort(w);
-	#else
-	thePort = (CGrafPtr)w;
-	#endif
 		
 	pushport (thePort);
 	}

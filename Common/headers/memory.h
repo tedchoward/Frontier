@@ -88,9 +88,7 @@ typedef struct handlestream {
 
 #else
 
-	#ifdef MACVERSION
 		#define GetCurrentThreadId() (0L)
-	#endif
 
 	#define newhandle(sz, ph) debugnewhandle(__FILE__, __LINE__, GetCurrentThreadId(), sz, ph)
 

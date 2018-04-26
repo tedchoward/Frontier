@@ -609,12 +609,7 @@ boolean pictedit (hdlexternalvariable hvariable, hdlwindowinfo hparent, ptrfiles
 			return (true);
 			}
 
-		#ifdef MACVERSION
 			break;
-		#else
-			if (!shellyield (false))
-				return (false);
-		#endif
 		}
 	
 	pictgetnewwindowrect (hp, &rwindow);

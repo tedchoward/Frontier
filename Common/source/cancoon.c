@@ -28,9 +28,7 @@
 #include "frontier.h"
 #include "standard.h"
 
-#ifdef MACVERSION
 	#include <land.h>
-#endif
 
 #include "memory.h"
 #include "dialogs.h"
@@ -469,9 +467,6 @@ static boolean ccinstalltablestructure (boolean flhavehost) {
 	loadsystemscripts (); /*load agents, compile handlers, run startup scripts, etc.*/
 	
 #ifndef PIKE
-	#if TARGET_API_MAC_CARBON == 0
-	langipcmenustartup ();
-	#endif
 #endif
 	
 	return (true);
@@ -897,11 +892,9 @@ boolean ccloadspecialfile (ptrfilespec fspec, OSType filetype) {
 	
 	if (getsystemtablescript (idfinder2frontscript, bs)) { // frontier.findertofront=^0
 		
-	#ifdef MACVERSION
 		if ((shellevent.what == kHighLevelEvent) && ((**landgetglobals ()).maceventsender == 'MACS'))
 			pbool = bstrue;
 		else
-	#endif
 			pbool = bsfalse;
 		
 		parsedialogstring (bs, pbool, nil, nil, nil, bs);
@@ -1415,9 +1408,6 @@ boolean ccdisposerecord (void) {
 	if (!flguestroot) {
 		
 #ifndef PIKE
-		#if TARGET_API_MAC_CARBON == 0
-		langipcmenushutdown ();
-		#endif
 		
 #endif
 		

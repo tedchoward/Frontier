@@ -35,27 +35,13 @@
 #endif
 
 
-#ifdef MACVERSION
-	#if TARGET_API_MAC_CARBON == 1
 	
 		#define popupwidth 54
-	#else
-	
-		#define popupwidth 45
-
-	#endif
 	
 	#define popupheight 16
 	#define geneva9popupmenuid 257
 	#define defaultpopupmenuid 258
-#endif
 
-#ifdef WIN95VERSION
-	#define popupwidth 55
-	#define popupheight 18
-	#define geneva9popupmenuid 10000
-	#define defaultpopupmenuid 10000
-#endif
 
 #define popupfont geneva
 #define popupfontsize 9

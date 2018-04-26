@@ -32,13 +32,8 @@ standard.h -- standard types and constants
 #ifndef standardinclude
 #define standardinclude /*so other modules can tell that we've been included*/
 
-#ifdef WIN95VERSION
-	#include "macconv.h"
-#endif
 
-#ifdef MACVERSION  /* 2005-01-09 SMD - for getmilliseconds */
 	#include "FastTimes.h"
-#endif
 
 #include "stringdefs.h"		/* embedded string definitions */
 
@@ -183,7 +178,6 @@ typedef enum tyjustification {
 #define chspace			((char) 32)
 #define chdelete 		((char) 127)
 
-#ifdef MACVERSION
 	#define chcomment			((byte) 0xc7)	/* 'Ç' */
 	#define chendcomment		((byte) 0xc8)	/* 'È' */
 	#define chopencurlyquote	((byte) 0xd2)	/* 'Ò' */
@@ -191,22 +185,9 @@ typedef enum tyjustification {
 	#define chtrademark			((byte) 0xaa)	/* 'ª' */
 	#define chnotequals			((byte) 0xad)	/* '­' */
 	#define chdivide			((byte) 0xd6)	/* 'Ö' */
-#endif
-
-#ifdef WIN95VERSION
-	#define chcomment			((byte) 0xab)	/* '«' */
-	#define chendcomment 		((byte) 0xbb)
-	#define chopencurlyquote 	((byte) 0x93)
-	#define chclosecurlyquote 	((byte) 0x94)
-	#define chtrademark			((byte) 0x99)
-	#define chnotequals			((byte) 0xad)	/* '­' */
-	#define chdivide			((byte) 0xf7)	/* '÷' */
-#endif
 
 
-#ifdef WIN95VERSION
-typedef unsigned char Str255[258];
-#endif
+
 
 #define lenbigstring 255
    
@@ -264,14 +245,8 @@ typedef	unsigned char byte, *ptrbyte;
 	#define verify(x)	assert(x)
 #endif
 
-#ifdef MACVERSION
 	#define sysbeep() SysBeep(1) 
-#endif
 
-#ifdef WIN95VERSION
-	//#define sysbeep() Beep (800, 300)
-	#define sysbeep() MessageBeep(MB_OK)
-#endif
 
 #ifndef abs
 	#define abs(x) ((x) < 0? -(x) : (x))
@@ -300,10 +275,6 @@ typedef	unsigned char byte, *ptrbyte;
 							hi = conditionalshortswap (hiword (x));} while (0)
 
 #ifdef PASCALSTRINGVERSION
-#ifdef WIN95VERSION
-char * pwstringbaseaddress(char * bs);
-void pwsetstringlength(char * bs, short len);
-#endif
 
 #define stringbaseaddress(bs) (bs+1)
 #define setstringlength(bs,len) (bs[0]=(char)(len))
@@ -344,94 +315,12 @@ void pwsetstringlength(char * bs, short len);
 
 #define bundle /**/
 
-#ifdef MACVERSION
 #define gettickcount() TickCount()
 
 typedef short hdlfilenum;
 
 typedef Pattern xppattern;
-#endif
 
-#ifdef WIN95VERSION
-typedef HANDLE hdlfilenum;
-
-typedef HBRUSH xppattern;
-
-#define gettickcount() ((GetTickCount()*3L)/50L)
-
-boolean appendcstring (bigstring dest, char * cstringsource);
-boolean buildfilename (unsigned char * pathsource, short pathtype, unsigned char * filesource, short filetype, char * dest);
-
-void NumToString (long theNum, char * theString);
-void StringToNum (char * theString, long * theNum);
-
-typedef long double double_t;
-
-typedef struct tydecform
-	{
-	char style;
-	char unused;
-	short digits;
-	} decform;
-
-#define SIGDIGLEN 36
-typedef struct tydecimal
-	{
-	char sgn;
-	char unused;
-	short exp;
-	struct
-		{
-		unsigned char length;
-		unsigned char text[SIGDIGLEN];
-		unsigned char unused;
-		} sig;
-	} decimal;
-
-
-typedef struct tyDateTimeRec
-	{
-	short year;
-	short month;
-	short day;
-	short hour;
-	short minute;
-	short second;
-	short dayOfWeek;
-	} DateTimeRec;
-
-typedef union tyLongDateRec
-	{
-	struct
-		{
-		short era;
-		short year;
-		short month;
-		short day;
-		short hour;
-		short minute;
-		short second;
-		short dayOfWeek;
-		short dayOfYear;
-		short weekOfYear;
-		short pm;
-		short res1;
-		short res2;
-		short res3;
-		}	ld;
-	short	list[14];
-	struct
-		{
-		short	eraAlt;
-		DateTimeRec oldDate;
-		}	od;
-	} LongDateRec;
-
-typedef struct tyDateCacheRecord
-	{
-	short	hidden[256];
-	} DateCacheRecord;
-#endif
 
 #define isnumeric(x) ((x >= '0') && (x <= '9'))
 

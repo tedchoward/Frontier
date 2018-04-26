@@ -119,17 +119,10 @@ typedef struct tyversion2cancoonrecord {
 	} tyversion2cancoonrecord;
 #pragma options align=reset
 
-#ifdef MACVERSION
 	#define flflagdisabled_mask 0x8000 /*hide the flag?*/
 	#define flpopupdisabled_mask 0x4000 /*hide the agents popup menu?*/
 	#define flbigwindow_mask 0x2000 /*is the flag toggled to the big window state?*/
-#endif
 
-#ifdef WIN95VERSION
-	#define flflagdisabled_mask 0x0080 /*hide the flag?*/
-	#define flpopupdisabled_mask 0x0040 /*hide the agents popup menu?*/
-	#define flbigwindow_mask 0x0020 /*is the flag toggled to the big window state?*/
-#endif
 
 static bigstring bserror = "\0";
 

@@ -103,11 +103,7 @@ void boldenbutton (DialogPtr pdialog, short itemnumber) {
 	//pushport was doing an implicit cast from a dialogPtr to a GrafPtr
 	//This is allowed in MacOS, but not in carbon. This was causing a crash.
 	CGrafPtr	thePort;
-	#if TARGET_API_MAC_CARBON == 1
 	thePort = GetDialogPort(pdialog);
-	#else
-	thePort = (CGrafPtr)pdialog;
-	#endif
 		
 	pushport (thePort);
 	
@@ -149,14 +145,10 @@ void positiondialogwindow (DialogPtr pdialog) {
 	
 	v = rscreen.top + (((rscreen.bottom - rscreen.top) - (rdialog.bottom - rdialog.top)) / 3);
 	
-	#if TARGET_API_MAC_CARBON == 1
 	{
 	WindowPtr theWind = GetDialogWindow(pdialog);
 	movewindow(theWind, h, v);
 	}
-	#else
-	movewindow (pdialog, h, v);
-	#endif
 	} /*positiondialogwindow*/
 
 
@@ -368,16 +360,11 @@ DialogPtr newmodaldialog (short id, short defaultitem) {
 	if (dialoghasedititems (pdialog))
 		shellwritescrap (textscraptype);
 	
-	#if TARGET_API_MAC_CARBON == 1
 	{
 	WindowPtr	theWind = GetDialogWindow(pdialog);
 	if (GetWVariant (theWind) == dBoxProc) /*make sure we're in front before posting modal dialog*/
 		shellactivate ();
 	}
-	#else
-	if (GetWVariant (pdialog) == dBoxProc) /*make sure we're in front before posting modal dialog*/
-		shellactivate ();
-	#endif
 	return (pdialog);
 	} /*newmodaldialog*/
 
@@ -921,14 +908,10 @@ static void passwordprocesskey (DialogPtr pdialog, char chkb, EventRecord *ev, s
 			
 		} /*switch*/
 	
-	#if TARGET_API_MAC_CARBON == 1
 	{
 	WindowPtr theWind = GetDialogWindow(pdialog);
 	buffer = (char *) GetWRefCon (theWind);
 	}
-	#else
-	buffer = (char *) GetWRefCon (pdialog);
-	#endif
 	//Code change by Timothy Paustian Sunday, April 30, 2000 10:13:01 PM
 	//Changed to Opaque call for Carbon
 	#if ACCESSOR_CALLS_ARE_FUNCTIONS == 1
@@ -989,9 +972,6 @@ pascal boolean modaldialogcallback (DialogPtr pdialog, EventRecord *ev, short *i
 	
  	//register short hit = 0;
  	
- 	#if !TARGET_API_MAC_CARBON && defined(flcomponent)
-		long curA5 = SetUpAppA5 ();
- 	#endif
  	
  	if (whatevent != nullEvent) { /*non-null event; set global event time for background logic*/
  		
@@ -1057,12 +1037,10 @@ pascal boolean modaldialogcallback (DialogPtr pdialog, EventRecord *ev, short *i
 		
 			if ((defaultitem > 0) && ((*ev).message == (long) pdialog))
 				boldenbutton (pdialog, defaultitem);
-			#if TARGET_API_MAC_CARBON == 1
 				{
 				CGrafPtr thePort = GetDialogPort(pdialog);
 				QDFlushPortBuffer(thePort, nil);	
 				}
-			#endif
 			break;
 		
 		case nullEvent:
@@ -1082,7 +1060,6 @@ pascal boolean modaldialogcallback (DialogPtr pdialog, EventRecord *ev, short *i
 			//need to be flushed on screen. The only way I could figure to do this
 			//was to do it at every null event. The whole thing should be rewritten
 			//at some points to use ModalDialog Correctly.
-			#if TARGET_API_MAC_CARBON == 1
 				{
 				WindowRef lpWindow = GetDialogWindow(pdialog);
 				CGrafPtr thePort = GetDialogPort(pdialog);
@@ -1090,16 +1067,10 @@ pascal boolean modaldialogcallback (DialogPtr pdialog, EventRecord *ev, short *i
 				SelectWindow(lpWindow);
 				QDFlushPortBuffer(thePort, nil);	
 				}
-			#else
-				SelectWindow (pdialog); /*make sure no one has screwed around with us*/
-			#endif
 			break;
 		
 		} /*switch*/
 	
-	#if !TARGET_API_MAC_CARBON && defined(flcomponent)
-		RestoreA5 (curA5);
-	#endif
 	return (eventHandled); /*the dialog manager's version of false*/
 	} /*modaldialogcallback*/
 
@@ -1118,15 +1089,9 @@ static short runmodaldialog (void) {
 	#ifdef flcomponent
 		{
 		ProcPtr filter = (ProcPtr) modaldialogcallback;
-		#if !TARGET_API_MAC_CARBON && defined(flcomponent)
-			long appA5 = SetUpCurA5 (); /*for system*/
-		#endif
 		
 		ModalDialog ((ModalFilterUPP) filter, &itemnumber);
 		
-		#if !TARGET_API_MAC_CARBON && defined(flcomponent)
-			RestoreA5 (appA5);
-		#endif
 		}
 	#else
 	
@@ -1139,41 +1104,22 @@ static short runmodaldialog (void) {
 
 #else
 
-#if !TARGET_API_MAC_CARBON
-static RoutineDescriptor modalfilterdesc = BUILD_ROUTINE_DESCRIPTOR (uppModalFilterProcInfo, modaldialogcallback);
-#endif
 
 static short runmodaldialog (void) {
 	
 	short itemnumber;
-	#if TARGET_API_MAC_CARBON == 1
 	ModalFilterUPP filter = NewModalFilterUPP(modaldialogcallback);
-	#else	
-	ModalFilterUPP filter = &modalfilterdesc;
-	#endif
 		
 	setcursortype (cursorisarrow);
 	
 	shellmodaldialogmenuadjust ();
 	
-	#if flcomponent && !TARGET_API_MAC_CARBON
-		{
-		long appA5 = SetUpCurA5 (); /*for system*/
-		
-		ModalDialog (filter, &itemnumber);
-		
-		RestoreA5 (appA5);
-		}
-	#else
 	
 //while(itemnumber != 1 && itemnumber != 2 && itemnumber != 3)
 //	{
 		ModalDialog (filter, &itemnumber);
 //	}
-	#endif
-	#if TARGET_API_MAC_CARBON == 1
 	DisposeModalFilterUPP(filter);
-	#endif
 	shellforcemenuadjust ();
 	
 	return (itemnumber);
@@ -1312,7 +1258,6 @@ boolean dialogselectall (DialogPtr pdialog) {
 	
 	OSStatus		err = noErr;
 
-	#if TARGET_API_MAC_CARBON == 1
 		WindowClass 	wclass;
 		
 		/* 12/9/2004 smd: use carbon's casting function, as "(WindowRef)pdialog" doesn't work */
@@ -1331,9 +1276,6 @@ boolean dialogselectall (DialogPtr pdialog) {
 			
 	} /*dialogselectall*/
 		return 0;
-	#else
-		return (dialogsetselect (pdialog, 0, infinity));
-	#endif
 }
 
 #if 1	// !flruntime -- we can rely on the linker to omit these now
@@ -1373,14 +1315,10 @@ short savedialog (bigstring bsfname) {
 		return (1);
 	
 	ParamText (bsfname, nil, nil, nil);
-	#if TARGET_API_MAC_CARBON == 1
 	{
 	WindowRef pWind = GetDialogWindow(pdialog);
 	ShowWindow(pWind);
 	}
-	#else
-	ShowWindow (pdialog);
-	#endif	
 	
 	itemnumber = runmodaldialog ();
 	
@@ -1511,14 +1449,10 @@ boolean revertdialog (bigstring bsfname) {
 	
 	if ((pdialog = newmodaldialog (revertdialogid, revertokitem)) == nil)
 		return (false);
-	#if TARGET_API_MAC_CARBON == 1
 	{
 	WindowRef pWind = GetDialogWindow(pdialog);
 	ShowWindow(pWind);
 	}
-	#else
-	ShowWindow (pdialog);	
-	#endif
 	itemnumber = runmodaldialog ();
 	
 	disposemodaldialog (pdialog);
@@ -1546,32 +1480,24 @@ boolean askdialog (bigstring bsprompt, bigstring bsanswer) {
 	
 //	selectdialogtext (pdialog, askansweritem);
 	
-	#if TARGET_API_MAC_CARBON == 1
 	{
 	WindowRef pWind = GetDialogWindow(pdialog);
 	ShowWindow(pWind);
 	
 	}
-	#else
-	ShowWindow (pdialog);
-	#endif
 	
-	#if TARGET_API_MAC_CARBON == 1
 	
 		while (true) {
 	
-	#endif
 	
 	itemnumber = runmodaldialog ();
 	
-	#if TARGET_API_MAC_CARBON == 1
 	
 		if (itemnumber == askokitem || itemnumber == askcancelitem)
 			break;
 			
 		} /*while*/
 	
-	#endif
 	
 	getdialogtext (pdialog, askansweritem, bsanswer);
 	
@@ -1595,14 +1521,10 @@ boolean twowaydialog (bigstring bsprompt, bigstring okbutton, bigstring cancelbu
 	
 	dialogsetbuttonstring (pdialog, twowaycancelitem, cancelbutton);
 	
-	#if TARGET_API_MAC_CARBON == 1
 	{
 	WindowRef pWind = GetDialogWindow(pdialog);
 	ShowWindow(pWind);
 	}
-	#else
-	ShowWindow (pdialog);
-	#endif
 	
 	item = runmodaldialog ();
 	
@@ -1628,14 +1550,10 @@ short threewaydialog (bigstring bsprompt, bigstring yesbutton, bigstring nobutto
 	
 	dialogsetbuttonstring (pdialog, threewayyesitem, yesbutton);
 	
-	#if TARGET_API_MAC_CARBON == 1
 	{
 	WindowRef pWind = GetDialogWindow(pdialog);
 	ShowWindow(pWind);
 	}
-	#else
-	ShowWindow (pdialog);
-	#endif
 	item = runmodaldialog ();
 	
 	disposemodaldialog (pdialog);
@@ -1672,14 +1590,10 @@ boolean intdialog (bigstring bsprompt, short *intval) {
 	
 	selectdialogtext (pdialog, intintitem);
 	
-	#if TARGET_API_MAC_CARBON == 1
 	{
 	WindowRef pWind = GetDialogWindow(pdialog);
 	ShowWindow(pWind);
 	}
-	#else
-	ShowWindow (pdialog);
-	#endif
 	itemnumber = runmodaldialog ();
 
 	getdialogtext (pdialog, intintitem, bs);
@@ -1710,14 +1624,10 @@ boolean chardialog (bigstring bsprompt, short *charval) {
 	
 	selectdialogtext (pdialog, charvalitem);
 	
-	#if TARGET_API_MAC_CARBON == 1
 	{
 	WindowRef pWind = GetDialogWindow(pdialog);
 	ShowWindow(pWind);
 	}
-	#else
-	ShowWindow (pdialog);
-	#endif
 	while (true) {
 		
 		itemnumber = runmodaldialog ();
@@ -1770,14 +1680,10 @@ boolean msgdialog (bigstring bsprompt) {
 	
 	setdialogtext (pdialog, msgmsgitem, bsprompt);
 	
-	#if TARGET_API_MAC_CARBON == 1
 	{
 	WindowRef pWind = GetDialogWindow(pdialog);
 	ShowWindow(pWind);
 	}
-	#else
-	ShowWindow (pdialog);
-	#endif
 	itemnumber = runmodaldialog ();
 	
 	disposemodaldialog (pdialog);
@@ -1803,14 +1709,10 @@ short customalert (short id, bigstring bsprompt) {
 	
 	setdialogtext (pdialog, 2, bsprompt);
 	
-	#if TARGET_API_MAC_CARBON == 1
 	{
 	WindowRef pWind = GetDialogWindow(pdialog);
 	ShowWindow(pWind);
 	}
-	#else
-	ShowWindow (pdialog); /*make sure it's visible now that values are set*/
-	#endif
 	itemnumber = runmodaldialog ();
 	
 	DisposeDialog (pdialog);
@@ -1836,14 +1738,10 @@ boolean alertdialog (bigstring bsprompt) {
 	
 	setdialogtext (pdialog, alertmsgitem, bsprompt);
 	
-	#if TARGET_API_MAC_CARBON == 1
 	{
 	WindowRef pWind = GetDialogWindow(pdialog);
 	ShowWindow(pWind);
 	}
-	#else
-	ShowWindow (pdialog);
-	#endif
 	itemnumber = runmodaldialog ();
 	
 	disposemodaldialog (pdialog);
@@ -1879,14 +1777,10 @@ boolean customdialog (short id, short defaultitem, dialogcallback itemhitcallbac
 		
 		dialogselectall (pdialog); /*in case there's a text item*/
 		
-		#if TARGET_API_MAC_CARBON == 1
 		{
 		WindowRef pWind = GetDialogWindow(pdialog);
 		ShowWindow(pWind);
 		}
-		#else
-		ShowWindow (pdialog); /*make sure it's visible now that values are set*/
-		#endif
 				
 		while (true) {
 			
@@ -1918,16 +1812,10 @@ boolean askpassword (bigstring passprompt, bigstring password) {
 		return (false);
 		
 	setemptystring (password);
-	#if TARGET_API_MAC_CARBON == 1
 	{
 	WindowRef pWind = GetDialogWindow(pdialog);
 	SetWRefCon (pWind, (long) password);
 	}
-	#else
-
-	SetWRefCon (pdialog, (long) password);
-	
-	#endif
 	
 //	setdialogtext (pdialog, passworditem, password);	
 //	setdialogtext (pdialog, iditem, id);
@@ -1935,33 +1823,25 @@ boolean askpassword (bigstring passprompt, bigstring password) {
 	setdialogtext (pdialog, askansweritem, password);
 	
 	//selectdialogtext (pdialog, askansweritem);
-	#if TARGET_API_MAC_CARBON == 1
 	{
 	WindowRef pWind = GetDialogWindow(pdialog);
 	ShowWindow(pWind);
 	}
-	#else
-	ShowWindow (pdialog);
-	#endif
 	
 	passworditem = askansweritem;
 	
-	#if TARGET_API_MAC_CARBON == 1
 	
 		while (true) {
 	
-	#endif
 
 	itemnumber = runmodaldialog ();
 	
-	#if TARGET_API_MAC_CARBON == 1
 	
 		if (itemnumber == askokitem || itemnumber == askcancelitem)
 			break;
 			
 		} /*while*/
 
-	#endif
 	
 	passworditem = -1;
 	

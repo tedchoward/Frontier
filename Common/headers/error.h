@@ -40,11 +40,6 @@ extern boolean memoryerror (void);
 
 extern boolean oserror (OSErr);
 
-#ifdef WIN95VERSION
-	extern boolean winerror (void);
-	
-	extern boolean getwinerrormessage (OSErr, bigstring);
-#endif
 
 extern boolean initerror (void);
 

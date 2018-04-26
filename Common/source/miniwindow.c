@@ -404,9 +404,7 @@ static boolean minidrawmsg (void) {
 		
 		insetrect (&r, 1, 1);
 		
-		#ifdef MACVERSION
 		LMSetHiliteMode(LMGetHiliteMode() & ~(1 << hiliteBit));
-		#endif
 		
 		invertrect (r);
 		}
@@ -856,11 +854,9 @@ static void miniresize (void) {
 	
 	miniresizetextrects (r); /*left and right are the same as for msgrect*/
 	
-	#if TARGET_API_MAC_CARBON == 1
 	
 		drawthemeborder ((**hm).textrects [0], (**hw).contentrect); /*PBS 7.0b52: draw scan-lines border*/
 		
-	#endif
 	
 	//(**hm).flmassiveupdate = true; /*it don't get much more massive than this!*/
 	} /*miniresize*/
@@ -928,11 +924,9 @@ static boolean mininewwindow (callback setuproutine) {
 	
 	(**hm).gettargetdataroutine = (shellshortcallback) &falsenoop;
 	
-	#ifdef MACVERSION
 		(**hm).forecolor = blackColor;
 		
 		(**hm).backcolor = whiteColor;
-	#endif
 
 	(**hm).activetextitem = -1;
 	
@@ -975,9 +969,7 @@ static boolean mininewwindow (callback setuproutine) {
 		
 	windowzoom (w);
 	
-	#if TARGET_API_MAC_CARBON == 1 /*Make sure the window is fully drawn.*/
 		miniresize ();
-	#endif
 
 	shellpopglobals ();
 	

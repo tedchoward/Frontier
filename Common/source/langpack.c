@@ -234,11 +234,7 @@ boolean langpackvalue (tyvaluerecord val, Handle *h, hdlhashnode hnode) {
 				long double x = **val.data.doublevalue;
 				extended80 x80;
 				 
-				#ifdef WIN95VERSION
-					convertToMacExtended (x, &x80);
-				#else
 					safeldtox80 (&x, &x80);
-				#endif		
 									 
 				fl = langpackdata (sizeof (x80), &x80, hpackedvalue);
 				
@@ -669,11 +665,7 @@ unpack:
 				
 				if (fl) {
 					
-					#ifdef WIN95VERSION
-						convertFromMacExtended (&x, &x80);
-					#else
 						safex80told (&x80, &x);
-					#endif			
 					 
 					fl = setdoublevalue (x, &v);
 					
@@ -852,23 +844,13 @@ boolean langunpackwindowverb (hdltreenode hparam1, tyvaluerecord *vreturned) {
 	
 	fs = &fspec;
 	
-	#ifdef MACVERSION
 
 		if (macfilespecisvalid(fs))
 			langexternalsetdirty ((hdlexternalhandle) val.data.externalvalue, false);
 		else
 			fs = nil;
 		
-	#endif // MACVERSION
 	
-	#ifdef WIN95VERSION
-	
-		if ( isemptystring ( fsname ( fs ) ) )
-			fs = nil;
-		else
-			langexternalsetdirty ( ( hdlexternalhandle ) val.data.externalvalue, false );
-
-	#endif // WIN95VERSION
 
 	if (!langexternalzoomfilewindow (&val, fs, true)) {
 		

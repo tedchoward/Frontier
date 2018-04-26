@@ -174,15 +174,9 @@ typedef struct tydiskexternalhandle {
 	
 	short versionnumber; /*this structure is stored on disk*/
 	
-	#ifdef MACVERSION
 		tyexternalid id;
 		//byte unused;
-	#endif
 	
-	#ifdef WIN95VERSION
-		byte id;
-		byte unused;
-	#endif
 
 	} tydiskexternalhandle;
 #pragma options align=reset

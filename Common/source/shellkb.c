@@ -43,7 +43,6 @@ unsigned long timelastkeystroke = 0; /*the value of tickcount for last keystroke
 static boolean flouchlocked = false;	/*4.0b7 dmb*/
 
 
-#ifdef MACVERSION	
 
 static boolean shellfilterfontkey (long *codeword) {
 	
@@ -236,7 +235,6 @@ static boolean shellfilterfunctionkey (long *codeword) {
 	return (true);
 	} /*shellfilterfunctionkey*/
 
-#endif
 
 void shellhandlekeystroke (void) {
 	
@@ -257,10 +255,8 @@ void shellhandlekeystroke (void) {
 	*/
 	
 	unsigned int chkb;
-	#ifdef MACVERSION	
 		register boolean fl;
 		long codeword;
-	#endif
 	
 	timelastkeystroke = gettickcount ();
 	
@@ -269,7 +265,6 @@ void shellhandlekeystroke (void) {
 	if (!keyboardstatus.flautokey)	/*4.0b7 dmb: new non-repeating ouchs*/
 		flouchlocked = false;
 
-#ifdef MACVERSION	
 	if (shellfilterfunctionkey (&codeword) || shellfilterfontkey (&codeword)) {
 		
 		fl = shellpushfrontglobals ();
@@ -285,14 +280,12 @@ void shellhandlekeystroke (void) {
 			
 		return;
 		}
-#endif
 	
 	if (!shellcallkeyboardhooks ())
 		return;
 	
 	chkb = keyboardstatus.chkb; /*move into register*/
 
-#ifdef MACVERSION	
 	if (keyboardstatus.flcmdkey && (chkb >= chspace)) {
 		
 		if (chkb == '.') { /*cmd-period is consumed here*/
@@ -329,7 +322,6 @@ void shellhandlekeystroke (void) {
 		
 		return;
 		}
-#endif
 		
 	if (shellpushfrontglobals ()) { /*a window is open to close or receive keystroke*/
 	

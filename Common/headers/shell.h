@@ -54,9 +54,6 @@
 
 #endif
 
-#ifdef WIN95VERSION
-extern HWND findreplacewindow;
-#endif
 
 /*constants*/
 
@@ -735,9 +732,6 @@ extern void fileinit(void);
 
 extern void	fileshutdown(void);
 
-#ifdef WIN95VERSION
-void winscroll (boolean isvertscroll, int scrolltype, long pos);
-#endif
 
 extern void shellupdatewindow (WindowPtr); /*shellupdate.c*/
 
@@ -858,11 +852,6 @@ extern boolean shellgetdatabase (WindowPtr, hdldatabaserecord*);
 
 extern void shellwindowmenudirty (void); /*shellwindowmenu.c*/
 
-#ifdef WIN95VERSION
-	extern boolean shellprocessfindmessage (FINDREPLACE * fr);
-
-	extern void shelldestoycaretinmainthread (void);
-#endif
 
 #endif
 

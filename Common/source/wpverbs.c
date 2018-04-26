@@ -909,12 +909,7 @@ boolean wpedit (hdlexternalvariable hvariable, hdlwindowinfo hparent, ptrfilespe
 			return (true);
 			}
 
-		#ifdef MACVERSION
 			break;
-		#else
-			if (!shellyield (false))
-				return (false);
-		#endif
 		}
 	
 	rwindow = (**hwp).windowrect; // window comes up where it was last time
@@ -938,12 +933,10 @@ boolean wpedit (hdlexternalvariable hvariable, hdlwindowinfo hparent, ptrfilespe
 	
 		(**hi).fspec = *fs;
 		
-		#ifdef MACVERSION
 		
 			if (macfilespecisresolvable (fs))
 				SetWindowProxyCreatorAndType (w, 'LAND', 'FTwp', kOnSystemDisk);
 				
-		#endif
 		
 		}
 	

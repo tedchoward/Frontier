@@ -1535,11 +1535,9 @@ static boolean opxmlsetwindowverticalscrollstate (hdlhashtable ht, hdlwindowinfo
 		
 	opresetscrollbars (); /*make sure scrollbars are accurate*/
 
-	#ifdef MACVERSION
 	
 		shellupdatewindow ((**hinfo).macwindow);
 
-	#endif
 	
 	outlinewindowinfo = oldoutlinewindow;
 

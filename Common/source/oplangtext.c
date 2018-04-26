@@ -418,12 +418,10 @@ boolean opgetlangtext (hdloutlinerecord houtline, boolean flpretty, Handle *htex
 		
 		*htext = closehandlestream (&s);
 		
-		#ifdef MACVERSION
 
 			if (signature == 'ascr')
 				langaddapplescriptsyntax (*htext);
 			
-		#endif
 		
 		return (true);
 		}

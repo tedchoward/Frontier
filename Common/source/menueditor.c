@@ -992,11 +992,7 @@ static void mezoomdownwindow (WindowPtr w) {
 	//Must pass a CGrafPtr to pushport on OS X to avoid a crash
 	{
 	CGrafPtr	thePort;
-	#if TARGET_API_MAC_CARBON == 1
 	thePort = GetWindowPort(menuwindow);
-	#else
-	thePort = (CGrafPtr)menuwindow;
-	#endif
 		
 	pushport (thePort);
 	}
@@ -1012,11 +1008,7 @@ static void mezoomdownwindow (WindowPtr w) {
 	//Must pass a CGrafPtr to pushport on OS X to avoid a crash
 	{
 	CGrafPtr	thePort;
-	#if TARGET_API_MAC_CARBON == 1
 	thePort = GetWindowPort(menuwindow);
-	#else
-	thePort = (CGrafPtr)menuwindow;
-	#endif
 		
 	pushport (thePort);/*who knows what zoomport did to the port?*/
 	}
@@ -1045,9 +1037,7 @@ boolean mescriptwindowclosed (void) {
 	
 	(**hm).scriptwindowrect = r; /*remember for next time we zoom a script window*/
 	
-	#ifdef MACVERSION
 	mezoomdownwindow ((**hm).scriptwindow); /*zoom it back to its button*/
-	#endif
 	
 	(**hm).scriptwindow = nil;
 	
@@ -1059,11 +1049,7 @@ boolean mescriptwindowclosed (void) {
 	//Must pass a CGrafPtr to pushport on OS X to avoid a crash
 	{
 	CGrafPtr	thePort;
-	#if TARGET_API_MAC_CARBON == 1
 	thePort = GetWindowPort(menuwindow);
-	#else
-	thePort = (CGrafPtr)menuwindow;
-	#endif
 		
 	pushport (thePort);/*who knows what zoomport did to the port?*/
 	} 
@@ -1270,9 +1256,7 @@ static boolean mecmdkeypopup (void) {
 	hdlheadrecord hsummit;
 	boolean flgeneva9 = false;
 	
-	#if TARGET_API_MAC_CARBON
 		flgeneva9 = true;
-	#endif
 	
 	mecheckglobals ();
 	
@@ -1360,13 +1344,11 @@ boolean memousedown (Point pt, tyclickflags flags) {
 	hm = menudata;
 
 			
-	#ifdef MACVERSION /*7.0b23 PBS: check for ctrl-clicking on Macs*/
 
 		if (keyboardstatus.ctmodifiers && keyboardstatus.flcontrolkey) {
 			return (oprmousedown (pt, flags)); /*Call right-click routine.*/
 		}
 
-	#endif
 
 	if (pointinrect (pt, (**(**hm).menuoutline).outlinerect)) {
 		
@@ -1472,10 +1454,6 @@ boolean mekeystroke (void) {
 	//tydirection dir = keyboardstatus.keydirection;
 	boolean flcmdkey = keyboardstatus.flcmdkey;
 	
-	#ifdef WIN95VERSION
-		if (keyboardstatus.flcontrolkey)
-			flcmdkey = true;
-	#endif
 
 	
 	if ((chkb == chenter) && flcmdkey) {
@@ -2038,11 +2016,9 @@ void meupdate (void) {
 	
 	medisplayuseritems ();
 	
-	#if TARGET_API_MAC_CARBON == 1
 	
 		shelldrawwindowmessage (shellwindowinfo);
 	
-	#endif
 
 	} /*meupdate*/
 

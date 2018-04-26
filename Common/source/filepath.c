@@ -35,15 +35,12 @@
 #include "file.h"
 #include "launch.h" // 2005-07-18 creedon
 
-#ifdef MACVERSION
 
 	#include <CoreFoundation/CFString.h> // 2006-08-10 creedon
 	#include <sys/param.h> // 2006-10-16 creedon
 
-#endif // MACVERSION
 
 
-#ifdef MACVERSION
 
 	static tyfilespec fsdefault; // we maintain our own default directory
 
@@ -101,7 +98,6 @@
 		return success;
 	} // directorytopath
 
-#endif
 
 
 boolean filegetdefaultpath ( ptrfilespec fs ) {
@@ -110,34 +106,12 @@ boolean filegetdefaultpath ( ptrfilespec fs ) {
 	// 2006-06-25 creedon: for Mac, FSRef-ized
 	//
 	
-	#ifdef MACVERSION
 	
 		*fs = fsdefault;
 		
 		return ( true );
 
-	#endif
 
-	#ifdef WIN95VERSION
-	
-		DWORD sz;
-
-		sz = GetCurrentDirectory (257, stringbaseaddress (fsname (fs)));
-		
-		if (sz == 0) {
-			
-			oserror (GetLastError ());
-			
-			return (false);
-			}
-		
-		strcat (stringbaseaddress (fsname (fs)), "\\");
-
-		setstringlength(fsname (fs), sz + 1);
-		
-		return (true);
-		
-	#endif		
 	} /*filegetdefaultpath*/
 
 
@@ -147,7 +121,6 @@ boolean filesetdefaultpath ( const ptrfilespec fs ) {
 	// 2006-06-18 creedon: for Mac, FSRef-ized
 	//
 	
-	#ifdef MACVERSION
 
 		setfserrorparam ( fs );
 		
@@ -155,23 +128,7 @@ boolean filesetdefaultpath ( const ptrfilespec fs ) {
 		
 		return (true);
 		
-	#endif
 
-	#ifdef WIN95VERSION
-	
-		if (isemptystring (fsname (fs)))
-			return (true);
-		
-		if (!SetCurrentDirectory (stringbaseaddress(fsname (fs)))) {
-			
-			oserror (GetLastError ());
-			
-			return (false);
-			}
-
-		return (true);
-		
-	#endif
 	
 	} // filesetdefaultpath
 
@@ -191,7 +148,6 @@ boolean filespectopath (const ptrfilespec fs, bigstring bspath) {
 	//				special case here, and return the empty string as the path
 	//
 	
-	#ifdef MACVERSION
 	
 		boolean flfolder;
 		
@@ -215,29 +171,11 @@ boolean filespectopath (const ptrfilespec fs, bigstring bspath) {
 		
 		return (true);
 		
-	#endif
 
-	#ifdef WIN95VERSION
-	
-		// 5.0d12 dmb: use GetFullPath to clean up 8.3 names
-		char * fileptr;
-		
-		copyptocstring (fsname (fs), bspath);
-		
-		GetFullPathName (bspath, lenbigstring, bspath, &fileptr);
-
-		convertcstring (bspath);
-		
-		nullterminate (bspath);
-
-		return (true);
-		
-	#endif
 	
 	} // filespectopath
 
 
-#ifdef MACVERSION
 
 OSStatus pathtofsref ( bigstring bspath, FSRef *ref ) {
 
@@ -270,7 +208,6 @@ OSStatus pathtofsref ( bigstring bspath, FSRef *ref ) {
 	return FSPathMakeRef((UInt8*) str, ref, NULL);
 	} /*pathtofsref*/
 
-#endif
 
 
 boolean pathtofilespec ( bigstring bspath, ptrfilespec fs ) {
@@ -306,23 +243,17 @@ boolean pathtofilespec ( bigstring bspath, ptrfilespec fs ) {
 	//                 non-existant files, we don't give up right away.
 	//
 	
-	#ifdef MACVERSION
 		FSRef fsr;
 		bigstring bspathtmp, bsfullpath, bsfile, bsfolder;
 		short ix = 1;
 		boolean flvolume = false;
-	#endif
 
-	#ifdef WIN95VERSION
-		bigstring bsfolder;
-	#endif
 
 	clearbytes ( fs, sizeof ( *fs ) );
 
 	if ( isemptystring ( bspath ) )
 		return ( true );
 		
-	#ifdef MACVERSION
 
 		// create cleaned-up full path representation of our input suitable for pathtosref
 	
@@ -384,26 +315,7 @@ boolean pathtofilespec ( bigstring bspath, ptrfilespec fs ) {
 		
 		return ( false );
 		
-	#endif
 
-	#ifdef WIN95VERSION
-	
-		copystring (bspath, fsname (fs));
-
-		folderfrompath (bspath, bsfolder);
-
-		if ((isemptystring (bsfolder)) && (! fileisvolume(fs))) {
-
-			filegetdefaultpath (fs);
-
-			pushstring (bspath, fsname (fs));
-			}
-		
-		nullterminate (fsname (fs));
-		
-		return (true);
-
-	#endif
 
 	} // pathtofilespec
 
@@ -422,29 +334,12 @@ boolean setfsfile ( ptrfilespec fs, bigstring bsfile ) {
 	//			     somehow screwed up when called to set the filename to Frontier.root so that it wouldn't be found.
 	//
 	
-	#ifdef MACVERSION
 		
 		bigstringtofsname (bsfile, &fs->name);
 		
 		return ( true );
 		
-	#endif
 
-	#ifdef WIN95VERSION
-	
-		bigstring bsfolder;
-		
-		folderfrompath (fsname (fs), bsfolder);
-		
-		pushstring (bsfile, bsfolder);
-
-		copystring (bsfolder, fsname (fs));
-
-		nullterminate (fsname (fs));
-
-		return (true);
-		
-	#endif
 	
 	} // setfsfile
 
@@ -457,7 +352,6 @@ boolean getfsfile ( const ptrfilespec fs, bigstring bsfile ) {
 	// 2006-06-18 creedon: for Mac, FSRef-ized
 	//
 	
-	#ifdef MACVERSION
 		
 		macgetfilespecnameasbigstring ( fs, bsfile );
 				
@@ -470,15 +364,7 @@ boolean getfsfile ( const ptrfilespec fs, bigstring bsfile ) {
 		
 		return ( filegetvolumename ( vnum, bsfile ) );
 		
-	#endif
 	
-	#ifdef WIN95VERSION
-	
-		lastword ((ptrstring) fs -> fullSpecifier, '\\', bsfile);
-
-		return (true);
-		
-	#endif
 	} // getfsfile
 
 
@@ -492,7 +378,6 @@ boolean getfsvolume ( const ptrfilespec fs, long *vnum ) {
 	//					don't expand partial paths using the default directory.
 	//
 
-	#ifdef MACVERSION
 	
 		FSCatalogInfo catalogInfo;
 		OSErr err = FSGetCatalogInfo ( &fs->ref, kFSCatInfoVolume, &catalogInfo, NULL, NULL, NULL );
@@ -504,15 +389,7 @@ boolean getfsvolume ( const ptrfilespec fs, long *vnum ) {
 
 		return ( err == noErr );
 		
-	#endif
 	
-	#ifdef WIN95VERSION
-
-		*vnum = 0;
-	
-		return ( true );
-		
-	#endif
 	
 	} // getfsvolume
 
@@ -530,13 +407,11 @@ void initfsdefault (void) {
 	// 2005-07-18 creedon, karstenw: created
 	//
     
-	#ifdef MACVERSION
 	
 		getapplicationfilespec ( nil, &fsdefault );
 		
         macgetfilespecparent ( &fsdefault, &fsdefault );
         
-	#endif
 	
 	} /* initfsdefault */
 

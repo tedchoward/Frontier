@@ -28,9 +28,7 @@
 #include "frontier.h"
 #include "standard.h"
 
-#ifdef MACVERSION
 	#include "mac.h"
-#endif
 
 #include "error.h"
 #include "memory.h"
@@ -244,17 +242,8 @@ void shorttostring (short shortval, bigstring bs) {
 
 void numbertostring (long longval, bigstring bs) {
 	
-#ifdef MACVERSION
 	NumToString (longval, bs);
-#endif
 
-#ifdef WIN95VERSION
-	wsprintf (bs, "%ld", longval);
-
-	#ifdef PASCALSTRINGVERSION
-		convertcstring (bs);
-	#endif
-#endif
 	} /*numbertostring*/
 
 
@@ -286,13 +275,7 @@ boolean stringtonumber (bigstring bs, long *longval) {
 		*longval = 0;
 		}
 	else {	
-		#ifdef MACVERSION	
 			StringToNum (bs, longval);
-		#endif
-		#ifdef WIN95VERSION
-			nullterminate (bs);
-			sscanf (stringbaseaddress(bs), "%ld", longval);
-		#endif
 		}
 	
 	return (true);
@@ -316,61 +299,6 @@ boolean stringtoshort (bigstring bs, short *shortval) {
 	} /*stringtoshort*/
 
 
-#ifdef WIN95VERSION /* 3.0.4 dmb: was if __powerc */
-
-	boolean stringtofloat (bigstring bs, double *pfloat) {
-		
-		/*
-		3.0.2b1 dmb: C lib version for PPC
-		*/
-		
-		bigstring bstest;
-		
-		nthword (bs, 1, '.', bstest);
-		
-		if (!isallnumeric (bstest))
-			return (false);
-		
-		nthword (bs, 2, '.', bstest);
-		
-		if (!isallnumeric (bstest))
-			return (false);
-		
-	//	moveleft (bs + 1, bstest, stringlength (bs));
-		
-	//	bstest [stringlength (bs)] = chnul;
-		
-		/*
-		sscanf((char *) bstest, "%lf", pfloat);
-		*/
-		nullterminate (bs);
-		*pfloat = atof ((char *) stringbaseaddress(bs));
-		
-		return (*pfloat != HUGE_VAL);
-		} /*stringtofloat*/
-	
-	
-	boolean floattostring (double num, bigstring bs) {
-		
-		/*
-		3.0.2b1 dmb: C lib version for PPC
-		*/
-		
-		sprintf (bs, "%08.8lf", num);
-	//	sprintf ((char *) bs, "%lf", num);
-
-		convertcstring (bs);
-		
-		while (bs [*bs] == '0')
-			--*bs;
-		
-		if (bs [*bs] == '.')
-			pushchar ('0', bs);
-		
-		return (true);
-		} /*floattostring*/
-
-#else
 
 	#define Decimal decimal
 	#define DecForm decform
@@ -467,7 +395,6 @@ boolean stringtoshort (bigstring bs, short *shortval) {
 		return (true);
 		} /*floattostring*/
 
-#endif
 
 long numberfromhandle (register Handle x) {
 	
@@ -513,17 +440,9 @@ void exittooperatingsystem (void) {
 	unconditional exit to the operating system.
 	*/
 	
-#ifdef MACVERSION
 
 	ExitToShell ();
-#endif
 
-#ifdef WIN95VERSION
-
-//	ExitProcess (0);
-//	PostQuitMessage (0);
-	DestroyWindow (shellframewindow);
-#endif
 	} /*exittooperatingsystem*/
 	
 	
@@ -687,45 +606,21 @@ boolean falsenoop (void) {
 
 static boolean gestaltavailable (void) {
 
-	#ifdef MACVERSION
-		#if TARGET_API_MAC_CARBON == 1
 		//Code change by Timothy Paustian Friday, June 9, 2000 9:55:04 PM
 		//Changed to Opaque call for Carbon
 		//Gestalt is available for OS 9 and X
 		return true;
-		#else
-
-		long gestaltaddr;
-		long unimplementedaddr;
-		
-		gestaltaddr = (long) NGetTrapAddress (gestalttrap, ToolTrap);
-		
-		unimplementedaddr = (long) NGetTrapAddress (unimplementedtrap, ToolTrap);
-		
-		return (unimplementedaddr != gestaltaddr);	
-		#endif
-	#else
-	
-		return (false);
-
-	#endif
 	} /*gestaltavailable*/
 
 
 boolean gestalt (OSType selector, long *result) {
 	
-	#ifdef MACVERSION
 
 		if (!gestaltavailable ())
 			return (false);
 		
 		return (Gestalt (selector, result) == noErr);
 
-	#else
-	
-		return (false);
-
-	#endif
 	} /*gestalt*/
 
 
@@ -860,7 +755,6 @@ void safeldtox80 ( const long double *x, extended80 *x80 ) {
 
 void getsystemversionstring ( bigstring bs, bigstring bsextrainfo ) {
 
-	#ifdef MACVERSION
 	
 		//
 		// 2007-06-29 creedon: bug fix for os version numbers like 10.4.10,
@@ -888,34 +782,7 @@ void getsystemversionstring ( bigstring bs, bigstring bsextrainfo ) {
 		if ( bsextrainfo != NULL )
 			setemptystring ( bsextrainfo );
 		
-	#endif // MACVERSION
 	
-	#ifdef WIN95VERSION
-	
-		OSVERSIONINFO osinfo;
-
-		osinfo.dwOSVersionInfoSize = sizeof (OSVERSIONINFO);
-
-		GetVersionEx (&osinfo);
-
-		numbertostring (osinfo.dwMajorVersion, bs);
-		
-		pushchar ('.', bs);
-		
-		pushint (LOWORD(osinfo.dwMinorVersion), bs);
-
-		if (LOWORD(osinfo.dwBuildNumber)) {
-		
-			pushchar ('.', bs);
-			
-			pushint (LOWORD (osinfo.dwBuildNumber), bs);
-			
-			}
-		
-		if ( bsextrainfo != NULL )
-			copyctopstring ( osinfo.szCSDVersion, bsextrainfo );
-			
-	#endif // WIN95VERSION
 	
 	} // getsystemversionstring
 

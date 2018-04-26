@@ -69,9 +69,7 @@
 
 static boolean scriptdebuggereventloop (void);
 
-#if TARGET_API_MAC_CARBON == 1 /*PBS 03/14/02: AE OS X fix.*/
 	#include "aeutils.h"
-#endif
 
 
 enum {
@@ -792,7 +790,6 @@ static boolean scriptinvalbuttonsvisit (WindowPtr w, ptrvoid refcon) {
 	
 	invalwindowrect (shellwindow, r);
 	
-	#if TARGET_API_MAC_CARBON == 1
 	
 		GetPortBounds (GetWindowPort (w), &r);	
 	
@@ -802,7 +799,6 @@ static boolean scriptinvalbuttonsvisit (WindowPtr w, ptrvoid refcon) {
 		
 		popclip ();
 		
-	#endif
 		
 	shellpopglobals ();
 	
@@ -1485,15 +1481,9 @@ static pascal OSErr handlerecordedtext (const AppleEvent *event, AppleEvent *rep
 	if (err != noErr)
 		return (err);
 	
-	#if TARGET_API_MAC_CARBON == 1 /*PBS 03/14/02: AE OS X fix.*/
 	
 		datahandletostring (&desc, bs);
 	
-	#else
-	
-		texthandletostring (desc.dataHandle, bs);
-	
-	#endif
 	
 	stringdeletechars (bs, chnul);
 	
@@ -1541,7 +1531,6 @@ static pascal OSErr handlerecordedtext (const AppleEvent *event, AppleEvent *rep
 		}
 	else
 		
-		#if TARGET_API_MAC_CARBON == 1 /*PBS 03/14/02: AE OS X fix.*/
 		
 			{
 			Handle hcopy;
@@ -1553,11 +1542,6 @@ static pascal OSErr handlerecordedtext (const AppleEvent *event, AppleEvent *rep
 			disposehandle (hcopy);
 			}
 		
-		#else
-		
-			floutline = isoutlinetext (desc.dataHandle);
-	
-		#endif
 		
 	diff = indent - (**hd).lastindent;
 	
@@ -1575,7 +1559,6 @@ static pascal OSErr handlerecordedtext (const AppleEvent *event, AppleEvent *rep
 		
 		if (floutline)
 			
-			#if TARGET_API_MAC_CARBON == 1 /*PBS 03/14/02: AE OS X fix.*/
 			
 				{
 				Handle hcopy;
@@ -1585,11 +1568,6 @@ static pascal OSErr handlerecordedtext (const AppleEvent *event, AppleEvent *rep
 				opinserthandle (hcopy, dir);
 				}
 			
-			#else
-			
-				opinserthandle (desc.dataHandle, dir);
-		
-			#endif
 			
 		else {
 			
@@ -2204,11 +2182,9 @@ static boolean scriptbuttondisplayed (short buttonnum) {
 			return (false);
 		#endif
 		
-		#if TARGET_API_MAC_CARBON == 1 /*PBS 7.0b43: no record button in OS X*/
 		
 			return (false);
 		
-		#endif
 		
 		case runbutton:
 		case debugbutton:
@@ -3252,9 +3228,6 @@ static void scriptresize (void) {
 	
 	opresize ((**outlinewindowinfo).contentrect);
 	
-	#ifdef WIN95VERSION
-		opupdatenow ();
-	#endif
 	} /*scriptresize*/
 
 
@@ -3507,16 +3480,9 @@ static boolean scriptkeystroke (void) {
 
 	if (scriptinmenubar ()) { /*lives in menubar*/
 		
-		#ifdef MACVERSION
 		if (keyboardstatus.chkb == chenter)
 			
 			if (keyboardstatus.flcmdkey && keyboardstatus.flshiftkey) {
-		#endif
-		#ifdef WIN95VERSION
-		if (keyboardstatus.chkb == chbackspace)
-			
-			if (keyboardstatus.flshiftkey) {
-		#endif
 				shellbringtofront ((**outlinewindowinfo).parentwindow);
 				
 				if (keyboardstatus.floptionkey)
@@ -3823,11 +3789,9 @@ static boolean scriptmousedown (Point pt, tyclickflags flags) {
 	Rect rmsg;
 	boolean flgeneva9 = false;
 	
-	#if TARGET_API_MAC_CARBON == 1
 	
 		flgeneva9 = true;
 		
-	#endif
 	
 	scriptgetpopuprect (&rmsg);
 	
@@ -4122,11 +4086,9 @@ static void scriptupdate (void) {
 	it doesn't exist on Windows. This was the site of a display glitch on Windows.
 	*/
 
-	#ifdef MACVERSION
 	
 		scriptupdateserverpopup ();
 	
-	#endif
 	
 	opupdate ();
 	} /*scriptupdate*/
@@ -4402,19 +4364,11 @@ boolean initscripts (void) {
 	
 #ifdef flcomponent
 
-	#if TARGET_API_MAC_CARBON == 1
 	
 		AEInstallEventHandler (kOSASuite, kOSARecordedText, NewAEEventHandlerUPP (handlerecordedtext), 0, false);
 		
 		AEInstallEventHandler ('ToyS', kAENotifyStopRecording, NewAEEventHandlerUPP (handlestoprecording), 0, false);
 	
-	#else
-
-		AEInstallEventHandler (kOSASuite, kOSARecordedText, NewAEEventHandlerProc (handlerecordedtext), 0, false);
-		
-		AEInstallEventHandler ('ToyS', kAENotifyStopRecording, NewAEEventHandlerProc (handlestoprecording), 0, false);
-	
-	#endif
 	
 #endif
 	

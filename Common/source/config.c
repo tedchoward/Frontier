@@ -25,13 +25,8 @@
 
 ******************************************************************************/
 
-#ifdef MACVERSION
 #include <standard.h>
-#endif
 
-#ifdef WIN95VERSION
-#include "standard.h"
-#endif
 
 #include "memory.h"
 #include "quickdraw.h"
@@ -44,14 +39,8 @@
 #include "shell.h"
 
 
-#ifdef MACVERSION
 #define configresourcetype 'cnfg'
-#endif
 
-#ifdef WIN95VERSION
-//#define configresourcetype 1000
-#define configresourcetype 'cnfg'
-#endif
 
 tyconfigrecord config;
 
@@ -80,12 +69,7 @@ static void initconfigrecord (tyconfigrecord *configrecord) {
 	
 	(*p).filetype = typeunknown;
 
-#ifdef MACVERSION
 	(*p).defaultfont = systemFont;
-#endif
-#ifdef WIN95VERSION
-	(*p).defaultfont = 0;
-#endif
 
 	(*p).defaultsize = 12;
 	} /*initconfigrecord*/

@@ -25,7 +25,6 @@
 
 ******************************************************************************/
 
-#ifdef MACVERSION /*Mac-only feature*/
 
 #include "shelltypes.h"
 
@@ -48,4 +47,3 @@ boolean playerplaymovie (void);
 
 boolean playerstopmovie (void);
 
-#endif /*MACVERSION -- Mac-only feature*/

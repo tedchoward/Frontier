@@ -28,14 +28,7 @@
 #define iconinclude
 
 
-#ifdef WIN95VERSION
-	#define atVerticalCenter	0x01
-	#define atHorizontalCenter	0x02
-	#define kTransformSelected	0x04
-	#define kAlignAbsoluteCenter	(atVerticalCenter | atHorizontalCenter)
-#endif
 
-#ifdef MACVERSION /*7.0b9 PBS: tycustomicontypeinfo is for Mac custom icons*/
 
 #define maxcustomicontypes 20
 
@@ -49,7 +42,6 @@ struct tycustomicontypeinfo {
 	}; 
 
 
-#endif
 
 /*function prototypes*/
 extern boolean ploticonfromodb (const Rect *r, short align, short transform, bigstring bsadricon);

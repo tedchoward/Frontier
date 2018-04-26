@@ -1524,7 +1524,6 @@ static boolean stringtorgb (tyvaluerecord *val) {
 
 static boolean stringtopattern (tyvaluerecord *val) {
 	
-#ifdef MACVERSION
 	/*
 	10/14/91 dmb: implemented.
 	*/
@@ -1559,7 +1558,6 @@ static boolean stringtopattern (tyvaluerecord *val) {
 	error:
 	
 	langparamerror (patterncoerceerror, bs);
-#endif
 	
 	return (false);
 	} /*stringtopattern*/
@@ -1614,15 +1612,10 @@ static boolean rgbtostring (RGBColor rgb, bigstring bs) {
 
 
 static boolean patterntostring (Pattern pat, bigstring bs) {
-#ifdef MACVERSION
 	bytestohexstring (&pat, sizeof (Pattern), bs);
 	
 	return (true);
-#endif
 
-#ifdef WIN95VERSION
-	return (false);
-#endif
 	} /*patterntostring*/
 
 
@@ -2093,12 +2086,10 @@ boolean coercetolong (tyvaluerecord *v) {
 			
 			break;
 
-#ifdef MACVERSION		
 		case fixedvaluetype:
 			x = (long) FixRound ((*v).data.fixedvalue);
 			
 			break;
-#endif
 			
 		case singlevaluetype:
 			f = (*v).data.singlevalue;
@@ -2657,7 +2648,6 @@ boolean coercetorgb (tyvaluerecord *v) {
 
 
 static boolean coercetopattern (tyvaluerecord *v) {
-#ifdef MACVERSION	
 	switch ((*v).valuetype) {
 		
 		case patternvaluetype:
@@ -2684,16 +2674,11 @@ static boolean coercetopattern (tyvaluerecord *v) {
 			
 			return (false);
 		} /*switch*/
-#endif
 
-#ifdef WIN95VERSION
-	return (false);
-#endif
 	} /*coercetopattern*/
 
 
 static boolean coercetofixed (tyvaluerecord *v) {
-#ifdef MACVERSION	
 	/*
 	6/29/92 dmb: added support for single & double types
 	
@@ -2753,13 +2738,7 @@ static boolean coercetofixed (tyvaluerecord *v) {
 		} /*switch*/
 	
 	return (setfixedvalue (x, v));
-#endif
 
-#ifdef WIN95VERSION
-	langparamerror (unimplementedverberror, bsfunctionname);
-
-	return (false);
-#endif
 	} /*coercetofixed*/
 
 
@@ -2908,15 +2887,9 @@ static boolean coercetodouble (tyvaluerecord *v) {
 
 			/*now convert to actual double value*/
 
-#ifdef WIN95VERSION
-			memmove (&x80, *((*v).data.doublevalue), sizeof (x80));
-
-			convertFromMacExtended (&lx, &x80);
-#else
 			x80 = (**(extended80 **) (*v).data.doublevalue);
 
 			safex80told (&x80, &lx);
-#endif
 			return (setdoublevalue (lx, v));
 		}
 #else
@@ -3043,26 +3016,13 @@ boolean coercetofilespec (tyvaluerecord *v) {
 				
 			if (equaltextidentifiers (stringbaseaddress(bs), stringbaseaddress(fileurl), stringlength(fileurl) )) {
 				
-				#ifdef WIN95VERSION
-				short ix = 0;
-				#endif
 				
 				/* Convert string to standard file string.*/
 				deletestring (bs, 1, stringlength (fileurl));
 				
 				decode (bs);
 
-				#ifdef MACVERSION
 					stringreplaceall ('/', ':', bs);
-				#endif
-				#ifdef WIN95VERSION
-					if (scanstring ('/', bs, &ix)) {
-						if (getstringcharacter(bs, ix-2) != ':')
-							midinsertstring ("\x01" ":", bs, ix);
-						}
-
-					stringreplaceall ('/', '\\', bs);
-				#endif
 				}
 			
 			if (!pathtofilespec (bs, &fs)) {
@@ -6334,12 +6294,10 @@ boolean addvalue (tyvaluerecord v1, tyvaluerecord v2, tyvaluerecord *vreturned) 
 			
 			break;
 		
-	#ifdef MACVERSION
 		case fixedvaluetype:
 			(*vreturned).data.fixedvalue = v1.data.fixedvalue + v2.data.fixedvalue;
 			
 			break;
-	#endif
 		
 		case singlevaluetype:
 			(*vreturned).data.singlevalue = v1.data.singlevalue + v2.data.singlevalue;
@@ -6482,12 +6440,10 @@ boolean subtractvalue (tyvaluerecord v1, tyvaluerecord v2, tyvaluerecord *vretur
 			(*vreturned).data.datevalue = v1.data.datevalue - v2.data.datevalue;
 			
 			break;
-#ifdef MACVERSION		
 		case fixedvaluetype:
 			(*vreturned).data.fixedvalue = v1.data.fixedvalue - v2.data.fixedvalue;
 			
 			break;
-#endif		
 		case singlevaluetype:
 			(*vreturned).data.singlevalue = v1.data.singlevalue - v2.data.singlevalue;
 			
@@ -6598,12 +6554,10 @@ boolean multiplyvalue (tyvaluerecord v1, tyvaluerecord v2, tyvaluerecord *vretur
 			(*vreturned).data.datevalue = v1.data.datevalue * v2.data.datevalue;
 			
 			break;
-#ifdef MACVERSION		
 		case fixedvaluetype:
 			(*vreturned).data.fixedvalue = FixMul (v1.data.fixedvalue, v2.data.fixedvalue);
 			
 			break;
-#endif
 			
 		case singlevaluetype:
 			(*vreturned).data.singlevalue = v1.data.singlevalue * v2.data.singlevalue;
@@ -7327,10 +7281,8 @@ boolean unaryminusvalue (tyvaluerecord v1, tyvaluerecord *vreturned) {
 			(*vreturned).data.longvalue = -v1.data.longvalue;
 			
 			break;
-#ifdef MACVERSION		
 		case fixedvaluetype:
 			(*vreturned).data.fixedvalue = -v1.data.fixedvalue;
-#endif		
 		case singlevaluetype:
 			(*vreturned).data.singlevalue = -v1.data.singlevalue;
 			
@@ -8755,7 +8707,6 @@ static boolean builtinvalue (tyfunctype token, hdltreenode hparam1, tyvaluerecor
 		case setobjspecfunc:
 			return (setobjspecverb (hp1, v));
 		
-		#ifdef MACVERSION
 
 			case gestaltfunc: {
 				OSType selector;
@@ -8771,7 +8722,6 @@ static boolean builtinvalue (tyfunctype token, hdltreenode hparam1, tyvaluerecor
 				
 				return (setlongvalue (result, v));
 				}
-		#endif
 			
 		case syscrashfunc: {
 			

@@ -28,10 +28,8 @@
 #include "frontier.h"
 #include "standard.h"
 
-#ifdef MACVERSION
 #include <land.h>
 #define wsprintf sprintf
-#endif
 
 #include "ops.h"
 #include "memory.h"
@@ -360,27 +358,13 @@ boolean frontierversion (tyvaluerecord *v) { //6.1d1 AR: needed in langhtml.c
 
 boolean sysos (tyvaluerecord *v) { //6.1d1 AR: needed in langhtml.c
 
-	#ifdef MACVERSION
 		//#if TARGET_API_MAC_CARBON == 1
 		//return (setstringvalue(osCarbon, v));
 		//#else
 		return (setstringvalue (osMacOS, v));
-	#endif
 	
 	//#endif
 	
-	#ifdef WIN95VERSION
-		OSVERSIONINFO osinfo;
-
-		osinfo.dwOSVersionInfoSize = sizeof (OSVERSIONINFO);
-
-		GetVersionEx (&osinfo);
-
-		if (osinfo.dwPlatformId == VER_PLATFORM_WIN32_NT)
-			return (setstringvalue (osWinNT, v));
-
-		return (setstringvalue (osWin95, v));
-	#endif
 	} /*sysos*/
 
 
@@ -439,19 +423,10 @@ static boolean sysfunctionvalue (short token, hdltreenode hparam1, tyvaluerecord
 		
 		case browsenetworkfunc:
 		
-			#ifdef MACVERSION
 			
 				return (langipcbrowsenetwork (hparam1, v));
 				
-			#endif
 			
-			#ifdef WIN95VERSION
-			
-				#pragma message ("WIN95: browsenetworkfunc - not yet implemented!")
-			
-				break;
-				
-			#endif
 
 		case apprunningfunc: {
 			OSType appid;
@@ -554,19 +529,8 @@ static boolean sysfunctionvalue (short token, hdltreenode hparam1, tyvaluerecord
 			{
 			unsigned long memavail;
 
-			#ifdef WIN95VERSION
-				MEMORYSTATUS meminfo;
 
-				meminfo.dwLength = sizeof (MEMORYSTATUS);
-
-				GlobalMemoryStatus (&meminfo);
-
-				memavail = meminfo.dwAvailVirtual;
-			#endif
-
-			#ifdef MACVERSION
 				memavail = TempFreeMem();
-			#endif
 			
 			if (!langcheckparamcount (hparam1, 0)) /*shouldn't have any parameters*/
 				return (false);
@@ -576,27 +540,13 @@ static boolean sysfunctionvalue (short token, hdltreenode hparam1, tyvaluerecord
 		
 		case machinefunc:
 			
-			#ifdef MACVERSION
 				//Code change by Timothy Paustian Friday, June 16, 2000 3:13:09 PM
 				//Changed to Opaque call for Carbon
 				//Carbon only runs on PPC
-				#if TARGET_API_MAC_CARBON
 				return (setstringvalue (machinePPC, v));
-				#else
-				#if GENERATINGPOWERPC
-				return (setstringvalue (machinePPC, v));
-				#endif
-				#if GENERATING68K
-				return (setstringvalue (machine68K, v));
-				#endif
-				#endif
 
 				
-			#endif
 			
-			#ifdef WIN95VERSION
-				return (setstringvalue (machinex86, v));
-			#endif
 
 			break;
 
@@ -604,70 +554,7 @@ static boolean sysfunctionvalue (short token, hdltreenode hparam1, tyvaluerecord
 			return (sysos (v));
 			break;
 
-		#ifdef WIN95VERSION
-			case getenvironmentvariablefunc: {
-				bigstring bsenvname;
-				bigstring buf;
-				DWORD res;
-				
-				flnextparamislast = true;
-				
-				if (!getstringvalue (hparam1, 1, bsenvname))
-					return (false);
-
-				nullterminate(bsenvname);
-
-				res = GetEnvironmentVariable (stringbaseaddress(bsenvname), stringbaseaddress(buf), sizeof(buf)-2);
-
-				if (res > sizeof(buf) - 2) {
-					return (setbooleanvalue (false, v));		//safety valve
-					}
-
-				setstringlength (buf, res);
-
-				return (setstringvalue (buf, v));
-				}
-				break;
-
-			case setenvironmentvariablefunc: {
-				bigstring bsenvname;
-				bigstring bsenvval;
-				bigstring bserror, bserror2;
-				boolean res;
-				
-				if (!getstringvalue (hparam1, 1, bsenvname))
-					return (false);
-
-				flnextparamislast = true;
-				
-				if (!getstringvalue (hparam1, 2, bsenvval))
-					return (false);
-
-				nullterminate(bsenvname);
-				nullterminate(bsenvval);
-
-				res = SetEnvironmentVariable (stringbaseaddress(bsenvname), stringbaseaddress(bsenvval));
-
-				if (res) {
-					return (setbooleanvalue (true, v));	
-					}
-
-				getsystemerrorstring (GetLastError(), bserror);
-
-				nullterminate(bserror);
-
-				wsprintf (bserror2, "Can't set environment variable \"%s\" to \"%s\" because %s", stringbaseaddress (bsenvname), stringbaseaddress (bsenvval), stringbaseaddress (bserror));
-
-				setstringlength (bserror2, strlen(stringbaseaddress(bserror2)));
-
-				shellerrormessage (bserror2);
-
-				return (setbooleanvalue (false, v));	
-				}
-				break;
-		#endif
 		
-		#if TARGET_API_MAC_CARBON == 1
 		
 			case unixshellcommandfunc: { /*7.0b51 PBS: call shell on OS X*/
 			
@@ -694,77 +581,7 @@ static boolean sysfunctionvalue (short token, hdltreenode hparam1, tyvaluerecord
 				return (setheapvalue (hreturn, stringvaluetype, v));
 				}
 		
-		#endif 
 		
-		#ifdef WIN95VERSION
-
-			case winshellcommandfunc: {
-				Handle hcommand;
-				Handle houttext = nil;
-				Handle herrtext = nil;
-				long exitcode = 0;
-				tyaddress adrexitcode, adrstderr;
-				short ctconsumed = 1;
-				short ctpositional = 1;
-				boolean flneedexitcode, flneedstderr;
-				tyvaluerecord val;
-				
-				if (!getexempttextvalue (hparam1, 1, &hcommand))
-					return (false);
-				
-				if (!getoptionaladdressparam (hparam1, &ctconsumed, &ctpositional, "\x0b" "adrExitCode", &adrexitcode.ht, adrexitcode.bs))
-					return (false);
-				
-				flnextparamislast = true;
-				
-				if (!getoptionaladdressparam (hparam1, &ctconsumed, &ctpositional, "\x0b" "adrStdErr", &adrstderr.ht, adrstderr.bs))
-					return (false);
-				
-				flneedexitcode = (adrexitcode.ht != nil) || !isemptystring (adrexitcode.bs);
-				
-				flneedstderr = (adrstderr.ht != nil) || !isemptystring (adrstderr.bs);
-
-				newemptyhandle (&houttext);
-
-				if (flneedstderr)
-					newemptyhandle (&herrtext);
-										
-				if (!winshellcall (hcommand, houttext, herrtext,
-										(flneedexitcode ? &exitcode : nil))) {
-				
-					disposehandle (houttext);
-					
-					disposehandle (herrtext);
-					
-					disposehandle (hcommand);
-					
-					return (false);
-					} /*if*/
-				
-				disposehandle (hcommand);
-				
-				if (flneedexitcode) {
-
-					setlongvalue (exitcode, &val);
-					
-					if (!langsetsymboltableval (adrexitcode.ht, adrexitcode.bs, val))
-						return (false);
-					}
-					
-				if (flneedstderr) {
-
-					setheapvalue (herrtext, stringvaluetype, &val);
-					
-					if (!langsetsymboltableval (adrstderr.ht, adrstderr.bs, val))
-						return (false);
-					
-					exemptfromtmpstack (&val);
-					}
-					
-				return (setheapvalue (houttext, stringvaluetype, v));
-				}
-
-		#endif //WIN95VERSION
 		
 		default:
 			break;
@@ -792,7 +609,6 @@ static boolean launchfunctionvalue (short token, hdltreenode hparam1, tyvaluerec
 	
 	switch (token) { /*these verbs don't need any special globals pushed*/
 		
-		#ifdef MACVERSION
 		case applemenufunc: {
 			bigstring bs;
 			
@@ -805,7 +621,6 @@ static boolean launchfunctionvalue (short token, hdltreenode hparam1, tyvaluerec
 			
 			break;
 			}
-		#endif
 		
 		case launchappfunc: {
 			tyfilespec fsapp;
@@ -854,15 +669,7 @@ static boolean launchfunctionvalue (short token, hdltreenode hparam1, tyvaluerec
 			}
 		
 		case anythingfunc:
-			#ifdef MACVERSION
 				return (filelaunchanythingverb (hparam1, v));
-			#endif
-			#ifdef WIN95VERSION
-			#pragma message ("WIN95: anythingfunc - not yet implemented! (uses filelaunchanthingverb)")
-				getstringlist (langerrorlist, unimplementedverberror, bserror);
-
-				return (false);
-			#endif
 		
 		default:
 			getstringlist (langerrorlist, unimplementedverberror, bserror);
@@ -963,14 +770,8 @@ static boolean frontierfunctionvalue (short token, hdltreenode hparam1, tyvaluer
 			if (!getstringvalue (hparam1, 1, bsmessage))
 				return (false);
 
-			#ifdef MACVERSION		
 				(*v).data.flvalue = shellisactive () || notifyuser (bsmessage);
-			#endif
 
-			#ifdef WIN95VERSION
-			#pragma message ("WIN95: case requesttofrontfunc,  windows case currently forced.")
-				(*v).data.flvalue = shellisactive() || SetForegroundWindow (hwndActive);
-			#endif
 
 			return (true);
 			}
@@ -1041,15 +842,6 @@ static boolean frontierfunctionvalue (short token, hdltreenode hparam1, tyvaluer
 
 		case hideapplicationfunc: { /*7.1b9 PBS: minimize to system tray*/
 			
-			#ifdef WIN95VERSION
-				
-				releasethreadglobals ();
-
-				ShowWindow (shellframewindow, SW_HIDE);
-
-				grabthreadglobals ();
-			
-			#endif
 
 			return (setbooleanvalue (true, v));
 			}
@@ -1069,15 +861,6 @@ static boolean frontierfunctionvalue (short token, hdltreenode hparam1, tyvaluer
 		
 		case showapplicationfunc: {	/*2004-11-28 aradke: re-emerge from system tray*/
 
-			#ifdef WIN95VERSION
-				
-				releasethreadglobals ();
-
-				ShowWindow (shellframewindow, SW_SHOW);
-
-				grabthreadglobals ();
-			
-			#endif
 
 			return (setbooleanvalue (true, v));
 			}
@@ -1091,13 +874,10 @@ static boolean frontierfunctionvalue (short token, hdltreenode hparam1, tyvaluer
 static boolean clipboardfunctionvalue (short token, hdltreenode hparam1, tyvaluerecord *vreturned, bigstring bserror) {
 	
 	register tyvaluerecord *v = vreturned;
-	#ifdef MACVERSION
 		typrocessid processid;
-	#endif
 	
 	setbooleanvalue (false, v); /*assume the worst*/
 	
-	#ifdef MACVERSION
 		processid = getcurrentprocessid ();
 		
 		if (!isfrontapplication (processid)) {
@@ -1106,7 +886,6 @@ static boolean clipboardfunctionvalue (short token, hdltreenode hparam1, tyvalue
 			
 			return (false);
 			}
-	#endif
 	
 	switch (token) { /*these verbs don't need any special globals pushed*/
 		

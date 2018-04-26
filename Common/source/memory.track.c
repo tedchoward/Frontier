@@ -25,13 +25,8 @@
 
 ******************************************************************************/
 
-#ifdef MACVERSION
 #include <standard.h>
-#endif
 
-#ifdef WIN95VERSION
-#include "standard.h"
-#endif
 
 #include "error.h"
 #include "memory.h"
@@ -92,7 +87,6 @@ static boolean safetycushionhook (long *ctbytesneeded) {
 
 		extrasize = strlen(filename) + 1 + sizeof(long) + sizeof(long) + sizeof(long) + (2 * (sizeof(Handle))) + 4;
 
-		#ifdef MACVERSION
 			if (fltemp) { /*try grabbing temp memory first*/
 				
 				h = TempNewHandle (ctbytes + extrasize, &err);
@@ -112,7 +106,6 @@ static boolean safetycushionhook (long *ctbytesneeded) {
 					return (h);
 					}
 				}
-		#endif
 		
 		if (hsafetycushion == nil) { /*don't allocate new stuff w/out safety cushion*/
 			
@@ -122,15 +115,10 @@ static boolean safetycushionhook (long *ctbytesneeded) {
 		
 		flholdsafetycushion = true;
 		
-		#ifdef MACVERSION
 			h = NewHandle (ctbytes);
 
 			if (h != nil)
 				debugaddmemhandle (h, ctbytes, filename, linenumber, threadid);
-		#endif
-		#ifdef WIN95VERSION
-			h = debugfrontierAlloc (filename, linenumber, threadid, ctbytes);
-		#endif
 		
 		flholdsafetycushion = false;
 		
@@ -148,7 +136,6 @@ static boolean safetycushionhook (long *ctbytesneeded) {
 		register Handle h;
 		OSErr err;
 
-		#ifdef MACVERSION
 			if (fltemp) { /*try grabbing temp memory first*/
 				
 				h = TempNewHandle (ctbytes, &err);
@@ -166,7 +153,6 @@ static boolean safetycushionhook (long *ctbytesneeded) {
 					return (h);
 					}
 				}
-		#endif
 		
 		if (hsafetycushion == nil) { /*don't allocate new stuff w/out safety cushion*/
 			
@@ -330,20 +316,12 @@ boolean validhandle (Handle h) {
 	if (h == nil)
 		return (true);
 	
-#ifdef MACVERSION
 
 	if (GetHandleSize (h) < 0) /*negative length never valid*/
 		return (false);
 	
 	return (MemError () == noErr);
-#endif
 
-#ifdef WIN95VERSION
-	if (GlobalSize (h) <= 0)
-		return (false);
-
-	return (true);
-#endif
 	} /*validhandle*/
 
 
@@ -393,11 +371,7 @@ void disposehandle (Handle h) {
 	
 	if (h != nil) {
 		
-	#ifdef WIN95VERSION
-		DisposeHandle (h);
-	#endif
 
-	#ifdef MACVERSION		
 		#if (MEMTRACKER == 1)
 			debugremovememhandle(h);
 		#endif
@@ -417,7 +391,6 @@ void disposehandle (Handle h) {
 			 memoryerror ();
 		
 		#endif
-	#endif		
 		}
 	} /*disposehandle*/
 
@@ -462,19 +435,8 @@ void moveleft (ptrvoid psource, ptrvoid pdest, long length) {
 	do a mass memory move with the left edge leading.  good for closing
 	up a gap in a buffer, among other thingsÉ
 	*/
-#if defined (MACVERSION)
 	BlockMoveData (psource, pdest, length);
 	
-#elif defined (WIN95VERSION)
-	CopyMemory (pdest, psource, length);
-	
-#else
-	register ptrbyte ps = psource, pd = pdest;
-	register long ctloops = length;
-	
-	while (--ctloops >= 0)
-		*pd++ = *ps++;
-#endif
 	} /*moveleft*/
 
 
@@ -485,25 +447,8 @@ void moveright (ptrvoid psource, ptrvoid pdest, long length) {
 	up a gap in a buffer, among other thingsÉ
 	*/
 	
-#if defined (MACVERSION)
 	BlockMoveData (psource, pdest, length);
 	
-#else
-	register ptrbyte ps, pd;
-	register long ctloops;
-	
-	ctloops = length;
-	
-	if (ctloops > 0) {
-	
-		ps = (ptrbyte) psource + length - 1; /*right edge of source*/
-	
-		pd = (ptrbyte) pdest + length - 1; /*right edge of destination*/
-	
-		while (ctloops--) 
-			*pd-- = *ps--;
-		}
-#endif
 	} /*moveright*/
 	
 	
@@ -513,18 +458,13 @@ void fillchar (ptrvoid pfill, long ctfill, char chfill) {
 	do a mass memory fill -- copy ctfill chfills at pfill.
 	*/
 	
-#ifdef MACVERSION
 	register ptrbyte p = pfill;
 	register long ct = ctfill;
 	register char ch = chfill;
 	
 	while (--ct >= 0)
 		*p++ = (char) ch; /*tight loop*/
-#endif
 
-#ifdef WIN95VERSION
-	FillMemory (pfill, ctfill, chfill);
-#endif
 	} /*fillchar*/
 	
 
@@ -696,7 +636,6 @@ static long getidealchunksize (void) {
 	
 	4/20/93 dmb: tweaked algorith; if more than 64K is available, grab half
 	*/
-#ifdef MACVERSION		
 	register long ctgrab = MaxBlock ();
 	
 	if (ctgrab < 0x4000)
@@ -708,11 +647,7 @@ static long getidealchunksize (void) {
 			ctgrab >>= 1;
 	
 	return (ctgrab);
-#endif
 
-#ifdef WIN95VERSION
-	return (32768L);
-#endif
 
 	} /*getidealchunksize*/
 

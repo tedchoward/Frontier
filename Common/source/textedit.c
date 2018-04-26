@@ -40,18 +40,8 @@ void edittextbox (bigstring bs, Rect r, short fontnum, short fontsize, short fon
 	
 	pushstyle (fontnum, fontsize, fontstyle);
 	
-	#ifdef MACVERSION
 		TETextBox (stringbaseaddress (bs), (long) stringlength (bs), &r, teJustLeft);
-	#endif
 
-	#ifdef WIN95VERSION
-		setWindowsFont();
-	
-		DrawText (getcurrentDC(), stringbaseaddress (bs), stringlength (bs), &r, 
-				DT_LEFT | DT_END_ELLIPSIS | DT_WORDBREAK);
-	
-		clearWindowsFont();
-	#endif
 	
 	popstyle ();
 	} /*edittextbox*/
@@ -99,17 +89,8 @@ boolean edittwostringbox (bigstring bs1, bigstring bs2, Rect r, short fontnum, s
 	
 	lockhandle (hbuffer);
 	
-	#ifdef MACVERSION
 		TETextBox (*hbuffer, len, &r, teJustLeft);
-	#endif
 
-	#ifdef WIN95VERSION
-		setWindowsFont();
-		
-		DrawText (getcurrentDC(), *hbuffer, len, &r, DT_LEFT | DT_END_ELLIPSIS | DT_WORDBREAK);
-		
-		clearWindowsFont();
-	#endif
 	
 	
 	unlockhandle (hbuffer);

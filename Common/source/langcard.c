@@ -28,10 +28,8 @@
 #include "frontier.h"
 #include "standard.h"
 
-#ifdef MACVERSION
 #include <uisharing.h>
 #include <uisinternal.h>
-#endif
 
 #include "launch.h"
 #include "memory.h"

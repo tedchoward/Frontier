@@ -52,20 +52,14 @@ Broken out from FrontierWinMain.c
 #define maxsubmenus 40
 
 
-#ifdef MACVERSION
 	UInt32 menuid;
 	short idsubmenu;
 	hdlmenurecord hcurrmenurecord;
 	boolean flstackneedsdisposing = false;
-#endif
 
 
-#ifdef WIN95VERSION
-	short menuid;
-#endif
 
 
-#ifdef MACVERSION
 
 #pragma pack(2)
 	typedef struct typopupinfo {
@@ -85,7 +79,6 @@ Broken out from FrontierWinMain.c
 
 	tydockmenustack dockmenustack;
 
-#endif
 
 
 static boolean dockmenubuildpopupmenu (hdlheadrecord hnode, hdlmenu hmenu); /*forward*/
@@ -95,7 +88,6 @@ static void dockmenudisposemenusinstack (void);
 
 static void dockmenuresetmenustack (void) {
 	
-	#ifdef MACVERSION
 	
 		dockmenudisposemenusinstack ();
 
@@ -105,7 +97,6 @@ static void dockmenuresetmenustack (void) {
 		
 		dockmenustack.popupmenus [0].id = -1;
 	
-	#endif
 	} /*dockmenuresetmenustack*/
 
 
@@ -115,7 +106,6 @@ static void dockmenudisposemenusinstack (void) {
 	Dispose and delete all menus in popup menu stack.
 	*/
 	
-	#ifdef MACVERSION
 	
 		short ix = dockmenustack.currstackitem;
 		short i, id;
@@ -151,13 +141,11 @@ static void dockmenudisposemenusinstack (void) {
 			} /*for*/
 		
 		flstackneedsdisposing = false;	
-	#endif
 	} /*dockmenudisposemenusinstack*/
 
 
 static boolean dockmenuaddtomenustack (hdlmenu hmenu, short id) {
 
-	#ifdef MACVERSION
 
 		short ix = dockmenustack.currstackitem + 1;
 		
@@ -170,7 +158,6 @@ static boolean dockmenuaddtomenustack (hdlmenu hmenu, short id) {
 		
 		dockmenustack.popupmenus [ix].id = id;
 	
-	#endif
 
 	return (true);	
 	} /*dockmenuaddtomenustack*/
@@ -185,17 +172,13 @@ static void dockmenuinsertsubmenu (hdlmenu hmenu, short itemnumber, hdlheadrecor
 	hdlmenu hsubmenu;
 	short id = defaultpopupmenuid;
 
-	#ifdef MACVERSION
 		idsubmenu++;
 		
 		id = idsubmenu;
-	#endif
 	
 	hsubmenu = Newmenu (id, BIGSTRING (""));
 
-	#ifdef MACVERSION	
 		InsertMenu (hsubmenu, -1);
-	#endif
 
 	dockmenubuildpopupmenu (hnode, hsubmenu);
 
@@ -258,11 +241,9 @@ static boolean dockmenuinsertmenuitem (hdlmenu hmenu, short itemnumber, hdlheadr
 
 	pushpopupitem (hmenu, bsheadstring, flenabled, menuid);
 
-	#if TARGET_API_MAC_CARBON == 1
 	
 		SetMenuItemCommandID (hmenu, countmenuitems (hmenu), menuid);
 		
-	#endif
 
 	if (flchecked) /*7.1b42 PBS: support for checked menu items.*/
 		checkmenuitem (hmenu, countmenuitems (hmenu), flchecked);
@@ -270,9 +251,7 @@ static boolean dockmenuinsertmenuitem (hdlmenu hmenu, short itemnumber, hdlheadr
 	if (!opnosubheads (hnode)) /*has subs?*/
 		dockmenuinsertsubmenu (hmenu, itemnumber, hnode);
 
-	#ifdef MACVERSION
 		flstackneedsdisposing = true;
-	#endif
 
 	return (true);
 	} /*dockmenuinsertmenuitem*/
@@ -358,10 +337,8 @@ static boolean dockmenufillpopup (hdlmenu hmenu, hdlmenurecord *hmreturned) {
 
 	hsummit = (**(**hm).menuoutline).hsummit;
 
-	#if TARGET_API_MAC_CARBON == 1
 		menuid = kbasecommandid;
 		idsubmenu = 5;
-	#endif
 
 	dockmenudisposemenusinstack ();
 	
@@ -401,7 +378,6 @@ static void dockmenuruncommand (hdlmenurecord hm, short itemhit) {
 	} /*dockmenuruncommand*/
 
 
-#if TARGET_API_MAC_CARBON == 1
 
 pascal OSStatus dockcommandhandler (EventHandlerCallRef nextHandler, EventRef theEvent, void* userData) {
 #pragma unused(nextHandler, theEvent, userData)	/*happy compiler*/
@@ -478,81 +454,4 @@ pascal OSStatus dockmenuhandler (EventHandlerCallRef nextHandler, EventRef theEv
 	return (noErr); /*all's well in dock-menu-land*/
 	} /*dockmenuhandler*/
 
-#endif
 
-#ifdef WIN95VERSION
-
-void rundockmenu (void) {
-	
-	/*
-	The system tray icon or dock icon has been right-clicked.
-	Display a menu and handle the user's choice.
-	*/
-
-	hdlmenu hmenu;
-	hdlmenurecord hm;
-	POINT mousept;
-	UINT flags = 0;
-	
-	hmenu = Newmenu (defaultpopupmenuid, "");
-	
-	menuid = 0;
-
-	if (!dockmenufillpopup (hmenu, &hm))
-		goto exit;
-
-	SetMenuDefaultItem (GetSubMenu (hmenu, 0), 0, true); /*Top item is default*/
-
-	GetCursorPos (&mousept); 
-	
-	SetForegroundWindow (shellframewindow); 
-
-	if (TrackPopupMenuEx (GetSubMenu (hmenu, 0), flags, mousept.x, mousept.y, shellframewindow, NULL)) {
-			
-		MSG msg;
-		short itemhit;
-		hdlheadrecord hsummit;
-		hdlheadrecord hmenuitem;
-		bigstring bs;
-		boolean flopencommand = false;
-
-		if (PeekMessage (&msg, shellframewindow, WM_COMMAND, WM_COMMAND, PM_REMOVE)) {
-
-			itemhit = LOWORD (msg.wParam) % 100;
-
-			hsummit = (**(**hm).menuoutline).hsummit; /*Top level of the menu*/
-
-			//hmenuitem = opnthsubhead (hsummit, itemhit);
-
-			oppushoutline ((**hm).menuoutline);
-	
-			hmenuitem = oprepeatedbump (flatdown, itemhit, hsummit, false);
-
-			getheadstring (hmenuitem, bs);
-
-			if (equalidentifiers (bs, "\x0d" "Open Frontier"))
-				flopencommand = true;
-
-			else if (equalidentifiers (bs, "\x0a" "Open Radio"))
-				flopencommand = true;
-
-			if (flopencommand) { /*Intercept -- there's no script verb for this command.*/
-
-				ShowWindow (shellframewindow, SW_SHOW); /*Show the window.*/
-
-				activateapplication (NULL); /*bring to front*/
-				} /*if*/
-			
-			else /*run the script*/
-				meuserselected (hmenuitem);
-
-			oppopoutline ();
-			} /*if*/
-		} /*if*/
-	
-	exit:
-
-	disposemenu (hmenu);
-	} /*rundockmenu*/
-
-#endif

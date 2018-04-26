@@ -44,13 +44,8 @@
 #endif
 
 
-#ifdef MACVERSION
 	#define filespecsize(fs) (sizeof (tyfilespec)) // - sizeof (CFStringRef) + stringsize ((fs).name))
-#endif
 
-#ifdef WIN95VERSION
-	#define filespecsize(fs) (sizeof (tyfilespec))	// assume all data is contiguous
-#endif
 
 
 typedef boolean (*langvisitlistvaluescallback) (tyvaluerecord *, ptrvoid); /*2003-04-28 AR*/

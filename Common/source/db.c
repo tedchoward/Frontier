@@ -420,10 +420,6 @@ static boolean dbflushheader (void) {
 		
 		fl = dbwrite ((dbaddress) 0, sizeof (tydatabaserecord), &diskrec);
 		
-		#ifdef WIN95VERSION
-			if (fl)
-				flushvolumechanges (nil, (hdlfilenum)((**databasedata).fnumdatabase));
-		#else
 		/*flush file buffers*/ {
 			IOParam pb;
 			
@@ -433,7 +429,6 @@ static boolean dbflushheader (void) {
 			
 			PBFlushFile ((ParmBlkPtr) &pb, false);
 			}
-		#endif
 
 		return (fl);
 		} /*changes made to header*/
@@ -2454,13 +2449,8 @@ boolean dbnew (hdlfilenum fnum) {
 	
 	(**hdb).fnumdatabase = (long) fnum;
 	
-#ifdef MACVERSION
 	(**hdb).systemid = dbsystemidMac;
-#endif
 
-#ifdef WIN95VERSION
-	(**hdb).systemid = dbsystemidWin32;
-#endif
 
 	(**hdb).versionnumber = dbversionnumber;
 

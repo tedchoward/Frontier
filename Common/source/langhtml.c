@@ -103,11 +103,7 @@ extern boolean sysos (tyvaluerecord *v); //implemted in shellsysverbs.c
 #define str_glosspatch			BIGSTRING ("\x0e" "[[#glossPatch ")
 #define str_useglosspatcher		BIGSTRING ("\x0f" "useGlossPatcher")
 #define str_renderedtext		BIGSTRING ("\x0c" "renderedtext")
-#ifdef MACVERSION
 	#define str_iso8859map		BIGSTRING ("\x15" "html.data.iso8859.mac")
-#else
-	#define str_iso8859map		BIGSTRING ("\x15" "html.data.iso8859.win")
-#endif
 
 #define str_template			BIGSTRING ("\x08" "template")
 #define str_indirecttemplate	BIGSTRING ("\x10" "indirectTemplate")
@@ -141,27 +137,15 @@ extern boolean sysos (tyvaluerecord *v); //implemted in shellsysverbs.c
 
 #ifndef OPMLEDITOR
 
-	#if TARGET_API_MAC_CARBON == 1
 		#define STR_P_SERVERSTRING				BIGSTRING ("\x15" "Radio UserLand/^0-^1X")
-	#else
-		#define STR_P_SERVERSTRING				BIGSTRING ("\x14" "Radio UserLand/^0-^1")
-	#endif
 
 #else  // OPMLEDITOR 2005-04-06 dluebbert
-	#if TARGET_API_MAC_CARBON == 1
 		#define STR_P_SERVERSTRING				BIGSTRING ("\x0b" "OPML/^0-^1X")
-	#else
-		#define STR_P_SERVERSTRING				BIGSTRING ("\x0a" "OPML/^0-^1")
-	#endif
 #endif // OPMLEDITOR
 
 #else // !PIKE
 
-	#if TARGET_API_MAC_CARBON == 1
 		#define STR_P_SERVERSTRING			BIGSTRING ("\x0f" "Frontier/^0-^1X") /* 2005-01-04 creedon - removed UserLand for open source release */
-	#else
-		#define STR_P_SERVERSTRING			BIGSTRING ("\x0e" "Frontier/^0-^1") /* 2005-01-04 creedon - removed UserLand for open source release */
-	#endif
 
 #endif  //!PIKE
 
@@ -387,9 +371,7 @@ static tyvaluerecord osaval = { binaryvaluetype };
 #endif
 
 
-#ifdef MACVERSION
 #pragma mark === processhtmlmacros ===
-#endif
 
 static boolean htmlcallbackerror (bigstring bsmsg, ptrvoid perrorstring) {
 	
@@ -517,17 +499,9 @@ static boolean frontTextScriptCall (OSType idroutine, Handle stringparam, Handle
 	if (!newselfaddressedevent (idroutine, &event))
 		return (false);
 	
-	#if TARGET_API_MAC_CARBON == 1 /*PBS 03/14/02: AE OS X fix.*/	
 	
 		typeAEList (&script, typeChar, stringparam);
 	
-	#else
-	
-		script.descriptorType = typeChar;
-
-		script.dataHandle = stringparam;
-	
-	#endif
 	
 	ec = AEPutKeyDesc (&event, 'prm1', &script);
 	
@@ -562,15 +536,9 @@ static boolean frontTextScriptCall (OSType idroutine, Handle stringparam, Handle
 	if (ec != noErr)
 		goto error;
 	
-	#if TARGET_API_MAC_CARBON == 1 /*PBS 03/14/02: AE OS X fix.*/
 	
 		copydatahandle (&result, hresult);
 		
-	#else
-	
-		*hresult = result.dataHandle;
-	
-	#endif
 	
 	return (true);
 	
@@ -996,7 +964,6 @@ static boolean htmlcleanforexport (Handle x) {
 		return (text)}
 	*/
 	
-	#ifdef MACVERSION
 		handlestream s;
 	
 		openhandlestream (x, &s);
@@ -1047,7 +1014,6 @@ static boolean htmlcleanforexport (Handle x) {
 			}
 		
 		closehandlestream (&s);
-	#endif
 	
 	return (true);
 	} /*htmlcleanforexport*/
@@ -2550,9 +2516,7 @@ boolean processhtmlmacrosverb (hdltreenode hparam1, tyvaluerecord *vreturned) {
 
 #endif
 
-#ifdef MACVERSION
 #pragma mark === stringOps ucmd ===
-#endif
 
 static unsigned char hexchartonum (unsigned char ch) {
 
@@ -2859,7 +2823,6 @@ boolean parseargsverb (hdltreenode hparam1, tyvaluerecord *vreturned) {
 		
 		disposehandle (htext);
 		
-		#if TARGET_API_MAC_CARBON == 1
 		
 			{
 			Handle h;
@@ -2869,11 +2832,6 @@ boolean parseargsverb (hdltreenode hparam1, tyvaluerecord *vreturned) {
 			return (setheapvalue (h, listvaluetype, vreturned));			
 			}
 		
-		#else
-		
-			return (setheapvalue (list.dataHandle, listvaluetype, vreturned));
-		
-		#endif
 		
 		error: {
 		
@@ -3245,9 +3203,7 @@ boolean getjpegheightwidthverb ( hdltreenode hparam1, tyvaluerecord *vreturned )
 	} // getjpegheightwidthverb
 
 
-#ifdef MACVERSION
 #pragma mark === build pagtable ===
-#endif
 
 static tyvaluetype langgetextendedvaluetype (const tyvaluerecord *val) {
 	
@@ -3404,11 +3360,7 @@ static boolean buildpagetableverb (hdltreenode hparam1, tyvaluerecord *vreturned
 	hdlhashtable nomadtable;
 	hdlhashnode hn;
 	bigstring subdirpath;
-	#ifdef MACVERSION
 	byte pc = ':';
-	#else
-	byte pc = '\\';
-	#endif
 	
 	if (!getvarparam (hparam1, 1, &nomad.ht, nomad.bs))
 		return (false);
@@ -3514,9 +3466,7 @@ static boolean refglossaryverb (hdltreenode hp1, tyvaluerecord *v) {
 #endif
 
 
-#ifdef MACVERSION
 #pragma mark === verbs ===
-#endif
 
 static boolean getprefverb (hdltreenode hp1, tyvaluerecord *v) {
 	
@@ -4385,9 +4335,7 @@ static boolean getpagetableaddressverb (hdltreenode hp1, tyvaluerecord *v) {
 	} /*getpagetableaddressverb*/
 
 
-#ifdef MACVERSION
 #pragma mark === search indexing ===
-#endif
 
 static boolean stripmarkup (handlestream *s) {
 
@@ -5009,9 +4957,7 @@ static boolean unionmatchesverb (hdltreenode hp1, tyvaluerecord *v) {
 	} /*unionmatchesverb*/
 
 
-#ifdef MACVERSION
 #pragma mark === webserver utility functions ===
-#endif
 
 
 static boolean followaddressvalue (tyvaluerecord *v) {
@@ -5208,9 +5154,7 @@ static boolean langruntextwithcontext (Handle htext, hdlhashtable hcontext, tyva
 
 
 
-#ifdef MACVERSION
 #pragma mark === webserver.util verbs ===
-#endif
 
 
 
@@ -5902,9 +5846,7 @@ static boolean webservercallfilters (tyaddress *pta, bigstring bstable, bigstrin
 
 
 
-#ifdef MACVERSION
 #pragma mark === kernelized webserver ===
-#endif
 
 
 /*	For reference: HTTP/1.1 status codes
@@ -7515,9 +7457,7 @@ exit:
 
 
 
-#ifdef MACVERSION
 #pragma mark === mainResponder: Calendar ===
-#endif
 
 /*
 on getAddressDay (adr) {
@@ -9398,9 +9338,7 @@ exit:
 
 
 
-#ifdef MACVERSION
 #pragma mark === mainResponder: Safe macros ===
-#endif
 
 /*
 	About the legalMacros table:
@@ -10460,9 +10398,7 @@ static boolean htmlneutertagsverb (hdltreenode hp1, tyvaluerecord *v) {
 
 
 
-#ifdef MACVERSION
 #pragma mark === html, searchengine, webserver, inetd EFP ===
-#endif
 
 static boolean htmlfunctionvalue (short token, hdltreenode hparam1, tyvaluerecord *vreturned, bigstring bserror) {
 	

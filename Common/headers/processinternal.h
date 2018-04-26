@@ -27,7 +27,6 @@
 
 #define processinternalinclude
 
-#ifdef MACVERSION
 	#ifndef __THREADS__
 		//#include <Threads.h>
 	#endif
@@ -35,7 +34,6 @@
 	#ifndef landinclude
 		#include <land.h>
 	#endif
-#endif
 
 #ifndef threadsinclude
 	#include "threads.h"
@@ -185,7 +183,6 @@ typedef struct tythreadglobals {
 	
 	long debugthreadingcookie; /*6.2b11 AR: for debugging hung threads*/
 	
-	#if TARGET_API_MAC_CARBON == 1
 	
 	ThreadSwitchUPP threadInCallbackUPP;
 	
@@ -195,7 +192,6 @@ typedef struct tythreadglobals {
 	
 	ThreadEntryUPP threadEntryCallbackUPP;
 	
-	#endif
 
 	boolean flcominitialized;
 

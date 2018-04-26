@@ -55,9 +55,7 @@
 #endif
 #include "shell.rsrc.h"
 #include "process.h"
-#if MACVERSION
 	#include "osacomponent.h"
-#endif
 #include "tablestructure.h"
 #include "Winland.h"
 #include "odbinternal.h"

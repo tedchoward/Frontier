@@ -86,13 +86,11 @@ static short handlepopup (hdlmenu hmenu, Rect r, short item) {
 	
 	Point pt;
 
-#ifdef MACVERSION
 	short idmenu;
 	short iditem;
 	long menuresult;
 	long commandid;
 	hdlmenu hchosenmenu;
-#endif
 	
 	setcursortype (cursorisarrow); /*arrow cursor is more appropriate here*/
 	
@@ -100,7 +98,6 @@ static short handlepopup (hdlmenu hmenu, Rect r, short item) {
 	
 	pt.h = r.left; 
 	
-#ifdef MACVERSION
 	if (item == 0) { /*no item selected*/
 		#if ACCESSOR_CALLS_ARE_FUNCTIONS == 1
 		SInt16 menuHeight;
@@ -140,32 +137,7 @@ static short handlepopup (hdlmenu hmenu, Rect r, short item) {
 	//return (LoWord (PopUpMenuSelect (hmenu, pt.v, pt.h, item)));
 	
 	return (iditem);
-#endif
 
-#ifdef WIN95VERSION
-	{
-	UINT flags = 0;
-	short itemhit = 0;
-
-	localtoglobalpoint (getfrontwindow (), &pt);
-	
-	hmenu = GetSubMenu (hmenu, 0); // get actual popup
-	
-	if (mousestatus.whichbutton == rightmousebuttonaction)
-		flags |= TPM_RIGHTBUTTON;
-	
-	if (TrackPopupMenuEx (hmenu, flags, pt.h, pt.v, shellframewindow, NULL)) {
-	
-		MSG msg;
-		
-		if (PeekMessage (&msg, shellframewindow, WM_COMMAND, WM_COMMAND, PM_REMOVE))
-			return (LOWORD (msg.wParam) % 100);
-			
-		}
-		
-	return (0);
-	}
-#endif
 
 	} /*handlepopup*/
 
@@ -182,7 +154,6 @@ boolean popupmenuhit (Rect r, boolean flgeneva9, fillpopupcallback fillpopuprout
 	hdlmenu hmenu;
 	short checkeditem;
 	short itemselected;
-#ifdef MACVERSION
 	short idmenu;
 
 	if (flgeneva9) {
@@ -195,12 +166,6 @@ boolean popupmenuhit (Rect r, boolean flgeneva9, fillpopupcallback fillpopuprout
 		idmenu = defaultpopupmenuid;
 	
 	hmenu = getresourcemenu (idmenu); /*name is irrelevent in a popup*/
-#else
-	flgeneva9 = false;
-	
-	hmenu = Newmenu (defaultpopupmenuid, "");
-
-#endif
 
 	if (hmenu == nil)
 		return (false);
@@ -231,29 +196,14 @@ boolean popupmenuhit (Rect r, boolean flgeneva9, fillpopupcallback fillpopuprout
 		
 		}
 	
-	#ifdef MACVERSION
 		inserthierarchicmenu (hmenu, -1); /*see IM-V, p 236*/
 		
 
-		#if TARGET_API_MAC_CARBON == 1
 		
 			if (flgeneva9)
 		
 				SetMenuFont (hmenu, 0, 10); /*smaller font in OS X*/
 		
-		#else
-		
-			if (flgeneva9) { /*Geneva*/
-				
-				short idgeneva;
-				
-				fontgetnumber ("\pGeneva", &idgeneva);
-				
-				SetMenuFont (hmenu, idgeneva, 9);
-				
-				} /*if*/
-		#endif
-	#endif
 	
 	itemselected = handlepopup (hmenu, r, checkeditem); /*menus are 1-based*/
 	
@@ -262,9 +212,7 @@ boolean popupmenuhit (Rect r, boolean flgeneva9, fillpopupcallback fillpopuprout
 		(*popupselectroutine) (hmenu, itemselected);
 		}
 
-	#ifdef MACVERSION
 		removemenu (idmenu);
-	#endif
 	
 	exit:
 	
@@ -294,7 +242,6 @@ boolean popupmenuhit (Rect r, boolean flgeneva9, fillpopupcallback fillpopuprout
 #endif
 
 
-#if TARGET_API_MAC_CARBON == 1
 
 static void
 MyThemeButtonDrawCallback (
@@ -324,11 +271,9 @@ MyThemeButtonDrawCallback (
 	popstyle ();
 	} /*MyThemeButtonDrawCallback*/
 
-#endif
 
 
 boolean drawpopup (Rect rpopup, bigstring bs, boolean flbitmap) {
-#if TARGET_API_MAC_CARBON == 1
 #	pragma unused (flbitmap)
 
 	Rect r;
@@ -358,56 +303,6 @@ boolean drawpopup (Rect rpopup, bigstring bs, boolean flbitmap) {
 
 	return (true);
 
-#else
-
-	Rect r;
-
-	initpopupfont ();
-
-	setrect (&r, rpopup.top, rpopup.left, rpopup.bottom + 1, rpopup.right + 1);
-
-	if (flbitmap)
-		flbitmap = openbitmap (r, getport ());
-
-	eraserect (r);
-
-	r = rpopup;
-
-	framerect (r);
-
-	movepento (r.left + 1, r.bottom);
-
-	pendrawline (r.right, r.bottom);
-
-	pendrawline (r.right, r.top + 1);
-
-	r.right -= popuparrowwidth;
-
-	insetrect (&r, 4, 2);
-
-	pushstyle (popupfont, popupfontsize, 0);
-
-	movepento (r.left, r.bottom - globalfontinfo.descent - 1);
-
-	ellipsize (bs, r.right - r.left);
-
-	pendrawstring (bs);
-
-	popstyle ();
-
-	r = rpopup;
-
-	insetrect (&r, 1, 1);
-
-	r.left = r.right - popuparrowwidth;
-
-	displaypopupicon (r, true);
-
-	if (flbitmap)
-		closebitmap (getport ());
-
-	return (true);
-#endif
 	} /*drawpopup*/
 
 

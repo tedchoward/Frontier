@@ -354,7 +354,6 @@ static pascal OSErr handleselectwindow (const AppleEvent *event, AppleEvent *rep
 			 | STACK_ROUTINE_PARAMETER(3, SIZE_CODE(sizeof(short)))
 	};
 	
-	#if TARGET_API_MAC_CARBON == 1
 
 		/*
 		For Carbon we have to build univeral procedure pointers at runtime.
@@ -375,28 +374,6 @@ static pascal OSErr handleselectwindow (const AppleEvent *event, AppleEvent *rep
 		#define windoweditcommandUPP (windoweditcommandDesc)
 		#define windowopencommandUPP (windowopencommandDesc)
 
-	#else
-		
-		/*
-			For the Classic Mac OS API, routine descriptors are built by the compiler.
-			Just define the UPPs as pointers to these routine descriptors.
-		*/
-
-		static RoutineDescriptor windowcandofunctionDesc = BUILD_ROUTINE_DESCRIPTOR (windowcandofunctionProcInfo, windowcandofunction);
-		static RoutineDescriptor handlewindoweventcommandDesc = BUILD_ROUTINE_DESCRIPTOR (handlewindoweventcommandProcInfo, handlewindoweventcommand);
-		static RoutineDescriptor windowiscardcommandDesc = BUILD_ROUTINE_DESCRIPTOR (windowiscardcommandProcInfo, windowiscardcommand);
-		static RoutineDescriptor closewindowcommandDesc = BUILD_ROUTINE_DESCRIPTOR (closewindowcommandProcInfo, closewindowcommand);
-		static RoutineDescriptor windoweditcommandDesc = BUILD_ROUTINE_DESCRIPTOR (windoweditcommandProcInfo, windoweditcommand);
-		static RoutineDescriptor windowopencommandDesc = BUILD_ROUTINE_DESCRIPTOR (windowopencommandProcInfo, windowopencommand);
-		
-		#define windowcandofunctionUPP (&windowcandofunctionDesc)
-		#define handlewindoweventcommandUPP (&handlewindoweventcommandDesc)
-		#define windowiscardcommandUPP (&windowiscardcommandDesc)
-		#define closewindowcommandUPP (&closewindowcommandDesc)
-		#define windoweditcommandUPP (&windoweditcommandDesc)
-		#define windowopencommandUPP (&windowopencommandDesc)
-
-	#endif
 
 #else
 
@@ -414,7 +391,6 @@ static pascal OSErr handleselectwindow (const AppleEvent *event, AppleEvent *rep
 
 #if TARGET_RT_MAC_CFM || TARGET_RT_MAC_MACHO
 
-	#if TARGET_API_MAC_CARBON
 
 		//Code change by Timothy Paustian Friday, July 21, 2000 11:41:07 PM
 		//Let's see if we can get away with just installing this.
@@ -422,13 +398,6 @@ static pascal OSErr handleselectwindow (const AppleEvent *event, AppleEvent *rep
 
 		#define handleselectwindowUPP (handleselectwindowDesc)
 
-	#else
-		
-		static RoutineDescriptor handleselectwindowDesc = BUILD_ROUTINE_DESCRIPTOR (uppAEEventHandlerProcInfo, handleselectwindow);
-	
-		#define handleselectwindowUPP (&handleselectwindowDesc)
-
-	#endif
 
 #else
 
@@ -441,10 +410,8 @@ static boolean installwindowsharinghandlers (void) {
 	
 	OSErr err;
 	
-	#if TARGET_API_MAC_CARBON	
 		if (handleselectwindowDesc == nil)
 			handleselectwindowDesc = NewAEEventHandlerUPP(handleselectwindow);
-	#endif
 		
 	err = AEInstallEventHandler ('SHUI', 'selw', handleselectwindowUPP, 0, false);
 	
@@ -458,7 +425,6 @@ static boolean removewindowsharinghandlers (void) {
 	
 	err = AERemoveEventHandler ('SHUI', 'selw', handleselectwindowUPP, false);
 
-	#if TARGET_API_MAC_CARBON
 	
 		if (handleselectwindowDesc != nil)
 			DisposeAEEventHandlerUPP(handleselectwindowDesc);
@@ -469,7 +435,6 @@ static boolean removewindowsharinghandlers (void) {
 		DisposeComponentFunctionUPP(closewindowcommandDesc);
 		DisposeComponentFunctionUPP(windoweditcommandDesc);
 		DisposeComponentFunctionUPP(windowopencommandDesc);
-	#endif
 
 	
 	return (err == noErr);
@@ -498,9 +463,6 @@ static pascal ComponentResult windowsharingdispatch (register ComponentParameter
 			
 			clienta5 = SetUpAppA5 ();
 			
-			#if !TARGET_API_MAC_CARBON
-				SetComponentInstanceA5 ((ComponentInstance) self, selfa5);
-			#endif
 
 			if (newcomponentglobals (self, clienta5, &hglobals))
 				SetComponentInstanceStorage ((ComponentInstance) self, (Handle) hglobals);
@@ -593,18 +555,13 @@ boolean initwindowsharingcomponent (void) {
 	
 	Component comp;
 	
-	#if !TARGET_API_MAC_CARBON
- 		RememberA5 ();
-	#endif
 	
-	#if TARGET_API_MAC_CARBON
 		windowcandofunctionDesc = NewComponentFunctionUPP((ProcPtr) windowcandofunction, windowcandofunctionProcInfo);
 		handlewindoweventcommandDesc = NewComponentFunctionUPP((ProcPtr) handlewindoweventcommand, handlewindoweventcommandProcInfo);
 		windowiscardcommandDesc = NewComponentFunctionUPP((ProcPtr) windowiscardcommand, windowiscardcommandProcInfo);
 		closewindowcommandDesc = NewComponentFunctionUPP((ProcPtr) closewindowcommand, closewindowcommandProcInfo);
 		windoweditcommandDesc = NewComponentFunctionUPP((ProcPtr) windoweditcommand, windoweditcommandProcInfo);
 		windowopencommandDesc = NewComponentFunctionUPP((ProcPtr) windowopencommand, windowopencommandProcInfo);
-	#endif
 		
 	comp = osaregistercomponent (wsComponentType, 0, &windowsharingdispatch, frontierstring, windowsharingcomponentstring);
 	

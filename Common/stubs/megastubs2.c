@@ -28,11 +28,9 @@
 #include "frontier.h"
 #include "standard.h"
 
-#ifdef MACVERSION
 	#include <IAC.h>
 	#include <uisharing.h>
 	#include "filealias.h"
-#endif
 
 #include "bitmaps.h"
 #include "dialogs.h"
@@ -55,9 +53,7 @@
 #include "shellhooks.h"
 #include "shellprint.h"
 
-#ifdef MACVERSION
 #include "osacomponent.h"
-#endif
 
 #include "process.h"
 
@@ -214,13 +210,8 @@ boolean initprocess (void) {return true;}
 
 unsigned long processstackspace (void) {
 	
-#if MACVERSION
 	return (StackSpace ());
-#endif
 
-#if WIN95VERSION
-	return (0x7fff); // 3/10/97 dmb: no equivalent measure (stackavail) under Windows
-#endif
 	} /*processstackspace*/
 
 #if winhybrid
@@ -311,7 +302,6 @@ boolean langrunmodeless (hdltreenode hparam1, tyvaluerecord *vreturned) {return 
 typrocessid langipcself;
 static boolean fltoolkitinitialized = false;
 
-#ifdef MACVERSION
 
 static pascal Boolean openfilespec (ptrfilespec pfs) {
 	
@@ -376,7 +366,6 @@ boolean landeventfilter (EventRecord *ev) {
 	return (false); /*don't consume the event*/
 	} /*landeventfilter*/
 
-#endif
 
 boolean langipcinit (void) {
 	
@@ -391,7 +380,6 @@ boolean langipcstart (void) {
 	and registering the verbs that scriptrunners must implement.
 	*/
 	
-#ifdef MACVERSION
 	
 	GetCurrentProcess (&langipcself);
 	
@@ -406,7 +394,6 @@ boolean langipcstart (void) {
 
 	error:
 	
-#endif
 
 	return (true);
 	} /*langipcstart*/
@@ -418,7 +405,6 @@ void langipcshutdown () {}
 //void initsegment (void) {}
 
 
-#ifdef MACVERSION
 
 // uiSharing
 
@@ -474,34 +460,4 @@ void aboutsegment (void) {}
 boolean openabout (boolean fl, long n) {return false;}
 
 
-#endif
 
-#ifdef WIN95VERSION
-
-short dialogcountitems (DialogPtr pdialog) {return 0;}
-
-void disabledialogitem (DialogPtr pdialog, short itemnumber) {}
-	
-void enabledialogitem (DialogPtr pdialog, short itemnumber) {}
-
-void hidedialogitem (DialogPtr pdialog, short itemnumber) {}
-
-void showdialogitem (DialogPtr pdialog, short itemnumber) {}
-
-boolean customdialog (short id, short defaultitem, dialogcallback itemhitcallback) {return false;}
-
-long FreeMem (void) {
-	MEMORYSTATUS ms;
-
-	ms.dwLength = sizeof (MEMORYSTATUS);
-	GlobalMemoryStatus (&ms);
-
-	return (ms.dwAvailPageFile);
-	}
-
-void DrawPicture (Handle hpicture, const Rect *frame) {}
-
-void UpdateDialog (WindowPtr w) {}
-
-
-#endif

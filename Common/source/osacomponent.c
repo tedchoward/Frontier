@@ -1323,89 +1323,6 @@ void osapostclientcallback (hdlcomponentglobals hglobals) {
 	} /*osapostclientcallback*/
 
 
-#if TARGET_API_MAC_OS8
-	
-	static UniversalProcPtr installpatch (short trapnum, GNEUPP patch) {
-		
-		UniversalProcPtr origtrap = nil;
-		
-		origtrap = NGetTrapAddress (trapnum, ToolTrap);
-		
-		NSetTrapAddress ((UniversalProcPtr) patch, trapnum, ToolTrap);
-		
-		return (origtrap);
-		} /*installpatch*/
-	
-	
-	static void removepatch (short trapnum, GNEUPP origtrap) {
-		
-		NSetTrapAddress ((UniversalProcPtr) origtrap, trapnum, ToolTrap);
-	
-		} /*removepatch*/
-
-
-static pascal Boolean osagetnextevent (short, EventRecord *);
-
-
-#if TARGET_RT_MAC_CFM
-
-	static RoutineDescriptor osagetnexteventDesc = BUILD_ROUTINE_DESCRIPTOR (uppGNEProcInfo, osagetnextevent);
-	
-	#define osagetnexteventUPP (&osagetnexteventDesc)
-	
-#else
-
-	#define osagetnexteventUPP (&osagetnextevent)
-
-#endif
-
-
-GNEUPP osainstallpatch (hdlcomponentglobals hglobals) {
-	
-	/*
-	3.0a dmb: return the original value of getnexteventproc so it can 
-	be restored in osaremovepath. this allows patching pairs to be 
-	nested, so calls to handlerunscript can be nested.
-	*/
-	
-	register hdlcomponentglobals hcg = hglobals;
-	GNEUPP origproc;
-	UniversalProcPtr origtrap;
-	
-	if ((**hcg).isHomeProcess)
-		origproc = nil;
-		
-	else {
-	
-		origtrap = installpatch (_GetNextEvent, osagetnexteventUPP);
-		
-		origproc = (**hcg).getnexteventproc;
-		
-		(**hcg).getnexteventproc = (GNEUPP) origtrap;
-		}
-	
-	return (origproc);
-	} /*osainstallpatch*/
-
-
-void osaremovepatch (hdlcomponentglobals hglobals, GNEUPP origproc) {
-#pragma unused (origproc)
-
-	register hdlcomponentglobals hcg = hglobals;
-	
-	if ((**hcg).isHomeProcess)
-		;	
-	else {
-	
-		assert ((**hcg).getnexteventproc != nil);
-		
-		removepatch (_GetNextEvent, (**hcg).getnexteventproc);
-				
-		(**hcg).getnexteventproc = origproc;
-		}
-	} /*osaremovepatch*/
-
-#else
 
 GNEUPP osainstallpatch (hdlcomponentglobals hglobals) {
 #pragma unused (hglobals)
@@ -1419,7 +1336,6 @@ void osaremovepatch (hdlcomponentglobals hglobals, GNEUPP origproc) {
 
 	} /*osaremovepatch*/
 
-#endif
 
 
 static boolean osapartialeventloop (short desiredevents) {

@@ -73,8 +73,6 @@ extern void getinitialfile (short, bigstring, short *);
 
 extern boolean installgestaltfunction (void);
 
-#ifdef MACVERSION //JES 2004.03.29: MacOS Specific function declarations
 	extern void WriteToConsole (char *s);
 	extern void DoErrorAlert(OSStatus status, CFStringRef errorFormatString);
-#endif
 

@@ -170,12 +170,7 @@ boolean loadfunctionprocessor (short id, langvaluecallback valuecallback) {
 	short ixverb = 0;
 	boolean fl = true;
 	
-#ifdef MACVERSION
 	hefps = getresourcehandle ('EFP#', id);
-#endif
-#ifdef WIN95VERSION
-	hefps = getresourcehandle ('EFP_', id);
-#endif
 	
 	assert (hefps != nil);
 	
@@ -243,7 +238,6 @@ static boolean initenvironment ( hdlhashtable ht ) {
 	bigstring bsos, bsversion;
 	boolean isServer;
 	
-	#ifdef MACVERSION
 	
 		Handle hcommand, hreturn;
 		bigstring bs;
@@ -343,59 +337,7 @@ static boolean initenvironment ( hdlhashtable ht ) {
 				isServer = false;
 			}
 			
-	#endif
 
-	#ifdef WIN95VERSION
-	
-		bigstring bsservicepack;
-		byte bsflavor [4];
-		OSVERSIONINFO osinfo;
-
-		osinfo.dwOSVersionInfoSize = sizeof (OSVERSIONINFO);
-		
-		GetVersionEx (&osinfo);
-		
-		copystring (BIGSTRING ("\x08" "Windows "), bsos);
-		
-		langassignbooleanvalue (ht, str_isMac, false);
-		
-		langassignbooleanvalue (ht, str_isWindows, true);
-		
-		if (osinfo.dwPlatformId == VER_PLATFORM_WIN32_NT) {
-		
-			copystring (BIGSTRING ("\x02" "NT"), bsflavor);
-			
-			isServer = true;
-			
-			}
-		else {
-			
-			if (osinfo.dwBuildNumber == 0)
-				copystring (BIGSTRING ("\x02" "95"), bsflavor);
-			else
-				copystring (BIGSTRING ("\x02" "98"), bsflavor);
-			
-			isServer = false;
-			
-			}
-			
-		pushstring (bsflavor, bsos);
-		
-		langassignstringvalue (ht, str_osFlavor, bsflavor);
-		
-		langassignlongvalue (ht, str_osMajorVersion, osinfo.dwMajorVersion);
-		
-		langassignlongvalue (ht, str_osMinorVersion, LOWORD(osinfo.dwMinorVersion));
-		
-		langassignlongvalue (ht, str_osBuildNumber, LOWORD(osinfo.dwBuildNumber));
-		
-		getsystemversionstring (bsversion, bsservicepack);
-		
-		langassignstringvalue (ht, str_winServicePackNumber, bsservicepack);
-		
-		langassignbooleanvalue (ht, str_isCarbon, false); // 7.0b28: isCarbon is false on Windows.
-		
-	#endif
 	
 	langassignbooleanvalue ( ht, str_isMacOsClassic, false );
 	
@@ -441,7 +383,6 @@ static boolean initenvironment ( hdlhashtable ht ) {
 
 static boolean initCharsetsTable (hdlhashtable cSetsTable)
 {
-#if MACVERSION
 	OSStatus err;
 	ItemCount ct, actual_ct, i;
 	
@@ -493,63 +434,7 @@ static boolean initCharsetsTable (hdlhashtable cSetsTable)
 	
 	return (true);
 	
-#endif
 
-#if WIN95VERSION
-	HRESULT err;
-	IMultiLanguage2 * pMultiLanguage;
-	IEnumCodePage * pEnumCodePage;
-	UINT i, cnum = 0;
-	MIMECPINFO cpInfo;
-	long ccpInfo;
-	bigstring ianaName, displayName;
-
-	initCOM();
-
-	err = CoCreateInstance(
-			&CLSID_CMultiLanguage, 
-			NULL,
-			CLSCTX_INPROC_SERVER,
-			&IID_IMultiLanguage2,
-			(void **) &pMultiLanguage );
-
-	if ( FAILED( err ) )
-		goto done;
-
-	err = pMultiLanguage->lpVtbl->EnumCodePages(
-		pMultiLanguage,
-		0,  // MIMECONTF_MAILNEWS | MIMECONTF_BROWSER | MIMECONTF_VALID | MIMECONTF_MIME_LATEST
-		9,  /* LANGID. I'm totally guessing that 0 means "all", here. -- smd */
-		(IEnumCodePage **) &pEnumCodePage );
-	
-	if ( FAILED( err ) )
-		goto done;
-
-	pMultiLanguage->lpVtbl->GetNumberOfCodePageInfo( pMultiLanguage, &cnum );
-	
-	// pcpInfo = (PMIMECPINFO)CoTaskMemAlloc( sizeof(MIMECPINFO) );
-
-	for ( i = 0; i < cnum; i++ )
-	{
-		err = pEnumCodePage->lpVtbl->Next( pEnumCodePage, 1, &cpInfo, &ccpInfo );
-
-		if ( SUCCEEDED( err ) && ( ccpInfo != 0 ) )
-		{
-			if ( copyWideToPString( cpInfo.wszWebCharset, ianaName )
-				&& copyWideToPString( cpInfo.wszDescription, displayName ) )
-				langassignstringvalue( cSetsTable, ianaName, displayName );
-				//langassignlongvalue( cSetsTable, ianaName, cpInfo.uiCodePage );
-		}
-	}
-
-	pEnumCodePage->lpVtbl->Release( pEnumCodePage );
-	pMultiLanguage->lpVtbl->Release( pMultiLanguage );
-	// CoTaskMemFree( (LPVOID) pcpInfo );
-
-done:
-	return (true);
-	
-#endif	
 	} /* initCharsetsTable */
 
 

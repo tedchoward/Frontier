@@ -114,116 +114,8 @@ static tydirection scrolldirection (boolean flvert, boolean flup) {
 
 
 
-#ifdef WIN95VERSION
-
-void winscroll (boolean isvertscroll, int scrolltype, long pos)
-	{
-
-	/*
-	7.0b20 PBS: Fix Windows display glitch -- if scroll is finished,
-	redraw the scrollbar.
-	*/
-
-	boolean flup, flpage;
-	long distance;
-	tyscrollinfo scrollinfo;
-	tydirection dir;
-
-	if (shellwindowinfo != NULL)
-		{
-		if (isvertscroll)
-			{
-			scrollinfo = (**shellwindowinfo).vertscrollinfo;
-			}
-		else
-			{
-			scrollinfo = (**shellwindowinfo).horizscrollinfo;
-			}
-
-		switch (scrolltype)
-			{
-			case SB_LINEUP:
-			case SB_PAGEUP:
-			case SB_TOP:
-				flup = false;
-				break;
-
-			case SB_BOTTOM:
-			case SB_LINEDOWN:
-			case SB_PAGEDOWN:
-				flup = true;
-				break;
-
-			case SB_THUMBPOSITION:
-			case SB_THUMBTRACK:
-				if (pos < scrollinfo.cur)
-					flup = false;
-				else
-					flup = true;
-				break;
-			default:
-				flup = false;
-				break;
-			}
-
-		dir = scrolldirection (isvertscroll, flup);
-
-		flpage = false;
-		distance = 0;
-
-		switch (scrolltype)
-			{
-			case SB_PAGEUP:
-			case SB_PAGEDOWN:
-				flpage = true;
-				distance = 1;
-				break;
-
-			case SB_LINEUP:
-			case SB_LINEDOWN:
-				distance = 1;
-				break;
-
-			case SB_BOTTOM:
-				distance = scrollinfo.max - scrollinfo.cur;
-				break;
-
-			case SB_TOP:
-				distance = scrollinfo.cur - scrollinfo.min;
-				break;
-
-			case SB_THUMBPOSITION:
-			case SB_THUMBTRACK:
-				distance = scrollinfo.cur - pos;
-				break;
-
-			default:
-				break;
-			}
-
-		distance = abs(distance);
-
-		if (distance > 0)
-			(*shellglobals.scrollroutine) (dir, flpage, distance);
-
-		if (scrolltype == SB_ENDSCROLL) { /*7.0b20 PBS: Fix Windows display glitch -- redraw.*/
-
-			if (isvertscroll)
-
-				drawscrollbar ((**shellwindowinfo).vertscrollbar);
-			
-			else
-
-				drawscrollbar ((**shellwindowinfo).horizscrollbar);
-			} /*if*/
-
-		}
-	}
-
-#endif
 
 
-#ifdef MACVERSION
 static pascal void shellhorizscroll (hdlscrollbar ctrl, short part) {
 	
 	register hdlwindowinfo h = shellwindowinfo;
@@ -282,21 +174,13 @@ static pascal void shellvertscroll (hdlscrollbar ctrl, short part) {
 	#define shellhorizscrollUPP	(&shellhorizscroll)
 	#define	shelllivescrollupp	(&ScrollThumbActionProc)
 #elif TARGET_RT_MAC_CFM
-	#if TARGET_API_MAC_CARBON
 		ControlActionUPP	shellvertscrollDesc;
 		ControlActionUPP	shellhorizscrollDesc;
 		ControlActionUPP	shelllivescrollupp;
 		#define shellvertscrollUPP (shellvertscrollDesc)
 		#define shellhorizscrollUPP (shellhorizscrollDesc)
-	#else
-		static RoutineDescriptor shellvertscrollDesc = BUILD_ROUTINE_DESCRIPTOR (uppControlActionProcInfo, shellvertscroll);
-		static RoutineDescriptor shellhorizscrollDesc = BUILD_ROUTINE_DESCRIPTOR (uppControlActionProcInfo, shellhorizscroll);
-		#define shellvertscrollUPP (&shellvertscrollDesc)
-		#define shellhorizscrollUPP (&shellhorizscrollDesc)
-	#endif
 #endif
 
-#if TARGET_API_MAC_CARBON == 1
 
 /*The live scrolling code descends from Apple sample code, hence the different style of code.*/
 
@@ -524,7 +408,6 @@ static void EndThumbTracking ( void ) {
 	return;
 	} /*EndThumbTracking*/
 
-#endif
 
 extern void shellinitscroll ();
 
@@ -532,26 +415,22 @@ void shellinitscroll(void)
 {
 	//Code change by Timothy Paustian Saturday, July 22, 2000 12:04:35 AM
 	//Needed in shellscroll
-	#if TARGET_API_MAC_CARBON
 		#if TARGET_RT_MAC_CFM
 			shellvertscrollDesc = NewControlActionUPP(shellvertscroll);
 			shellhorizscrollDesc = NewControlActionUPP(shellhorizscroll);
 			shelllivescrollupp = NewControlActionUPP (ScrollThumbActionProc);
 		#endif
-	#endif
 }
 
 extern void shellshutdownscroll ();
 
 void shellshutdownscroll(void)
 {
-	#if TARGET_API_MAC_CARBON
 		#if TARGET_RT_MAC_CFM
 			DisposeControlActionUPP(shellvertscrollDesc);
 			DisposeControlActionUPP(shellhorizscrollDesc);
 			DisposeControlActionUPP (shelllivescrollupp);
 		#endif
-	#endif
 }
 
 
@@ -559,10 +438,6 @@ void shellscroll (boolean flvert, hdlscrollbar sb, short part, Point pt) {
 	
 //	register WindowPtr w = shellwindow;
 	register long oldscrollbarcurrent;
-	#if TARGET_API_MAC_CARBON != 1
-		register long ctscroll;
-		tydirection dir;
-	#endif
 	
 	//pushclip ((*w).portRect); /*allow drawing in whole window%/
 		
@@ -570,7 +445,6 @@ void shellscroll (boolean flvert, hdlscrollbar sb, short part, Point pt) {
 		
 		oldscrollbarcurrent = getscrollbarcurrent (sb);
 		
-		#if TARGET_API_MAC_CARBON == 1
 			
 			gControl = sb;
 			
@@ -584,17 +458,6 @@ void shellscroll (boolean flvert, hdlscrollbar sb, short part, Point pt) {
 			
 			EndThumbTracking ();			
 		
-		#else
-		
-			TrackControl (sb, pt, nil);
-			
-			ctscroll = getscrollbarcurrent (sb) - oldscrollbarcurrent;
-		
-			dir = scrolldirection (flvert, ctscroll > 0);
-			
-			(*shellglobals.scrollroutine) (dir, false, abs (ctscroll));
-
-		#endif			
 		}
 	
 	else {
@@ -613,7 +476,6 @@ void shellscroll (boolean flvert, hdlscrollbar sb, short part, Point pt) {
 	*/
 	} /*shellscroll*/
 	
-#endif
 
 
 

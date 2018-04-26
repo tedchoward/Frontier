@@ -34,13 +34,8 @@
 
 #endif
 
-#ifdef MACVERSION
 	#define geneva kFontIDGeneva
 	#define helv kFontIDHelvetica
-#endif
-#ifdef WIN95VERSION
-	extern short geneva;
-#endif
 
 extern FontInfo globalfontinfo;
 
@@ -71,15 +66,6 @@ extern void diskgetfontnum (diskfontstring, short *);
 
 extern boolean initfonts (void);
 
-#ifdef WIN95VERSION
-
-	extern void getWindowsLogFont (LOGFONT *);
-
-	extern void setWindowsFont ();
-
-	extern void clearWindowsFont ();
-
-#endif
 
 
 /* file.h*/

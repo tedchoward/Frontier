@@ -95,17 +95,10 @@
 
 /* dialog button text */
 
-#ifdef MACVERSION
 	#define cancelbuttontext BIGSTRING ("\x06" "Cancel")
 	#define duplicatebuttontext BIGSTRING ("\x09" "Duplicate")
 	#define replacebuttontext BIGSTRING ("\x07" "Replace")
-#endif
 
-#ifdef WIN95VERSION
-	#define cancelbuttontext BIGSTRING ("\x07" "&Cancel")
-	#define duplicatebuttontext BIGSTRING ("\x0a" "&Duplicate")
-	#define replacebuttontext BIGSTRING ("\x08" "&Replace")
-#endif
 
 
 typedef boolean (*dialogcallback) (DialogPtr, short);
@@ -219,13 +212,7 @@ extern short customalert (short, bigstring);
 
 extern boolean customdialog (short, short, dialogcallback);
 
-#ifdef WIN95VERSION
-	extern boolean userinfodialog (bigstring username, bigstring userinitials, bigstring userorg, bigstring email);
-
-	extern void centerdialog (HWND hwndDlg);
-#else
 	char X0_p2cstrcpy(char *dst, StringPtr src);
-#endif
 
 #endif
 

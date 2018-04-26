@@ -250,11 +250,7 @@ static unsigned char * tcperrorstrings [80] = {
 
 #define ACCEPT_CONN_WITHOUT_GLOBALS		1
 
-#ifdef WIN95VERSION
-#define ACCEPT_IN_SEPARATE_THREAD		1
-#endif
 
-#ifdef MACVERSION
 	#ifdef FRONTIER_GUSI_2
 		#include <compat.h>
 		#include <fcntl.h>
@@ -291,7 +287,6 @@ static unsigned char * tcperrorstrings [80] = {
 
 	#include <sys/errno.h>
 	#include "mac.h"
-#endif
 
 #include "error.h"
 #include "file.h"
@@ -306,32 +301,13 @@ static unsigned char * tcperrorstrings [80] = {
 #include "processinternal.h"
 #include "shell.h"
 #include "shellhooks.h"
-#ifdef WIN95VERSION
-	#include "FrontierWinMain.h"
-#endif
 
 #include "winsocknetevents.h"
 
 
 #define NO_HOST_SERVICES NULL
 
-#ifdef WIN95VERSION
-	#define WSAGetHostError() WSAGetLastError()
-	
-	typedef struct hostData {
-		
-		void * dummy; // strucure not needed under Windows
-		} hostData;
 
-	#define usleep(A) Sleep(A)
-
-	//#if 0
-		typedef int (WINAPI * tyTransmitFile) (SOCKET, HANDLE, DWORD, DWORD, LPOVERLAPPED, LPTRANSMIT_FILE_BUFFERS, DWORD);
-		static tyTransmitFile adrTransmitFile = nil;
-	//#endif
-#endif
-
-#ifdef MACVERSION
 
 	#ifdef FRONTIER_GUSI_2
 	typedef struct hostData {
@@ -384,7 +360,6 @@ static unsigned char * tcperrorstrings [80] = {
 	typedef struct in_addr IN_ADDR;
 	typedef struct in_addr *PIN_ADDR;
 	typedef struct in_addr FAR *LPIN_ADDR;
-#endif
 
 #define SOCKTYPE_INVALID -1
 #define SOCKTYPE_UNKNOWN 0
@@ -424,42 +399,15 @@ static boolean frontierWinSockLoaded = false;
 static sockRecord sockstack[FRONTIER_MAX_STREAM];
 
 
-#ifdef MACVERSION
 	static short sockListenCount = 0;
 	static short sockListenList[FRONTIER_MAX_STREAM];
-#endif
 
 
-#ifdef WIN95VERSION
-	
-static CRITICAL_SECTION sockstacksection;
-
-static boolean sockstacksectioninitialized = false;
-
-static void _entercriticalsockstacksection (void) {
-
-	if (!sockstacksectioninitialized) {
-
-		InitializeCriticalSection (&sockstacksection);
-
-		sockstacksectioninitialized = true;
-		}
-	
-	EnterCriticalSection (&sockstacksection);
-	}
-
-static void _leavecriticalsockstacksection (void) {
-
-	LeaveCriticalSection (&sockstacksection);
-	}
-
-#else
 
 #define _entercriticalsockstacksection()
 
 #define _leavecriticalsockstacksection()
 
-#endif
 
 
 static char * TCPGETTYPE (tysocktypeid typeID) {
@@ -520,9 +468,6 @@ static char * TCPGETTYPE (tysocktypeid typeID) {
 
 static boolean fllogger = true;
 
-#ifdef WIN95VERSION
-extern 	DWORD ixthreadglobalsgrabcount;			// Tls index of counter for nest globals grabbing
-#endif
 
 static FILE * tcpfile = NULL;
 static char TCPmsg[400];
@@ -533,20 +478,10 @@ static char TCPmsg[400];
 static void TCPWRITEMSG () {
 	unsigned long ticks = gettickcount ();
 	static unsigned long lastticks = 0;
-	#ifdef WIN95VERSION
-		DWORD idthread;
-		static DWORD idlastthread = 0;
-		long grabcount = (long) TlsGetValue (ixthreadglobalsgrabcount);
-	#endif
-	#ifdef MACVERSION
 		long idthread = (long) (**getcurrentthread ()).idthread;
 		static long idlastthread = 0;
-	#endif
 	
 	if (fllogger) {
-	#ifdef WIN95VERSION
-		idthread = GetCurrentThreadId();
-	#endif
 
 		if (tcpfile == NULL) {
 			tcpfile = fopen ("tcpfile.txt", "w+");
@@ -557,13 +492,8 @@ static void TCPWRITEMSG () {
 			idlastthread = idthread;
 			}
 
-	#ifdef WIN95VERSION
-		fprintf (tcpfile, "%08X (%04ld) | %04X (%02ld) | %s", (unsigned long) ticks, (ticks - lastticks), idthread, grabcount, TCPmsg);
-	#endif
 
-	#ifdef MACVERSION
 		fprintf (tcpfile, "%08X (%04ld) | %04X | %s", (unsigned long) ticks, (ticks - lastticks), idthread, TCPmsg);
-	#endif
 
 		lastticks = ticks;
 
@@ -581,16 +511,9 @@ void TCPTRACKERIN (char * functionName, int linenumber, unsigned long streamID) 
 			return;
 			}
 
-		#ifdef WIN95VERSION
-			wsprintf (TCPmsg, "Entering %s at line %d, Stream = %ld, Socket = %ld, Type is %s, Max Depth is %d, Current Depth is %d, Notification is %s, Listen Ref is %08lX, Refcon = %08lX.\n",
-				functionName, linenumber, streamID, sockstack[streamID].sockID, TCPGETTYPE (sockstack[streamID].typeID), sockstack[streamID].maxdepth,
-				sockstack[streamID].currentListenDepth, sockstack[streamID].flNotification ? "ON" : "OFF",
-				sockstack[streamID].listenReference, sockstack[streamID].refcon);
-		#else
 			wsprintf (TCPmsg, "Entering %s at line %d, Stream = %ld, Socket = %ld, Type is %s, Max Depth is %d, Current Depth is %d, Listen Ref is %08lX, Refcon = %08lX.\n",
 				functionName, linenumber, streamID, sockstack[streamID].sockID, TCPGETTYPE (sockstack[streamID].typeID), sockstack[streamID].maxdepth,
 				sockstack[streamID].currentListenDepth, sockstack[streamID].listenReference, sockstack[streamID].refcon);
-		#endif
 
 		TCPWRITEMSG ();
 		}
@@ -605,16 +528,9 @@ void TCPTRACKEROUT (char * functionName, int linenumber, unsigned long streamID)
 			return;
 			}
 
-		#ifdef WIN95VERSION
-			wsprintf (TCPmsg, "Exiting %s at line %d, Stream = %ld, Socket = %ld, Type is %s, Max Depth is %d, Current Depth is %d, Notification is %s, Listen Ref is %08lX, Refcon = %08lX.\n",
-				functionName, linenumber, streamID, sockstack[streamID].sockID, TCPGETTYPE (sockstack[streamID].typeID), sockstack[streamID].maxdepth,
-				sockstack[streamID].currentListenDepth, sockstack[streamID].flNotification ? "ON" : "OFF",
-				sockstack[streamID].listenReference, sockstack[streamID].refcon);
-		#else
 			wsprintf (TCPmsg, "Exiting %s at line %d, Stream = %ld, Socket = %ld, Type is %s, Max Depth is %d, Current Depth is %d, Listen Ref is %08lX, Refcon = %08lX.\n",
 				functionName, linenumber, streamID, sockstack[streamID].sockID, TCPGETTYPE (sockstack[streamID].typeID), sockstack[streamID].maxdepth,
 				sockstack[streamID].currentListenDepth, sockstack[streamID].listenReference, sockstack[streamID].refcon);
-		#endif
 
 		TCPWRITEMSG ();
 		}
@@ -633,9 +549,6 @@ static void TCPTRACKERCLOSE () {
 
 static boolean fllogger = true;
 
-#ifdef WIN95VERSION
-extern 	DWORD ixthreadglobalsgrabcount;			// Tls index of counter for nest globals grabbing
-#endif
 
 static FILE * tcpfile = NULL;
 static char TCPmsg[400];
@@ -650,20 +563,10 @@ static char TCPmsg[400];
 static void TCPERRORWRITEMSG () {
 	unsigned long ticks = gettickcount ();
 	static unsigned long lastticks = 0;
-	#ifdef WIN95VERSION
-		DWORD idthread;
-		static DWORD idlastthread = 0;
-		long grabcount = (long) TlsGetValue (ixthreadglobalsgrabcount);
-	#endif
-	#ifdef MACVERSION
 		long idthread = (long) (**getcurrentthread ()).idthread;
 		static long idlastthread = 0;
-	#endif
 	
 	if (fllogger) {
-	#ifdef WIN95VERSION
-		idthread = GetCurrentThreadId();
-	#endif
 
 		if (tcpfile == NULL) {
 			tcpfile = fopen ("tcpfile.txt", "w+");
@@ -674,13 +577,8 @@ static void TCPERRORWRITEMSG () {
 			idlastthread = idthread;
 			}
 
-	#ifdef WIN95VERSION
-		fprintf (tcpfile, "%08X (%04ld) | %04X (%02ld) | %s", (unsigned long) ticks, (ticks - lastticks), idthread, grabcount, TCPmsg);
-	#endif
 
-	#ifdef MACVERSION
 		fprintf (tcpfile, "%08X (%04ld) | %04X | %s", (unsigned long) ticks, (ticks - lastticks), idthread, TCPmsg);
-	#endif
 
 		lastticks = ticks;
 
@@ -870,9 +768,7 @@ static void clearsockstack () {
 
 	_leavecriticalsockstacksection();
 
-	#ifdef MACVERSION
 		sockListenCount = 0;
-	#endif
 	} /*clearsockstack*/
 
 
@@ -880,12 +776,6 @@ static void gettcperrorstring (int errcode, bigstring bs) {
 
 	int ixtcperr = errcode;
 	
-	#ifdef WIN95VERSION
-		if (errcode >= WSAHOST_NOT_FOUND && errcode <= WSANO_DATA)
-			ixtcperr -= 1000;
-		
-		ixtcperr -= WSABASEERR;
-	#endif
 	
 	if (ixtcperr > 0 && ixtcperr < 80) {
 		
@@ -899,15 +789,8 @@ static void gettcperrorstring (int errcode, bigstring bs) {
 			}
 		}
 	
-	#ifdef MACVERSION
 		getsystemerrorstring (errcode, bs);
-	#endif
 	
-	#ifdef WIN95VERSION
-		getwinerrormessage (errcode, bs);
-		
-		firstword (bs, '.', bs); //skip the cr	
-	#endif
 	
 	} /*gettcperrorstring*/
 
@@ -974,7 +857,6 @@ static void intneterror (long errcode) {
 	} /*intneterror*/
 
 
-#ifdef MACVERSION
 
 	#ifdef FRONTIER_GUSI_2
 	
@@ -1295,7 +1177,6 @@ static boolean fwsGUSIWakeupHook (hdlprocessthread hthread) {
 
 
 #endif
-#endif
 
 
 #ifdef PIKE
@@ -1353,58 +1234,10 @@ static boolean fwsNetEventLaunch (struct hostData *data) {
 	5.0.2b5 dmb: added hostData parameter and GUSI support to handle threading
 	*/
 
-	#ifdef WIN95VERSION
-		WSADATA wsaData; 
-		WORD VersionRequested;
-	#endif
 
 	if (! frontierWinSockLoaded) {
 
-		#ifdef WIN95VERSION
-			//#if 0
-				HMODULE hmodule;
-			//#endif
-			
-			#if (TCPTRACKER >= 2) //if reporting to file
-				long l;
-				if (getProfileLong (BIGSTRING ("\x0a" "TCPTracker"), &l)) {
-					fllogger = (boolean) l;
-					}
-				else {
-					setProfileLong (BIGSTRING ("\x0a" "TCPTracker"), fllogger);		/*this just sets the value in the registry*/
-					}
-			#endif
-
-			VersionRequested = MAKEWORD(WINSOCK_VERSION_MAJOR, WINSOCK_VERSION_MINOR);
-
-			if (WSAStartup (VersionRequested, &wsaData) == SOCKET_ERROR) { 
-				neterror("start WinSock", WSAGetLastError ()); 
-				WSACleanup(); 
-				return (false); 
-				}
-
-			if ((LOBYTE(wsaData.wVersion) != WINSOCK_VERSION_MAJOR) || (HIBYTE(wsaData.wVersion) != WINSOCK_VERSION_MINOR)) {
-				/* Tell the user that we couldn't find a useable WinSock DLL. */
-				WSACleanup( );
-				return(false); 
-				}
-
-			/*
-			The TransmitFile function is only available on Windows NT. 
-			*/
-			
-			//#if 0
-			
-				hmodule = GetModuleHandle ("wsock32.dll");
-
-				if (hmodule != nil)
-					adrTransmitFile = (tyTransmitFile) GetProcAddress (hmodule, "TransmitFile");
-			
-			//#endif
-			
-		#endif
 		
-		#ifdef MACVERSION
 			#ifdef FRONTIER_GUSI_2
 				//GUSISetHook (GUSI_SpinHook, (GUSIHook) fwsGUSI2Spin);
 			#else
@@ -1423,16 +1256,13 @@ static boolean fwsNetEventLaunch (struct hostData *data) {
 				shellpushwakeuphook (&fwsGUSIWakeupHook);
 			#endif
 
-		#endif
 
 		clearsockstack();
 		}
 	
-	#ifdef MACVERSION
 		#ifndef FRONTIER_GUSI_2
 			sethostdata (data);
 		#endif
-	#endif
 	
 	++frontierWinSockCount;
 	frontierWinSockLoaded = true;
@@ -1450,7 +1280,6 @@ boolean fwsNetEventIsRunning (void) {
 	} /*fwsNetEventIsRunning*/
 
 
-#ifdef MACVERSION
 
 boolean fwsNetEventQuit (void) {
 
@@ -1467,7 +1296,6 @@ boolean fwsNetEventQuit (void) {
 	return (true);
 	} /*fwsNetEventQuit*/
 
-#endif
 
 
 boolean fwsNetEventShutDown (void) {
@@ -1482,9 +1310,6 @@ boolean fwsNetEventShutDown (void) {
 	TCPTRACKERCLOSE();
 
 	if (frontierWinSockLoaded) {
-		#ifdef WIN95VERSION
-			WSACleanup();
-		#endif
 
 		return (true);
 		}
@@ -1529,11 +1354,9 @@ boolean fwsNetEventAddressEncode (bigstring IPaddr, unsigned long  * addr) {
 	
 	unsigned long netaddr;
 	char sysstring[256];
-	#ifdef MACVERSION
 		#ifndef FRONTIER_GUSI_2
 			struct in_addr foo;
 		#endif
-	#endif
 	struct hostData hostdata;
 
 	if (!fwsNetEventLaunch (&hostdata))
@@ -1541,18 +1364,13 @@ boolean fwsNetEventAddressEncode (bigstring IPaddr, unsigned long  * addr) {
 
 	copyptocstring (IPaddr, sysstring);
 
-	#ifdef MACVERSION
 		#ifdef FRONTIER_GUSI_2
 			netaddr = inet_addr (sysstring);
 		#else
 			foo = inet_addr (sysstring);
 			netaddr = foo.s_addr;
 		#endif
-	#endif
 
-	#ifdef WIN95VERSION
-		netaddr = inet_addr (sysstring);
-	#endif
 
 	if (netaddr == INADDR_NONE) {
 		
@@ -1660,7 +1478,6 @@ boolean fwsNetEventMyAddress (unsigned long * addr) {
 
 	struct hostData hostdata;
 	
-	#ifdef MACVERSION
 		
 		if (!fwsNetEventLaunch (&hostdata))
 			return (false);
@@ -1670,37 +1487,6 @@ boolean fwsNetEventMyAddress (unsigned long * addr) {
 		*addr = (unsigned long) gethostid ();
 		
 		return (true);
-	#else
-		struct hostent * h;
-		char sysstring[256];
-		long errcode;
-
-
-		if (!fwsNetEventLaunch (&hostdata))
-			return (false);
-		
-		if (gethostname (sysstring, 255) == SOCKET_ERROR) {
-			neterror("get local address", WSAGetHostError ());
-			return (false);
-			}
-
-		releasethreadglobalsnopriority ();
-
-		h = gethostbyname (sysstring);
-
-		errcode = WSAGetHostError ();
-
-		grabthreadglobalsnopriority ();
-
-		if (h == NULL) {
-			neterror("get local address name", errcode);
-			return (false);
-			}
-
-		*addr = ntohl (*((long *)h->h_addr_list[0]));
-
-		return (true);
-	#endif
 	} /*fwsNetEventMyAddress*/
 
 
@@ -1902,83 +1688,6 @@ static boolean fwsrunstring (bigstring bs) {
 static boolean restartAccepter (SOCKET s, short listenstream) {
 	boolean fl = true;
 
-#ifdef WIN95VERSION
-	long err;
-	#ifndef ACCEPT_CONN_WITHOUT_GLOBALS
-		bigstring bs;
-	#endif
-	unsigned long timewait;
-
-	TCPTRACKERIN ("restartAccepter", __LINE__, listenstream);
-
-	if (!sockstack[listenstream].flNotification
-			&& sockstack[listenstream].currentListenDepth < sockstack[listenstream].maxdepth) {
-
-		/*Turn it on again!*/
-
-		if (WSAAsyncSelect (s, shellframewindow, wm_processAccept, FD_ACCEPT) != SOCKET_ERROR)
-			{
-				sockstack[listenstream].flNotification = true;
-				fl = true;
-				goto exit;
-				}
-
-			/* Our interest in this has failed */
-
-			err = WSAGetLastError();
-
-			timewait = gettickcount() + (60L * 15L);		/*max of 15 seconds*/
-
-			while (timewait > gettickcount()) {
-				if (err == WSAEINPROGRESS) {
-					/* let's see if we can restart this ourselves */
-					TCPprintf (wsprintf(TCPmsg, "In restartAccepter at line %d.  Attempting restart on listenstream: %d.\n", __LINE__, listenstream));
-					TCPWRITEMSG();
-
-					//threadyield (true);
-
-					Sleep (100L); //100 milliseconds -- make sure we don't control the thread globals!
-
-					if (WSAAsyncSelect (s, shellframewindow, wm_processAccept, FD_ACCEPT) != SOCKET_ERROR)
-						{
-						sockstack[listenstream].flNotification = true;
-						TCPprintf (wsprintf(TCPmsg, "In restartAccepter at line %d.  Got listen restarted on listenstream: %d.\n", __LINE__, listenstream));
-						TCPWRITEMSG();
-						fl = true;
-						goto exit;
-						}
-
-					err = WSAGetLastError();
-					}
-				else 
-					break;				/*any other error we get out*/
-				}
-
-			sockstack[listenstream].typeID = SOCKTYPE_LISTENSTOPPED;
-			#ifndef ACCEPT_IN_SEPARATE_THREAD
-				sockstack[listenstream].hevent = nil;
-			#endif
-
-			#ifdef ACCEPT_CONN_WITHOUT_GLOBALS
-				TCPERRORprintf (wsprintf(TCPmsg, "In restartAccepter at line %d.  Error setting future accepts %s (%ld, %ld).\n", __LINE__, stringbaseaddress (sockstack[listenstream].callback), err * -1L, listenstream * -1L));
-				TCPWRITEMSG();
-
-				fl = fwsruncallback (listenstream, err * -1L, listenstream * -1L);
-			#else
-				parsecallbackstring (listenstream, err * -1L, listenstream * -1L, bs);
-
-				TCPERRORprintf (wsprintf(TCPmsg, "In restartAccepter at line %d.  Error setting future accepts %s.\n", __LINE__, stringbaseaddress(bs)));
-				TCPERRORWRITEMSG();
-				
-				fl = fwsrunstring (bs);
-			#endif
-		}
-
-exit:
-
-	TCPTRACKEROUT ("restartAccepter", __LINE__, listenstream);
-
-#endif
 	return (fl);
 	} /*restartAccepter*/
 
@@ -1991,21 +1700,6 @@ static boolean checkAccepter (unsigned long stream) {
 
 		--sockstack[listenstream].currentListenDepth;
 
-		#ifdef WIN95VERSION
-			#ifndef ACCEPT_IN_SEPARATE_THREAD
-				{
-				boolean fl;
-
-				releasethreadglobalsnopriority ();
-
-				fl = restartAccepter (sockstack[listenstream].sockID, listenstream);
-
-				grabthreadglobalsnopriority ();
-
-				return (fl);
-				}
-			#endif
-		#endif
 		}
 
 	return (true);
@@ -2204,24 +1898,6 @@ static void *fwsacceptingthreadmain (long *param) {
 
 static boolean fwslaunchacceptingthread (long stream) {
 	
-	#ifdef WIN95VERSION
-
-		HANDLE hthread;
-
-		/*create listening thread*/
-
-		hthread = CreateThread (nil, nil, (LPTHREAD_START_ROUTINE) &fwsacceptingthreadmain, (LPVOID) stream, CREATE_SUSPENDED, &sockstack[stream].idthread);
-
-		if (hthread == NULL) {
-			
-			neterror("create listen thread", GetLastError ());
-
-			return (false);
-			}
-
-		ResumeThread (hthread); /*let the new thread fly*/
-
-	#else
 	
 		pthread_t idthread;
 		pthread_attr_t attr;
@@ -2232,7 +1908,6 @@ static boolean fwslaunchacceptingthread (long stream) {
 	
 		pthread_attr_destroy (&attr);
 		
-	#endif
 	
 	return (true);
 	}/*fwslaunchacceptingthread*/
@@ -2403,10 +2078,8 @@ boolean fwsNetEventCloseListen (unsigned long stream) {
 
 	SOCKET sock;
 	int res, errcode;
-	#ifdef MACVERSION
 		int i,j;
 		struct linger l;
-	#endif
 //	struct hostData hostdata;
 
 	if (!fwsNetEventLaunch (NO_HOST_SERVICES))
@@ -2428,13 +2101,7 @@ boolean fwsNetEventCloseListen (unsigned long stream) {
 
 	releasethreadglobalsnopriority();
 
-	#ifdef WIN95VERSION
-		#ifndef ACCEPT_IN_SEPARATE_THREAD
-			WSAAsyncSelect (sock, shellframewindow, 0, 0);
-		#endif
-	#endif
 
-	#ifdef MACVERSION
 		for (i = 0; i < sockListenCount; i++) {
 			if (sockListenList [i] == stream) {
 				if (i == (sockListenCount - 1)) {
@@ -2458,7 +2125,6 @@ boolean fwsNetEventCloseListen (unsigned long stream) {
 		
 		setsockopt (sock, SOL_SOCKET, SO_LINGER, (char *) &l, sizeof(l));
 	
-	#endif
 
 	res = closesocket(sock);
 
@@ -2604,9 +2270,7 @@ boolean fwsNetEventOpenAddrStream (unsigned long addr, unsigned long port, unsig
 
 	netaddr = htonl(addr);
 
-	#ifdef MACVERSION
 		sHostID = 0; //clear cached value
-	#endif
 	
 	memset (&sa, 0, sizeof(sa));
 	
@@ -2640,9 +2304,7 @@ boolean fwsNetEventOpenNameStream (bigstring name, unsigned long port, unsigned 
 	
 	copyptocstring (name, sysstring);
 	
-	#ifdef MACVERSION
 		sHostID = 0; //clear cached value
-	#endif
 	
 	TCPprintf (wsprintf(TCPmsg, "Entering fwsNetEventOpenNameStream at line %d.  Domain name: %s.\n", __LINE__, sysstring));
 	TCPWRITEMSG();
@@ -2782,7 +2444,6 @@ boolean fwsNetEventWriteStream (unsigned long stream, unsigned long bytesToWrite
 	} /*fwsNetEventWriteStream*/
 
 
-#ifdef MACVERSION
 /*
 static unsigned long selects = 0;
 static unsigned long accepts = 0;
@@ -2982,209 +2643,7 @@ boolean fwsNetEventCheckAndAcceptSocket () {
 	return (fl);
 	} /*fwsNetEventCheckAndAcceptSocket*/
 #endif
-#endif
 
-#ifdef WIN95VERSION
-boolean fwsNetEventAcceptSocket (WPARAM wParam, LPARAM lParam) {
-
-	/*
-	Process an accept pending message on a socket
-	
-	5.1.2 dmb: release thread globals on all errors
-	*/
-
-#ifdef ACCEPT_IN_SEPARATE_THREAD
-
-	TCPERRORprintf (wsprintf(TCPmsg, "In fwsNetEventAcceptSocket at line %d. THIS FUNCTION IS NOT SUPPOSED TO BE CALLED!\n", __LINE__));
-	TCPWRITEMSG();
-
-	return (false);
-
-#else
-
-	int sasize;
-	struct sockaddr_in sa;
-	SOCKET s, acceptsock;
-	long err;
-	boolean fl = false;
-	long listenstream, newstream;
-	long dummy = 0; /*need a pointer to nil for ioctlsocket call*/
-	#ifndef ACCEPT_CONN_WITHOUT_GLOBALS
-		bigstring bs;
-	#endif
-
-	s = (SOCKET) wParam;
-
-	/*get listen stream*/
-	if (!getsockrecord (s, &listenstream))
-		goto exit;
-
-	TCPTRACKERIN ("fwsNetEventAcceptSocket", __LINE__, listenstream);
-
-	if (listenstream < 0)
-		goto exit;
-
-	if (sockstack[listenstream].typeID != SOCKTYPE_LISTENING) {
-		/*something has happened to close this listen*/
-		goto exit;
-		}
-
-	/*Check for error*/
-
-	err = WSAGETSELECTERROR(lParam);
-
-	if (err != 0) {
-		/* if an error - pass this on to callback */
-		#ifdef ACCEPT_CONN_WITHOUT_GLOBALS
-			TCPERRORprintf (wsprintf(TCPmsg, "In fwsNetEventAcceptSocket at line %d.  Error in accept message %s (%ld, %ld).\n", __LINE__, stringbaseaddress (sockstack[listenstream].callback), err * -1L, sockstack[listenstream].refcon));
-			TCPWRITEMSG();
-
-			fl = fwsruncallback (listenstream, err * -1L, sockstack[listenstream].refcon);
-		#else
-			parsecallbackstring (listenstream, err * -1L, sockstack[listenstream].refcon, bs);
-
-			TCPERRORprintf (wsprintf(TCPmsg, "In fwsNetEventAcceptSocket at line %d.  Error in accept message %s.\n", __LINE__, stringbaseaddress(bs)));
-			TCPERRORWRITEMSG();
-			
-			fl = fwsrunstring (bs);
-		#endif
-
-		goto exit;
-		}
-	
-	/*get socket record for accepted socket*/
-	
-	if (!addsockrecord (&newstream)) {
-		/* if an error - pass this on to callback */
-		long err = WSAEMFILE;
-		
-		#ifdef ACCEPT_CONN_WITHOUT_GLOBALS
-			TCPERRORprintf (wsprintf(TCPmsg, "In fwsNetEventAcceptSocket at line %d.  Error addding new socket record %s (%ld, %ld).\n", __LINE__, stringbaseaddress (sockstack[listenstream].callback), err * -1L, sockstack[listenstream].refcon));
-			TCPWRITEMSG();
-
-			fl = fwsruncallback (listenstream, err * -1L, sockstack[listenstream].refcon);
-		#else
-			parsecallbackstring (listenstream, err * -1L, sockstack[listenstream].refcon, bs);
-
-			TCPERRORprintf (wsprintf(TCPmsg, "In fwsNetEventAcceptSocket at line %d.  Error addding new socket record %s.\n", __LINE__, stringbaseaddress(bs)));
-			TCPERRORWRITEMSG();
-			
-			fl = fwsrunstring (bs);
-		#endif
-
-		goto exit;
-		}
-
-	/*We do not want any more connection messages - at least if we've reached maximum listen depth*/
-
-	if (!(sockstack[listenstream].currentListenDepth + 1 < sockstack[listenstream].maxdepth)) {
-
-		sockstack[listenstream].flNotification = false;
-
-		WSAAsyncSelect(s, shellframewindow, 0, 0);
-		}
-
-	/*Accept connection*/
-
-	sasize = sizeof(sa);
-	
-	acceptsock = accept (s, (struct sockaddr *)&sa, &sasize);
-
-	if (acceptsock != INVALID_SOCKET) {
-
-	#ifdef PIKE
-		if (incrementconnectioncounter ()) {
-	#endif
-			/*Switch child socket to blocking mode*/
-			if (WSAAsyncSelect(acceptsock, shellframewindow, 0, 0) == SOCKET_ERROR) {
-				TCPERRORprintf (wsprintf(TCPmsg, "In fwsNetEventAcceptSocket at line %d.  WSAAsyncSelect call failed: %ld.\n", __LINE__, WSAGetLastError ()));
-				TCPERRORWRITEMSG();
-				}
-
-			if (ioctlsocket (acceptsock, FIONBIO, &dummy) == SOCKET_ERROR) {
-				TCPERRORprintf (wsprintf(TCPmsg, "In fwsNetEventAcceptSocket at line %d.  ioctlsocket call failed: %ld.\n", __LINE__, WSAGetLastError ()));
-				TCPERRORWRITEMSG();
-				}
-
-			/*Increment listen depth*/
-			++sockstack[listenstream].currentListenDepth;
-	
-			/*Add Socket to list*/		
-			sockstack[newstream].sockID = acceptsock;
-			sockstack[newstream].typeID = SOCKTYPE_OPEN;
-			sockstack[newstream].listenReference = listenstream;
-			sockstack[newstream].refcon = 0;
-
-			/*Pass "stream" and "refcon" to callback*/
-
-			#ifdef ACCEPT_CONN_WITHOUT_GLOBALS
-				TCPprintf (wsprintf(TCPmsg, "In fwsNetEventAcceptSocket at line %d.  Accepted new socket %ld: %s (%ld, %ld).\n", __LINE__, acceptsock, stringbaseaddress (sockstack[listenstream].callback), newstream, sockstack[listenstream].refcon));
-				TCPWRITEMSG();
-
-				fl = fwsruncallback (listenstream, newstream, sockstack[listenstream].refcon);
-			#else
-				parsecallbackstring (listenstream, newstream, sockstack[listenstream].refcon, bs);
-
-				TCPprintf (wsprintf(TCPmsg, "In fwsNetEventAcceptSocket at line %d.  Accepted new socket %ld, stream %ld callback message %s.\n", __LINE__, (unsigned long) acceptsock, (unsigned long) newstream, stringbaseaddress(bs)));
-				TCPWRITEMSG();
-				
-				fl = fwsrunstring (bs);
-			#endif
-
-	#ifdef PIKE
-			}
-		else {
-
-			struct linger l;
-
-			l.l_onoff = 1;
-			l.l_linger = 0;
-
-			TCPERRORprintf (wsprintf(TCPmsg, "In fwsNetEventAcceptSocket at line %d.  Exceeded number of maximum connections: %ld of %ld.\n", __LINE__, ctconnections, maxconnections));
-			TCPERRORWRITEMSG();
-
-			setsockopt (acceptsock, SOL_SOCKET, SO_LINGER, (char *) &l, sizeof(l));
-
-			fl = closesocket (acceptsock);
-
-			sockstack[newstream].typeID = SOCKTYPE_INVALID;
-			}
-	#endif
-
-		}
-	else
-		{
-		/*if an error - pass this on to callback*/
-		err = WSAGetLastError();
-
-		#ifdef ACCEPT_CONN_WITHOUT_GLOBALS
-			TCPERRORprintf (wsprintf(TCPmsg, "In fwsNetEventAcceptSocket at line %d.  Error processing accept message %s (%ld, %ld).\n", __LINE__, stringbaseaddress (sockstack[listenstream].callback), err * -1L, sockstack[listenstream].refcon));
-			TCPWRITEMSG();
-
-			fl = fwsruncallback (listenstream, err * -1L, sockstack[listenstream].refcon);
-		#else
-			parsecallbackstring (listenstream, err * -1L, sockstack[listenstream].refcon, bs);
-
-			TCPERRORprintf (wsprintf(TCPmsg, "In fwsNetEventAcceptSocket at line %d.  Error processing accept message %s.\n", __LINE__, stringbaseaddress(bs)));
-			TCPERRORWRITEMSG();
-			
-			fl = fwsrunstring (bs);
-		#endif
-		
-		sockstack[newstream].typeID = SOCKTYPE_INVALID;
-		}
-	
-	restartAccepter (s, listenstream);
-
-	TCPprintf (wsprintf(TCPmsg, "Exiting fwsNetEventAcceptSocket at line %d.  Return value is %s.\n", __LINE__, fl?"True":"False"));
-	TCPWRITEMSG();
-	
-	exit:
-
-	return (fl);
-#endif
-	} /*fwsNetEventAcceptSocket*/
-#endif
 
 
 boolean fwsNetEventListenStream (unsigned long port, long depth, bigstring callback, unsigned long refcon, unsigned long * stream, unsigned long ipaddr, long hdatabase) {
@@ -3277,9 +2736,7 @@ boolean fwsNetEventListenStream (unsigned long port, long depth, bigstring callb
 
 	*stream = streamref;
 
-	#ifdef MACVERSION
 		sockListenList[sockListenCount++] = *stream;
-	#endif
 
 	#ifdef ACCEPT_IN_SEPARATE_THREAD
 		sockstack[streamref].hdatabase = (hdldatabaserecord) hdatabase; /*hdldatabaserecord of the db that contains the daemon script*/
@@ -3291,24 +2748,6 @@ boolean fwsNetEventListenStream (unsigned long port, long depth, bigstring callb
 			return (false);
 			}
 	#else
-		#ifdef WIN95VERSION
-			releasethreadglobalsnopriority();
-
-			if (WSAAsyncSelect (sock, shellframewindow, wm_processAccept, FD_ACCEPT) == SOCKET_ERROR) {
-			/* Our interest in this has failed */
-				errcode = WSAGetLastError ();
-				grabthreadglobalsnopriority();
-				neterror("setup listen stream", errcode);
-				closesocket (sock);
-				sockstack[streamref].typeID = SOCKTYPE_INACTIVE;
-				disposehandle (hcallbacktree);
-				return (false);
-				}
-
-			sockstack[stream].flNotification = true;
-			
-			grabthreadglobalsnopriority();
-		#endif
 	#endif
 
 	TCPTRACKEROUT ("fwsNetEventListenStream", __LINE__, *stream);
@@ -3935,39 +3374,6 @@ boolean fwsNetEventWriteHandleToStream (unsigned long stream, Handle hbuffer, un
 				
 					errcode = WSAGetLastError ();
 
-					#ifdef WIN95VERSION
-						if (errcode == WSAEWOULDBLOCK) { /*work around winsock bug on win95/win98*/
-						
-							unsigned long timewait = gettickcount() + (60L * 15L); /*max of 15 seconds*/
-							
-							while (timewait > gettickcount ()) {
-
-								Sleep (100L); /*wait six ticks (100 milliseconds) and try again*/
-
-								TCPprintf (wsprintf(TCPmsg, "In fwsNetEventWriteHandleToStream at line %d.  Attempting to re-send on stream: %d.\n", __LINE__, stream));
-								TCPWRITEMSG();
-								
-								res = send (sock, &((*hbuffer) [ix]), bytestowrite, 0);
-								
-								if (res == SOCKET_ERROR) {
-									errcode = WSAGetLastError ();
-									
-									if (errcode != WSAEWOULDBLOCK) {
-									
-										TCPERRORprintf (wsprintf(TCPmsg, "In fwsNetEventWriteHandleToStream at line %d.  Error re-sending on stream: %d.\n", __LINE__, stream));
-										TCPERRORWRITEMSG();
-										
-										goto exit; /*terminate attempts to send data and throw a script error*/
-										}
-									}
-								else
-									goto continue_send;
-								}/*while*/
-							}
-							
-						TCPERRORprintf (wsprintf(TCPmsg, "In fwsNetEventWriteHandleToStream at line %d.  Gave up re-sending on stream: %d.\n", __LINE__, stream));
-						TCPERRORWRITEMSG();
-					#endif
 
 					goto exit; /*unconditionally throw a script error*/
 					}
@@ -4088,102 +3494,6 @@ boolean fwsNetEventWriteFileToStream (unsigned long stream, Handle hprefix, Hand
 
 	TCPTRACKERIN ("fwsNetEventWriteFileToStream", __LINE__, stream);
 
-#ifdef WIN95VERSION
-
-	if (adrTransmitFile != nil) {
-
-		SOCKET sock;
-		boolean fl;
-		long errcode = 0;
-		TRANSMIT_FILE_BUFFERS transmitbuffers;
-		HANDLE hfile = INVALID_HANDLE_VALUE;
-		char fn[300];
-
-		if ((stream < 1) || (stream >= FRONTIER_MAX_STREAM)) {
-			intneterror (INTNETERROR_INVALIDSTREAM);
-			return (false);
-			}
-
-		sock = sockstack[stream].sockID;	
-
-		/* open file */
-
-		copyptocstring (fsname (fs), fn);
-
-		hfile = CreateFile(fn, GENERIC_READ, FILE_SHARE_READ,
-			NULL, OPEN_EXISTING, FILE_FLAG_SEQUENTIAL_SCAN, NULL);
- 
-		if (hfile == INVALID_HANDLE_VALUE) {
-
-			oserror (GetLastError ());
-			
-			return (false);
-			}
-
-		/* set up transmit buffers */
-
-		if (hprefix != nil) {
-
-			lockhandle (hprefix);
-
-			transmitbuffers.HeadLength = gethandlesize (hprefix);
-
-			transmitbuffers.Head = (void *) *hprefix;
-			}
-		else {
-			transmitbuffers.HeadLength = nil;
-
-			transmitbuffers.Head = nil;
-			}
-
-		
-		if (hsuffix != nil) {
-
-			lockhandle (hsuffix);
-
-			transmitbuffers.TailLength = gethandlesize (hsuffix);
-
-			transmitbuffers.Tail = (void *) *hsuffix;
-			}
-		else {
-			transmitbuffers.TailLength = nil;
-
-			transmitbuffers.Tail = nil;
-			}
-
-		/* kernel call */
-
-		releasethreadglobalsnopriority ();
-
-		fl = adrTransmitFile (sock, hfile, nil, nil, nil, &transmitbuffers, TF_WRITE_BEHIND);
-		
-		if (!fl)
-			errcode = GetLastError ();
-
-		grabthreadglobalsnopriority ();
-
-		/* clean up */
-		
-		if (hprefix != nil)
-			unlockhandle (hprefix);
-
-		if (hsuffix != nil)
-			unlockhandle (hsuffix);
-
-		if (!fl) {
-
-			neterror ("write file to stream", errcode);
-			
-			return (false);
-			}
-
-		TCPprintf (wsprintf(TCPmsg, "Exiting fwsNetEventWriteFileToStream at line %d.\n", __LINE__));
-		TCPWRITEMSG ();
-
-		return (true);
-		}
-
-#endif /*WIN95VERSION*/
 
 	if (hprefix != nil) {
 		boolean fl;

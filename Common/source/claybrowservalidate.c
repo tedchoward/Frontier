@@ -79,13 +79,8 @@ byte * dialogstrings [] = {
 	BIGSTRING ("\x02" "An"),
 	BIGSTRING ("\x07" "A newer"),
 	BIGSTRING ("\x08" "An older"),
-	#ifdef MACVERSION
 		BIGSTRING ("\x0d" " item named Ò"),
 		BIGSTRING ("\x22" "Ó already exists in this location.")
-	#else
-		BIGSTRING ("\x0d" " item named \""),
-		BIGSTRING ("\x22" "\" already exists in this location.")
-	#endif
 	};
 #pragma pack(2)
 typedef struct tydraginfo {

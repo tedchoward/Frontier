@@ -28,10 +28,8 @@
 #include "frontier.h"
 #include "standard.h"
 
-#ifdef MACVERSION
 #include <land.h>
 #include "mac.h"
-#endif
 
 #include "memory.h"
 #include "dialogs.h"
@@ -81,37 +79,11 @@ boolean flthreadkilled = false;
 boolean flcanusethreads = false;
 
 
-#ifdef WIN95VERSION
-	
-static CRITICAL_SECTION processlistsection;
-
-static boolean processlistsectioninitialized = false;
-
-
-static void _entercriticalprocesssection (void) {
-
-	if (!processlistsectioninitialized) {
-
-		InitializeCriticalSection (&processlistsection);
-
-		processlistsectioninitialized = true;
-		}
-	
-	EnterCriticalSection (&processlistsection);
-	}
-
-static void _leavecriticalprocesssection (void) {
-
-	LeaveCriticalSection (&processlistsection);
-	}
-
-#else
 
 #define _entercriticalprocesssection()
 
 #define _leavecriticalprocesssection()
 
-#endif
 
 #pragma pack(2)
 typedef struct tythreadlist {
@@ -1389,10 +1361,6 @@ void disposethreadglobals (hdlthreadglobals hglobals) {
 	
 	if (hg == hthreadglobals) {
 
-		#ifdef WIN95VERSION
-			if ( flcominitialized )
-				shutdownCOM();
-		#endif
 		
 		disposehandle ((Handle) hashtablestack);
 		
@@ -1520,11 +1488,7 @@ void copythreadglobals (hdlthreadglobals hglobals) {
 	
 		aboutsetthreadstring (nil, false);
 
-		#ifdef MACVERSION
 		ticks = gettickcount ();
-		#else
-		ticks = GetTickCount ();
-		#endif
 
 		totalticksin += ticks - lastswapticks;
 		lastswapticks = ticks;
@@ -1749,11 +1713,7 @@ void swapinthreadglobals (hdlthreadglobals hglobals) {
 		
 		aboutsetthreadstring (hg, true);
 
-		#ifdef MACVERSION
 		ticks = gettickcount ();
-		#else
-		ticks = GetTickCount ();
-		#endif
 
 		if (lastswapticks)
 			totalticksout += ticks - lastswapticks;
@@ -2779,7 +2739,6 @@ unsigned long processstackspace (void) {
 	nor GetCurrentThread returns an error, but the space returned is bogus.
 	*/
 	
-#ifdef MACVERSION
 	#if __powerc
 	if (infrontierthread ())	// not in an osa client
 	#endif
@@ -2796,11 +2755,7 @@ unsigned long processstackspace (void) {
 			}
 	
 	return (StackSpace ());
-#endif
 
-#ifdef WIN95VERSION
-	return (0x04000);	// a lot; *** don't know how to check this under Windows
-#endif
 	} /*processstackspace*/
 
 
@@ -3239,9 +3194,7 @@ void processscheduler (void) {
 	5.1.5b15 dmb: don't schedule anything if we're closing all
 	*/
 	
-	#ifdef MACVERSION
 		long stacksize;
-	#endif
 	
 	if (processlist == nil)
 		return;
@@ -3265,7 +3218,6 @@ void processscheduler (void) {
 	if (processlist == nil) /*file was closed during background processing*/
 		return;
 	
-	#ifdef MACVERSION
 	/*
 		//6.1b8 AR: This bit of code stopped the agents from being called
 		//			on the Mac while the scriptdebugger was active and
@@ -3278,7 +3230,6 @@ void processscheduler (void) {
 			return;
 			}
 	*/
-	#endif
 	
 	if (agentthread != nil) { /*agent scheduler is not to be re-entered*/
 		
@@ -3292,9 +3243,7 @@ void processscheduler (void) {
 				processwake (agentthread);
 			}
 		
-		#ifdef MACVERSION
 			processyield (); /*let previous thread die, reawaken, or try to finish, respectively*/
-		#endif
 		
 		return;
 		}
@@ -3324,7 +3273,6 @@ void processscheduler (void) {
 		return;
 	*/
 
-	#ifdef MACVERSION	
 		stacksize = macmemoryconfig.minstacksize;
 		
 		if (!haveheapspace (stacksize + 2 * 1024)) { /*not enough memory to run agents*/
@@ -3333,7 +3281,6 @@ void processscheduler (void) {
 			
 			return;
 			}
-	#endif
 
 	if (flpostedmemorymessage)
 		shellfrontrootwindowmessage (zerostring); /*clear it*/
@@ -3368,12 +3315,7 @@ static boolean processkeyboardhook (void) {
 	} /*processkeyboardhook*/
 
 
-#ifdef MACVERSION
 	#define maxticks (0xffffffffUL)
-#endif
-#ifdef WIN95VERSION
-	#define maxticks (0xffffffffUL / 50UL)
-#endif
 
 void processchecktimeouts (void) {
 

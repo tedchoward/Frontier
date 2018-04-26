@@ -28,11 +28,9 @@
 #include "frontier.h"
 #include "standard.h"
 
-#ifdef MACVERSION
 
 	# include "mac.h"
 	
-#endif
 
 #include "filealias.h"
 #include "cursor.h"
@@ -53,7 +51,6 @@
 #include "versions.h" /* 2005-09-23 creedon */
 
 
-#ifdef MACVERSION
 
 	#define sfgetfileid 5000
 	#define sfputfileid 5001
@@ -68,81 +65,8 @@
 	static OSErr macgetfiledialog (SInt16 dialogtype, bigstring prompt, ptrfilespec fs, OSType filecreator, ptrsftypelist filetypes); /* 2005-09-23 creedon */ 
 
 
-	#if ! TARGET_API_MAC_CARBON
 
-		static pascal Boolean knowntypesfilter (ParmBlkPtr pb, tysfdata *pdata) {
-			
-			short i;
-			
-			if (pb->fileParam.ioFlAttrib & ioDirMask)
-				return (0);
-			
-			if (pdata->sftypes == nil) // show all files
-				return (0);
-			
-			for (i = 0; i < pdata->sftypes->cttypes; ++i) {
-				
-				OSType type = pdata->sftypes->types [i];
-				byte bstype [6];
-				bigstring bssuffix;
-				
-				ostypetostring (type, bstype);
-				
-				lastword (pb->fileParam.ioNamePtr, '.', bssuffix);
-				
-				if (stringlength (bssuffix) == 3) //handle 8.3 names
-					setstringlength (bstype, 3);
-				
-				if (equalidentifiers (bssuffix, bstype))
-					return (0);
-				
-				if (pb->fileParam.ioFlFndrInfo.fdType == type)
-					return (0);
-				}
-			
-			return (-1); // didn't find it in our list
-			} /*knowntypesfilter*/
 
-				
-		#if !TARGET_RT_MAC_CFM
-			
-			#define knowntypesfilterUPP ((FileFilterYDUPP) &knowntypesfilter)
-
-		#else
-
-			#if !TARGET_API_MAC_CARBON
-			static RoutineDescriptor knowntypesfilterDesc = BUILD_ROUTINE_DESCRIPTOR (uppFileFilterYDProcInfo, knowntypesfilter);
-
-			#define knowntypesfilterUPP (&knowntypesfilterDesc)
-			
-			#endif
-
-		#endif
-
-	#endif /* !TARGET_API_MAC_CARBON */
-
-#endif
-
-#ifdef WIN95VERSION
-
-	static void buildfilter (char * filter, short * len, bigstring bsname, bigstring bsext) {
-		short namelen, extlen;
-
-		namelen = stringlength (bsname);
-		extlen = stringlength (bsext);
-
-		memmove (filter + *len, stringbaseaddress(bsname), namelen);
-		*len = *len + namelen;
-		memmove (filter + *len, "\0", 1);
-		*len = *len + 1;
-		memmove (filter + *len, stringbaseaddress(bsext), extlen);
-		*len = *len + extlen;
-		memmove (filter + *len, "\0", 1);
-		*len = *len + 1;
-		memmove (filter + *len, "\0", 1);  //alway finish the filter but don't count it in the length
-		} /*buildfilter*/
-
-#endif
 
 
 boolean sfdialog ( tysfverb sfverb, bigstring bsprompt, ptrsftypelist filetypes, ptrfilespec fspec, OSType filecreator ) {
@@ -151,7 +75,6 @@ boolean sfdialog ( tysfverb sfverb, bigstring bsprompt, ptrsftypelist filetypes,
 	// return true if the user selected a file with one of the SF routines, return false otherwise.
 	//
 	
-	#ifdef MACVERSION
 
 		// 2010-03-14 aradke: pick up default location from fspec, type filtering checks extension if file type not set 
 		//
@@ -238,358 +161,16 @@ boolean sfdialog ( tysfverb sfverb, bigstring bsprompt, ptrsftypelist filetypes,
 
 		return (true);
 		
-	#endif // MACVERSION
 
-	#ifdef WIN95VERSION
-
-		#pragma unused ( filecreator )
-		
-		/*
-		2005-10-06 creedon: added filecreator, unused on Windows
-		
-		5.0.2b4 dmb: fixed bug in above change that would generate an error for empty paths
-
-		5.0.1 dmb: make sure default file and directory are valid, or we'll fail (silently)
-		*/
-
-		TCHAR szFile[MAX_PATH];
-		OPENFILENAME OpenFileName;
-		BROWSEINFO BrowseInfo;
-		LPITEMIDLIST itemList;
-		char title [256];
-		char filter [1024];
-		short filterlen = 0;
-		char defaultdir [256];
-		char defaultfile [256];
-		bigstring extension;
-		byte type [6];
-		bigstring osstring;
-		boolean fl = false;
-		short i;
-		boolean fldatabases = false;
-		boolean flfatpages = false;
-		// Global pointer to the shell's IMalloc interface.  
-		static LPMALLOC pMalloc = NULL;
-
-
-		OpenFileName.lStructSize       = sizeof(OPENFILENAME);
-		OpenFileName.hwndOwner         = shellframewindow;
-		OpenFileName.hInstance         = shellinstance;
-		OpenFileName.lpstrFilter       = NULL;
-		OpenFileName.lpstrCustomFilter = NULL;
-		OpenFileName.nMaxCustFilter    = 0;
-		OpenFileName.nFilterIndex      = 0;
-		OpenFileName.lpstrFile		   = stringbaseaddress(fsname (fspec));
-		OpenFileName.nMaxFile          = sizeof(fsname (fspec)) - 2;
-		OpenFileName.lpstrFileTitle    = NULL;
-		OpenFileName.nMaxFileTitle     = 0;
-		OpenFileName.lpstrTitle			= title;
-		OpenFileName.lpstrInitialDir	= NULL;
-		OpenFileName.lpstrTitle			= NULL;
-		OpenFileName.nFileOffset       = 0;
-		OpenFileName.nFileExtension    = 0;
-		OpenFileName.lpstrDefExt       = NULL;
-		OpenFileName.lCustData         = (LPARAM)NULL;
-		OpenFileName.lpfnHook 		   = NULL;
-		OpenFileName.lpTemplateName    = 0;
-
-		strcpy (szFile, "");
-		
-		// set the title
-		if (bsprompt != NULL) {
-			
-			copyptocstring (bsprompt, title);
-			
-			OpenFileName.lpstrTitle = title;
-			}
-
-		// set default dir, file and extension fields
-		if (!isemptystring (fsname (fspec))) {
-
-			tyfilespec fsdir;
-			boolean flfolder;
-
-			folderfrompath (fsname (fspec), defaultdir);
-			
-			if (pathtofilespec (defaultdir, &fsdir) && 
-				fileexists (&fsdir, &flfolder) && flfolder) {
-				
-				OpenFileName.lpstrInitialDir = defaultdir;
-				
-				//if (!isemptystring (defaultdir))
-				//	OpenFileName.nFileOffset = stringlength (defaultdir) + 1;
-				
-				convertpstring (defaultdir);
-				}
-			
-			filefrompath (fsname (fspec), defaultfile);
-
-			lastword (defaultfile, ':', defaultfile); //skip any Mac path 
-
-			//OpenFileName.nFileExtension = stringlength (fsname (fspec));
-			
-			lastword (defaultfile, '.', extension);
-			
-			//if (stringlength (extension) < stringlength (fsname (fspec)))
-			//	OpenFileName.nFileExtension -= stringlength (extension);
-			
-			copystring (defaultfile, fsname (fspec));
-
-			nullterminate (fsname (fspec));
-			}
-
-		releasethreadglobals ();
-		
-		switch (sfverb) {
-			
-			case sfputfileverb:
-				OpenFileName.Flags = OFN_SHOWHELP | OFN_EXPLORER | OFN_OVERWRITEPROMPT; //| OFN_NOCHANGEDIR;
-				
-				if (filetypes != nil) {
-					setemptystring (filter);
-
-					//RAB: 1/22/98 use string since the windows type can be any case
-					ostypetostring ((*filetypes).types [0], osstring);
-
-					if (equalidentifiers (osstring, BIGSTRING ("\x04" "fatp")))
-						copystring (BIGSTRING ("\x016" "Fat Page [*.fatp]\0*.*\0"), filter);
-
-					else if (equalidentifiers (osstring, BIGSTRING ("\x04" "ftop")))
-						copystring (BIGSTRING ("\x015" "Outline [*.ftop]\0*.*\0"), filter);
-
-					else if (equalidentifiers (osstring, BIGSTRING ("\x04" "ftwp")))
-						copystring (BIGSTRING ("\x019" "WP Document [*.ftwp]\0*.*\0"), filter);
-
-					else if (equalidentifiers (osstring, BIGSTRING ("\x04" "fttb")))
-						copystring (BIGSTRING ("\x013" "Table [*.fttb]\0*.*\0"), filter);
-
-					else if (equalidentifiers (osstring, BIGSTRING ("\x04" "ftmb")))
-						copystring (BIGSTRING ("\x012" "Menu [*.ftmb]\0*.*\0"), filter);
-
-					else if (equalidentifiers (osstring, BIGSTRING ("\x04" "ftsc")))
-						copystring (BIGSTRING ("\x014" "Script [*.ftsc]\0*.*\0"), filter);
-
-					else if (equalidentifiers (osstring, BIGSTRING ("\x04" "ftds")))
-						copystring (BIGSTRING ("\x01c" "Desktop Script [*.ftds]\0*.*\0"), filter);
-
-					else if (equalidentifiers (osstring, BIGSTRING ("\x04" "root")))
-						copystring (BIGSTRING ("\x016" "Database [*.root]\0*.*\0"), filter);
-
-					if (! isemptystring (filter)) {
-						convertpstring (filter);
-
-						OpenFileName.lpstrFilter = filter;
-						}
-
-					ostypetostring ((*filetypes).types [0], type);
-					
-					popleadingchars (type, '.');
-
-					poptrailingwhitespace (type);
-						
-	//				convertpstring (type);
-					
-	//				OpenFileName.lpstrDefExt = type;
-					OpenFileName.lpstrDefExt = NULL;
-					}
-
-				// Call the common dialog function.
-				fl = GetSaveFileName (&OpenFileName);
-
-				if (fl && (filetypes != NULL) && (stringlength(type) > 0)) {
-
-					setstringlength (fsname (fspec), strlen(stringbaseaddress(fsname (fspec))));
-					lastword (fsname (fspec), '.', extension);
-
-					if ((stringlength (fsname (fspec)) == stringlength (extension)) || (stringlength (extension) > 4)) {	/* no extension */
-						pushstring ("\x01.", fsname(fspec));
-						pushstring (type, fsname(fspec));
-						nullterminate (fsname (fspec));
-						}
-					}
-			
-				break;
-			
-			case sfgetfileverb:
-				OpenFileName.Flags = OFN_SHOWHELP | OFN_EXPLORER | OFN_PATHMUSTEXIST | OFN_FILEMUSTEXIST; //| OFN_NOCHANGEDIR;
-
-				// create the filter string
-				if (filetypes != nil) { /*showing specific files*/
-
-					//copystring ("\x09Types: [\0", filter);
-					setemptystring (extension);
-
-					for (i = 0; i < (*filetypes).cttypes; ++i) {
-						
-						if (i > 0)
-							pushchar (';', extension);
-						
-						if ((*filetypes).types [i] == 'root')
-							fldatabases = true;
-
-						if ((*filetypes).types [i] == 'fatp')
-							flfatpages = true;
-
-						if ((*filetypes).types [i] == 'ROOT')
-							fldatabases = true;
-
-						if ((*filetypes).types [i] == 'FATP')
-							flfatpages = true;
-
-						ostypetostring ((*filetypes).types [i], type);
-						
-						popleadingchars (type, '.');
-
-						poptrailingwhitespace (type);
-						
-						pushstring (BIGSTRING ("\x02" "*."), extension);
-
-						pushstring (type, extension);
-
-						if (stringlength (type) > 3) {
-							
-							setstringlength (type, 3);
-
-							pushstring (BIGSTRING ("\x03" ";*."), extension);
-							
-							pushstring (type, extension);
-							}
-						}
-					
-					filterlen = 0;
-
-					buildfilter (filter, &filterlen, BIGSTRING ("\x1c" "Openable Types: [*.clickers]"), extension);
-					
-					if (fldatabases)
-						buildfilter (filter, &filterlen, BIGSTRING ("\x12" "Databases [*.root]"), BIGSTRING ("\x0c" "*.root;*.roo"));
-
-					//					pushstring ("\x20\0Databases [*.root]\0*.roo;*.root", filter);
-
-					if (flfatpages) {
-						buildfilter (filter, &filterlen, BIGSTRING ("\x12" "Fat Pages [*.fatp]"), BIGSTRING ("\x5a" "*.fatp;*.fat;*.FTsc;*.FTs;*.FTwp;*.FTw;*.FTop;*.FTo;*.FTmb;*.FTm;*.FTtb;*.FTt;*.Ftds;*.FTd"));
-						buildfilter (filter, &filterlen, BIGSTRING ("\x17" "Frontier Menus [*.FTmb]"),    BIGSTRING ("\x0c" "*.FTmb;*.FTm"));
-						buildfilter (filter, &filterlen, BIGSTRING ("\x1a" "Frontier Outlines [*.FTop]"), BIGSTRING ("\x0c" "*.FTop;*.FTo"));
-						buildfilter (filter, &filterlen, BIGSTRING ("\x19" "Frontier Scripts [*.FTsc]"),  BIGSTRING ("\x0c" "*.FTsc;*.FTs"));
-						buildfilter (filter, &filterlen, BIGSTRING ("\x21" "Frontier Desktop Scripts [*.FTds]"),  BIGSTRING ("\x0c" "*.FTds;*.FTd"));
-						buildfilter (filter, &filterlen, BIGSTRING ("\x18" "Frontier Tables [*.FTtb]"),	  BIGSTRING ("\x0c" "*.FTtb;*.FTt"));
-						buildfilter (filter, &filterlen, BIGSTRING ("\x19" "Frontier WP Text [*.FTwp]"),  BIGSTRING ("\x0c" "*.FTwp;*.FTw"));
-						}
-
-					//					pushstring ("\x20\0Fat Pages [*.fatp]\0*.fat;*.fatp", filter);
-
-					buildfilter (filter, &filterlen, BIGSTRING ("\x12" "Plain Text [*.txt]"),  BIGSTRING ("\x12" "*.Text;*.txt;*.tex"));
-					buildfilter (filter, &filterlen, BIGSTRING ("\x0f" "All Files [*.*]"),  BIGSTRING ("\x03" "*.*"));
-
-					OpenFileName.lpstrFilter = filter;
-
-					ostypetostring ((*filetypes).types [0], type);
-					
-					//RAB: 1/22/98  added next two lines
-					//				poptrailingwhitespace is no longer done in ostypetostring.
-					popleadingchars (type, '.');
-
-					poptrailingwhitespace (type);
-
-					convertpstring (type);
-					
-					OpenFileName.lpstrDefExt = type;
-					}
-
-				// Call the common dialog function.
-				fl = GetOpenFileName (&OpenFileName);
-			
-				break;
-			
-			case sfgetfolderverb:
-			case sfgetdiskverb:
-				// Get the shell's allocator. 
-				if (pMalloc == NULL && !SUCCEEDED(SHGetMalloc(&pMalloc))) 
-					break; 
-	 
-				BrowseInfo.hwndOwner = OpenFileName.hwndOwner;
-				BrowseInfo.pidlRoot = NULL;
-				BrowseInfo.pszDisplayName = szFile;
-				BrowseInfo.lpszTitle = OpenFileName.lpstrTitle;
-				BrowseInfo.ulFlags = BIF_RETURNONLYFSDIRS;
-				if (sfverb == sfgetdiskverb)
-					BrowseInfo.ulFlags |= BIF_RETURNFSANCESTORS;
-				BrowseInfo.lpfn = NULL;
-				BrowseInfo.lParam = 0;
-				
-				itemList = SHBrowseForFolder (&BrowseInfo);
-				
-				if (itemList != NULL) {
-
-					fl = SHGetPathFromIDList (itemList, szFile);
-
-					copyctopstring (szFile, fsname (fspec));
-
-					if (sfverb == sfgetdiskverb) {
-
-						firstword (fsname (fspec), ':', fsname (fspec));
-					
-						pushstring ("\x02:\\", fsname (fspec));
-						}
-					else {
-
-						pushstring ("\x01\\", fsname (fspec));
-						}
-					
-					nullterminate (fsname (fspec));
-
-					// deallocate itemList
-					pMalloc->lpVtbl->Free (pMalloc, itemList);
-
-			/*
-			LPSHELLFOLDER ppshf;
-			if (SHGetDesktopFolder (&ppshf) == NOERROR) {
-				ULONG ctchars;
-				WCHAR szWide [300];
-
-				MultiByteToWideChar (CP_ACP, 0, szFile, -1, szWide, 300);
-
-				ppshf->lpVtbl->ParseDisplayName (ppshf, NULL, szWide, &ctchars, &itemList,NULL);
-
-				fl = SHGetPathFromIDList (itemList, szFile);
-
-				pMalloc->lpVtbl->Free (pMalloc, itemList);
-
-				ppshf->lpVtbl->Release (ppshf);
-				}
-			*/
-					}
-				
-				break;
-			
-			}
-		
-		grabthreadglobals ();
-		
-		if (!fl) {
-			
-			oserror (GetLastError ());
-			
-			return (false);
-			}
-		
-		setstringlength (fsname (fspec), strlen(stringbaseaddress(fsname (fspec))));
-		
-		return (true);
-
-	#endif // WIN95VERSION
 
 	} // sfdialog
 
 
-#ifdef MACVERSION
 
 	boolean initfiledialog (void) {
 
 		#ifdef flcomponent
 		
-		#if !TARGET_API_MAC_CARBON
-		RememberA5 ();
-		#endif /*for hook*/
 		
 		#endif
 		
@@ -953,4 +534,3 @@ boolean sfdialog ( tysfverb sfverb, bigstring bsprompt, ptrsftypelist filetypes,
 		return (err);
 		} /* macgetfiledialog */
 
-#endif

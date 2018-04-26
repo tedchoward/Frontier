@@ -28,10 +28,8 @@
 #include "frontier.h"
 #include "standard.h"
 
-#ifdef MACVERSION
 	#include "OSXSpecifics.h"
 	#include "player.h" /*7.0b4: QuickTime Player*/
-#endif
 
 #include "about.h"
 #include "frontierconfig.h"
@@ -97,7 +95,6 @@ boolean frontierstart (void) {
 	if (!aboutstart ())
 		return (false);
 		
-		#ifdef MACVERSION
 
 /*
 		useQDText(0); // set to 1 for Quartz rendering.
@@ -106,7 +103,6 @@ boolean frontierstart (void) {
 		if (!playerstart ()) /*7.0b4 PBS: QuickTime Player*/
 			return (false);
 	
-		#endif
 	
 	#endif
 	

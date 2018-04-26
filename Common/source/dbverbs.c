@@ -32,10 +32,8 @@
 #include "frontier.h"
 #include "standard.h"
 
-#ifdef MACVERSION
 #include <land.h>
 #include "mac.h"
-#endif
 
 #include "ops.h"
 #include "memory.h"

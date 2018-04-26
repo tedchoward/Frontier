@@ -67,12 +67,9 @@
 #define windoidwithtexticon 137
 #define windoidwithnotexticon 138
 
-#if defined (MACVERSION)
 OSStatus loadicondatafromodb(bigstring bsadricon, bigstring bsicondatatype, Handle *hicon);
-#endif
 
 boolean ploticonfromodb (const Rect *r, short align, short transform, bigstring bsadricon) {
-#if defined (MACVERSION)
 	//bigstring bsadricon = "\psystem.verbs.builtins.Frontier.tools.data.nodeTypes.link.icon.mac";
 	
 
@@ -146,12 +143,8 @@ boolean ploticonfromodb (const Rect *r, short align, short transform, bigstring 
 	disposehandle((Handle) iconHand);
 	
 	return theErr == noErr;
-#elif defined (WIN95VERSION)
-	return FALSE;
-#endif
 }
 
-#if defined (MACVERSION)
 OSStatus loadicondatafromodb(bigstring bsadricon, bigstring bsicondatatype, Handle *hicon) {
 	bigstring bsname;
 	hdlhashtable ht;
@@ -179,7 +172,6 @@ OSStatus loadicondatafromodb(bigstring bsadricon, bigstring bsicondatatype, Hand
 	
 	return noErr;
 }
-#endif
 
 boolean ploticonresource (const Rect *r, short align, short transform, short resid) {
 	
@@ -194,7 +186,6 @@ boolean ploticonresource (const Rect *r, short align, short transform, short res
 	Note that the Windows version does NOT use the transform parameter
 	*/
 	
-#ifdef MACVERSION
 	OSErr ec;
 	CIconHandle hcicon;
 	Handle hicon;
@@ -236,87 +227,10 @@ boolean ploticonresource (const Rect *r, short align, short transform, short res
 		}
 	
 	return (false);
-#endif
 
-#ifdef WIN95VERSION
-	HBITMAP hbm, oldbm;
-	BITMAP bm;
-	HDC hdcsrc, hdc;
-	boolean flprinting;
-	HDC hdcmask;
-	HBITMAP hbmmask, oldmaskbm;
-	COLORREF oldclr, oldclr2;
-
-
-	hbm = LoadBitmap (shellinstance, MAKEINTRESOURCE (resid));
-
-	if (hbm)
-		{
-		hdc = getcurrentDC();
-
-		flprinting = iscurrentportprintport ();
-
-		if (hdc)
-			{
-			hdcsrc = CreateCompatibleDC (hdc);
-
-			if (hdcsrc)
-				{
-				GetObject (hbm, sizeof (BITMAP), &bm);
-
-				oldbm = (HBITMAP) SelectObject (hdcsrc, hbm);
-				
-				if (flprinting) {
-				//	StretchBlt (hdc, r->left, r->top, r->right-r->left, r->bottom - r->top, hdcsrc, 0,0, bm.bmWidth, bm.bmHeight, SRCCOPY);
-					}
-				else {
-					hdcmask = CreateCompatibleDC (hdc);
-					hbmmask = CreateBitmap (bm.bmWidth, bm.bmHeight, 1, 1, NULL);
-
-					if (hdcmask && hbmmask) {
-						oldmaskbm = (HBITMAP) SelectObject (hdcmask, hbmmask);
-
-						oldclr = SetBkColor (hdcsrc, RGB(255,255,255));
-
-						BitBlt (hdcmask, 0,0,bm.bmWidth, bm.bmHeight, hdcsrc, 0,0, SRCCOPY);
-
-						SetBkColor (hdcsrc,oldclr);
-
-						eraserect (*r);
-
-						oldclr = SetBkColor (hdc, RGB(255,255,255));
-						oldclr2 = SetTextColor (hdc, RGB(0,0,0));
-
-						BitBlt (hdc, r->left, r->bottom - bm.bmHeight, bm.bmWidth, bm.bmHeight, hdcsrc, 0,0, SRCINVERT);
-						BitBlt (hdc, r->left, r->bottom - bm.bmHeight, bm.bmWidth, bm.bmHeight, hdcmask, 0,0, SRCAND);
-						BitBlt (hdc, r->left, r->bottom - bm.bmHeight, bm.bmWidth, bm.bmHeight, hdcsrc, 0,0, SRCINVERT);
-
-						SetBkColor (hdc,oldclr);
-						SetTextColor (hdc,oldclr2);
-
-						SelectObject (hdcmask, oldmaskbm);
-
-	//					BitBlt (hdc, r->left, r->bottom - bm.bmHeight, bm.bmWidth, bm.bmHeight, hdcsrc, 0,0, SRCAND);
-						}
-
-					DeleteObject (hbmmask);
-					DeleteDC (hdcmask);
-					}
-
-				SelectObject (hdcsrc, oldbm);
-				DeleteDC (hdcsrc);
-				}
-			}
-
-		DeleteObject (hbm);
-		}
-	
-	return (true);	
-#endif
 	} /*ploticonresource*/
 
 
-#ifdef MACVERSION
 
 	struct tycustomicontypeinfo icontypes [maxcustomicontypes]; /*array*/
 
@@ -411,7 +325,6 @@ static boolean customiconload (bigstring bsiconname, short *rnum) {
 	
 } // customiconload
 
-#endif
 
 
 boolean ploticoncustom (const Rect *r, short align, short transform, bigstring bsiconname) {
@@ -420,7 +333,6 @@ boolean ploticoncustom (const Rect *r, short align, short transform, bigstring b
 	7.0b9 PBS: plot a custom icon.
 	*/
 	
-#ifdef MACVERSION
 
 	short rnum;
 	short resid = 128; /*Always 128 for custom icons*/
@@ -446,98 +358,7 @@ boolean ploticoncustom (const Rect *r, short align, short transform, bigstring b
 	
 	return (true);
 
-#endif
 
-#ifdef WIN95VERSION
-	HBITMAP hbm, oldbm;
-	BITMAP bm;
-	HDC hdcsrc, hdc;
-	boolean flprinting;
-	HDC hdcmask;
-	HBITMAP hbmmask, oldmaskbm;
-	COLORREF oldclr, oldclr2;
-	bigstring bsfilepath;
-	char cfilepath [256];
-	
-	copystring (BIGSTRING ("\x11" "Appearance\\Icons\\"), bsfilepath);
-	
-	pushstring (bsiconname, bsfilepath); /*add file name to folder path*/
-
-	pushstring (BIGSTRING ("\x04" ".bmp"), bsfilepath); /*add .bmp file extension*/
-
-	copyptocstring (bsfilepath, cfilepath);
-
-	/*Load the image from a file.*/
-
-	hbm = LoadImage (shellinstance, cfilepath, IMAGE_BITMAP, 16, 16, LR_LOADFROMFILE);
-
-	if (hbm == NULL) /*Load failed, return false, use default icon.*/
-
-		return (false);
-
-	if (hbm)
-		{
-		hdc = getcurrentDC();
-
-		flprinting = iscurrentportprintport ();
-
-		if (hdc)
-			{
-			hdcsrc = CreateCompatibleDC (hdc);
-
-			if (hdcsrc)
-				{
-				GetObject (hbm, sizeof (BITMAP), &bm);
-
-				oldbm = (HBITMAP) SelectObject (hdcsrc, hbm);
-				
-				if (flprinting) {
-				//	StretchBlt (hdc, r->left, r->top, r->right-r->left, r->bottom - r->top, hdcsrc, 0,0, bm.bmWidth, bm.bmHeight, SRCCOPY);
-					}
-				else {
-					hdcmask = CreateCompatibleDC (hdc);
-					hbmmask = CreateBitmap (bm.bmWidth, bm.bmHeight, 1, 1, NULL);
-
-					if (hdcmask && hbmmask) {
-						oldmaskbm = (HBITMAP) SelectObject (hdcmask, hbmmask);
-
-						oldclr = SetBkColor (hdcsrc, RGB(255,255,255));
-
-						BitBlt (hdcmask, 0,0,bm.bmWidth, bm.bmHeight, hdcsrc, 0,0, SRCCOPY);
-
-						SetBkColor (hdcsrc,oldclr);
-
-						eraserect (*r);
-
-						oldclr = SetBkColor (hdc, RGB(255,255,255));
-						oldclr2 = SetTextColor (hdc, RGB(0,0,0));
-
-						BitBlt (hdc, r->left, r->bottom - bm.bmHeight, bm.bmWidth, bm.bmHeight, hdcsrc, 0,0, SRCINVERT);
-						BitBlt (hdc, r->left, r->bottom - bm.bmHeight, bm.bmWidth, bm.bmHeight, hdcmask, 0,0, SRCAND);
-						BitBlt (hdc, r->left, r->bottom - bm.bmHeight, bm.bmWidth, bm.bmHeight, hdcsrc, 0,0, SRCINVERT);
-
-						SetBkColor (hdc,oldclr);
-						SetTextColor (hdc,oldclr2);
-
-						SelectObject (hdcmask, oldmaskbm);
-
-	//					BitBlt (hdc, r->left, r->bottom - bm.bmHeight, bm.bmWidth, bm.bmHeight, hdcsrc, 0,0, SRCAND);
-						}
-
-					DeleteObject (hbmmask);
-					DeleteDC (hdcmask);
-					}
-
-				SelectObject (hdcsrc, oldbm);
-				DeleteDC (hdcsrc);
-				}
-			}
-
-		DeleteObject (hbm);
-		}
-
-	return (true);	
-#endif
 	} /*ploticoncustom*/
 
 
@@ -552,113 +373,6 @@ boolean ploticoncustom (const Rect *r, short align, short transform) {
 	*/
 	
 
-#ifdef WIN95VERSION
-	HBITMAP hbm, oldbm;
-	BITMAP bm;
-	HDC hdcsrc, hdc;
-	boolean flprinting;
-	HDC hdcmask;
-	HBITMAP hbmmask, oldmaskbm;
-	COLORREF oldclr, oldclr2;
-
-	bigstring bsadricon = BIGSTRING ("\x18" "user.playlist.icons.face");
-	bigstring bsname;
-	hdlhashtable ht;
-	hdlhashnode hn;
-	tyvaluerecord iconvalue;
-	bigstring bsiconname = BIGSTRING ("\x04" "face");
-	boolean flexpanded = false;
-	boolean fllookup = false;
-	Handle hicon;
-
-	pushhashtable (roottable);
-
-	disablelangerror ();
-
-	flexpanded = langexpandtodotparams (bsadricon, &ht, bsname);
-	enablelangerror ();
-	pophashtable ();
-
-
-	fllookup = hashtablelookup (ht, bsiconname, &iconvalue, &hn);
-	copyhandle (iconvalue.data.binaryvalue, &hicon);
-	stripbinarytypeid (hicon);
-
-	hbm = CreateBitmap (16, 16, 1, 32, hicon);
-
-//	hbm = LoadImage (shellinstance, "face.bmp", IMAGE_BITMAP, 16, 16, LR_LOADFROMFILE);
-
-	if (hbm)
-		{
-		hdc = getcurrentDC();
-
-		flprinting = iscurrentportprintport ();
-
-		if (hdc)
-			{
-			hdcsrc = CreateCompatibleDC (hdc);
-
-			if (hdcsrc)
-				{
-				//GetObject (hbm, sizeof (BITMAP), &bm);
-
-				bm.bmType = 0;
-				bm.bmWidth = 16;
-				bm.bmHeight = 16;
-				bm.bmWidthBytes = 32;
-				bm.bmPlanes = 1;
-				bm.bmBitsPixel = 16;
-				bm.bmBits = hicon;
-
-				oldbm = (HBITMAP) SelectObject (hdcsrc, hbm);
-				
-				if (flprinting) {
-				//	StretchBlt (hdc, r->left, r->top, r->right-r->left, r->bottom - r->top, hdcsrc, 0,0, bm.bmWidth, bm.bmHeight, SRCCOPY);
-					}
-				else {
-					hdcmask = CreateCompatibleDC (hdc);
-					hbmmask = CreateBitmap (bm.bmWidth, bm.bmHeight, 1, 1, NULL);
-
-					if (hdcmask && hbmmask) {
-						oldmaskbm = (HBITMAP) SelectObject (hdcmask, hbmmask);
-
-						oldclr = SetBkColor (hdcsrc, RGB(255,255,255));
-
-						BitBlt (hdcmask, 0,0,bm.bmWidth, bm.bmHeight, hdcsrc, 0,0, SRCCOPY);
-
-						SetBkColor (hdcsrc,oldclr);
-
-						eraserect (*r);
-
-						oldclr = SetBkColor (hdc, RGB(255,255,255));
-						oldclr2 = SetTextColor (hdc, RGB(0,0,0));
-
-						BitBlt (hdc, r->left, r->bottom - bm.bmHeight, bm.bmWidth, bm.bmHeight, hdcsrc, 0,0, SRCINVERT);
-						BitBlt (hdc, r->left, r->bottom - bm.bmHeight, bm.bmWidth, bm.bmHeight, hdcmask, 0,0, SRCAND);
-						BitBlt (hdc, r->left, r->bottom - bm.bmHeight, bm.bmWidth, bm.bmHeight, hdcsrc, 0,0, SRCINVERT);
-
-						SetBkColor (hdc,oldclr);
-						SetTextColor (hdc,oldclr2);
-
-						SelectObject (hdcmask, oldmaskbm);
-
-	//					BitBlt (hdc, r->left, r->bottom - bm.bmHeight, bm.bmWidth, bm.bmHeight, hdcsrc, 0,0, SRCAND);
-						}
-
-					DeleteObject (hbmmask);
-					DeleteDC (hdcmask);
-					}
-
-				SelectObject (hdcsrc, oldbm);
-				DeleteDC (hdcsrc);
-				}
-			}
-
-		DeleteObject (hbm);
-		}
-	disposehandle (hicon);
-	return (true);	
-#endif
 	} /*ploticoncustom*/
 
 #endif
@@ -671,7 +385,6 @@ boolean ploticon (const Rect *r, short id) {
 	and the machine supports color, use the color version
 	*/
 	
-#ifdef MACVERSION
 	Handle hicon;
 	CIconHandle hcicn;
 	
@@ -699,11 +412,7 @@ boolean ploticon (const Rect *r, short id) {
 		}
 	
 	return (false);
-#endif
 
-#ifdef WIN95VERSION
-	return (ploticonresource (r, 0, 0, id));
-#endif
 	} /*ploticon*/
 
 
@@ -773,7 +482,6 @@ drawiconsequence (Rect r, short firsticon, short lasticon, bigstring bs) {
 */
 
 
-#if TARGET_API_MAC_CARBON == 1
 
 static void
 MyThemeButtonDrawCallback (
@@ -803,7 +511,6 @@ MyThemeButtonDrawCallback (
 
 	} /*MyThemeButtonDrawCallback*/
 
-#endif
 
 void drawlabeledwindoidicon (Rect r, bigstring bslabel, boolean flhastext, boolean flpressed) {
 	
@@ -811,7 +518,6 @@ void drawlabeledwindoidicon (Rect r, bigstring bslabel, boolean flhastext, boole
 	draw the labeled windoid icon in the appropriate state
 	*/
 	
-	#if TARGET_API_MAC_CARBON == 1
 	
 		ThemeButtonDrawInfo drawinfo;
 		ThemeButtonDrawUPP drawupp;
@@ -851,23 +557,6 @@ void drawlabeledwindoidicon (Rect r, bigstring bslabel, boolean flhastext, boole
 			popstyle ();
 			} /*if*/			
 			
-	#else
-
-		register short resnum;
-		
-		if (flpressed)
-			resnum = depressedshrunkenwindoidicon;
-			
-		else {
-			if (flhastext)
-				resnum = windoidwithtexticon;
-			else
-				resnum = windoidwithnotexticon;
-			}
-		
-		drawlabeledicon (&r, resnum, bslabel, false);
-	
-	#endif
 		
 	} /*drawlabeledwindoidicon*/
 

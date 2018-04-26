@@ -59,25 +59,11 @@ typedef struct diskrgb {
 	} diskrgb;
 
 
-#ifdef MACVERSION
 typedef ControlHandle hdlscrollbar;
-#endif
 
-#ifdef WIN95VERSION
-typedef struct tyscrollbarrecord
-	{
-	HWND hWnd;
-	int  item;
-	} scrollbarrecord, *ptrscrollbarrecord, **hdlscrollbar;
-#endif
 
-#ifdef MACVERSION
 	typedef MenuHandle hdlmenu;
-#endif
 
-#ifdef WIN95VERSION
-	typedef HMENU hdlmenu;
-#endif
 
 #pragma pack(2)
 typedef struct tytextdisplayinfo { 
@@ -167,7 +153,6 @@ typedef struct tybuttonstatus {
 #pragma options align=reset
 
 
-#ifdef MACVERSION
 
 	/*
 	2009-09-03 aradke: FSSpec was deprecated on Mac OS X and FSRef is its replacement.
@@ -204,20 +189,8 @@ typedef struct tybuttonstatus {
 	typedef tyfilespec *ptrfilespec, **hdlfilespec;
 #pragma options align=reset
 		
-	#endif // MACVERSION
 
 
-#ifdef WIN95VERSION
-	
-	typedef struct tyfilespec {
-
-			char fullSpecifier [258];
-			
-			} tyfilespec, *ptrfilespec, **hdlfilespec;
-
-	#define fsname( fs ) ( fs ) -> fullSpecifier
-
-	#endif // WIN95VERSION
 
 #endif
 

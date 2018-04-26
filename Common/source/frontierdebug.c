@@ -164,23 +164,13 @@ static boolean flreentering = false;
 
 /* functions */
 
-#ifdef WIN95VERSION
-	extern DWORD ixthreadglobalsgrabcount;
-#endif
 
 static void logtofile (char *str, char *category) {
 
 	unsigned long ticks = gettickcount ();
 	static unsigned long lastticks = 0;
-	#ifdef WIN95VERSION
-		DWORD idthread = GetCurrentThreadId();
-		static DWORD idlastthread = 0;
-		long grabcount = (long) TlsGetValue (ixthreadglobalsgrabcount);
-	#endif
-	#ifdef MACVERSION
 		long idthread = (long) (**getcurrentthread ()).idthread;
 		static long idlastthread = 0;
-	#endif
 
 	if (logfile == NULL) {
 		logfile = fopen (debuglogname, "a");
@@ -191,13 +181,8 @@ static void logtofile (char *str, char *category) {
 		idlastthread = idthread;
 		}
 
-	#ifdef WIN95VERSION
-		fprintf (logfile, "%08X (%04ld) | %04X (%02ld) | %s | &s\n", (unsigned long) ticks, (ticks - lastticks), idthread, grabcount, category, str);
-	#endif
 
-	#ifdef MACVERSION
 		fprintf (logfile, "%08lX (%04ld) | %08lX | %s | %s\n", (unsigned long) ticks, (ticks - lastticks), idthread, category, str);
-	#endif
 
 	lastticks = ticks;
 

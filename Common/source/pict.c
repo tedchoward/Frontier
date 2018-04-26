@@ -72,17 +72,10 @@ typedef struct tydiskpictrecord {
 	} tydiskpictrecord, *ptrdiskpictrecord, **hdldiskpictrecord;
 #pragma options align=reset
 
-#ifdef MACVERSION
 	#define flbitmapupdate_mask 0x8000 /*if set, use offscreen bitmaps when updating*/
 	#define flevalexpressions_mask 0x4000 /*if set, parse all text that begins with an = sign*/
 	#define flscaletofitwindow_mask 0x2000 /*if set, scale window down to fit inside window*/
-#endif
 
-#ifdef WIN95VERSION
-	#define flbitmapupdate_mask 0x0080 /*if set, use offscreen bitmaps when updating*/
-	#define flevalexpressions_mask 0x0040 /*if set, parse all text that begins with an = sign*/
-	#define flscaletofitwindow_mask 0x0020 /*if set, scale window down to fit inside window*/
-#endif
 
 #pragma pack(2)
 typedef struct tyOLD42diskpictrecord {
@@ -119,28 +112,21 @@ hdlwindowinfo pictwindowinfo = nil;
 hdlpictrecord pictdata = nil;
 
 
-#ifdef MACVERSION
 	static CQDProcs procs; /*must be statically allocated & have room for color procs*/
 
 	static CQDProcs *porigprocs; /*need to save, call & restore*/
-#endif
 
 
 
 boolean pictgetframerect (hdlpictrecord hpict, Rect *rframe) {
 	
-#ifdef MACVERSION
 	PicHandle macpicture = (**hpict).macpicture;
 	
 	if (macpicture == nil)
 		return (false);
 	
 	*rframe = (**macpicture).picFrame;
-#endif
 
-#ifdef WIN95VERSION
-	#pragma message ("Win95: pictgetframerect not implemented")
-#endif
 
 	return (true);
 	} /*pictgetframerect*/
@@ -604,7 +590,6 @@ static boolean picttextparse (Ptr textbuf, short ctbytes, bigstring bs) {
 	return (false);
 	} /*picttextparse*/
 
-#ifdef MACVERSION
 
 	static pascal void update_stdtext (short ctbytes, Ptr textbuf, Point numer, Point denom)  {
 	
@@ -616,15 +601,9 @@ static boolean picttextparse (Ptr textbuf, short ctbytes, bigstring bs) {
 			StdText (stringlength (bs), &bs [1], numer, denom);
 		else
 		
-			#if TARGET_API_MAC_CARBON == 1
 			
 				InvokeQDTextUPP ((short) stringlength (bs), (Ptr) &bs [1], numer, denom, (*porigprocs).textProc);
 			
-			#else
-		
-				CallQDTextProc ((*porigprocs).textProc, (short) stringlength (bs), (Ptr) &bs [1], numer, denom);
-			
-			#endif
 		} /*update_stdtext*/
 	
 	
@@ -637,43 +616,16 @@ static boolean picttextparse (Ptr textbuf, short ctbytes, bigstring bs) {
 		if (porigprocs == nil)
 			return (StdTxMeas (stringlength (bs), &bs [1], numer, denom, info));
 	
-		#if TARGET_API_MAC_CARBON == 1
 
 			return (InvokeQDTxMeasUPP ((short) stringlength (bs), (Ptr) &bs [1], numer, denom, info, (*porigprocs).txMeasProc));
 			
-		#else
-			
-			return (CallQDTxMeasProc ((*porigprocs).txMeasProc, (short) stringlength (bs), (Ptr) &bs [1], numer, denom, info));
-		
-		#endif
 		} /*update_stdtxmeas*/
 	
-	#if TARGET_API_MAC_CARBON == 1
 	#define update_stdtextUPP ((QDTextUPP) update_stdtext)
 		
 	#define update_stdtxmeasUPP ((QDTxMeasUPP) update_stdtxmeas)
-	#else
-	#if GENERATINGCFM
-		
-		static RoutineDescriptor update_stdtextDesc = BUILD_ROUTINE_DESCRIPTOR (uppQDTextProcInfo, update_stdtext);
-		
-		static RoutineDescriptor update_stdtxmeasDesc = BUILD_ROUTINE_DESCRIPTOR (uppQDTxMeasProcInfo, update_stdtxmeas);
-		
-		#define update_stdtextUPP (&update_stdtextDesc)
-		
-		#define update_stdtxmeasUPP (&update_stdtxmeasDesc)
-		
-	#else
-		
-		#define update_stdtextUPP ((QDTextUPP) update_stdtext)
-		
-		#define update_stdtxmeasUPP ((QDTxMeasUPP) update_stdtxmeas)
-		
-	#endif
-#endif//TARGET_API_MAC_CARBON
 		
 	
-#endif
 
 
 void pictupdatepatcher (void) {
@@ -682,7 +634,6 @@ void pictupdatepatcher (void) {
 	2.1b5 dmb: use CProcs to handle color windows
 	*/
 	
-#ifdef MACVERSION
 	//Code change by Timothy Paustian Sunday, April 30, 2000 9:24:15 PM
 	//Changed to Opaque call for Carbon
 	//I think we can just use a CGrafPort instead of casting to a WindowPtr
@@ -730,13 +681,11 @@ void pictupdatepatcher (void) {
 	//old code
 	(*w).grafProcs = (QDProcs *) &procs;
 	#endif
-#endif
 	} /*pictupdatepatcher*/
 
 
 void pictdepatcher (void) {
 	
-#ifdef MACVERSION
 	//Code change by Timothy Paustian Sunday, April 30, 2000 9:32:15 PM
 	//Changed to Opaque call for Carbon
 	#if ACCESSOR_CALLS_ARE_FUNCTIONS == 1
@@ -746,7 +695,6 @@ void pictdepatcher (void) {
 	//old code
 	(*getport ()).grafProcs = (QDProcs *) porigprocs;
 	#endif
-#endif
 	} /*pictdepatcher*/
 
 

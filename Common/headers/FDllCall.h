@@ -37,9 +37,7 @@ typedef unsigned char odbString [256];
 
 #ifndef isFrontier
 
-#ifdef MACVERSION
 typedef short hdlfilenum;
-#endif
 
 #ifdef WIN32
 #define Handle HANDLE
@@ -192,7 +190,6 @@ typedef union odbValueData {
 	
 	Rect **rectvalue;
 
-#ifdef MACVERSION
 	Pattern **patternvalue;
 	
 	RGBColor **rgbvalue;
@@ -200,7 +197,6 @@ typedef union odbValueData {
 	Fixed fixedvalue;
 	
 	FSSpec **filespecvalue;
-#endif
 	
 	float singlevalue;
 	
@@ -226,9 +222,7 @@ typedef struct odbValueRecord {
 	odbValueData data;
 	} odbValueRecord;
 
-#ifdef MACVERSION
 #define xCALLBACK
-#endif
 
 #ifdef WIN32
 #define xCALLBACK CALLBACK

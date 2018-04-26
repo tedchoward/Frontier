@@ -55,7 +55,6 @@ static hdlsmalliconbits hmiscbits;
 
 boolean plotsmallicon (tysmalliconspec spec) {
 
-#ifdef MACVERSION
 	register hdlsmalliconbits hbits;
 	short mode;
 	BitMap iconbitmap;
@@ -141,23 +140,12 @@ boolean plotsmallicon (tysmalliconspec spec) {
 	#endif
 	
 	return (true);
-#endif
 
-#ifdef WIN95VERSION
-	if (!ploticon (&spec.iconrect, spec.iconlist * 10 + spec.iconnum))
-		return (false);
-
-	if (spec.flinverted)
-		invertrect (spec.iconrect);
-
-	return (true);
-#endif
 	} /*plotsmallicon*/
 	
 	
 boolean displaypopupicon (Rect r, boolean flenabled) {
 	
-	#if TARGET_API_MAC_CARBON == 1
 	
 		short themestate = kThemeStateActive;
 		
@@ -174,36 +162,11 @@ boolean displaypopupicon (Rect r, boolean flenabled) {
 
 		return (true);
 	
-	#else
-	
-		tysmalliconspec spec;
-		
-		spec.hbits = nil;
-		
-		spec.iconlist = miscsmalliconlist;
-		
-		if (flenabled)
-			spec.iconnum = blackpopupicon;
-		else
-			spec.iconnum = graypopupicon;
-		
-		spec.iconwindow = getport (); // quickdrawglobal (thePort);
-		
-		spec.iconrect = r;
-		
-		spec.flinverted = false;
-		
-		spec.flclearwhatsthere = true;
-		
-		return (plotsmallicon (spec));
-		
-	#endif
 	} /*displaypopupicon*/
 	
 	
 boolean loadsmallicon (short resnum, hdlsmalliconbits *hbits) {
 	
-#ifdef MACVERSION
 	Handle h;
 	boolean fl;
 	SInt8 hState;
@@ -217,13 +180,7 @@ boolean loadsmallicon (short resnum, hdlsmalliconbits *hbits) {
 	HSetState(h, hState);
 	
 	return (fl);
-#endif
 
-#ifdef WIN95VERSION
-	*hbits = NULL;	// we map to individual icons
-
-	return (true);
-#endif
 	} /*loadsmallicon*/
 
 
@@ -261,24 +218,15 @@ boolean myMoof (short ticksbetweenframes, long howlong) {
 	if (abs (howlong) < 0x2222222) /*convert to ticks, avoiding overflow*/
 		howlong *= 60;
 	
-#ifdef MACVERSION
 	//you cannot call this with a window ptr, the function needs a dialog ptr
 	//its really not needed anyway, but I will leave it in for the non-carbon version
-	#if TARGET_API_MAC_CARBON == 0
-	positiondialogwindow (w);
-	#endif
-#endif
 
 	showwindow (w);	
 	
 	//Code change by Timothy Paustian Monday, August 21, 2000 4:31:49 PM
 	//Must pass a CGrafPtr to pushport on OS X to avoid a crash
 	{
-	#if TARGET_API_MAC_CARBON == 1
 	thePort = GetWindowPort(w);
-	#else
-	thePort = (CGrafPtr)w;
-	#endif
 		
 	pushport (thePort);
 	}
@@ -303,9 +251,7 @@ boolean myMoof (short ticksbetweenframes, long howlong) {
 			sicn.iconnum = i;
 			
 			plotsmallicon (sicn);
-			#if TARGET_API_MAC_CARBON
 			QDFlushPortBuffer(thePort, nil);
-			#endif
 			if (mousebuttondown ()) {
 				
 				while (mousebuttondown ()) {}

@@ -1376,12 +1376,7 @@ boolean opedit (hdlexternalvariable hvariable, hdlwindowinfo hparent, ptrfilespe
 			return (true);
 			}
 		
-		#ifdef MACVERSION
 			break;
-		#else
-			if (!shellyield (false))
-				return (false);
-		#endif
 		}
 	
 	rwindow = (**ho).windowrect; // window comes up where it was last time
@@ -1415,7 +1410,6 @@ boolean opedit (hdlexternalvariable hvariable, hdlwindowinfo hparent, ptrfilespe
 	
 		(**hi).fspec = *fs;
 		
-		#ifdef MACVERSION
 		
 			FSRef fsref;
 		
@@ -1451,7 +1445,6 @@ boolean opedit (hdlexternalvariable hvariable, hdlwindowinfo hparent, ptrfilespe
 				SetWindowProxyCreatorAndType ( w, 'LAND', type, kOnSystemDisk );
 				
 				}
-		#endif
 		
 		}
 	
@@ -4210,9 +4203,6 @@ static void opverbresize (void) {
 	
 	opresize ((**outlinewindowinfo).contentrect);
 	
-	#ifdef WIN95VERSION
-		opupdatenow ();
-	#endif
 	} /*opverbresize*/
 
 

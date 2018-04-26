@@ -56,10 +56,8 @@ typedef struct tyinternationalinfo {
 #pragma options align=reset
 
 
-#ifdef MACVERSION
 /* #define getlongermilliseconds() (unsigned long long)FastMilliseconds() */
 #define getmilliseconds() (long)FastMilliseconds()
-#endif
 
 /*prototypes*/
 
@@ -85,15 +83,6 @@ extern void secondstodatetime (long, short *, short *, short *, short *, short *
 
 extern void secondstodayofweek (long, short *);
 
-#ifdef WIN95VERSION
-
-extern long filetimetoseconds (const FILETIME *);
-
-extern void secondstofiletime (long seconds, FILETIME *);
-
-extern tyinternationalinfoptr getIntlInfo ();
-
-#endif
 
 extern unsigned long nextmonth(unsigned long date);
 
@@ -121,10 +110,5 @@ extern long getcurrenttimezonebias(void);
 
 extern boolean isLeapYear (short year);
 
-#ifdef WIN95VERSION
-
-extern long getmilliseconds(void);  /* mac version is #defined near the top of the file */
-
-#endif /* WIN95VERSION */
 
 #endif /*timedateinclude*/

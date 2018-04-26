@@ -142,12 +142,7 @@ typedef struct tyversion1tablediskrecord { /*packed version of tableformats, sui
 	
 	short fontgarbage, fontsize, fontstyle; /*the display fontsizestyle*/
 	
-#ifdef MACVERSION
 	tylinespacing linespacing;
-#endif
-#ifdef WIN95VERSION
-	short linespacing;
-#endif
 	
 	short vertmin, vertmax, vertcurrent; /*values for the scrollbars*/
 	

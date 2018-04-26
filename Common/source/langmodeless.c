@@ -136,12 +136,8 @@ static boolean langdialogmousedown (Point pt, tyclickflags flags){
 	register hdldialogrecord hd = langdialogdata;
 	short item;
 	
-	#if TARGET_API_MAC_CARBON
 	DialogPtr	theDial = GetDialogFromWindow(langdialogwindow);
 	if(dialogevent (&shellevent, theDial, &item))
-	#else
-	if (dialogevent (&shellevent, langdialogwindow, &item))
-	#endif
 	{ /*mouse in text item*/
 		
 		(**hd).itemhit = item;
@@ -159,12 +155,8 @@ static boolean langdialogkeystroke (void) {
 	
 	register hdldialogrecord hd = langdialogdata;
 	short item;
-	#if TARGET_API_MAC_CARBON
 	DialogPtr theDial = GetDialogFromWindow(langdialogwindow);
 	if (dialogevent (&shellevent, theDial, &item)) 
-	#else
-	if (dialogevent (&shellevent, langdialogwindow, &item))
-	#endif
 	{
 		(**hd).itemhit = item;
 	}
@@ -197,7 +189,6 @@ static boolean langdialogclose (void) {
 		
 		(**hd).itemhit = -2; /*close*/
 		
-		#if TARGET_API_MAC_CARBON
 
 			while (((char)((long)*hd) != -1) && ((**hd).flstillalive)) { /*make sure it's handled before window is disposed*/
 				
@@ -207,17 +198,6 @@ static boolean langdialogclose (void) {
 					return (false);
 				}
 			
-		#else
-		
-			while ((**hd).flstillalive) { /*make sure it's handled before window is disposed*/
-				
-				processchecktimeouts ();
-				
-				if (!processyield ())
-					return (false);
-				}
-			
-		#endif
 		
 		}
 	else {
@@ -238,28 +218,20 @@ static void langdialogupdate (void) {
 	EventRecord event = shellevent;
 	
 	event.what = updateEvt;
-	#if TARGET_API_MAC_CARBON
 	{
 	DialogPtr	theDial = GetDialogFromWindow(langdialogwindow);
 	dialogupdate (&event, theDial);
 	}
-	#else
-	dialogupdate (&event, (DialogPtr) langdialogwindow);
-	#endif
 	} /*langdialogupdate*/
 
 
 static void langdialogactivate (boolean flactivate) {
 	
 	(**langdialogdata).flactive = flactivate;
-	#if TARGET_API_MAC_CARBON
 	{
 	DialogPtr	theDial = GetDialogFromWindow(langdialogwindow);
 	dialogactivate (theDial, flactivate);
 	}
-	#else
-	dialogactivate (langdialogwindow, flactivate);
-	#endif
 	} /*langdialogactivate*/
 
 
@@ -310,14 +282,10 @@ static boolean langdialogsetselectioninfo (void) {
 
 static void langdialogidle (void) {
 	
-	#if TARGET_API_MAC_CARBON
 	{
 	DialogPtr	theDial = GetDialogFromWindow(langdialogwindow);
 	dialogidle (theDial);
 	}
-	#else
-	dialogidle (langdialogwindow);
-	#endif
 	} /*langdialogidle*/
 
 
@@ -325,12 +293,8 @@ static boolean langdialogcopy (void) {
 	
 	Handle htext;
 	
-	#if TARGET_API_MAC_CARBON
 	DialogPtr	theDial = GetDialogFromWindow(langdialogwindow);
 	DialogCopy (theDial);
-	#else
-	DialogCopy (langdialogwindow);
-	#endif
 	
 	if (!copyhandle (TEScrapHandle (), &htext))
 		return (false);
@@ -356,26 +320,18 @@ static boolean langdialogpaste (void) {
 	
 	shellwritescrap (textscraptype); // 5.1.6: Mac OS 8.5 fix?
 	
-	#if TARGET_API_MAC_CARBON
 	{
 	DialogPtr	theDial = GetDialogFromWindow(langdialogwindow);
 	DialogPaste (theDial);
 	}
-	#else
-	DialogPaste (langdialogwindow);
-	#endif
 	return (true);
 	} /*langdialogpaste*/
 
 
 static boolean langdialogclear (void) {
 	
-	#if TARGET_API_MAC_CARBON
 	DialogPtr	theDial = GetDialogFromWindow(langdialogwindow);
 	DialogDelete (theDial);
-	#else
-	DialogDelete (langdialogwindow);
-	#endif
 	return (true);
 	} /*langdialogclear*/
 
@@ -442,11 +398,7 @@ static boolean langdialogitemhit (hdltreenode htree, short itemnumber, boolean f
 		
 		langcallbacks.debuggercallback = &langdialogdebugger;
 		}
-	#if TARGET_API_MAC_CARBON
 	langmodaldialog = GetDialogFromWindow(langdialogwindow); /*make current for langdialog verbs*/
-	#else
-	langmodaldialog = langdialogwindow; /*make current for langdialog verbs*/
-	#endif
 	fl = langhandlercall (htree, hparam, &val);
 	
 	langmodaldialog = savedialogwindow; /*restore*/
@@ -476,11 +428,7 @@ static void langdialogdispose (hdldialogrecord hdialog) {
 	
 	if ((**hd).flwindowopen)
 	{	
-		#if TARGET_API_MAC_CARBON
 		shellclosewindow (GetDialogWindow((**hd).pdialog));
-		#else
-		shellclosewindow ((**hd).pdialog);
-		#endif
 	}
 	disposehandle ((Handle) hdialog);
 	} /*langdialogdispose*/
@@ -588,14 +536,9 @@ static boolean langdialognewwindow (short dialogid, short defaultitem, hdltreeno
 		return (false);
 		}
 	{
-	#if TARGET_API_MAC_CARBON == 1
 	DialogPtr	theDial = GetDialogFromWindow(langdialogwindow);
 	setdefaultitem (theDial, defaultitem);
 	(**hd).pdialog = theDial;
-	#else
-	setdefaultitem(langdialogwindow, defaultitem);
-	(**hd).pdialog = langdialogwindow;
-	#endif
 		
 	}
 	(**hd).flwindowopen = true;
@@ -671,11 +614,7 @@ boolean langrunmodeless (hdltreenode hparam1, tyvaluerecord *vreturned) {
 	
 	if (langdialogfindwindow (dialogid, &hdialog)) { /*already running -- just bring to front*/
 		
-		#if TARGET_API_MAC_CARBON
 		windowbringtofront (GetDialogWindow((**hdialog).pdialog)); /***should use windowinfo*/
-		#else
-		windowbringtofront ((**hdialog).pdialog); /***should use windowinfo*/
-		#endif
 		setbooleanvalue (true, vreturned);
 		
 		return (true);
@@ -698,13 +637,8 @@ boolean langrunmodeless (hdltreenode hparam1, tyvaluerecord *vreturned) {
 	if (!langdialogitemhit (htree, -1, false)) /*initialization failed*/
 		goto exit;
 	
-	#if TARGET_API_MAC_CARBON
 	shellpushglobals (GetDialogWindow((**hd).pdialog));
    	dialogselectall(GetDialogFromWindow(shellwindow));
-	#else
-	shellpushglobals ((**hd).pdialog);
-	dialogselectall (shellwindow); /*in case there's a text item*/
-	#endif
 	
 	windowzoom (shellwindow);
 	
@@ -750,13 +684,11 @@ boolean langrunmodeless (hdltreenode hparam1, tyvaluerecord *vreturned) {
 			
 			flzoomscript = (itemhit > 0) && keyboardstatus.floptionkey;
 			
-			#if TARGET_API_MAC_CARBON == 1
 			
 				flzoomscript = false; 	/*7.1b37 PBS: wiring off a feature that: 1. no one knows about and 2. crashes anyway.*/
 										/*Attempting to support this feature also causes crashes.*/
 										/*That's why it's gone.*/
 			
-			#endif
 			
 			(**hd).itemhit = 0; /*clear for next time*/
 			
@@ -783,11 +715,7 @@ boolean langrunmodeless (hdltreenode hparam1, tyvaluerecord *vreturned) {
 				
 				if (debuggingcurrentprocess ())
 				{
-					#if TARGET_API_MAC_CARBON
 					windowbringtofront (GetDialogWindow((**hd).pdialog)); /***should use windowinfo*/
-					#else
-					windowbringtofront ((**hd).pdialog); /***should use windowinfo*/
-					#endif
 				}
 				}
 			}

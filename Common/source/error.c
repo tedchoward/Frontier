@@ -38,10 +38,6 @@
 #include "error.h"
 
 
-#ifdef WIN95VERSION
-	#define memFullErr -20000
-	#define userCanceledErr -20001
-#endif
 
 #define systemerrorlist 258 
 
@@ -55,7 +51,6 @@ struct {
 	/***short errorindex; #*index into the STR# resource for the appropriate message*/
 	}
 
-#ifdef MACVERSION
 
 systemerrortable [ctsystemerrors] = {
 	
@@ -155,102 +150,7 @@ systemerrortable [ctsystemerrors] = {
 	
 	}; /*systemerrortable*/
 
-#endif
 
-#ifdef WIN95VERSION
-
-systemerrortable [ctsystemerrors] = {
-	
-	{-33},	//dirFulErr
-	{-34},	//dskFulErr
-	{-35},	//nsvErr
-	{-36},	//ioErr
-	{-37},	//bdNamErr
-	{-38},	//fnOpnErr
-	{-39},	//eofErr
-	{-40},	//posErr
-	{-41},	//mFulErr
-	{ERROR_TOO_MANY_OPEN_FILES},	//tmfoErr
-	{ERROR_FILE_NOT_FOUND},	//fnfErr
-	{-44},	//wPrErr
-	{-45},	//fLckdErr
-	{-46},	//vLckdErr
-	{ERROR_SHARING_VIOLATION},	//fBsyErr
-	{-48},	//dupFNErr
-	{-49},	//opWrErr
-	{-50},
-	{-51},	//rfNumErr
-	{-52},	//gfpErr
-	{-53},	//volOffLinErr
-	{-54},	//permErr
-	{-55},	//volOnLinErr
-	{-56},	//nsDrvErr
-	{-57},	//noMacDskErr
-	{-58},	//extFSErr
-	{-59},	//fsRnErr
-	{-60},	//badMDBErr
-	{-61},	//wrPermErr
-	{-64},	//noDriveErr
-	{-65},	//offLinErr
-	{-66},	//noNybErr
-	{-67},	//noAdrMkErr
-	{-68},	//dataVerErr
-	{-69},	//badCksmErr
-	{-70},	//badBtSlpErr
-	{-71},	//noDtaMkErr
-	{-72},	//badDCksum
-	{-73},
-	{-74},
-	{-75},
-	{-76},
-	{-77},
-	{-78},
-	{-79},
-	{-80},
-	{-81},
-	{ERROR_PATH_NOT_FOUND},	//dirNFErr
-	{-121},
-	{-122},	//badMovErr
-	{-123},	//wrgVolTypErr
-	{-192},	//resNotFound
-	{-193},	//resFNotFound
-	{-194},	//addResFailed
-	{-196},	//rmvResFailed
-	{-198},	//resAttrErr
-	{-199},	//mapReadErr
-	{-100},
-	{-102},
-	{ERROR_OUTOFMEMORY},	//memFullErr
-	{-109},	//nilHandleErr
-	{-111},
-	{-112},
-	{-117},
-	{-1703},
-	{-1719},
-	{-1704},
-	{-1705},
-	{-1708},
-	{-1712},
-	{-1711},
-	{-906},
-	{-1700},
-	{-1701},
-	{-1723},
-	{-1728},
-	{ERROR_ACCESS_DENIED},
-	{-5016},
-	{-5019},
-	{-5023},
-	{-5063},
-	{-10000},
-	{-10007},
-	{-10011},
-	{-10003},
-	{-10014},
-	
-	}; /*systemerrortable*/
-
-#endif
 
 #define unknownsystemerror ctsystemerrors + 1
 
@@ -313,23 +213,8 @@ boolean getsystemerrorstring (OSErr errcode, bigstring bs) {
 	if (isemptystring (bs))
 		return (false);
 		
-	#ifdef MACVERSION
 		shorttostring (errcode, bsos);
-	#endif
 
-	#ifdef WIN95VERSION
-		if (getwinerrormessage (errcode, bsos)) {
-			
-			firstword (bsos, '.', bsos); //skip the cr
-			}
-		else {
-		
-			/* THe format failed, therefore we have no further info */
-			wsprintf (stringbaseaddress(bsos), "error number %ld." , errcode);
-			
-			setstringlength (bsos, strlen (stringbaseaddress(bsos)));
-			}
-	#endif
 
 	parsedialogstring (bs, bsos, nil, nil, nil, bs);
 
@@ -364,11 +249,6 @@ boolean memoryerror (void) {
 	
 	register OSErr errcode = MemError ();
 	bigstring bs;
-	#ifdef WIN95VERSION
-		long ctbytes = longinfinity;
-		
-		shellcallmemoryhooks (&ctbytes);
-	#endif
 	
 	if (errcode == noErr) /*specific error code has been overwritten*/
 		errcode = memFullErr;
@@ -439,49 +319,6 @@ boolean oserror (OSErr errcode) {
 	} /*oserror*/
 
 
-#ifdef WIN95VERSION
-
-boolean winerror (void) {
-	
-	/*
-	5.0.1 dmb: the callerk has already detected an error. we're
-	just reporting it.
-	*/
-
-	oserror (GetLastError ());
-
-	return (true);
-	} /*winerror*/
-
-
-boolean getwinerrormessage (OSErr err, bigstring bserr) {
-
-	LPVOID lpMsgBuf;
-
-	if (FormatMessage(
-		FORMAT_MESSAGE_ALLOCATE_BUFFER | FORMAT_MESSAGE_FROM_SYSTEM,
-		NULL,
-		err,
-		MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT), // Default language
-		(LPTSTR) &lpMsgBuf,
-		0,
-		NULL) == 0) {
-		
-		setemptystring (bserr);
-		
-		return (false);
-		}
-	
-	strcpy (stringbaseaddress (bserr), lpMsgBuf);
-	
-	setstringlength (bserr, strlen(lpMsgBuf));
-	
-	LocalFree (lpMsgBuf);
-	
-	return (true);
-	} /*getwinerrormessage*/
-
-#endif
 
 
 boolean initerror (void) {

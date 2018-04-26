@@ -80,19 +80,6 @@ static void shelldisposeinternalscrap (void) {
 	} /*shelldisposeinternalscrap*/
 
 
-#ifdef WIN95VERSION
-
-void shelldisposescrap (void) {
-	
-	if (!shellscrap.fllocked) {
-		
-		shelldisposeinternalscrap ();
-		
-		handlescrapdisposed ();
-		}
-	} /*shelldisposescrap*/
-
-#endif
 
 
 static boolean shellsetinternalscrap (void * hscrap, tyscraptype type, shelldisposescrapcallback disposeroutine, shellexportscrapcallback exportroutine) {
@@ -129,20 +116,6 @@ boolean shellsetscrap (void * hscrap, tyscraptype type, shelldisposescrapcallbac
 	putscrap should result in the disposal of the current private clipboard
 	*/
 	
-	#ifdef WIN95VERSION
-		if (openclipboard ()) { // set this scrap type for delayed rendering
-			
-			if (resetscrap ()) {
-
-				putscrap (type, NULL);
-				
-				if ((type != textscraptype) && (type != pictscraptype))
-					putscrap (textscraptype, NULL);
-				}
-
-			closeclipboard ();
-			}
-	#endif
 	
 	return (shellsetinternalscrap (hscrap,type, disposeroutine, exportroutine));
 	} /*shellsetscrap*/
@@ -248,12 +221,10 @@ boolean shellreadscrap (void) {
 		
 		register tyscraptype scraptype = noscraptype;
 		
-	#ifndef WIN95VERSION
 		if (getscrap ('PICT', hscrap))
 			scraptype = pictscraptype;
 		
 		else { 
-	#endif
 			if (getscrap ('TEXT', hscrap))
 				scraptype = textscraptype;
 		
@@ -264,9 +235,7 @@ boolean shellreadscrap (void) {
 				if (!getscrap (scraptype, hscrap))
 					scraptype = noscraptype;
 				}
-		#ifndef WIN95VERSION
 			}
-		#endif
 		
 		if (scraptype != noscraptype)
 			shellsetinternalscrap (hscrap, scraptype, (shelldisposescrapcallback) disposehandle, nil);
@@ -280,32 +249,6 @@ boolean shellreadscrap (void) {
 	} /*shellreadscrap*/
 
 
-#ifdef WIN95VERSION
-
-static boolean cr2crlfhandle (Handle htext) {
-	
-	byte bscr[] = "\x01\r";
-	byte bscrlf[] = "\x02\r\n";
-	Handle hcr = nil;
-	Handle hcrlf = nil;
-	boolean fl;
-	
-	if (!newtexthandle (bscr, &hcr))
-		return (false);
-
-	fl = newtexthandle (bscrlf, &hcrlf);
-
-	if (fl)
-		fl = textfindreplace (hcr, hcrlf, htext, true, false);
-
-	disposehandle (hcr);
-	
-	disposehandle (hcrlf);
-
-	return (fl);
-	} /*cr2crlfhandle*/
-
-#endif
 
 
 boolean shellexportscrap (tyscraptype scraptype) {
@@ -330,15 +273,6 @@ boolean shellexportscrap (tyscraptype scraptype) {
 	if (!exportshellscrap (scraptype, &hscrap, &flconverted)) //couldn't create this type
 		return (false);
 	
-	#ifdef WIN95VERSION
-	
-		if (scraptype == textscraptype) {
-			
-			if (flconverted)			
-				cr2crlfhandle (hscrap);
-			}
-		
-	#endif
 	
 	fl = putscrap (scraptype, hscrap);
 	
@@ -373,12 +307,7 @@ boolean shellwritescrap (tyscraptype type) {
 	
 	boolean fl = false;
 	
-	#ifdef WIN95VERSION
-		if (type != allscraptypes)
-			return (true);
-	#endif
 
-	#ifdef MACVERSION
 		if (!shellscrap.fldirty)
 			return (false);
 		
@@ -387,7 +316,6 @@ boolean shellwritescrap (tyscraptype type) {
 			if ((type != textscraptype) /*|| (gethandlesize (shellscrap.hscrap) > lenbigstring)*/)
 				return (false);
 			}
-	#endif
 	
 	shellscrap.fldirty = false;
 	
@@ -406,13 +334,11 @@ boolean shellwritescrap (tyscraptype type) {
 	
 	switch (shellscrap.type) {
 		
-		#if TARGET_API_MAC_CARBON == 1
 			case hashscraptype: /*7.0b48 PBS: can't export this type*/
 			
 				fl = false;
 				
 				break;
-		#endif
 			
 		case pictscraptype:
 			fl = shellexportscrap (pictscraptype);

@@ -83,7 +83,6 @@ boolean dosound (short duration, short amplitude, short frequency) {
 
 boolean dosound (short duration, short amplitude, short frequency) {
 	
-#ifdef MACVERSION
 	//#if TARGET_API_MAC_CARBON
 	//sysbeep();
 	//return true;
@@ -137,17 +136,7 @@ boolean dosound (short duration, short amplitude, short frequency) {
 	
 	return (!oserror (err));
 //#endif
-#endif
 
-#ifdef WIN95VERSION
-	//NOTE:  Beep does not take amplitude.  
-	//       Also the parameters are ignored on Windows 95/98
-	long ltime;
-
-	ltime = (duration * 1000L) / 60L;
-	return (Beep (frequency, ltime));
-//	return (false); // *** WIN95 not implemented
-#endif
 	} /*dosound*/
 
 #endif
@@ -161,9 +150,7 @@ void motorsound (void) {
 
 void ouch (void) {
 	
-#ifdef MACVERSION
 	sysbeep (); 
-#endif
 
 #ifdef WIN95VERSIOON
 	Beep(1000, 500);
@@ -176,7 +163,6 @@ void ouch (void) {
 
 boolean playnamedsound (bigstring bsname) {
 
-#ifdef MACVERSION
 	Handle hsound;
 	
 	hsound = GetNamedResource ('snd ', bsname);
@@ -185,14 +171,7 @@ boolean playnamedsound (bigstring bsname) {
 		return (false);
 	
 	return (SndPlay (nil, (SndListHandle) hsound, false) == noErr);
-#endif
 
-#ifdef WIN95VERSION
-	char sndname[256];
-	copyptocstring (bsname, sndname);
-	return (PlaySound (sndname, NULL, SND_FILENAME | SND_NODEFAULT | SND_ASYNC));
-//	return (false);	// *** WIN95 not implemented
-#endif
 
 	} /*playnamedsound*/
 

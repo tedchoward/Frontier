@@ -134,7 +134,6 @@ boolean langgetdialogvalue (hdltreenode hparam1, tyvaluerecord *vreturned) {
 	if (!langdialoggetitemparam (hparam1, 1, &itemnum))
 		return (false);
 	
-#if MACVERSION
 	GetDialogItem (langmodaldialog, itemnum, &itemtype, &itemhandle, &itemrect);
 	
 	switch (itemtype % itemDisable) { /*ignore enabledness*/
@@ -174,7 +173,6 @@ boolean langgetdialogvalue (hdltreenode hparam1, tyvaluerecord *vreturned) {
 			
 			break;
 		}
-#endif
 
 	// *** WIN95 not implemented
 
@@ -202,7 +200,6 @@ boolean langsetdialogvalue (hdltreenode hparam1, tyvaluerecord *vreturned) {
 	
 	setbooleanvalue (true, vreturned); /*optimism*/
 	
-#if MACVERSION
 	GetDialogItem (langmodaldialog, itemnum, &itemtype, &itemhandle, &itemrect);
 	
 	flnextparamislast = true;
@@ -258,7 +255,6 @@ boolean langsetdialogvalue (hdltreenode hparam1, tyvaluerecord *vreturned) {
 			
 			break;
 		}
-#endif
 
 	// *** WIN95 not implemented
 

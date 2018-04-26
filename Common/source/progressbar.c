@@ -33,12 +33,7 @@ Make sure you have a STR# resource number 128, with exactly six strings in it.
 Not too big, kind of sexy, and certainly better than nothing!
 */ 
 
-#ifdef MACVERSION
 	#include <standard.h>
-#endif
-#ifdef WIN95VERSION
-	#include "standard.h"
-#endif
 
 #include "quickdraw.h"
 #include "strings.h"
@@ -70,14 +65,8 @@ Not too big, kind of sexy, and certainly better than nothing!
 #include "process.h"
 #include "processinternal.h"
 
-#ifdef WIN95VERSION
-	#include "Winland.h"
-	#define idfrontiericon	IDB_FRONTIER_BITMAP
-#endif
 
-#ifdef MACVERSION
 	#define idfrontiericon	128
-#endif
 
 
 
@@ -185,12 +174,7 @@ static byte * aboutstrings [] = {
 	
 	BIGSTRING ("\x11" "Current Thread:  "),
 	
-	#ifdef MACVERSION
 		BIGSTRING ("\x13" "Available Memory:  "),
-	#endif
-	#ifdef WIN95VERSION
-		BIGSTRING ("\x14" "Handles Allocated:  "),
-	#endif
 
 	BIGSTRING (""),
 
@@ -199,21 +183,11 @@ static byte * aboutstrings [] = {
 	BIGSTRING ("\x0f" "Current Time:  "),
 	
 #ifdef PIKE
-	#ifdef MACVERSION
 		BIGSTRING ("\x0e" "UserLand Pikeª"),
-	#endif
-	#ifdef WIN95VERSION
-		BIGSTRING ("\x0e" "UserLand Pike™"),
-	#endif
 	
 	BIGSTRING ("\x0a" "About Pike"),
 #else
-	#ifdef MACVERSION
 		BIGSTRING ("\x12" "UserLand Frontierª"),
-	#endif
-	#ifdef WIN95VERSION
-		BIGSTRING ("\x12" "UserLand Frontier™"),
-	#endif
 	
 	BIGSTRING ("\x0e" "About Frontier"),
 #endif
@@ -660,20 +634,12 @@ static void ccupdatestatistics (boolean flbitmap) {
 	
 	if (aboutstatsshowing ()) {
 	
-	#ifdef WIN95VERSION
-		extern long handlecounter;
-		
-		numbertostring (handlecounter, bs);
 
-	#endif
-
-	#ifdef MACVERSION
 		long freemem = FreeMem () / 1024;
 		
 		numbertostring (freemem, bs);
 		
 		pushchar ('K', bs);
-	#endif
 		
 		ccdrawstatistic (memoryitem, bs, flbitmap);
 		
@@ -711,15 +677,6 @@ static void	ccdrawabout (void) {
 	
 	/*draw the icon*/ {
 		
-		#ifdef WIN95VERSION
-			short tmfont;
-
-			fontgetnumber (BIGSTRING ("\x05" "Arial"), &tmfont);
-
-			if (tmfont != 0)
-				setglobalfontsizestyle (tmfont, 9, bold);
-			else
-		#endif
 		
 		setglobalfontsizestyle (geneva, 9, bold);
 	
@@ -727,10 +684,6 @@ static void	ccdrawabout (void) {
 		
 		pendrawstring (aboutstrings [frontieritem]);
 		
-		#ifdef WIN95VERSION
-			if (tmfont != 0)
-				setglobalfontsizestyle (geneva, 9, bold);
-		#endif
 		
 
 		rabout.left += abouticonsize;
@@ -849,11 +802,6 @@ boolean aboutsetthreadstring (hdlthreadglobals hg, boolean flin) {
 
 boolean aboutsetmiscstring (bigstring bsmisc) {
 	
-	#ifdef WIN95VERSION
-	extern 	DWORD ixthreadglobalsgrabcount;			// Tls index of counter for nest globals grabbing
-
-	long grabcount = (long) TlsGetValue (ixthreadglobalsgrabcount);
-	#endif
 
 //	register hdlcancoonrecord hc = cancoonglobals;
 //	hdlwindowinfo hinfo;
@@ -863,9 +811,6 @@ boolean aboutsetmiscstring (bigstring bsmisc) {
 //	if (!findaboutwindow (&hinfo) || !shellpushglobals ((**hinfo).macwindow))
 //		return (false);
 	
-	#ifdef WIN95VERSION
-	if (grabcount > 0)
-	#endif
 	if (aboutport != nil && flhavemiscrect) {
 		
 		pushport (aboutport);
@@ -1725,12 +1670,10 @@ boolean openabout (boolean flzoom, long ctreservebytes) {
 	
 	hdlwindowinfo hinfo;
 	
-#ifdef MACVERSION
 	Ptr ptemp = nil;
 	
 	if (ctreservebytes > 0)
 		ptemp = NewPtr (ctreservebytes); /*force about window to load high*/
-#endif
 
 	aboutstart ();
 	
@@ -1742,10 +1685,8 @@ boolean openabout (boolean flzoom, long ctreservebytes) {
 	if (findaboutwindow (&hinfo))
 		shellupdatenow ((**hinfo).macwindow);
 	
-#ifdef MACVERSION
 	if (ptemp != nil)
 		DisposePtr (ptemp); /*restore heap space for remaining code segments*/
-#endif
 	
 	aboutopenticks = gettickcount ();
 	

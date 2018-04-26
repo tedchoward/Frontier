@@ -836,12 +836,10 @@ boolean menuedit (hdlexternalvariable hvariable, hdlwindowinfo hparent, ptrfiles
 	
 		(**hi).fspec = *fs;
 		
-		#ifdef MACVERSION
 		
 			if (macfilespecisresolvable (fs))
 				SetWindowProxyCreatorAndType ( w, 'LAND', 'FTmb', kOnSystemDisk );
 				
-		#endif
 		
 		}
 	

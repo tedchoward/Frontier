@@ -33,7 +33,6 @@
 #include "shell.h"
 
 
-#ifdef MACVERSION
 #define keycodeclear 71 /*keycodes for numeric keybad*/
 #define keycodeminus 78
 #define keycodeplus 69
@@ -57,38 +56,7 @@
 #define keycodecommand 48
 #define keycodeshift	63
 #define keycodecontrol 60
-#endif
 
-#ifdef WIN95VERSION
- /*keycodes for numeric keybad*/
-#define keycodeclear -1
-#define keycodeminus 0x4a
-#define keycodeplus 0x4e
-#define keycodedivide 0x135
-#define keycodetimes 0x37
-#define keycodeseven 0x47
-#define keycodeeight 0x48
-#define keycodenine 0x49
-#define keycodefour 0x4b
-#define keycodefive 0x4c
-#define keycodesix 0x4d
-#define keycodecomma -1
-#define keycodeone 0x4f
-#define keycodetwo 0x50
-#define keycodethree 0x51
-#define keycodeenter 0x11c
-#define keycodezero 0x52
-#define keycodeperiod 0x53
-
-//#define keycodeoption 61
-//#define keycodecommand VK_MENU
-//#define keycodeshift	VK_SHIFT
-//#define keycodecontrol VK_CONTROL
-#define keycodeoption VK_MENU
-#define keycodecommand VK_CONTROL
-#define keycodeshift	VK_SHIFT
-#define keycodecontrol 60
-#endif
 
 
 
@@ -98,20 +66,12 @@ static boolean keydown (short keycode, boolean flasync) {
 	5.0b6 dmb: added flasunc parameter
 	*/
 
-	#ifdef MACVERSION
 #		pragma unused (flasync)
 		KeyMap keys;
 		
 		GetKeys (keys);
 		
 		return (BitTst (&keys, keycode) != 0);
-	#endif
-	#ifdef WIN95VERSION
-		if (flasync)
-			return ((GetAsyncKeyState (keycode) & 0x8000) == 0x8000);
-		else
-			return ((GetKeyState (keycode) & 0x8000) == 0x8000);
-	#endif
 	} /*keydown*/
 	
 
@@ -126,7 +86,6 @@ static boolean flescapepending = false;
 
 
 boolean iscmdperiodevent (long eventmessage, long eventwhat, long eventmodifiers) {
-#ifdef MACVERSION
 	/*
 	Date: Tue, 17 Sep 1996 14:34:15 +0200
 	To: FRONTIER-TALK@DMC.COM
@@ -197,25 +156,7 @@ boolean iscmdperiodevent (long eventmessage, long eventwhat, long eventmodifiers
 		}
 	
 	return (result);
-#endif
 
-#ifdef WIN95VERSION
-	/* For the Windows version, let us look for ALT-. and CTRL-C */
-	if ((eventwhat == 'C') || (eventwhat == 'c')) {
-		if (GetAsyncKeyState(VK_CONTROL) & 0x8000) {
-			return (true);
-			}
-		}
-
-	if ((eventwhat == '.') || (eventwhat == VK_DECIMAL)) {
-		if (GetAsyncKeyState(VK_MENU) & 0x8000) {
-			return (true);
-			}
-		}
-
-	return (false);
-
-#endif
 	} /*iscmdperiodevent*/
 
 
@@ -270,7 +211,6 @@ static void kbsetstatus (long eventmessage, long eventwhat, long eventmodifiers,
 	short keycode;
 	tykeystrokerecord kbcurrent;
 	
-#ifdef MACVERSION
 	kbcurrent.flshiftkey = (eventmodifiers & shiftKey) != 0;
 	
 	kbcurrent.flcmdkey = (eventmodifiers & cmdKey) != 0;
@@ -280,20 +220,8 @@ static void kbsetstatus (long eventmessage, long eventwhat, long eventmodifiers,
 	kbcurrent.flalphalock = (eventmodifiers & alphaLock) != 0;
 	
 	kbcurrent.flcontrolkey = (eventmodifiers & controlKey) != 0;
-#endif
 	
 
-#ifdef WIN95VERSION
-	kbcurrent.flshiftkey = keydown(keycodeshift, false);
-	
-	kbcurrent.flcmdkey = keydown(keycodecommand, false);
-	
-	kbcurrent.floptionkey = keydown(keycodeoption, false);
-	
-	kbcurrent.flalphalock = (GetKeyState (VK_CAPITAL) & 0x0001);  /*Use toggle state*/
-	
-	kbcurrent.flcontrolkey = keydown(keycodecontrol, false);
-#endif
 	
 
 	ct = 0;
@@ -312,7 +240,6 @@ static void kbsetstatus (long eventmessage, long eventwhat, long eventmodifiers,
 	
 	kbcurrent.ctmodifiers = ct;	
 	
-#ifdef MACVERSION
 	if (eventwhat == mouseDown) {
 		
 		kbcurrent.chkb = chnul;
@@ -355,42 +282,7 @@ static void kbsetstatus (long eventmessage, long eventwhat, long eventmodifiers,
 			if ((hkchr = GetResource ('KCHR', 0)) != nil)
 				kbcurrent.chkb = KeyTranslate (*hkchr, kbcurrent.keycode, &state) & 0x000000ff;
 			};
-#endif
 
-#ifdef WIN95VERSION
-	if ((eventmessage == WM_LBUTTONDOWN) || (eventmessage == WM_RBUTTONDOWN)) {
-		
-		kbcurrent.chkb = chnul;
-		
-		kbcurrent.keycode = 0;
-		
-		kbcurrent.flautokey = false;
-		
-		kbcurrent.keydirection = nodirection;
-		}
-	else {
-		
-		kbcurrent.chkb = eventmessage;
-		
-		kbcurrent.flautokey = ((eventmodifiers & 0x40000000) == 0x40000000);
-		
-		kbcurrent.keycode = keycode = (eventmodifiers & 0x01FF0000) >> 16;
-	    
-		kbcurrent.keydirection = keystroketodirection (kbcurrent.chkb);
-
-		if (keycode == keycodeenter)
-			kbcurrent.chkb = chenter;
-		
-//		if ((kbcurrent.flcmdkey) && iscmdperiodevent (eventmessage, eventwhat, eventmodifiers)) { /*dmb 4.1b12*/
-//		
-//			kbcurrent.chkb = '.';
-//			
-//			kbcurrent.flshiftkey = false; /*dmb 4.1.1b1: prevent shellfilterfunctionkey menu mapping*/
-//			
-//			kbcurrent.ctmodifiers--;
-//			}
-
-#endif
 		
 		kbcurrent.flkeypad = /*true if it is a keystroke from the numeric keypad*/
 			
@@ -460,13 +352,8 @@ boolean keyboardescape (void) {
 	*/
 	
 	register unsigned long tc;
-#ifdef MACVERSION
 	tykeystrokerecord kbcurrent;
 	EventRecord ev;
-#endif
-#ifdef WIN95VERSION
-	MSG msg;
-#endif
 
 	static unsigned long lastcheck = 0;
 	
@@ -480,7 +367,6 @@ boolean keyboardescape (void) {
 	
 	lastcheck = tc; /*remember for next time*/
 
-#ifdef MACVERSION
 	if (EventAvail (keyDownMask, &ev)) {
 		
 		kbsetstatus (ev.message, ev.what, ev.modifiers, &kbcurrent);
@@ -494,18 +380,6 @@ boolean keyboardescape (void) {
 			return (true);
 			}
 		}
-#endif
-#ifdef WIN95VERSION
-	if (PeekMessage(&msg, NULL, WM_KEYDOWN, WM_KEYDOWN, PM_NOREMOVE)) {
-		if ((msg.wParam == VK_ESCAPE) || iscmdperiodevent (msg.message, msg.wParam, 0)) {
-			PeekMessage(&msg, NULL, WM_KEYDOWN, WM_KEYDOWN, PM_REMOVE); /*get rid of command*/
-			
-			keyboardsetescape (); /*multimedia!*/
-			
-			return (true);
-			}
-		}
-#endif
 	
 	/*motorsound ();*/
 	
@@ -590,17 +464,10 @@ void keyboardpeek (tykeystrokerecord *kbrecord) {
 
 short getkeyboardstartrepeattime (void) {
 
-	#ifdef MACVERSION
 	
 		return (LMGetKeyThresh ());
 	
-	#endif
 	
-	#ifdef WIN95VERSION
-	
-		return (20);	// dmb to rab: what should this be?
-	
-	#endif
 	} /*getkeyboardstartrepeattime*/
 
 

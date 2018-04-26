@@ -512,13 +512,8 @@ void opsetdisplaydefaults (hdloutlinerecord ho) {
 
 		(**ho).lineindent = (15L * scaleMult) / scaleDiv;
 		
-		#ifdef WIN95VERSION // can't print icons
-			(**ho).iconheight = 0;
-			(**ho).iconwidth = 0;
-		#else
 			(**ho).iconheight = (16L * scaleMult) / scaleDiv;
 			(**ho).iconwidth = (16L * scaleMult) / scaleDiv;
-		#endif
 		}
 	else {
 		(**ho).lineindent = 15;
@@ -1908,11 +1903,9 @@ boolean opgetoutinesize (long *width, long *height) {
 	
 	*width = maxheadwidth;
 	
-	#ifdef MACVERSION
 	
 		*width = *width + 5; /*7.0b17 PBS: a little extra needed on Macs to prevent wrapping.*/
 	
-	#endif
 
 	//restore outlinerect
 	

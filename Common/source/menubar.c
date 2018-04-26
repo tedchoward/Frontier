@@ -28,10 +28,8 @@
 #include "frontier.h"
 #include "standard.h"
 
-#ifdef MACVERSION
 	#include <uisharing.h>
 	#include "langipc.h"
-#endif
 
 #include "cursor.h"
 #include "memory.h"
@@ -53,13 +51,8 @@
 id of menu at stays to right of all custom menus.  set to zero if no main 
 menu stays to the right
 */
-#ifdef MACVERSION
 	#define rightmainmenu windowsmenu
-#endif
 
-#ifdef WIN95VERSION
-	static long rightmainmenu = -2;
-#endif
 
 /*
 rules for resource numbers -- all menu ids generated here must be no greater 
@@ -68,17 +61,8 @@ a character.  Actaully, the range is further limited to 0-235; the rest are
 reserved for desk accessories. Plus, Frontier uses 128 - 133 or so. So we'll 
 us 136 - 235. For menu sharing, a different base menu id can be pass in.
 */
-#ifdef MACVERSION
 	#define defaultbasemenuid (lasthiermenu + hiermenuincrement)
-#endif
 
-#ifdef WIN95VERSION
-	/*
-	2006-02-25 aradke: on windows, the menu with the highest id can be
-		a main menu or a hierarchic (sub)menu. deal with it.
-	*/
-	#define defaultbasemenuid ((max(lastmainmenu, lasthiermenu) / hiermenuincrement) + 1)
-#endif
 
 hdlmenubarlist menubarlist = nil;
 
@@ -99,32 +83,6 @@ static hdlmenubarstack menubarglobalsstack [ctmenubarglobalsstack];
 
 
 
-#ifdef WIN95VERSION
-
-	static boolean BitTst (char *x, long n) {
-
-		x += n / 8;
-
-		return ((*x & (0x0080 >> (n % 8))) != 0);
-		} /*BitTst*/
-
-
-	static void BitSet (char *x, long n) {
-
-		x += n / 8;
-
-		*x |= (0x0080 >> (n % 8));
-		} /*BitTst*/
-
-
-	static void BitClr (char *x, long n) {
-
-		x += n / 8;
-
-		*x &= ~(0x0080 >> (n % 8));
-		} /*BitTst*/
-
-#endif
 
 
 boolean pushmenubarglobals (hdlmenubarstack hstack) {
@@ -196,17 +154,11 @@ static boolean meallocmenuid (short *id) {
 	register hdlmenubarlist hlist = menubarlist;
 	register byte *pbitmap;
 	boolean	flFound = false;
-	#ifdef MACVERSION
 		//9/1/00 Timothy Paustian
 		//got rid of nasty use of direct memory access.
 		//not allowed in carbon
-		#if TARGET_API_MAC_CARBON == 1
 		MenuBarHandle MenuList = nil;
 		MenuList = GetMenuBar();
-		#else
-		#define MenuList (*(Handle *)0xA1C)
-		#endif		
-	#endif
 
 	if (hlist == nil)
 		return (false);
@@ -221,25 +173,18 @@ static boolean meallocmenuid (short *id) {
 			
 			*id = (**hlist).basemenuid + i;
 			
-			#ifdef MACVERSION
 				if ((MenuList != nil) && (GetMenuHandle (*id) != nil)) /*2.1a6 dmb: in use by someone!*/
 					continue;
-			#endif
 			
-			#ifdef WIN95VERSION
-				*id *= 100; // 4.18.97 dmb: leave room for 99 items with their own, sequenced ids
-			#endif
 			
 			flFound = true;
 			break;
 			}
 		} /*for*/
-	#if MACVERSION && TARGET_API_MAC_CARBON
 		//Code change by Timothy Paustian Tuesday, September 5, 2000 9:27:35 PM
 		//Only dispose of in carbon
 		if(MenuList != nil)
 			DisposeMenuBar(MenuList);
-	#endif
 	return (flFound); /*all menu ids are in use*/
 	} /*meallocmenuid*/
 
@@ -248,9 +193,6 @@ static void mefreemenuid (short id) {
 	
 	register hdlmenubarlist hlist = menubarlist;
 	
-	#ifdef WIN95VERSION
-		id /= 100;
-	#endif
 
 	if ((hlist != nil) && (id > 0))
 		BitClr ((**hlist).menubitmap, id - (**hlist).basemenuid);
@@ -766,29 +708,16 @@ static boolean getmenutobuild (bigstring bsmenu, boolean flhierarchic, short *id
 
 	#ifdef flcomponent
 		THz savezone;
-		#if TARGET_API_MAC_CARBON == 1
 		savezone = LMGetApplZone();
-		#else
-		 savezone = GetZone ();
-		 #endif
 		
 		#endif
 	
-	#ifdef MACVERSION
 		flinfrontier = iscurrentapplication (langipcself);
-	#else
-		flinfrontier = true;
-	#endif
 	
 	if (flinfrontier && !flhierarchic && shelltgetmainmenu (bsmenu, hmenu, id)) {
 		
 		*flbuiltin = true;
 		
-		#ifdef WIN95VERSION
-			// about needs to be last, but resource compiler doesn't allow empty menus
-			if (*id == helpmenu)
-				deletemenuitem (*hmenu, aboutitem);
-		#endif
 	
 		return (true);
 		}
@@ -802,24 +731,16 @@ static boolean getmenutobuild (bigstring bsmenu, boolean flhierarchic, short *id
 		}
 	
 	#ifdef flcomponent
-		#if TARGET_API_MAC_CARBON == 1
 		//Code change by Timothy Paustian Monday, June 26, 2000 9:29:46 PM
 		//This code makes no sense to me.
 		LMSetApplZone(LMGetApplZone());
-		#else		
-		SetZone (ApplicationZone ());
-		#endif
 		
 	#endif
 	
 	*hmenu = Newmenu (*id, bsmenu);
 	
 	#ifdef flcomponent
-		#if TARGET_API_MAC_CARBON == 1
 		LMSetApplZone(savezone);
-		#else
-		SetZone (savezone);
-		#endif
 		
 		
 	#endif
@@ -900,9 +821,7 @@ boolean newmenubarlist (hdlmenubarlist *hlist) {
 	if (!newclearhandle (longsizeof (tymenubarlist), (Handle *) hlist))
 		return (false);
 	
-	#ifdef MACVERSION
 		assert (defaultbasemenuid + maxmenus < 236);
-	#endif
 	
 	(***hlist).basemenuid = defaultbasemenuid;
 	
@@ -1056,21 +975,6 @@ boolean mebuildmenubar (hdlmenubarstack hstack) {
 	tymenubarstackelement menuinfo;
 	boolean fl = false;
 	
-	#ifdef WIN95VERSION
-
-	hdlmenu hwindowmenu;
-	MENUITEMINFO info;
-
-	hwindowmenu = shellmenuhandle (windowsmenu);
-
-	info.cbSize = sizeof (info);
-	info.fMask = MIIM_ID;
-	
- 	GetMenuItemInfo (hwindowmenu, 0, true, &info); // get the actual popup and all of it's info
-
-	rightmainmenu = info.wID; //GetMenuItemID (hmenu, 0);
-
-	#endif
 
 	pushmenubarglobals (hstack); /*make sure menubardata, outlinedata are set up*/
 	

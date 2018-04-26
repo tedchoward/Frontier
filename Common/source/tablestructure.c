@@ -170,9 +170,7 @@ static boolean checktable (hdlhashtable htable, bigstring bs, boolean flcreate, 
 	with a matching named, and try to unpack the values
 	*/
 	
-	#ifdef MACVERSION
 		Handle hpacked;
-	#endif
 
 	register hdlhashtable *ht = hsubtable;
 	
@@ -556,9 +554,7 @@ boolean checktablestructure (boolean flcreate) {
 	register boolean fl;
 	hdlhashtable menustable;
 	
-	#ifdef MACVERSION
 		hdlhashtable macintoshtable;
-	#endif
 	
 	fl = checktable (roottable, namesystembranch, flcreate, &systemtable);
 	
@@ -579,12 +575,10 @@ boolean checktablestructure (boolean flcreate) {
 		if (checktable (systemtable, STR_menus, false, &menustable))
 			checktable (menustable, namemenubartable, false, &menubartable); /*don't auto-create*/
 		
-		#ifdef MACVERSION
 		
 		if (checktable (systemtable, namemacintoshtable, false, &macintoshtable))
 			checktable (macintoshtable, nameobjectmodeltable, false, &objectmodeltable);
 		
-		#endif
 		
 		}
 	

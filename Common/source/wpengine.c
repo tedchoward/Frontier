@@ -95,9 +95,6 @@ static pg_globals ws_globals;
 
 // static Handle hlastundodata = nil;
 
-#ifdef WIN95VERSION
-	static boolean fldestroycaret = false; /*7.0b16 PBS: global for destroying caret in main thread on Windows.*/
-#endif
 
 
 #define ctwpstack 5 /*we can remember wp contexts up to 5 levels deep*/
@@ -136,19 +133,11 @@ typedef struct tywpheader { /*format of text item header stored on disk*/
 	} tywpheader;
 #pragma options align=reset
 
-#ifdef MACVERSION
 	#define floneline_mask	0x8000 /*set if this is a single-line, false otherwise*/
 	#define flruleron_mask	0x4000 /*set if the ruler should be displayed*/
 	#define flexpandvariables_mask	0x2000 /*expand variables into text?*/
 	#define flhilitevariables_mask	0x1000 /*show visual indication of variable text?*/
-#endif
 
-#ifdef WIN95VERSION
-	#define floneline_mask	0x0080 /*set if this is a single-line, false otherwise*/
-	#define flruleron_mask	0x0040 /*set if the ruler should be displayed*/
-	#define flexpandvariables_mask	0x0020 /*expand variables into text?*/
-	#define flhilitevariables_mask	0x0010 /*show visual indication of variable text?*/
-#endif
 
 #pragma pack(2)
 typedef struct tyOLD42wpheader { /*format of text item header stored on disk*/
@@ -214,9 +203,7 @@ typedef struct tyselectinfo { /*for undo*/
 static boolean wpinserttexthandle (pg_ref, Handle, short, boolean);
 
 
-#ifdef MACVERSION
 #pragma mark === low-level ===
-#endif
 
 static PG_PASCAL (long) wpcharinfoproc (
 		paige_rec_ptr pg, style_walk_ptr style_walker,
@@ -286,9 +273,7 @@ void wpshutdown (void) {
 
 
 static void setdefaultstyles (boolean flprinting) {
-#ifdef MACVERSION
 #	pragma unused (flprinting)
-#endif
 
 	short font, size, style;
 	bigstring bsfont;
@@ -300,16 +285,7 @@ static void setdefaultstyles (boolean flprinting) {
 	pgFillBlock(ws_globals.def_font.name, FONT_SIZE * sizeof(pg_char), 0);
 	pgBlockMove (bsfont, ws_globals.def_font.name, stringsize (bsfont));
 	
-	#ifdef MACVERSION
 		ws_globals.def_style.point = (long) size << 16;     // Fixed data type
-	#endif
-	#ifdef WIN95VERSION
-		// 6.0b3: scale pointsize when printing
-		if (flprinting)
-			ws_globals.def_style.point = MulDiv(size, shellprintinfo.scaleMult, shellprintinfo.scaleDiv) << 16;
-		else
-			ws_globals.def_style.point = (long) size << 16; // Fixed data type
-	#endif
 
 	ws_globals.def_style.char_width = 0;
 	
@@ -489,9 +465,7 @@ boolean wppopdata (void) {
 	} /*wppopdata*/
 
 
-#ifdef MACVERSION
 #pragma mark === display ===
-#endif
 
 
 static shape_ref newshape (const Rect *r) {
@@ -516,25 +490,14 @@ static void wppushdraw (void) {
 		//Code change by Timothy Paustian Monday, August 21, 2000 4:31:49 PM
 		//Must pass a CGrafPtr to pushport on OS X to avoid a crash
 	
-		#ifdef MACVERSION
 
 			CGrafPtr thePort;
 
-			#if TARGET_API_MAC_CARBON == 1
 			thePort = GetWindowPort(wpwindow);
-			#else
-			thePort = (CGrafPtr)wpwindow;
-			#endif
 
 			pushport (thePort);
 
-		#endif
 
-		#ifdef WIN95VERSION
-
-			pushport (wpwindow);
-
-		#endif
 
 		
 	/*
@@ -775,18 +738,9 @@ void wpsetupwindow (void) {
 	
 	if (wpsetglobals () && wpwindow) {
 
-		#ifdef MACVERSION
-			#if TARGET_API_MAC_CARBON
 			CGrafPtr thePort = GetWindowPort(wpwindow);
 			pgInitDevice (&ws_globals, thePort, 0, &port);
-			#else
-			pgInitDevice (&ws_globals, wpwindow, 0, &port);
-			#endif
-		#endif
 	
-		#ifdef WIN95VERSION
-			pgInitDevice (&ws_globals, (generic_var) wpwindow, MEM_NULL, &port);
-		#endif
 	
 		pgSetDefaultDevice (wpbuffer, &port);
 		}
@@ -928,12 +882,7 @@ static void wpframeselection (void) {
 			
 			RectangleToRect (&bounds, NULL, &r);
 			
-			#ifdef MACVERSION
 				RectRgn (wpselectionrgn, &r);
-			#endif
-			#ifdef WIN95VERSION
-				wpselectionrgn = CreateRectRgn (r.left, r.top, r.right, r.bottom);
-			#endif
 			}
 		else {
 		
@@ -1093,24 +1042,7 @@ static pg_ref wpnewpg (Handle htext, const Rect *rclip, const Rect *rbounds, tyw
 	short draw_mode;
 	generic_var device;
 	
-	#ifdef WIN95VERSION /*PBS 7.1b41: fix large fonts bug.*/
 
-		device = (generic_var) getport ();
-
-		if (fldisplay)		
-			draw_mode = best_way;
-			
-		else {
-
-			if (device == MEM_NULL)
-				device = USE_NO_DEVICE;
-
-			draw_mode = draw_none;
-			} /*else*/
-
-	#endif
-
-	#ifdef MACVERSION /*PBS 7.1b41: old code, since there's no bug on Macs.*/
 
 		if (fldisplay) {
 	
@@ -1126,7 +1058,6 @@ static pg_ref wpnewpg (Handle htext, const Rect *rclip, const Rect *rbounds, tyw
 			draw_mode = draw_none;
 			} /*else*/
 
-	#endif
 
 
 	if ((wpflags & wponeline) != 0)
@@ -1199,9 +1130,6 @@ static boolean wpapplyhtmlstyles (Handle htext, pg_ref pg, boolean flredraw) {
 	
 	linkcolor = darkbluecolor;
 	
-	#ifdef WIN95VERSION
-		linkcolor = darkgreencolor;
-	#endif
 
 	lentext = gethandlesize (htext);
 
@@ -1452,11 +1380,6 @@ boolean wpdrawtext (Handle htext, const Rect *rclip, const Rect *rtext, tywpflag
 		
 	flprinting = (wpflags & wpprinting) != 0;
 
-	#ifdef WIN95VERSION
-
-		if (shellwindowinfo != nil)
-			flupdating = (**shellwindowinfo).drawrgn != nil;
-	#endif
 	
 	pg = wpnewpg (htext, rclip, rtext, wpflags,	!flupdating && !flprinting);
 	
@@ -1465,13 +1388,8 @@ boolean wpdrawtext (Handle htext, const Rect *rclip, const Rect *rtext, tywpflag
 	
 	if (flprinting) {
 
-		#ifdef MACVERSION
 			pgInitDevice (&ws_globals, shellprintinfo.printport, 0, &port);
-		#endif
 
-		#ifdef WIN95VERSION
-			pgInitDevice (&ws_globals, MEM_NULL, (long) shellprintinfo.printport, &port);
-		#endif
 		
 		//pgSetDefaultDevice (pg, &port);
 			
@@ -1490,22 +1408,6 @@ boolean wpdrawtext (Handle htext, const Rect *rclip, const Rect *rtext, tywpflag
 		}
 	else if (flupdating) {
 
-		#ifdef WIN95VERSION
-			pgInitDevice (&ws_globals, (generic_var) getcurrentDC (), MEM_NULL, &port);
-			port.machine_ref3 = port.machine_var; // default place to get DC
-			port.machine_var = 0; //can't GetDC from a HDC
-			
-			PG_TRY (&mem_globals)
-			{
-				pgDisplay (pg, &port, MEM_NULL, MEM_NULL, NULL, direct_copy);
-			}
-			PG_CATCH
-			{
-			}
-			PG_ENDTRY;
-			
-			pgCloseDevice (&ws_globals, &port);
-		#endif
 		}
 	
 	pgDispose (pg);
@@ -1768,32 +1670,15 @@ void wpactivate (boolean flactivate) {
 		
 		pgSetHiliteStates (wpbuffer, activate_verb, no_change_verb, TRUE);
 
-		#ifdef WIN95VERSION
-
-			fldestroycaret = false; /*7.0b16 PBS: make sure the caret doesn't get destroyed*/
-
-		#endif
 
 		}
 	else {
 		pgSetHiliteStates (wpbuffer, deactivate_verb, no_change_verb, TRUE);
 		
-		#ifdef MACVERSION
 		
 			pgSetCursorState (wpbuffer, hide_cursor);
 
-		#endif
 		
-		#ifdef WIN95VERSION
-		
-			/*
-			7.0b16 PBS: destroy caret in main thread, in wpidle.
-			On Windows, you can only destroy carets in the main thread.
-			*/
-
-			fldestroycaret = true;
-
-		#endif
 		
 		if (flisactive)
 			if (flactivate != (boolean) -1)
@@ -1807,10 +1692,6 @@ void wpactivate (boolean flactivate) {
 	
 	wppopdraw ();
 	
-	#ifdef WIN95VERSION
-	//	if (fldestroycaret)
-		//	shelldestoycaretinmainthread();
-	#endif
 	} /*wpactivate*/
 
 
@@ -1835,18 +1716,6 @@ void wpupdate (void) {
 		graf_device_ptr updateport = NULL;
 		hdlregion updatergn = nil;
 		
-		#ifdef WIN95VERSION
-		graf_device	port;
-		
-		updatergn = (**shellwindowinfo).drawrgn;
-		
-		if (updatergn != nil) {
-			pgInitDevice (&ws_globals, (generic_var) getcurrentDC (), MEM_NULL, &port);
-			port.machine_ref3 = port.machine_var; // default place to get DC
-			port.machine_var = 0; //can't GetDC from a HDC
-			updateport = &port;
-			}
-		#endif
 
 		#if flrulers
 		
@@ -1882,10 +1751,6 @@ void wpupdate (void) {
 		
 		wpframedisplay ();
 		
-		#ifdef WIN95VERSION
-			if (updatergn != nil)
-				pgCloseDevice (&ws_globals, &port);
-		#endif
 		}
 	} /*wpupdate*/
 
@@ -1930,18 +1795,13 @@ static graf_device wpprintdevice;
 
 boolean wpbeginprint (void) {
 
-	#ifdef MACVERSION
 		//Code change by Timothy Paustian Monday, June 19, 2000 2:21:51 PM
 		//Changed to Opaque call for Carbon
 		//we have trouble here. Paige expects a GrafPort, I will have to 
 		//decide how to fix this when I get to the engine.
 	return(false);
 	//	pgInitDevice (&ws_globals, shellprintinfo.printport, 0, &wpprintdevice);
-	#endif
 
-	#ifdef WIN95VERSION
-		pgInitDevice (&ws_globals, MEM_NULL, (long) shellprintinfo.printport, &wpprintdevice);
-	#endif
 	
 	if (wpdata != nil)
 		(**wpdata).printpos = 0;
@@ -1965,36 +1825,11 @@ boolean wpprint (short pagenumber) {
 	*/
 	
 	/* kw - 2005-12-05 remove this after print error correction */
-#if TARGET_API_MAC_CARBON == 1
 	return (false);
-#else
-	register hdlwprecord hwp = wpdata;
-	long nextpos = 0;
-	rectangle r;
-	
-	if (!wpsetglobals ())
-		return (false);
-	
-	RectToRectangle (&shellprintinfo.paperrect, &r);
-	
-	wpresettyping ();
-	
-	(**hwp).flprinting = true;
-	
-	nextpos = pgPrintToPage (wpbuffer, &wpprintdevice, (**hwp).printpos, &r, best_way);
-	
-	(**hwp).flprinting = false;
-	
-	(**hwp).printpos = nextpos; /*copy from local, used to avoid locking handle*/
-	
-	return (nextpos > 0);
-#endif
 	} /*wpprint*/
 
 
-#ifdef MACVERSION
 #pragma mark === read / write ===
-#endif
 
 
 static 
@@ -2035,14 +1870,8 @@ pascal void wptrackclick (hdlwprecord wp, Point pt) {
 //Code change by Timothy Paustian Wednesday, August 2, 2000 9:45:12 PM
 //I had a crash with wptrackclickDesc. I found I can get away with a proc ptr.
 #if TARGET_RT_MAC_CFM
-	#if TARGET_API_MAC_CARBON == 1
 	//we can get away with a straight proc ptr here.
 		#define wptrackclickUPP (wptrackclick)
-	#else	
-		static RoutineDescriptor wptrackclickDesc = BUILD_ROUTINE_DESCRIPTOR (uppTrackClickProcInfo, wptrackclick);
-		#define wptrackclickUPP (&wptrackclickDesc)
-
-	#endif
 #else
 
 	#define wptrackclickUPP (&wptrackclick)
@@ -2051,15 +1880,8 @@ pascal void wptrackclick (hdlwprecord wp, Point pt) {
 
 
 
-#ifdef MACVERSION
 	#include <WSE.h>
-#endif
 
-#ifdef WIN95VERSION
-	typedef void * UniversalProcPtr;
-	#define FixRound(x) (x.whole)
-	#include "WSE.h"
-#endif
 
 #define rulerheaderlen (sizeof (rulerRecord) + sizeof (rulerInfo) + 2 * sizeof (Handle))
 
@@ -2797,12 +2619,7 @@ static boolean wpinserttexthandle (pg_ref pg, Handle htext, short draw_mode, boo
 		}
 	PG_CATCH
 	{
-		#ifdef MACVERSION
 			oserror (memFullErr);
-		#endif
-		#ifdef WIN95VERSION
-			oserror (ERROR_OUTOFMEMORY);
-		#endif
 		
 		return (false);
 	}
@@ -2889,11 +2706,7 @@ hdlwprecord wpnewbuffer (Handle hpacked, const Rect *rclip, const Rect *rbounds,
 	
 	if (flinwindow)
 	{
-		#if TARGET_API_MAC_CARBON == 1
 		device = (generic_var)GetWindowPort(wpwindow);
-		#else
-		device = (generic_var) wpwindow;
-		#endif
 	}
 	
 	if (!newclearhandle (sizeof (tywprecord), &hrecord))
@@ -3058,9 +2871,7 @@ void wpdispose (void) {
 	} /*wpdispose*/
 
 
-#ifdef MACVERSION
 #pragma mark === editing ===
-#endif
 
 
 boolean wppreedit (void) {
@@ -3430,74 +3241,35 @@ boolean wpkeystroke (void) {
 	boolean flvisi = true;
 	hdlwprecord pwpdata;
 	
-	#ifdef WIN95VERSION
-		Point pt;
-	#endif
 	
 	if (!wppreedit ())
 		return (false);
 	
 	obscurecursor ();
 	
-	#ifdef WIN95VERSION
-		if (keyboardstatus.flcmdkey) {
-			
-			floptionkey = true;
-
-			keyboardstatus.flcmdkey = false;
-			}
-	#endif
 
 	switch (chkey) {
 	
 		case chhome:
-			#ifdef MACVERSION
 				caretverb = home_caret;
-			#else
-				if (floptionkey)
-					caretverb = home_caret;
-				else
-					caretverb = begin_line_caret;
-			#endif
 			break;
 		
 		case chend:
-			#ifdef MACVERSION
 				caretverb = doc_bottom_caret;
-			#else
-				if (floptionkey)
-					caretverb = doc_bottom_caret;
-				else
-					caretverb = end_line_caret;
-			#endif
 			break;
 		
 		case chpageup:
-			#ifdef WIN95VERSION
-				wpvisicursor ();
-		 		wpgetselpoint (&pt);
-			#endif
 			
 			wpscroll (down, true, 1);
 			
-			#ifdef WIN95VERSION
-		 		wpsetselpoint (pt);
-			#endif
 			
 			flinserting = flvisi = false;
 			break;
 		
 		case chpagedown:
-			#ifdef WIN95VERSION
-				wpvisicursor ();
-		 		wpgetselpoint (&pt);
-			#endif
 			
 			wpscroll (up, true, 1);
 			
-			#ifdef WIN95VERSION
-		 		wpsetselpoint (pt);
-			#endif
 			
 			flinserting = flvisi = false;
 			break;
@@ -3506,12 +3278,7 @@ boolean wpkeystroke (void) {
 			forcemotionverb = home_caret;
 			
 			if (floptionkey) {
-				#ifdef WIN95VERSION
-					wpscroll (down, false, 1);
-					flinserting = flvisi = false;
-				#else
 					caretverb = home_caret;
-				#endif
 				}
 
 			if (keyboardstatus.flcmdkey)
@@ -3522,12 +3289,7 @@ boolean wpkeystroke (void) {
 			forcemotionverb = doc_bottom_caret;
 			
 			if (floptionkey) {
-				#ifdef WIN95VERSION
-					wpscroll (up, false, 1);
-					flinserting = flvisi = false;
-				#else
 					caretverb = doc_bottom_caret;
-				#endif
 				}
 			
 			if (keyboardstatus.flcmdkey)
@@ -3856,12 +3618,7 @@ static boolean wpinserttext (byte *ptext, long ctchars) {
 		}
 		PG_CATCH
 		{
-			#ifdef MACVERSION
 				oserror (memFullErr);
-			#endif
-			#ifdef WIN95VERSION
-				oserror (ERROR_OUTOFMEMORY);
-			#endif
 		}
 		PG_ENDTRY;
 		
@@ -4542,24 +4299,13 @@ void wpidle (void) {
 		
 		pgIdle (wpbuffer);
 
-		#ifdef WIN95VERSION
-
-		if (fldestroycaret) { /*7.0b16 PBS: on Windows, caret must be destroyed in main thread.*/
-
-				fldestroycaret = false; /*Reset*/
-
-				pgSetCursorState (wpbuffer, hide_cursor); /*Call Paige to destroy the caret*/
-				} /* if*/
-		#endif
 		
 		wppopdraw ();
 		}
 	} /*wpidle*/
 
 
-#ifdef MACVERSION
 #pragma mark === formatting ===
-#endif
 
 
 boolean wpsetfont (void) {

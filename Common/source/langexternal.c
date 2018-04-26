@@ -2691,17 +2691,6 @@ boolean langexternalsurfacekey (hdlexternalvariable hv) {
 			}
 		}
 	
-	#ifdef WIN95VERSION
-		if (keyboardstatus.chkb == chbackspace) {
-			
-			if (keyboardstatus.flshiftkey) {
-			
-				tableclientsurface (hv);
-				
-				return (true);
-				}
-			}
-	#endif
 
 	return (false); /*keystroke not handled*/
 	} /*langexternalsurfacekey*/

@@ -70,7 +70,6 @@ typedef enum tylinetableitemflags {
 #define macplatform 'mac '
 #define winplatform 'win '
 
-#ifdef MACVERSION
 	#define thisplatform macplatform
 	#define diskchcomment			((byte) 0xab)	/* '«' */
 	#define diskchendcomment		((byte) 0xbb)
@@ -79,20 +78,6 @@ typedef enum tylinetableitemflags {
 	#define diskchtrademark			((byte) 0x99)
 	#define diskchnotequals			((byte) 0xad)	/* '­' */
 	#define diskchdivide			((byte) 0xf7)	/* '÷' */
-#endif
-#ifdef WIN95VERSION
-	#define thisplatform winplatform
-	#define diskchcomment			((byte) 0xc7)	/* 'Ç' */
-	#define diskchendcomment		((byte) 0xc8)	/* 'È' */
-	#define diskchopencurlyquote	((byte) 0xd2)	/* 'Ò' */
-	#define diskchclosecurlyquote	((byte) 0xd3)	/* 'Ó' */
-	#define diskchtrademark			((byte) 0xaa)	/* 'ª' */
-	#define diskchnotequals			((byte) 0xad)	/* '­' */
-	#define diskchdivide			((byte) 0xd6)	/* 'Ö' */
-	#define diskchellipses			((byte) 0xc9)	/* 'É' */
-
-	static byte bsellipses [] = "\x03...";
-#endif
 
 #define opversionnumber 2
 
@@ -109,12 +94,7 @@ typedef struct tyversion2diskheader {
 	
 	short lnumcursor; 
 	
-#ifdef MACVERSION
 	tylinespacing linespacing;
-#endif
-#ifdef WIN95VERSION
-	short linespacing;
-#endif
 	
 	short lineindent;
 	
@@ -284,17 +264,6 @@ static boolean pushdiskchar (byte ch, handlestream *deststream) {
 			ch = chdivide;
 			break;
 		
-	#ifndef MACVERSION
-		case diskchnotequals:
-			if (!writehandlestreamchar (deststream, '!'))
-				return (false);
-			
-			ch = '=';
-			break;
-		
-		case diskchellipses:
-			return (writehandlestreamstring (deststream, bsellipses));
-	#endif
 
 		default:
 			break;

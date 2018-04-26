@@ -31,7 +31,6 @@ player.c -- This file handles the QuickTime player window.
 PBS 08/08/00
 */ 
 
-#ifdef MACVERSION /*This is a Mac-only feature.*/
 
 #include "frontier.h"
 #include "standard.h"
@@ -704,4 +703,3 @@ boolean playerstart (void) {
 	return (true);
 	} /*playerstart*/
 
-#endif /*MACVERSION -- Mac-only feature*/

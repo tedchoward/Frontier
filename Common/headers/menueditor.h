@@ -73,16 +73,7 @@
 
 #define menuscriptitem 5 /*the script button*/
 
-#ifdef MACVERSION
-	#if TARGET_API_MAC_CARBON == 1
 		#define cmdkeypopupwidth 60
-	#else
-		#define cmdkeypopupwidth 50
-	#endif
-#endif
-#ifdef WIN95VERSION
-	#define cmdkeypopupwidth 60
-#endif
 
 #pragma pack(2)
 typedef struct tysavedmenuinfo { 
@@ -111,13 +102,8 @@ typedef struct tysavedmenuinfo {
 	} tysavedmenuinfo;
 #pragma options align=reset
 
-#ifdef MACVERSION
 	#define flautosmash_mask 0x8000
-#endif
 
-#ifdef WIN95VERSION
-	#define flautosmash_mask 0x0080
-#endif
 
 #pragma pack(2)
 typedef struct tyOLD42savedmenuinfo { 

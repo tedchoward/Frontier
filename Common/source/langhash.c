@@ -46,9 +46,7 @@
 #include "timedate.h"
 #include "byteorder.h"	/* 2006-04-08 aradke: endianness conversion macros */
 
-#if TARGET_API_MAC_CARBON == 1 /*PBS 03/14/02: AE OS X fix.*/
 	#include "aeutils.h" /*PBS 03/14/02: AE OS X fix.*/
-#endif
 
 #pragma pack(2)
 typedef struct tydisksymbolrecord {
@@ -96,13 +94,8 @@ typedef struct tydisktablerecord { /*new in 5.0, a header for each table*/
 
 typedef enum tylinetableitemflags {
 
-#ifdef MACVERSION
 	flxml = 0x8000
-#endif
 
-#ifdef WIN95VERSION
-	flxml = 0x0080
-#endif
 	} tylinetableitemflags;
 
 #define	maxinlinescalarsize	1023
@@ -2654,11 +2647,7 @@ static boolean hashpackvisit (bigstring bsname, hdlhashnode hnode, tyvaluerecord
 				double x = **val.data.doublevalue;
 				extended80 x80;
 				
-				#ifdef WIN95VERSION
-					convertToMacExtended (x, &x80);
-				#else
 					dtox80 (&x, &x80);
-				#endif	
 				
 				if (!hashpackdata (&lpi->s2, &x80, sizeof (x80), &rec.data.longvalue))
 					goto error;
@@ -3154,11 +3143,7 @@ boolean hashunpacktable (Handle hpackedtable, boolean flmemory, hdlhashtable hta
 				if (!hashunpackbinary (hstrings, (Handle *) &x80, ixstrings))
 					goto L1;
 				
-				#ifdef WIN95VERSION
-					convertFromMacExtended (&x, *x80);
-				#else
 					x = x80tod (*x80);
-				#endif			 
 				 
 				disposehandle ((Handle) x80);	// 1/22/97 dmb: this was a leak!
 				
@@ -3197,7 +3182,6 @@ boolean hashunpacktable (Handle hpackedtable, boolean flmemory, hdlhashtable hta
 			case listvaluetype:
 			case recordvaluetype:
 				if (rec.version < 2) {
-					#ifdef MACVERSION
 						AEDesc aelist;
 						
 						if (!hashunpackscalar (hstrings, &val, ixstrings))
@@ -3218,7 +3202,6 @@ boolean hashunpacktable (Handle hpackedtable, boolean flmemory, hdlhashtable hta
 							val.fldiskval = false;
 							}
 						
-						#if TARGET_API_MAC_CARBON == 1 /*PBS 03/14/02: AE OS X fix.*/
 							
 							{
 							DescType typecode = typeAEList;
@@ -3229,16 +3212,6 @@ boolean hashunpacktable (Handle hpackedtable, boolean flmemory, hdlhashtable hta
 							newdescwithhandle (&aelist, typecode, val.data.binaryvalue);
 							}
 						
-						#else
-								
-							if (val.valuetype == recordvaluetype)
-								aelist.descriptorType = typeAERecord;
-							else
-								aelist.descriptorType = typeAEList;
-					
-							aelist.dataHandle = val.data.binaryvalue;
-						
-						#endif
 						
 						if (!langipcconvertaelist (&aelist, &val))
 							goto L1;
@@ -3246,13 +3219,7 @@ boolean hashunpacktable (Handle hpackedtable, boolean flmemory, hdlhashtable hta
 						AEDisposeDesc (&aelist);
 						
 						exemptfromtmpstack (&val);
-					#endif
 					
-					#ifdef WIN95VERSION
-						val.valuetype = stringvaluetype;
-						
-						newheapstring ("\x15" "***unreadable data***", &val.data.stringvalue);
-					#endif
 					
 					break;
 					}
@@ -3271,7 +3238,6 @@ boolean hashunpacktable (Handle hpackedtable, boolean flmemory, hdlhashtable hta
 			case aliasvaluetype:
 
 				if (rec.version < 2) {
-					#ifdef MACVERSION
 						tyfilespec fs;
 						boolean flresolved;
 						Handle hbinary;
@@ -3299,14 +3265,7 @@ boolean hashunpacktable (Handle hpackedtable, boolean flmemory, hdlhashtable hta
 						val.data.binaryvalue = hbinary;
 						
 						break;
-					#endif
 					
-					#ifdef WIN95VERSION
-						if (!hashunpackscalar (hstrings, &val, ixstrings))
-							goto L1;
-						
-						break;
-					#endif
 					}
 				
 				if (!hashunpackbinary (hstrings, &hpacked, ixstrings))
@@ -3357,9 +3316,6 @@ boolean hashunpacktable (Handle hpackedtable, boolean flmemory, hdlhashtable hta
 				}
 				
 			case directionvaluetype:
-				#ifdef WIN95VERSION
-				val.data.dirvalue = 0;	// clear both bytes before loading low byte
-				#endif
 
 			case booleanvaluetype:
 				if (header.version < 2)

@@ -157,36 +157,11 @@ typedef struct tytreenodeblock {
 #pragma options align=reset
 
 
-#ifdef WIN95VERSION
-	
-static CRITICAL_SECTION treenodesection;
-
-static boolean treenodesectioninitialized = false;
-
-static void _entercriticaltreenodesection (void) {
-
-	if (!treenodesectioninitialized) {
-
-		InitializeCriticalSection (&treenodesection);
-
-		treenodesectioninitialized = true;
-		}
-	
-	EnterCriticalSection (&treenodesection);
-	}
-
-static void _leavecriticaltreenodesection (void) {
-
-	LeaveCriticalSection (&treenodesection);
-	}
-
-#else
 
 #define _entercriticaltreenodesection()
 
 #define _leavecriticaltreenodesection()
 
-#endif
 
 
 static hdltreenode hfirstfreetreenode = nil;

@@ -39,7 +39,6 @@
 #define safetycushionsize 0x2800 /*10K*/
 
 // TRT - 20 Mar 2005 - 10.1a2 - only used for debugging on Mac OS
-#ifdef MACVERSION
 
 	#ifdef fldebug
 
@@ -57,7 +56,6 @@
 
 	#endif
 
-#endif
 
 static Handle hsafetycushion = nil; /*a buffer to allow memory error reporting*/
 
@@ -102,13 +100,10 @@ static boolean safetycushionhook (long *ctbytesneeded) {
 
 		extrasize = strlen(filename) + 1 + sizeof(long) + sizeof(long) + sizeof(long) + (2 * (sizeof(Handle))) + 4;
 
-		#ifdef MACVERSION
-			#if TARGET_API_MAC_CARBON == 1
 			// TRT - 13 Mar 2005 - 10.1a2
 			// There is no temp memory in Carbon or OS X so make sure 
 			// we never ask for it.
 			fltemp = false;
-			#endif
 
 			if (fltemp) { /*try grabbing temp memory first*/
 				
@@ -122,20 +117,12 @@ static boolean safetycushionhook (long *ctbytesneeded) {
 					
 					// again we can't have any temp handles so this
 					// code isn't useful
-					#if TARGET_API_MAC_CARBON == 0
-					
-					++cttemphandles;
-					
-					tempzone = HandleZone (h);
-					
-					#endif
 					
 					#endif
 					
 					return (h);
 					}
 				}
-		#endif
 		
 		if (hsafetycushion == nil) { /*don't allocate new stuff w/out safety cushion*/
 			
@@ -145,15 +132,10 @@ static boolean safetycushionhook (long *ctbytesneeded) {
 		
 		flholdsafetycushion = true;
 		
-		#ifdef MACVERSION
 			h = NewHandle (ctbytes);
 
 			if (h != nil)
 				debugaddmemhandle(h, ctbytes, filename, linenumber, threadid);
-		#endif
-		#ifdef WIN95VERSION
-			h = debugfrontierAlloc (filename, linenumber, threadid, ctbytes);
-		#endif
 		
 		flholdsafetycushion = false;
 		
@@ -170,16 +152,13 @@ static Handle getnewhandle (long ctbytes, boolean fltemp) {
 	
 	register Handle h;
 
-#ifdef MACVERSION
 
 	OSErr err;
 	
-	#if TARGET_API_MAC_CARBON == 1
 	//Code change by Timothy Paustian Friday, June 9, 2000 9:39:50 PM
 	//There is no temp memory in Carbon or OS X so make sure 
 	//we never ask for it.
 	fltemp = false;
-	#endif
 
 	if (fltemp) { /*try grabbing temp memory first*/
 		h = TempNewHandle (ctbytes, &err);
@@ -190,19 +169,12 @@ static Handle getnewhandle (long ctbytes, boolean fltemp) {
 			
 			//again we can't have any temp handles so this
 			//code isn't useful
-			#if TARGET_API_MAC_CARBON == 0
-	
-			++cttemphandles;
-			
-			tempzone = HandleZone (h);
-			#endif
 			
 			#endif
 			
 			return (h);
 			}
 		}
-#endif
 	
 	if (hsafetycushion == nil) { /*don't allocate new stuff w/out safety cushion*/
 		
@@ -224,9 +196,6 @@ static Handle getnewhandle (long ctbytes, boolean fltemp) {
 static boolean resizehandle (Handle hresize, long size) {
 	
 	register Handle h = hresize;
-	#ifdef WIN95VERSION
-		Handle foo;
-	#endif
 
 	if (size > gethandlesize (h)) {
 		
@@ -239,19 +208,11 @@ static boolean resizehandle (Handle hresize, long size) {
 	
 	flholdsafetycushion = true;
 	
-	#ifdef WIN95VERSION
-		foo = SetHandleSize (h, size);
-	#else
 		SetHandleSize (h, size);
-	#endif
 
 	flholdsafetycushion = false;
 	
-	#ifdef WIN95VERSION
-		return (foo != NULL);
-	#else
 		return (MemError () == noErr);
-	#endif
 	} /*resizehandle*/
 
 
@@ -381,20 +342,12 @@ boolean validhandle (Handle h) {
 	if (h == nil)
 		return (true);
 	
-#ifdef MACVERSION
 
 	if (GetHandleSize (h) < 0) /*negative length never valid*/
 		return (false);
 	
 	return (MemError () == noErr);
-#endif
 
-#ifdef WIN95VERSION
-	if (frontierSize (h) < 0)
-		return (false);
-
-	return (true);
-#endif
 	} /*validhandle*/
 
 
@@ -445,11 +398,7 @@ void disposehandle (Handle h) {
 	
 	if (h != nil) {
 		
-	#ifdef WIN95VERSION
-		DisposeHandle (h);
-	#endif
 
-	#ifdef MACVERSION
 		#if (MEMTRACKER == 1)
 			debugremovememhandle(h);
 		#endif
@@ -457,10 +406,6 @@ void disposehandle (Handle h) {
 		#ifdef fldebug
 		//Code change by Timothy Paustian Friday, June 9, 2000 9:43:15 PM
 		//No temp memory in Carbon
-		#if TARGET_API_MAC_CARBON == 0
-		if (HandleZone (h) == tempzone)
-			--cttemphandles;
-		#endif
 		#endif
 		
 		DisposeHandle (h);
@@ -473,7 +418,6 @@ void disposehandle (Handle h) {
 			 memoryerror ();
 		
 		#endif
-	#endif		
 		}
 	} /*disposehandle*/
 
@@ -768,7 +712,6 @@ static long getidealchunksize (void) {
 	
 	4/20/93 dmb: tweaked algorith; if more than 64K is available, grab half
 	*/
-#ifdef MACVERSION		
 	register long ctgrab = MaxBlock ();
 	
 	if (ctgrab < 0x4000)
@@ -780,11 +723,7 @@ static long getidealchunksize (void) {
 			ctgrab >>= 1;
 	
 	return (ctgrab);
-#endif
 
-#ifdef WIN95VERSION
-	return (32768L);
-#endif
 
 	} /*getidealchunksize*/
 

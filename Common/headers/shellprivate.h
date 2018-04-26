@@ -200,9 +200,6 @@ extern boolean shellpushtargetglobals (void); /*shellverbs.c*/
 
 extern boolean shellinitverbs (void);
 
-#ifdef WIN95VERSION
-	extern boolean shellprocessfindmessage (FINDREPLACE *);
-#endif
 
 
 

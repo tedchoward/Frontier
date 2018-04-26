@@ -104,7 +104,6 @@ typedef struct tydisklinelayout {
 
 static boolean midcolorof (Rect r, RGBColor *rgb1, RGBColor *rgb2, RGBColor *rgbmid) {
 	
-	#ifdef MACVERSION
 		GDHandle hgd;
 		
 		*rgbmid = *rgb2;
@@ -112,15 +111,7 @@ static boolean midcolorof (Rect r, RGBColor *rgb1, RGBColor *rgb2, RGBColor *rgb
 		hgd = GetMaxDevice (&r);
 		
 		return (GetGray (hgd, rgb1, rgbmid));
-	#endif
 
-	#ifdef WIN95VERSION
-		(*rgbmid).red = ((long) (*rgb1).red + (*rgb2).red) / 2;
-		(*rgbmid).green = ((long) (*rgb1).green + (*rgb2).green) / 2;
-		(*rgbmid).blue = ((long) (*rgb1).blue + (*rgb2).blue) / 2;
-
-		return (true);
-	#endif
 	} /*midcolorof*/
 
 
@@ -277,12 +268,7 @@ static void setcomputedfields (hdltableformats hf) {
 	
 		(**hf).computedlineinfo.filenamelineheight = globalfontinfo.ascent + globalfontinfo.descent;
 		
-		#ifdef MACVERSION
 			(**hf).computedlineinfo.filenamewidth = (globalfontinfo.widMax * 31) / 2;
-		#endif
-		#ifdef WIN95VERSION
-			(**hf).computedlineinfo.filenamewidth = stringpixels (BIGSTRING ("\x02" "Wi")) * 16;
-		#endif
 
 		popstyle ();
 		}
@@ -930,13 +916,8 @@ boolean claydrawnodeicon (hdlheadrecord hnode, const Rect *iconrect, boolean fls
 	if (flselected)
 		transform = 0x4000; 
 	
-#ifdef MACVERSION
 	ploticonresource ((Rect *) iconrect, kAlignAbsoluteCenter, transform, iconnum);
-#endif
 
-#ifdef WIN95VERSION
-	ploticonresource (iconrect, 0, transform, iconnum);
-#endif
 //	opdrawheadicon (iconnum, iconrect, false);
 	
 	/*

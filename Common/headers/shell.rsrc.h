@@ -36,9 +36,6 @@
 #define preferencesfilename 5
 #define startupfilename 6
 #define nonstartupfileprompt 7
-#ifdef WIN95VERSION
-#define programversion 8
-#endif
 
 #define interfacelistnumber 130 /*misc strings that appear in UI of program*/
 
@@ -68,9 +65,6 @@
 	#define saveasitemstring 18
 	#define saveacopyitemstring 19
 	#define openolddatabasestring 20
-	#ifdef WIN95VERSION
-		#define revertitemstring 21
-	#endif
 #endif
 
 #ifdef fltrialsize

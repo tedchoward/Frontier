@@ -963,34 +963,8 @@ void memoryerror ()
 	}
 #endif
 
-#ifdef WIN95VERSION
-void recttowinrect (Rect * rIn, RECT * rOut) {
-	rOut->left = rIn->left;
-	rOut->top = rIn->top;
-	rOut->right = rIn->right;
-	rOut->bottom = rIn->bottom;
-	}
-
-void winrecttorect (RECT * rIn, Rect * rOut) {
-	rOut->left = (short)rIn->left;
-	rOut->top = (short)rIn->top;
-	rOut->right = (short)rIn->right;
-	rOut->bottom = (short)rIn->bottom;
-	}
-#endif
 
 #ifdef PASCALSTRINGVERSION
-#ifdef WIN95VERSION
-char * pwstringbaseaddress(char * bs) {
-	bs[bs[0]+1]=0;
-	return (bs+1);
-	}
-
-void pwsetstringlength(char * bs, short len) {
-	bs[0]=(char)len;
-//	bs[len+1] = 0;
-	}
-#endif
 #endif
 
 

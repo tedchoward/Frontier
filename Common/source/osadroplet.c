@@ -97,17 +97,9 @@ static OSErr OSAnewverb (OSType receiver, OSType vclass, OSType vtoken, AppleEve
 	AEDesc adr;
 	OSErr ec;
 	
-	#if TARGET_API_MAC_CARBON == 1 /*PBS 03/14/02: AE OS X fix.*/
 		
 		newdescnull (&adr, typeNull);
 	
-	#else
-	
-		adr.dataHandle = nil;
-	
-		adr.descriptorType = typeNull;
-	
-	#endif
 	
 	if (receiver != 0)
 		ec = AECreateDesc (typeApplSignature, (Ptr) &receiver, sizeof (receiver), &adr);
@@ -238,17 +230,9 @@ static Boolean dropletedit (void) {
 	if (ec != noErr)
 		return (false);	
 	
-	#if TARGET_API_MAC_CARBON == 1 /*PBS 03/14/02: AE OS X fix.*/
 	
 		newdescnull (&reply, typeNull);
 	
-	#else
-		
-		reply.descriptorType = typeNull;
-
-		reply.dataHandle = nil;
-	
-	#endif
 	
 	psn.highLongOfPSN = 0;
 	
@@ -261,17 +245,9 @@ static Boolean dropletedit (void) {
 	if (ec != noErr)
 		goto exit;	
 	
-	#if TARGET_API_MAC_CARBON == 1 /*PBS 03/14/02: AE OS X fix.*/
 	
 		newdescwithhandle (&desc, typeAlias, (Handle) halias);
 	
-	#else
-		
-		desc.descriptorType = typeAlias;
-
-		desc.dataHandle = (Handle) halias;
-	
-	#endif
 	
 	ec = AEPutParamDesc (&event, keyDirectObject, &desc); /*put alias on the event*/
 	
@@ -298,7 +274,6 @@ static Boolean dropletrun (hdlcomponentglobals hcg) {
 	
 	scriptdesc.descriptorType = 'scpt';
 	
-	#if TARGET_API_MAC_CARBON == 1 /*PBS 03/14/02: AE OS X fix.*/
 	
 		{
 		Handle h;
@@ -312,13 +287,6 @@ static Boolean dropletrun (hdlcomponentglobals hcg) {
 		if (AEGetDescDataSize (&scriptdesc) < 1)
 		}
 	
-	#else
-	
-		scriptdesc.dataHandle = getResourceAndDetach ('scpt', 128);
-	
-		if (scriptdesc.dataHandle == nil) {
-	
-	#endif
 		
 		alertuser ("\pScript resource not found.");
 		
@@ -831,11 +799,7 @@ static boolean initdropletwindow (hdlcomponentglobals hcg, boolean fl2click) {
 	//Code change by Timothy Paustian Wednesday, August 23, 2000 9:21:06 PM
 	//
 	{
-	#if TARGET_API_MAC_CARBON
 	CGrafPtr	thePort = GetWindowPort(w);
-	#else
-	GrafPtr	thePort = (GrafPtr)w;
-	#endif
 
 	SetPort (thePort);
 	}
@@ -1132,9 +1096,6 @@ boolean initdropletcomponent (void) {
 	Handle hname, hdescription, hicon;
 	Component comp;
 	
-	#if !TARGET_API_MAC_CARBON
-	RememberA5 ();
-	#endif
 	
 	desc.componentType = 'aplt';
 	

@@ -44,7 +44,6 @@
 
 
 
-#ifdef MACVERSION
 static void shellhandlecontent (Point pt) {
 	
 	register WindowPtr w = shellwindow;
@@ -181,7 +180,6 @@ void shellhandledrag (EventRecord ev, WindowPtr w) {
 		}
 	} /*shellhandledrag*/
 
-#endif
 
 void shellhandlemouseup (void) {
 	mouseup (shellevent.when, shellevent.where.h, shellevent.where.v, shellevent.what); /*call mouse.c routine to record info*/
@@ -200,13 +198,8 @@ void shellhandlemouse (void) {
 	short windowpart;
 	WindowPtr macwindow;
 	register WindowPtr w;
-#ifdef WIN95VERSION		
-	tyclickflags flags = clicknormal;
-#endif
 
-	#ifdef MACVERSION
 		Point localpt;
-	#endif
 
 	mousedown (shellevent.when, shellevent.where.h, shellevent.where.v, shellevent.what); /*call mouse.c routine to record info*/
 	
@@ -214,101 +207,7 @@ void shellhandlemouse (void) {
 
 	findmousewindow (mousept, &macwindow, &windowpart);
 
-#ifdef WIN95VERSION		
-	macwindow = (WindowPtr) shellevent.hwnd;
 
-	if (!isshellwindow (macwindow))	// 4.0b6, 2/23/96 dmb
-		return;
-	
-	if (!shellcalleventhooks (&shellevent, macwindow))
-		return;
-
-	w = macwindow;
-
-	shellpushglobals (w); /*following mouse operations assume globals are pushed*/
-	
-	if ((macwindow != getfrontwindow ())) {
-		
-		windowbringtofront (macwindow);
-		
-		if (!config.fldontconsumefrontclicks) {
-			
-			mousedoubleclickdisable (); /*click can't be part of a doubleclick*/
-			
-			goto exit; /*the mouse click is consumed by the windowbringtofront operation*/
-			}
-		}
-
-	setkeyboardstatus (shellevent.message, shellevent.what, shellevent.modifiers); /*allow callback to work with global keyboard record*/
-	
-	if (keyboardstatus.flshiftkey)
-		flags |= clickextend;
-
-	if (keyboardstatus.flcontrolkey)
-		flags |= clickdiscontiguous;
-	
-	if (keyboardstatus.floptionkey)
-		flags |= clickoption;
-	
-	if (keyboardstatus.flcmdkey)
-		flags |= clickcommand;
-	
-	if (mousestatus.fldoubleclick)
-		flags |= clickwords;
-	
-	if (pointinrect (mousept, (**shellwindowinfo).buttonsrect)) {
-		
-		shellbuttonhit (mousept);
-		
-		goto exit;
-		}
-
-	switch (shellevent.part) {
-		case HTCLIENT:
-			if (ismouseleftclick())
-				(*shellglobals.mouseroutine) (mousept, flags);
-
-			else if (ismouserightclick())
-				(*shellglobals.rmouseroutine) (mousept, flags);
-			
-			else if (ismousecenterclick())
-				(*shellglobals.cmouseroutine) (mousept, flags);
-			
-			else if (ismousewheelclick())
-				(*shellglobals.wmouseroutine) (mousept, flags);
-			break;
-
-		case HTCAPTION:
-			if (macwindow == getfrontwindow ())
-				if ((*shellglobals.titleclickroutine) (mousept)) /*click was consumed*/
-					break;
-			break;
-
-		case HTBORDER:
-		case HTBOTTOM:
-		case HTBOTTOMLEFT:
-		case HTBOTTOMRIGHT:
-		case HTGROWBOX:
-		case HTHSCROLL:
-		case HTLEFT:
-		case HTMENU:
-		case HTREDUCE:
-		case HTRIGHT:
-		case HTSYSMENU:
-		case HTTOP:
-		case HTTOPLEFT:
-		case HTTOPRIGHT:
-		case HTVSCROLL:
-		case HTZOOM:
-			break;
-
-		default:
-			break;
-		}
-
-#endif
-
-#ifdef MACVERSION	
 	switch (windowpart) { /*operations that don't require globals pushed*/
 		
 		case inDesk:
@@ -318,9 +217,6 @@ void shellhandlemouse (void) {
 			//Code change by Timothy Paustian Friday, June 16, 2000 3:07:31 PM
 			//Changed to Opaque call for Carbon
 			//not used in carbon
-			#if !TARGET_API_MAC_CARBON
-			SystemClick (&shellevent, macwindow); 
-			#endif
 
 			return;
 		
@@ -347,7 +243,6 @@ void shellhandlemouse (void) {
 	
 	shellpushglobals (w); /*following mouse operations assume globals are pushed*/
 	
-	#if TARGET_API_MAC_CARBON == 1
 	
 		/*On OS X, some operations don't require the window to come to front. PBS 7.0b53.*/
 
@@ -355,11 +250,6 @@ void shellhandlemouse (void) {
 			&& (windowpart != inGoAway) && (windowpart != inZoomOut) && (windowpart != inZoomIn)
 			&& (windowpart != inProxyIcon)) {
 	
-	#else
-	
-		if ((macwindow != getfrontwindow ()) && (windowpart != inDrag) && (windowpart != inMenuBar)) {
-	
-	#endif
 		
 		windowbringtofront (macwindow);
 		
@@ -454,16 +344,13 @@ void shellhandlemouse (void) {
 			
 			break;
 			
-		#if TARGET_API_MAC_CARBON == 1
 		
 			case inProxyIcon: /*7.0b50: proxy icons are draggable in OS X*/
 			
 				TrackWindowProxyDrag (w, mousept);
 				
 				break;
-		#endif
 		} /*switch*/
-#endif
 	
 	exit:
 	
@@ -477,7 +364,6 @@ boolean shellcheckautoscroll (Point pt, boolean flhoriz, tydirection *dir) {
 	} /*shellcheckautoscroll*/
 
 
-#if TARGET_API_MAC_CARBON == 1
 
 static pascal OSStatus mousewheelhandler (EventHandlerCallRef nextHandler, EventRef theEvent, void* userData) {
 	
@@ -518,14 +404,11 @@ static void shellinstallmousewheelhandler (void) {
 	InstallApplicationEventHandler (NewEventHandlerUPP (mousewheelhandler), 1, &myevents, 0, NULL);	
 	} /*dockmenuinstallhandler*/
 
-#endif
 
 void initmouse (void) {
 	
-	#if TARGET_API_MAC_CARBON == 1
 	
 		shellinstallmousewheelhandler (); /*7.1b24 PBS: install mouse wheel support on OS X.*/
 		
-	#endif
 	} /*initmouse*/
 

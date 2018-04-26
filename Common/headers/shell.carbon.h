@@ -35,21 +35,12 @@
 	#endif
 #endif
 
-#ifdef MACVERSION
 	#ifndef THINK_C
 		#include "carbonheaders.h"
 		#pragma once on
 		#pragma syspath_once on
 	#endif
-#endif
 
-#ifdef WIN95VERSION
-	#include <Win32Headers>
-	#define _DEBUG
-	#define _WINDOWS
-	#define _X86_
-	#define _WIN32
-#endif
 
 #undef fltrialsize
 #undef flruntime
