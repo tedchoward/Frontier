@@ -718,11 +718,6 @@ static void	ccdrawabout (void) {
 	
 	filegetprogramversion (bs);
 	
-	#ifdef fltrialsize
-	
-		insertstring (BIGSTRING ("\x06" "Trial "), bs);
-		
-	#endif
 	
 	ccdrawmainwindowtext (versionitem, normal, bs, rightjustified);
 	

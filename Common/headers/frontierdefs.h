@@ -46,7 +46,6 @@
 
 
 #undef MEMTRACKER		/* define as 1 to enable tracking of memory allocations */
-#undef fltrialsize		/* define as 1 to build trial version with expiration logic */
 #undef DATABASE_DEBUG	/* define as 1 to enable database debugging and logging code */
 
 

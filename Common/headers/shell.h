@@ -102,18 +102,6 @@ enum { /*indexes of internal errors*/
 	idwpstackfull
 	};
 
-#ifdef fltrialsize
-
-enum { /*indexes of trial errors*/
-
-	dbsizelimitstring = 1,
-	threadlimitstring,
-	expirationstring,
-	buyfrontierstring,
-	noguestdatabasesstring
-	};
-
-#endif
 
 
 /*typedefs*/
@@ -538,11 +526,6 @@ extern void shellerrormessage (bigstring); /*shell.c*/
 #endif
 
 
-#ifdef fltrialsize
-
-	extern void shelltrialerror (short);
-
-#endif
 
 
 extern boolean shellgetstring (short, bigstring);

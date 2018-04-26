@@ -2320,16 +2320,6 @@ boolean newprocessthread (tythreadmaincallback threadmain, tythreadmainparams th
 	if (!flcanusethreads)
 		return (false);
 	
-	#ifdef fltrialsize
-	
-		if (ctprocessthreads > 2) {
-		
-			shelltrialerror (threadlimitstring);
-			
-			return (false);
-			}
-	
-	#endif
 	
 	if (!newthreadglobals (&hglobals))
 		return (false);

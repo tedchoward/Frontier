@@ -55,9 +55,6 @@
 #include "menuverbs.h"
 #include "scripts.h"
 #include "process.h"
-#ifdef fltrialsize
-	#include "dbinternal.h"
-#endif
 #include "cancoon.h"
 #include "cancooninternal.h"
 #include "serialnumber.h"
@@ -655,18 +652,6 @@ static boolean loadversion2cancoonfile (dbaddress adr, hdlcancoonrecord hcancoon
 	
 	flguest = systemtable == nil;
 	
-	#ifdef fltrialsize
-
-	if (flguest) {
-		
-		(**cancoonwindowinfo).hdata = nil; /*unlink data from window to avoid crash*/
-		
-		shelltrialerror (noguestdatabasesstring);
-
-		return (false);
-		}
-
-	#endif
 	
 	if (!flguest) {
 		
@@ -728,25 +713,6 @@ static boolean loadoldcancoonfile (dbaddress adr, hdlcancoonrecord hcancoon) {
 
 #endif
 
-#ifdef fltrialsize
-	
-static boolean cctrialviolation (void) {
-
-	long eof;
-	
-	dbgeteof (&eof);
-	
-	if (eof > 7 * 0x0100000) {
-		
-		shelltrialerror (dbsizelimitstring);
-		
-		return (true);
-		}
-	
-	return (false);
-	} /*cctrialviolation*/
-
-#endif
 
 boolean ccloadfile (hdlfilenum fnum, short rnum) {
 #pragma unused(rnum)
@@ -772,17 +738,6 @@ boolean ccloadfile (hdlfilenum fnum, short rnum) {
 	if (!dbopenfile (fnum, false))
 		return (false);
 	
-	#ifdef fltrialsize
-		
-		if (cctrialviolation ()) {
-			
-			if (!flhavehost)
-				shellexitmaineventloop ();
-			
-			goto error;
-			}
-	
-	#endif
 	
 	dbgetview (cancoonview, &adr);
 	
@@ -1201,12 +1156,6 @@ boolean ccsavefile (ptrfilespec fs, hdlfilenum fnum, short rnum, boolean flsavea
 	
 	fl = true; // success!
 
-	#ifdef fltrialsize
-		
-		if (cctrialviolation ()) // just issue message
-			;
-	
-	#endif
 	
 	exit:
 

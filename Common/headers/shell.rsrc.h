@@ -67,9 +67,6 @@
 	#define openolddatabasestring 20
 #endif
 
-#ifdef fltrialsize
-	#define trialsizelistnumber 400
-#endif
 
 #define langerrorlistnumber 131 /*strings used by langerror.c, the Error Info window*/
 #define scripticonstring 1

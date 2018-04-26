@@ -147,22 +147,6 @@ void shellerrormessage (bigstring bs) {
 	} /*shellerrormessage*/
 
 
-#ifdef fltrialsize
-
-void shelltrialerror (short id) {
-
-	bigstring bs, bsbuy;
-	
-	getstringlist (trialsizelistnumber, id, bs);
-	
-	getstringlist (trialsizelistnumber, buyfrontierstring, bsbuy);
-	
-	pushstring (bsbuy, bs);
-	
-	shellerrormessage (bs);
-	} /*shelltrialerror*/
-
-#endif
 
 
 #ifdef fldebug
@@ -903,37 +887,6 @@ boolean shellstart (void) {
 	} /*shellstart*/
 
 
-#ifdef fltrialsize
-
-static boolean shellinitclock (void) {
-	
-	/*
-	this version expires Septermber 8, 1998
-	*/
-	
-	unsigned long now;
-	short day, month, year, hour, minute, second;
-	
-	now = timenow ();
-	
-	secondstodatetime (now, &day, &month, &year, &hour, &minute, &second);
-	
-	if (year > 1998)
-		return (false);
-	
-	/*
-	if (month > 9)
-		return (false);
-	
-	if (month == 9)
-		if (day > 7)
-			return (false);
-	*/
-
-	return (true);
-	} /*shellinitclock*/
-
-#endif
 
 
 /*
@@ -1048,23 +1001,6 @@ boolean shellinit (void) {
 	
 		initmouse ();
 	
-	#ifdef fltrialsize
-	
-	if (!shellinitclock ()) {
-		bigstring bs;
-		
-		getstringlist (trialsizelistnumber, expirationstring, bs);
-		
-		parsedialogstring (bs, "\x06" "1/1/99", nil, nil, nil, bs);
-
-		shellerrormessage (bs);
-
-		return (false);
-		}
-	
-	//alertdialog ("\x30" "This version of Frontier expires on July 1, 1998");
-	
-	#endif
 	
 	//#ifndef PIKE
 		openabout (true, macmemoryconfig.reserveforcode); /*show about window, do zoom -- closed by shellmaineventloop*/
