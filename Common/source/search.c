@@ -77,10 +77,8 @@ boolean textsearch (byte *ptext, long lentext, long *offset, long *lenmatch) {
 	long ixstart = *offset;
 	long ixmatch;
 
-#ifdef flregexpverbs
 	if (searchparams.flregexp)
 		return (regexptextsearch (ptext, lentext, offset, lenmatch));
-#endif
 	
 	while (true) {
 		
@@ -273,13 +271,11 @@ boolean initsearch (void) {
 	
 	setemptystring (searchparams.bsreplace);
 
-#ifdef flregexpverbs
 	
 	searchparams.hcompiledpattern = nil;
 	
 	searchparams.hovector = nil;
 
-#endif
 	
 	return (true);
 	} /*initsearch*/

@@ -430,7 +430,6 @@ boolean getsearchparams (void) {
 	
 	searchparams.floneobject = searchparams.floneobject || searchparams.flonelevel;
 
-#ifdef flregexpverbs
 
 	if (flupdateregexp) {
 		
@@ -469,7 +468,6 @@ boolean getsearchparams (void) {
 			}
 		}
 
-#endif 
 	
 	setstringsearchparam (ixsearchfor, zerostring);
 	

@@ -25,7 +25,6 @@
 
 ******************************************************************************/
 
-#ifdef flregexpverbs
 
 
 #define PCRE_STATIC
@@ -44,4 +43,3 @@ extern boolean regexpnewovector (Handle, Handle *);
 extern boolean regexptextsearch (byte *, long, long *, long *);
 
 
-#endif /*flregexpverbs*/

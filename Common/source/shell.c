@@ -1067,9 +1067,7 @@ boolean shellinit (void) {
 	
 	mysqlinitverbs (); /* 2007-04-08 gewirtz: langmysql.c */
 	
-#ifdef flregexpverbs
 	regexpinitverbs (); /* 2003-04-23 AR: langregexp.c */
-#endif
 	
 	
 	quicktimeinitverbs ();

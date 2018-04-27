@@ -28,7 +28,6 @@
 #include "frontier.h"
 #include "standard.h"
 
-#ifdef flregexpverbs
 
 #include "error.h"
 #include "memory.h"
@@ -3430,5 +3429,4 @@ boolean regexpinitverbs (void) {
 	} /*regexpinitverbs*/
 
 
-#endif /* flregexpverbs */
 
