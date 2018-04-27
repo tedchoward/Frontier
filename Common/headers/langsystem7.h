@@ -94,7 +94,6 @@ extern boolean makerecordvalue (hdltreenode, boolean, tyvaluerecord *);
 
 extern boolean langgetlistsize (const tyvaluerecord *, long *);
 
-#ifdef oplanglists
 	extern boolean langgetlistitem (const tyvaluerecord *, long, ptrstring, tyvaluerecord *);
 	
 	extern boolean langpushlistval (struct tylistrecord **, ptrstring, tyvaluerecord *);
@@ -110,9 +109,6 @@ extern boolean langgetlistsize (const tyvaluerecord *, long *);
 	extern boolean getnthlistval (struct tylistrecord ** hlist, long n, ptrstring pkey, tyvaluerecord *val);
 
 	extern boolean setnthlistval (struct tylistrecord ** hlist, long n, ptrstring pkey, tyvaluerecord *val);
-#else
-	extern boolean langgetlistitem (const tyvaluerecord *, long, OSType *, tyvaluerecord *);
-#endif
 
 extern boolean coercetolist (tyvaluerecord *, tyvaluetype);
 

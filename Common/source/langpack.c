@@ -250,16 +250,11 @@ boolean langpackvalue (tyvaluerecord val, Handle *h, hdlhashnode hnode) {
 		case passwordvaluetype:
 		case patternvaluetype:
 		case objspecvaluetype:
-	#ifndef oplanglists
-		case listvaluetype:
-		case recordvaluetype:
-	#endif
 		case binaryvaluetype:
 			fl = langpackhandle (val.data.binaryvalue, hpackedvalue);
 			
 			break;
 		
-	#ifdef oplanglists
 		case listvaluetype:
 		case recordvaluetype:
 			fl = oppacklist (val.data.listvalue, &hdata);
@@ -272,7 +267,6 @@ boolean langpackvalue (tyvaluerecord val, Handle *h, hdlhashnode hnode) {
 			disposehandle (hdata);
 
 			break;
-	#endif
 	
 	
 		case filespecvaluetype:
@@ -679,15 +673,10 @@ unpack:
 		case passwordvaluetype: 
 		case patternvaluetype:
 		case binaryvaluetype:
-	#ifndef oplanglists
-		case listvaluetype:
-		case recordvaluetype:
-	#endif
 			fl = langunpackhandle (false, &v.data.binaryvalue, h, &ixunpack);
 			
 			break;
 		
-	#ifdef oplanglists
 		case listvaluetype:
 		case recordvaluetype:
 			fl = langunpackhandle (true, &hdata, h, &ixunpack);
@@ -698,7 +687,6 @@ unpack:
 			fl = opunpacklist (hdata, &v.data.listvalue);
 			
 			break;
-	#endif
 
 		case objspecvaluetype: {
 			Handle hobjspec;

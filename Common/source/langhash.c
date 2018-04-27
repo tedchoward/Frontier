@@ -2633,16 +2633,11 @@ static boolean hashpackvisit (bigstring bsname, hdlhashnode hnode, tyvaluerecord
 		case patternvaluetype:
 		case objspecvaluetype:
 		case binaryvaluetype:
-	#ifndef oplanglists
-		case listvaluetype:
-		case recordvaluetype:
-	#endif
 			if (!hashpackscalar (&lpi->s2, hnode, &rec.data.longvalue))
 				goto error;
 				
 			break;
 		
-	#ifdef oplanglists
 		case listvaluetype:
 		case recordvaluetype:
 			if (!oppacklist (val.data.listvalue, &hpacked))
@@ -2656,7 +2651,6 @@ static boolean hashpackvisit (bigstring bsname, hdlhashnode hnode, tyvaluerecord
 			disposehandle (hpacked);
 
 			break;
-	#endif
 
 		case filespecvaluetype:
 		case aliasvaluetype:
@@ -3129,10 +3123,6 @@ boolean hashunpacktable (Handle hpackedtable, boolean flmemory, hdlhashtable hta
 			case stringvaluetype:
 			case passwordvaluetype:
 			case patternvaluetype:
-		#ifndef oplanglists
-			case listvaluetype:
-			case recordvaluetype:
-		#endif
 			case binaryvaluetype: {
 				if (!hashunpackscalar (hstrings, &val, ixstrings))
 					goto L1;
@@ -3140,7 +3130,6 @@ boolean hashunpacktable (Handle hpackedtable, boolean flmemory, hdlhashtable hta
 				break;
 				}
 			
-		#ifdef oplanglists
 			case listvaluetype:
 			case recordvaluetype:
 				if (rec.version < 2) {
@@ -3193,7 +3182,6 @@ boolean hashunpacktable (Handle hpackedtable, boolean flmemory, hdlhashtable hta
 					goto L1;
 				
 				break;
-		#endif
 
 			case filespecvaluetype:
 			case aliasvaluetype:

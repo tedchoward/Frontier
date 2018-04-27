@@ -329,15 +329,10 @@ boolean langipcpushparam (tyvaluerecord *valparam, typaramkeyword key, hdlverbre
 		case rgbvaluetype:
 		case filespecvaluetype:
 		case aliasvaluetype:
-	#ifndef oplanglists
-		case listvaluetype:
-		case recordvaluetype:
-	#endif
 			hval = (*v).data.stringvalue;
 			
 			break;
 		
-	#ifdef oplanglists
 		case listvaluetype:
 		case recordvaluetype:
 			if (!langipcconvertoplist (v, &aelist))
@@ -353,7 +348,6 @@ boolean langipcpushparam (tyvaluerecord *valparam, typaramkeyword key, hdlverbre
 			
 			break;
 	
-	#endif
 	
 		case addressvaluetype:	/*addresses need to be sent as strings for safety*/
 			getaddresspath (*v, bsval);
@@ -440,7 +434,6 @@ static boolean langipccoerceparam (AEDesc *param, tyvaluerecord *vreturned) {
 	
 	vtype = langgetvaluetype (desctype);
 
-	#ifdef oplanglists
 		
 		if (vtype == listvaluetype || vtype == recordvaluetype) {	/*only case that actually needs AEDesc record*/
 		
@@ -451,7 +444,6 @@ static boolean langipccoerceparam (AEDesc *param, tyvaluerecord *vreturned) {
 			return (fl);
 			}
 
-	#endif
 	
 		
 		copydatahandle (p, &hdata);	/*make a copy of the opaque data handle*/
@@ -528,10 +520,6 @@ static boolean langipccoerceparam (AEDesc *param, tyvaluerecord *vreturned) {
 		case rgbvaluetype:
 		case filespecvaluetype:
 		case aliasvaluetype:
-	#ifndef oplanglists
-		case listvaluetype:
-		case recordvaluetype:
-	#endif
 		case binaryvaluetype:
 			
 			fl = setheapvalue (hdata, vtype, v);	/*consumes hdata*/
@@ -681,7 +669,6 @@ boolean valuetodescriptor (tyvaluerecord *val, AEDesc *desc) {
 			return (!oserror (AECreateDesc (typeid, bspath + 1, stringlength (bspath), desc)));
 			}
 		
-	#ifdef oplanglists
 		case listvaluetype:
 		case recordvaluetype:
 			if (!langipcconvertoplist (val, desc))
@@ -692,7 +679,6 @@ boolean valuetodescriptor (tyvaluerecord *val, AEDesc *desc) {
 			setnilvalue (val);
 			
 			return (true);
-	#endif
 		
 		default:
 			fl = coercetobinary (val);
@@ -2108,10 +2094,8 @@ boolean langipcputlistitem (hdltreenode hparam1, tyvaluerecord *vreturned) {
 	if (!getlistpositionvalue (hp1, 2, &posval))
 		return (false);
 	
-	#ifdef oplanglists
 		if (posval.valuetype == stringvaluetype)
 			coercetoostype (&posval);
-	#endif
 	
 	flnextparamislast = true;
 	
@@ -2201,10 +2185,8 @@ boolean langipcgetlistitem (hdltreenode hparam1, tyvaluerecord *vreturned) {
 	if (!getlistpositionvalue (hp1, 2, &posval))
 		return (false);
 	
-	#ifdef oplanglists
 		if (posval.valuetype == stringvaluetype)
 			coercetoostype (&posval);
-	#endif
 	
 	flnextparamislast = true;
 	

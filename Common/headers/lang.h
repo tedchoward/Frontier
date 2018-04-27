@@ -349,15 +349,9 @@ typedef union tyvaluedata {
 	
 	OSType enumvalue;
 	
-#ifdef oplanglists
 	struct tylistrecord **listvalue;
 
 	struct tylistrecord **recordvalue;
-#else
-	Handle listvalue;
-	
-	Handle recordvalue;
-#endif
 	
 	dbaddress diskvalue;	/*4.0.2b1 dmb*/
 	} tyvaluedata;

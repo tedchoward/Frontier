@@ -90,16 +90,12 @@ static boolean equaldescriptors (AEDesc *desc1, AEDesc *desc2) {
 		return (false);
 	
 	if ((t1 == typeAERecord) || (t1 == typeAEList)) {
-		#ifdef oplanglists
 			tyvaluerecord v1, v2, vequal;
 			
 			if (!langipcconvertaelist (d1, &v1) || !langipcconvertaelist (d2, &v2))
 				return (false);
 			
 			return (EQvalue (v1, v2, &vequal) && vequal.data.flvalue);
-		#else
-			return (comparelists (d1, d2, EQop));
-		#endif
 		}
 	else
 	

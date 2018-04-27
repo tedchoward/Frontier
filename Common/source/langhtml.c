@@ -2532,7 +2532,6 @@ boolean parseargsverb (hdltreenode hparam1, tyvaluerecord *vreturned) {
 	to not contain "=" signs.
 	*/
 
-	#ifdef oplanglists
 		Handle htext, hreturnedtext = nil, hfieldname, hfieldvalue;
 		hdllistrecord list = nil;
 		short fieldnum = 1;
@@ -2601,76 +2600,6 @@ boolean parseargsverb (hdltreenode hparam1, tyvaluerecord *vreturned) {
 
 			return (false);
 			}
-	#else
-		Handle htext, hreturnedtext = nil, hfieldname, hfieldvalue;
-		AEDescList list = {typeNull, nil};
-		short fieldnum = 1, ixlist = 1;
-
-		flnextparamislast = true;
-		
-		if (!getexempttextvalue (hparam1, 1, &htext))
-			return (false);
-		
-		if (!IACnewlist (&list))
-			goto error;
-		
-		while (true) {
-			
-			if (!nthfieldhandle (htext, '&', fieldnum++, &hreturnedtext))
-				break;
-			
-			if (gethandlesize (hreturnedtext) == 0) { //ran out of fields
-				
-				disposehandle (hreturnedtext);
-				
-				break;
-				}
-			
-			if (!nthfieldhandle (hreturnedtext, '=', 1, &hfieldname))
-				goto error;
-			
-			decodehandle (hfieldname);
-			
-			if (!IACpushtextitem (&list, hfieldname, ixlist++))
-				goto error;
-			
-			if (!nthfieldhandle (hreturnedtext, '=', 2, &hfieldvalue))
-				goto error;
-			
-			decodehandle (hfieldvalue);
-			
-			if (!IACpushtextitem (&list, hfieldvalue, ixlist++))
-				goto error;
-			
-			disposehandle (hreturnedtext);
-			}
-		
-		disposehandle (htext);
-		
-		
-			{
-			Handle h;
-			
-			copydatahandle (&list, &h);
-			
-			return (setheapvalue (h, listvaluetype, vreturned));			
-			}
-		
-		
-		error: {
-		
-			disposehandle (hreturnedtext);
-			
-			disposehandle (htext);
-			
-			AEDisposeDesc (&list); // 5.0d12 dmb
-
-			if (!fllangerror)
-				oserror (IACglobals.errorcode);
-
-			return (false);
-			}
-	#endif
 	} /*parseargsverb*/
 
 

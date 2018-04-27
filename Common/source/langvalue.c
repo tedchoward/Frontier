@@ -887,10 +887,6 @@ boolean copyvaluerecord (tyvaluerecord v, tyvaluerecord *vreturned) {
 		case aliasvaluetype:
 		case doublevaluetype:
 		case binaryvaluetype:
-	#ifndef oplanglists
-		case listvaluetype:
-		case recordvaluetype:
-	#endif
 			initvalue (vreturned, novaluetype);
 			
 				
@@ -911,7 +907,6 @@ boolean copyvaluerecord (tyvaluerecord v, tyvaluerecord *vreturned) {
 
 			return (setheapvalue (x, v.valuetype, vreturned));
 		
-	#ifdef oplanglists
 		case listvaluetype:
 		case recordvaluetype:
 			initvalue (vreturned, v.valuetype);
@@ -920,7 +915,6 @@ boolean copyvaluerecord (tyvaluerecord v, tyvaluerecord *vreturned) {
 				return (false);
 			
 			return (setheapvalue ((Handle) hlist, v.valuetype, vreturned));
-	#endif
 
 		case codevaluetype:
 		case externalvaluetype:
@@ -980,10 +974,6 @@ void disposevaluerecord (tyvaluerecord val, boolean fldisk)
 		case aliasvaluetype:
 		case doublevaluetype:
 		case binaryvaluetype:
-	#ifndef oplanglists
-		case listvaluetype:
-		case recordvaluetype:
-	#endif
 			if (val.fldiskval) { /*4.0.2b1 dmb: see langhash comments for details*/
 			
 				if (fldisk) {
@@ -1002,7 +992,6 @@ void disposevaluerecord (tyvaluerecord val, boolean fldisk)
 			
 			break;
 		
-	#ifdef oplanglists
 		case listvaluetype:
 		case recordvaluetype:
 			exemptfromtmpstack (&val);
@@ -1010,7 +999,6 @@ void disposevaluerecord (tyvaluerecord val, boolean fldisk)
 			opdisposelist (val.data.listvalue);
 			
 			break;
-	#endif
 
 		case codevaluetype:
 			exemptfromtmpstack (&val);
@@ -1095,22 +1083,14 @@ void disposevalues (tyvaluerecord *val1, tyvaluerecord *val2) {
 		
 		if ((*v1).fltmpstack) { //isgarbagetype ((*v1).valuetype)) {
 			
-		#ifdef oplanglists
 			disposevaluerecord (*v1, true);
-		#else
-			releaseheaptmp ((Handle) (*v1).data.stringvalue);
-		#endif
 			}
 	
 	if (v2 != nil)
 		
 		if ((*v2).fltmpstack) { //isgarbagetype ((*v2).valuetype)) {
 
-		#ifdef oplanglists
 			disposevaluerecord (*v2, true);
-		#else
-			releaseheaptmp ((Handle) (*v2).data.stringvalue);
-		#endif
 			}
 	
 	} /*disposevalues*/
@@ -3351,10 +3331,6 @@ boolean coercetobinary (tyvaluerecord *val) {
 			
 		#endif
 		
-		#ifndef oplanglists
-			case listvaluetype:
-			case recordvaluetype:
-		#endif
 		case stringvaluetype:
 		case passwordvaluetype:
 		case rectvaluetype:
@@ -3364,7 +3340,6 @@ boolean coercetobinary (tyvaluerecord *val) {
 		case aliasvaluetype:
 			break;
 		
-		#ifdef oplanglists
 			case listvaluetype:
 			case recordvaluetype: {
 				Handle x;
@@ -3374,7 +3349,6 @@ boolean coercetobinary (tyvaluerecord *val) {
 				
 				return (setheapvalue (x, binaryvaluetype, v));
 				}
-		#endif
 		
 		case objspecvaluetype:
 			if ((*v).data.objspecvalue == nil) { /*null spec; special case*/
@@ -7302,7 +7276,6 @@ static boolean namefunc (hdltreenode hparam1, tyvaluerecord *vreturned) {
 			if (valarray.valuetype != recordvaluetype)
 				goto exit;
 			
-			#ifdef oplanglists
 				switch (valindex.valuetype) {
 					
 					case ostypevaluetype:
@@ -7324,23 +7297,6 @@ static boolean namefunc (hdltreenode hparam1, tyvaluerecord *vreturned) {
 						
 						break;
 					}
-			#else
-				if (valindex.valuetype == ostypevaluetype)
-					key = valindex.data.ostypevalue;
-				
-				else {
-					
-					if (!coercetolong (&valindex))
-						goto exit;
-					
-					if (!langgetlistitem (&valarray, valindex.data.longvalue, &key, &valitem))
-						goto exit;
-					
-					disposevaluerecord (valitem, true);
-					}
-				
-				ostypetostring (key, bsname);
-			#endif
 			}
 		}
 	
