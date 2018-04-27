@@ -472,7 +472,6 @@ static boolean tableassignverb (hdltreenode hparam1, tyvaluerecord *v) {
 	} /*tableassignverb*/
 
 
-#ifdef MACVERSION
 
 static boolean tablepacktableverb (hdltreenode hparam1, tyvaluerecord *v) {
 	
@@ -511,7 +510,6 @@ static boolean tablepacktableverb (hdltreenode hparam1, tyvaluerecord *v) {
 	return (true);
 	} /*tablepacktableverb*/
 
-#endif
 
 static boolean tableemptytableverb (hdltreenode hparam1, tyvaluerecord *v) {
 	
@@ -701,10 +699,8 @@ static boolean tablefunctionvalue (short token, hdltreenode hparam1, tyvaluereco
 		case assignfunc:
 			return (tableassignverb (hparam1, v));
 			
-		#ifdef MACVERSION
 		case packtablefunc:
 			return (tablepacktableverb (hparam1, v));
-		#endif
 
 		case emptytablefunc:
 			return (tableemptytableverb (hparam1, v));

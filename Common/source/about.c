@@ -69,15 +69,9 @@ Not too big, kind of sexy, and certainly better than nothing!
 #include "launch.h"
 
 
-#ifdef MACVERSION
 	#define idfrontiericon	128
-#endif
 
 
-#ifdef WIN95VERSION
-	#include "Winland.h"
-	#define idfrontiericon	IDB_FRONTIER_BITMAP
-#endif
 
 
 static long aboutopenticks; /*so we can tell how long it's been up*/
@@ -182,12 +176,7 @@ static byte * aboutstrings [] = {
 	
 	BIGSTRING ("\x11" "Current Thread:  "),
 	
-	#ifdef MACVERSION
 		BIGSTRING ("\x13" "Available Memory:  "),
-	#endif
-	#ifdef WIN95VERSION
-		BIGSTRING ("\x14" "Handles Allocated:  "),
-	#endif
 	
 	BIGSTRING (""),
 	
@@ -277,7 +266,6 @@ static void ccdrawfrontiericon (Rect rcicn, boolean flpressed) {
 	// 7.0b53 PBS: draw an OS X style icon
 	//
 		
-	#ifdef MACVERSION
 
 		IconRef iconref;
 		tyfilespec programfspec;
@@ -300,7 +288,6 @@ static void ccdrawfrontiericon (Rect rcicn, boolean flpressed) {
 				return;
 			} // if
 
-	#endif // MACVERSION
 	
 	ploticonresource ( &rcicn, kAlignAbsoluteCenter, flpressed ? kTransformSelected : 0, idfrontiericon );
 	
@@ -448,22 +435,6 @@ static short ccgetneededheight (boolean flbigwindow) {
 	} /*ccgetneededheight*/
 
 
-#if 0
-
-static boolean ccfindagentvisit (bigstring bsname, hdlhashnode hnode, tyvaluerecord val, ptrvoid refcon) {
-	
-	hdltreenode hcode;
-	
-	if (!langexternalvaltocode (val, &hcode)) /*not a scipt, or no code*/
-		return (false);
-	
-	if (hcode == (**cancoonglobals).hprimaryagent)
-		return (true);
-	
-	return (false);
-	} /*ccfindagentvisit*/
-
-#endif
 
 
 static void ccdrawagentpopup (void) {
@@ -500,17 +471,6 @@ static void ccdrawagentpopup (void) {
 	} /*ccdrawagentpopup*/
 
 
-#if 0
-
-static void cceraseagentpopup (void) {
-	
-	Rect r;
-	
-	if (ccgetagentpopuprect (&r))
-		eraserect (r);
-	} /*cceraseagentpopup*/
-
-#endif
 
 
 static void ccgetmsgrect (Rect *rmsg) {
@@ -680,20 +640,12 @@ static void ccupdatestatistics (boolean flbitmap) {
 	
 	if (aboutstatsshowing ()) {
 	
-	#ifdef WIN95VERSION
-		extern long handlecounter;
-		
-		numbertostring (handlecounter, bs);
 
-	#endif
-
-	#ifdef MACVERSION
 		long freemem = FreeMem () / 1024;
 		
 		numbertostring (freemem, bs);
 		
 		pushchar ('K', bs);
-	#endif
 		
 		ccdrawstatistic (memoryitem, bs, flbitmap);
 		
@@ -731,15 +683,6 @@ static void	ccdrawabout (void) {
 	
 	/*draw the icon*/ {
 		
-		#ifdef WIN95VERSION
-			short tmfont;
-
-			fontgetnumber (BIGSTRING ("\x05" "Arial"), &tmfont);
-
-			if (tmfont != 0)
-				setglobalfontsizestyle (tmfont, 9, bold);
-			else
-		#endif
 		
 		setglobalfontsizestyle (geneva, 9, bold);
 		
@@ -751,10 +694,6 @@ static void	ccdrawabout (void) {
 		
 		pendrawstring (aboutstrings [frontieritem]);
 		
-		#ifdef WIN95VERSION
-			if (tmfont != 0)
-				setglobalfontsizestyle (geneva, 9, bold);
-		#endif
 		
 
 		//rabout.left += abouticonsize; /*2005-01-12 aradke*/
@@ -772,16 +711,9 @@ static void	ccdrawabout (void) {
 	
 	ccdrawurlitem (false);
 	
-	#if __powerc
-	
-	//	ccdrawtextitem (isaitem, "\pPowerPC", normal);
-		parsedialogstring (aboutstrings [isaitem], BIGSTRING ("\x07" "PowerPC"), nil, nil, nil, bs);
-	
-	#else
 	
 		parsedialogstring (aboutstrings [isaitem], BIGSTRING ("\x05" "680x0"), nil, nil, nil, bs);
 	
-	#endif
 	
 //	ccdrawmainwindowtext (isaitem, normal, bs, leftjustified);
 	
@@ -791,11 +723,6 @@ static void	ccdrawabout (void) {
 	
 	filegetprogramversion (bs);
 	
-	#ifdef fltrialsize
-	
-		insertstring (BIGSTRING ("\x06" "Trial "), bs);
-		
-	#endif
 	
 	ccdrawmainwindowtext (versionitem, normal, bs, rightjustified);
 	
@@ -876,11 +803,6 @@ boolean aboutsetthreadstring (hdlprocessthread hp, boolean flin) {
 
 boolean aboutsetmiscstring (bigstring bsmisc) {
 	
-	#ifdef WIN95VERSION
-	extern 	DWORD ixthreadglobalsgrabcount;			// Tls index of counter for nest globals grabbing
-
-	long grabcount = (long) TlsGetValue (ixthreadglobalsgrabcount);
-	#endif
 
 //	register hdlcancoonrecord hc = cancoonglobals;
 //	hdlwindowinfo hinfo;
@@ -890,19 +812,12 @@ boolean aboutsetmiscstring (bigstring bsmisc) {
 //	if (!findaboutwindow (&hinfo) || !shellpushglobals ((**hinfo).macwindow))
 //		return (false);
 	
-	#ifdef WIN95VERSION
-	if (grabcount > 0)
-	#endif
 	if (aboutport != nil && flhavemiscrect) {
 		//Code change by Timothy Paustian Monday, August 21, 2000 4:17:36 PM
 		//We cannot just pass a window or dialog ptr to pushport. It's doing
 		//an implicit cast. This will not work on OS X
 		CGrafPtr	thePort;
-		#if TARGET_API_MAC_CARBON == 1
 		thePort = GetWindowPort((WindowRef) aboutport);
-		#else
-		thePort = (CGrafPtr)aboutport;		
-		#endif
 		pushport(thePort);
 			
 			pushclip (miscinforect);
@@ -1023,11 +938,7 @@ static void aboutupdate (void) {
 	
 	displayedaboutdata = aboutdata;
 
-	#if TARGET_API_MAC_CARBON
 		aboutport = GetWindowPort(aboutwindow);
-	#else
-		aboutport = (CGrafPtr)aboutwindow;	
-	#endif
 	
 	flhavemiscrect = false;
 
@@ -1049,7 +960,6 @@ static void aboutupdate (void) {
 		
 		insetrect (&r, -1, -1);
 		
-		#if TARGET_API_MAC_CARBON == 1
 			
 			insetrect (&r, 0, -3);
 			
@@ -1057,20 +967,6 @@ static void aboutupdate (void) {
 		
 			DrawThemeSeparator (&r, kThemeStateActive);
 		
-		#else
-
-		//	grayframerect (r);
-			movepento (r.left, r.top);
-			
-			pushpen ();
-			
-			setgraypen ();
-			
-			pendrawline (r.right, r.top);
-			
-			poppen ();
-
-		#endif
 		
 		flhavemiscrect = ccgettextitemrect (miscinfoitem, &miscinforect);
 		}
@@ -1354,133 +1250,6 @@ static boolean aboutkeystroke (void) {
 	} /*aboutkeystroke*/
 
 
-#ifndef version42orgreater
-
-static void drawtextitem (WindowPtr w, short item, short font, short size, short style) {
-	
-	Rect ritem;
-	bigstring bsitem;
-	
-	getdialogtext ((DialogPtr) w, item, bsitem);
-	
-	dialoggetobjectrect ((DialogPtr) w, item, &ritem);
-	
-	edittextbox (bsitem, ritem, font, size, style);
-	} /*drawtextitem*/
-
-
-static boolean runurlscript () {
-
-	bigstring bsurl;
-	bigstring bsscript;
-	//this is a problem. aboutwindow is a window
-	getdialogtext ((DialogPtr) aboutwindow, urlitem, bsurl);
-	
-	if (!getsystemtablescript (idopenurlscript, bsscript))
-		return (false);
-	
-	parsedialogstring (bsscript, bsurl, nil, nil, nil, bsscript);
-	
-	return (processrunstring (bsscript));
-	} /*runurlscript*/
-
-
-static void drawurlitem (boolean flpressed) {
-	
-	RGBColor rgb = {0, 0, 0};
-	
-	if (flpressed)
-		rgb.red = 0xA000;	
-	else
-		rgb.blue = 0xA000;
-	
-	pushforecolor (&rgb);
-	
-	drawtextitem (aboutwindow, urlitem, geneva, 9, underline);
-	
-	popforecolor ();
-	} /*drawurlitem*/
-
-
-#define aboutresnumber 128 /*the id of the various "about" resources*/
-
-static void drawabout (WindowPtr w, boolean flliveurl) { 
-
-	/*
-	10/18/91 DW: color!
-	
-	10/18/91 DW: added PICT #128 to shell.¹.rsrc.
-	
-	12/19/91 dmb: use version resource instead of buildinfo routine
-	*/
-	
-	/*draw the icon*/ {
-		
-		Rect rcicn;
-		
-		dialoggetobjectrect (w, iconitem, &rcicn);
-		
-		ploticon (&rcicn, aboutresnumber);
-		}
-	
-	drawtextitem (w, userlanditem, systemFont, 12, 0);
-	
-	drawtextitem (w, sloganitem, helv, 9, 0);
-	
-	drawtextitem (w, copyrightitem, helv, 9, 0);
-	
-	if (flliveurl)
-		drawurlitem (false);
-	else
-		drawtextitem (w, urlitem, helv, 9, 0);
-	
-	#if __powerc
-	
-		drawtextitem (w, nativeitem, helv, 9, 0);
-	
-	#else
-	
-		drawtextitem (w, emulateditem, helv, 9, 0);
-	
-	#endif
-	
-	/*draw the version string*/ {
-	
-		Rect ritem;
-		
-		bigstring bsbuildinfo;
-		
-		filegetprogramversion (bsbuildinfo);
-		
-		setfontsizestyle (geneva, 9, normal);
-		
-		dialoggetobjectrect (w, versionitem, &ritem);
-		
-		movepento (ritem.right - stringpixels (bsbuildinfo), ritem.bottom - 6);
-	
-		pendrawstring (bsbuildinfo);
-		}
-	} /*drawabout*/
-
-
-static void updateabout (WindowPtr w, boolean flliveurl) {
-	
-	shellupdatenow (w);
-	} /*updateabout*/
-
-
-static boolean abouteventhook (EventRecord *ev, WindowPtr w) {
-	
-	if (w != aboutwindow) /*don't hook if not our dialog*/
-		return (true);
-	
-	if ((*ev).what == updateEvt)
-		updateabout (w, false);
-	
-	return (false); /*don't process this event any further*/
-	} /*abouteventhook*/
-
-#endif
 
 
 static boolean aboutsave (ptrfilespec fs, hdlfilenum fnum, short rnum, boolean flsaveas, boolean flrunnable) {
@@ -1636,11 +1405,9 @@ static boolean newaboutwindow (boolean flbootsplash) {
 		return (false);
 		}
 	
-	#if TARGET_API_MAC_CARBON == 1
 	
 		SetThemeWindowBackground (w, kThemeBrushModelessDialogBackgroundActive, false);
 	
-	#endif
 	
 	getwindowinfo (w, &hw);
 	
@@ -1788,12 +1555,10 @@ boolean openabout (boolean flzoom, long ctreservebytes) {
 	
 	hdlwindowinfo hinfo;
 	
-#ifdef MACVERSION
 	Ptr ptemp = nil;
 	
 	if (ctreservebytes > 0)
 		ptemp = NewPtr (ctreservebytes); /*force about window to load high*/
-#endif
 
 	aboutstart ();
 	
@@ -1808,14 +1573,10 @@ boolean openabout (boolean flzoom, long ctreservebytes) {
 		//Code change by Timothy Paustian 10/5/00
 		//We need to flush the about window to the screen
 		//safe because this routine only gets call during init. 
-		#if TARGET_API_MAC_CARBON == 1
 		QDFlushPortBuffer(GetWindowPort((**hinfo).macwindow), nil);
-		#endif
 	}
-#ifdef MACVERSION
 	if (ptemp != nil)
 		DisposePtr (ptemp); /*restore heap space for remaining code segments*/
-#endif
 	
 	aboutopenticks = gettickcount ();
 	

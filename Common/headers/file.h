@@ -37,7 +37,6 @@
 
 
 //universal error codes
-#ifdef MACVERSION
 #define errorVolume					nsvErr
 #define errorParam					paramErr
 #define errorFileNotFound			fnfErr
@@ -46,25 +45,12 @@
 #ifndef __NAVIGATION__
 #include <Navigation.h>
 #endif
-#endif
-
-#ifdef WIN95VERSION
-#define errorVolume					ERROR_PATH_NOT_FOUND
-#define errorParam					ERROR_INVALID_PARAMETER
-#define errorFileNotFound			ERROR_FILE_NOT_FOUND
-#define errorDirNotFound			ERROR_PATH_NOT_FOUND
-#define errorNone					NO_ERROR
-#endif
 
 
 
-#ifdef MACVERSION
+
 	#define chpathseparator ':'
-#endif
 
-#ifdef WIN95VERSION
-	#define chpathseparator '\\'
-#endif
 
 	
 /*selectors for sfdialog*/
@@ -190,17 +176,6 @@ extern boolean flsupportslargevolumes; /*6.1b15 AR: fileverbs.c*/
 
 /*prototypes*/
 
-#ifdef WIN95VERSION
-
-	typedef int (WINAPI * tyGetDiskFreeSpaceEx) (unsigned short *, ULARGE_INTEGER *, ULARGE_INTEGER *, ULARGE_INTEGER *);
-
-	extern tyGetDiskFreeSpaceEx adrGetDiskFreeSpaceEx;
-
-	extern void winsetfileinfo (WIN32_FIND_DATA * fileinfo, tyfileinfo *info);
-
-	extern boolean winfileerror (const ptrfilespec );
-	
-#endif
 
 extern void setfserrorparam ( const ptrfilespec );
 
@@ -422,7 +397,6 @@ extern boolean fileexists ( const ptrfilespec , boolean * );
 
 extern boolean filetruncate (hdlfilenum);
 
-#ifdef MACVERSION
 
 	extern void filegetinfofrompb ( FSRefParam *, tyfileinfo * );
 
@@ -432,7 +406,6 @@ extern boolean filetruncate (hdlfilenum);
 
 	extern boolean getmacfileinfocipbr ( const FSSpecPtr, CInfoPBRec * );
 
-#endif
 
 
 #pragma mark === filedialog.c ===
@@ -455,7 +428,6 @@ extern boolean setfilelabelindex (const ptrfilespec , short, boolean); // 2006-0
 
 extern short getfilelabelindex (const ptrfilespec , short *);	// 2006-04-23 creedon */
 
-#ifdef MACVERSION
 
 	extern boolean macfilespecisvalid(const ptrfilespec fs);	// 2009-09-05 aradke
 	
@@ -497,7 +469,6 @@ extern short getfilelabelindex (const ptrfilespec , short *);	// 2006-04-23 cree
 
 	extern OSStatus LSIsApplication( const FSRef *, Boolean *, Boolean * ); // 2006-05-25
 
-#endif // MACVERSION
 
 
 #pragma mark === filepath.c ===
@@ -524,11 +495,9 @@ extern boolean getfsvolume (const ptrfilespec, long *);
 
 extern void initfsdefault (void); /* 2005-07-18 creedon */
 
-#ifdef MACVERSION
 
 	extern OSStatus pathtofsref (bigstring, FSRef *);
 
-#endif // MACVERSION
 
 
 #pragma mark === fileverbs.c ===

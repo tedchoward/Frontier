@@ -54,9 +54,6 @@
 
 #endif
 
-#ifdef WIN95VERSION
-extern HWND findreplacewindow;
-#endif
 
 /*constants*/
 
@@ -105,18 +102,6 @@ enum { /*indexes of internal errors*/
 	idwpstackfull
 	};
 
-#ifdef fltrialsize
-
-enum { /*indexes of trial errors*/
-
-	dbsizelimitstring = 1,
-	threadlimitstring,
-	expirationstring,
-	buyfrontierstring,
-	noguestdatabasesstring
-	};
-
-#endif
 
 
 /*typedefs*/
@@ -126,17 +111,9 @@ typedef struct tywindowposition {
 	
 	Rect windowrect;
 	
-	#ifdef version5orgreater
 	
 		short unused [6];
 	
-	#else
-		
-		short vertcurrent, vertmin, vertmax;
-		
-		short horizcurrent, horizmin, horizmax;
-	
-	#endif
 	
 	long ctopens; /*the number of times the file has been opened*/
 	
@@ -541,11 +518,6 @@ extern void shellerrormessage (bigstring); /*shell.c*/
 #endif
 
 
-#ifdef fltrialsize
-
-	extern void shelltrialerror (short);
-
-#endif
 
 
 extern boolean shellgetstring (short, bigstring);
@@ -735,9 +707,6 @@ extern void fileinit(void);
 
 extern void	fileshutdown(void);
 
-#ifdef WIN95VERSION
-void winscroll (boolean isvertscroll, int scrolltype, long pos);
-#endif
 
 extern void shellupdatewindow (WindowPtr); /*shellupdate.c*/
 
@@ -858,11 +827,6 @@ extern boolean shellgetdatabase (WindowPtr, hdldatabaserecord*);
 
 extern void shellwindowmenudirty (void); /*shellwindowmenu.c*/
 
-#ifdef WIN95VERSION
-	extern boolean shellprocessfindmessage (FINDREPLACE * fr);
-
-	extern void shelldestoycaretinmainthread (void);
-#endif
 
 #endif
 

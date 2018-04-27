@@ -28,9 +28,7 @@
 #include "frontier.h"
 #include "standard.h"
 
-#ifdef MACVERSION
 #define GetDoubleClickTime() GetDblTime()
-#endif
 
 #include "quickdraw.h"
 #include "mouse.h"
@@ -59,13 +57,7 @@ void setmousedoubleclickstatus (boolean fl) {
 boolean mousebuttondown (void) {
 	
 	/*shellbackgroundtask ();*/ /*allow tasks to hook into this bottleneck*/
-#ifdef MACVERSION	
 	return (Button ());
-#endif
-#ifdef WIN95VERSION
-	MSG msg;
-	return (PeekMessage (&msg, NULL, WM_LBUTTONDOWN, WM_LBUTTONDOWN, PM_NOREMOVE));
-#endif
 	} /*mousebuttondown*/
 	
 	
@@ -78,31 +70,12 @@ void waitmousebutton (boolean fl) {
 	
 	if fl is false, we wait for it to come back up.
 	*/
-#ifdef MACVERSION	
 	while (true) {
 		if (Button () == fl)
 			return;
 			
 		/*shellbackgroundtask ();*/ /*wired off 5/9/90 -- simplifies debugging*/
 		} /*while*/
-#endif
-#ifdef WIN95VERSION	
-	MSG msg;
-
-	while (true) {
-		if (fl) {
-			if (PeekMessage (&msg, NULL, WM_LBUTTONDOWN, WM_LBUTTONDOWN, PM_NOREMOVE)) {
-				return;
-				}
-			}
-		else {
-			if (PeekMessage (&msg, NULL, WM_LBUTTONUP, WM_LBUTTONUP, PM_NOREMOVE)) {
-				return;
-				}
-			}
-						
-		} /*while*/
-#endif
 
 	} /*waitmousebutton*/
 	
@@ -121,20 +94,8 @@ boolean mousestilldown (void) {
 	wait for mouse button to come back up after a mousedown.  no background
 	tasks while this is happening.  thank you!
 	*/
-#ifdef MACVERSION	
 	return (StillDown ());
-#endif
 
-#ifdef WIN95VERSION
-
-	/* getting the keystate of the mouse, gets the physical mouse, but the user may have swapped
-	   the meaning of the buttons.  We are interested in the left logical button. */
-	if (GetSystemMetrics(SM_SWAPBUTTON)) {
-		return ((GetAsyncKeyState(VK_RBUTTON) & 0x8000) == 0x8000);
-		}
-
-	return ((GetAsyncKeyState(VK_LBUTTON) & 0x8000) == 0x8000);
-#endif	
 	} /*mousestilldown*/
 	
 
@@ -144,16 +105,6 @@ boolean rightmousestilldown (void) {
 	7.0b26 PBS: wait for the right-mouse-button to come back up after a mousedown.
 	*/
 
-#ifdef WIN95VERSION
-
-	/* getting the keystate of the mouse, gets the physical mouse, but the user may have swapped
-	   the meaning of the buttons.  We are interested in the left logical button. */
-	if (GetSystemMetrics(SM_SWAPBUTTON)) {
-		return ((GetAsyncKeyState(VK_LBUTTON) & 0x8000) == 0x8000);
-		}
-
-	return ((GetAsyncKeyState(VK_RBUTTON) & 0x8000) == 0x8000);
-#endif
 	
 	return (false);
 	} /*rightmousestilldown*/
@@ -165,32 +116,12 @@ void getmousepoint (Point *pt) {
 	window that happens to contain the mouse
 	*/
 
-#ifdef MACVERSION	
 	GetMouse (pt);
-#endif
-#ifdef WIN95VERSION
-	POINT winpt;
-//	RECT winrect;
-	HWND hwnd;
-	
-	GetCursorPos (&winpt);
-	
-//	hwnd = ChildWindowFromPointEx (hwndMDIClient , winpt, CWP_SKIPINVISIBLE | CWP_SKIPTRANSPARENT);
-//	hwnd = WindowFromPoint (winpt);
-	hwnd = getport ();
-	
-	if (hwnd != NULL)
-		ScreenToClient (hwnd, &winpt);
-	
-	(*pt).h = (short)winpt.x;
-	(*pt).v = (short)winpt.y;
-#endif
 	} /*getmousepoint*/
 	
 
 boolean getmousewindowpos (WindowPtr *w, Point *pt) {
 	
-	#ifdef MACVERSION
 		short part;
 
 		GetMouse (pt);
@@ -203,11 +134,7 @@ boolean getmousewindowpos (WindowPtr *w, Point *pt) {
 		//Must pass a CGrafPtr to pushport on OS X to avoid a crash
 		{
 		CGrafPtr	thePort;
-		#if TARGET_API_MAC_CARBON == 1
 		thePort = GetWindowPort(*w);
-		#else
-		thePort = (CGrafPtr)(*w);
-		#endif
 			
 		pushport (thePort);
 		}		
@@ -215,21 +142,7 @@ boolean getmousewindowpos (WindowPtr *w, Point *pt) {
 		GlobalToLocal (pt);
 
 		popport ();
-	#endif
 
-	#ifdef WIN95VERSION
-		POINT winpt;
-		
-		GetCursorPos (&winpt);
-		
-		*w = WindowFromPoint (winpt);
-		
-		if (*w != NULL)
-			ScreenToClient (*w, &winpt);
-		
-		(*pt).h = (short)winpt.x;
-		(*pt).v = (short)winpt.y;
-	#endif
 	
 	return (*w != nil);
 	} /*findmousewindow*/
@@ -297,7 +210,6 @@ void mousedoubleclickdisable (void) {
 	
 	
 static boolean mousecheckdoubleclick (void) {
-#ifdef MACVERSION
 	/*
 	using the globals mouseuptime and mouseuppoint determine if a
 	mouseclick at pt, right now, is a double click.
@@ -330,11 +242,7 @@ static boolean mousecheckdoubleclick (void) {
 	mousestatus.fldoubleclickdisabled = fldoubleclick; /*copy into global*/
 	
 	return (fldoubleclick);
-#endif
 
-#ifdef WIN95VERSION
-	return (mousestatus.fldoubleclick);
-#endif
 	} /*mousecheckdoubleclick*/
 
 
@@ -369,28 +277,8 @@ boolean ismousewheelclick (void) {
 
 
 static short translatemouseeventtype (long eventwhat) {
-#ifdef MACVERSION
 #	pragma unused (eventwhat)
-#endif
 
-#ifdef WIN95VERSION
-	switch (eventwhat) {
-		case rmouseDown:
-		case rmouseUp:
-			return (rightmousebuttonaction);
-
-		case cmouseDown:
-		case cmouseUp:
-			return (centermousebuttonaction);
-
-		case wmouseDown:
-		case wmouseUp:
-			return (wheelmousebuttonaction);
-
-		default:
-			break;
-		}
-#endif
 
 	return (leftmousebuttonaction);
 	} /*translatemouseeventtype*/
@@ -443,67 +331,11 @@ void mousedown (long eventwhen, long eventposx, long eventposy, long eventwhat) 
 
 long getmousedoubleclicktime () {
 
-#ifdef MACVERSION
 	return (GetDoubleClickTime ());
-#endif
 
-#ifdef WIN95VERSION
-	return ((GetDoubleClickTime ()*60L)/1000L);
-#endif
 	} /*getmousedoubleclicktime*/
 
 
-#if 0
-
-void smashmouse (Point pt) {
-	
-	/*
-	reset the mouse position to the indicated Point, in global coordinates.
-	
-	downloaded from APPDEV on Compuserve, so we're not exactly sure how this
-	works.
-	*/
-	
-	register short h = pt.h, v = pt.v;
-	register short *pint;
-	register char *pchar;
-	register short maxh, maxv;
-	Rect rbounds;
-	
-	getcurrentscreenbounds (&rbounds);
-	
-	maxv = rbounds.bottom - 1;
-	
-	maxh = rbounds.right - 1;
-	
-	v = min (v, maxv); /*keep h and v within bounds of of screen*/
-	
-	v = max (v, 0);
-		
-	h = min (h, maxh);
-	
-	h = max (h, 0);
-	
-	pint = (short *) 0x828; /*point at a magic spot in memory*/
-	
-	*pint++ = v;
-	
-	*pint++ = h;
-	
-	*pint++ = v;
-	
-	*pint++ = h;
-	
-	*pint++ = v;
-	
-	*pint = h;
-	
-	pchar = (char *) 0x8ce; /*point at another magic spot*/
-
-	*pchar = 0xff;
-	} /*smashmouse*/
-
-#endif
 
 /*	
 smashmousetester (void) {
@@ -547,23 +379,13 @@ smashmousetester (void) {
 
 
 void showmousecursor (void) {
-#ifdef MACVERSION	
 	ShowCursor ();
-#endif
-#ifdef WIN95VERSION
-	ShowCursor (TRUE);
-#endif
 	} /*showmousecursor*/
 
 
 void hidemousecursor (void) {
 	
-#ifdef MACVERSION	
 	HideCursor ();
-#endif
-#ifdef WIN95VERSION
-	ShowCursor (FALSE);
-#endif
 	} /*hidemousecursor*/
 
 

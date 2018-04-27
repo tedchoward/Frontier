@@ -28,10 +28,8 @@
 #include "frontier.h"
 #include "standard.h"
 
-#ifdef MACVERSION
 #include <land.h>
 #include "mac.h"
-#endif
 
 #include "memory.h"
 #include "dialogs.h"
@@ -81,37 +79,11 @@ boolean flthreadkilled = false;
 boolean flcanusethreads = false;
 
 
-#ifdef WIN95VERSION
-	
-static CRITICAL_SECTION processlistsection;
-
-static boolean processlistsectioninitialized = false;
-
-
-static void _entercriticalprocesssection (void) {
-
-	if (!processlistsectioninitialized) {
-
-		InitializeCriticalSection (&processlistsection);
-
-		processlistsectioninitialized = true;
-		}
-	
-	EnterCriticalSection (&processlistsection);
-	}
-
-static void _leavecriticalprocesssection (void) {
-
-	LeaveCriticalSection (&processlistsection);
-	}
-
-#else
 
 #define _entercriticalprocesssection()
 
 #define _leavecriticalprocesssection()
 
-#endif
 
 #pragma pack(2)
 typedef struct tythreadlist {
@@ -378,7 +350,6 @@ boolean newprocess (hdltreenode hcode, boolean floneshot, langerrorcallback erro
 	
 	popprocess ();
 	
-	#if 1
 	{
 	hdlhashtable htable;
 	bigstring bsname;
@@ -393,7 +364,6 @@ boolean newprocess (hdltreenode hcode, boolean floneshot, langerrorcallback erro
 
 	copystring (bsname, (**hp).bsname);
 	}
-	#endif
 
 	if (!floneshot)
 		flcreatedagentprocess = true; /*for thread error reporting*/
@@ -1044,33 +1014,6 @@ boolean ingoodthread (void) {
 	} /*ingoodthread*/
 
 
-#ifndef version42orgreater
-
-boolean inmainthread (void) {
-	
-	/*
-	2.1a7 dmb: the main thread's true id isn't idapplicationthread, so 
-	check the id stored in the current globals record instead
-	
-	5.0b17 dmb: handle nil globals
-	*/
-	
-	return (hthreadglobals && (**hthreadglobals).idthread == idapplicationthread);
-	
-	/*
-	ThreadID id;
-	
-	if (!flcanusethreads)
-		return (true);
-	
-	if (GetCurrentThread (&id) != noErr)
-		return (true);
-	
-	return (id == idapplicationthread);
-	*/
-	} /*inmainthread*/
-
-#endif
 
 
 boolean infrontierthread (void) {
@@ -1124,16 +1067,10 @@ boolean processsleep (hdlprocessthread hthread, unsigned long timeout) {
 
 	(**(hdlthreadglobals) hthread).timebeginsleep = ticks;
 
-	#if flruntime
-	
-		++ctsleepingthreads;
-	
-	#else
 		
 		if (processlist != nil)
 			++(**processlist).ctsleeping;
 		
-	#endif
 	
 	if (hthread == hthreadglobals)
 		fl = threadsleep (nil);
@@ -1215,16 +1152,10 @@ boolean processwake (hdlprocessthread hthread) {
 
 		(**(hdlthreadglobals) hthread).timebeginsleep = 0;
 		
-		#if flruntime
-		
-			--ctsleepingthreads;
-		
-		#else
 			
 			if (processlist != nil)
 				--(**processlist).ctsleeping;
 			
-		#endif
 		}
 	
 	THREADS_ASSERT_1 (fl);
@@ -1278,12 +1209,6 @@ boolean processyield (void) {
 		return (true);
 	*/
 	
-	#if flruntime
-	
-		if (flscriptresting)
-			++ctsleepingthreads;
-	
-	#else
 	
 		oldwindow = shellwindow;
 		
@@ -1292,16 +1217,9 @@ boolean processyield (void) {
 		if (flscriptresting && (processlist != nil))
 			++(**processlist).ctsleeping;
 		
-	#endif
 	
 	threadyield (flscriptresting);
 	
-	#if flruntime
-	
-		if (flscriptresting)
-			--ctsleepingthreads;
-		
-	#else
 	
 		if (flscriptresting && (processlist != nil))
 			--(**processlist).ctsleeping;
@@ -1310,7 +1228,6 @@ boolean processyield (void) {
 		
 		assert (flscriptwasrunning == flscriptrunning);
 	
-	#endif
 	
 	return (ingoodthread ());
 	} /*processyield*/
@@ -1344,11 +1261,6 @@ boolean processyieldtoagents (void) {
 	if (agentthread == nil)
 		return (true);
 	
-	#if flruntime
-	
-		fl = processyield ();
-	
-	#else
 		
 		++flagentsdisabled;
 		
@@ -1368,7 +1280,6 @@ boolean processyieldtoagents (void) {
 		
 		--flagentsdisabled;
 	
-	#endif
 	
 	return (fl);
 	} /*processyieldtoagents*/
@@ -1389,10 +1300,6 @@ void disposethreadglobals (hdlthreadglobals hglobals) {
 	
 	if (hg == hthreadglobals) {
 
-		#ifdef WIN95VERSION
-			if ( flcominitialized )
-				shutdownCOM();
-		#endif
 		
 		disposehandle ((Handle) hashtablestack);
 		
@@ -1520,11 +1427,7 @@ void copythreadglobals (hdlthreadglobals hglobals) {
 	
 		aboutsetthreadstring (nil, false);
 
-		#ifdef MACVERSION
 		ticks = gettickcount ();
-		#else
-		ticks = GetTickCount ();
-		#endif
 
 		totalticksin += ticks - lastswapticks;
 		lastswapticks = ticks;
@@ -1602,7 +1505,6 @@ void copythreadglobals (hdlthreadglobals hglobals) {
 	
 	(**hg).langcallbacks = langcallbacks;
 	
-	#ifdef flcomponent
 	
 	hlg = landgetglobals ();
 	
@@ -1614,7 +1516,6 @@ void copythreadglobals (hdlthreadglobals hglobals) {
 	
 	(**hg).eventsettings = (**hlg).eventsettings;
 	
-	#endif
 	
 	} /*copythreadglobals*/
 
@@ -1678,7 +1579,6 @@ void swapinthreadglobals (hdlthreadglobals hglobals) {
 	
 	langcallbacks = (**hg).langcallbacks;
 		
-	#if !flruntime
 	
 		cterrorhooks = (**hg).cterrorhooks;
 		
@@ -1702,7 +1602,6 @@ void swapinthreadglobals (hdlthreadglobals hglobals) {
 		
 		moveleft  ((**hg).outlinestack, outlinestack, sizeof (hdloutlinerecord) * ctoutlinestack);
 
-	#endif
 	
 	ctscanlines = (**hg).ctscanlines;
 
@@ -1749,11 +1648,7 @@ void swapinthreadglobals (hdlthreadglobals hglobals) {
 		
 		aboutsetthreadstring (hg, true);
 
-		#ifdef MACVERSION
 		ticks = gettickcount ();
-		#else
-		ticks = GetTickCount ();
-		#endif
 
 		if (lastswapticks)
 			totalticksout += ticks - lastswapticks;
@@ -1842,12 +1737,6 @@ static pascal boolean maimprocessvisit (hdlthreadglobals hthread, long hcancoon)
 	
 	register hdlthreadglobals hg = getthreadglobals (hthread);
 	
-	#if flruntime
-		
-		if ((**hg).idthread != idapplicationthread)
-			(**hg).flthreadkilled = true;
-	
-	#else
 		
 		if (hcancoon == (long) (**hg).hccglobals) /*it's dependent; maim it*/ {
 			
@@ -1861,7 +1750,6 @@ static pascal boolean maimprocessvisit (hdlthreadglobals hthread, long hcancoon)
 //#endif
 			}
 		
-	#endif
 	
 	return (false); /*keep visiting*/
 	} /*maimprocessvisit*/
@@ -2123,7 +2011,6 @@ static void setprocesslangcallbacks (void) {
 	
 	langcallbacks.popsourcecodecallback = &processpopsourcecode;
 	
-	#if !flruntime
 	
 	langcallbacks.debuggercallback = &processdebugger;
 	
@@ -2131,7 +2018,6 @@ static void setprocesslangcallbacks (void) {
 	
 	langcallbacks.poptablecallback = &processpoptable;
 	
-	#endif
 	
 	langcallbacks.scriptkilledcallback = &processscriptkilled;
 	} /*setprocesslangcallbacks*/
@@ -2175,15 +2061,12 @@ boolean initprocessthread (bigstring bsname) {
 	with the same bsname present in that table.
 	*/
 	
-#if threadverbs
 	tyvaluerecord val;
 	bigstring bs;
-#endif
 
 	if (!threadstartup ())
 		return (false);
 	
-#if threadverbs
 	assert (threadtable);
 
 	setlongvalue ((long) (**hthreadglobals).idthread, &val);
@@ -2218,17 +2101,14 @@ boolean initprocessthread (bigstring bsname) {
 	hashinsert (bs, val);
 	
 	pophashtable ();
-#endif
 
 	(**hthreadglobals).timestarted = gettickcount ();
 	
-	#if !flruntime
 	
 		clearbytes (&globalsstack, sizeof (globalsstack));
 		
 		shellwindow = nil;
 		
-	#endif
 	
 	setprocesslangcallbacks ();
 	
@@ -2248,7 +2128,6 @@ void exitprocessthread (void) {
 	for executing scripts has already been disposed of at this point.
 	*/
 	
-#if threadverbs
 	bigstring bsname;
 	
 	currentprocess = nil;	/* 91.b3 AR */
@@ -2262,7 +2141,6 @@ void exitprocessthread (void) {
 		
 		flexitingthread = false;
 		}
-#endif
 	
 	threadshutdown ();
 	} /*exitprocessthread*/
@@ -2360,16 +2238,6 @@ boolean newprocessthread (tythreadmaincallback threadmain, tythreadmainparams th
 	if (!flcanusethreads)
 		return (false);
 	
-	#ifdef fltrialsize
-	
-		if (ctprocessthreads > 2) {
-		
-			shelltrialerror (threadlimitstring);
-			
-			return (false);
-			}
-	
-	#endif
 	
 	if (!newthreadglobals (&hglobals))
 		return (false);
@@ -2732,7 +2600,6 @@ boolean processnotbusy (void) {
 	running a 1-shot process, we're not busy.
 	*/
 	
-	#if !flruntime
 	
 	if (honeshotcode != nil) {
 		
@@ -2741,7 +2608,6 @@ boolean processnotbusy (void) {
 		shellforcemenuadjust ();
 		}
 	
-	#endif
 	
 	return (true);
 	} /*processnotbusy*/
@@ -2749,11 +2615,6 @@ boolean processnotbusy (void) {
 
 boolean processrunning (void) {
 	
-	#if flruntime
-	
-	return (ctprocessthreads - ctsleepingthreads > 0);
-	
-	#else
 	
 	register hdlprocesslist hlist = processlist;
 	
@@ -2762,7 +2623,6 @@ boolean processrunning (void) {
 	
 	return ((**hlist).ctrunning - (**hlist).ctsleeping > 0);
 	
-	#endif
 	
 	} /*processrunning*/
 
@@ -2779,10 +2639,6 @@ unsigned long processstackspace (void) {
 	nor GetCurrentThread returns an error, but the space returned is bogus.
 	*/
 	
-#ifdef MACVERSION
-	#if __powerc
-	if (infrontierthread ())	// not in an osa client
-	#endif
 	
 		if (flcanusethreads) {
 			
@@ -2796,11 +2652,7 @@ unsigned long processstackspace (void) {
 			}
 	
 	return (StackSpace ());
-#endif
 
-#ifdef WIN95VERSION
-	return (0x04000);	// a lot; *** don't know how to check this under Windows
-#endif
 	} /*processstackspace*/
 
 
@@ -2829,17 +2681,9 @@ static void postthreadsmessage (void) {
 				return;
 			}
 		
-		#if flruntime
-		
-		getstringlist (alertstringlistnumber, needthreadmanagerstring, bs);
-		
-		setwindowmessage (bs);
-		
-		#else
 		
 		alertstring (needthreadmanagerstring);
 		
-		#endif
 		}
 	} /*postthreadsmessage*/
 
@@ -2959,24 +2803,8 @@ static pascal void *oneshotthreadmain (void *hprocess) {
 	register hdlprocesslist hlist = (**hp).hprocesslist;
 	bigstring bsname;
 
-	#if 0
-
-	hdlerrorstack hs = (**hp).herrorstack;
-	hdlhashtable htable;
-	
-	tyerrorrecord *pe = &(**hs).stack [(**hs).toperror - 1];
-	
-	setemptystring (bsname);
-	
-	if ((*pe).errorcallback != nil)
-		(*(*pe).errorcallback) ((*pe).errorrefcon, 0, 0, &htable, bsname);
-	
-	if (isemptystring (bsname))
-		langgetstringlist (anomynousthreadstring, bsname); 
-	#else
 
 	copystring ((**hp).bsname, bsname);
-	#endif
 
 	if (!initprocessthread (bsname)) /*must call from every thread main, before using globals*/
 		return (nil);
@@ -3239,9 +3067,7 @@ void processscheduler (void) {
 	5.1.5b15 dmb: don't schedule anything if we're closing all
 	*/
 	
-	#ifdef MACVERSION
 		long stacksize;
-	#endif
 	
 	if (processlist == nil)
 		return;
@@ -3265,7 +3091,6 @@ void processscheduler (void) {
 	if (processlist == nil) /*file was closed during background processing*/
 		return;
 	
-	#ifdef MACVERSION
 	/*
 		//6.1b8 AR: This bit of code stopped the agents from being called
 		//			on the Mac while the scriptdebugger was active and
@@ -3278,7 +3103,6 @@ void processscheduler (void) {
 			return;
 			}
 	*/
-	#endif
 	
 	if (agentthread != nil) { /*agent scheduler is not to be re-entered*/
 		
@@ -3292,16 +3116,12 @@ void processscheduler (void) {
 				processwake (agentthread);
 			}
 		
-		#ifdef MACVERSION
 			processyield (); /*let previous thread die, reawaken, or try to finish, respectively*/
-		#endif
 		
 		return;
 		}
 	
-	#ifdef version5orgreater
 		flagentsenabled = langgetuserflag (idagentsenabledscript, flagentsenabled);
-	#endif
 	
 	if (!flagentsenabled || flagentsdisabled)
 		return;
@@ -3324,7 +3144,6 @@ void processscheduler (void) {
 		return;
 	*/
 
-	#ifdef MACVERSION	
 		stacksize = macmemoryconfig.minstacksize;
 		
 		if (!haveheapspace (stacksize + 2 * 1024)) { /*not enough memory to run agents*/
@@ -3333,7 +3152,6 @@ void processscheduler (void) {
 			
 			return;
 			}
-	#endif
 
 	if (flpostedmemorymessage)
 		shellfrontrootwindowmessage (zerostring); /*clear it*/
@@ -3368,12 +3186,7 @@ static boolean processkeyboardhook (void) {
 	} /*processkeyboardhook*/
 
 
-#ifdef MACVERSION
 	#define maxticks (0xffffffffUL)
-#endif
-#ifdef WIN95VERSION
-	#define maxticks (0xffffffffUL / 50UL)
-#endif
 
 void processchecktimeouts (void) {
 
@@ -3468,11 +3281,9 @@ boolean initprocess (void) {
 	_profile = false;
 	*/
 	
-	#if !flruntime
 	
 		shellpushkeyboardhook (&processkeyboardhook);
 	
-	#endif
 	
 	if (!newclearhandle (sizeof (tythreadlist), (Handle *) &processthreadlist))
 		return (false);

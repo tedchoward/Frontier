@@ -41,145 +41,6 @@ FontInfo globalfontinfo;
 static bigstring cachedfontname;
 static short cachedfontnum;
 
-#ifdef WIN95VERSION
-typedef struct tywindowsfontinformation {
-	
-	FontInfo	fi;
-
-	LOGFONT		lfi;
-	} tywindowsfontinformation;
-
-tywindowsfontinformation ** globalWindowsFontInfo;
-
-short globalFontCount;
-
-static short currentFontNum;
-static short currentFontSize;
-static short currentFontStyle;
-
-static HFONT globalOldFont = 0;
-static HFONT globalCurrentFont = 0;
-
-static BOOL FAR PASCAL EnumFamCallBack1(ENUMLOGFONT * lplf, LPNEWTEXTMETRIC lpntm, DWORD FontType, LPVOID counter) {
-	
-	short * ctr = (short *) counter;
-	*ctr = *ctr + 1;
-    return TRUE; 
-	} /*EnumFamCallBack*/
-
-
-static BOOL FAR PASCAL EnumFamCallBack2(ENUMLOGFONT * lplf, LPNEWTEXTMETRIC lpntm, DWORD FontType, LPVOID counter) {
-	
-	tywindowsfontinformation * wfi;
-	short * ctr = (short *) counter;
-	*ctr = *ctr + 1;
-	wfi = *globalWindowsFontInfo + *ctr;
-	wfi->lfi = lplf->elfLogFont;
-	wfi->fi.ascent = (short)lpntm->tmAscent;
-	wfi->fi.descent = (short)lpntm->tmDescent;
-	wfi->fi.leading = (short)lpntm->tmInternalLeading;
-    return TRUE; 
-	} /*EnumFamCallBack2*/
-
-
-short geneva = 1;
-
-static void initgenevafont (void) {
-
-	fontgetnumber ("\x0d" "MS Sans Serif", &geneva);
-	
-	if (geneva == 0)
-		fontgetnumber ("\x05" "Arial", &geneva);
-	} /*initgenevafont*/
-
-
-void getWindowsLogFont (LOGFONT *lf) {
-	
-	short ctr;
-	tywindowsfontinformation * wfi;
-
-	if (globalCurrentFont != 0)
-		return;
-
-	ctr = currentFontNum;
-
-	if (ctr == 0)
-		ctr = ctr + 1;
-
-	wfi = *globalWindowsFontInfo + ctr;
-
-	*lf = wfi->lfi;
-	lf->lfHeight = -MulDiv(currentFontSize, GetDeviceCaps(getcurrentDC(), LOGPIXELSY), 72);
-	lf->lfWidth = 0;
-	} /*getWindowsLogFont*/
-
-
-void setWindowsFont () {
-	
-	short ctr;
-	tywindowsfontinformation * wfi;
-
-	if (globalCurrentFont != 0)
-		return;
-
-	ctr = currentFontNum;
-
-	if (ctr == 0)
-		ctr = ctr + 1;
-
-	wfi = *globalWindowsFontInfo + ctr;
-
-	wfi->lfi.lfHeight = -MulDiv(currentFontSize, GetDeviceCaps(getcurrentDC(), LOGPIXELSY), 72);
-	
-	wfi->lfi.lfWidth = 0;
-	
-	wfi->lfi.lfWeight = (currentFontStyle & bold)? FW_BOLD : FW_NORMAL;
-	
-	wfi->lfi.lfItalic = (currentFontStyle & italic)? true : false;
-	
-	wfi->lfi.lfUnderline = (currentFontStyle & underline)? true : false;
-	 
-	globalCurrentFont = CreateFontIndirect (&(wfi->lfi));
-
-	globalOldFont = SelectObject (getcurrentDC(), globalCurrentFont);
-	} /*setWindowsFont*/
-
-
-void clearWindowsFont () {
-	
-	SelectObject (getcurrentDC(), globalOldFont);
-	DeleteObject (globalCurrentFont);
-
-	globalCurrentFont = 0;
-	globalOldFont = 0;
-	} /*clearWindowsFont*/
-
-	
-boolean findWindowsFont (ptrstring fontname, short *fontnumber) {
-
-	short i;
-	char fn[256];
-	tywindowsfontinformation * wfi;
-
-	memmove (fn, stringbaseaddress(fontname), stringlength(fontname));
-	fn[stringlength(fontname)] = 0;
-
-	for (i = 1; i <= globalFontCount; i++) {
-		
-		wfi = *globalWindowsFontInfo + i;
-		
-		if (stricmp (wfi->lfi.lfFaceName, fn)==0) {
-
-			*fontnumber = i;
-			
-			return (true);
-			}
-		}
-
-	return (false);
-	} /*findWindowsFont*/
-
-#endif
 
 static boolean mapxfont (ptrstring bsfont) {
 	
@@ -245,23 +106,11 @@ void fontgetnumber (bigstring fontname, short *fontnumber) {
 	
 	copystring (bsfont, cachedfontname);
 	
-#ifdef MACVERSION	
 	GetFNum (bsfont, &cachedfontnum);
 
 	if ((cachedfontnum == 0) && !equalstrings (bsfont, BIGSTRING ("\x07" "Chicago")))
 		if (mapxfont (bsfont))
 			GetFNum (bsfont, &cachedfontnum);
-#endif
-#ifdef WIN95VERSION
-	if (findWindowsFont (bsfont, &cachedfontnum))
-		goto exit;
-
-	if (mapxfont (bsfont))
-		if (findWindowsFont (bsfont, &cachedfontnum))
-			goto exit;
-
-	cachedfontnum = 0;
-#endif
 	
 	exit:
 	
@@ -270,113 +119,30 @@ void fontgetnumber (bigstring fontname, short *fontnumber) {
 
 
 void fontgetname (short fontnumber, bigstring fontname) {
-#ifdef MACVERSION		
 	GetFontName (fontnumber, fontname);
-#endif
-#ifdef WIN95VERSION
-	tywindowsfontinformation * wfi;
-
-	wfi = *globalWindowsFontInfo + fontnumber;
-
-	strcpy (stringbaseaddress(fontname), wfi->lfi.lfFaceName);
-	setstringlength (fontname, strlen(wfi->lfi.lfFaceName));
-#endif
 	} /*fontgetname*/
 
 
 void setfontsizestyle (short fontnum, short fontsize, short fontstyle) {
-#ifdef MACVERSION
 	TextFont (fontnum);
 	
 	TextSize (fontsize);
 	
 	TextFace (fontstyle);
-#endif
-#ifdef WIN95VERSION
-	if (fontnum > 0)
-		currentFontNum = fontnum;
-
-	if (fontsize != 0)
-		currentFontSize = fontsize;
-
-	currentFontStyle = fontstyle;
-#endif
 	} /*setfontsizestyle*/
 	
 	
 void setglobalfontsizestyle (short fontnum, short fontsize, short fontstyle) {
-#ifdef MACVERSION	
 	setfontsizestyle (fontnum, fontsize, fontstyle);
 	
 	GetFontInfo (&globalfontinfo);
-#endif
 
-#ifdef WIN95VERSION
-	HFONT fnt, oldfnt;
-	TEXTMETRIC tm;
-	tywindowsfontinformation * wfi;
-	short ctr;
-	HDC hdc;
-	long logpix;
-
-	hdc = GetDC (GetDesktopWindow());
-
-	if (fontnum > 0)
-		currentFontNum = fontnum;
-
-	if (fontsize != 0)
-		currentFontSize = fontsize;
-
-	currentFontStyle = fontstyle;
-
-	ctr = currentFontNum;
-
-//	ctr = ctr + 1;
-	wfi = *globalWindowsFontInfo + ctr;
-
-	wfi->lfi.lfHeight = -MulDiv(currentFontSize, GetDeviceCaps(getcurrentDC(), LOGPIXELSY), 72);
-	
-	wfi->lfi.lfWidth = 0;
-	
-	wfi->lfi.lfWeight = (currentFontStyle & bold)? FW_BOLD : FW_NORMAL;
-	
-	wfi->lfi.lfItalic = (currentFontStyle & italic)? true : false;
-	
-	wfi->lfi.lfUnderline = (currentFontStyle & underline)? true : false;
-
-	fnt = CreateFontIndirect (&(wfi->lfi));
-
-	oldfnt = SelectObject (hdc, fnt);
-
-	GetTextMetrics (hdc, &tm);
-
-	logpix = GetDeviceCaps(getcurrentDC(), LOGPIXELSY);
-
-	globalfontinfo.ascent = (short) tm.tmAscent;
-	globalfontinfo.descent = (short) tm.tmDescent;
-	globalfontinfo.leading = (short) tm.tmExternalLeading;
-//	globalfontinfo.leading = (short)tm.tmInternalLeading;
-
-	SelectObject (hdc, oldfnt);
-	DeleteObject (fnt);
-
-	ReleaseDC (GetDesktopWindow(), hdc);
-#endif
 	} /*setglobalfontsizestyle*/
 
 	
-#if !flruntime
 
 boolean realfont (short fontnum, short fontsize) {
-#ifdef MACVERSION	
 	return (RealFont (fontnum, fontsize));
-#endif
-#ifdef WIN95VERSION
-	if ((fontnum > 0) && (fontnum <= globalFontCount))
-		return (true);
-
-	return (false);
-#endif
 	} /*realfont*/
 
 
@@ -398,11 +164,9 @@ short setnamedfont (bigstring bs, short fsize, short fstyle, short defaultfont) 
 	return (fontnum); /*return the font that we are actually using*/
 	} /*setnamedfont*/
 
-#endif
 
 
 void getfontsizestyle (short *fontnum, short *fontsize, short *fontstyle) {
-#ifdef MACVERSION	
 	//Code change by Timothy Paustian Monday, May 1, 2000 8:36:17 PM
 	//Changed to Opaque call for Carbon
 	#if ACCESSOR_CALLS_ARE_FUNCTIONS == 1
@@ -417,116 +181,9 @@ void getfontsizestyle (short *fontnum, short *fontsize, short *fontstyle) {
 	*fontsize = (*qd.thePort).txSize;
 	*fontstyle = (*qd.thePort).txFace;
 	#endif
-#endif
-#ifdef WIN95VERSION
-	*fontnum = currentFontNum;
-	*fontsize = currentFontSize;
-	*fontstyle = currentFontStyle;
-#endif
 	} /*getfontsizestyle*/
 
 
-#if 0
-
-void fontstring (short fontnum, short fontsize, boolean flhavefont, boolean flhavesize, bigstring bs) {
-	
-	bigstring bsint;
-	
-	setstringlength(bs,0); /*set it to the empty string*/
-	
-	if (flhavefont)
-		fontgetname (fontnum, bs);
-		
-	if (flhavesize) {	
-	
-		NumToString (fontsize, bsint);
-		
-		if (flhavefont) {
-			
-			pushspace (bs);
-			
-			pushstring (bsint, bs);	
-			}		
-		else
-			copystring ((ptrstring) "\pno consistent font", bs);
-		}
-	} /*fontstring*/
-
-
-
-void getstyle (style, flplain, flbold, flitalic, flunderline, floutline, flshadow) 
-
-	/*
-	give me a style bit array, and I'll extract the booleans which are 
-	slightly easier to deal with.
-	
-	if none of the others are true, we set flplain to true.  otherwise 
-	flplain is false.
-	*/
-
-	short style; 
-	boolean *flplain, *flbold, *flitalic, *flunderline, *floutline, *flshadow; 
-	
-	{
-	*flplain = true;  /*default values*/
-	
-	*flbold = false;
-	
-	*flitalic = false;
-	
-	*flunderline = false;
-	
-	*floutline = false;
-	
-	*flshadow = false;
-	
-	if (style >= shadow) {
-		
-		style -= shadow;
-		
-		*flshadow = true;
-		
-		*flplain = false;
-		}
-		
-	if (style >= outline) {
-		
-		style -= outline;
-		
-		*floutline = true;
-		
-		*flplain = false;
-		}
-		
-	if (style >= underline) {
-		
-		style -= underline;
-		
-		*flunderline = true;
-		
-		*flplain = false;
-		}
-		
-	if (style >= italic) {
-		
-		style -= italic;
-		
-		*flitalic = true;
-		
-		*flplain = false;
-		}
-		
-	if (style >= bold) {
-		
-		style -= bold;
-		
-		*flbold = true;
-		
-		*flplain = false;
-		}
-	} /*getstyle*/
-
-#endif
 
 
 void diskgetfontname (short fontnum, diskfontstring fontname) {
@@ -558,33 +215,6 @@ void diskgetfontnum (diskfontstring fontname, short *fontnum) {
 		
 boolean initfonts (void) {
 	
-	#ifdef WIN95VERSION
-		HDC hdc;
-		short fontnum;
-
-		hdc = GetDC (GetDesktopWindow());
-
-		globalFontCount = 0;
-
-		EnumFontFamilies(hdc, (LPCTSTR) NULL, 
-			(FONTENUMPROC) EnumFamCallBack1, (LPARAM) &globalFontCount); 
-
-		globalWindowsFontInfo = (tywindowsfontinformation **) NewHandle ((globalFontCount + 1) * sizeof (tywindowsfontinformation));
-
-		if (globalWindowsFontInfo != NULL) {
-			globalFontCount = 0;
-
-			EnumFontFamilies(hdc, (LPCTSTR) NULL, 
-				(FONTENUMPROC) EnumFamCallBack2, (LPARAM) &globalFontCount); 
-			}
-
-
-		fontgetnumber ("\005Arial", &fontnum);
-		setglobalfontsizestyle (fontnum, 12, 0);		/* set defaults*/
-		ReleaseDC (GetDesktopWindow(), hdc);
-
-		initgenevafont ();
-	#endif
 	
 	setemptystring (cachedfontname);
 	

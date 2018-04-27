@@ -142,15 +142,9 @@ static tytypeinfo typeinfo [ctvaluetypes] = {
 	
 	{'wptx', STR_wptext},
 	
-	#ifdef fliowa
-	
-	{'intf', STR_interface},
-	
-	#else
 	
 	{'head', STR_headline},
 	
-	#endif
 	
 	{'tabl', STR_table},
 	
@@ -878,16 +872,7 @@ boolean langgetvalsize (tyvaluerecord v, long *size) {
 			break;
 			}
 		
-		#if defined(__powerc) || defined(WIN95VERSION)
-		
-			case doublevaluetype:
-				x = sizeof (extended80);
-				
-				break;
-			
-		#else
 				case doublevaluetype:
-		#endif
 		
 		case stringvaluetype:
 		case passwordvaluetype:
@@ -983,14 +968,12 @@ boolean langcheckstackspace (void) {
 	3.0.1 dmb: use new processstackspace instead of StackSpace trap
 	*/
 	
-#if !flruntime
 	if (processstackspace () < minstackspace) {
 		
 		flstackoverflow = true; /*flag for reporting when it's safe*/
 		
 		return (false);
 		}
-#endif 	
 	return (true);
 	} /*langcheckstackspace*/
 #endif
@@ -1155,7 +1138,6 @@ boolean langsetthisvalue (hdlhashtable hlocaltable, hdlhashtable htable, bigstri
 	stack
 	*/
 	
-	#ifdef version5orgreater
 
 	tyvaluerecord val;
 	
@@ -1167,7 +1149,6 @@ boolean langsetthisvalue (hdlhashtable hlocaltable, hdlhashtable htable, bigstri
 		
 	exemptfromtmpstack (&val);
 
-	#endif
 
 	return (true);
 	} /*langsetthisvalue*/

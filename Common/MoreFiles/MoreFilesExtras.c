@@ -83,84 +83,10 @@ typedef DeleteEnumGlobals *DeleteEnumGlobalsPtr;
 **	file.
 */
 
-#if TARGET_API_MAC_CARBON || !TARGET_RT_MAC_CFM
 
 	// Carbon builds and 68K builds don't need this glue
 	#define CallPBXGetVolInfoSync PBXGetVolInfoSync
 
-#else	//	TARGET_API_MAC_CARBON || !TARGET_RT_MAC_CFM
-
-	#if	__WANTPASCALELIMINATION
-		#undef	pascal
-	#endif	//	__WANTPASCALELIMINATION
-	
-	/* This is exactly like the simple mixed mode glue in InterfaceLib in Mac OS 8.5 and 8.6 */
-	static pascal OSErr PBXGetVolInfoSyncGlue(XVolumeParamPtr paramBlock)
-	{
-		enum
-		{
-			uppFSDispatchProcInfo = kRegisterBased
-				 | REGISTER_RESULT_LOCATION(kRegisterD0)
-				 | RESULT_SIZE(SIZE_CODE(sizeof(OSErr)))
-				 | REGISTER_ROUTINE_PARAMETER(1, kRegisterD0, SIZE_CODE(sizeof(long)))	/* selector */
-				 | REGISTER_ROUTINE_PARAMETER(2, kRegisterD1, SIZE_CODE(sizeof(long)))	/* trap word */
-				 | REGISTER_ROUTINE_PARAMETER(3, kRegisterA0, SIZE_CODE(sizeof(XVolumeParamPtr)))
-		};
-		
-		static UniversalProcPtr	fsDispatchTrapAddress = NULL;
-		
-		/* Is this the first time we've been called? */
-		if ( fsDispatchTrapAddress == NULL )
-		{
-			/* Yes - Get the trap address of _FSDispatch */
-			fsDispatchTrapAddress = NGetTrapAddress(_FSDispatch, OSTrap);
-		}
-		return ( CallOSTrapUniversalProc(fsDispatchTrapAddress,
-											uppFSDispatchProcInfo,
-											kFSMXGetVolInfo,
-											_FSDispatch,
-											paramBlock) );
-	}
-	
-	/*
-	** PBXGetVolInfoSync was added to the File Manager in System software 7.5.2.
-	** However, PBXGetVolInfoSync wasn't added to InterfaceLib until Mac OS 8.5.
-	** This wrapper calls PBXGetVolInfoSync if it is found in InterfaceLib;
-	** otherwise, it calls PBXGetVolInfoSyncGlue. This ensures that your program
-	** is calling the latest implementation of PBXGetVolInfoSync.
-	*/
-	static pascal OSErr CallPBXGetVolInfoSync(XVolumeParamPtr paramBlock)
-	{
-		typedef pascal OSErr (*PBXGetVolInfoProcPtr) (XVolumeParamPtr paramBlock);
-		
-		OSErr						result;
-		CFragConnectionID			connID;
-		static PBXGetVolInfoProcPtr	PBXGetVolInfoSyncPtr = NULL;
-		
-		//* Is this the first time we've been called? */
-		if ( PBXGetVolInfoSyncPtr == NULL )
-		{
-			/* Yes - Get our connection ID to InterfaceLib */
-			result = GetSharedLibrary("\pInterfaceLib", kPowerPCCFragArch, kLoadCFrag, &connID, NULL, NULL);
-			if ( result == noErr )
-			{
-				/* See if PBXGetVolInfoSync is in InterfaceLib */
-				if ( FindSymbol(connID, "\pPBXGetVolInfoSync", &(Ptr)PBXGetVolInfoSyncPtr, NULL) != noErr )
-				{
-					/* Use glue code if symbol isn't found */
-					PBXGetVolInfoSyncPtr = PBXGetVolInfoSyncGlue;
-				}
-			}
-		}
-		/* Call PBXGetVolInfoSync if present; otherwise, call PBXGetVolInfoSyncGlue */
-		return ( (*PBXGetVolInfoSyncPtr)(paramBlock) );
-	}
-
-	#if	__WANTPASCALELIMINATION
-		#define	pascal	
-	#endif	//	__WANTPASCALELIMINATION
-
-#endif	//	TARGET_API_MAC_CARBON || !TARGET_RT_MAC_CFM
 
 /*****************************************************************************/
 
@@ -343,23 +269,6 @@ pascal	OSErr	XGetVolumeInfoNoName(ConstStr255Param pathname,
 		}
 		
 		{
-#if !TARGET_API_MAC_CARBON
-			long response;
-			
-			/* Is PBXGetVolInfo available? */
-			if ( ( Gestalt(gestaltFSAttr, &response) != noErr ) || ((response & (1L << gestaltFSSupports2TBVols)) == 0) )
-			{
-				/* No, fall back on PBHGetVInfo */
-				error = PBHGetVInfoSync((HParmBlkPtr)pb);
-				if ( error == noErr )
-				{
-					/* calculate the ioVTotalBytes and ioVFreeBytes fields */
-					pb->ioVTotalBytes = U64Multiply(U64SetU(pb->ioVNmAlBlks), U64SetU(pb->ioVAlBlkSiz));
-					pb->ioVFreeBytes = U64Multiply(U64SetU(pb->ioVFrBlk), U64SetU(pb->ioVAlBlkSiz));
-				}
-			}
-			else
-#endif
 			{
 				/* Yes, so use it */
 				error = CallPBXGetVolInfoSync(pb);
@@ -472,23 +381,12 @@ pascal	OSErr	XGetVInfo(short volReference,
 	OSErr			result;
 	XVolumeParam	pb;
 	
-#if !TARGET_API_MAC_CARBON
-	
-	long			response;
-	
-#endif	//	!TARGET_API_MAC_CARBON
 	
 	pb.ioVRefNum = volReference;
 	pb.ioNamePtr = volName;
 	pb.ioXVersion = 0;	/* this XVolumeParam version (0) */
 	pb.ioVolIndex = 0;	/* use ioVRefNum only, return volume name */
 	
-#if !TARGET_API_MAC_CARBON
-
-	/* See if large volume support is available */
-	if ( ( Gestalt(gestaltFSAttr, &response) == noErr ) && ((response & (1L << gestaltFSSupports2TBVols)) != 0) )
-	
-#endif	//	!TARGET_API_MAC_CARBON
 	
 	{
 		/* Large volume support is available */
@@ -505,63 +403,6 @@ pascal	OSErr	XGetVInfo(short volReference,
 		}
 	}
 	
-#if !TARGET_API_MAC_CARBON
-	
-	else
-	{
-		/* No large volume support */
-		/* Use PBHGetVInfoSync to get the results */
-		result = PBHGetVInfoSync((HParmBlkPtr)&pb);
-		if ( result == noErr )
-		{
-			VCB				*theVCB;
-		
-			/* The volume name was returned in volName (if not NULL) and */
-			/* we have the volume's vRefNum */
-			*vRefNum = pb.ioVRefNum;
-			
-			/* System 7.5 (and beyond) pins the number of allocation blocks and */
-			/* the number of free allocation blocks returned by PBHGetVInfo to */
-			/* a value so that when multiplied by the allocation block size, */
-			/* the volume will look like it has $7fffffff bytes or less. This */
-			/* was done so older applications that use signed math or that use */
-			/* the GetVInfo function (which uses signed math) will continue to work. */
-			/* However, the unpinned numbers (which we want) are always available */
-			/* in the volume's VCB so we'll get those values from the VCB. */
-			/* Note: Carbon doesn't support the VCB queue, so this code cannot be */
-			/* used (and is conditionalized out) by Carbon applications. */
-			
-			/* Find the volume's VCB */
-			theVCB = (VCB *)(GetVCBQHdr()->qHead);
-			while ( theVCB != NULL )
-			{
-				if ( theVCB->vcbVRefNum == *vRefNum )
-				{
-					break;
-				}
-				
-				theVCB = (VCB *)(theVCB->qLink);	/* next VCB */
-			}
-			
-			if ( theVCB != NULL )
-			{
-				/* Found a VCB we can use. Get the un-pinned number of allocation blocks */
-				/* and the number of free blocks from the VCB. */
-				*freeBytes = U64Multiply(U64SetU((unsigned short)theVCB->vcbFreeBks), U64SetU((unsigned long)pb.ioVAlBlkSiz));
-				*totalBytes = U64Multiply(U64SetU((unsigned short)theVCB->vcbNmAlBlks), U64SetU((unsigned long)pb.ioVAlBlkSiz));
-			}
-			else
-			{
-				/* Didn't find a VCB we can use. Return the number of allocation blocks */
-				/* and the number of free blocks returned by PBHGetVInfoSync. */
-				*freeBytes = U64Multiply(U64SetU((unsigned short)pb.ioVFrBlk), U64SetU((unsigned long)pb.ioVAlBlkSiz));
-				*totalBytes = U64Multiply(U64SetU((unsigned short)pb.ioVNmAlBlks), U64SetU((unsigned long)pb.ioVAlBlkSiz));
-			}
-			
-		}
-	}
-	
-#endif	//	!TARGET_API_MAC_CARBON
 	
 	return ( result );
 }
@@ -600,349 +441,6 @@ pascal	OSErr	CheckVolLock(ConstStr255Param pathname,
 //		GetDiskBlocks
 //		GetVolState
 
-#if !TARGET_API_MAC_CARBON	//	{
-
-	/*****************************************************************************/
-
-	pascal	OSErr GetDriverName(short driverRefNum,
-								Str255 driverName)
-	{
-		OSErr result;
-		DCtlHandle theDctl;
-		DRVRHeaderPtr dHeaderPtr;
-		
-		theDctl = GetDCtlEntry(driverRefNum);
-		if ( theDctl != NULL )
-		{
-		    if ( (**theDctl).dCtlFlags & dRAMBasedMask )
-		    {
-		    	/* dctlDriver is handle - dereference */
-				dHeaderPtr = *((DRVRHeaderHandle)(**theDctl).dCtlDriver);
-		    }
-		    else
-		    {
-				/* dctlDriver is pointer */
-		      dHeaderPtr = (DRVRHeaderPtr)(**theDctl).dCtlDriver;
-		    }
-			BlockMoveData((*dHeaderPtr).drvrName, driverName, (*dHeaderPtr).drvrName[0] + 1);
-			result = noErr;
-		}
-		else
-		{
-			driverName[0] = 0;
-			result = badUnitErr;	/* bad reference number */
-		}
-		
-		return ( result );
-	}
-
-	/*****************************************************************************/
-
-	pascal	OSErr	FindDrive(ConstStr255Param pathname,
-							  short vRefNum,
-							  DrvQElPtr *driveQElementPtr)
-	{
-		OSErr			result;
-		HParamBlockRec	hPB;
-		short			driveNumber;
-		
-		*driveQElementPtr = NULL;
-		
-		/* First, use GetVolumeInfoNoName to determine the volume */
-		result = GetVolumeInfoNoName(pathname, vRefNum, &hPB);
-		if ( result == noErr )
-		{
-			/*
-			**	The volume can be either online, offline, or ejected. What we find in
-			**	ioVDrvInfo and ioVDRefNum will tell us which it is.
-			**	See Inside Macintosh: Files page 2-80 and the Technical Note
-			**	"FL 34 - VCBs and Drive Numbers : The Real Story"
-			**	Where we get the drive number depends on the state of the volume.
-			*/
-			if ( hPB.volumeParam.ioVDrvInfo != 0 )
-			{
-				/* The volume is online and not ejected */
-				/* Get the drive number */
-				driveNumber = hPB.volumeParam.ioVDrvInfo;
-			}
-			else
-			{
-				/* The volume's is either offline or ejected */
-				/* in either case, the volume is NOT online */
-
-				/* Is it ejected or just offline? */
-				if ( hPB.volumeParam.ioVDRefNum > 0 )
-				{
-					/* It's ejected, the drive number is ioVDRefNum */
-					driveNumber = hPB.volumeParam.ioVDRefNum;
-				}
-				else
-				{
-					/* It's offline, the drive number is the negative of ioVDRefNum */
-					driveNumber = (short)-hPB.volumeParam.ioVDRefNum;
-				}
-			}
-			
-			/* Get pointer to first element in drive queue */
-			*driveQElementPtr = (DrvQElPtr)(GetDrvQHdr()->qHead);
-			
-			/* Search for a matching drive number */
-			while ( (*driveQElementPtr != NULL) && ((*driveQElementPtr)->dQDrive != driveNumber) )
-			{
-				*driveQElementPtr = (DrvQElPtr)(*driveQElementPtr)->qLink;
-			}
-			
-			if ( *driveQElementPtr == NULL )
-			{
-				/* This should never happen since every volume must have a drive, but... */
-				result = nsDrvErr;
-			}
-		}
-		
-		return ( result );
-	}
-
-	/*****************************************************************************/
-
-	pascal	OSErr	GetDiskBlocks(ConstStr255Param pathname,
-								  short vRefNum,
-								  unsigned long *numBlocks)
-	{
-		/* Various constants for GetDiskBlocks() */
-		enum
-		{
-			/* return format list status code */
-			kFmtLstCode = 6,
-			
-			/* reference number of .SONY driver */
-			kSonyRefNum = 0xfffb,
-			
-			/* values returned by DriveStatus in DrvSts.twoSideFmt */
-			kSingleSided = 0,
-			kDoubleSided = -1,
-			kSingleSidedSize = 800,		/* 400K */
-			kDoubleSidedSize = 1600,	/* 800K */
-			
-			/* values in DrvQEl.qType */
-			kWordDrvSiz = 0,
-			kLongDrvSiz = 1,
-			
-			/* more than enough formatListRecords */
-			kMaxFormatListRecs = 16
-		};
-		
-		DrvQElPtr		driveQElementPtr;
-		unsigned long	blocks;
-		ParamBlockRec	pb;
-		FormatListRec	formatListRecords[kMaxFormatListRecs];
-		DrvSts			status;
-		short			formatListRecIndex;
-		OSErr			result;
-
-		blocks = 0;
-		
-		/* Find the drive queue element for this volume */
-		result = FindDrive(pathname, vRefNum, &driveQElementPtr);
-		
-		/* 
-		**	Make sure this is a real driver (dQRefNum < 0).
-		**	AOCE's Mail Enclosures volume uses 0 for dQRefNum which will cause
-		**	problems if you try to use it as a driver refNum.
-		*/ 
-		if ( (result == noErr) && (driveQElementPtr->dQRefNum >= 0) )
-		{
-			result = paramErr;
-		}
-		else
-		{
-			/* Attempt to get the drive's format list. */
-			/* (see the Technical Note "What Your Sony Drives For You") */
-			
-			pb.cntrlParam.ioVRefNum = driveQElementPtr->dQDrive;
-			pb.cntrlParam.ioCRefNum = driveQElementPtr->dQRefNum;
-			pb.cntrlParam.csCode = kFmtLstCode;
-			pb.cntrlParam.csParam[0] = kMaxFormatListRecs;
-			*(long *)&pb.cntrlParam.csParam[1] = (long)&formatListRecords[0];
-			
-			result = PBStatusSync(&pb);
-			
-			if ( result == noErr )
-			{
-				/* The drive supports ReturnFormatList status call. */
-				
-				/* Get the current disk's size. */
-				for( formatListRecIndex = 0;
-					 formatListRecIndex < pb.cntrlParam.csParam[0];
-		    		 ++formatListRecIndex )
-		    	{
-		    		if ( (formatListRecords[formatListRecIndex].formatFlags &
-		    			  diCIFmtFlagsCurrentMask) != 0 )
-		    		{
-		    			blocks = formatListRecords[formatListRecIndex].volSize;
-		    		}
-				}
-	    		if ( blocks == 0 )
-	    		{
-	    			/* This should never happen */
-	    			result = paramErr;
-	    		}
-			}
-			else if ( driveQElementPtr->dQRefNum == (short)kSonyRefNum )
-			{
-				/* The drive is a non-SuperDrive floppy which only supports 400K and 800K disks */
-				
-				result = DriveStatus(driveQElementPtr->dQDrive, &status);
-				if ( result == noErr )
-				{
-					switch ( status.twoSideFmt )
-					{
-					case kSingleSided:
-						blocks = kSingleSidedSize;
-						break;
-					case kDoubleSided:
-						blocks = kDoubleSidedSize;
-						break;
-					default:
-						/* This should never happen */
-						result = paramErr;
-						break;
-					}
-				}
-			}
-			else
-			{
-				/* The drive is not a floppy and it doesn't support ReturnFormatList */
-				/* so use the dQDrvSz field(s) */
-				
-				result = noErr;	/* reset result */
-				switch ( driveQElementPtr->qType )
-				{
-				case kWordDrvSiz:
-					blocks = driveQElementPtr->dQDrvSz;
-					break;
-				case kLongDrvSiz:
-					blocks = ((unsigned long)driveQElementPtr->dQDrvSz2 << 16) +
-							 driveQElementPtr->dQDrvSz;
-					break;
-				default:
-					/* This should never happen */
-					result = paramErr;
-					break;
-				}
-			}
-		}
-		
-		if ( result == noErr )
-		{
-			*numBlocks = blocks;
-		}
-		
-		return ( result );
-	}
-
-	/*****************************************************************************/
-
-	pascal	OSErr	GetVolState(ConstStr255Param pathname,
-								short vRefNum,
-								Boolean *volumeOnline,
-								Boolean *volumeEjected,
-								Boolean *driveEjectable,
-								Boolean *driverWantsEject)
-	{
-		HParamBlockRec pb;
-		short driveNumber;
-		OSErr error;
-
-		error = GetVolumeInfoNoName(pathname,vRefNum, &pb);
-		if ( error == noErr )
-		{
-			if ( pb.volumeParam.ioVDrvInfo != 0 )
-			{
-				/* the volume is online and not ejected */
-				*volumeOnline = true;
-				*volumeEjected = false;
-				
-				/* Get the drive number */
-				driveNumber = pb.volumeParam.ioVDrvInfo;
-			}
-			else
-			{
-				/* the volume's is either offline or ejected */
-				/* in either case, the volume is NOT online */
-				*volumeOnline = false;
-
-				/* Is it ejected? */
-				*volumeEjected = pb.volumeParam.ioVDRefNum > 0;
-				
-				if ( *volumeEjected )
-				{
-					/* If ejected, the drive number is ioVDRefNum */
-					driveNumber = pb.volumeParam.ioVDRefNum;
-				}
-				else
-				{
-					/* If offline, the drive number is the negative of ioVDRefNum */
-					driveNumber = (short)-pb.volumeParam.ioVDRefNum;
-				}
-			}
-			
-			{
-				DrvQElPtr drvQElem;
-				
-				/* Find the drive queue element by searching the drive queue */
-				drvQElem = (DrvQElPtr)(GetDrvQHdr()->qHead);
-				while ( (drvQElem != NULL) && (drvQElem->dQDrive != driveNumber) )
-				{
-					drvQElem = (DrvQElPtr)drvQElem->qLink;
-				}
-				
-				if ( drvQElem != NULL )
-				{
-					/*
-					**	Each drive queue element is preceded by 4 flag bytes.
-					**	Byte 1 (the second flag byte) has bits that tell us if a
-					**	drive is ejectable and if its driver wants an eject call.
-					**	See Inside Macintosh: Files, page 2-85.
-					*/
-					{
-						Ptr		flagBytePtr;
-						
-						/* point to byte 1 of the flag bytes */
-						flagBytePtr = (Ptr)drvQElem;
-						flagBytePtr -= 3;
-						
-						/*
-						**	The drive is ejectable if flag byte 1 does not contain
-						**	0x08 (nonejectable) or 0x48 (nonejectable, but wants eject call).
-						*/
-						
-						*driveEjectable = (*flagBytePtr != 0x08) && (*flagBytePtr != 0x48);
-						
-						/*
-						**	The driver wants an eject call if flag byte 1 does not contain
-						**	0x08 (nonejectable). This may seem like a minor point, but some
-						**	disk drivers use the Eject request to flush their caches to disk
-						**	and you wouldn't want to skip that step after unmounting a volume.
-						*/
-						
-						*driverWantsEject = (*flagBytePtr != 0x08);
-					}
-				}
-				else
-				{
-					/* Didn't find the drive (this should never happen) */
-					*driveEjectable = false;
-					*driverWantsEject = false;
-				}
-			}
-		}
-		
-		return ( error );
-	}
-
-	/*****************************************************************************/
-
-#endif	//	}	!TARGET_API_MAC_CARBON
 
 /*****************************************************************************/
 
@@ -981,77 +479,12 @@ pascal	OSErr	UnmountAndEject(ConstStr255Param pathname,
 	if ( error == noErr )
 	{
 	
-#if	!TARGET_API_MAC_CARBON
-
-		short driveNum;
-		Boolean ejected, wantsEject;
-		DrvQElPtr drvQElem;
-		
-		if ( pb.volumeParam.ioVDrvInfo != 0 )
-		{
-			/* the volume is online and not ejected */
-			ejected = false;
-			
-			/* Get the drive number */
-			driveNum = pb.volumeParam.ioVDrvInfo;
-		}
-		else
-		{
-			/* the volume is ejected or offline */
-			
-			/* Is it ejected? */
-			ejected = pb.volumeParam.ioVDRefNum > 0;
-			
-			if ( ejected )
-			{
-				/* If ejected, the drive number is ioVDRefNum */
-				driveNum = pb.volumeParam.ioVDRefNum;
-			}
-			else
-			{
-				/* If offline, the drive number is the negative of ioVDRefNum */
-				driveNum = (short)-pb.volumeParam.ioVDRefNum;
-			}
-		}
-		
-		/* find the drive queue element */
-		drvQElem = (DrvQElPtr)(GetDrvQHdr()->qHead);
-		while ( (drvQElem != NULL) && (drvQElem->dQDrive != driveNum) )
-		{
-			drvQElem = (DrvQElPtr)drvQElem->qLink;
-		}
-		
-		if ( drvQElem != NULL )
-		{
-			/* does the drive want an eject call */
-			wantsEject = (*((Ptr)((Ptr)drvQElem - 3)) != 8);
-		}
-		else
-		{
-			/* didn't find the drive!! */
-			wantsEject = false;
-		}
-		
-#endif	//	!TARGET_API_MAC_CARBON
 
 		/* unmount the volume */
 		pb.volumeParam.ioNamePtr = NULL;
 		/* ioVRefNum is already filled in from PBHGetVInfo */
 		error = PBUnmountVol((ParmBlkPtr)&pb);
 
-#if	!TARGET_API_MAC_CARBON
-
-		if ( error == noErr )
-		{
-			if ( wantsEject && !ejected )
-			{
-				/* eject the media from the drive if needed */
-				pb.volumeParam.ioVRefNum = driveNum;
-				error = PBEject((ParmBlkPtr)&pb);
-			}
-		}
-		
-#endif	//	!TARGET_API_MAC_CARBON
 
 	}
 	
@@ -1121,35 +554,10 @@ pascal	OSErr RestoreDefault(short oldVRefNum,
 {
 	OSErr	error;
 	
-#if	!TARGET_API_MAC_CARBON
-
-	short	defaultVRefNum;
-	long	defaultDirID;
-	long	defaultProcID;
-	
-	/* Determine if the default volume was a wdRefNum. */
-	error = GetWDInfo(oldVRefNum, &defaultVRefNum, &defaultDirID, &defaultProcID);
-	if ( error == noErr )
-	{
-		/* Restore the old default volume/directory, one way or the other. */
-		if ( defaultDirID != fsRtDirID )
-		{
-			/* oldVRefNum was a wdRefNum - use SetVol */
-			error = SetVol(NULL, oldVRefNum);
-		}
-		else
-		{
-		
-#endif	//	!TARGET_API_MAC_CARBON
 
 			/* oldVRefNum was a real vRefNum - use HSetVol */
 			error = HSetVol(NULL, oldVRefNum, oldDirID);
 
-#if	!TARGET_API_MAC_CARBON
-
-		}
-	}
-#endif	//	!TARGET_API_MAC_CARBON
 	
 	return ( error );
 }

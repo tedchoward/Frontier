@@ -36,23 +36,8 @@
 #define __FRONTIER_H__
 
 
-#if !defined(MACVERSION) && !defined(WIN95VERSION)
-	#error Either MACVERSION or WIN95VERSION must always be defined!
-#endif
 
 
-#ifdef WIN95VERSION
-	#if (defined(_MSC_VER) && !defined(__MWERKS__))
-		/*
-		2006-03-04 aradke: Key to MS Visual C++ warning numbers
-			4244: conversion from [e.g.] 'long' to 'short', possible loss of data
-			4761: integral size mismatch in argument; conversion supplied
-			4068: unknown pragma
-			4013: 'fooBarFunction' undefined; assuming extern returning int
-		*/
-		#pragma warning (disable: 4244 4761 4068; error: 4013)
-	#endif
-#endif /* WIN95VERSION */
 
 
 #include "osincludes.h"		/* operating system headers */

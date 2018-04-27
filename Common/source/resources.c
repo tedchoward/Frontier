@@ -37,13 +37,9 @@
 #include "langinternal.h" /* 2006-01-30 creedon */
 
 
-#ifdef WIN95VERSION
-	extern HINSTANCE hInst;
-#endif
 
 
 boolean getstringlist (short listnum, short id, bigstring bs) {
-#ifdef MACVERSION
     
     CFStringRef stringKey = CFStringCreateWithFormat(kCFAllocatorDefault, NULL, CFSTR("%d.%d"), listnum, id);
     CFBundleRef mainBundle = CFBundleGetMainBundle();
@@ -60,21 +56,7 @@ boolean getstringlist (short listnum, short id, bigstring bs) {
     CFRelease(stringKey);
     
     return stringlength(bs) > 0;
-#endif
 
-#ifdef WIN95VERSION
-	HANDLE reshandle, hdata;
-	
-	setstringlength(bs,0);
-	reshandle = FindResource (hInst, MAKEINTRESOURCE(id), MAKEINTRESOURCE(listnum));
-	if (reshandle != NULL)
-		{
-		hdata = LoadResource (hInst, reshandle);
-		strcpy (stringbaseaddress(bs), LockResource(hdata));
-		setstringlength (bs, strlen (stringbaseaddress(bs)));
-		}
-	return (stringlength (bs) > 0);
-#endif
 	} /*getstringlist*/
 	
 
@@ -115,7 +97,6 @@ boolean findstringlist (bigstring bs, short listnum, short *id) {
 	
 
 boolean closeresourcefile (short rnum) {
-#ifdef MACVERSION	
 	/*
 	close the last file opened with openresourcefile.
 	
@@ -134,7 +115,6 @@ boolean closeresourcefile (short rnum) {
 		if (ResError () != noErr)
 			return (false);
 		}
-#endif	
 	return (true);
 	} /*closeresourcefile*/
 
@@ -147,7 +127,6 @@ boolean openresourcefile ( const ptrfilespec fs, short *rnum, short forktype ) {
 	2005-09-02 creedon: on Mac added support for fork parameter, see resources.c: openresourcefile and pushresourcefile
 	*/ 
 		
-	#ifdef MACVERSION
 	
 		short resourcerefnum = -1;
 		FSRef fsref;
@@ -209,13 +188,11 @@ boolean openresourcefile ( const ptrfilespec fs, short *rnum, short forktype ) {
 
 		*rnum = -1;
 
-	#endif // MACVERSION
 	
 	return (false);
 	} /* openresourcefile */
 
 
-#ifdef MACVERSION
 boolean writeresource (ResType type, short id, bigstring bsname, long ctwrite, void *pdata) {
 	
 	/*
@@ -264,10 +241,8 @@ boolean writeresource (ResType type, short id, bigstring bsname, long ctwrite, v
 	
 	return (true);
 	} /*writeresource*/
-#endif
 
 
-#ifdef MACVERSION
 static boolean copyresourcehandle (Handle hresource, short destnum) {
 	
 	/*
@@ -318,10 +293,8 @@ static boolean copyresourcehandle (Handle hresource, short destnum) {
 	
 	return (!oserror (ResError ()));
 	} /*copyresourcehandle*/
-#endif
 
 
-#ifdef MACVERSION
 boolean copyresource (short sourcenum, short destnum, ResType type, short id) {
 	
 	/*
@@ -345,7 +318,6 @@ boolean copyresource (short sourcenum, short destnum, ResType type, short id) {
 	
 	return (fl);
 	} /*copyresource*/
-#endif
 
 
 boolean copyallresources (short sourcenum, short destnum) {
@@ -357,7 +329,6 @@ boolean copyallresources (short sourcenum, short destnum) {
 	oserror if a memory or IO error occurs.
 	*/
 	
-#ifdef MACVERSION
 	short saveresfile;
 	short cttypes, ixtype;
 	short ctresources, ixresource;
@@ -387,65 +358,16 @@ boolean copyallresources (short sourcenum, short destnum) {
 	UseResFile (saveresfile);
 	
 	return (fl);
-#endif
-#ifdef WIN95VERSION
-	return (false);
-#endif
 	} /*copyallresources*/
 
 
 
 static Handle get1resource (ResType type, short id, bigstring bsname) {
-#ifdef MACVERSION	
 	if ((bsname == nil) || isemptystring (bsname))
 		return (Get1Resource (type, id));
 	else
 		return (Get1NamedResource (type, bsname));
-#endif
 
-#ifdef WIN95VERSION
-	HANDLE reshandle, hdata;
-	Handle hreturn;
-	long sz;
-	char restype[5];
-	char restypex[5];
-	memmove (restypex, &type, 4);
-	restype[0] = restypex[3];
-	restype[1] = restypex[2];
-	restype[2] = restypex[1];
-	restype[3] = restypex[0];
-
-	restype[4] = 0;
-
-	hdata = NULL;
-	hreturn = NULL;
-
-	if ((bsname == nil) || isemptystring (bsname))
-		reshandle = FindResource (hInst, MAKEINTRESOURCE(id), restype);
-	else
-		reshandle = FindResource (hInst, stringbaseaddress(bsname), restype);
-
-	if (reshandle != NULL) 
-		{
-		sz = SizeofResource (hInst, reshandle);
-		hdata = LoadResource (hInst, reshandle);
-		
-		if (hdata != NULL) 
-			{
-			hreturn = NewHandle (sz);
-
-			if (hreturn != NULL)
-				{
-//				memmove (GlobalLock (hreturn), LockResource(hdata), sz);
-//				GlobalUnlock (hreturn);
-				//5.1.2 new memory handling RAB
-				memmove (*hreturn, LockResource(hdata), sz);
-				}
-			}
-		}
-	return (hreturn);
-
-#endif
 	} /*get1resource*/
 
 
@@ -456,23 +378,17 @@ Handle filegetresource (short rnum, ResType type, short id, bigstring bsname) {
 	*/
 	
 	register Handle hresource;
-#ifdef MACVERSION
 	short saveresfile;
-#endif
 	
 	if (rnum == -1)
 		return (nil);
-#ifdef MACVERSION	
 	saveresfile = CurResFile ();
 	
 	UseResFile (rnum);
-#endif	
 
 	hresource = get1resource (type, id, bsname);
 
-#ifdef MACVERSION	
 	UseResFile (saveresfile);
-#endif	
 	return (hresource);
 	} /*filegetresource*/
 
@@ -495,7 +411,6 @@ boolean filereadresource (short rnum, ResType type, short id, bigstring bsname, 
 	return (false);
 	} /*filereadresource*/
 
-#ifdef MACVERSION
 boolean filewriteresource (short rnum, ResType type, short id, bigstring bsname, long ctwrite, void *pdata) {
 	
 	register boolean fl;
@@ -517,9 +432,7 @@ boolean filewriteresource (short rnum, ResType type, short id, bigstring bsname,
 	
 	return (fl && !oserror (err));
 	} /*filewriteresource*/
-#endif
 
-#ifdef MACVERSION
 boolean saveresource (const ptrfilespec fs, short rnum, ResType type, short id, bigstring bsname, long sizedata, void *pdata, short forktype) {
 
 	/*
@@ -562,9 +475,7 @@ boolean saveresource (const ptrfilespec fs, short rnum, ResType type, short id, 
 	
 	return (fl && !oserror (err));
 	} /*saveresource*/
-#endif
 
-#ifdef MACVERSION
 boolean saveresourcehandle (const ptrfilespec fs, ResType type, short id, bigstring bsname, Handle h, short forktype) {
 	
 	/*
@@ -581,7 +492,6 @@ boolean saveresourcehandle (const ptrfilespec fs, ResType type, short id, bigstr
 	
 	return (fl);
 	} /*saveresourcehandle*/
-#endif
 
 /*
 static for push/popresourcefile
@@ -589,7 +499,6 @@ static for push/popresourcefile
 
 static short newrnum, oldrnum;
 
-#ifdef MACVERSION
 
 	static boolean pushresourcefile (const ptrfilespec fs, char permission, short forktype) {
 		
@@ -682,7 +591,6 @@ static short newrnum, oldrnum;
 		
 		return (true);
 		} /*popresourcefile*/
-#endif
 
 boolean loadresource (const ptrfilespec fs, short rnum, ResType type, short id, bigstring bsname, long sizedata, void *pdata, short forktype) {
 	
@@ -699,10 +607,8 @@ boolean loadresource (const ptrfilespec fs, short rnum, ResType type, short id, 
 	if (rnum != -1) /*have an open resource file to read from*/
 		return (filereadresource (rnum, type, id, bsname, sizedata, pdata));
 	
-	#ifdef MACVERSION	
 		if (!pushresourcefilereadonly (fs, forktype))
 			return (false);
-	#endif
 	
 	h = get1resource (type, id, bsname);
 	
@@ -714,20 +620,14 @@ boolean loadresource (const ptrfilespec fs, short rnum, ResType type, short id, 
 		
 		fl = true;
 
-		#ifdef WIN95VERSION
-			releaseresourcehandle (h);
-		#endif
 		}
 	
-	#ifdef MACVERSION
 		popresourcefile ();
-	#endif
 		
 	return (fl);
 	} /*loadresource*/
 
 
-#ifdef MACVERSION
 boolean loadresourcehandle (const ptrfilespec fs, ResType type, short id, bigstring bsname, Handle *hresource, short forktype) {
 	
 	/*
@@ -772,10 +672,8 @@ boolean loadresourcehandle (const ptrfilespec fs, ResType type, short id, bigstr
 	
 	return (fl);
 	} /*loadresourcehandle*/
-#endif
 
 
-#ifdef MACVERSION
 boolean deleteresource (const ptrfilespec fs, ResType type, short id, bigstring bsname, short forkttype) {
 	
 	/*
@@ -809,10 +707,8 @@ boolean deleteresource (const ptrfilespec fs, ResType type, short id, bigstring 
 	
 	return (fl);
 	} /*deleteresource*/
-#endif
 
 
-#ifdef MACVERSION
 boolean getnumresourcetypes (const ptrfilespec fs, short *cttypes, short forktype) {
 	
 	/*
@@ -828,9 +724,7 @@ boolean getnumresourcetypes (const ptrfilespec fs, short *cttypes, short forktyp
 	
 	return (true);
 	} /*getnumresourcetypes*/
-#endif
 
-#ifdef MACVERSION
 boolean getnthresourcetype (const ptrfilespec fs, short n, ResType *type, short forktype) {
 	
 	/*
@@ -846,9 +740,7 @@ boolean getnthresourcetype (const ptrfilespec fs, short n, ResType *type, short 
 	
 	return (*type != 0L);
 	} /*getnthresourcetype*/
-#endif
 
-#ifdef MACVERSION
 boolean getnumresources (const ptrfilespec fs, ResType type, short *ctresources, short forktype) {
 	
 	/*
@@ -864,9 +756,7 @@ boolean getnumresources (const ptrfilespec fs, ResType type, short *ctresources,
 	
 	return (true);
 	} /*getnumresources*/
-#endif
 
-#ifdef MACVERSION
 boolean getnthresourcehandle (const ptrfilespec fs, ResType type, short n, short *id, bigstring bsname, Handle *hresource, short forktype) {
 	
 	/*
@@ -914,10 +804,8 @@ boolean getnthresourcehandle (const ptrfilespec fs, ResType type, short n, short
 	
 	return (fl);
 	} /*getnthresourcehandle*/
-#endif
 
 
-#ifdef MACVERSION
 static boolean getemptyresourcehandle (ResType type, short id, bigstring bsname, Handle *hresource) {
 	
 	/*
@@ -944,10 +832,8 @@ static boolean getemptyresourcehandle (ResType type, short id, bigstring bsname,
 	
 	return (true);
 	} /*getemptyresourcehandle*/
-#endif
 
 
-#ifdef MACVERSION
 boolean getresourceattributes (const ptrfilespec fs, ResType type, short id, bigstring bsname, short *resattrs, short forktype) {
 	
 	/*
@@ -973,10 +859,8 @@ boolean getresourceattributes (const ptrfilespec fs, ResType type, short id, big
 	
 	return (fl);
 	} /*getresourceattributes*/
-#endif
 
 
-#ifdef MACVERSION
 boolean setresourceattributes (const ptrfilespec fs, ResType type, short id, bigstring bsname, short resattrs, short forktype) {
 	
 	/*
@@ -1004,27 +888,16 @@ boolean setresourceattributes (const ptrfilespec fs, ResType type, short id, big
 	
 	return (fl);
 	} /*setresourceattributes*/
-#endif
 
 
 Handle getresourcehandle (ResType type, short id)	{
-#ifdef MACVERSION
 	return (GetResource (type, id));
-#endif
 
-#ifdef WIN95VERSION
-	return (filegetresource (0, type, id, NULL));
-#endif
 	}
 
 
 void releaseresourcehandle (Handle h) {
-#ifdef MACVERSION
 	ReleaseResource (h);
-#endif
 
-#ifdef WIN95VERSION
-	DisposeHandle (h);
-#endif
 	} /*releaseresourcehandle*/
 

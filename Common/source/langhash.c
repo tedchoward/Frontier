@@ -46,9 +46,7 @@
 #include "timedate.h"
 #include "byteorder.h"	/* 2006-04-08 aradke: endianness conversion macros */
 
-#if TARGET_API_MAC_CARBON == 1 /*PBS 03/14/02: AE OS X fix.*/
 	#include "aeutils.h" /*PBS 03/14/02: AE OS X fix.*/
-#endif
 
 #pragma pack(2)
 typedef struct tydisksymbolrecord {
@@ -96,13 +94,8 @@ typedef struct tydisktablerecord { /*new in 5.0, a header for each table*/
 
 typedef enum tylinetableitemflags {
 
-#ifdef MACVERSION
 	flxml = 0x8000
-#endif
 
-#ifdef WIN95VERSION
-	flxml = 0x0080
-#endif
 	} tylinetableitemflags;
 
 #define	maxinlinescalarsize	1023
@@ -150,253 +143,6 @@ static long cthashtablesallocated = 0;
 #endif
 
 
-#ifdef fltracklocaladdresses
-
-	#ifdef fldebug
-
-	static long ctrefnodesadded = 0;
-
-	static long ctrefnodesremoved = 0;
-
-	static long ctrefnodesinvalidated = 0;
-
-	#endif
-
-static void hashaddrefnode (hdlhashtable ht, hdlhashnode hn) {
-	
-	/*
-	2003-05-21 AR: Insert the node at the beginning of the table's
-	linked list of nodes that reference it.
-	
-	This is so that right before the table gets disposed, it can notify
-	the nodes that the addresses they contain are about to become invalid.
-	Not only are they pointing at an object that will no longer exist
-	in the namespace, worse, the handle tacked onto the end of the address
-	string will soon point at a block of memory that was already released!
-	
-	For now, we only keep track of nodes referencing a local table.
-	
-	Note that references to global tables can become invalid, too, if a
-	database file is closed while an address pointing into it is part
-	of some thread's stack of local variables.
-	*/
-
-	assert (ht != nil);
-	
-	assert ((**ht).fllocaltable);
-	
-	assert (hn != nil);
-	
-	assert ((**hn).val.valuetype == addressvaluetype);
-	
-	assert ((**hn).refnodelink == nil);
-	
-	(**hn).refnodelink = (**ht).refnodes;
-	
-	(**ht).refnodes = hn;	
-
-	#ifdef fldebug
-		++ctrefnodesadded;
-	#endif
-	} /*hashaddrefnode*/
-
-
-static void hashremoverefnode (hdlhashtable ht, hdlhashnode hn) {
-
-	/*
-	2003-05-21 AR: Complements hashaddrefnode.
-	Remove the given node from the table's linked list.
-	
-	2003-06-14 AR: Commented out an over-eager assertion.
-	*/
-
-	assert (ht != nil);
-	
-	assert ((**ht).fllocaltable);
-	
-	assert ((**ht).refnodes != nil);
-	
-	assert (hn != nil);
-	
-	// assert ((**hn).val.valuetype == addressvaluetype); /* this may no longer be true */
-	
-	if ((**ht).refnodes == hn) {
-	
-		(**ht).refnodes = (**hn).refnodelink;
-	
-		(**hn).refnodelink = nil;
-		}
-	else {
-	
-		hdlhashnode nomad = (**ht).refnodes;
-	
-		while ((**nomad).refnodelink != nil) {
-
-			if ((**nomad).refnodelink == hn) {
-			
-				(**nomad).refnodelink = (**hn).refnodelink;
-				
-				(**hn).refnodelink = nil;
-				
-				break;
-				} /*while*/
-			
-			nomad = (**nomad).refnodelink;
-			}
-		}
-		
-	assert ((**hn).refnodelink == nil); /*check that we found it*/
-
-	#ifdef fldebug
-		++ctrefnodesremoved;
-	#endif
-	} /*hashremoverefnode*/
-
-
-void hashregisteraddressnode (hdlhashtable hparent, hdlhashnode hn) {
-
-	/*
-	2003-05-21 AR: Call me if the valuerecord of hn has just been
-	assigned a new value. If it's an address of a local variable,
-	we will register hn with the table that contains the local variable.
-	
-	When the table is about to be disposed, it can notify us of the fact
-	that our address value is about to point to an invalid handle.
-	
-	Optimization: We don't have to register hn with the destination table
-	if hn lives in a stack frame that will be disposed before (or at worst
-	at the same time) as the destination table. For this to work properly,
-	we have to make sure that if hn is unlinked and inserted into another
-	table (or the same table), e.g. via copy&paste, we unregister and
-	register hn again.
-	
-	Actually, the above should work but its probably not a useful optimization.
-	Just check whether the table containing hn and the destination table are
-	identical. This should already apply to a lot of cases.
-	*/
-
-	assert ((**hn).reftable == nil);
-
-	if ((**hn).val.valuetype == addressvaluetype && (**hn).reftable == nil) {
-		
-		hdlhashtable hdest;
-		bigstring bsname;
-		boolean fl;
-		
-		disablelangerror ();
-		
-		fl = getaddressvalue ((**hn).val, &hdest, bsname);
-		
-		enablelangerror ();
-			
-		if (!fl || (hdest == nil) || !(**hdest).fllocaltable)
-			return;
-		
-		if (hparent == hdest) /*don't bother...*/
-			return;
-		
-		/*
-		if ((**hparent).fllocaltable) { //optimization?
-
-			register hdlhashtable nomad = hparent;
-			
-			while ((**nomad).parenthashtable != nil) { //surface to stack frame
-				nomad = (**nomad).parenthashtable;
-				}
-			
-			while (nomad != nil && (**nomad).fllocaltable) { //walk chain and check whether hdest is in it
-
-				if (nomad == hdest)
-					return;
-
-				nomad = (**nomad).prevhashtable;
-				}
-			}
-		*/
-		
-		hashaddrefnode (hdest, hn);
-			
-		(**hn).reftable = hdest;
-		}
-	} /*hashregisteraddressnode*/
-
-
-void hashunregisteraddressnode (hdlhashnode hn) {
-
-	/*
-	2003-05-21 AR: Call me if the valuerecord of hn has changed
-	or if hn itself is about to be disposed.
-	*/
-	
-	if ((**hn).reftable != nil) {
-
-		hashremoverefnode ((**hn).reftable, hn);
-		
-		(**hn).reftable = nil;
-		}
-	} /*hashunregisteraddressnode*/
-
-
-static void hashinvalidaterefnodes (hdlhashtable ht) {
-	
-	/*
-	2003-05-21 AR: The hash table is about to be disposed, so notify
-	all hash nodes containing an address that reference the table
-	of the fact that they are about to become invalid.
-	
-	Call me from disposehashtable after it has disposed of its nodes.
-	
-	2003-05-23 AR: Set refnodes field to nil so we won't crash
-	if we are called multiple times for the same table. Also, try
-	to get the full path representation of the address, but this
-	will only work if the table hasn't been removed from the
-	namespace yet.
-	*/
-
-	hdlhashnode hn, hnext;
-	bigstring bspath;
-		
-	assert (ht != nil);
-	
-	hn = (**ht).refnodes; /*unlink list from table*/
-	
-	(**ht).refnodes = nil;
-
-	disablelangerror (); /*must re-enable before we return*/
-	
-	while (hn != nil) {
-		
-		assert ((**hn).reftable == ht);
-		assert ((**hn).val.valuetype == addressvaluetype);
-		
-		hnext = (**hn).refnodelink;
-		
-		/* unlink */
-		
-		(**hn).refnodelink = nil;
-		
-		(**hn).reftable = nil;
-		
-		/* nuke the htable handle tacked onto the item name */
-		
-		getaddresspath ((**hn).val, bspath);
-		
-		sethandlecontents (bspath, stringsize (bspath), (Handle) (**hn).val.data.addressvalue);
-		
-		#if fldebug
-			++ctrefnodesinvalidated;
-		#endif
-		
-		/* advance */
-		
-		hn = hnext;
-		} /*while*/
-
-	enablelangerror ();
-	
-	} /*hashinvalidaterefnodes*/
-
-#endif /*fltracklocaladdresses*/
 
 
 boolean newhashtable (hdlhashtable *htable) {
@@ -511,43 +257,6 @@ void unchainhashtable (void) {
 	} /*unchainhashtable*/
 
 
-#if 0
-
-static boolean indexhashtable_obsolete (short tablenum, hdlhashtable *htable) {
-	
-	/*
-	turn an index into a hash table.  the most-global hashtable has index 0.
-	its previous table is index 1.
-	
-	you can safely ask for the most-global one by asking for table number
-	infinity, but watch out -- we return false if we fell off the list.
-	*/
-
-	register hdlhashtable nomad = currenthashtable;
-	register hdlhashtable prevnomad = nomad;
-	register short ct = tablenum;
-	register short i;
-	
-	for (i = 1; i <= ct; i++) {
-		
-		if (nomad == nil) { /*ran out of tables, return most-global table*/
-			
-			*htable = prevnomad;
-			
-			return (false);
-			}
-		
-		prevnomad = nomad;
-		
-		nomad = (**nomad).prevhashtable;
-		} /*for*/
-		
-	*htable = nomad; 
-	
-	return (true);
-	} /*indexhashtable*/
-
-#endif
 	
 
 hdlhashtable sethashtable (hdlhashtable hset) {
@@ -763,12 +472,10 @@ static boolean purgetablevisit (hdlhashnode hnode) {
 	if ((**ht).fldirty)
 		return (false);
 	
-	#if !flruntime
 	
 	if ((**ht).flwindowopen)
 		return (false);
 	
-	#endif
 	
 	assert (!(**ht).fllocaltable);
 	
@@ -839,9 +546,6 @@ boolean disposehashnode (hdlhashtable ht, hdlhashnode hnode, boolean fldisposeva
 		}
 	*/
 
-#ifdef fltracklocaladdresses
-	hashunregisteraddressnode (hnode);
-#endif	
 
 	if (fldisposevalue) {
 		
@@ -1003,9 +707,6 @@ boolean disposehashtable (hdlhashtable htable, boolean fldisk) {
 		}
 	*/
 	
-#ifdef fltracklocaladdresses
-	hashinvalidaterefnodes (ht);
-#endif
 	
 	(**ht).prevhashtable = hfirstfreetable;
 	
@@ -1758,7 +1459,6 @@ boolean hashresolvevalue (hdlhashtable htable, hdlhashnode hnode) {
 	register hdlhashnode hn = hnode;
 	boolean fl;
 	
-	#ifdef version5orgreater
 	if (htable == pathstable && (**hn).flunresolvedaddress) {
 
 		(**hn).flunresolvedaddress = false; /*clear now to avoid potential recursion*/
@@ -1776,39 +1476,6 @@ boolean hashresolvevalue (hdlhashtable htable, hdlhashnode hnode) {
 		if (!fl)
 			return (false);
 		}
-	#else
-	register hdlstring hstring;
-	bigstring bs;
-	if ((**hn).flunresolvedaddress) {
-
-		(**hn).flunresolvedaddress = false; /*clear now to avoid potential recursion*/
-		
-		hstring = (**hn).val.data.addressvalue;
-		
-		copyheapstring (hstring, bs);
-		
-		pushhashtable (roottable);
-		
-		disablelangerror ();
-		
-		fl = langexpandtodotparams (bs, &htable, bs);
-		
-		enablelangerror ();
-		
-		pophashtable ();
-		
-		if (!fl) {
-
-		//	(**hn).flunresolvedaddress = true; /*didn't actually resolve it*/
-			
-			return (false);
-			}
-
-		setheapstring (bs, hstring); /*now we have just the name*/
-		
-		enlargehandle ((Handle) hstring, sizeof (hdlhashtable), &htable); /*should never fail*/
-		}
-	#endif
 
 	if ((**hn).val.fldiskval) {
 		Handle hbinary;
@@ -2654,11 +2321,7 @@ static boolean hashpackvisit (bigstring bsname, hdlhashnode hnode, tyvaluerecord
 				double x = **val.data.doublevalue;
 				extended80 x80;
 				
-				#ifdef WIN95VERSION
-					convertToMacExtended (x, &x80);
-				#else
 					dtox80 (&x, &x80);
-				#endif	
 				
 				if (!hashpackdata (&lpi->s2, &x80, sizeof (x80), &rec.data.longvalue))
 					goto error;
@@ -2680,16 +2343,11 @@ static boolean hashpackvisit (bigstring bsname, hdlhashnode hnode, tyvaluerecord
 		case patternvaluetype:
 		case objspecvaluetype:
 		case binaryvaluetype:
-	#ifndef oplanglists
-		case listvaluetype:
-		case recordvaluetype:
-	#endif
 			if (!hashpackscalar (&lpi->s2, hnode, &rec.data.longvalue))
 				goto error;
 				
 			break;
 		
-	#ifdef oplanglists
 		case listvaluetype:
 		case recordvaluetype:
 			if (!oppacklist (val.data.listvalue, &hpacked))
@@ -2703,9 +2361,7 @@ static boolean hashpackvisit (bigstring bsname, hdlhashnode hnode, tyvaluerecord
 			disposehandle (hpacked);
 
 			break;
-	#endif
 
-	#ifdef version5orgreater
 		case filespecvaluetype:
 		case aliasvaluetype:
 			if (!langpackfileval (&val, &hpacked))
@@ -2719,7 +2375,6 @@ static boolean hashpackvisit (bigstring bsname, hdlhashnode hnode, tyvaluerecord
 			disposehandle (hpacked);
 			
 			break;
-	#endif
 
 		case codevaluetype:
 			if (!langpacktree (val.data.codevalue, &hpacked))
@@ -3001,21 +2656,6 @@ boolean hashunpacktable (Handle hpackedtable, boolean flmemory, hdlhashtable hta
 		
 		assert (sizeof (tydisksymbolrecord) == sizeof (tyOLD42disksymbolrecord));
 		
-	#if 0 //def MACVERSION
-		tyOLD42disksymbolrecord rec42;
-		
-		if (header.version < 2) {
-			
-			if (!loadfromhandle (hrecords, &ix, sizeof (rec42), &rec42))
-				break;
-			
-			rec.ixkey = rec42.ixkey;
-			rec.valuetype = rec42.valuetype;
-			rec.version = rec42.version;
-			rec.data.longvalue = rec42.data.longvalue;
-			}
-		else
-	#endif
 			
 			if (!loadfromhandle (hrecords, &ix, sizeof (rec), &rec)) /*out of records*/
 				break;
@@ -3154,11 +2794,7 @@ boolean hashunpacktable (Handle hpackedtable, boolean flmemory, hdlhashtable hta
 				if (!hashunpackbinary (hstrings, (Handle *) &x80, ixstrings))
 					goto L1;
 				
-				#ifdef WIN95VERSION
-					convertFromMacExtended (&x, *x80);
-				#else
 					x = x80tod (*x80);
-				#endif			 
 				 
 				disposehandle ((Handle) x80);	// 1/22/97 dmb: this was a leak!
 				
@@ -3182,10 +2818,6 @@ boolean hashunpacktable (Handle hpackedtable, boolean flmemory, hdlhashtable hta
 			case stringvaluetype:
 			case passwordvaluetype:
 			case patternvaluetype:
-		#ifndef oplanglists
-			case listvaluetype:
-			case recordvaluetype:
-		#endif
 			case binaryvaluetype: {
 				if (!hashunpackscalar (hstrings, &val, ixstrings))
 					goto L1;
@@ -3193,11 +2825,9 @@ boolean hashunpacktable (Handle hpackedtable, boolean flmemory, hdlhashtable hta
 				break;
 				}
 			
-		#ifdef oplanglists
 			case listvaluetype:
 			case recordvaluetype:
 				if (rec.version < 2) {
-					#ifdef MACVERSION
 						AEDesc aelist;
 						
 						if (!hashunpackscalar (hstrings, &val, ixstrings))
@@ -3218,7 +2848,6 @@ boolean hashunpacktable (Handle hpackedtable, boolean flmemory, hdlhashtable hta
 							val.fldiskval = false;
 							}
 						
-						#if TARGET_API_MAC_CARBON == 1 /*PBS 03/14/02: AE OS X fix.*/
 							
 							{
 							DescType typecode = typeAEList;
@@ -3229,16 +2858,6 @@ boolean hashunpacktable (Handle hpackedtable, boolean flmemory, hdlhashtable hta
 							newdescwithhandle (&aelist, typecode, val.data.binaryvalue);
 							}
 						
-						#else
-								
-							if (val.valuetype == recordvaluetype)
-								aelist.descriptorType = typeAERecord;
-							else
-								aelist.descriptorType = typeAEList;
-					
-							aelist.dataHandle = val.data.binaryvalue;
-						
-						#endif
 						
 						if (!langipcconvertaelist (&aelist, &val))
 							goto L1;
@@ -3246,13 +2865,7 @@ boolean hashunpacktable (Handle hpackedtable, boolean flmemory, hdlhashtable hta
 						AEDisposeDesc (&aelist);
 						
 						exemptfromtmpstack (&val);
-					#endif
 					
-					#ifdef WIN95VERSION
-						val.valuetype = stringvaluetype;
-						
-						newheapstring ("\x15" "***unreadable data***", &val.data.stringvalue);
-					#endif
 					
 					break;
 					}
@@ -3264,14 +2877,11 @@ boolean hashunpacktable (Handle hpackedtable, boolean flmemory, hdlhashtable hta
 					goto L1;
 				
 				break;
-		#endif
 
-		#ifdef version5orgreater
 			case filespecvaluetype:
 			case aliasvaluetype:
 
 				if (rec.version < 2) {
-					#ifdef MACVERSION
 						tyfilespec fs;
 						boolean flresolved;
 						Handle hbinary;
@@ -3299,14 +2909,7 @@ boolean hashunpacktable (Handle hpackedtable, boolean flmemory, hdlhashtable hta
 						val.data.binaryvalue = hbinary;
 						
 						break;
-					#endif
 					
-					#ifdef WIN95VERSION
-						if (!hashunpackscalar (hstrings, &val, ixstrings))
-							goto L1;
-						
-						break;
-					#endif
 					}
 				
 				if (!hashunpackbinary (hstrings, &hpacked, ixstrings))
@@ -3316,7 +2919,6 @@ boolean hashunpacktable (Handle hpackedtable, boolean flmemory, hdlhashtable hta
 					goto L1;
 				
 				break;
-		#endif
 
 			case objspecvaluetype: {
 				Handle hobjspec;
@@ -3357,9 +2959,6 @@ boolean hashunpacktable (Handle hpackedtable, boolean flmemory, hdlhashtable hta
 				}
 				
 			case directionvaluetype:
-				#ifdef WIN95VERSION
-				val.data.dirvalue = 0;	// clear both bytes before loading low byte
-				#endif
 
 			case booleanvaluetype:
 				if (header.version < 2)
@@ -3749,7 +3348,6 @@ boolean hashgetvaluestring (tyvaluerecord val, bigstring bs) {
 			
 			break;
 		
-		#if !flruntime
 		
 		case codevaluetype:
 			parsenumberstring (langmiscstringlist, treesizestring, langcounttreenodes (val.data.codevalue), bs);
@@ -3763,7 +3361,6 @@ boolean hashgetvaluestring (tyvaluerecord val, bigstring bs) {
 			
 			break;
 		
-		#endif
 		
 		default:
 			langgetmiscstring (unknownstring, bs);
@@ -3838,17 +3435,6 @@ boolean hashgetsizestring (const tyvaluerecord *val, bigstring bssize) {
 			
 			break;
 		
-		#ifndef version5orgreater
-			case addressvaluetype:
-				size = stringlength (bsvalue);
-				
-				if (size > 0) /*non-empty address; don't count the '@' character*/
-					--size;
-				
-				numbertostring (size, bssize);
-				
-				break;
-		#endif
 
 		case binaryvaluetype: {
 			register Handle h = (*val).data.binaryvalue;

@@ -49,12 +49,7 @@
 #define backgroundpattern 128
 
 
-#ifdef MACVERSION
 	#define flbitmapsallowed true /*bitmaps wreak havoc on debugging*/
-#endif
-#ifdef WIN95VERSION
-	#define flbitmapsallowed false /*somehow, true value screws display*/
-#endif
 
 static boolean flbuttonbitmap = false; /*if true, don't use bitmaps*/
 
@@ -144,26 +139,6 @@ static boolean buttondisplayed (short ix) {
 	} /*buttondisplayed*/
 
 
-#if !TARGET_API_MAC_CARBON
-
-static short getbuttonstyle (short ix) {
-	
-	/*
-	5.017 dmb: new button logic doesn't do bold anymore. we don't use it.
-	*/
-
-	if (!(**shellwindowinfo).flwindowactive) /*inactive windows have no bold buttons*/
-		return (normal);
-	
-	/*
-	if (buttonstatusarray [ix].flbold)
-		return (boldbuttonstyle);
-	*/
-
-	return (normal);
-	} /*getbuttonstyle*/
-
-#endif
 
 
 #ifdef flbuttoncolor
@@ -326,43 +301,28 @@ static void drawbuttonbackground (Rect r) {
 			
 			if (colorenabled ())
 				
-				#if TARGET_API_MAC_CARBON == 1
 				
 					DrawThemeWindowHeader (&r, kThemeStateActive);
 					
-				#else
-				
-					fillcolorrect (r, backgroundpattern);
-					
-				#endif
 								
 			else
-				#if TARGET_API_MAC_CARBON == 1
 				{
 				Pattern pat;
 				GetQDGlobalsGray(&pat);
 				FillRect (&r, &pat);
 				}
-				#else
-				fillrect (r, buttonbackground);
-				#endif
 			}
 		else
-			#if TARGET_API_MAC_CARBON == 1
 			{
 			//Pattern pat;
 			//GetQDGlobalsWhite(&pat);
 			//FillRect (&r, &pat);
 			DrawThemeWindowHeader (&r, kThemeStateInactive);
 			}
-			#else
-			fillrect (r, whitebackground);
-			#endif
 	#endif
 	} /*drawbuttonbackground*/
 
 
-#if TARGET_API_MAC_CARBON == 1
 
 #pragma pack(2)
 	typedef struct tybuttoninfo {
@@ -399,7 +359,6 @@ MyThemeButtonDrawCallback (
 		popstyle ();
 		} /*MyThemeButtonDrawCallback*/
 
-#endif
 
 
 void shelldrawbutton (short ix, boolean flpressed) {
@@ -418,7 +377,6 @@ void shelldrawbutton (short ix, boolean flpressed) {
 	shellgetbuttonrect (ix, &rbutton);
 	
 	
-	#if TARGET_API_MAC_CARBON == 1
 	
 		{
 		ThemeButtonDrawInfo drawinfo;
@@ -456,65 +414,6 @@ void shelldrawbutton (short ix, boolean flpressed) {
 		}
 	
 	
-	#else
-		
-		{
-		boolean flbitmap = false;
-		
-		if (flbitmapsallowed) {
-		
-			if (!flbuttonbitmap) 
-				flbitmap = openbitmap (rbutton, shellwindow);
-			}
-		
-		if (flpressed) {
-			
-			drawbuttonbackground (rbutton);
-			
-			offsetrect (&rbutton, 1, 1); /*simulate a button being pressed -- multimedia!*/
-			}
-		
-		#ifdef flbuttoncolor
-		
-		pushbackcolor (getbuttoncolor (ix));
-		
-		#endif
-		
-		eraseandframerect (rbutton);
-		
-		#ifdef flbuttoncolor
-		
-		popbackcolor ();
-		
-		#endif
-		
-		pushstyle (buttonfont, buttonsize, getbuttonstyle (ix));
-		
-		centerbuttonstring (&rbutton, bs, !buttonenabled (ix));
-		
-		popstyle ();
-		
-		/*
-		if (!buttonenabled (ix)) {
-			
-			Rect r;
-			
-			r = rbutton;
-			
-			insetrect (&r, 1, 1);
-			
-			grayrect (r);
-			}
-		*/
-
-		if (flbitmap)
-			closebitmap (shellwindow);
-		
-		if (!flpressed)
-			dropshadowrect (rbutton, 1, flpressed);
-		}
-		
-	#endif
 	} /*shelldrawbutton*/
 	
 

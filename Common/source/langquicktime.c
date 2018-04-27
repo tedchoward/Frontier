@@ -32,7 +32,6 @@
 #include "frontier.h"
 #include "standard.h"
 
-#ifdef MACVERSION /*7.0b4 PBS: QuickTime verbs are Mac-only.*/
 
 #include "memory.h"
 #include "strings.h"
@@ -180,4 +179,3 @@ boolean quicktimeinitverbs (void) {
 	} /*quicktimeinitverbs*/
 
 
-#endif

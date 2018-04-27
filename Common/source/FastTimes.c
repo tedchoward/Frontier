@@ -17,14 +17,8 @@
 #include "frontier.h"
 #include "standard.h"
 
-#if !FRONTIER_FRAMEWORK_INCLUDES
-	#include <DriverServices.h>
-	#include <Timer.h>
-#endif
 
-#if TARGET_API_MAC_CARBON
 	#include "CallMachOFrameWork.h"	/*2005-01-15 aradke*/
-#endif
 
 #include "FastTimes.h"
 
@@ -90,12 +84,6 @@ static Boolean			gUseTBR = false;
 static double			gScaleUSec = 1.0 / 1000.0;    /* 1 / ( nsec / usec) */
 static double			gScaleMSec = 1.0 / 1000000.0; /* 1 / ( nsec / msec) */
 
-	#if (! TARGET_API_MAC_CARBON)
-	
-	static __asm__ UnsignedWide PollRTC(void);
-	static __asm__ UnsignedWide PollTBR(void);
-
-	#endif
 
 static Ptr FindFunctionInSharedLib(StringPtr libName, StringPtr funcName);
 
@@ -128,7 +116,6 @@ void FastInitialize() {
 				"\pDriverServicesLib", "\pAbsoluteToNanoseconds");
 		if (!gA2NS) gUpTime = nil; /* Pedantic but necessary */
 		
-		#if TARGET_API_MAC_CARBON
 		
 		/* 2005-01-15 aradke: On OS X, DriverServicesLib is no longer present,
 		   but the functions we want are available in the CoreServices framework. */
@@ -146,7 +133,6 @@ void FastInitialize() {
 				gUpTime = nil; /* Pedantic but necessary */
 			}
 		
-		#endif
 		
 		if (gUpTime) {
 			/* If we loaded UpTime(), then we need to know if the system has
@@ -176,7 +162,6 @@ void FastInitialize() {
 			UnsignedWide	wide;
 
 			/* Wait for the beginning of the very next tick */
-#if TARGET_API_MAC_CARBON
 			for(tick = TickCount() + 1; tick > TickCount(); )
 				;
 
@@ -191,24 +176,6 @@ void FastInitialize() {
 			/* Poll the selected timer again and prepare it  */
 			wide = (*gA2NS)((*gUpTime)());
 			usec2 = WideTo64bit(wide);
-#else
-			for(tick = MyLMGetTicks() + 1; tick > MyLMGetTicks(); )
-				;
-
-			/* Poll the selected timer and prepare it (since we have time) */
-			wide = (gUpTime) ? (*gA2NS)((*gUpTime)()) : 
-					((gUseRTC) ? PollRTC() : PollTBR());
-			usec1 = (gUseRTC) ? RTCToNano(wide) : WideTo64bit(wide);
-			
-			/* Wait for the exact 60th tick to roll over */
-			while(tick + 60 > MyLMGetTicks())
-				;
-
-			/* Poll the selected timer again and prepare it  */
-			wide = (gUpTime) ? (*gA2NS)((*gUpTime)()) : 
-					((gUseRTC) ? PollRTC() : PollTBR());
-			usec2 = (gUseRTC) ? RTCToNano(wide) : WideTo64bit(wide);
-#endif /* TARGET_API_MAC_CARBON */
 
 			/* Calculate a scale value that will give microseconds per second.
 			   Remember, there are actually 60.15 ticks in a second, not 60.  */
@@ -245,20 +212,6 @@ UInt64 FastMicroseconds() {
 		usec = (double) WideTo64bit(wide) * gScaleUSec + 0.5;
 		}
 
-	#if (! TARGET_API_MAC_CARBON)
-	
-	  else if (gUseTBR) {
-		/* On a recent PowerPC, we poll the TBR directly */
-		wide = PollTBR();
-		usec = (double) WideTo64bit(wide) * gScaleUSec + 0.5;
-		}
-	  else if (gUseRTC) {
-		/* On a 601, we can poll the RTC instead */
-		wide = PollRTC();
-		usec = (double) RTCToNano(wide) * gScaleUSec + 0.5;
-		}
-	
-	#endif /* TARGET_API_MAC_CARBON */
 
 	  else 
 #endif /* TARGET_CPU_PPC */
@@ -293,20 +246,6 @@ UInt64 FastMilliseconds() {
 		msec = (double) WideTo64bit(wide) * gScaleMSec + 0.5;
 		}
 	
-	#if (! TARGET_API_MAC_CARBON)
-	
-	  else if (gUseTBR) {
-		/* On a recent PowerPC, we poll the TBR directly */
-		wide = PollTBR();
-		msec = (double) WideTo64bit(wide) * gScaleMSec + 0.5;
-		}
-	  else if (gUseRTC) {
-		/* On a 601, we can poll the RTC instead */
-		wide = PollRTC();
-		msec = (double) RTCToNano(wide) * gScaleMSec + 0.5;
-		}
-	
-	#endif /* ! TARGET_API_MAC_CARBON */
 	
 	  else 
 #endif /* TARGET_CPU_PPC */
@@ -338,16 +277,6 @@ StringPtr FastMethod() {
 		method = "\pUpTime()";
 		}
 	
-	#if (! TARGET_API_MAC_CARBON)
-	  else if (gUseTBR) {
-		/* On a recent PowerPC, we poll the TBR directly */
-		method = "\pPowerPC TBR";
-		}
-	  else if (gUseRTC) {
-		/* On a 601, we can poll the RTC instead */
-		method = "\pPowerPC RTC";
-		}
-	#endif
 	
 	  else 
 #endif /* TARGET_CPU_PPC */
@@ -364,40 +293,6 @@ StringPtr FastMethod() {
 #pragma mark -
 
 #if TARGET_CPU_PPC
-	#if (! TARGET_API_MAC_CARBON)
-	
-__asm__ static UnsignedWide PollRTC_() {
-entry PollRTC /* Avoid CodeWarrior glue */
-	machine 601
-@AGAIN:
-	mfrtcu	r4 /* RTCU = SPR 4 */
-	mfrtcl	r5 /* RTCL = SPR 5 */
-	mfrtcu	r6
-	cmpw	r4,r6
-	bne		@AGAIN
-	stw		r4,0(r3)
-	stw		r5,4(r3)
-	blr
-	}
-
-/* **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** */
-/* **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** */
-
-__asm__ static UnsignedWide PollTBR_() {
-entry PollTBR /* Avoid CodeWarrior glue */
-	machine 604
-@AGAIN:
-	mftbu	r4 /* TBRU = SPR 268 */
-	mftb	r5 /* TBRL = SPR 269 */
-	mftbu	r6
-	cmpw	r4,r6
-	bne		@AGAIN
-	stw		r4,0(r3)
-	stw		r5,4(r3)
-	blr
-	}
-	
-	#endif
 
 /* **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** */
 /* **** **** **** **** **** **** **** **** **** **** **** **** **** **** **** */

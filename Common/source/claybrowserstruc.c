@@ -213,30 +213,6 @@ boolean browserchecklinelength (short newlen, bigstring bs) {
 	return (false);
 	} /*browserchecklinelength*/
 
-#if 0
-
-static boolean browserupdatefileinfo (hdlheadrecord hnode) {
-
-	/*
-	change the in-memory info to reflect what's on disk
-	*/ 
-	
-	tybrowserspec fs;
-	tybrowserinfo info;
-	
-	if (hnode == nil) /*defensive driving*/
-		return (false);
-	
-	claygetfilespec (hnode, &fs);
-	
-	claygetfileinfo (&fs, &info);
-
-	browsercopyfileinfo	(hnode, &info);
-	
-	return (true);
-	} /*browserupdatefileinfo*/
-
-#endif
 
 
 boolean browserfileadded (hdlheadrecord hnodeparent, const tybrowserspec *fsnew, hdlheadrecord *hnew) {	
@@ -287,38 +263,6 @@ boolean browserfileadded (hdlheadrecord hnodeparent, const tybrowserspec *fsnew,
 	} /*browserfileadded*/
 
 
-#if 0
-
-static boolean browsernodeislocked (hdlheadrecord hnode) {
-	
-	tybrowserinfo info;
-	
-	browsergetrefcon (hnode, &info);
-	
-	#if filebrowser
-		if (info.flnamelocked || info.fllocked)
-			return (false);
-			
-		while (opchaseleft (&hnode)) {}; /*get out to volume node*/
-		
-		browsergetrefcon (hnode, &info);
-		
-		if (info.fllocked || info.flhardwarelock)
-			return (false);
-	#endif
-	
-	return (true);
-	} /*browsernodeislocked*/
-
-
-static boolean browserpostpaste (hdlheadrecord hfirstpasted) {
-	
-	browsersortfolder ((**hfirstpasted).headlinkleft);
-	
-	return (true);
-	} /*browserpostpaste*/
-
-#endif
 
 
 static boolean foldercontainsfile (tybrowserspec *fsfolder, tybrowserspec *fsfile) {
@@ -681,11 +625,7 @@ boolean browserpredrag (hdlheadrecord *htarget, tydirection *dragdir) {
 		
 		opcleartmpbits ();
 		
-		#ifdef MACVERSION
 			parsedialogstring (BIGSTRING ("\x3b" "Can’t move “^0” here because it would replace its ancestor."), bsunsafe, nil, nil, nil, bsmsg);
-		#else
-			parsedialogstring (BIGSTRING ("\x3b" "Can't move \"^0\" here because it would replace its ancestor."), bsunsafe, nil, nil, nil, bsmsg);
-		#endif
 		
 		alertdialog (bsmsg);
 		
@@ -1122,28 +1062,6 @@ boolean browsercommitchanges (void) {
 	} /*browsercommitchanges*/
 
 
-#if 0
-
-static boolean xxxbrowserexportscrap (hdloutlinerecord hscrap) {
-	
-	hdlheadrecord nomad = (**hscrap).hsummit;
-	
-	if (!getclipfolderspec ())
-		return (false);
-		
-	while (true) {
-		
-		if (!browsermoveto (nomad, &clipfolderspec))
-			return (false);
-		
-		oprecursivelyvisit (nomad, infinity, &notownrefconvisit, nil);
-		
-		if (!opchasedown (&nomad))
-			return (true);
-		} /*while*/
-	} /*browserexportscrap*/
-
-#endif
 
 
 static void tabledisposescrap (hdloutlinerecord houtline) {

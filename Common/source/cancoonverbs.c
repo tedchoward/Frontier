@@ -167,13 +167,11 @@ static boolean ccfunctionvalue (short token, hdltreenode hparam1, tyvaluerecord 
 	
 	setbooleanvalue (false, v); /*by default, cancoon functions return false*/
 	
-	#ifdef version42orgreater
 		// can no longer assume that the "root" window is cancoon
 		if (!shellfindwindow (idcancoonconfig, &cancoonwindow, &cancoonwindowinfo, (Handle *) &cancoondata))
 			return (true);
 		
 		shellpushglobals (cancoonwindow);
-	#endif
 
 	switch (token) {
 		
@@ -237,9 +235,7 @@ static boolean ccfunctionvalue (short token, hdltreenode hparam1, tyvaluerecord 
 			break;
 		} /*switch*/
 	
-	#ifdef version42orgreater
 		shellpopglobals ();
-	#endif
 
 	if (fl)
 		return (true);

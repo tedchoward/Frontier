@@ -28,13 +28,8 @@
 #include "frontier.h"
 #include "standard.h"
 
-#ifdef MACVERSION
 #include "langxcmd.h"
-#endif
 
-#ifdef WIN95VERSION
-#include "htmlcontrol.h"
-#endif
 
 #include "memory.h"
 #include "frontierconfig.h"
@@ -72,9 +67,6 @@
 #include "timedate.h"
 #include "langpython.h"
 
-#ifdef WIN95VERSION
-	#include "winregistry.h"
-#endif
 
 static byte nametargetval [] = "\x08" "_target_";
 
@@ -94,13 +86,11 @@ typedef enum tylangtoken { /*verbs that are processed by langverbs.c*/
 		
 		disposefunc,
 		
-		#if !flruntime
 		
 		editfunc,
 		
 		closefunc,
 		
-		#endif
 		
 		timecreatedfunc,
 		
@@ -293,11 +283,9 @@ typedef enum tylangtoken { /*verbs that are processed by langverbs.c*/
 		
 		rundialogfunc,
 		
-		#if !flruntime
 		
 		runmodelessfunc,
 		
-		#endif
 		
 		runcardfunc,
 		
@@ -343,13 +331,11 @@ typedef enum tylangtoken { /*verbs that are processed by langverbs.c*/
 	
 	/*mouse*/
 		
-		#if !flruntime
 		
 		mousebuttonfunc,
 		
 		mouselocationfunc,
 		
-		#endif
 	
 	
 	/*point*/
@@ -384,7 +370,6 @@ typedef enum tylangtoken { /*verbs that are processed by langverbs.c*/
 	
 	/*target*/
 		
-		#if !flruntime
 		
 		gettargetfunc,
 		
@@ -392,7 +377,6 @@ typedef enum tylangtoken { /*verbs that are processed by langverbs.c*/
 		
 		cleartargetfunc,
 		
-		#endif
 		
 	
 	/*bit*/
@@ -630,7 +614,6 @@ static boolean presskeyverb (char ch) {
 */
 
 
-#if !flruntime
 
 static boolean langclosehiddenwindow (tyvaluerecord val) {
 	
@@ -816,7 +799,6 @@ static boolean langunsettarget (hdlhashtable htable, bigstring bsname) {
 	return (false);
 	} /*langunsettarget*/
 
-#endif
 
 
 static boolean newvaluefunc (hdltreenode hparam1, tyvaluerecord *vreturned) {
@@ -921,11 +903,9 @@ static boolean disposevaluefunc (hdltreenode hparam1, tyvaluerecord *vreturned) 
 	if (!getvarparam (hparam1, 1, &htable, bs)) /*use original hparam1, not hp1*/
 		return (false);
 	
-	#if !flruntime
 	
 	langunsettarget (htable, bs); /*make sure it's not still the target*/
 	
-	#endif
 	
 	(*vreturned).data.flvalue = hashtabledelete (htable, bs);
 	
@@ -933,7 +913,6 @@ static boolean disposevaluefunc (hdltreenode hparam1, tyvaluerecord *vreturned) 
 	} /*disposevaluefunc*/
 
 
-#if !flruntime
 
 boolean langzoomvalwindow (hdlhashtable htable, bigstring bs, tyvaluerecord val, boolean flmakevisible) {
 	
@@ -1185,7 +1164,6 @@ static boolean langsettargetfunc (hdltreenode hparam1, tyvaluerecord *vreturned)
 	return (true);
 	} /*langsettargetfunc*/
 
-#endif
 
 static boolean getuserinfofunc (hdltreenode hparam1, tyvaluerecord *vreturned) {
 	
@@ -1228,13 +1206,8 @@ static boolean getuserinfofunc (hdltreenode hparam1, tyvaluerecord *vreturned) {
 	if (fllangerror) /*probably a bad array reference*/
 		return (false);
 	
-	#ifdef WIN95VERSION
-		fl = userinfodialog (bsname, bsinitials, bsorg, bsemail);
-	#endif
 		
-	#ifdef MACVERSION
 		fl = false;  //not supported on this platform
-	#endif
 
 	setbooleanvalue (fl, vreturned);
 	
@@ -1386,173 +1359,6 @@ static boolean threewayfunc (hdltreenode hparam1, tyvaluerecord *v) {
 	} /*threewayfunc*/
 
 
-#if MACVERSION && TARGET_API_MAC_OS8
-
-#if !TARGET_RT_MAC_CFM
-		
-	#define xcmdcallbackUPP ((UniversalProcPtr) &xcmdcallback)
-		
-#else
-	enum {
-		XCmdProcInfo = kPascalStackBased
-			 | STACK_ROUTINE_PARAMETER(1, SIZE_CODE(sizeof(XCmdPtr)))
-	};
-	
-	enum {
-		xcmdcallbackProcInfo = kPascalStackBased
-	};
-	
-	static RoutineDescriptor xcmdcallbackDesc = BUILD_ROUTINE_DESCRIPTOR (xcmdcallbackProcInfo, xcmdcallback);
-	
-	#define xcmdcallbackUPP (&xcmdcallbackDesc)
-#endif
-
-static boolean callxcmdverb (hdltreenode hparam1, tyvaluerecord *vreturned) {
-	
-	/*
-	5/4/92 dmb: created.
-	
-	7/8/92 dmb: don't rely on temp stack for handle disposal; will overflow
-				push/popport on frontwindow; some XCMDs may expect this
-	
-	7/14/92 dmb: different return values for XCMDs & XFCNs when they return nothing
-	
-	10/3/92 dmb: must set plangxcmdrec for the callback routine
-	
-	7.0b48: calling an XCMD or XFCN on OS X is an error.
-	*/
-	
-	register hdltreenode hp1 = hparam1;
-	short ctparams = langgetparamcount (hp1) - 1;
-	hdlhashtable htable;
-	bigstring bsxcmd;
-	tyvaluerecord val;
-	Handle hxcmd;
-	struct XCmdBlock xcb;
-	short i;
-	Handle x;
-	OSType xtype;
-	boolean fl = false;
-	hdlhashnode hnode;
-		
-	if (!getvarvalue (hp1, 1, &htable, bsxcmd, &val, &hnode))
-		return (false);
-	
-	if (val.valuetype != binaryvaluetype) {
-		
-		langparamerror (notxcmderror, bsxcmd);
-		
-		return (false);
-		}
-		
-	hxcmd = val.data.binaryvalue; /*copy into register*/
-	
-	xtype = getbinarytypeid (hxcmd);
-	
-	if ((xtype != 'XCMD') && (xtype != 'XFCN')) {
-		
-		langparamerror (notxcmderror, bsxcmd);
-		
-		return (false);
-		}
-	
-	if (ctparams > 16) { /*max number of XCMD params is 16*/
-		
-		langparamerror (toomanyparameterserror, bsfunctionname);
-		
-		return (false);
-		}
-	
-	clearbytes (&xcb, longsizeof (xcb));
-	
-	for (i = 0; i < ctparams; ++i) {
-		
-		if (!getexempttextvalue (hp1, i + 2, &x))
-			goto exit;
-		
-		xcb.params [i] = x;
-		
-		if (!enlargehandle (x, 1, zerostring))
-			goto exit;
-		}
-	
-	xcb.paramCount = ctparams;
-	
-	xcb.passFlag = false;
-	
-	xcb.entryPoint = xcmdcallbackUPP;
-	
-	lockhandle (hxcmd);
-	//Code change by Timothy Paustian Monday, August 21, 2000 4:24:28 PM
-	//We cannot pass a window ptr to push port
-	{
-	CGrafPtr	thePort;
-	#if TARGET_API_MAC_CARBON == 1
-	thePort = GetWindowPort(getfrontwindow ());
-	#else
-	thePort = (CGrafPtr)getfrontwindow ();
-	#endif
-		
-	pushport (thePort); /*checks for nil*/
-	}
-	plangxcmdrec = &xcb; /*set global*/
-	
-	//Code change by Timothy Paustian Wednesday, June 14, 2000 9:06:07 PM
-	//No CFM for Carbon
-	#if TARGET_RT_MAC_CFM
-		
-	{
-		#if TARGET_API_MAC_CARBON == 1
-		(*(pascal void (*)(XCmdPtr)) ((OSType *) *hxcmd + 1)) (&xcb);
-		#else
-		
-		UniversalProcPtr upp = NewRoutineDescriptor ((ProcPtr) ((OSType *) *hxcmd + 1), XCmdProcInfo, kM68kISA);
-		
-		CallUniversalProc (upp, XCmdProcInfo, &xcb);
-		
-		DisposeRoutineDescriptor (upp);
-		#endif
-		
-	}
-	#else
-	
-		(*(pascal void (*)(XCmdPtr)) ((OSType *) *hxcmd + 1)) (&xcb);
-	
-	#endif
-	plangxcmdrec = nil; /*clear it*/
-	
-	popport ();
-	
-	unlockhandle (hxcmd);
-	
-	if (xcb.returnValue == nil) { /*no explicit return value*/
-		
-		if (xtype == 'XCMD')
-			fl = setbooleanvalue (true, vreturned);
-		else
-			fl = setstringvalue (zerostring, vreturned);
-		}
-	else {
-		
-		truncatecstringhandle (xcb.returnValue); /*strip zero terminator*/
-		
-		fl = setheapvalue (xcb.returnValue, stringvaluetype, vreturned);
-		}
-	
-	exit:
-	
-	for (i = 0; i < ctparams; ++i) {
-		
-		register Handle x = xcb.params [i];
-		
-		if (x != xcb.returnValue) /*some xcmds return a parameter as the result*/
-			disposehandle (x);
-		}
-	
-	return (fl);
-	} /*callxcmdverb*/
-
-#endif
 
 
 static boolean callscriptverb (hdltreenode hparam1, tyvaluerecord *vreturned) {
@@ -1741,9 +1547,7 @@ static boolean locksemaphoreverb (hdltreenode hparam1, tyvaluerecord *vreturned)
 	long startticks = gettickcount ();
 	bigstring bsticks;
 	tyvaluerecord val;
-	#ifdef version5orgreater
 		hdllistrecord hlist;
-	#endif
 	
 	if (!getstringvalue (hparam1, 1, bssemaphorename))
 		return (false);
@@ -1768,7 +1572,6 @@ static boolean locksemaphoreverb (hdltreenode hparam1, tyvaluerecord *vreturned)
 			}
 		}
 	
-	#ifdef version5orgreater
 		if (!opnewlist (&hlist, true))
 			return (false);
 		
@@ -1784,9 +1587,6 @@ static boolean locksemaphoreverb (hdltreenode hparam1, tyvaluerecord *vreturned)
 		
 		if (!setheapvalue ((Handle) hlist, recordvaluetype, &val))
 			return (false);
-	#else
-		setdatevalue (timenow(), &val);
-	#endif
 	
 	if (!hashtableassign (semaphoretable, bssemaphorename, val))
 		return (false);
@@ -1795,12 +1595,10 @@ static boolean locksemaphoreverb (hdltreenode hparam1, tyvaluerecord *vreturned)
 	
 	return (setbooleanvalue (true, vreturned));
 	
-	#ifdef version5orgreater
 		error:
 			opdisposelist (hlist);
 			
 			return (false);
-	#endif
 	} /*locksemaphoreverb*/
 
 
@@ -1915,14 +1713,12 @@ static boolean langfunctionvalue (short token, hdltreenode hparam1, tyvaluerecor
 		
 		switch (token) {
 			
-			#if !flruntime
 			
 			case editfunc:
 			case gettargetfunc:
 			case settargetfunc:
 			case cleartargetfunc:
 			
-			#endif
 			
 			case msgfunc:			// 3.0.4b8 dmb
 			case runmodelessfunc:	// 4.1b3 dmb
@@ -1985,7 +1781,6 @@ static boolean langfunctionvalue (short token, hdltreenode hparam1, tyvaluerecor
 		case disposefunc:
 			return (disposevaluefunc (hparam1, v));
 		
-		#if !flruntime
 		
 		case editfunc:
 			return (editvalue (hparam1, v));
@@ -2007,7 +1802,6 @@ static boolean langfunctionvalue (short token, hdltreenode hparam1, tyvaluerecor
 			
 			return (true);
 		
-		#endif
 		
 		case booleanfunc:
 			flnextparamislast = true;
@@ -2037,22 +1831,6 @@ static boolean langfunctionvalue (short token, hdltreenode hparam1, tyvaluerecor
 			return (setdatevalue (timenow (), v));
 			}
 		
-		#if !TARGET_API_MAC_CARBON
-
-			case settimefunc: {
-				unsigned long time;
-				
-				flnextparamislast = true;
-				
-				if (!getdatevalue (hparam1, 1, &time))
-					return (false);
-				
-				setbooleanvalue (setsystemclock (time), v);
-				
-				return (true);
-				}
-			
-		#endif
 		
 		case datefunc:
 			flnextparamislast = true;
@@ -2513,7 +2291,6 @@ static boolean langfunctionvalue (short token, hdltreenode hparam1, tyvaluerecor
 			
 			flnextparamislast = true;
 			
-			#ifdef version42orgreater
 				if (!getparamvalue (hparam1, 1, &val))
 					break;
 				
@@ -2521,10 +2298,6 @@ static boolean langfunctionvalue (short token, hdltreenode hparam1, tyvaluerecor
 					break;
 				
 				x = val.data.binaryvalue;
-			#else
-				if (!getbinaryvalue (hparam1, 1, true, &x))
-					break;
-			#endif
 			
 			setostypevalue (getbinarytypeid (x), v);
 			
@@ -2814,7 +2587,6 @@ static boolean langfunctionvalue (short token, hdltreenode hparam1, tyvaluerecor
 			*/
 			}
 		
-		#if !flruntime
 		
 		case mousebuttonfunc:
 			if (!langcheckparamcount (hparam1, 0))
@@ -2836,11 +2608,7 @@ static boolean langfunctionvalue (short token, hdltreenode hparam1, tyvaluerecor
 				//Code change by Timothy Paustian Monday, August 21, 2000 4:29:53 PM
 				//pushport must receive a CGrafPtr, no implicit converstion on OS X
 				CGrafPtr	thePort;
-				#if TARGET_API_MAC_CARBON == 1
 				thePort = GetWindowPort(w);
-				#else
-				thePort = (CGrafPtr)w;
-				#endif
 				pushport (thePort);
 				
 				getmousepoint (&pt);
@@ -2851,7 +2619,6 @@ static boolean langfunctionvalue (short token, hdltreenode hparam1, tyvaluerecor
 			return (setpointvalue (pt, v));
 			}
 		
-		#endif
 		
 		case optionkeyfunc: case cmdkeyfunc: case shiftkeyfunc: case controlkeyfunc:
 			if (!langcheckparamcount (hparam1, 0))
@@ -2944,34 +2711,15 @@ static boolean langfunctionvalue (short token, hdltreenode hparam1, tyvaluerecor
 			
 			return (true);
 		
-	#ifdef MACVERSION
 		case rundialogfunc:
 			return (langrundialog (hparam1, v));
 		
-		#if !flruntime
 		
 		case runmodelessfunc:
 			return (langrunmodeless (hparam1, v));
 		
-		#endif
-	#endif
 
-	#if macBirdRuntime
 	
-		case runcardfunc:
-			return (langruncard (hparam1, false, v));
-		
-		case runmodalcardfunc:
-			return (langruncard (hparam1, true, v));
-		
-		case ismodalcardfunc:
-			return (langismodalcard (hparam1, v));
-		
-		case setmodalcardtimeoutfunc:
-			return (langsetmodalcardtimeout (hparam1, v));
-	#endif
-	
-	#ifdef MACVERSION
 		case getdialogvaluefunc:
 			return (langgetdialogvalue (hparam1, v));
 		
@@ -2986,7 +2734,6 @@ static boolean langfunctionvalue (short token, hdltreenode hparam1, tyvaluerecor
 		
 		case hidedialogitemfunc:
 			return (langsetdialogitemvis (hparam1, false, v));
-	#endif
 	
 		case twowaydialogfunc:
 			return (twowayfunc (hparam1, v));		
@@ -3132,7 +2879,6 @@ static boolean langfunctionvalue (short token, hdltreenode hparam1, tyvaluerecor
 			return (true);
 			}
 		
-	#if isFrontier && MACVERSION
 	
 		case seteventtimeoutfunc:
 			return (langipcsettimeout (hparam1, v));
@@ -3172,7 +2918,6 @@ static boolean langfunctionvalue (short token, hdltreenode hparam1, tyvaluerecor
 		case transactioneventfunc:
 			return (langipcmessage (hparam1, transactionmsg, v));
 	
-	#endif
 		
 		case timecreatedfunc: {
 			long timecreated, timemodified;
@@ -3201,10 +2946,6 @@ static boolean langfunctionvalue (short token, hdltreenode hparam1, tyvaluerecor
 		case msgfunc:
 			return ((*langcallbacks.msgverbcallback) (hparam1, v));
 		
-	#if MACVERSION && TARGET_API_MAC_OS8 /*7.0b49: not implemented in OS X*/
-			case callxcmdfunc:
-				return (callxcmdverb (hparam1, v));
-	#endif
 
 		case callscriptfunc:
 			return (callscriptverb (hparam1, v));
@@ -3747,27 +3488,9 @@ static boolean langfunctionvalue (short token, hdltreenode hparam1, tyvaluerecor
 		
 		case netstatus: {
 		
-			#if defined(MACVERSION) && __POWERPC__
-				long stream = nil;
-				bigstring lbs;
-				
-				if (langgetparamcount (hparam1) > 0) {
-				
-					flnextparamislast = true;
-					
-					if (!getlongvalue (hparam1, 1, &stream))
-						return (false);
-					}
-				
-				if (!fwsNetEventGetStats (stream, lbs))
-					return (false);
-					
-				return (setstringvalue (lbs, v));
-			#else
 				langerror (unimplementedverberror);
 
 				return (false);
-			#endif
 			}
 
 		case netcountconnections: {
@@ -3784,320 +3507,6 @@ static boolean langfunctionvalue (short token, hdltreenode hparam1, tyvaluerecor
 		/* These functions are  for Windows - the code to ifdef 
 		    is in htmlcontrol.c  8/26/00 by RAB */
 		
-		#ifdef WIN95VERSION
-
-		case htmlcontrolbackfunc: {
-			if (!langcheckparamcount (hparam1, 0))
-				return (false);
-			htmlcontrolback();
-			return (setbooleanvalue (true, v));
-			}
-
-		case htmlcontrolforwardfunc: {
-			if (!langcheckparamcount (hparam1, 0))
-				return (false);
-			htmlcontrolforward();
-			return (setbooleanvalue (true, v));
-			}
-
-		case htmlcontrolrefreshfunc: {
-			if (!langcheckparamcount (hparam1, 0))
-				return (false);
-			htmlcontrolrefresh();
-			return (setbooleanvalue (true, v));
-			}
-
-		case htmlcontrolhomefunc: {
-			if (!langcheckparamcount (hparam1, 0))
-				return (false);
-			htmlcontrolhome();
-			return (setbooleanvalue (true, v));
-			}
-
-		case htmlcontrolstopfunc: {
-			if (!langcheckparamcount (hparam1, 0))
-				return (false);
-			htmlcontrolstop();
-			return (setbooleanvalue (true, v));
-			}
-
-		case htmlcontrolnavigatefunc: {
-			Handle htext;
-
-			flnextparamislast = true;
-
-			if (!getreadonlytextvalue (hparam1, 1, &htext))
-				return (false);
-
-			htmlcontrolnavigate (htext);
-
-			return (setbooleanvalue (true, v));
-			}
-		
-		case htmlcontrolisofflinefunc: {
-			boolean fl;
-
-			if (! langcheckparamcount (hparam1, 0))
-				return (false);
-
-			if (! htmlcontrolisoffline (&fl))
-				return (false);
-
-			return (setbooleanvalue (fl, v));
-			}
-		
-		case htmlcontrolsetofflinefunc: {
-			boolean fl;
-
-			flnextparamislast = true;
-
-			if (!getbooleanvalue (hparam1, 1, &fl))
-				return (false);
-
-			if (! htmlcontrolsetoffline (fl))
-				return (false);
-
-			return (setbooleanvalue (true, v));
-			}
-		
-		/*7.0b20 PBS: new statusbar verbs from Bob*/
-		
-		case statusbarmsgfunc: {
-			long partNumber;
-
-			if (langgetparamcount (hparam1) == 1) {
-				flnextparamislast = true;
-
-				if (!getstringvalue (hparam1, 1, bs))
-					return (false);
-
-				return (setbooleanvalue (setstatusbarstring (bs, 0), v));
-				}
-
-			if (langgetparamcount (hparam1) == 2) {
-
-				if (!getstringvalue (hparam1, 1, bs))
-					return (false);
-
-				flnextparamislast = true;
-
-				if (!getlongvalue (hparam1, 2, &partNumber))
-					return (false);
-
-				partNumber--; /*7.0b21 PBS: partNumber is one-based at the script level*/
-
-				return (setbooleanvalue (setstatusbarstring (bs, partNumber), v));
-				}
-
-			return (false);
-			}
-		
-
-		case statusbargetmessagefunc: {
-			long partNumber;
-			bigstring bs;
-
-			if (langgetparamcount (hparam1) == 0) {
-				getstatusbarstring (bs, 0);
-
-				return (setstringvalue (bs, v));
-				}
-
-			if (langgetparamcount (hparam1) == 1) {
-
-				flnextparamislast = true;
-
-				if (!getlongvalue (hparam1, 1, &partNumber))
-					return (false);
-
-				partNumber--; /*7.0b21 PBS: partNumber is one-based at the script level*/
-
-				getstatusbarstring (bs, partNumber);
-
-				return (setstringvalue (bs, v));
-				}
-
-			return (false);
-			}
-		
-		case statusbarsetsectionsfunc: {
-			long partCount;
-			long wArray[50];
-			int i;
-			tyvaluerecord vlist;
-			tyvaluerecord val;
-			hdllistrecord hlist;
-
-			flnextparamislast = true;
-
-			if (!getparamvalue (hparam1, 1, &vlist))
-				return (false);
-
-			if (!coercetolist (&vlist, listvaluetype))
-				return (false);
-
-			wArray[0] = -1;
-
-			langgetlistsize (&vlist, &partCount);
-
-			hlist = vlist.data.listvalue;
-
-			if (partCount > 48)
-				return (false);
-
-			for (i = 1; i <= partCount; i++) {
-				if (!getnthlistval (hlist, i, nil, &val))
-					return (false);
-
-				if (!coercevalue (&val, intvaluetype))
-					return (false);
-
-				wArray[i] = val.data.intvalue;
-				}
-
-			return (setbooleanvalue (setstatusbarparts (partCount+1, wArray), v));
-			}
-
-		case statusbargetsectionsfunc: {
-			long partCount;
-			long wArray[50];
-			int i;
-			//tyvaluerecord vlist;
-			//tyvaluerecord val;
-			hdllistrecord hlist;
-
-
-			partCount = getstatusbarparts (wArray);
-
-			if (!opnewlist (&hlist, false))
-				return (false);
-
-			for (i = 2; i <= partCount; i++) { /*7.0b21 PBS: don't get the first section width*/
-				if (!langpushlistlong (hlist, wArray[i-1])) 
-					goto getstatuspartsfuncerror;
-				}
-
-			return (setheapvalue ((Handle) hlist, listvaluetype, v));
-
-			getstatuspartsfuncerror:
-
-			opdisposelist (hlist);
-			
-			return (false);
-			}
-
-		case statusbargetsectiononefunc: {
-
-			/*
-			7.0b21 PBS: get the width of the first section, which varies in size
-			when the window is resized.
-			*/
-
-			long wArray [50];
-
-			getstatusbarparts (wArray);
-
-			return (setlongvalue (wArray [0], v));
-			}
-		
-		/*Windows Registry verbs -- 7.0.2b1 Radio PBS*/
-
-		case winregistrygettypefunc: {
-			
-			Handle h;
-			bigstring bstype;
-			boolean fl;
-
-			flnextparamislast = true;
-		
-			if (!getexempttextvalue (hparam1, 1, &h))
-				return (false);
-
-			fl = winreggettype (h, bstype);
-
-			disposehandle (h);
-
-			if (!fl)
-				return (false);
-
-			return (setstringvalue (bstype, v));
-			}
-
-		case winregistryreadfunc: {
-
-			Handle h;
-			boolean fl = false;
-
-			flnextparamislast = true;
-
-			if (!getexempttextvalue (hparam1, 1, &h))
-				return (false);
-			
-			fl = winregread (h, v);
-
-			disposehandle (h);
-
-			return (fl);
-			}
-
-		case winregistrydeletefunc: {
-
-			Handle h;
-			boolean fl = false;
-			
-			flnextparamislast = true;
-
-			if (!getexempttextvalue (hparam1, 1, &h))
-				return (false);
-
-			fl = winregdelete (h);
-
-			disposehandle (h);
-
-			return (setbooleanvalue (fl, v));
-			}
-
-		case winregistrywritefunc: {
-
-			Handle h;
-			tyvaluerecord val;
-			bigstring bstype;
-			short ctparams;
-			boolean fl = false;
-
-			if (!getexempttextvalue (hparam1, 1, &h))
-				return (false);
-
-			ctparams = langgetparamcount (hparam1);
-
-			if (ctparams == 2)
-				flnextparamislast = true;
-
-			if (!getparamvalue (hparam1, 2, &val))
-				return (false);
-
-			setemptystring (bstype);
-			
-			if (ctparams > 2) {
-
-				flnextparamislast = true;
-
-				if (!getstringvalue (hparam1, 3, bstype)) {
-
-					disposehandle (h);
-				
-					return (false);
-					} /*if*/
-				} /*if*/
-
-			fl = winregwrite (h, &val, bstype);
-			
-			disposehandle (h);
-
-			return (setbooleanvalue (fl, v));
-			}
-
-		#endif /*WIN95VERSION*/
 		
 //#endif
 

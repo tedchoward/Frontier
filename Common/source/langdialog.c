@@ -134,7 +134,6 @@ boolean langgetdialogvalue (hdltreenode hparam1, tyvaluerecord *vreturned) {
 	if (!langdialoggetitemparam (hparam1, 1, &itemnum))
 		return (false);
 	
-#if MACVERSION
 	GetDialogItem (langmodaldialog, itemnum, &itemtype, &itemhandle, &itemrect);
 	
 	switch (itemtype % itemDisable) { /*ignore enabledness*/
@@ -174,7 +173,6 @@ boolean langgetdialogvalue (hdltreenode hparam1, tyvaluerecord *vreturned) {
 			
 			break;
 		}
-#endif
 
 	// *** WIN95 not implemented
 
@@ -202,7 +200,6 @@ boolean langsetdialogvalue (hdltreenode hparam1, tyvaluerecord *vreturned) {
 	
 	setbooleanvalue (true, vreturned); /*optimism*/
 	
-#if MACVERSION
 	GetDialogItem (langmodaldialog, itemnum, &itemtype, &itemhandle, &itemrect);
 	
 	flnextparamislast = true;
@@ -258,7 +255,6 @@ boolean langsetdialogvalue (hdltreenode hparam1, tyvaluerecord *vreturned) {
 			
 			break;
 		}
-#endif
 
 	// *** WIN95 not implemented
 
@@ -309,7 +305,6 @@ boolean langsetdialogitemvis (hdltreenode hparam1, boolean fl, tyvaluerecord *vr
 	return (true);
 	} /*langsetdialogitemvis*/
 
-#if isFrontier && !flruntime
 
 static boolean langdialogeventhook (EventRecord *ev, WindowPtr w) {
 	
@@ -366,7 +361,6 @@ static boolean langdialogeventhook (EventRecord *ev, WindowPtr w) {
 	return (false); /*ignore the event*/
 	} /*langdialogeventhook*/
 
-#endif
 
 static boolean langdialogitemhit (DialogPtr pdialog, short itemnumber) {
 	
@@ -400,32 +394,22 @@ static boolean langdialogitemhit (DialogPtr pdialog, short itemnumber) {
 	
 	if (topdialog == 1) { /*only need one event hook for all nested dialogs*/
 		
-		#if !isFrontier
-			++fldisableyield;
-		
-		#else
 			fldebugging = debuggingcurrentprocess ();
 			
 			if (!fldebugging)
 				++fldisableyield;
 			
 			shellpusheventhook (&langdialogeventhook);
-		#endif
 		}
 	
 	fl = langhandlercall (hitemhitcallback, hparam, &val);
 	
 	if (topdialog == 1) {
 	
-		#if !isFrontier
-			--fldisableyield;
-			
-		#else
 			shellpopeventhook ();
 			
 			if (!fldebugging)
 				--fldisableyield;
-		#endif
 		}
 	
 	popdialogcall ();

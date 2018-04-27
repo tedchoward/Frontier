@@ -28,9 +28,7 @@
 #include "frontier.h"
 #include "standard.h"
 
-#ifdef MACVERSION
 #include "player.h" /*7.0b4 PBS: QuickTime Player window*/
-#endif
 
 #include "shell.h"
 #include "shellprivate.h"
@@ -116,11 +114,9 @@ typedef enum tywindowtoken {
 	
 	aboutfunc,
 	
-	#ifdef MACVERSION
 	
 		playerfunc, // 7.0b4 PBS: QuickTime Player window
 		
-	#endif
 	
 	getfilefunc,
 	
@@ -409,14 +405,12 @@ static boolean openverb (hdltreenode hparam1, tyvaluerecord *vreturned, bigstrin
 				(**hinfo).flsyntheticbuttons = false;
 			} /*switch*/
 
-		#if defined(WIN95VERSION) || TARGET_API_MAC_CARBON /*8.0.3b2: Windows and OS X only. Fixes missing scrollbar on Classic.*/
 		
 			shellpushglobals ((**hinfo).macwindow);		
 		
 			shelladjustaftergrow ((**hinfo).macwindow);
 
 			shellpopglobals ();
-#endif
 		} /*if*/		
 	
 	if (!langzoomvalwindow (htable, bsname, val, true)) /*now make it visible*/
@@ -1259,7 +1253,6 @@ static boolean windowfunctionvalue (short token, hdltreenode hparam1, tyvaluerec
 			
 			return (true);
 		
-		#ifdef MACVERSION
 			
 			case playerfunc: /*7.0b4 PBS: QuickTime Player window*/
 				if (!langcheckparamcount (hparam1, 0))
@@ -1269,7 +1262,6 @@ static boolean windowfunctionvalue (short token, hdltreenode hparam1, tyvaluerec
 				
 				return (true);
 			
-		#endif
 		
 		case getfilefunc:
 			return (getfileverb (hparam1, v));

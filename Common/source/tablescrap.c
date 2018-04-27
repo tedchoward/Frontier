@@ -61,27 +61,6 @@ typedef struct tytablescrap {
 #pragma options align=reset
 
 
-#if 0
-
-static boolean tablegetscrapvaluetype (Handle hscrap, tyvaluetype *type) {
-	
-	register Handle h;
-	long ix;
-	OSType typeid;
-	
-	h = hscrap; /*copy into register*/
-	
-	ix = stringlength ((ptrstring) *h) + 1;
-	
-	if (!loadfromhandle (h, &ix, longsizeof (typeid), &typeid))
-		return (false);
-	
-	*type = langgetvaluetype (typeid);
-	
-	return (true);
-	} /*tablegetscrapvaluetype*/
-
-#endif
 
 
 static boolean tableexpandtodotparams (bigstring bspath, hdlhashtable *htable, bigstring bsname) {

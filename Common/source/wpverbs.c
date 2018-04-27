@@ -150,11 +150,6 @@ typedef enum tywptoken { /*verbs that are processed by wp.c*/
 
 
 
-#if langexternalfind_optimization
-
-	typedef tyexternalvariable tywpvariable, *ptrwpvariable, **hdlwpvariable;
-
-#else
 
 #pragma pack(2)
 typedef struct tywpvariable {
@@ -175,12 +170,10 @@ typedef struct tywpvariable {
 	} tywpvariable, *ptrwpvariable, **hdlwpvariable;
 #pragma options align=reset
 
-#endif
 
 static short errornum = 0; /*error number exclusively for wp routines*/
 
 
-#if !flruntime
 
 static void wpverbsetscrollbarsroutine (void) {
 
@@ -232,7 +225,6 @@ boolean wpverbgettypestring (hdlexternalvariable hvariable, bigstring bs) {
 	} /*wpverbgettypestring*/
 
 
-#endif // !flruntime
 
 static boolean newwpvariable (boolean flinmemory, boolean flpacked, long variabledata, hdlwpvariable *h) {
 
@@ -265,7 +257,6 @@ boolean wpverbdispose (hdlexternalvariable hvariable, boolean fldisk) {
 	} /*wpverbdispose*/
 
 
-#if !flruntime
 
 static void wpverbcheckwindowrect (register hdlwprecord hwp) {
 	
@@ -289,13 +280,7 @@ static void wpverbcheckwindowrect (register hdlwprecord hwp) {
 		}
 	} /*wpverbcheckwindowrect*/
 
-#else
-	
-	#define wpverbcheckwindowrect(hwp)	((void *) 0)
 
-#endif
-
-#if !flruntime
 
 boolean wpverbisdirty (hdlexternalvariable hvariable) {
 	
@@ -339,7 +324,6 @@ boolean wpverbsetdirty (hdlexternalvariable hvariable, boolean fldirty) {
 	return (true);
 	} /*wpverbsetdirty*/
 
-#endif // !flruntime
 
 
 static void wpverblinkvariable (hdlwprecord hwp, hdlwpvariable hv) {
@@ -695,7 +679,6 @@ boolean wpverbinmemory (hdlexternalvariable h) {
 	} /*wpverbinmemory*/
 
 
-#if !flruntime
 
 boolean wpverbgetsize (hdlexternalvariable hvariable, long *size) {
 	
@@ -809,43 +792,6 @@ boolean wpverbsettimes (hdlexternalvariable h, long timecreated, long timemodifi
 	} /*wpverbsettimes*/
 
 
-#if 0
-
-static boolean getwpparam (hdltreenode hfirst, short pnum, hdlwpvariable *hv) {
-	
-	/*
-	the caller wants an wp doc parameter.  we only accept them as "var"
-	parameters, we just want the name of a variable that holds an wpdoc.
-	
-	this keeps lang.c from having to know too much about wpdocs, but 
-	more importantly, keeps them from being automatically copied!  could
-	be very wasteful of memory because these things can get very large.
-	
-	we return a handle to the wp record and the identifier we 
-	referenced to get the wp doc.  the string may used to name a window,
-	for example.
-	*/
-	
-	short id;
-	
-	if (!langexternalgetexternalparam (hfirst, pnum, &id, (hdlexternalvariable *) hv)) {
-		
-		errornum = namenotwperror;
-		
-		return (false);
-		}
-	
-	if (id != idwordprocessor) {
-		
-		errornum = namenotwperror;
-		
-		return (false);
-		}
-	
-	return (true);
-	} /*getwpparam*/
-
-#endif
 
 
 boolean wpwindowopen (hdlexternalvariable hvariable, hdlwindowinfo *hinfo) {
@@ -909,12 +855,7 @@ boolean wpedit (hdlexternalvariable hvariable, hdlwindowinfo hparent, ptrfilespe
 			return (true);
 			}
 
-		#ifdef MACVERSION
 			break;
-		#else
-			if (!shellyield (false))
-				return (false);
-		#endif
 		}
 	
 	rwindow = (**hwp).windowrect; // window comes up where it was last time
@@ -938,12 +879,10 @@ boolean wpedit (hdlexternalvariable hvariable, hdlwindowinfo hparent, ptrfilespe
 	
 		(**hi).fspec = *fs;
 		
-		#ifdef MACVERSION
 		
 			if (macfilespecisresolvable (fs))
 				SetWindowProxyCreatorAndType (w, 'LAND', 'FTwp', kOnSystemDisk);
 				
-		#endif
 		
 		}
 	
@@ -2036,13 +1975,11 @@ boolean wpstart (void) {
 	
 	(*cb).quitroutine = &wpshutdown;
 	
-#ifdef version42orgreater
 	
 	(*cb).disposerecordroutine = ccdisposefilerecord;
 	
 	(*cb).saveroutine = ccsavespecialfile;
 
-#endif
 	
 	(*cb).closeroutine = &wpclose;
 	
@@ -2115,7 +2052,6 @@ boolean wpstart (void) {
 	return (true);
 	} /*wpstart*/
 
-#endif // !flruntime
 
 
 

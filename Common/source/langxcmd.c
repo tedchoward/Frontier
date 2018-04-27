@@ -342,18 +342,9 @@ void xcmdcallback (void) {
 		
 		case 0x11: { /*void ExtToStr (extended num, StringPtr str)*/
 			
-			#if __powerc
-			
-				long double x;
-				
-				safex80told ((extended80 *) args [0], &x);
-				
-				setdoublevalue (x, &val);
-			#else
 			
 				setdoublevalue (* (long double *) args [0], &val);
 			
-			#endif
 			
 			valtostring (&val, (ptrstring) args [1]);
 				
@@ -427,23 +418,11 @@ void xcmdcallback (void) {
 			break;
 		
 		case 0x0c: { /*extended StrToExt (StringPtr str)*/
-			#if __powerc
-			
-				long double x;
-				
-				stringtoval ((ptrstring) args [0], doublevaluetype, &val);
-				
-				x = **val.data.doublevalue;
-				
-				safeldtox80 (&x, (extended80 *) args [1]);
-				
-			#else
 				
 				stringtoval ((ptrstring) args [0], doublevaluetype, &val);
 				
 				*(double *) args [1] = **val.data.doublevalue;
 				
-			#endif
 			
 			break;
 			}
@@ -481,42 +460,6 @@ void xcmdcallback (void) {
 			
 			break;
 		
-		#if 0
-		
-		/*  Field Utilities  */
-		case 0x16: /*Handle GetFieldByID (Boolean cardFieldFlag, short fieldID)*/
-			newfilledhandle (zerostring, 1L, (Handle *) out);
-			
-			break;
-		
-		case 0x14: /*Handle GetFieldByName (Boolean cardFieldFlag, StringPtr fieldName)*/
-			newfilledhandle (zerostring, 1L, (Handle *) out);
-			
-			break;
-		
-		case 0x15: /*Handle GetFieldByNum (Boolean cardFieldFlag, short fieldNum)*/
-			newfilledhandle (zerostring, 1L, (Handle *) out);
-			
-			break;
-		
-		case 0x19: /*void SetFieldByID (Boolean cardFieldFlag, short fieldID, Handle fieldVal)*/
-			break;
-		
-		case 0x17: /*void SetFieldByName (Boolean cardFieldFlag, StringPtr fieldName, Handle fieldVal)*/
-			break;
-		
-		case 0x18: /*void SetFieldByNum (Boolean cardFieldFlag, short fieldNum, Handle fieldVal)*/
-			break;
-		
-		case 0x2f: /*TEHandle GetFieldTE (Boolean cardFieldFlag, short fieldID, short fieldNum, StringPtr fieldNamePtr)*/
-			*out = 0;
-			
-			break;
-															
-		case 0x30: /*void SetFieldTE (Boolean cardFieldFlag, short fieldID, short fieldNum, StringPtr fieldNamePtr, TEHandle fieldTE)*/
-			break;
-		
-		#endif
 		
 		case 0x22: /*void SendHCEvent(EventRecord *event)*/
 			

@@ -64,11 +64,7 @@ typedef enum tymenustate {
 	} tymenustate;
 
 
-#ifdef version42orgreater
 	#define cteditors 14
-#else
-	#define cteditors 12
-#endif
 
 
 /*globals*/
@@ -200,9 +196,6 @@ extern boolean shellpushtargetglobals (void); /*shellverbs.c*/
 
 extern boolean shellinitverbs (void);
 
-#ifdef WIN95VERSION
-	extern boolean shellprocessfindmessage (FINDREPLACE *);
-#endif
 
 
 

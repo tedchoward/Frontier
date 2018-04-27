@@ -44,57 +44,8 @@
 #define blackpopupicon 8
 #define graypopupicon 9
 
-#ifdef version42orgreater
 	#define moofsmalliconlist 142
 
-#else
-	#define xxxdraggingsmalliconlist 130 /*small icons for dragging something*/
-	#define rightarrowicon 0
-	#define leftarrowicon 1
-	#define downarrowicon 2
-	#define uparrowicon 3
-
-	#define xxxfindersmalliconlist 128 /*small icons for the UserLand finder*/
-	#define foldericon 0
-	#define filledfoldericon 1
-	#define fileicon 2
-	#define filledfileicon 3
-	#define programicon 4
-	#define filledprogramicon 5
-
-	#define xxxleadersmalliconlist 128 /*small icons for the structured display*/
-	#define fullicon 0
-	#define emptyicon 1
-	#define linkedicon 2
-	#define commenticon 3
-	#define fullcommenticon 4
-	#define whiteboxicon 5
-	#define grayboxicon 6
-	#define whitediamondicon 7
-	#define tablefullicon 8
-	#define tableemptyicon 9
-	#define tablefullselicon 10
-	#define tableemptyselicon 11
-	#define whiteclosedfoldericon 12
-	#define blackclosedfoldericon 13
-	#define whiteopenfoldericon 14
-	#define blackopenfoldericon 15
-
-	#define xxxcirclesmalliconlist 132 /*different shades of circles*/
-	#define whitecircleicon 0
-	#define blackcircleicon 1
-	#define graycircleicon 2
-
-	#define xxxtablesmalliconlist 134 /*icons that appear in front of table entries*/
-	#define scalaricon 0
-	#define tableicon 1
-	#define wordicon 2
-	#define picticon 3
-	#define outlineicon 4
-	#define scripticon 5
-	#define menuicon 6
-	#define unknownicon 7
-#endif
 
 
 typedef enum tyfillstate {

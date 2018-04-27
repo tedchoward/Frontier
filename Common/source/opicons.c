@@ -47,12 +47,7 @@
 #define breakpointicon 483
 #define markedicon 484
 #define	expandedicon 485
-#ifdef WIN95VERSION
-	#define refconicon 43 /*7.0d7 PBS: musical note icon.*/
-#endif
-#ifdef MACVERSION
 	#define refconicon 489 /*7.0b2 PBS: musical note icon has different id in Mac version.*/
-#endif
 #define customicon 490
 
 
@@ -99,18 +94,13 @@ void opdrawheadicon (short iconnum, const Rect *r, boolean flselected) {
 	
 	operaserect (*r);
 
-#ifdef MACVERSION
 	short transform = kTransformNone;
 	
 	if (flselected)
 		transform = kTransformSelected; 
 	
 	ploticonresource ((Rect *) r, kAlignAbsoluteCenter, transform, iconnum);
-#endif
 
-#ifdef WIN95VERSION
-	ploticonresource (r, 0, 0, iconnum);
-#endif
 	} /*opdrawheadicon*/
 
 
@@ -220,7 +210,6 @@ boolean opdefaultdrawicon (hdlheadrecord hnode, const Rect *iconrect, boolean fl
 
 				/* Look up a custom icon in the odb and draw it if there is one. */
 				
-				#if defined (MACVERSION)
 				
 				bigstring bsadrnodepath;
 
@@ -229,7 +218,6 @@ boolean opdefaultdrawicon (hdlheadrecord hnode, const Rect *iconrect, boolean fl
 					flcustomicondrawn = opdrawheadiconcustomfromodb (bsadrnodepath, iconrect, false);
 				}
 				
-				#endif
 				
 				#if (defined(MACVERSION) && defined(__ppc__)) || defined (WIN95VERSION)
 

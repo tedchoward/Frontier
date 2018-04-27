@@ -63,11 +63,9 @@
 #define TRUE		true
 #define FALSE		false
 
-#ifndef powerc
  #include <MixedMode.h>
  long GetCurrentA5(void)
   ONEWORDINLINE(0x200D);
-#endif
 
 /*
  *	Apple #include files
@@ -178,9 +176,7 @@
 	#include <Resources.h>
 //	#include <Retrace.h>
 //	#include <ROMDefs.h>
-#ifndef powerc
 //	#include <SANE.h>
-#endif
 	#include <Scrap.h>
 	//Code change by Timothy Paustian Sunday, May 7, 2000 8:37:27 PM
 	//Needed for compilation with UH 3.4
@@ -236,11 +232,7 @@
 	#undef fliowa
 	#define threadverbs 1
 	#define oplanglists 1
-	#ifdef __powerc
-		#define noextended 1
-	#else
 		#define noextended 0
-	#endif
 	#define macBirdRuntime 1
 	#undef appRunsCards /*for Applet Toolkit, Iowa Runtime is baked in*/
 	#define iowaRuntimeInApp /*iowa code knows it's in an app*/

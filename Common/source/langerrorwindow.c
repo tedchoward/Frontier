@@ -304,9 +304,7 @@ static void langerrorupdate (void) {
 	/*
 	eraserect ((**hw).contentrect);
 	*/
-	#if TARGET_API_MAC_CARBON == 1
 		drawthemeborder ((**langerrordata).textrect, (**langerrorwindowinfo).contentrect);
-	#endif
 
 	langerrordrawicon (false);
 	
@@ -325,9 +323,7 @@ static void langerrorupdate (void) {
 	//Timothy Paustian 10/5/00
 	//For some reason the buffer is not being flushed for this window.
 	//This should fix it.
-	#if TARGET_API_MAC_CARBON == 1
 		QDFlushPortBuffer (GetWindowPort (langerrorwindow), nil);
-	#endif
 
 	#ifdef gray3Dlook
 		popbackcolor ();
@@ -347,9 +343,7 @@ static void langerroractivate (boolean flactivate) {
 	
 	langerrorframetext ();
 	
-	#if TARGET_API_MAC_CARBON == 1
 		drawthemeborder ((**langerrordata).textrect, (**langerrorwindowinfo).contentrect);
-	#endif
 
 	langerrordrawicon (false);
 	} /*langerroractivate*/
@@ -499,7 +493,6 @@ static void langerrorbuttonhit (void) {
 	} /*langerrorbuttonhit*/
 
 
-#ifdef flnewfeatures	// flstacktrace
 
 static boolean langerrorpopupselect (hdlmenu hmenu, short itemselected) {
 #pragma unused (hmenu)
@@ -568,7 +561,6 @@ static boolean langerrorpopupmenu (void) {
 	register hdlerrorstack hs = (**hle).herrorstack;
 	Rect r;
 	
-	#ifdef flnewfeatures	// flstacktrace
 		r = (**hle).iconrect;
 		
 		if (hs != nil /* && (**hs).toperror > 1*/) {
@@ -577,12 +569,10 @@ static boolean langerrorpopupmenu (void) {
 			
 			popupmenuhit (r, true, &langerrorfillerrorpopup, &langerrorpopupselect);
 			}
-	#endif
 	
 	return (true);
 	} /*langerrorpopupmenu*/
 
-#endif
 
 
 static boolean langerrormousedown (Point pt, tyclickflags flags) {
@@ -718,7 +708,6 @@ boolean langerrorflush (void) {
 	} /*langerrorflush*/
 
 
-#ifdef flnewfeatures
 
 hdlerrorstack langerrorgetstack (void) {
 	
@@ -731,7 +720,6 @@ hdlerrorstack langerrorgetstack (void) {
 	return ((**hle).herrorstack);
 	} /*langerrorgetstack*/
 
-#endif
 
 
 static boolean langerrordirtyhook (void) {

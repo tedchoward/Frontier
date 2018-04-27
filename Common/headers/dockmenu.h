@@ -27,14 +27,10 @@
 
 extern void rundockmenu (void);
 
-#if MACVERSION
 
 extern pascal OSStatus dockmenuhandler (EventHandlerCallRef nextHandler, EventRef theEvent, void* userData);
 
-#endif
 
-#if TARGET_API_MAC_CARBON == 1
 
 pascal OSStatus dockcommandhandler (EventHandlerCallRef nextHandler, EventRef theEvent, void* userData);
 
-#endif

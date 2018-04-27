@@ -188,17 +188,6 @@ boolean langpopsourcecode (void) {
 	} /*langpopsourcecode*/
 
 
-#if 0
-
-boolean langgetsourcecodeaddress (hdlhashtable *htable, bigstring bsname) {
-	
-	register hdlerrorstack hs = langcallbacks.scripterrorstack;
-	tyerrorrecord errorrecord = (**hs).stack [(**hs).toperror - 1];
-	
-	return ((*errorrecord.errorcallback) (errorrecord.errorrefcon, 0, 0, htable, bsname));
-	} /*langgetsourcecodeaddress*/
-
-#endif
 
 boolean langerrormessage (bigstring bs) {
 	
@@ -212,11 +201,9 @@ boolean langerrormessage (bigstring bs) {
 	4.1b3 dmb: added call to new langseterrorcallbackline for stack tracing (on error)
 	*/
     
-#ifdef MACVERSION
     char cs[stringlength(bs)];
     copyptocstring(bs, cs);
     fprintf(stderr, "%s\n", cs);
-#endif
     
 	
 	if (!langerrorenabled ())
@@ -227,11 +214,9 @@ boolean langerrormessage (bigstring bs) {
 	
 	fllangerror = true; /*only display once for each script*/
 	
-	#ifdef flnewfeatures	// flstacktrace
 	
 	langseterrorcallbackline ();
 	
-	#endif
 	
 	if (!(*langcallbacks.debugerrormessagecallback) (bs, langcallbacks.errormessagerefcon))
 		return (false);
@@ -260,21 +245,6 @@ void langsymbolchanged (hdlhashtable htable, const bigstring bs, hdlhashnode hno
 	5.1.5b15 dmb: call callback first, so it can tell if table was already dirty
 	*/
 
-#ifdef fltracklocaladdresses
-
-	if (flvalue) {
-
-		hdlhashnode hn = hnode;
-		
-		if ((hn != nil && hn != HNoNode) || hashtablelookupnode (htable, bs, &hn)) {
-
-			hashunregisteraddressnode (hn);
-
-			hashregisteraddressnode (htable, hn);
-			}
-		}
-
-#endif
 
 	(*langcallbacks.symbolchangedcallback) (htable, bs, hnode, flvalue);
 	
@@ -291,9 +261,6 @@ void langsymbolprechange (hdlhashtable htable, const bigstring bs, hdlhashnode h
 
 void langsymbolinserted (hdlhashtable htable, const bigstring bsname, hdlhashnode hnode) {
 
-#ifdef fltracklocaladdresses	
-	hashregisteraddressnode (htable, hnode);
-#endif
 
 	(*langcallbacks.symbolinsertedcallback) (htable, bsname, hnode);
 

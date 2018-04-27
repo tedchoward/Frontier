@@ -60,9 +60,6 @@ static void mesetalloutlinerects (Rect r) {
 	
 	opresize (r);
 	
-	#ifdef WIN95VERSION
-		opupdatenow ();
-	#endif
 
 	oppopoutline ();
 	} /*mesetalloutlinerects*/

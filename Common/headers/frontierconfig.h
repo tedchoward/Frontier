@@ -27,13 +27,8 @@
 
 #define configinclude /*so other includes can tell if we've been loaded*/
 
-#ifdef MACVERSION
 #include <standard.h>
-#endif
 
-#ifdef WIN95VERSION 
-#include "standard.h"
-#endif
 
 /*resnums of 'cnfg' resources for window types*/
 
@@ -49,22 +44,15 @@
 #define	idaboutconfig 137
 
 
-#if TARGET_API_MAC_CARBON == 1
 	#define idcommandconfig 146 /*OS X uses a normal window*/
 	#define idlangerrorconfig 145
-#else
-	#define idcommandconfig 138
-	#define idlangerrorconfig 139
-#endif
 
 #define idstatsconfig 140
 #define idpictconfig 141
 #define idcancoonconfig 142
 #define idlangdialogconfig 143
 
-#ifdef MACVERSION
 	#define idplayerconfig 144 /*PBS 7.0b4: QuickTime Player window*/
-#endif
 
 
 #define typeunknown '\?\?\?\?'

@@ -55,9 +55,7 @@
 #endif
 #include "shell.rsrc.h"
 #include "process.h"
-#if MACVERSION
 	#include "osacomponent.h"
-#endif
 #include "tablestructure.h"
 #include "Winland.h"
 #include "odbinternal.h"
@@ -1483,9 +1481,7 @@ boolean buildfilename (unsigned char * pathsource, short pathtype, unsigned char
 	memmove (stringbaseaddress(dest), pathaddr, pathlen);
 	memmove (stringbaseaddress(dest)+pathlen, fileaddr, filelen);
 	setstringlength (dest, pathlen + filelen);
-#ifdef PASCALSTRINGVERSION
 		dest [stringlength(dest) + 1] = 0;
-#endif
 	return (true);
 	}
 

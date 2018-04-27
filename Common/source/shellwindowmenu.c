@@ -35,9 +35,7 @@
 #include "shellmenu.h"
 #include "shellprivate.h"
 #include "cancoon.h"
-#if TARGET_API_MAC_CARBON == 1
 	#include "launch.h" /*For OS X Bring All to Front command*/
-#endif
 
 
 
@@ -76,9 +74,7 @@ static boolean pushwindowmenuvisit (WindowPtr w, ptrvoid ptr) {
 	hdlwindowinfo hinfo;
 	Style itemstyle = 0;
 
-	#ifdef MACVERSION
 		hdlwindowinfo hroot;
-	#endif
 	
 	if (!getwindowinfo (w, &hinfo))
 		return (false);
@@ -106,13 +102,11 @@ static boolean pushwindowmenuvisit (WindowPtr w, ptrvoid ptr) {
 	if (w == wfront)
 		checkmenuitem (hwindowsmenu, ix, true);
 	
-	#ifdef MACVERSION /*7.0b26: mark the current root only if this is the Mac version.*/
 
 		else {
 			if (frontrootwindow (&hroot) && (hinfo == hroot)) /*we're the active root*/
 				markmenuitem (hwindowsmenu, ix, '×');
 			}
-	#endif
 	
 	if ((**hinfo).flmadechanges)
 		itemstyle += underline;
@@ -207,13 +201,11 @@ boolean shellupdatewindowmenu (void) {
 	
 	setmenuitemenable (hwindowsmenu, hidewindowitem, isshellwindow (getfrontwindow ()));
 	
-	#if TARGET_API_MAC_CARBON == 1
 	
 		setmenuitemenable (hwindowsmenu, minimizewindowitem, isshellwindow (getfrontwindow ()));
 		
 		setmenuitemenable (hwindowsmenu, bringalltofrontwindowitem, true);
 		
-	#endif
 	
 	if (!flwindowmenudirty)
 		return (true);
@@ -224,15 +216,9 @@ boolean shellupdatewindowmenu (void) {
 
 	fllastwasdottedline = true; /*default*/
 	
-	#if TARGET_API_MAC_CARBON == 1
 	
 		deleteallmenuitems (hwindowsmenu, hidewindowitem + 4);
 
-	#else
-	
-		deleteallmenuitems (hwindowsmenu, hidewindowitem + 1);
-	
-	#endif
 
 #ifndef PIKE	
 	if (ccinexpertmode () || (ccfindrootwindow (&hinfo) && !(**hinfo).flhidden))
@@ -241,11 +227,9 @@ boolean shellupdatewindowmenu (void) {
 
 	shellpushminortype (idaboutconfig);
 	
-#ifdef MACVERSION
 	
 	shellpushminortype (idplayerconfig); /*7.0b4 PBS: QuickTime Player window*/
 	
-#endif
 	
 	shellpushminortype (idcommandconfig);
 	
@@ -341,7 +325,6 @@ void shellwindowmenuselect (short ixmenu) {
 		}
 	else {
 	
-		#if TARGET_API_MAC_CARBON == 1
 		
 			if (ixmenu == minimizewindowitem) {
 				
@@ -361,7 +344,6 @@ void shellwindowmenuselect (short ixmenu) {
 				flcommand = true;
 				} /*if*/
 				
-		#endif
 		
 		if (!flcommand) {
 

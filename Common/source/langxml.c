@@ -182,20 +182,6 @@ static boolean handlebeginswith (Handle h, bigstring bs) {
 	} /*handleendswith*/
 
 
-#if 0
-
-static boolean handleendswith (Handle h, bigstring bs) {
-	
-	long ct = gethandlesize (h);
-	long ctcompare = stringlength (bs);
-	
-	if (ct < ctcompare)
-		return (false);
-	
-	return (strncmp (stringbaseaddress (bs), ((char *) *h) + (ct - ctcompare), ctcompare) == 0);
-	} /*handleendswith*/
-
-#endif
 
 
 static boolean handlecontains (Handle h, bigstring bs) {
@@ -309,80 +295,6 @@ static boolean breakatfirstwhitespacechar (bigstring bs) {
 	} /*breakatfirstwhitespacechar*/
 
 
-#if 0
-
-static boolean bettyRPCclient (bigstring server, short port, bigstring procedurename, hdltreenode hparams) {
-
-	/*
-	ÇA full-featured client for the RPC2 responder
-		ÇPrior to the release of 5.0.2 this is the only way to talk to the server from Frontier
-		ÇA beautiful client interface is coming, but even after that, this script will still have a purpose -- debugging.
-		ÇIf you call it with fldebug true, you'll get a lot of information about the XML conversation.
-		Ç4/4/98; 6:13:06 AM by DW
-
-	on client (rpcServer=tcp.addressDecode (tcp.myAddress ()), rpcPort=user.inetd.config.http.port, procedureName="", adrparamlist=nil, fldebug=false) {
-		
-		local (xmltext = "");
-		bundle { //build the XML request
-			local (indentlevel = 0);
-			on add (s) {
-				xmltext = xmltext + string.filledString ("\t", indentlevel) + s + "\r\n"};
-			add ("<?XML VERSION=\"1.0\"?>");
-			add ("<methodCall>"); indentlevel++;
-			add ("<methodName>" + procedureName + "</methodName>");
-			add ("<params>"); indentlevel++;
-			if adrparamlist != nil {
-				local (item);
-				for item in adrparamlist^ {
-					add ("<param>"); indentlevel++;
-					Çadd ("<name>" + nameOf (adritem^) + "</name>")
-					add ("<value>" + xml.coercions.frontierValueToTaggedText (@item, indentlevel) + "</value>");
-					add ("</param>"); indentlevel--}};
-			add ("</params>"); indentlevel--;
-			add ("</methodCall>"); indentlevel--};
-		local (s);
-		bundle { //send the HTTP request
-			s = tcp.httpClient (method:"POST", server:rpcServer, port:rpcPort, path:"/RPC2", data:xmltext, datatype:"text/xml", debug:fldebug);
-			if fldebug {
-				edit (@scratchpad.httpResult); //the result of setting debug to true in the call above
-				edit (@scratchpad.httpCommand)}};
-		
-		local (ix = string.patternMatch ("\r\n\r\n", s));
-		local (response = string.delete (s, 1, ix + 3));
-		
-		local (adrtable = @temp.rpcReturn);
-		xml.compile (s, adrtable);
-		local (returnedValue);
-		try { //walk the response structure, get returnedValue
-			local (adrresponse = xml.getaddress (adrtable, "methodResponse"));
-			local (adrparams = xml.getaddress (adrresponse, "params"));
-			local (adrparam = xml.getaddress (adrparams, "param"));
-			returnedValue = xml.getvalue (adrparam, "value")}
-		else { //scriptError
-			local (adrresponse = xml.getaddress (adrtable, "methodResponse"));
-			local (adrfault = xml.getaddress (adrresponse, "fault"));
-			local (adrvalue = xml.getaddress (adrfault, "value"));
-			local (adrstruct = xml.getaddress (adrvalue, "struct"));
-			local (memberlist = xml.getaddresslist (adrstruct, "member"));
-			local (member, name, value, faultCode, faultString);
-			for member in memberlist {
-				name = xml.getvalue (member, "name");
-				value = xml.getvalue (member, "value");
-				case name {
-					"faultCode" {
-						faultCode = value};
-					"faultString" {
-						faultString = value}}};
-			scriptError ("The server, " + rpcServer + ", returned error code " + faultCode + ": " + faultString)};
-		
-		adrparamlist^ = {xmltext, adrtable^}; //save copies for the caller, helpful for examples
-		return (returnedValue)}
-	*/
-	
-	return (true);
-	} /*bettyRPCclient*/
-
-#endif
 
 
 static boolean xmladdtaggedvalue (tyvaluerecord *val, short indentlevel, handlestream *sptr) {

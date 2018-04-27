@@ -48,18 +48,11 @@
 #include "langinternal.h"
 #include "tablestructure.h"
 
-#ifdef MACVERSION
 
 	#include "mac.h"
 	#include <uisharing.h>
 	
-#endif
 
-#ifdef WIN95VERSION
-
-	#include "FrontierWinMain.h"
-	
-#endif
 
 #define str_desktopscript	BIGSTRING ("\x04" "ftds")
 #define str_normalscript	BIGSTRING ("\x04" "ftsc")
@@ -156,11 +149,9 @@ boolean shellopenfile (ptrfilespec fs, boolean flhidden, WindowPtr *wnew) {
 	OSType filetype;
 	tyfindvisitinfo info;
 	
-	#ifdef MACVERSION
 
 		bigstring bsext, bs;
 		
-	#endif
 
 	if (wnew != nil)
 		*wnew = nil;
@@ -180,7 +171,6 @@ boolean shellopenfile (ptrfilespec fs, boolean flhidden, WindowPtr *wnew) {
 	if (!getfiletype (fs, &filetype))
 		return (false);
 	
-	#ifdef MACVERSION
 
 		getfsfile ( fs, bs );
 
@@ -189,7 +179,6 @@ boolean shellopenfile (ptrfilespec fs, boolean flhidden, WindowPtr *wnew) {
 		if (equalidentifiers (bsext, "\proot"))
 			filetype = 'TABL';
 			
-	#endif
 	
 	if (!shellpushdefaultglobals ())
 		return (false);
@@ -216,23 +205,19 @@ boolean shellopenfile (ptrfilespec fs, boolean flhidden, WindowPtr *wnew) {
 	if (!openfile (fs, &fnum, false))
 		goto error;
 	
-	#ifdef MACVERSION
 	
 		if (config.flopenresfile)
 			if (!openresourcefile (fs, &rnum, resourcefork)) // 2005-09-02 creedon - added support for fork parameter,
 										// see resources.c: openresourcefile and pushresourcefile
 				goto error;
 				
-	#endif
 	
 	if (!newfilewindow (fs, fnum, rnum, flhidden, &w))
 		goto error;
 	
-	#ifdef MACVERSION
 	
 		SetWindowProxyCreatorAndType ( w, 'LAND', 'TABL', kOnSystemDisk );
 	
-	#endif
 	
 	if (wnew != nil)
 		*wnew = w;
@@ -267,11 +252,9 @@ boolean shellopenfile (ptrfilespec fs, boolean flhidden, WindowPtr *wnew) {
 	
 	closefile (fnum);
 
-	#ifdef MACVERSION
 	
 		closeresourcefile (rnum);
 		
-	#endif
 		
 	return (false);
 	
@@ -358,9 +341,7 @@ boolean shellopen (void) {
 
 
 static void prepuserforwait (WindowPtr w) {
-#if TARGET_API_MAC_CARBON
 #	pragma unused(w)
-#endif
 
 	/*
 	4.1.1b1 dmb: call langpartialeventloop when appropriate
@@ -380,19 +361,6 @@ static void prepuserforwait (WindowPtr w) {
 	else
 		shellpartialeventloop (updateMask);
 
-#if 0	/*7.0b16 PBS: only Macs get grayed windows. Fix for Windows display glitch.*/
-		/*2009-09-18 aradke: graying out now causes display glitch on Mac OS X too */
-	#if TARGET_API_MAC_CARBON
-	{
-	//only gray the front window
-	WindowRef	frontWind = GetFrontWindowOfClass(kAllWindowClasses, false);
-	graywindow(frontWind);
-	}
-	#else
-	grayownedwindows (w); /*gray the window while saving*/
-	#endif
-
-#endif
 	} /*prepuserforwait*/
 
 
@@ -463,7 +431,6 @@ static boolean shelldatabasesaveas (WindowPtr wsave, ptrfilespec fspec) {
 	
 	rnum = -1;
 
-#ifdef MACVERSION
 
 	if (config.flopenresfile)
 		if (!openresourcefile (fspec, &rnum, resourcefork)) { // 2005-09-02 creedon - added support for fork parameter, see
@@ -473,16 +440,13 @@ static boolean shelldatabasesaveas (WindowPtr wsave, ptrfilespec fspec) {
 			
 			return (false);
 			}
-#endif
 	
 	getwindowinfo (w, &hinfo);
 	
-#ifdef MACVERSION
 
 	if (macfilespecisresolvable (fspec))
 		SetWindowProxyCreatorAndType ( w, 'LAND', config.filetype, kOnSystemDisk );
 		
-#endif
 		
 	/*
 	shellbringtofront (hinfo);
@@ -504,13 +468,6 @@ static boolean shelldatabasesaveas (WindowPtr wsave, ptrfilespec fspec) {
 	if (config.flopenresfile)
 		copyallresources ((**hinfo).rnum, rnum);
 
-#ifndef version42orgreater
-
-	shellsavewindowresource (w, fspec, rnum);
-	
-	shellsavefontresource (w, fspec, rnum);
-	
-#endif
 	
 	if (!flconvertingolddatabase) { // close new file; we're really doing a "Save a Copy"
 	
@@ -612,13 +569,11 @@ static boolean shellnormalsaveas (WindowPtr wsave, ptrfilespec fspec, boolean fl
 		
 		closefile (windowgetfnum (w));
 		
-	#ifdef MACVERSION
 	
 		closeresourcefile (windowgetrnum (w));
 		
 		SetWindowProxyCreatorAndType ( w, 'LAND', filetype, kOnSystemDisk );
 		
-	#endif
 	
 		windowsetchanges (w, false);
 		
@@ -678,20 +633,13 @@ boolean shellsaveas (WindowPtr wsave, ptrfilespec fspec, boolean flrunnable) {
 			
 			getdefaultfilename ( bsname );
 
-			#ifdef MACVERSION
 				
 				if ( fsnamelength ( &fs.name ) <= 0 ) {
 					
 					bigstringtofsname ( bsname, &fs.name );
 					}
 			
-			#endif
 
-			#ifdef WIN95VERSION
-			
-				copystring ( bsname, fsname ( &fs ) );
-			
-			#endif
 
 			}
 		
@@ -768,13 +716,11 @@ boolean shellnewfile (ptrfilespec fspec, boolean flhidden, WindowPtr *wnew) {
 		if (!opennewfile (fspec, config.filecreator, config.filetype, &fnum))
 			goto error;
 
-	#ifdef MACVERSION
 	
 		if (config.flopenresfile)
 			if (!openresourcefile (fspec, &rnum, resourcefork)) // 2005-09-02 creedon - added support for fork parameter,
 										     // see resources.c: openresourcefile and pushresourcefile
 				goto error;
-	#endif
 	
 		}
 	
@@ -783,11 +729,9 @@ boolean shellnewfile (ptrfilespec fspec, boolean flhidden, WindowPtr *wnew) {
 	
 	w = *wnew;
 	
-	#ifdef MACVERSION
 	
 		SetWindowProxyCreatorAndType ( w, 'LAND', 'TABL', kOnSystemDisk );
 	
-	#endif
 	
 	shellpushglobals (w);
 	
@@ -814,9 +758,7 @@ boolean shellnewfile (ptrfilespec fspec, boolean flhidden, WindowPtr *wnew) {
 		
 		closefile (fnum);
 		
-		#ifdef MACVERSION		
 			closeresourcefile (rnum);
-		#endif		
 		
 		deletefile (fspec);
 		}
@@ -853,19 +795,12 @@ boolean shellnew (void) {
 	
 	getuntitledfilename ( bsname );
 	
-	#ifdef MACVERSION
 	
 		pushstring ( "\x05"".root", bsname );
 				
 		bigstringtofsname ( bsname, &fspec.name );
 
-	#endif
 
-	#ifdef WIN95VERSION
-	
-		copystring ( bsname, fsname ( &fspec ) );
-	
-	#endif
 
 	if (lconfig.flcreateonnew) {
 		
@@ -933,13 +868,6 @@ boolean shellsave (WindowPtr wsave) {
 		
 		(**shellwindowinfo).flneversaved = false;
 		
-		#ifndef version42orgreater //def MACVERSION
-		
-			shellsavewindowposition (w); 
-			
-			shellsavedefaultfont (w);
-		
-		#endif
 
 		windowgetfspec (w, &fspec);
 		
@@ -1021,12 +949,8 @@ boolean shellclosewindow (WindowPtr wclose) {
 	
 	hparentinfo = (**hinfo).parentwindow;
 	
-	#ifdef version42orgreater
 		if (hparentinfo == nil) // don't close -- hide
 			return (shellhidewindow (hinfo));
-	#else
-		assert (hparentinfo != nil); /*we should be part of another window's data structure*/
-	#endif
 	
 	shellpushglobals ((**hparentinfo).macwindow); /*close message goes to parent window*/
 	
@@ -1072,8 +996,6 @@ boolean shellclose (WindowPtr wclose, boolean fldialog) {
 	if (w == nil) /*closing a nil window is very easy*/
 		return (true);
 
-#ifdef MACVERSION	
-	#ifdef flnewfeatures
 	
 	if (!isshellwindow (w)) {
 		
@@ -1083,8 +1005,6 @@ boolean shellclose (WindowPtr wclose, boolean fldialog) {
 		return (false);
 		}
 	
-	#endif
-#endif
 	
 	if (!getwindowinfo (w, &hinfo))
 		return (false);
@@ -1254,9 +1174,7 @@ boolean shellcloseall (WindowPtr w, boolean fldialog) {
 	hdlwindowinfo hinfo;
 	boolean fl;
 	
-	#ifdef MACVERSION
 		uisCloseAllSharedWindows ();
-	#endif
 	
 	if (w != nil) {
 		
@@ -1270,9 +1188,6 @@ boolean shellcloseall (WindowPtr w, boolean fldialog) {
 			if (!shellclosechildwindows (hinfo))
 				return (false);
 			
-			#ifndef version5orgreater
-				shellbringtofront (hinfo);
-			#endif
 			
 			return (true);
 			}
@@ -1435,14 +1350,5 @@ boolean shellopendefaultfile (void) {
 	} /*shellopendefaultfile*/
 
 
-#ifdef WIN95VERSION
-
-void shellopeninitialfiles (void) {
-	/* Add command line open and drag-drop open here */
-	if (!openwindowsparamlinefiles ())
-		shellopendefaultfile ();
-	} /*shellopeninitialfiles*/
-
-#endif
 
 

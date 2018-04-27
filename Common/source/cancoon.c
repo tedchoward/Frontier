@@ -28,9 +28,7 @@
 #include "frontier.h"
 #include "standard.h"
 
-#ifdef MACVERSION
 	#include <land.h>
-#endif
 
 #include "memory.h"
 #include "dialogs.h"
@@ -57,9 +55,6 @@
 #include "menuverbs.h"
 #include "scripts.h"
 #include "process.h"
-#ifdef fltrialsize
-	#include "dbinternal.h"
-#endif
 #include "cancoon.h"
 #include "cancooninternal.h"
 #include "serialnumber.h"
@@ -469,9 +464,6 @@ static boolean ccinstalltablestructure (boolean flhavehost) {
 	loadsystemscripts (); /*load agents, compile handlers, run startup scripts, etc.*/
 	
 #ifndef PIKE
-	#if TARGET_API_MAC_CARBON == 0
-	langipcmenustartup ();
-	#endif
 #endif
 	
 	return (true);
@@ -660,18 +652,6 @@ static boolean loadversion2cancoonfile (dbaddress adr, hdlcancoonrecord hcancoon
 	
 	flguest = systemtable == nil;
 	
-	#ifdef fltrialsize
-
-	if (flguest) {
-		
-		(**cancoonwindowinfo).hdata = nil; /*unlink data from window to avoid crash*/
-		
-		shelltrialerror (noguestdatabasesstring);
-
-		return (false);
-		}
-
-	#endif
 	
 	if (!flguest) {
 		
@@ -696,62 +676,7 @@ static boolean loadversion2cancoonfile (dbaddress adr, hdlcancoonrecord hcancoon
 	} /*loadversion2cancoonfile*/
 
 
-#if 0 //def MACVERSION
 
-static boolean loadoldcancoonfile (dbaddress adr, hdlcancoonrecord hcancoon) {
-	
-	tyfilespec fs, fsold;
-	boolean fl;
-	
-	if (!msgdialog ("\50" "Convert 4.x database to 5.0? (This can take a while. A backup will be retained.)"))
-		return (false);
-	
-	if (!loadversion2cancoonfile (adr, hcancoon))
-		return (false);
-	
-	windowgetfspec (cancoonwindow, &fs);
-	
-	fsold = fs;
-	
-	pushstring ("\x04" ".v4x", fs.name);
-	
-	flconvertingolddatabase = true;
-	
-	fl = shellsaveas (cancoonwindow, &fs);
-	
-	flconvertingolddatabase = false;
-	
-	if (!fl)
-		return (false);
-	
-	oserror (FSpExchangeFiles (&fs, &fsold)); // ignore, but report error
-	
-	windowsetfspec (cancoonwindow, &fsold); // the old fspec is now the new file
-	
-	return (true);
-	} /*loadoldcancoonfile*/
-
-#endif
-
-#ifdef fltrialsize
-	
-static boolean cctrialviolation (void) {
-
-	long eof;
-	
-	dbgeteof (&eof);
-	
-	if (eof > 7 * 0x0100000) {
-		
-		shelltrialerror (dbsizelimitstring);
-		
-		return (true);
-		}
-	
-	return (false);
-	} /*cctrialviolation*/
-
-#endif
 
 boolean ccloadfile (hdlfilenum fnum, short rnum) {
 #pragma unused(rnum)
@@ -777,17 +702,6 @@ boolean ccloadfile (hdlfilenum fnum, short rnum) {
 	if (!dbopenfile (fnum, false))
 		return (false);
 	
-	#ifdef fltrialsize
-		
-		if (cctrialviolation ()) {
-			
-			if (!flhavehost)
-				shellexitmaineventloop ();
-			
-			goto error;
-			}
-	
-	#endif
 	
 	dbgetview (cancoonview, &adr);
 	
@@ -897,11 +811,9 @@ boolean ccloadspecialfile (ptrfilespec fspec, OSType filetype) {
 	
 	if (getsystemtablescript (idfinder2frontscript, bs)) { // frontier.findertofront=^0
 		
-	#ifdef MACVERSION
 		if ((shellevent.what == kHighLevelEvent) && ((**landgetglobals ()).maceventsender == 'MACS'))
 			pbool = bstrue;
 		else
-	#endif
 			pbool = bsfalse;
 		
 		parsedialogstring (bs, pbool, nil, nil, nil, bs);
@@ -1168,15 +1080,10 @@ boolean ccsavefile (ptrfilespec fs, hdlfilenum fnum, short rnum, boolean flsavea
 	if (!tablesavesystemtable ((**hc).hrootvariable, &info.adrroottable))
 		goto exit;
 	
-#ifdef version42orgreater
 	info.windowinfo [ixcancooninfo].flhidden = (**shellwindowinfo).flhidden;
 
 	if (!dbassignhandle ((**hc).hscriptstring, &info.adrscriptstring))
 		goto exit;
-#else
-	if (!dbassignheapstring (&info.adrscriptstring, (**hc).hscriptstring))
-		goto exit;
-#endif
 	
 	memtodisklong (info.adrroottable);
 	memtodisklong (info.adrscriptstring);
@@ -1208,12 +1115,6 @@ boolean ccsavefile (ptrfilespec fs, hdlfilenum fnum, short rnum, boolean flsavea
 	
 	fl = true; // success!
 
-	#ifdef fltrialsize
-		
-		if (cctrialviolation ()) // just issue message
-			;
-	
-	#endif
 	
 	exit:
 
@@ -1263,9 +1164,6 @@ boolean ccsetdatabase (void) {
 	and add some logic to ccsave
 	*/
 	
-	#ifndef version5orgreater
-		databasedata = (**cancoondata).hdatabase;
-	#endif
 	
 	return (true);
 	} /*ccsetdatabase*/
@@ -1289,14 +1187,12 @@ boolean ccclose (void) {
 	the main window of cancoon is closing.
 	*/
 	
-#ifdef version5orgreater
 //	hdlwindowinfo hw = cancoonwindowinfo;
 //
 //	ccsavefile ((**hw).fnum, (**hw).rnum, false, false);	//odbSaveFile (ccodb);
 
 	if ((cancoondata != nil) && (**cancoondata).flguestroot)  //defensive driving
 		return (true);
-#endif
 
 	runshutdownscripts ();
 	
@@ -1415,9 +1311,6 @@ boolean ccdisposerecord (void) {
 	if (!flguestroot) {
 		
 #ifndef PIKE
-		#if TARGET_API_MAC_CARBON == 0
-		langipcmenushutdown ();
-		#endif
 		
 #endif
 		
@@ -1530,9 +1423,7 @@ boolean ccbackground (void) {
 
 
 boolean ccfnumchanged (hdlfilenum newfnum) {
-#ifdef version5orgreater
 #	pragma unused (newfnum)
-#endif
 
 	/*
 	part of the implementation of Save As
@@ -1540,13 +1431,7 @@ boolean ccfnumchanged (hdlfilenum newfnum) {
 	5.0a18 dmb: no, it's not. it's never called.
 	*/
 	
-	#ifdef version5orgreater
 		return (true);
-	#else
-		ccsetdatabase ();
-	
-		return (dbfnumchanged (newfnum));
-	#endif
 	} /*ccfnumchanged*/
 
 
@@ -1611,37 +1496,6 @@ boolean ccinexpertmode (void) {
 	} /*ccinexpertmode*/
 
 
-#if 0
-
-static boolean cctoggleexpertmode (void) {
-
-	/*
-	5.0a3 dmb: we now call Frontier.setExpertMode, not system.misc.toggleExpertMode
-	*/
-	
-	bigstring bsscript;
-	boolean flexpert;
-	ptrstring bsexpert;
-	
-	flexpert = !ccinexpertmode ();
-	
-	getsystemtablescript (idtoggleexpertmodescript, bsscript);
-	
-	bsexpert = (flexpert? bstrue : bsfalse);
-	
-	parsedialogstring (bsscript, bsexpert, nil, nil, nil, bsscript);
-	
-	langrunstringnoerror (bsscript, bsscript);
-	
-	if (ccinexpertmode () != flexpert)
-		return (false);
-	
-	shellwindowmenudirty ();
-	
-	return (true);
-	} /*cctoggleexpertmode*/
-
-#endif
 
 
 static boolean ccmenuroutine (short idmenu, short ixmenu) {

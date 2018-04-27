@@ -47,7 +47,6 @@ boolean isword (byte *ptext, long lentext, long pos, long len) {
 	boundaries.
 	*/
 	
-	#ifdef MACVERSION
 	
 		OffsetTable offsets;
 		//Code change by Timothy Paustian Sunday, June 25, 2000 12:50:40 PM
@@ -62,17 +61,7 @@ boolean isword (byte *ptext, long lentext, long pos, long len) {
 		if (offsets [0].offSecond != pos + len)
 			return (false);
 	
-	#endif
 
-	#ifdef WIN95VERSION
-		
-		if ((pos > 0) && (ptext [pos - 1] != ' '))
-			return (false);
-		
-		if ((pos + len < lentext) && (ptext [pos + len] != ' '))
-			return (false);
-
-	#endif
 
 	return (true);
 	} /*isword*/
@@ -88,10 +77,8 @@ boolean textsearch (byte *ptext, long lentext, long *offset, long *lenmatch) {
 	long ixstart = *offset;
 	long ixmatch;
 
-#ifdef flregexpverbs
 	if (searchparams.flregexp)
 		return (regexptextsearch (ptext, lentext, offset, lenmatch));
-#endif
 	
 	while (true) {
 		
@@ -284,13 +271,11 @@ boolean initsearch (void) {
 	
 	setemptystring (searchparams.bsreplace);
 
-#ifdef flregexpverbs
 	
 	searchparams.hcompiledpattern = nil;
 	
 	searchparams.hovector = nil;
 
-#endif
 	
 	return (true);
 	} /*initsearch*/

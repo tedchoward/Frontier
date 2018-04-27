@@ -42,15 +42,9 @@
 #include "tablestructure.h"
 
 
-#if TARGET_API_MAC_CARBON == 1 /*PBS 03/14/02: AE OS X fix.*/
 	#include "aeutils.h"
-#endif
 
-#ifdef MACVERSION
 	static byte bsellipses [] = "\x01É";
-#else
-	static byte bsellipses [] = "\x03...";
-#endif
 
 static byte filerecordpath [] = "\x04" "path";
 
@@ -65,7 +59,6 @@ static byte bsplatformmac [] = "\x03" "mac";
 static byte bsplatformwin [] = "\x03" "win";
 
 
-#ifdef MACVERSION
 
 static boolean langgestaltcheck (OSType selector, short stringnum) {
 	
@@ -97,20 +90,15 @@ static boolean equaldescriptors (AEDesc *desc1, AEDesc *desc2) {
 		return (false);
 	
 	if ((t1 == typeAERecord) || (t1 == typeAEList)) {
-		#ifdef oplanglists
 			tyvaluerecord v1, v2, vequal;
 			
 			if (!langipcconvertaelist (d1, &v1) || !langipcconvertaelist (d2, &v2))
 				return (false);
 			
 			return (EQvalue (v1, v2, &vequal) && vequal.data.flvalue);
-		#else
-			return (comparelists (d1, d2, EQop));
-		#endif
 		}
 	else
 	
-		#if TARGET_API_MAC_CARBON == 1 /*PBS 03/14/02: AE OS X fix.*/
 		
 			{
 			Handle hcopy1, hcopy2;
@@ -129,27 +117,15 @@ static boolean equaldescriptors (AEDesc *desc1, AEDesc *desc2) {
 			return (fl);
 			}
 				
-		#else
-		
-			return (equalhandles ((*d1).dataHandle, (*d2).dataHandle));
-		
-		#endif
 	} /*equaldescriptors*/
 
-#endif
 
 
 boolean langcanusealiases (void) {
 	
-	#ifdef MACVERSION
 	
 		return (langgestaltcheck (gestaltAliasMgrAttr, cantusealiaseserror));
 	
-	#else
-	
-		return (false);
-	
-	#endif
 	} /*langcanusealiases*/
 
 
@@ -348,7 +324,6 @@ static boolean getlimitedvaluestring (tyvaluerecord *val, short limit, char chqu
 	
 	register tyvaluerecord *v = val;
 	
-#ifdef MACVERSION
 	AEDesc desc, coerceddesc;
 	OSErr err;
 
@@ -384,7 +359,6 @@ static boolean getlimitedvaluestring (tyvaluerecord *val, short limit, char chqu
 				return (false);
 			}
 		}
-#endif
 
 	if (!coercetostring (v))
 		return (false);
@@ -449,9 +423,6 @@ boolean getobjectmodeldisplaystring (tyvaluerecord *vitem, bigstring bsdisplay) 
 			break;
 		
 		case stringvaluetype: /*these need to be quoted*/
-	#ifndef version5orgreater
-		case addressvaluetype:
-	#endif
 		case filespecvaluetype:
 		case aliasvaluetype:
 		case datevaluetype:
@@ -460,7 +431,6 @@ boolean getobjectmodeldisplaystring (tyvaluerecord *vitem, bigstring bsdisplay) 
 			
 			break;
 		
-	#ifdef version5orgreater
 		case addressvaluetype:
 			if (!getlimitedvaluestring (v, 251, chnul, bsdisplay))
 				return (false);
@@ -471,7 +441,6 @@ boolean getobjectmodeldisplaystring (tyvaluerecord *vitem, bigstring bsdisplay) 
 				insertchar ('@', bsdisplay);
 			
 			break;
-	#endif
 		
 		case pointvaluetype: /*these should look like lists*/
 		case rectvaluetype:
@@ -505,7 +474,6 @@ boolean getobjectmodeldisplaystring (tyvaluerecord *vitem, bigstring bsdisplay) 
 	} /*getobjectmodeldisplaystring*/
 
 
-#ifdef MACVERSION
 
 	static boolean stringtoalias ( tyvaluerecord *val ) {
 	
@@ -561,7 +529,6 @@ boolean getobjectmodeldisplaystring (tyvaluerecord *vitem, bigstring bsdisplay) 
 		
 		} // stringtoalias
 		
-#endif
 
 
 boolean filespectoalias (const ptrfilespec fs, boolean flminimal, AliasHandle *halias) {
@@ -572,7 +539,6 @@ boolean filespectoalias (const ptrfilespec fs, boolean flminimal, AliasHandle *h
 	// 2006-06-24 creedon: for Mac, FSRef-ized
 	//
 	
-	#ifdef MACVERSION
 
 		OSErr err = noErr;
 		
@@ -606,20 +572,11 @@ boolean filespectoalias (const ptrfilespec fs, boolean flminimal, AliasHandle *h
 		
 		return (false);
 		
-	#endif
 
-	#ifdef WIN95VERSION
-	
-		langparamerror (unimplementedverberror, bsfunctionname);
-		
-		return (false);
-		
-	#endif
 	
 	} // filespectoalias
 
 
-#ifdef MACVERSION
 
 	static boolean filespecvaltoalias (tyvaluerecord *val) {
 
@@ -650,12 +607,10 @@ boolean filespectoalias (const ptrfilespec fs, boolean flminimal, AliasHandle *h
 		
 		} // filespecvaltoalias
 
-#endif
 
 
 boolean aliastostring (Handle halias, bigstring bs) {
 
-	#ifdef MACVERSION
 		
 		//
 		// 2006-07-26 creedon: FSRef-ized
@@ -733,15 +688,7 @@ boolean aliastostring (Handle halias, bigstring bs) {
 		
 		return (true);
 		
-	#endif
 
-	#ifdef WIN95VERSION
-	
-		langparamerror (unimplementedverberror, bsfunctionname);
-
-		return (false);
-		
-	#endif
 	
 	} // aliastostring
 
@@ -760,7 +707,6 @@ boolean aliastofilespec ( AliasHandle halias, ptrfilespec fs ) {
 	// 2.1a6 dmb: ignore fnfErr
 	//
 	
-	#ifdef MACVERSION
 	
 		FSRef fsref;
 		boolean flchanged;
@@ -809,15 +755,7 @@ boolean aliastofilespec ( AliasHandle halias, ptrfilespec fs ) {
 		
 		return ( false );
 		
-	#endif
 
-	#ifdef WIN95VERSION
-	
-		langparamerror (unimplementedverberror, bsfunctionname);
-
-		return (false);
-		
-	#endif
 	
 	} // aliastofilespec
 
@@ -830,7 +768,6 @@ boolean coercetoalias (tyvaluerecord *v) {
 	I don't expect this to come up much, if at all.
 	*/
 	
-#ifdef MACVERSION
 	switch ((*v).valuetype) {
 		
 		case aliasvaluetype:
@@ -863,13 +800,7 @@ boolean coercetoalias (tyvaluerecord *v) {
 			
 			return (false);
 		} /*switch*/
-#endif
 
-#ifdef WIN95VERSION
-	langparamerror (unimplementedverberror, bsfunctionname);
-
-	return (false);
-#endif
 	} /*coercetoalias*/
 
 
@@ -889,7 +820,6 @@ boolean filespecaddvalue ( tyvaluerecord *v1, tyvaluerecord *v2, tyvaluerecord *
 	// 2.1b3 dmb: if resulting path is to a non-existent folder, don't return a filespec 
 	//
 	
-	#ifdef MACVERSION
 
 		FSRef fsref;
 		bigstring bs, bsadd;
@@ -921,19 +851,7 @@ boolean filespecaddvalue ( tyvaluerecord *v1, tyvaluerecord *v2, tyvaluerecord *
 
 		return (setfilespecvalue (&fs, vreturned));
 		
-	#endif
 
-	#ifdef WIN95VERSION
-	
-		if (!coercetostring (v2))
-			return (false);
-		
-		if (!coercetostring (v1))
-			return (false);
-		
-		return (addvalue (*v1, *v2, vreturned));
-		
-	#endif
 	
 	} // filespecaddvalue
 
@@ -947,7 +865,6 @@ boolean filespecsubtractvalue (tyvaluerecord *v1, tyvaluerecord *v2, tyvaluereco
 	// 2006-06-24 creedon: FSRef-ized
 	//
 	
-	#ifdef MACVERSION
 
 		tyfilespec fs;
 		bigstring bssub;
@@ -982,19 +899,7 @@ boolean filespecsubtractvalue (tyvaluerecord *v1, tyvaluerecord *v2, tyvaluereco
 		
 		return (subtractvalue (*v1, *v2, vreturned));
 		
-	#endif
 
-	#ifdef WIN95VERSION
-	
-		if (!coercetostring (v2))
-			return (false);
-		
-		if (!coercetostring (v1))
-			return (false);
-		
-		return (subtractvalue (*v1, *v2, vreturned));
-		
-	#endif
 	
 	} // filespecsubtractvalue
 
@@ -1064,19 +969,11 @@ boolean langpackfileval (const tyvaluerecord *vfile, Handle *hpacked) {
 	//5.0a24 rab: adding platform indicator rather then converting to URL - URL's have as much difference as
 	//just indicating what platform the path is specific to.
 
-	#ifdef MACVERSION
 	
 		if (!oppushstring (hlist, filerecordplatform, bsplatformmac))
 			goto exit;
 			
-	#endif
 
-	#ifdef WIN95VERSION
-	
-		if (!oppushstring (hlist, filerecordplatform, bsplatformwin))
-			goto exit;
-			
-	#endif
 
 	if (getmachinename (bsmachine)) // *** could push machine name too
 		if (!oppushstring (hlist, filerecordmachine, bsmachine))
@@ -1116,27 +1013,13 @@ boolean langunpackfileval (Handle hpacked, tyvaluerecord *vfile) {
 		
 		case aliasvaluetype:
 		
-			#ifdef MACVERSION
 			
 				fl = opgetlisthandle (hlist, -1, filerecordalias, &halias);
 
 				if (fl)
 					fl = copyhandle (halias, &(*vfile).data.aliasvalue);
 					
-			#endif
 
-			#ifdef WIN95VERSION
-			
-				fl = opgetliststring (hlist, -1, filerecordpath, bspath);
-				
-				if (fl) {
-
-					(*vfile).valuetype = stringvaluetype;
-
-					fl = newtexthandle (bspath, &(*vfile).data.stringvalue);
-					}
-					
-			#endif
 			
 			break;
 
@@ -1162,21 +1045,12 @@ boolean langunpackfileval (Handle hpacked, tyvaluerecord *vfile) {
 					
 					if (opgetliststring (hlist, -1, filerecordplatform, bsplat)) {
 					
-						#ifdef MACVERSION
 						
 							if (equalidentifiers (bsplat, bsplatformwin)) {
 								// ERROR or Conversion HERE!
 								}
 								
-						#endif
 
-						#ifdef WIN95VERSION
-						
-							if (equalidentifiers (bsplat, bsplatformmac)) {
-								// ERROR or Conversion HERE!
-								}
-								
-						#endif
 						}
 					
 					fl = pathtofilespec (bspath, &fs);
@@ -1212,71 +1086,7 @@ boolean langunpackfileval (Handle hpacked, tyvaluerecord *vfile) {
 	} // langunpackfileval
 
 
-#ifdef WIN95VERSION
 
-boolean objspectoaddress (tyvaluerecord *val) {
-
-	langparamerror (unimplementedverberror, bsfunctionname);
-
-	return (false);
-	} /*objspectoaddress*/
-
-
-boolean objspectofilespec (tyvaluerecord *val) {
-
-	langparamerror (unimplementedverberror, bsfunctionname);
-
-	return (false);
-	} /*objspectofilespec*/
-
-
-boolean filespectoobjspec (tyvaluerecord *val) {
-
-	langparamerror (unimplementedverberror, bsfunctionname);
-
-	return (false);
-	} /*filespectoobjspec*/
-
-
-boolean objspectostring (Handle hobjspec, bigstring bs) {
-
-	copystring ("\x09" "<objspec>", bs);
-
-	return (true);
-	} /*objspectostring*/
-
-
-boolean coercetoobjspec (tyvaluerecord *v) {
-
-	langparamerror (unimplementedverberror, bsfunctionname);
-
-	return (false);
-	} /*coercetoobjspec*/
-
-
-boolean setobjspecverb (hdltreenode hparam1, tyvaluerecord *val) {
-
-	langparamerror (unimplementedverberror, bsfunctionname);
-
-	return (false);
-	} /*setobjspecverb*/
-
-
-boolean isobjspectree (hdltreenode htree) {
-	return (false);
-	} /*isobjspectree*/
-
-
-boolean evaluateobjspec (hdltreenode htree, tyvaluerecord *vreturned) {
-
-	langparamerror (unimplementedverberror, bsfunctionname);
-
-	return (false);
-	} /*evaluateobjspec*/
-
-#endif
-
-#ifdef MACVERSION
 
 static pascal OSErr langsystem7accessobject (
 						DescType	classWanted,
@@ -1302,15 +1112,9 @@ static pascal OSErr langsystem7accessobject (
 			if (err != noErr)
 				return (err);
 			
-			#if TARGET_API_MAC_CARBON == 1 /*PBS 03/14/02: AE OS X fix.*/
 			
 				datahandletostring (keydesc, bs);
 				
-			#else
-			
-				texthandletostring ((*keydesc).dataHandle, bs);
-			
-			#endif
 			
 			if (!langexpandtodotparams (bs, &htable, bs)) {
 				
@@ -1341,7 +1145,6 @@ static pascal OSErr langsystem7accessobject (
 
 static void setupdescriptor (Handle hdata, AEDesc *desc) {
 	
-	#if TARGET_API_MAC_CARBON == 1 /*PBS 03/14/02: AE OS X fix.*/
 	
 		DescType type = typeObjectSpecifier;
 		
@@ -1350,18 +1153,6 @@ static void setupdescriptor (Handle hdata, AEDesc *desc) {
 		
 		newdescwithhandle (desc, type, hdata);
 	
-	#else
-	
-		register AEDesc *d = desc;
-	
-		(*d).dataHandle = hdata;
-		
-		if ((*d).dataHandle == nil)
-			(*d).descriptorType = typeNull;
-		else
-			(*d).descriptorType = typeObjectSpecifier;
-		
-	#endif
 	} /*setupdescriptor*/
 
 
@@ -1463,7 +1254,6 @@ boolean objspectoaddress (tyvaluerecord *val) {
 	
 	disposevaluerecord (*v, true);
 	
-	#if TARGET_API_MAC_CARBON == 1 /*PBS 03/14/02: AE OS X fix.*/
 	
 		{
 		Handle h;
@@ -1474,12 +1264,6 @@ boolean objspectoaddress (tyvaluerecord *val) {
 			return (false);
 		}
 	
-	#else
-	
-		if (!setheapvalue (token.dataHandle, stringvaluetype, v)) /*consumes handle*/
-			return (false);
-			
-	#endif
 	
 	return (stringtoaddress (v));
 	} /*objspectoaddress*/
@@ -1558,7 +1342,6 @@ boolean filespectoobjspec (tyvaluerecord *val) {
 	disposevaluerecord (*v, true);
 	
 	
-	#if TARGET_API_MAC_CARBON == 1 /*PBS 03/14/02: AE OS X fix.*/
 	
 		{
 		Handle h;
@@ -1568,11 +1351,6 @@ boolean filespectoobjspec (tyvaluerecord *val) {
 		return (setheapvalue (h, objspecvaluetype, v));
 		}
 	
-	#else
-	
-		return (setheapvalue (objdesc.dataHandle, objspecvaluetype, v));
-	
-	#endif
 	
 	} /*filespectoobjspec*/
 
@@ -1667,7 +1445,6 @@ typedef struct tyobjspecitem { /*data within special object specifier structures
 
 static boolean getobjspeckeydesc (AEDesc *objdata, OSType desiredkey, AEDesc *keydata) {
 
-    #if TARGET_API_MAC_CARBON == 1
     // MJL 17/08/05: As of Jaguar the AEDesc datahandle is opaque so use toolbox accessor functions rather
     //  than trying to parse the data structure.
 	AEKeyword		curKeyWord;
@@ -1695,56 +1472,6 @@ static boolean getobjspeckeydesc (AEDesc *objdata, OSType desiredkey, AEDesc *ke
     exit:
     return (!oserror (err));
 	
-	#else  // #if TARGET_API_MAC_CARBON == 1
-	
-    register Handle h = (*objdata).dataHandle;
-	register byte *p;
-	long ctitems;
-	tyobjspecitem objspecitem;
-	OSErr err;
-	
-	HLock (h);
-	//Code change by Timothy Paustian Saturday, April 29, 2000 11:00:17 PM
-	//Changed to dereference h instead of the AEDesc directly.
-	p = (byte *)*h;
-	//old code
-	//p = (byte *) *(*objdata).dataHandle;
-	
-	if (*(OSType *)p == (*objdata).descriptorType) /*data begins with redundant type; skip it*/
-		p += 4;
-	
-	BlockMove (p, &ctitems, 4);
-	
-	p += 8;
-	
-	while (--ctitems >= 0) {
-		
-		BlockMove (p, &objspecitem, sizeof (tyobjspecitem));
-		
-		p += sizeof (objspecitem);
-		
-		if (objspecitem.key == desiredkey) {
-			
-			err = AECreateDesc (objspecitem.type, (Ptr) p, objspecitem.size, keydata);
-			
-			goto exit;
-			}
-		
-		p += objspecitem.size;
-		
-		if (odd (objspecitem.size))
-			++p;
-		}
-	
-	err = errAEDescNotFound;
-	
-	exit:
-	
-	HUnlock (h);
-	
-	return (!oserror (err));
-
-    #endif // #if !TARGET_API_MAC_CARBON == 1
 	} /*getobjspeckeydesc*/
 
 
@@ -1848,7 +1575,6 @@ static boolean testtostring (AEDesc *testdata, bigstring bstest) {
 			if (!getobjspeckeydesc (testdata, keyAELogicalOperator, &desc))
 				goto exit;
 			
-			#if TARGET_API_MAC_CARBON == 1 /*PBS 03/14/02: AE OS X fix.*/
 			
 				{
 				Handle hcopy;
@@ -1860,11 +1586,6 @@ static boolean testtostring (AEDesc *testdata, bigstring bstest) {
 				disposehandle (hcopy);
 				}
 
-			#else
-			
-				op = **(OSType **)desc.dataHandle;
-			
-			#endif
 			
 			operatortostring (op, bsop);
 			
@@ -1918,7 +1639,6 @@ static boolean testtostring (AEDesc *testdata, bigstring bstest) {
 				goto exit;
 			
 			
-				#if TARGET_API_MAC_CARBON == 1 /*PBS 03/14/02: AE OS X fix.*/
 			
 				{
 				Handle hcopy;
@@ -1930,11 +1650,6 @@ static boolean testtostring (AEDesc *testdata, bigstring bstest) {
 				disposehandle (hcopy);
 				}
 
-				#else
-			
-					op = **(OSType **)desc.dataHandle;
-			
-				#endif
 
 			operatortostring (op, bsop);
 			
@@ -2076,14 +1791,10 @@ static boolean objtostring (AEDesc *objdesc, boolean fldisposeobj, DescType exam
 		if (oserror (langsystem7parseobject (objdesc, &class, &container, &keyform, &keydata)))
 			goto exit;
 		
-#if TARGET_API_MAC_CARBON == 1
         // MJL 17/08/05: On X we cannot keep a lazy handle in the AEDesc to the keydata datahandle that gets 
         //  pushed onto the Frontier temp stack in the vkey. As we need it later we must duplicate the AEDesc before pushing it.
         tempDescPtr = &tempDesc;
         AEDuplicateDesc (&keydata, tempDescPtr);
-#else
-        tempDescPtr = &keydata;
-#endif
 		if (!setdescriptorvalue (*tempDescPtr, &vkey)) /*if successful, keydata is on temp stack*/
 			goto exit;
 		
@@ -2162,9 +1873,7 @@ static boolean objtostring (AEDesc *objdesc, boolean fldisposeobj, DescType exam
 		
 		disposevaluerecord (vkey, false);
 		
-#if TARGET_API_MAC_CARBON == 1
         AEDisposeDesc (&keydata);   // MJL 17/08/05 dispose of our duplicated temp AEDesc. On 9 the dataHandle belongs also to the vkey which is disposed above so we don't need to explicitly dispose the AEDesc
-#endif
 		if (fldisposeobj)
 			AEDisposeDesc (objdesc);
 		
@@ -2247,17 +1956,9 @@ static void getdefaultcontainer (OSType nulltype, AEDesc *containerdesc, boolean
 			}
 		}
 	
-	#if TARGET_API_MAC_CARBON == 1
 		
 		newdescnull (containerdesc, nulltype);
 	
-	#else
-	
-		(*containerdesc).descriptorType = nulltype;
-	
-		(*containerdesc).dataHandle = nil;
-	
-	#endif
 	} /*getdefaultcontainer*/
 
 
@@ -2360,7 +2061,6 @@ static boolean valtoobjspec (tyvaluerecord *val, OSType nulltype, AEDesc *object
 			return (false);
 		} /*switch*/
 	
-	#if TARGET_API_MAC_CARBON == 1 /*PBS 03/14/02: AE OS X fix.*/
 	
 		if (x == nil)
 		
@@ -2373,23 +2073,6 @@ static boolean valtoobjspec (tyvaluerecord *val, OSType nulltype, AEDesc *object
 			newdescwithhandle (obj, typeObjectSpecifier, x);
 			} /*else*/
 	
-	#else
-	
-		(*obj).dataHandle = x;
-	
-		
-		if (x == nil) {
-			
-			(*obj).descriptorType = typeNull; /*don't use nulltype here; nil spec is always typeNull*/
-			}
-		else {
-			
-			exemptfromtmpstack (v);
-			
-			(*obj).descriptorType = typeObjectSpecifier;
-			}
-		
-	#endif
 	return (true);
 	} /*valtoobjspec*/
 
@@ -2424,7 +2107,6 @@ boolean coercetoobjspec (tyvaluerecord *v) {
 			if (!valtoobjspec (v, typeNull, &objectdesc))
 				return (false);
 			
-			#if TARGET_API_MAC_CARBON == 1 /*PBS 03/14/02: AE OS X fix.*/
 			
 				{
 				Handle h;
@@ -2434,11 +2116,6 @@ boolean coercetoobjspec (tyvaluerecord *v) {
 				return (setheapvalue (h, objspecvaluetype, v));
 				}			
 			
-			#else
-			
-				return (setheapvalue (objectdesc.dataHandle, objspecvaluetype, v));
-			
-			#endif
 		} /*switch*/
 	} /*coercetoobjspec*/
 
@@ -2527,7 +2204,6 @@ boolean setobjspecverb (hdltreenode hparam1, tyvaluerecord *val) {
 	if (oserror (errcode))
 		return (false);
 
-	#if TARGET_API_MAC_CARBON == 1 /*PBS 03/14/02: AE OS X fix.*/
 
 		{
 		Handle h;
@@ -2537,11 +2213,6 @@ boolean setobjspecverb (hdltreenode hparam1, tyvaluerecord *val) {
 		return (setheapvalue (h, objspecvaluetype, val));
 		}			
 
-	#else
-
-		return (setheapvalue (objspecdesc.dataHandle, objspecvaluetype, val));
-	
-	#endif
 	} /*setobjspecverb*/
 
 
@@ -2580,11 +2251,9 @@ static boolean evaluateproperty (hdltreenode htree, OSType nulltype, AEDesc *obj
 	OSType propkey;
 	boolean fltmp = false;
 	
-	#if TARGET_API_MAC_CARBON == 1
 	
 		Handle hcopy;
 		
-	#endif
 	
 	assert (h != nil);
 	
@@ -2609,17 +2278,11 @@ static boolean evaluateproperty (hdltreenode htree, OSType nulltype, AEDesc *obj
 			if (!evaluateobject ((**h).param1, nulltype, &containerdesc)) /*daisy-chain recursion*/
 				return (false);
 			
-			#if TARGET_API_MAC_CARBON == 1 /*PBS 03/14/02: AE OS X fix.*/
 			
 				copydatahandle (&containerdesc, &hcopy);
 				
 				pushtmpstack (hcopy);
 						
-			#else
-			
-				pushtmpstack (containerdesc.dataHandle); /*until it's merged*/
-			
-			#endif
 			
 			fltmp = true;
 			
@@ -2639,15 +2302,9 @@ static boolean evaluateproperty (hdltreenode htree, OSType nulltype, AEDesc *obj
 	
 	if (fltmp)
 	
-		#if TARGET_API_MAC_CARBON == 1 /*PBS 03/14/02: AE OS X fix.*/
 		
 			releaseheaptmp (hcopy);
 
-		#else
-	
-			releaseheaptmp (containerdesc.dataHandle);
-	
-		#endif
 		
 	return (true);
 	} /*evaluateproperty*/
@@ -2779,26 +2436,18 @@ static boolean evaluatecomparison (hdltreenode htree, DescType operator, AEDesc 
 	AEDesc valdesc;
 	OSErr errcode;
 	
-	#if TARGET_API_MAC_CARBON == 1
 	
 		Handle hcopy;
 	
-	#endif
 	
 	if (!evaluateobject ((**h).param1, typeObjectBeingExamined, &objectdesc))
 		return (false);
 	
-	#if TARGET_API_MAC_CARBON == 1 /*PBS 03/14/02: AE OS X fix.*/
 	
 		copydatahandle (&objectdesc, &hcopy);
 		
 		pushtmpstack (hcopy);
 	
-	#else
-	
-		pushtmpstack (objectdesc.dataHandle); /*until it's merged*/
-	
-	#endif
 	
 	if (!evaluatetree ((**h).param2, &val))
 		return (false);
@@ -2808,15 +2457,9 @@ static boolean evaluatecomparison (hdltreenode htree, DescType operator, AEDesc 
 	
 	errcode = CreateCompDescriptor (operator, &objectdesc, &valdesc, false, keydatadesc);
 	
-	#if TARGET_API_MAC_CARBON == 1 /*PBS 03/14/02: AE OS X fix.*/
 
 		releaseheaptmp (hcopy);
 	
-	#else
-		
-		releaseheaptmp (objectdesc.dataHandle); /*keep tmpstack cleared out*/
-	
-	#endif
 	
 	AEDisposeDesc (&valdesc);
 	
@@ -2965,15 +2608,9 @@ static boolean evaluateboundryobject (hdltreenode htree, OSType rangeclass, AEDe
 	if (!evaluatesimplekey (h, &keyform, &keydatadesc))
 		return (false);
 		
-	#if TARGET_API_MAC_CARBON == 1
 	
 		nildatahandle (&containerdesc);
 	
-	#else
-		
-		containerdesc.dataHandle = nil;
-	
-	#endif
 
 	containerdesc.descriptorType = typeCurrentContainer;
 	
@@ -3029,11 +2666,9 @@ static boolean evaluateelement (hdltreenode htree, OSType nulltype, OSType *elem
 	OSErr errcode;
 	boolean fltmp = false;
 	
-	#if TARGET_API_MAC_CARBON == 1 /*PBS 03/14/02: AE OS X fix.*/
 	
 		Handle hcopy;
 	
-	#endif
 	
 	assert (h != nil);
 	
@@ -3062,17 +2697,11 @@ static boolean evaluateelement (hdltreenode htree, OSType nulltype, OSType *elem
 			if (!evaluateobject ((**hp1).param1, nulltype, &containerdesc)) /*daisy-chain recursion*/
 				return (false);
 			
-			#if TARGET_API_MAC_CARBON == 1 /*PBS 03/14/02: AE OS X fix.*/
 			
 				copydatahandle (&containerdesc, &hcopy);
 				
 				pushtmpstack (hcopy);
 			
-			#else
-			
-				pushtmpstack (containerdesc.dataHandle); /*until it's merged*/
-			
-			#endif
 			
 			fltmp = true;
 			
@@ -3085,17 +2714,11 @@ static boolean evaluateelement (hdltreenode htree, OSType nulltype, OSType *elem
 			if (!evaluateelement (hp1, nulltype, &class, &containerdesc))
 				return (false);
 
-			#if TARGET_API_MAC_CARBON == 1 /*PBS 03/14/02: AE OS X fix.*/
 			
 				copydatahandle (&containerdesc, &hcopy);
 				
 				pushtmpstack (hcopy);
 			
-			#else
-			
-				pushtmpstack (containerdesc.dataHandle); /*until it's merged*/
-				
-			#endif
 			
 			fltmp = true;
 			
@@ -3155,17 +2778,10 @@ static boolean evaluateelement (hdltreenode htree, OSType nulltype, OSType *elem
 	
 	errcode = CreateObjSpecifier (class, &containerdesc, keyform, &keydatadesc, false, objectdesc);
 	
-	#if TARGET_API_MAC_CARBON == 1 /*PBS 03/14/02: AE OS X fix.*/
 	
 		if (fltmp)
 			releaseheaptmp (hcopy);
 	
-	#else
-	
-		if (fltmp)
-			releaseheaptmp (containerdesc.dataHandle);
-	
-	#endif
 	
 	AEDisposeDesc (&keydatadesc);
 	
@@ -3251,7 +2867,6 @@ boolean evaluateobjspec (hdltreenode htree, tyvaluerecord *vreturned) {
 	if (!evaluateobject (htree, typeNull, &objectdesc))
 		return (false);
 	
-	#if TARGET_API_MAC_CARBON == 1 /*PBS 03/14/02: AE OS X fix.*/
 	
 		{
 		Handle h;
@@ -3261,11 +2876,6 @@ boolean evaluateobjspec (hdltreenode htree, tyvaluerecord *vreturned) {
 		return (setheapvalue (h, objspecvaluetype, vreturned));
 		}
 	
-	#else
-	
-		return (setheapvalue (objectdesc.dataHandle, objspecvaluetype, vreturned));
-
-	#endif
 	} /*evaluateobjspec*/
 
 
@@ -3391,5 +3001,4 @@ boolean isobjspectree (hdltreenode htree) {
 		}
 	} /*isobjspectree*/
 
-#endif
 

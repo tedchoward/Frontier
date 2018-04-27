@@ -138,9 +138,7 @@ static void statsline (bigstring bs) {
 	//Timothy Paustian 10/5/00
 	//We need to flush the result to the stats window everytime to see it
 	//If this is not called the window remains blank.
-	#if TARGET_API_MAC_CARBON == 1
 	QDFlushPortBuffer(GetWindowPort(statswindow), nil);
-	#endif
 	} /*statsline*/
 	
 
@@ -658,11 +656,9 @@ static boolean statsnewwindow (void) {
 	
 //	shellpushglobals (statswindow); 
 	
-	#if TARGET_API_MAC_CARBON == 1
 	
 		SetThemeWindowBackground (w, kThemeBrushModelessDialogBackgroundActive, false);
 		
-	#endif
 
 	windowzoom (w);
 	

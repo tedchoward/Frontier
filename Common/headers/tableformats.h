@@ -142,12 +142,7 @@ typedef struct tyversion1tablediskrecord { /*packed version of tableformats, sui
 	
 	short fontgarbage, fontsize, fontstyle; /*the display fontsizestyle*/
 	
-#ifdef MACVERSION
 	tylinespacing linespacing;
-#endif
-#ifdef WIN95VERSION
-	short linespacing;
-#endif
 	
 	short vertmin, vertmax, vertcurrent; /*values for the scrollbars*/
 	
@@ -159,35 +154,11 @@ typedef struct tyversion1tablediskrecord { /*packed version of tableformats, sui
 	
 	long sizerowarray, sizecolarray; /*sizes of two arrays stored at end of disk record*/
 	
-#ifdef version42orgreater
 	short flags;
-#else
-	unsigned short fleditingcell: 1;
-	
-	unsigned short flgridlines: 1;
-	
-	unsigned short flrowsizingenabled: 1; /*if true, user is allowed to resize row heights*/
-	
-	unsigned short flcolsizingenabled: 1; /*if true, user is allowed to resize column widths*/
-	
-	unsigned short flbarcursor: 1; /*if true, cursor is the current row, not just current cell*/
-	
-	unsigned short flgrayoffbottom: 1; /*ditto, off the bottom of real cells*/
-	
-	unsigned short flautorowheight: 1; /*recalc all row heights after font/size change*/
-	
-	unsigned short flcoltitles: 1; /*if turned on, leave room for column titles*/
-#endif
 
 	diskfontstring fontname; /*a bit of Mac culture, font specified by a string, not a number*/
 
-#ifdef version42orgreater
 	unsigned short flags2;
-#else	
-	unsigned short flcenterifpossible: 1; /*center the table, otherwise flush with top & left*/
-	
-	unsigned short flsavedsorted: 1; /*if true, version is recent enough to retain sort*/
-#endif
 
 	diskrect windowrect; /*the position & size of window last time table was packed*/
 	

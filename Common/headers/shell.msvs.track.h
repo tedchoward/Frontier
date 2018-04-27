@@ -41,9 +41,6 @@
 	#endif
 #endif
 
-#ifdef WIN95VERSION
-	#define PACKFLIPPED
-#endif
 
 #define MEMTRACKER 1
 #undef winhybrid

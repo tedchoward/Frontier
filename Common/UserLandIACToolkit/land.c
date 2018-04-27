@@ -33,9 +33,7 @@
 #include "ops.h"
 #include "process.h"
 
-#if TARGET_API_MAC_CARBON == 1 /*PBS 03/14/02: AE OS X fix.*/
 	#include "aeutils.h" /*PBS 03/14/02: AE OS X fix.*/
-#endif
 
 
 /*
@@ -58,9 +56,6 @@ typedef struct tytransportinfo {
 
 static THz landzone;
 
-#if !TARGET_API_MAC_CARBON
-	static Handle landresmap;
-#endif
 
 static short landresfile;
 
@@ -71,28 +66,14 @@ pascal boolean landpushfastcontext (tyfastverbcontext *savecontext) {
 	register tyfastverbcontext *x = savecontext;
 	//Code change by Timothy Paustian Monday, June 26, 2000 3:19:32 PM
 	//
-	#if TARGET_API_MAC_CARBON == 1
 	(*x).savezone = LMGetApplZone();
-	#else
-	(*x).savezone = GetZone ();
-	#endif
 		
 	(*x).saveresfile = CurResFile ();
 	
 	//I wonder if these calls are needed. Can we get away with
 	//UseResFile and CurResFile
-	#if !TARGET_API_MAC_CARBON
-	(*x).savemaphandle = LMGetTopMapHndl ();
-	#endif
 
-	#if TARGET_API_MAC_CARBON == 1
 	LMSetApplZone(landzone);
-	#else	
-	SetZone (landzone);
-	#endif
-	#if !TARGET_API_MAC_CARBON
-	LMSetTopMapHndl (landresmap);
-	#endif
 
 	UseResFile (landresfile);
 	
@@ -104,16 +85,9 @@ pascal void landpopfastcontext (const tyfastverbcontext *savecontext) {
 	
 	register const tyfastverbcontext *x = savecontext;
 	
-	#if !TARGET_API_MAC_CARBON
-	LMSetTopMapHndl ((*x).savemaphandle);
-	#endif
 
 	UseResFile ((*x).saveresfile);
-	#if TARGET_API_MAC_CARBON == 1
 	LMSetApplZone((*x).savezone);
-	#else
-	SetZone ((*x).savezone);
-	#endif
 	} /*landpopfastcontext*/
 
 	
@@ -134,19 +108,9 @@ pascal boolean landdisposeparamrecord (const typaramrecord *p) {
 	docnote: param now passed by reference for Pascal compatability.
 	*/
 	
-	#if TARGET_API_MAC_CARBON == 1
 	
 		AEDisposeDesc ((AEDesc*) &(*p).desc);
 		
-	#else
-	
-		register Handle h;
-		
-		h = (*p).desc.dataHandle;
-		
-		landdisposehandle (h);
-	
-	#endif
 	
 	return (true);
 	} /*landdisposeparamrecord*/
@@ -390,15 +354,6 @@ pascal boolean landsendverb (hdlverbrecord hverb, typaramrecord *result, bigstri
 			
 			if (!landgetstringparam (hresult, errorstringkey, bserror)) { /*no string*/
 				
-				#if 0
-				
-				register hdllandglobals hg = landgetglobals ();
-				short ixstring = *iderror;
-				
-				if ((ixstring > 0) && (ixstring <= usercancellederror)) /*one of our errors*/
-					GetIndString (bserror, (**hg).iderrorlist, ixstring);
-				
-				#endif
 				}
 			}
 		}
@@ -487,7 +442,6 @@ pascal boolean landsetinteractionlevel (short level) {
 	return (true);
 	} /*landsetinteractionlevel*/
 
-#if !flruntime
 
 pascal boolean landeventfilter (EventRecord *ev) {
 	
@@ -529,7 +483,6 @@ pascal boolean landeventfilter (EventRecord *ev) {
 	*/
 	} /*landeventfilter*/
 
-#endif
 
 
 pascal boolean landclose (void) {
@@ -706,15 +659,8 @@ pascal boolean landinit (void) {
 	hdllandglobals hglobals;
 	tyapplicationid id;
 	
-	#if TARGET_API_MAC_CARBON == 1
 	landzone = LMGetApplZone();
-	#else	
-	landzone = GetZone ();
-	#endif
 		
-	#if !TARGET_API_MAC_CARBON
-	landresmap = LMGetTopMapHndl ();
-	#endif
 
 	landresfile = CurResFile ();
 	

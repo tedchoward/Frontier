@@ -61,9 +61,6 @@ boolean initmacintosh (void) {
 	register long ctbytes;
 	//Code change by Timothy Paustian Thursday, June 8, 2000 3:45:13 PM
 	//
-	#if TARGET_API_MAC_CARBON == 0
-	long ctstack;
-	#endif
 	long ctheap, ctcode;
 	short ctmasters;
 	
@@ -77,19 +74,6 @@ boolean initmacintosh (void) {
 	//Code change by Timothy Paustian Saturday, June 3, 2000 10:13:20 PM
 	//Changed to Opaque call for Carbon
 	//we don't need this in carbon.
-	#if TARGET_API_MAC_CARBON == 0
-	if (h != nil) { /*first check stack size*/
-		
-		ctbytes = (**h).minstacksize;
-		
-		ctstack = LMGetCurStackBase () - GetApplLimit (); /*current stack size*/
-		
-		if (ctbytes > ctstack)
-			SetApplLimit (LMGetCurStackBase () - ctbytes);
-		}
-	MaxApplZone ();
-	
-	#endif
 
 	
 	
@@ -101,7 +85,6 @@ boolean initmacintosh (void) {
 		//Changed to Opaque call for Carbon
 		//This is meaningless for OS X since it has unlimited memory.
 		
-		#if TARGET_API_MAC_CARBON == 1
 		//we need to do somethings else. FreeMem is going to return some large value
 		//of all the available system memory
 		//This whole thing is pointless. We can get as much memory as we need.
@@ -110,31 +93,6 @@ boolean initmacintosh (void) {
 			#pragma unused (ctcode)
 			#pragma unused (ctheap)
 		
-		#else
-
-		ctheap = FreeMem ();
-		
-		if (ctbytes > ctheap) {
-			
-			return (false);
-			}
-		
-		ctbytes = (**h).avghandlesize;
-		
-		ctcode = (**h).reserveforcode;
-		
-		if ((ctbytes > 0) && (ctheap > ctcode)) {
-			
-			ctmasters = ((ctheap - ctcode) / ctbytes) / kNumberOfMasters;
-			
-			ctmasters = min (ctmasters, 1024);  /*7.1b37 PBS: You'd think 1024 calls would be enough. With large memory alottments on Mac
-			  						  			Classic, we're calling MoreMasters in excess of 20,000 times. That makes the app take
-			  						  			a minute or so to start up! So instead I've chosen an arbitrary limit.*/
-			  						  
-			for (i = 1; i < ctmasters; i++) 
-				MoreMasters ();
-			}
-		#endif
 
 		ReleaseResource ((Handle) h); /*we're done with it*/
 		}
@@ -142,21 +100,6 @@ boolean initmacintosh (void) {
 	//Code change by Timothy Paustian Thursday, June 8, 2000 3:21:06 PM
 	//Changed to Opaque call for Carbon
 	//we don't need this initialization in carbon
-	#if TARGET_API_MAC_CARBON == 0
-	InitGraf (&qd.thePort);
-	
-	InitFonts ();
-	
-	FlushEvents (everyEvent, 0);
-	
-	InitWindows ();
-	
-	InitMenus ();
-	
-	TEInit ();
-	
-	InitDialogs (0L);
-	#endif
 
 	
 	InitCursor ();
@@ -190,11 +133,9 @@ boolean initmacintosh (void) {
 		EventAvail (everyEvent, &ev); /*see TN180 -- splash screen*/
 		} /*for*/
 	
-	#if TARGET_API_MAC_CARBON == 1
 	
 		RegisterAppearanceClient ();
 		
-	#endif
 	
 	return (true);
 	} /*initmacintosh*/
@@ -228,40 +169,9 @@ void getinitialfile (short ix, bigstring fname, short *vnum) {
 
 #endif
 
-#if 0
-
-boolean installgestaltfunction (void) {
-	
-	Handle hgdef;
-	ProcPtr x;
-	
-	hgdef = GetResource ('GDEF', idgestaltfunction);
-	
-	if (hgdef == nil) /*didn't find gestalt definition function*/
-		return (false);
-	
-	x = (ProcPtr) *hgdef;
-	
-	if (NewGestalt (idgestaltselector, x) != noErr) {
-		
-		if (ReplaceGestalt (idgestaltselector, x, &x) != noErr) {
-			
-			ReleaseResource (hgdef);
-			
-			return (false);
-			}
-		}
-	
-	DetachResource (hgdef);
-	
-	return (true);
-	} /*installgestaltfunction*/
-
-#endif
 
 
 
-#if TARGET_API_MAC_CARBON
 
 void WriteToConsole (char *s)
 {
@@ -304,5 +214,4 @@ void DoErrorAlert(OSStatus status, CFStringRef errorFormatString)
 	}
 }
 	
-#endif
 

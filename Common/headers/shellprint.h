@@ -42,9 +42,7 @@ typedef struct typrintinfo {
 	/*the number of pages in the document being printed*/
 	short ctpages;
 	
-#if MACVERSION
 	
-#	if TARGET_API_MAC_CARBON == 1
 	
 	GrafPtr			printport;
 	PMPrintSession 	printhandle;
@@ -53,24 +51,7 @@ typedef struct typrintinfo {
 	PMPrintSettings	printsettings;
 	PMRect			pagerect;
 	
-#	else
-	Rect			pagerect;
-	
-	TPPrPort		printport;
-	
-	/*a handle to the machine's print record*/
-	THPrint printhandle;
-	
-#	endif
-#endif
 
-	#ifdef WIN95VERSION
-	
-		HDC printport;
-
-		PAGESETUPDLG pagesetupinfo;
-
-	#endif
 	} typrintinfo;
 #pragma options align=reset
 

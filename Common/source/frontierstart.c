@@ -28,10 +28,8 @@
 #include "frontier.h"
 #include "standard.h"
 
-#ifdef MACVERSION
 	#include "OSXSpecifics.h"
 	#include "player.h" /*7.0b4: QuickTime Player*/
-#endif
 
 #include "about.h"
 #include "frontierconfig.h"
@@ -49,12 +47,7 @@
 #include "wpverbs.h"
 #include "cancoon.h"
 #include "command.h"
-#ifdef flcomponent
 	#include "osacomponent.h"
-#endif
-#ifdef fliowa
-	#include "iowaverbs.h" /*3/18/92 dmb*/
-#endif
 #include "frontierstart.h"
 
 
@@ -92,12 +85,10 @@ boolean frontierstart (void) {
 	if (!wpstart ())
 		return (false);
 	
-	#ifdef version42orgreater
 	
 	if (!aboutstart ())
 		return (false);
 		
-		#ifdef MACVERSION
 
 /*
 		useQDText(0); // set to 1 for Quartz rendering.
@@ -106,9 +97,7 @@ boolean frontierstart (void) {
 		if (!playerstart ()) /*7.0b4 PBS: QuickTime Player*/
 			return (false);
 	
-		#endif
 	
-	#endif
 	
 	if (!cmdstart ())
 		return (false);
@@ -122,17 +111,10 @@ boolean frontierstart (void) {
 	if (!statsstart ())
 		return (false); 
 	
-	#ifdef iowaRuntime
-	
-	if (!langcardstart ())
-		return (false);
-
-	#endif
 	
 	if (!ccstart ())
 		return (false);
 	
-	#ifdef flcomponent
 	
 	//#if !TARGET_API_MAC_CARBON
 	//Code change by Timothy Paustian Saturday, July 8, 2000 9:47:28 PM
@@ -142,7 +124,6 @@ boolean frontierstart (void) {
 		;	// don't quit if this doesn't work
 	//#endif
 
-	#endif
 	
 	if (!shellstart ())
 		return (false);

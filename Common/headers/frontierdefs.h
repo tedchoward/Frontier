@@ -32,90 +32,20 @@
 #ifndef __FRONTIERDEFS_H__
 #define __FRONTIERDEFS_H__
 
-
-#ifdef WIN95VERSION
-	#define FRONTIERCOM 1
-
-	#ifndef OPMLEDITOR
-		#define FRONTIERWEB 0
-	#else //OPMLEDITOR
-		#define FRONTIERWEB 1	/* 2006-02-05 aradke: enable HTML display in main window background */
-	#endif // OPMLEDITOR
-
-	#undef winhybrid
-	#define fljustpacking 0
-	#undef flcomponent
-	#define gray3Dlook 1
-	#define noextended 1
-	#define NEWFILESPECTYPE 1	
-#endif /* WIN95VERSION */
-
-
-#ifdef MACVERSION
-	#define flcomponent 1
-	#ifdef __powerc
-		#define noextended 1
-	#elif defined(__GNUC__)
-		#define noextended 1
-	#else
-		#define noextended 0
-	#endif
-#endif /* MACVERSION */
-
+#if   defined(__GNUC__)
+    #define noextended 1
+#else
+    #define noextended 0
+#endif
 
 #undef MEMTRACKER		/* define as 1 to enable tracking of memory allocations */
-#undef fltrialsize		/* define as 1 to build trial version with expiration logic */
 #undef DATABASE_DEBUG	/* define as 1 to enable database debugging and logging code */
 
-
-#undef flruntime
 #define fldebug 1
-#define flnewfeatures 1
-#define version42orgreater 1
-#define version5orgreater 1
-#define isFrontier 1
-#undef dropletcomponent
-#undef fliowa
-#define threadverbs 1
-#define oplanglists 1
-#define flregexpverbs 1
-#undef lazythis_optimization
-#undef langexternalfind_optimization
-#define PASCALSTRINGVERSION 1
-#define SPEED 1
-#undef fltracklocaladdresses		/*2004-12-08 aradke: disable [buggy] code for tracking deleted local addresses*/
-
-
-#ifdef MACVERSION
-	#undef macBirdRuntime
-	#undef appRunsCards			/*for Applet Toolkit, Iowa Runtime is baked in*/
-	#undef iowaRuntimeInApp	/*iowa code knows it's in an app*/
-	#undef iowaRuntime			/*iowa code knows it's not compiling in Card Editor*/
-	#undef cmdPeriodKillsCard
-	#undef IOAinsideApp		/*all the IOA's are baked into the app*/
-	#undef coderesource			/*we're not running inside a code resource*/
-#endif
-
-#ifdef WIN95VERSION
-	#undef macBirdRuntime
-	#undef appRunsCards			/*for Applet Toolkit, Iowa Runtime is baked in*/
-	#undef iowaRuntimeInApp		/*iowa code knows it's in an app*/
-	#undef iowaRuntime			/*iowa code knows it's not compiling in Card Editor*/
-	#undef cmdPeriodKillsCard
-	#undef IOAinsideApp			/*all the IOA's are baked into the app*/
-	#undef coderesource			/*we're not running inside a code resource*/
-#endif
-
-
-#define Rez true
-#define DeRez false
 
 #ifndef OPMLEDITOR				/*2008-09-08 aradke: keep opml editor lean and mean*/
 	#define FRONTIER_MYSQL	1	/*include mysql database client library*/
 	#define FRONTIER_SQLITE	1	/*include sqlite database code*/
 #endif
-
-#define SystemSevenOrLater 1
-
 
 #endif /*__FRONTIERDEFS_H__*/

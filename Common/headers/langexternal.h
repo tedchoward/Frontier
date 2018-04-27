@@ -71,11 +71,9 @@ typedef enum tyexternalid { /*11/17/90 DW: order determines sort order when view
 	
 	idpictprocessor,
 	
-	#ifdef flnewfeatures
 	
 	idappleprocessor,
 	
-	#endif
 	
 	/*new types must be added at end of list, these get saved on disk*/
 	
@@ -148,13 +146,6 @@ typedef struct tyexternalvariable {
 
 	dbaddress oldaddress; /*last place this variable was stored in db*/
 
-#if langexternalfind_optimization
-
-	hdlhashtable hexternaltable;
-
-	hdlhashnode hexternalnode;
-
-#endif
 	} tyexternalvariable, *ptrexternalvariable, **hdlexternalvariable;
 #pragma options align=reset
 
@@ -174,15 +165,9 @@ typedef struct tydiskexternalhandle {
 	
 	short versionnumber; /*this structure is stored on disk*/
 	
-	#ifdef MACVERSION
 		tyexternalid id;
 		//byte unused;
-	#endif
 	
-	#ifdef WIN95VERSION
-		byte id;
-		byte unused;
-	#endif
 
 	} tydiskexternalhandle;
 #pragma options align=reset

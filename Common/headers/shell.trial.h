@@ -35,21 +35,12 @@
 	#endif
 #endif
 
-#ifdef MACVERSION
 	#ifndef THINK_C
 		#include "shellheaders.h"
 		#pragma once on
 		#pragma syspath_once on
 	#endif
-#endif
 
-#ifdef WIN95VERSION
-	#include <Win32Headers>
-	#define _DEBUG
-	#define _WINDOWS
-	#define _X86_
-	#define _WIN32
-#endif
 
 #define fltrialsize 1
 #undef flruntime
@@ -64,11 +55,7 @@
 #define threadverbs 1
 #define oplanglists 1
 
-#ifdef __powerc
-	#define noextended 1
-#else
 	#define noextended 0
-#endif
 
 #define macBirdRuntime 1
 #undef appRunsCards /*for Applet Toolkit, Iowa Runtime is baked in*/

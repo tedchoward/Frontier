@@ -66,7 +66,6 @@ extern boolean getapplicationfilespec ( bigstring, ptrfilespec );
 
 extern boolean executeresource (ResType, short, bigstring);
 
-#ifdef flnewfeatures
 
 extern OSType getprocesscreator (void);
 
@@ -78,7 +77,6 @@ extern boolean isfrontapplication (typrocessid);
 
 extern boolean activateapplicationwindow (typrocessid, WindowPtr);
 
-#endif
 
 
 

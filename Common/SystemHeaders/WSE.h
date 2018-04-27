@@ -12,9 +12,6 @@
 #ifndef WSINTF_H
 #define WSINTF_H
 
-#if defined(powerc) || defined (__powerc)
-#pragma options align=mac68k
-#endif
 typedef struct {
 		long	top; 			/* "top" of rectangle */
 		long	left;			/* "top" of rectangle */

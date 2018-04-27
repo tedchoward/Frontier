@@ -39,22 +39,17 @@
 #include "oplist.h"
 #include "ops.h"
 
-#ifdef flcomponent
 
 	#include "osacomponent.h"
 	
-#endif
 
-#ifdef MACVERSION
 
 	#include <sys/param.h>
 	
-#endif
 
 #define fltryerrorstackcode false
 
 
-#ifdef PASCALSTRINGVERSION
 byte bscontainername [] = "\x0a" "_container\0";
 
 static byte nametryerrorval [] = "\x08" "tryerror\0";
@@ -63,17 +58,6 @@ static byte nametryerrorval [] = "\x08" "tryerror\0";
 	static byte nametryerrorstackval [] = "\x0d" "tryerrorstack\0";
 #endif
 
-#else
-
-byte bscontainername [] = "_container";
-
-static byte nametryerrorval [] = "tryerror";
-
-#if fltryerrorstackcode
-	static byte nametryerrorstackval [] = "tryerrorstack";
-#endif
-
-#endif
 
 void langseterrorline (hdltreenode hnode) {
 	
@@ -441,91 +425,6 @@ static boolean evaluateforinloop (hdltreenode hloop, tyvaluerecord vlist, tyvalu
 	return (fl);
 	} /*evaluateforinloop*/
 
-#if 0 /*support for fileloop file filtering*/
-
-#include "strings.h"
-#include "tableverbs.h"
-
-
-static hdlhashtable hfiletable = nil;
-
-static hdltreenode hpathtree = nil;
-
-/*
-static hdltreenode hfilecalltree = nil;
-*/
-
-static boolean fileidvaluecallback (hdltreenode htree, tyvaluerecord *val) {
-	
-	register hdltreenode h = htree;
-	bigstring bsverb;
-	
-	if ((**h).nodetype != identifierop)
-		return (false);
-	
-	langgetidentifier (h, bsverb);
-	
-	if (!hashtablesymbolexists (hfiletable, bsverb))
-		return (false);
-	
-	return (kernelfunctionvalue (hfiletable, bsverb, hpathtree, val));
-	} /*fileidvaluecallback*/
-
-
-static hdltreenode hfiltertree;
-
-
-static boolean fileloopfilter (bigstring bsfolder, bigstring bsfile) {
-	
-	/*	
-	6.2b15 AR: Call coercetoboolean directly instead of the now defunct truevalue
-	*/
-	
-	tyvaluerecord val;
-	boolean fl;
-	bigstring bspath;
-	Handle hpath;
-	
-	if (hfiletable == nil) { /****need to do 1-time initialization*/
-		
-		initvalue (&val, stringvaluetype);
-		
-		if (!newconstnode (val, &hpathtree))
-			return (false);
-		
-		findnamedtable (efptable, "\pfile", &hfiletable);
-		}
-	
-	if (isfolderpath (bsfile))
-		return (true);
-	
-	addstrings (bsfolder, bsfile, bspath);
-	
-	if (!newtexthandle (bspath, &hpath))
-		return (false);
-	
-	(**hpathtree).nodeval.data.stringvalue = hpath;
-	
-	langcallbacks.idvaluecallback = &fileidvaluecallback;
-	
-	fl = evaluatetree (hfiltertree, &val);
-	
-	cleartmpstack ();
-	
-	langcallbacks.idvaluecallback = nil;
-	
-	disposehandle (hpath);
-	
-	if (!fl)
-		return (false);
-	
-	if (!coercetoboolean (&val))
-		return (false);
-	
-	return (val.data.flvalue);
-	} /*fileloopfilter*/
-
-#endif
 
 static boolean fileloopguts (hdltreenode htree, ptrfilespec fsfolder, bigstring bsidentifier, long ctlevels, tyvaluerecord *valtree) {
 
@@ -552,13 +451,11 @@ static boolean fileloopguts (hdltreenode htree, ptrfilespec fsfolder, bigstring 
 	
 	clearfilespec (&fs);
 
-	#ifdef MACVERSION
 	
 		if (!macfilespecisvalid (fsfolder)) // loop over mounted volumes
 			fl = diskinitloop (nil, &hfileloop);
 		else
 		
-	#endif
 	
 	fl = fileinitloop (fsfolder, nil, &hfileloop);
 	
@@ -826,17 +723,14 @@ static long langgetlexicalrefcon (void) {
 	
 	register hdlerrorstack hs;
 
-	#if TARGET_API_MAC_CARBON == 1	 
 
 		if (langcallbacks.scripterrorstack == nil)
 			return (-1);
 	
-	#endif	
 		
 	hs = langcallbacks.scripterrorstack;
 
 	
-	#if TARGET_API_MAC_CARBON == 1
 	
 		if (hs == nil)
 			return (-1);
@@ -844,7 +738,6 @@ static long langgetlexicalrefcon (void) {
 		if ((long) (*hs) == -1)
 			return (-1);
 	
-	#endif
 	
 	if ((hs == nil) || ((**hs).toperror == 0)) {
 
@@ -852,7 +745,6 @@ static long langgetlexicalrefcon (void) {
 		}
 	else {
 
-		#if TARGET_API_MAC_CARBON == 1
 		
 			if ((**hs).stack == nil)
 				return (-1);
@@ -862,7 +754,6 @@ static long langgetlexicalrefcon (void) {
 				
 			if ((**hs).toperror > cterrorcallbacks)
 				return (-1);
-		#endif
 		
 		return ((**hs).stack [(**hs).toperror - 1].errorrefcon);
 		}
@@ -1790,7 +1681,6 @@ static boolean evaltree (hdltreenode htree, tyvaluerecord *valtree) {
 				return (false);
 				}
 			
-			#ifdef version5orgreater
 				
 				*valtree = val1;
 				
@@ -1803,12 +1693,6 @@ static boolean evaltree (hdltreenode htree, tyvaluerecord *valtree) {
 						pushtmpstackvalue (valtree);
 					}
 			
-			#else
-			
-				if (!copyvaluerecord (val1, valtree))
-					return (false);
-			
-			#endif
 
 			if ((*valtree).valuetype == novaluetype) { /*return () -- no value provided*/
 				
@@ -1888,11 +1772,9 @@ static boolean evaltree (hdltreenode htree, tyvaluerecord *valtree) {
 			return (langaddlocals (h, true));
 		*/
 		
-		#ifdef flcomponent
 		case osascriptop:
 			if (isosascriptnode (h, &val1))
 				return (evaluateosascript (&val1, nil, zerostring, valtree));
-		#endif
 		
 		default:
 			/* do nothing for procop, assignlocalop, caseitemop, casebodyop, kernelop, globalop */
@@ -1921,9 +1803,6 @@ boolean evaluatetree (hdltreenode htree, tyvaluerecord *valtree) {
 	} /*evaluatetree*/
 
 
-#if lazythis_optimization
-	static int ctdeferredthis = 0;
-#endif
 
 boolean evaluatelist (hdltreenode hfirst, tyvaluerecord *val) {
 	
@@ -1974,10 +1853,8 @@ boolean evaluatelist (hdltreenode hfirst, tyvaluerecord *val) {
 	hdlhashtable hlocals; 
 	boolean fltmpval;
 	boolean flhavelocals, flneedlocals, flneedthis;
-#if !lazythis_optimization
 	hdlhashtable hthis;
 	bigstring bsthis;
-#endif
 
 
 	setbooleanvalue (false, val); /*default returned value*/
@@ -2020,16 +1897,10 @@ boolean evaluatelist (hdltreenode hfirst, tyvaluerecord *val) {
 		
 		(**hlocals).lexicalrefcon = langgetlexicalrefcon ();
 		
-		#ifdef version5orgreater
 		if (flneedthis) {
-			#if lazythis_optimization
-				++ctdeferredthis;
-			#else
 				if (langgetthisaddress (&hthis, bsthis))
 					langsetthisvalue (hlocals, hthis, bsthis);
-			#endif
 			}
-		#endif
 		
 		if (tryerror != nil) {
 			

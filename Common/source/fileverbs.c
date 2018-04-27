@@ -48,24 +48,14 @@
 #include "oplist.h"			/* 2006-04-23 creedon */
 
 
-#ifdef MACVERSION
 
 	#define chpathseparator ':'
 	
-#endif
 
-#ifdef WIN95VERSION
-	#define chpathseparator '\\'
-#endif
 
 boolean flsupportslargevolumes = false; /*true if volumes over 2 GB are supported by the OS*/
 
 
-#ifdef WIN95VERSION
-
-tyGetDiskFreeSpaceEx adrGetDiskFreeSpaceEx = NULL;
-
-#endif
 
 
 typedef enum tyfiletoken { /*verbs that are processed by file.c*/
@@ -300,68 +290,6 @@ typedef enum tyreztoken {
 
 
 
-#if 0
-
-static bigstring bsdefaultpath; /*see setpath*/
-
-
-static checkfordrivenum (bigstring bspath) {
-	
-	/*
-	interpret single-digit vol name as driver number
-	*/
-	
-	if ((stringlength (bspath) > 1) && (bspath [2] == chpathseparator)) {
-		
-		byte ch = bspath [1];
-		short drivenum;
-		byte bsvol [64];
-		
-		if (isnumeric (ch)) {
-			
-			drivenum = ch - '0';
-			
-			if (drivenumtovolname (drivenum, bsvol))
-				replacestring (bspath, 1, 1, bsvol);
-			}
-		}
-	} /*checkfordrivenum*/
-
-
-filecheckdefaultpath (bigstring bspath) {
-	
-	/*
-	if bspath is a partial path, add our local current path, if set.
-	
-	12/5/91 dmb: sneak in support drive number as "n:" here
-	
-	12/27/91 dmb: if bsdefaultpath isn't empty, and we have a partial path, 
-	make sure we don't double-up on colons if bspath starts with one.
-	*/
-	
-	short ix = 1;
-	
-	if (!isemptystring (bspath)) {
-		
-		if (!scanstring (chpathseparator, bspath, &ix) || (ix == 1)) { /*a partial path*/
-			
-			if (!isemptystring (bsdefaultpath)) {
-				
-				if (bspath [1] == chpathseparator) /*default path ends in one already*/
-					deletefirstchar (bspath);
-				
-				insertstring (bsdefaultpath, bspath);
-				}
-			}
-		
-		/*
-		else
-			checkfordrivenum (bspath);
-		*/
-		}
-	} /*filecheckdefaultpath*/
-
-#endif
 
 static boolean getpathvalue (hdltreenode hparam1, short pnum, ptrfilespec fspath) {
 	
@@ -540,28 +468,13 @@ static boolean filefrompathverb (hdltreenode hparam1, tyvaluerecord *vreturned) 
 			
 			fs = **v.data.filespecvalue;
 
-			#ifdef MACVERSION
 				
 				macgetfilespecnameasbigstring(&fs, bs);
 
-			#endif
 			
-			#ifdef WIN95VERSION
-			
-				copystring (fs.fullSpecifier, bs);
-				
-			#endif
 			
 			fileexists (&fs, &flfolder); // don't care about return, just flfolder value
 			
-			#ifdef WIN95VERSION
-			
-				if (endswithpathsep (bs))
-					setstringlength (bs, stringlength (bs) - 1);
-
-				filefrompath (bs, bs);
-						
-			#endif
 			
 			break;
 		}
@@ -590,7 +503,6 @@ static boolean folderfrompathverb (hdltreenode hparam1, tyvaluerecord *vreturned
 	if (!getparamvalue (hparam1, 1, &v))
 		return (false);
 	
-	#ifdef MACVERSION
 	
 		if (v.valuetype != stringvaluetype) {
 		
@@ -612,7 +524,6 @@ static boolean folderfrompathverb (hdltreenode hparam1, tyvaluerecord *vreturned
 			return (setfilespecvalue(&fsparent,vreturned));
 			}
 	
-	#endif
 	
 	if (!coercetostring (&v))
 		return (false);
@@ -1444,7 +1355,6 @@ static boolean seticonposverb (hdltreenode hparam1, tyvaluerecord *v) {
 	return (true);
 	} /*seticonposverb*/
 
-#ifdef MACVERSION
 
 	typedef struct lNumVersion {
 	
@@ -2028,7 +1938,6 @@ static boolean seticonposverb (hdltreenode hparam1, tyvaluerecord *v) {
 
 		} /* getlabelnamesverb */
 			
-#endif // MACVERSION
 
 
 static boolean findapplicationverb ( hdltreenode hparam1, tyvaluerecord *v ) {
@@ -2049,197 +1958,6 @@ static boolean findapplicationverb ( hdltreenode hparam1, tyvaluerecord *v ) {
 	} // findapplicationverb
 
 
-#ifdef WIN95VERSION
-
-	boolean filegetprogramversion (bigstring bsversion) {
-		
-		return (getstringlist (defaultlistnumber, programversion, bsversion));
-		} /*filegetprogramversion*/
-
-
-	static boolean getshortversionverb (hdltreenode hparam1, tyvaluerecord *v) {
-		
-		/*
-		file.getversion (path): string; return the version number as 
-		a string, e.g. "1.0b2".
-		*/
-		
-		tyfilespec fs;
-		DWORD dummyhandle;
-		bigstring bs;
-		DWORD buflen;
-		char * buf;
-		VS_FIXEDFILEINFO * ffi;
-		char * info;
-		boolean flffi;
-		
-		flnextparamislast = true;
-		
-		if (!getpathvalue (hparam1, 1, &fs)) 
-			return (false);
-		
-		nullterminate (fsname(&fs));
-
-		setemptystring (bs);
-
-		buflen = GetFileVersionInfoSize (stringbaseaddress(fsname(&fs)), &dummyhandle);
-
-		if (buflen > 0) {
-			buf = (char *) LocalAlloc (LPTR, buflen);
-			
-			if (buf != NULL) {
-				if (GetFileVersionInfo (stringbaseaddress(fsname(&fs)), dummyhandle, buflen, buf)) {
-					buflen = sizeof(VS_FIXEDFILEINFO);
-
-					flffi = VerQueryValue (buf, "\\", &ffi, &buflen);
-
-					if (flffi)
-						flffi = buflen > 0;
-
-					buflen = 0;
-
-					VerQueryValue (buf, "\\StringFileInfo\\040904E4\\FileVersion", &info, &buflen);
-					
-					if (buflen == 0) {
-						VerQueryValue (buf, "\\StringFileInfo\\040904B0\\FileVersion", &info, &buflen);
-						}
-
-					if (buflen != 0)
-						copyctopstring (info, bs);
-					else if (flffi) {
-						wsprintf (stringbaseaddress (bs), "%d.%d.%d.%d", HIWORD(ffi->dwFileVersionMS), 
-								LOWORD(ffi->dwFileVersionMS), HIWORD(ffi->dwFileVersionLS), LOWORD(ffi->dwFileVersionLS));
-						setstringlength (bs, strlen(stringbaseaddress(bs)));
-						}
-					}
-
-				LocalFree (buf);
-				}
-			}
-
-		return (setstringvalue (bs, v));
-		} /*getshortversionverb*/
-
-
-	static boolean getlongversionverb (hdltreenode hparam1, tyvaluerecord *v) {
-
-		/*
-		file.getfullversion (path): string; return the long version string 
-		"1.0b2 © Copyright 1991 UserLand Software.".  need definitions above, 
-		which don't appear in the Think C headers anywhere
-		*/
-		
-		tyfilespec fs;
-		DWORD dummyhandle;
-		bigstring bs, bs2;
-		DWORD buflen;
-		char * buf;
-		VS_FIXEDFILEINFO * ffi;
-		char * info;
-		
-		flnextparamislast = true;
-		
-		if (!getpathvalue (hparam1, 1, &fs)) 
-			return (false);
-		
-		nullterminate (fsname(&fs));
-
-		setemptystring (bs);
-		setemptystring (bs2);
-
-		buflen = GetFileVersionInfoSize (stringbaseaddress(fsname(&fs)), &dummyhandle);
-
-		if (buflen > 0) {
-			buf = (char *) LocalAlloc (LPTR, buflen);
-			
-			if (buf != NULL) {
-				if (GetFileVersionInfo (stringbaseaddress(fsname(&fs)), dummyhandle, buflen, buf)) {
-					buflen = sizeof(VS_FIXEDFILEINFO);
-					VerQueryValue (buf, "\\", &ffi, &buflen);
-
-					VerQueryValue (buf, "\\StringFileInfo\\040904E4\\FileVersion", &info, &buflen);
-					
-					if (buflen == 0) {
-						VerQueryValue (buf, "\\StringFileInfo\\040904B0\\FileVersion", &info, &buflen);
-						}
-
-					if (buflen != 0)
-						copyctopstring (info, bs);
-
-					VerQueryValue (buf, "\\StringFileInfo\\040904E4\\LegalCopyright", &info, &buflen);
-					
-					if (buflen == 0) {
-						VerQueryValue (buf, "\\StringFileInfo\\040904B0\\LegalCopyright", &info, &buflen);
-						}
-
-					if (buflen != 0)
-						copyctopstring (info, bs2);
-
-					if (stringlength(bs) > 0)
-						pushspace (bs);
-
-					pushstring (bs2, bs);
-					}
-
-				LocalFree (buf);
-				}
-			}
-
-		return (setstringvalue (bs, v));
-		} /*getlongversionverb*/
-
-	static boolean getcommentverb (hdltreenode hparam1, tyvaluerecord *v) {
-		
-		/*
-		file.getversion (path): string; return the version number as 
-		a string, e.g. "1.0b2".
-		*/
-		
-		tyfilespec fs;
-		DWORD dummyhandle;
-		bigstring bs;
-		DWORD buflen;
-		char * buf;
-		VS_FIXEDFILEINFO * ffi;
-		char * info;
-		
-		flnextparamislast = true;
-		
-		if (!getpathvalue (hparam1, 1, &fs)) 
-			return (false);
-		
-		nullterminate (fsname(&fs));
-
-		setemptystring (bs);
-
-		buflen = GetFileVersionInfoSize (stringbaseaddress(fsname(&fs)), &dummyhandle);
-
-		if (buflen > 0) {
-			buf = (char *) LocalAlloc (LPTR, buflen);
-			
-			if (buf != NULL) {
-				if (GetFileVersionInfo (stringbaseaddress(fsname(&fs)), dummyhandle, buflen, buf)) {
-					buflen = sizeof(VS_FIXEDFILEINFO);
-					VerQueryValue (buf, "\\", &ffi, &buflen);
-
-					VerQueryValue (buf, "\\StringFileInfo\\040904E4\\FileDescription", &info, &buflen);
-					
-					if (buflen == 0) {
-						VerQueryValue (buf, "\\StringFileInfo\\040904B0\\FileDescription", &info, &buflen);
-						}
-
-					if (buflen != 0)
-						copyctopstring (info, bs);
-					}
-
-				LocalFree (buf);
-				}
-			}
-
-		return (setstringvalue (bs, v));
-		} /*getcommentverb*/
-
-#endif // WIN95VERSION
 
 
 /*start of new verbs added by DW, 7/27/91*/
@@ -2594,48 +2312,6 @@ static boolean writeverb (hdltreenode hparam1, tyvaluerecord *v) {
 	} // writeverb
 
 
-#if 0
-
-static boolean writewholefileverb (hdltreenode hparam1, tyvaluerecord *v) {
-
-	/*
-	on writeWholeFile (f, s, type = nil, creator = nil, creationdate = clock.now ()) {
-		Ç10/31/97 at 1:41:20 PM by DW -- moved from toys.writeWholeFile
-		ÇFriday, July 18, 1997 at 10:22:07 AM by PBS
-			ÇConditionalized for multiple platforms, with optional parameters.
-		file.new (f);
-		file.open (f);
-		if sys.os () == "MacOS" {
-			if type != nil {
-				file.setType (f, type)};
-			if creator != nil {
-				file.setCreator (f, creator)};
-			file.setCreated (f, creationdate)};
-		file.write (f, s);
-		file.close (f);
-		return (true)}
-	*/
-	
-	tyfilespec fs;
-	tyvaluerecord val;
-	
-	if (!getpathvalue (hparam1, 1, &fs))
-		return (false);
-	
-	flnextparamislast = true;
-	
-	if (!getbinaryparam (hparam1, 2, &val))
-		return (false);
-	
-	if (!coercetostring (&val)) //strip binary type
-		return (false);
-	
-	(*v).data.flvalue = fifwritehandle (&fs, (Handle) val.data.stringvalue);
-	
-	return (true);
-	} /*writewholefileverb*/
-
-#endif
 
 
 static boolean comparefilesverb (hdltreenode hparam1, tyvaluerecord *v) {
@@ -2696,7 +2372,6 @@ static boolean getposixpathverb ( hdltreenode hp1, tyvaluerecord *vreturned ) {
 	// 2006-10-07 creedon: created
 	//
 	
-	#ifdef	MACVERSION
 	
 		bigstring bs;
 		tyfilespec fs;
@@ -2737,18 +2412,11 @@ static boolean getposixpathverb ( hdltreenode hp1, tyvaluerecord *vreturned ) {
 
 		return ( setstringvalue ( bs, vreturned ) );
 	
-	#endif // MACVERSION
 	
-	#ifdef	WIN95VERSION
-	
-		return ( false );
-	
-	#endif
 	
 	} // getposixpathverb
 
 
-#ifdef MACVERSION
 
 	static boolean newaliasverb (hdltreenode hparam1, tyvaluerecord *vreturned) {
 		
@@ -2900,7 +2568,6 @@ static boolean getposixpathverb ( hdltreenode hp1, tyvaluerecord *vreturned ) {
 		
 		} // filelaunchanythingverb
 		
-#endif
 
 
 static boolean filefunctionvalue (short token, hdltreenode hparam1, tyvaluerecord *vreturned, bigstring bserror) {
@@ -3679,12 +3346,7 @@ static boolean filefunctionvalue (short token, hdltreenode hparam1, tyvaluerecor
 			if (!langcheckparamcount (hp1, 0))
 				return (false);
 			
-			#ifdef MACVERSION
 				return (setstringvalue (BIGSTRING ("\x01" ":"), v));
-			#endif
-			#ifdef WIN95VERSION
-				return (setstringvalue (BIGSTRING ("\x01" "\\"), v));
-			#endif
 		
 		case getshortversionfunc: 
 			return (getshortversionverb (hp1, v));
@@ -3701,7 +3363,6 @@ static boolean filefunctionvalue (short token, hdltreenode hparam1, tyvaluerecor
 		/* 3/20/97 - The following are MAC speciifc verbs and are therefore grouped
 			together here for ease of ifdefing */
 
-	#ifdef MACVERSION
 		case newaliasfunc:
 			return (newaliasverb (hp1, v));
 		
@@ -3743,35 +3404,6 @@ static boolean filefunctionvalue (short token, hdltreenode hparam1, tyvaluerecor
 			return (setbooleanvalue (true, v));
 			}
 		
-		#if TARGET_API_MAC_CARBON != 1 /*7.0B59 PBS: not implemented in OS X yet*/
-		
-			case mountservervolumefunc: {
-				bigstring bsvol, bsuser, bspassword;
-				
-				if (!getstringvalue (hp1, 1, bsvol))
-					break;
-				
-				if (!getstringvalue (hp1, 2, bsuser))
-					break;
-				
-				flnextparamislast = true;
-				
-				if (!getstringvalue (hp1, 3, bspassword))
-					break;
-				
-				if (countwords (bsvol, chpathseparator) != 3) {
-					
-					langparamerror (badnetworkvolumespecificationerror, bsvol);
-					
-					return (false);
-					}
-				
-				if (!mountvolume (bsvol, bsuser, bspassword))
-					break;
-				
-				return (setbooleanvalue (true, v));
-				}
-		#endif
 		
 		case volumeejectfunc: {
 			tyfilespec fs;
@@ -3834,7 +3466,6 @@ static boolean filefunctionvalue (short token, hdltreenode hparam1, tyvaluerecor
 		
 		case getlabelnamesfunc: // 2006-04-24 creedon
 			return (getlabelnamesverb (hp1, v));
-	#endif
 
 		case folderfrompathfunc:
 			return (folderfrompathverb (hp1, v));
@@ -3861,17 +3492,10 @@ static boolean filefunctionvalue (short token, hdltreenode hparam1, tyvaluerecor
 
 			clearbytes ( &fs, sizeof ( fs ) );
 			
-			#ifdef MACVERSION
 			
 				ostypetostring ('pref', bsfolder);
 				
-			#endif
 				
-			#ifdef WIN95VERSION
-			
-				copyctopstring ("SYSTEM", bsfolder);
-				
-			#endif
 			
 			if (!getspecialfolderpath (bsvol, bsfolder, false, &fs))
 				break;
@@ -3957,24 +3581,6 @@ static boolean filefunctionvalue (short token, hdltreenode hparam1, tyvaluerecor
 		
 			return ( getposixpathverb ( hp1, v ) );
 		
-		#ifdef WIN95VERSION
-		
-			case newaliasfunc:
-			case filefollowaliasfunc:
-			case filegeticonposfunc:
-			case fileseticonposfunc: 
-			case setshortversionfunc: 
-			case setlongversionfunc: 
-			case filesetcommentfunc:
-			case filegetlabelfunc:
-			case filesetlabelfunc:
-			case unmountvolumefunc: 	
-			case mountservervolumefunc:
-			case volumeejectfunc:
-			case setfiletypefunc:
-			case setfilecreatorfunc:
-			
-		#endif
 		
 		default:
 			getstringlist (langerrorlist, unimplementedverberror, bserror);
@@ -3997,7 +3603,6 @@ static boolean rezfunctionvalue (short token, hdltreenode hparam1, tyvaluerecord
 	
 	switch (token) {
 	
-	#ifdef MACVERSION
 	
 			case rezgetresourcefunc:
 				return (getresourceverb (hp1, false, v));
@@ -4044,7 +3649,6 @@ static boolean rezfunctionvalue (short token, hdltreenode hparam1, tyvaluerecord
 			case rezsetresourceattrsfunc:
 				return (setresourceattrsverb (hp1, false, v));
 			
-	#endif	
 
 		default:
 			getstringlist (langerrorlist, unimplementedverberror, bserror);
@@ -4099,23 +3703,6 @@ boolean filestart (void) {
 	instead of GetDiskFreeSpaceEx
 	*/
 	
-#ifdef WIN95VERSION
-	
-	HMODULE hmodule;
-
-	char kerneldllname[] = "kernel32.dll\0";
-	char procname[] = "GetDiskFreeSpaceExA\0";
-
-	hmodule = GetModuleHandle (kerneldllname);
- 
-	if (hmodule != nil) {
-	
-		adrGetDiskFreeSpaceEx = (tyGetDiskFreeSpaceEx) GetProcAddress (hmodule, procname);
-
- 		if (adrGetDiskFreeSpaceEx != NULL)
- 			flsupportslargevolumes = true;
-		}
-#endif
 
 	return (true);
 	}/*filestart*/

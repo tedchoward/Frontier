@@ -98,11 +98,6 @@ typedef enum tymenutoken { /*verbs that are processed by menueditor.c*/
 	ctmenuverbs
 	} tymenutoken;
 
-#if langexternalfind_optimization
-
-	typedef tyexternalvariable tymenuvariable, *ptrmenuvariable, **hdlmenuvariable;
-
-#else
 
 #pragma pack(2)
 typedef struct tymenuvariable { /*7.0b6 PBS: moved from menuverbs.c*/
@@ -121,7 +116,6 @@ typedef struct tymenuvariable { /*7.0b6 PBS: moved from menuverbs.c*/
 	} tymenuvariable, *ptrmenuvariable, **hdlmenuvariable;
 #pragma options align=reset
 
-#endif
 
 		
 static short errornum = 0; /*error number exclusively for menu routines*/
@@ -836,12 +830,10 @@ boolean menuedit (hdlexternalvariable hvariable, hdlwindowinfo hparent, ptrfiles
 	
 		(**hi).fspec = *fs;
 		
-		#ifdef MACVERSION
 		
 			if (macfilespecisresolvable (fs))
 				SetWindowProxyCreatorAndType ( w, 'LAND', 'FTmb', kOnSystemDisk );
 				
-		#endif
 		
 		}
 	
@@ -2275,13 +2267,11 @@ boolean menustart (void) {
 
 	(*cb).poproutine = &oppopglobals;
 	
-#ifdef version42orgreater
 	
 	(*cb).disposerecordroutine = ccdisposefilerecord;
 	
 	(*cb).saveroutine = ccsavespecialfile;
 
-#endif
 	
 	(*cb).updateroutine = &meupdate;
 	

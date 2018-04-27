@@ -31,7 +31,7 @@ cd "${SRCROOT}/tools/"
 preprocessor_defs=`echo ${GCC_PREPROCESSOR_DEFINITIONS} | sed -e "s/[A-Z0-9_][A-Z0-9_=]*/-D&/g"`
 
 # set environment variable to stop cc from complaining
-export MACOSX_DEPLOYMENT_TARGET="10.1"
+export MACOSX_DEPLOYMENT_TARGET="10.6"
 
 # extract the APP_VERSION_STRING
 echo "cc ${preprocessor_defs} -isysroot ${SDKROOT} -I \"${SRCROOT}/../Common/headers\" -o appversion appversion.c"

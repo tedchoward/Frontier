@@ -157,36 +157,11 @@ typedef struct tytreenodeblock {
 #pragma options align=reset
 
 
-#ifdef WIN95VERSION
-	
-static CRITICAL_SECTION treenodesection;
-
-static boolean treenodesectioninitialized = false;
-
-static void _entercriticaltreenodesection (void) {
-
-	if (!treenodesectioninitialized) {
-
-		InitializeCriticalSection (&treenodesection);
-
-		treenodesectioninitialized = true;
-		}
-	
-	EnterCriticalSection (&treenodesection);
-	}
-
-static void _leavecriticaltreenodesection (void) {
-
-	LeaveCriticalSection (&treenodesection);
-	}
-
-#else
 
 #define _entercriticaltreenodesection()
 
 #define _leavecriticaltreenodesection()
 
-#endif
 
 
 static hdltreenode hfirstfreetreenode = nil;
@@ -638,7 +613,6 @@ boolean pushbinaryoperation (tytreetype op, hdltreenode hp1, hdltreenode hp2, hd
 		return (false);
 		}
 	
-	#ifdef version5orgreater
 	
 	if (op == assignop) { // look for assignment optimizations when rhs includes lhs
 		
@@ -680,7 +654,6 @@ boolean pushbinaryoperation (tytreetype op, hdltreenode hp1, hdltreenode hp2, hd
 			}
 		}
 
-	#endif
 
 	h = *hreturned; /*copy into register*/
 	
@@ -978,34 +951,6 @@ boolean pushlastlink (hdltreenode hnewlast, hdltreenode hlist) {
 	} /*pushlastlink*/
 
 
-#if 0
-
-boolean pushlastoptionallink (hdltreenode hnewlast, hdltreenode hlist, hdltreenode *hresult) {
-	
-	tyvaluerecord val;
-	
-	initvalue (&val, novaluetype);
-	
-	if (hnewlast == nil) {
-		
-		if (!newconstnode (val, &hnewlast))
-			return (false);
-		}
-	
-	if (hlist == nil) {
-		
-		if (!newconstnode (val, &hlist))
-			return (false);
-		}
-	
-	pushlastlink (hnewlast, hlist);
-	
-	*hresult = hlist;
-	
-	return (true);
-	} /*pushlastoptionallink*/
-
-#endif
 
 
 typedef struct packtreeinfo {

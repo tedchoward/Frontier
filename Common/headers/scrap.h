@@ -64,11 +64,6 @@ extern short getscrapcount (void);
 
 extern short handlescrapdisposed (void);
 
-#ifdef WIN95VERSION
-	extern tyscraptype win2shellscraptype (UINT);
-
-	extern UINT shell2winscraptype (tyscraptype);
-#endif
 
 extern tyscraptype getscraptype (void);
 

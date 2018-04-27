@@ -170,9 +170,7 @@ static boolean checktable (hdlhashtable htable, bigstring bs, boolean flcreate, 
 	with a matching named, and try to unpack the values
 	*/
 	
-	#ifdef MACVERSION
 		Handle hpacked;
-	#endif
 
 	register hdlhashtable *ht = hsubtable;
 	
@@ -354,11 +352,9 @@ boolean tablenewsubtable (hdlhashtable htable, bigstring bsname, hdlhashtable *h
 		return (false);
 		}
 	
-	#if !flruntime
 	
 	(***hnewtable).parenthashtable = htable; /*retain parental link*/
 	
-	#endif
 	
 	return (true);
 	} /*tablenewsubtable*/
@@ -446,18 +442,6 @@ boolean tableloadsystemtable (dbaddress adr, Handle *hvariable, hdlhashtable *ht
 	
 	ht = (hdlhashtable) (**hv).variabledata;
 	
-	#if !odbengine && !version5orgreater
-		
-	if (!linksystemtablestructure (ht)) {
-		
-		tabledisposetable (ht, false);
-		
-		disposehandle ((Handle) hv);
-		
-		return (false);
-		}
-
-	#endif
 	
 	(**hv).id = idtableprocessor; /*so we can make a value out of this variable*/
 	
@@ -556,9 +540,7 @@ boolean checktablestructure (boolean flcreate) {
 	register boolean fl;
 	hdlhashtable menustable;
 	
-	#ifdef MACVERSION
 		hdlhashtable macintoshtable;
-	#endif
 	
 	fl = checktable (roottable, namesystembranch, flcreate, &systemtable);
 	
@@ -579,12 +561,10 @@ boolean checktablestructure (boolean flcreate) {
 		if (checktable (systemtable, STR_menus, false, &menustable))
 			checktable (menustable, namemenubartable, false, &menubartable); /*don't auto-create*/
 		
-		#ifdef MACVERSION
 		
 		if (checktable (systemtable, namemacintoshtable, false, &macintoshtable))
 			checktable (macintoshtable, nameobjectmodeltable, false, &objectmodeltable);
 		
-		#endif
 		
 		}
 	
@@ -638,11 +618,9 @@ boolean cleartablestructureglobals (void) {
 	
 	menubartable = nil;
 	
-	#ifdef flnewfeatures
 	
 	objectmodeltable = nil;
 	
-	#endif
 	
 	/*these are never disposed; they're shared among all files
 	

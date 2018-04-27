@@ -27,7 +27,6 @@
 
 #define processinternalinclude
 
-#ifdef MACVERSION
 	#ifndef __THREADS__
 		//#include <Threads.h>
 	#endif
@@ -35,7 +34,6 @@
 	#ifndef landinclude
 		#include <land.h>
 	#endif
-#endif
 
 #ifndef threadsinclude
 	#include "threads.h"
@@ -49,7 +47,6 @@
 	#include "opinternal.h"
 #endif
 
-#if !flruntime
 	#ifndef shellprivateinclude
 		#include "shellprivate.h"
 	#endif
@@ -57,7 +54,6 @@
 	#ifndef shellhooksinclude
 		#include "shellhooks.h"
 	#endif
-#endif
 
 
 #define ctprocesses 5 /*we can remember nested processes up to 5 levels deep*/
@@ -93,11 +89,9 @@ typedef struct tythreadglobals {
 	
 	hdlthread idthread;
 	
-	#if !flruntime
 	
 	hdlcancoonrecord hccglobals;
 	
-	#endif
 	
 	typrocessstack processstack;
 	
@@ -109,7 +103,6 @@ typedef struct tythreadglobals {
 	
 	tylangcallbacks langcallbacks;
 	
-	#if !flruntime
 	
 	short cterrorhooks;
 	
@@ -127,7 +120,6 @@ typedef struct tythreadglobals {
 	
 	DialogPtr pmodaldialog;
 	
-	#endif
 	
 	unsigned short ctscanlines;
 	
@@ -147,7 +139,6 @@ typedef struct tythreadglobals {
 
 	unsigned long timesliceticks;
 
-	#ifdef flcomponent
 	
 	pascal OSErr (*eventcreatecallback) (AEEventClass, AEEventID, const AEAddressDesc *, short, long, AppleEvent *);
 	
@@ -157,7 +148,6 @@ typedef struct tythreadglobals {
 	
 	tymaceventsettings eventsettings; /*not just for OSA; new features*/
 	
-	#endif
 	
 	boolean flreturn;
 	
@@ -185,7 +175,6 @@ typedef struct tythreadglobals {
 	
 	long debugthreadingcookie; /*6.2b11 AR: for debugging hung threads*/
 	
-	#if TARGET_API_MAC_CARBON == 1
 	
 	ThreadSwitchUPP threadInCallbackUPP;
 	
@@ -195,7 +184,6 @@ typedef struct tythreadglobals {
 	
 	ThreadEntryUPP threadEntryCallbackUPP;
 	
-	#endif
 
 	boolean flcominitialized;
 

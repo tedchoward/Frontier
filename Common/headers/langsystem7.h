@@ -44,13 +44,8 @@
 #endif
 
 
-#ifdef MACVERSION
 	#define filespecsize(fs) (sizeof (tyfilespec)) // - sizeof (CFStringRef) + stringsize ((fs).name))
-#endif
 
-#ifdef WIN95VERSION
-	#define filespecsize(fs) (sizeof (tyfilespec))	// assume all data is contiguous
-#endif
 
 
 typedef boolean (*langvisitlistvaluescallback) (tyvaluerecord *, ptrvoid); /*2003-04-28 AR*/
@@ -86,7 +81,6 @@ extern boolean evaluateobjspec (hdltreenode, tyvaluerecord *);
 
 extern boolean isobjspectree (hdltreenode);
 
-#ifdef flnewfeatures
 
 extern boolean filespecaddvalue (tyvaluerecord *, tyvaluerecord *, tyvaluerecord *);
 
@@ -100,7 +94,6 @@ extern boolean makerecordvalue (hdltreenode, boolean, tyvaluerecord *);
 
 extern boolean langgetlistsize (const tyvaluerecord *, long *);
 
-#ifdef oplanglists
 	extern boolean langgetlistitem (const tyvaluerecord *, long, ptrstring, tyvaluerecord *);
 	
 	extern boolean langpushlistval (struct tylistrecord **, ptrstring, tyvaluerecord *);
@@ -116,9 +109,6 @@ extern boolean langgetlistsize (const tyvaluerecord *, long *);
 	extern boolean getnthlistval (struct tylistrecord ** hlist, long n, ptrstring pkey, tyvaluerecord *val);
 
 	extern boolean setnthlistval (struct tylistrecord ** hlist, long n, ptrstring pkey, tyvaluerecord *val);
-#else
-	extern boolean langgetlistitem (const tyvaluerecord *, long, OSType *, tyvaluerecord *);
-#endif
 
 extern boolean coercetolist (tyvaluerecord *, tyvaluetype);
 
@@ -140,6 +130,5 @@ extern boolean listdeletevalue (tyvaluerecord *, bigstring, tyvaluerecord *);
 
 extern boolean langvisitlistvalues (tyvaluerecord *, langvisitlistvaluescallback, ptrvoid); /*2003-04-28 AR*/
 
-#endif
 
 

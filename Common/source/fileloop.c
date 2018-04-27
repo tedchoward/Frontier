@@ -36,7 +36,6 @@
 #include "fileloop.h"
 
 
-#ifdef MACVERSION
 
 #pragma pack(2)
 	typedef struct tyfilelooprecord {
@@ -51,24 +50,10 @@
 		} tyfilelooprecord, *ptrfilelooprecord, **hdlfilelooprecord;
 #pragma options align=reset
 
-#endif // MACVERSION
 
 
-#ifdef WIN95VERSION
-
-	typedef struct tyfindloopinfo
-		{
-		tyfilespec fs;
-		HANDLE findhandle;
-		tyfileloopcallback ffilter;
-		boolean doingDrives;
-		short drivenum;
-		} findloopinfo;
-
-#endif // WIN95VERSION
 
 
-#ifdef MACVERSION
 	
 	static boolean fileloopreleaseitem (Handle h) {
 	#pragma unused(h)
@@ -126,7 +111,6 @@
 			FSSpec fsvol;
 			OSErr errcode;
 			Handle hstring;
-			#if TARGET_API_MAC_CARBON == 1
 			HFSUniStr255	theName;
 			//Code change by Timothy Paustian Thursday, June 29, 2000 10:29:59 AM
 			//Updated to modern call for volume infomation
@@ -156,17 +140,6 @@
 			ix++;
 			fsvol.vRefNum = vRefNum;
 			
-			#else //not carbon
-			pb.volumeParam.ioVolIndex = ix++;
-			
-			pb.volumeParam.ioNamePtr = fsvol.name;
-			
-			errcode = PBGetVInfoSync (&pb);
-			fsvol.vRefNum = pb.volumeParam.ioVRefNum;
-			
-			if (errcode == nsvErr) /*not an error, just ran out of volumes*/
-				return (true);
-			#endif//end carbon
 			
 			if (errcode == nsvErr) /*not an error, just ran out of volumes*/
 				return (true);
@@ -195,66 +168,12 @@
 		return (false);
 		} /*diskinitloop*/
 
-#endif // MACVERSION
 
 
-#ifdef WIN95VERSION
-
-	static boolean initfileloopspec (tyfilespec *fs)
-		{
-		HANDLE findHandle;
-		WIN32_FIND_DATA	fileinfo;
-		char fn[300];
-		char * filename;
-		short isFolder;
-
-		copystring (fsname (fs), fn);
-		filename = fsname (fs);
-		
-		if (fileisvolume (fs)) {
-			cleanendoffilename (fsname (fs));
-			appendcstring (filename, "\\*");
-			return (true);
-			}
-
-		cleanendoffilename (fn);
-		nullterminate (fn);
-		
-		findHandle = FindFirstFile (stringbaseaddress(fn), &fileinfo);
-
-		if (findHandle == INVALID_HANDLE_VALUE)
-			{
-			oserror (GetLastError());
-			return (false);						//no match
-			}
-
-		isFolder = (fileinfo.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY)?true:false;
-
-		if (FindNextFile (findHandle, &fileinfo))
-			{
-			FindClose (findHandle);
-			return (true);						//wild card must be present to find second
-			}
-
-		FindClose (findHandle);
-		
-		if (isFolder) {
-			cleanendoffilename (filename);
-
-			appendcstring (filename, "\\*");
-
-			nullterminate (filename);
-			}
-
-		return (true);
-		}
-
-#endif // WIN95VERSION
 
 
 boolean fileinitloop ( const ptrfilespec fst, tyfileloopcallback filefilter, Handle *hfileloop ) {
 
-	#ifdef MACVERSION
 	
 		#pragma unused(filefilter)
 		
@@ -404,42 +323,13 @@ boolean fileinitloop ( const ptrfilespec fst, tyfileloopcallback filefilter, Han
 		
 		return (false);
 		
-	#endif // MACVERSION
 	
-	#ifdef WIN95VERSION
-	
-		findloopinfo ** fi;
-		
-		*hfileloop = NULL;
-		fi = (findloopinfo **) NewHandle (sizeof(findloopinfo));
-
-		if (fi == NULL)
-			return (false);
-
-		(**fi).fs = *fst;
-		(**fi).findhandle = NULL;
-		(**fi).ffilter = filefilter;
-		(**fi).doingDrives = false;
-		(**fi).drivenum = 0;		/*start with A*/
-
-		if (isemptystring ((**fi).fs.fullSpecifier)) {	/* do disks */
-			(**fi).doingDrives = true;
-			}
-		else {
-			initfileloopspec (&((**fi).fs));
-			}
-
-		*hfileloop = (Handle)fi;
-		return (true);
-
-	#endif // WIN95VERSION
 
 	} // fileinitloop
 
 
 void fileendloop (Handle hfileloop) {
 
-	#ifdef MACVERSION
 	
 		register hdlfilelooprecord h = (hdlfilelooprecord) hfileloop;
 		
@@ -447,29 +337,13 @@ void fileendloop (Handle hfileloop) {
 		
 		disposehandle ((Handle) h);
 	
-	#endif // MACVERSION
 	
-	#ifdef WIN95VERSION
-	
-		findloopinfo ** fi;
-		fi = (findloopinfo **) hfileloop;
-
-		if (fi != NULL) {
-			if ((**fi).findhandle != NULL)
-				FindClose ((**fi).findhandle);
-		
-			disposehandle ((Handle) fi);
-			
-			}
-
-	#endif // WIN95VERSION
 	
 	} // fileendloop
 
 
 boolean folderloop ( const ptrfilespec pfs, boolean flreverse, tyfileloopcallback filecallback, long refcon ) {
 
-	#ifdef MACVERSION
 	
 		//
 		// loop through all of the files in the folder at fs, and call filecallback 
@@ -545,81 +419,13 @@ boolean folderloop ( const ptrfilespec pfs, boolean flreverse, tyfileloopcallbac
 			
 		return (true);
 		
-	#endif // MACVERSION
 	
-	#ifdef WIN95VERSION
-	
-		HANDLE findHandle;
-		WIN32_FIND_DATA	fileinfo;
-		char fn[300];
-		char pathname[300];
-		char * endofpath;
-		bigstring bsfile;
-		tyfileinfo info;
-		int errCode;
-
-		copystring (fsname (pfs), fn);
-
-		cleanendoffilename (fn);
-
-		nullterminate (fn);
-		
-		findHandle = FindFirstFile (stringbaseaddress(fn), &fileinfo);
-
-		if (findHandle == INVALID_HANDLE_VALUE)
-			{
-			oserror (GetLastError());
-			return (false);
-			}
-
-		winsetfileinfo (&fileinfo, &info);
-
-		GetFullPathName (stringbaseaddress(fn), 300, stringbaseaddress(pathname), &endofpath);
-
-		*endofpath = 0;  /*terminates path name*/
-
-		setstringlength(pathname, strlen(stringbaseaddress(pathname)));
-
-		buildfilename (pathname, 0, fileinfo.cFileName, 1, bsfile);
-
-		if (!(*filecallback) (bsfile, &info, refcon))
-			{
-			FindClose(findHandle);
-			return (false);
-			}
-
-		while (FindNextFile (findHandle, &fileinfo))
-			{
-			winsetfileinfo (&fileinfo, &info);
-
-			buildfilename (pathname, 0, fileinfo.cFileName, 1, bsfile);
-
-			if (!(*filecallback) (bsfile, &info, refcon))
-				{
-				FindClose(findHandle);
-				return (false);
-				}
-			}
-
-		errCode = GetLastError();
-
-		FindClose(findHandle);
-
-		if (errCode == ERROR_NO_MORE_FILES)
-			return (true);
-
-		oserror(errCode);
-		
-		return (false);
-
-	#endif // WIN95VERSION
 	
 	} // folderloop
 
 
 boolean filenextloop ( Handle hfileloop, ptrfilespec fsfilet, boolean *flfolder ) {
 
-	#ifdef MACVERSION
 	
 		//
 		// 2006-06-26 creedon: minimally FSRef-ized
@@ -724,129 +530,7 @@ boolean filenextloop ( Handle hfileloop, ptrfilespec fsfilet, boolean *flfolder 
 				}
 			}
 		
-	#endif // MACVERSION
 	
-	#ifdef WIN95VERSION
-	
-		findloopinfo ** fi;
-		HANDLE findHandle;
-		WIN32_FIND_DATA	fileinfo;
-		char fn[300];
-		char pathname[300];
-		char * endofpath;
-		int errCode;
-		short drivenum;
-		DWORD drivemap, drivemask;
-
-		if (hfileloop == NULL)
-			return (false);
-
-		if ( fsfilet == NULL )
-			return ( false );
-
-		fi = (findloopinfo **) hfileloop;
-
-		if ((**fi).doingDrives) {				/*We are looping over each volume - not files*/
-			while (true) {
-				drivenum = (**fi).drivenum;
-
-				++((**fi).drivenum);
-
-				if (drivenum >= 26)
-					return (false);
-
-				drivemap = GetLogicalDrives();
-			
-				drivemask = 1 << drivenum;
-
-				if ((drivemap & drivemask) == drivemask) { /* we found one */
-					/*convert drivenum to filespec */
-					wsprintf ( stringbaseaddress ( fsname ( fsfilet ) ), "%c:\\", drivenum + 'A' );
-					setstringlength ( fsname ( fsfilet ), strlen( stringbaseaddress ( fsname ( fsfilet ) ) ) );
-					*flfolder = true;
-					return (true);
-					}
-				}
-			}
-
-		if ((**fi).findhandle == NULL)			/*we are looking for the first one...*/
-			{
-			copystring (fsname (&(**fi).fs), fn);
-
-			cleanendoffilename (fn);
-
-			nullterminate (fn);
-			
-			findHandle = FindFirstFile (stringbaseaddress(fn), &fileinfo);
-
-			if (findHandle == INVALID_HANDLE_VALUE)
-				{
-				oserror (GetLastError());
-				return (false);
-				}
-
-			GetFullPathName (stringbaseaddress(fn), 300, stringbaseaddress(pathname), &endofpath);
-
-			*endofpath = 0;  /*terminates path name*/
-
-			setstringlength(pathname, strlen(stringbaseaddress(pathname)));
-
-			copystring (pathname, fsname (&(**fi).fs));
-			buildfilename ( fsname ( &( **fi ).fs ), 0, fileinfo.cFileName, 1, fsname ( fsfilet ) );
-
-			if (flfolder != NULL)
-				*flfolder = (fileinfo.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY)?true:false;
-
-			(**fi).findhandle = findHandle;
-
-			if (strcmp (fileinfo.cFileName, ".") == 0)
-				goto SkippingDotandDotDot;
-
-			if (strcmp (fileinfo.cFileName, "..") == 0)
-				goto SkippingDotandDotDot;
-
-			if (fileinfo.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) {
-				cleanendoffilename ( fsname ( fsfilet ) );
-				appendcstring ( fsname ( fsfilet ), "\\" );
-				}
-
-			return (true);
-			}
-		else
-			{
-	SkippingDotandDotDot:
-			if (FindNextFile ((**fi).findhandle, &fileinfo))
-				{
-				buildfilename ( fsname ( &( **fi ).fs ), 0, fileinfo.cFileName, 1, fsname ( fsfilet ) );
-
-				if (flfolder != NULL)
-					*flfolder = (fileinfo.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY)?true:false;
-
-				if (strcmp (fileinfo.cFileName, ".") == 0)
-					goto SkippingDotandDotDot;
-
-				if (strcmp (fileinfo.cFileName, "..") == 0)
-					goto SkippingDotandDotDot;
-
-				if (fileinfo.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) {
-					cleanendoffilename ( fsname ( fsfilet ) );
-					appendcstring ( fsname ( fsfilet ), "\\" );
-					}
-
-				return (true);
-				}
-
-			errCode = GetLastError();
-
-	//		FindClose((**fi).findhandle);
-
-			if (errCode != ERROR_NO_MORE_FILES)
-				oserror(errCode);
-			}
-
-		return (false);
-	
-	#endif // WIN95VERSION
 	
 	} // filenextloop
 

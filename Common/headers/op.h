@@ -39,15 +39,9 @@ structures, set it true.
 
 #ifndef fljustpacking
 
-	#if !flruntime
 
 		#define fljustpacking false
 
-	#else
-		
-		#define fljustpacking true
-
-	#endif
 
 #endif
 

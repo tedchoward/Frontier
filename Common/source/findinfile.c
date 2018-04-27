@@ -151,19 +151,6 @@ static void fifopenfileerror (const ptrfilespec fs) {
 	} /*fifopenfileerror*/
 
 
-#if 0
-static OSErr openforkperm (const ptrfilespec fs, boolean flresource, short perm, hdlfilenum *fnum) {
-	
-	OSErr errcode;
-	
-	if (flresource)
-		errcode = FSpOpenRF (fs, perm, fnum);
-	else
-		errcode = FSpOpenDF (fs, perm, fnum);
-	
-	return (errcode);
-	} /*openforkperm*/
-#endif
 
 static boolean fileopener (const ptrfilespec fs, hdlopenfile *hfile, hdlfilenum *fnum) {
 	
@@ -208,11 +195,9 @@ static boolean fileopener (const ptrfilespec fs, hdlopenfile *hfile, hdlfilenum 
 	if (!fl)
 		fl = openfile (fs, fnum, true);
 
-	#ifdef MACVERSION
 	
 		setfserrorparam ( fs );
 		
-	#endif
 	
 	#ifdef WIN95VERSIOBN
 
@@ -946,12 +931,7 @@ boolean fifwriteline (const ptrfilespec fs, Handle linestring) {
 	write a line at the end of the indicated file.
 	*/
 	
-	#ifdef WIN95VERSION
-		byte bseol [] = "\002\r\n";
-	#endif
-	#ifdef MACVERSION
 		byte bseol [] = "\001\r";
-	#endif
 	
 	if (!pushtexthandle (bseol, linestring))
 		return (false);

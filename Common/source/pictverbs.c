@@ -73,11 +73,6 @@ typedef enum typicttoken { /*verbs that are processed by pict.c*/
 	ctpictverbs
 	} typicttoken;
 
-#if langexternalfind_optimization
-
-	typedef tyexternalvariable typictvariable, *ptrpictvariable, **hdlpictvariable;
-
-#else
 
 #pragma pack(2)
 	typedef struct typictvariable {
@@ -96,7 +91,6 @@ typedef enum typicttoken { /*verbs that are processed by pict.c*/
 		} typictvariable, *ptrpictvariable, **hdlpictvariable;
 #pragma options align=reset
 
-#endif
 
 static short errornum = 0;
 
@@ -176,7 +170,6 @@ boolean pictverbnew (Handle hdata, hdlexternalvariable *hvariable) {
 	} /*pictverbnew*/
 
 
-#if !flruntime
 
 static void pictverbcheckwindowrect (hdlpictrecord hpict) {
 	
@@ -201,13 +194,6 @@ static void pictverbcheckwindowrect (hdlpictrecord hpict) {
 		}
 	} /*pictverbcheckwindowrect*/
 	
-#else
-
-	#define pictverbcheckwindowrect(hpict)	((void *) 0)
-	
-	#define fldatabasesaveas 0
-
-#endif
 
 
 static boolean pictverbinmemory (hdlpictvariable hv) {
@@ -449,7 +435,6 @@ boolean pictverbpacktotext (hdlexternalvariable h, Handle htext) {
 	} /*pictverbpacktotext*/
 
 
-#if !flruntime
 
 boolean pictverbgetsize (hdlexternalvariable hvariable, long *size) {
 	
@@ -609,12 +594,7 @@ boolean pictedit (hdlexternalvariable hvariable, hdlwindowinfo hparent, ptrfiles
 			return (true);
 			}
 
-		#ifdef MACVERSION
 			break;
-		#else
-			if (!shellyield (false))
-				return (false);
-		#endif
 		}
 	
 	pictgetnewwindowrect (hp, &rwindow);
@@ -642,30 +622,6 @@ boolean pictedit (hdlexternalvariable hvariable, hdlwindowinfo hparent, ptrfiles
 	} /*pictedit*/
 
 
-#if 0
-
-static boolean getpictparam (hdltreenode hfirst, short pnum, hdlpictvariable *hv) {
-	
-	short id;
-	
-	if (!langexternalgetexternalparam (hfirst, pnum, &id, (hdlexternalvariable *) hv)) {
-		
-		errornum = namenotpicterror;
-		
-		return (false);
-		}
-	
-	if (id != idpictprocessor) {
-		
-		errornum = namenotpicterror;
-		
-		return (false);
-		}
-	
-	return (true);
-	} /*getpictparam*/
-
-#endif
 
 
 static boolean pictverbscheduleupdate (hdltreenode hparam1, tyvaluerecord *v) {
@@ -685,25 +641,6 @@ static boolean pictverbscheduleupdate (hdltreenode hparam1, tyvaluerecord *v) {
 	} /*pictverbscheduleupdate*/
 			
 
-#if 0
-
-static boolean pictverbbitmapupdate (hdltreenode hparam1, tyvaluerecord *v) {
-	
-	boolean flbitmap;
-	
-	flnextparamislast = true;
-	
-	if (!getbooleanvalue (hparam1, 1, &flbitmap))
-		return (false);
-	
-	pictsetbitmapupdate (flbitmap);
-	
-	(*v).data.flvalue = true;
-	
-	return (true);
-	} /*pictverbbitmapupdate*/
-
-#endif
 	
 			
 static boolean pictverbevaluator (hdltreenode hparam1, tyvaluerecord *v) {
@@ -723,22 +660,6 @@ static boolean pictverbevaluator (hdltreenode hparam1, tyvaluerecord *v) {
 	} /*pictverbevaluator*/
 
 
-#if 0
-
-static boolean pictverbgetbounds (hdltreenode hparam1, tyvaluerecord *v) {
-	
-	Rect r;
-	
-	if (!langcheckparamcount (hparam1, 0)) /*shouldn't have any parameters*/
-		return (false);
-	
-	if (!pictgetframerect (pictdata, &r))
-		clearbytes (&r, sizeof (r));
-	
-	return (!newheapvalue (&r, sizeof (r), rectvaluetype, v));
- 	} /*pictverbgetbounds*/
-
-#endif
 
 
 static boolean pictverbgetpicture (hdltreenode hparam1, tyvaluerecord *v) {
@@ -1200,13 +1121,11 @@ boolean pictstart (void) {
 	
 	(*cb).infoholder = &pictwindowinfo; 
 	
-#ifdef version42orgreater
 	
 	(*cb).disposerecordroutine = ccdisposefilerecord;
 	
 	(*cb).saveroutine = ccsavespecialfile;
 
-#endif
 	
 	(*cb).updateroutine = &pictupdate;
 	
@@ -1249,7 +1168,6 @@ boolean pictstart (void) {
 	return (true);
 	} /*pictstart*/
 
-#endif // !flruntime
 
 
 

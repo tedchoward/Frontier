@@ -70,11 +70,9 @@ boolean tablesetdebugglobals (register hdlhashtable ht, register hdlhashnode hno
 	
 	debugvariable = (hdltablevariable) (**ht).hashtablerefcon;
 	
-	#if !flruntime
 	
 	debugformats = (hdltableformats) (**ht).hashtableformats;
 	
-	#endif
 	
 	if ((**ht).hfirstsort)
 		gethashkey ((**ht).hfirstsort, debugfirstsort);
@@ -89,7 +87,6 @@ boolean tablesetdebugglobals (register hdlhashtable ht, register hdlhashnode hno
 #endif
 
 
-#if defined (isFrontier) && !defined (flruntime)
 
 
 hdlhashtable tablegetlinkedhashtable (void) {
@@ -151,7 +148,6 @@ void tablelinkformats (hdlhashtable htable, hdltableformats hformats) {
 	(**hformats).htable = htable;
 	} /*tablelinkformats*/
 
-#endif
 
 
 boolean istablevariable (hdlexternalvariable hv) {
@@ -225,11 +221,9 @@ boolean findnamedtable (hdlhashtable htable, bigstring bs, hdlhashtable *hnamedt
 	if (!tablevaltotable ((**hnode).val, hnamedtable, hnode))
 		return (false);
 	
-	#if !flruntime
 	
 	(***hnamedtable).parenthashtable = htable; /*retain parental link*/
 	
-	#endif
 	
 	return (true);
 	} /*findnamedtable*/
@@ -272,7 +266,6 @@ boolean tablenewtablevalue (hdlhashtable *newtable, tyvaluerecord *newval) {
 	} /*tablenewtablevalue*/
 
 
-#if defined (isFrontier) && !defined (flruntime)
 
 boolean tablefinddatawindow (hdlhashtable htable, hdlwindowinfo *hinfo) {
 	
@@ -381,21 +374,6 @@ boolean tablecheckwindowrect (hdlhashtable htable) {
 	return (true);
 	} /*tablecheckwindowrect*/
 
-#else
-
-boolean tabledisposetable (hdlhashtable htable, boolean fldisk) {
-	
-	register hdlhashtable ht = htable;
-	
-	if (ht) {
-		
-		disposehashtable (ht, fldisk);
-		}
-	
-	return (true);
-	} /*tabledisposetable*/
-
-#endif
 
 
 boolean tableverbunload (hdlexternalvariable hvariable) {
@@ -650,7 +628,6 @@ boolean tablepreflightsubsdirtyflag (hdlexternalvariable hv) {
 	}/*tablepreflightsubsdirtyflag*/
 
 
-#if defined (isFrontier) && !defined (flruntime)
 
 typedef struct findtableinfo {
 	
@@ -1096,7 +1073,6 @@ boolean tablepopcontext (hdlhashtable ht, tyvaluetype type) {
 	} /*tablepopcontext*/
 
 
-#endif
 
 
 boolean tablegetstringlist (short id, bigstring bs) {

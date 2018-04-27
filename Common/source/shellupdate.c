@@ -38,47 +38,6 @@
 
 
 
-#ifdef WIN95VERSION
-
-static PAINTSTRUCT globalWinPaintstruct;
-
-static void BeginUpdate (WindowPtr w) {
-	HDC hdc;
-	HWND hwnd;
-	hdlwindowinfo hinfo;
-	Rect r;
-	
-	assert (shellevent.what == updateEvt);
-	
-	getwindowinfo (w, &hinfo);
-	
-	if (hinfo != nil)
-		(**hinfo).drawrgn = getupdateregion (w);
-	
-	hwnd = (HWND) w;
-	hdc = BeginPaint (hwnd, &globalWinPaintstruct);
-	winpushport (w, hdc);
-	
-	getlocalwindowrect (w, &r);
-
-	/* if hbrBackground brush is NULL...
-	pushbackcolor (&graycolor);
-	eraserect (r);
-	popbackcolor ();
-	*/
-	}
-
-static void EndUpdate (WindowPtr w) {
-	HWND hwnd;
-
-	assert (shellevent.what == updateEvt);
-
-	hwnd = (HWND) w;
-	winpopport();
-	EndPaint (hwnd, &globalWinPaintstruct);
-	}
-
-#endif
 
 
 void shellupdatewindow (WindowPtr w) {
@@ -96,11 +55,9 @@ void shellupdatewindow (WindowPtr w) {
 	
 	if ((hinfo == nil) || (**hinfo).fldisposewhenpopped) {
 
-		#ifdef MACVERSION
 			BeginUpdate (w);
 			
 			EndUpdate (w);
-		#endif
 		
 		return;
 		}
@@ -114,15 +71,10 @@ void shellupdatewindow (WindowPtr w) {
 	//Must pass a CGrafPtr to pushport on OS X to avoid a crash
 	{
 	CGrafPtr	thePort;
-	#if TARGET_API_MAC_CARBON == 1
 	thePort = GetWindowPort(w);
-	#else
-	thePort = (CGrafPtr)w;
-	#endif
 		
 	pushport (thePort);/*7/7/90 DW: this probably is not necessary, shellpushglobals does it*/
 	}
-#ifdef MACVERSION	
 	if (!config.fldialog) /*if it's a dialog, the callback routine re-drew the controls*/
 		DrawControls (w);
 	
@@ -147,13 +99,7 @@ void shellupdatewindow (WindowPtr w) {
 	//old code
 	(**hw).drawrgn = (*w).visRgn; /*so updater knows what needs drawing*/
 	#endif
-#endif
 
-#ifdef WIN95VERSION
-//	(**hw).drawrgn = getvisregion (w);
-
-	pushcliprgn ((**hw).drawrgn, false);
-#endif
 
 	if (shellrectneedsupdate (&(**hw).buttonsrect)) /*if window has an attached button list, draw it*/
 		shelldrawbuttons ();
@@ -167,19 +113,12 @@ void shellupdatewindow (WindowPtr w) {
 	if (shellrectneedsupdate (&(**hw).contentrect))
 		(*shellglobals.updateroutine) ();
 	
-#ifdef WIN95VERSION
-	popclip ();
-	
-	DeleteObject ((**hw).drawrgn);
-#endif
-#ifdef MACVERSION
 	//Code change by Timothy Paustian Saturday, April 29, 2000 11:11:12 PM
 	//Changed to Opaque call for Carbon
 	//Get rid of the drawrgn to prevent a memory leak
 	#if ACCESSOR_CALLS_ARE_FUNCTIONS == 1
 	DisposeRgn((**hw).drawrgn);	
 	#endif
-#endif
 	(**hw).drawrgn = nil; /*this is a temp, keep it nil normally*/
 	
 	popport (); /*7/7/90 DW: see comment for pusport, above*/
@@ -214,9 +153,6 @@ void shellupdatecontent (Rect contentrect) {
 
 	if (EmptyRgn (actualupdatergn)) {
 		
-		#ifdef WIN95VERSION
-			DeleteObject (actualupdatergn);
-		#endif
 
 		return;
 		}
@@ -229,56 +165,23 @@ void shellupdatecontent (Rect contentrect) {
 	
 	globaltolocalrgn (updatergn);
 	
-	#ifdef MACVERSION
 		RectRgn (contentrgn = NewRgn (), &contentrect);
 		#if ACCESSOR_CALLS_ARE_FUNCTIONS == 1
 		//in carbon a copy of the update region is returned.
 		DisposeRgn(actualupdatergn);
 		actualupdatergn = nil;
 		#endif
-	#endif
-	#ifdef WIN95VERSION
-		DeleteObject (actualupdatergn);
-		insetrect (&contentrect, -1, -1);
-		contentrgn = CreateRectRgn (contentrect.left, contentrect.top, contentrect.right, contentrect.bottom);
-	#endif
 	
 	SectRgn (contentrgn, updatergn, contentrgn); /*re-use contentrgn*/
 
 	
-#if defined(WIN95VERSION) && fldebug
-
-/****** DEBUG CODE *********/
-	if (false) {
-		
-		RECT rrr;
-
-		GetClientRect (shellwindow, &rrr);
-
-		DeleteObject(contentrgn);
-
-		contentrgn = CreateRectRgn (rrr.left, rrr.top, rrr.right, rrr.bottom);
-
-		FillRect (getport(), &rrr, GetStockObject (WHITE_BRUSH));
-		}
-
-#endif
 
 	if (!EmptyRgn (contentrgn)) {
 		
 		(**hw).drawrgn = contentrgn; /*for display routines to refer to*/
 		//Code change by Timothy Paustian Monday, June 19, 2000 3:09:46 PM
 		//Changed to Opaque call for Carbon
-		#ifdef MACVERSION
-			#if TARGET_API_MAC_CARBON == 1
 			ValidWindowRgn((WindowRef) hw, contentrgn);
-			#else
-			ValidRgn (contentrgn); /*no need to draw it again.  do now to simulate beginupdate*/
-			#endif
-		#endif
-		#ifdef WIN95VERSION
-			ValidateRgn (shellwindow, contentrgn);
-		#endif
 		
 		pushcliprgn (contentrgn, false);
 		
@@ -306,7 +209,6 @@ boolean shellupdatenow (WindowPtr wupdate) {
 	should be fine from the toolbox's point of view, but will not limit 
 	the update to contentrect.
 	*/
-#ifdef MACVERSION
 	hdlregion rgn;
 
 	rgn = getupdateregion (wupdate);
@@ -319,15 +221,7 @@ boolean shellupdatenow (WindowPtr wupdate) {
 	//we have to dispose of it to prevent a memory leak
 	DisposeRgn(rgn);
 	#endif
-#endif
 
-#ifdef WIN95VERSION
-	releasethreadglobals ();
-
-	UpdateWindow ((HWND) wupdate);
-
-	grabthreadglobals ();
-#endif
 	return (true);
 	} /*shellupdatenow*/
 
@@ -360,10 +254,8 @@ boolean shellhandleupdate (void) {
 	
 	if (!isshellwindow (w)) {
 		
-		#ifdef MACVERSION
 			BeginUpdate (w);
 			EndUpdate (w);
-		#endif
 		
 		return (false);
 		}

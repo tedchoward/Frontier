@@ -701,7 +701,6 @@ boolean opunpacklist (Handle hpacked, hdllistrecord *hnewlist) {
 		goto error;
 		}
 	
-	#if 1 // faster
 		hpackedoutline = hpacked;
 		
 		hpacked = nil;
@@ -722,14 +721,6 @@ boolean opunpacklist (Handle hpacked, hdllistrecord *hnewlist) {
 			assert (gethandlesize (hpackedoutline) == (long) info.ctoutlinebytes);
 			}
 	
-	#else // old code
-		if (!loadfromhandletohandle (hpacked, &ixload, info.ctoutlinebytes, true, &hpackedoutline))
-			goto error;
-		
-		disposehandle (hpacked);
-		
-		hpacked = nil;
-	#endif
 	
 	// (**hlist).ctitems = makelong (info.ctitems, info.ctitems_hiword);
 	(**hlist).ctitems = info.ctitems;

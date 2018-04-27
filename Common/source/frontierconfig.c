@@ -40,14 +40,8 @@
 #include "byteorder.h"	/* 2006-04-16 aradke: swap byte order in loadconfigresource */
 
 
-#ifdef MACVERSION
 #define configresourcetype 'cnfg'
-#endif
 
-#ifdef WIN95VERSION
-//#define configresourcetype 1000
-#define configresourcetype 'cnfg'
-#endif
 
 tyconfigrecord config;
 
@@ -76,12 +70,7 @@ static void initconfigrecord (tyconfigrecord *configrecord) {
 	
 	(*p).filetype = typeunknown;
 
-#ifdef MACVERSION
 	(*p).defaultfont = systemFont;
-#endif
-#ifdef WIN95VERSION
-	(*p).defaultfont = 0;
-#endif
 
 	(*p).defaultsize = 12;
 	} /*initconfigrecord*/

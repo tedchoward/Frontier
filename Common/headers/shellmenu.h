@@ -29,7 +29,6 @@
 #define shellmenuinclude /*so other includes can tell if we've been loaded*/
 
 
-#ifdef MACVERSION
 
 	/*
 	2006-02-25 aradke: must keep in sync with SHELL.R
@@ -60,63 +59,8 @@
 	#define firsthiermenu			fontmenu
 	#define lasthiermenu			openrecentmenu
 	
-#endif //MACVERSION
 
 
-#ifdef WIN95VERSION	
-
-	/*
-	2006-02-25 aradke: must keep in sync with WinLand.rc
-	
-	2006-02-25 aradke: undefine menus for Pike and OPML Editor that aren't actually used by the app
-		in order to avoid picking up their keyboard shortcuts at runtime
-	*/
-
-	#define mainmenuincrement	1000
-	#define hiermenuincrement 	100
-
-	#define applemenu			1000
-	#define filemenu			2000
-	#define editmenu			3000
-	#define windowsmenu			4000
-	#define helpmenu			5000
-
-	#define firstmainmenu		filemenu
-	#define lastmainmenu		helpmenu
-
-	#ifdef PIKE
-		#undef stylemenu
-		#undef leadingmenu
-		#undef justifymenu
-		#undef newobjectmenu
-		#undef openrecentmenu
-
-		#define virtualmenu			5100	/* 2006-02-25 aradke: never actually displayed */
-		#define fontmenu			5200
-		#define sizemenu			5300
-		#define findandreplacemenu	5400
-		#define commonstylesmenu	5500	/*7.0b26 PBS*/
-
-		#define firsthiermenu		fontmenu
-		#define lasthiermenu		commonstylesmenu
-	#else //!PIKE
-		#define virtualmenu			5100	/* 2006-02-25 aradke: never actually displayed */
-		#define fontmenu			5200
-		#define stylemenu			5300
-		#define sizemenu			5400
-		#define leadingmenu			5500
-		#define justifymenu			5600
-		#define findandreplacemenu	5700
-		#define commonstylesmenu	5800	/*7.0b26 PBS*/
-		#define newobjectmenu		5900
-		#define openrecentmenu		6000	/* 2006-02-05 aradke */
-
-		#define firsthiermenu		fontmenu
-		#define lasthiermenu		openrecentmenu
-
-	#endif //!PIKE
-
-#endif //WIN95VERSION
 
 
 #define aboutitem 1
@@ -233,10 +177,8 @@
 
 // #define windowsmenu (editmenu + mainmenuincrement)
 #define hidewindowitem 1
-#if TARGET_API_MAC_CARBON == 1
 	#define minimizewindowitem 2
 	#define bringalltofrontwindowitem 4
-#endif
 
 // #define helpmenu (windowsmenu + mainmenuincrement)
 #define aboutitem 1

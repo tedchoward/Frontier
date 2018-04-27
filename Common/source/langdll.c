@@ -28,11 +28,9 @@
 #include "frontier.h"
 #include "standard.h"
 
-#ifdef MACVERSION
 
 	#include "langxcmd.h"
 	
-#endif
 
 #include "memory.h"
 #include "frontierconfig.h"
@@ -56,10 +54,6 @@
 #include "langinternal.h"
 #include "langexternal.h"
 #include "langipc.h"
-#ifdef WIN95VERSION
-#include "langwinipc.h"
-#include "FrontierWinMain.h"
-#endif
 #include "langsystem7.h"
 #include "langtokens.h"
 #include "oplist.h"
@@ -87,12 +81,7 @@
 
 	/* type definitions */
 	
-	#ifdef WIN95VERSION
-		typedef HINSTANCE tydllsyshandle;
-	#endif
-	#ifdef MACVERSION
 		typedef CFragConnectionID tydllsyshandle;
-	#endif
 
 	#define ctprocinfohashbuckets 29 /* should be a prime number */
 
@@ -110,10 +99,6 @@
 
 		tyDLLEXTROUTINE procaddress;				/* pointer to the proc in the library */
 		
-		#if MACVERSION && !TARGET_API_MAC_CARBON
-			RoutineDescriptor moduledesc;			/* needed for calling the proc on Mac OS Classic */
-			UniversalProcPtr moduleUPP;
-		#endif
 		
 		bigstring bsprocname;						/* name of the proc (null-terminated pascal string!) */
 
@@ -161,11 +146,9 @@
 		
 		Handle moduleHandle;
 
-		#ifdef MACVERSION
 			RoutineDescriptor moduleDesc;
 			UniversalProcPtr moduleUPP;
 			Handle hresdata; 
-		#endif
 
 		char * pdata;
 
@@ -196,7 +179,6 @@
 	boolean odbdisposevalue (odbRef odb, odbValueRecord *value);
 	extern pascal void odbGetError (bigstring bs);
 
-#ifdef MACVERSION
 
 	enum {
 		 uppdllcallProcInfo = kCStackBased
@@ -205,7 +187,6 @@
 		 | STACK_ROUTINE_PARAMETER(2, SIZE_CODE(sizeof(XDLLProcTable *)))
 		 };
 
-#endif
 
 
 Handle xCALLBACK extfrontierReAlloc (Handle h, long sz) {
@@ -237,15 +218,10 @@ char * xCALLBACK extfrontierLock (Handle h) {
 
 	grabthreadglobals ();
 
-	#ifdef MACVERSION
 		HLock (h);
 
 		res = (char *) *h;
-	#endif
 
-	#ifdef WIN95VERSION
-		res = frontierLock (h);
-	#endif
 
 	releasethreadglobals ();
 
@@ -731,9 +707,7 @@ odbBool xCALLBACK extDoScriptText (char * script, long len, Handle * text) {
 
 
 odbBool xCALLBACK extInvoke (bigstring bsscriptname, void * pDispParams, odbValueRecord * retval, boolean *flfoundhandler, unsigned int * errarg) {
-#if MACVERSION
 #	pragma unused (bsscriptname, pDispParams, flfoundhandler, errarg)
-#endif
 	boolean res;
 	tyvaluerecord val;
 
@@ -741,14 +715,8 @@ odbBool xCALLBACK extInvoke (bigstring bsscriptname, void * pDispParams, odbValu
 
 	grabthreadglobals ();
 
-	#ifdef WIN95VERSION
-		convertodbtotyval (retval, &val);
-		res = langwinipchandleCOM (bsscriptname, pDispParams, &val, flfoundhandler, errarg);
-	#endif
-	#ifdef MACVERSION
 		res = false;
 		setstringvalue (BIGSTRING ("\x29" "Invoke is not supported on this platform."), &val);
-	#endif
 
 	converttyvaltoodb (&val, retval);
 
@@ -1118,7 +1086,6 @@ static boolean loadprocinforesource (tydllinfohandle hdll) {
 	// 2006-06-25 creedon: for Mac, FSRef-ized
 	//
 
-	#ifdef MACVERSION
 	
 		short resfile;
 		Handle hRes;
@@ -1151,27 +1118,7 @@ static boolean loadprocinforesource (tydllinfohandle hdll) {
 			
 			}
 			
-	#endif
 
-	#ifdef WIN95VERSION
-	
-		HRSRC frh;
-		HGLOBAL rh;
-
-		frh = FindResource ((**hdll).hdllsyshandle, "ProcInfo", RT_RCDATA);
-
-		if (frh != NULL) {
-		
-			rh = LoadResource ((**hdll).hdllsyshandle, frh);
-			
-			if (rh != NULL) {
-			
-				(**hdll).hres = (Handle) rh;
-			
-				(**hdll).resdata = LockResource (rh);
-				}
-			}
-	#endif
 
 	return ((**hdll).hres != NULL);
 	} // loadprocinforesource
@@ -1183,13 +1130,11 @@ static void unloadprocinforesource (tydllinfohandle hdll) {
 	Platoform-specific code for unloading the library's ProcInfo resource
 	*/
 
-#ifdef MACVERSION
 
 	HUnlock ((**hdll).hres);
 
 	disposehandle ((**hdll).hres);
 
-#endif
 	
 	return;
 	} /*unlockprocinforesource*/
@@ -1479,32 +1424,7 @@ static boolean openlibrary (tydllinfohandle hdll) {
 
 	tyfilespec fs = (**hdll).fs;
 
-	#ifdef WIN95VERSION
 	
-		bigstring fn;
-	
-		#if (FRONTIERCOM == 1)
-			filefrompath ((ptrstring) fsname (&fs), fn);
-	
-			nullterminate(fn);
-	
-			if (stricmp (stringbaseaddress(fn), "COMDLL.DLL") == 0) {
-			
-				(**hdll).hdllsyshandle = (tydllsyshandle) COMStartup(); /*** FIXME: make sure we deal properly with the COM DLL ***/
-				
-				return ((**hdll).hdllsyshandle != nil);
-				}
-		#endif
-	
-		copystring (fsname (&fs), fn);
-		
-		nullterminate(fn);
-	
-		(**hdll).hdllsyshandle = LoadLibrary (stringbaseaddress(fn));
-	
-	#endif
-	
-	#ifdef MACVERSION
 	
 		long response;
 		OSErr err;
@@ -1534,7 +1454,6 @@ static boolean openlibrary (tydllinfohandle hdll) {
 	
 	exit:
 	
-	#endif
 		
 	if ((**hdll).hdllsyshandle == NULL) {
 	
@@ -1558,18 +1477,7 @@ static void closelibrary (tydllinfohandle hdll) {
 	Platform-specific code for unloading the library code from memory
 	*/
 
-#ifdef WIN95VERSION
 
-	#if (FRONTIERCOM == 1)
-		if ((**hdll).hdllsyshandle == (tydllsyshandle) COMSYSModule()) /*** FIXME: make sure we deal properly with the COM DLL ***/
-			COMShutdown();
-		else
-	#endif
-			FreeLibrary ((**hdll).hdllsyshandle);
-
-#endif
-
-#ifdef MACVERSION
 
 	lockhandle ((Handle) hdll);
 	
@@ -1577,7 +1485,6 @@ static void closelibrary (tydllinfohandle hdll) {
 	
 	unlockhandle ((Handle) hdll);
 
-#endif
 	
 	return;
 	} /*closelibrary*/
@@ -1726,31 +1633,17 @@ static boolean lookupprocaddress (tydllinfohandle hdll, typrocinfohandle hprocin
 	Platform-specific code for looking up the address of a proc in the library
 	*/
 	
-	#ifdef MACVERSION
 		CFragSymbolClass procclass;
 		OSErr err;
-		#if !TARGET_API_MAC_CARBON
-			RoutineDescriptor desctemplate = BUILD_ROUTINE_DESCRIPTOR (uppdllcallProcInfo, NULL);
-		#endif
 		
 		err = FindSymbol ((**hdll).hdllsyshandle, (**hprocinfo).bsprocname, (Ptr*) &(**hprocinfo).procaddress, &procclass); 
 
-		#if !TARGET_API_MAC_CARBON
-			if (err == noErr) {
-				(**hprocinfo).moduledesc = desctemplate;
-				(**hprocinfo).moduledesc.routineRecords[0].procDescriptor = (ProcPtr) (**hprocinfo).procaddress;	/* fill in the blank */
-				(**hprocinfo).moduleUPP = (UniversalProcPtr) &(**hprocinfo).moduledesc;
-				}
-		#elif TARGET_RT_MAC_MACHO
+		#if   TARGET_RT_MAC_MACHO
 			if (err == noErr) {
 				(**hprocinfo).procaddress = convertcfmtomachofuncptr ((**hprocinfo).procaddress);
 				}
 		#endif
-	#endif
 
-	#ifdef WIN95VERSION
-		(**hprocinfo).procaddress = (tyDLLEXTROUTINE) GetProcAddress ((**hdll).hdllsyshandle, stringbaseaddress((**hprocinfo).bsprocname));
-	#endif
 
 	return ((**hprocinfo).procaddress != nil);
 	} /*lookupprocaddress*/
@@ -1793,15 +1686,7 @@ static boolean callprocwithparams (tydllinfohandle hdll, typrocinfohandle hproci
 
 	releasethreadglobals ();
 	
-	#if MACVERSION && !TARGET_API_MAC_CARBON
-		#if GENERATINGCFM
-			fl = CallUniversalProc ((**hprocinfo).moduleUPP, uppdllcallProcInfo, params, dllcallbacks);
-		#else
-			fl = (*(tyDLLEXTROUTINE) ((**hprocinfo).moduleUPP)) (params, dllcallbacks);
-		#endif
-	#else
 		fl = (*(**hprocinfo).procaddress) (params, dllcallbacks);
-	#endif
 	
 	grabthreadglobals ();
 
@@ -1825,11 +1710,7 @@ static boolean callprocwithparams (tydllinfohandle hdll, typrocinfohandle hproci
 		{
 		bigstring errmsg;
 		
-		#ifdef MACVERSION
 			copystring (params->errormessage, errmsg);
-		#else
-			copyctopstring (params->errormessage, errmsg);
-		#endif
 		
 		langerrormessage (errmsg);
 		}
@@ -2129,14 +2010,9 @@ static boolean getprocinfo (const ptrfilespec fs, bigstring bsprocname, tydllmod
 
 	//Code change by Timothy Paustian Friday, June 16, 2000 1:03:09 PM
 	//Changed to Opaque call for Carbon - UPP aren't needed for Carbon
-	#ifdef MACVERSION
 
 		CFragSymbolClass procclass;
 		OSErr err;
-		 #if !TARGET_API_MAC_CARBON
-		RoutineDescriptor desctemplate = BUILD_ROUTINE_DESCRIPTOR (uppdllcallProcInfo, NULL);
-		#endif
-	#endif
 	/*
 	load the dll, find the module, and map its parameter info to our types.
 	*/
@@ -2145,8 +2021,6 @@ static boolean getprocinfo (const ptrfilespec fs, bigstring bsprocname, tydllmod
 	
 	nullterminate (procname);
 
-	#ifdef MACVERSION
-		#if TARGET_API_MAC_CARBON
 		info->procAddress = NULL;
 	
 		err = FindSymbol ((CFragConnectionID)info->moduleHandle, procname, (Ptr*)&(info->procAddress), &procclass); 
@@ -2160,25 +2034,7 @@ static boolean getprocinfo (const ptrfilespec fs, bigstring bsprocname, tydllmod
 			//This is the only place the frontier code uses moduleUPP so it should be save. 
 			info->moduleUPP = NULL;
 			}
-		#else
-		info->moduleDesc = desctemplate;
 
-		info->procAddress = NULL;
-	
-		err = FindSymbol ((CFragConnectionID)info->moduleHandle, procname, (Ptr*)&(info->procAddress), &procclass); 
-
-		if (err == noErr) {
-			
-			info->moduleDesc.routineRecords [0].procDescriptor = (ProcPtr)info->procAddress;	// fill in the blank
-	
-			info->moduleUPP = (UniversalProcPtr) &(info->moduleDesc);
-			}
-		#endif
-	#endif
-
-	#ifdef WIN95VERSION
-		info->procAddress = (tyDLLEXTROUTINE) GetProcAddress ((HINSTANCE) info->moduleHandle, stringbaseaddress(procname));
-	#endif
 
 	if (info->procAddress == NULL) {
 		
@@ -2200,17 +2056,7 @@ static boolean getprocinfo (const ptrfilespec fs, bigstring bsprocname, tydllmod
 
 static boolean islibraryloaded (const ptrfilespec fs, Handle * hModule) {
 
-	#ifdef WIN95VERSION
-		bigstring fn;
-		
-		copystring (fsname (fs), fn);
-		
-		nullterminate(fn);
-		
-		*hModule = (Handle) GetModuleHandle (stringbaseaddress(fn));
-	#endif
 
-	#ifdef MACVERSION
 		long response;
 		OSErr err;
 		CFragConnectionID connID;
@@ -2222,17 +2068,12 @@ static boolean islibraryloaded (const ptrfilespec fs, Handle * hModule) {
 		if ((err != noErr) || (response & (1 << gestaltCFMPresent)) == 0)
 			return (false);
 		
-		#if TARGET_API_MAC_CARBON == 1
 			err = GetDiskFragment (fs, 0, kCFragGoesToEOF, fs->name, kReferenceCFrag, &connID, &mainAddr, errName);		
-		#else
-			err = GetDiskFragment (fs, 0, kCFragGoesToEOF, fs->name, kFindCFrag, &connID, &mainAddr, errName);		
-		#endif
 		
 		if (err != noErr)
 			return (false);
 		
 		*hModule = (Handle) connID;
-	#endif
 	
 	return (*hModule != NULL);
 	} /*islibraryloaded*/
@@ -2242,39 +2083,7 @@ static Handle doloadlibrary (const ptrfilespec fs, boolean flforce) {
 
 	Handle hModule = NULL;
 
-	#ifdef WIN95VERSION
-		bigstring fn;
 
-	//	if (! flforce) {
-	//		if (islibraryloaded (fs, &hModule))
-	//			return (hModule);
-	//		}
-
-		#if (FRONTIERCOM == 1)
-			filefrompath ((ptrstring) fsname (fs), fn);
-
-			nullterminate(fn);
-
-			if (stricmp (stringbaseaddress(fn), "COMDLL.DLL") == 0)
-					return (COMStartup());
-		#endif
-
-		copystring (fsname (fs), fn);
-		
-		nullterminate(fn);
-
-		hModule = (Handle) LoadLibrary (stringbaseaddress(fn));
-
-	//	if (hModule != NULL) {
-	//		namelen = GetModuleFileName (hModule, stringbaseaddress(namebuf), sizeof(namebuf));
-	//		setstringlength (namebuf, namelen);
-	//		alllower(namebuf);
-	//		addopenlibrary (hModule, fs, namebuf);
-	//		}
-
-	#endif
-
-	#ifdef MACVERSION
 		long response;
 		OSErr err;
 		CFragConnectionID connID;
@@ -2294,7 +2103,6 @@ static Handle doloadlibrary (const ptrfilespec fs, boolean flforce) {
 		hModule = (Handle) connID;
 	
 		exit:
-	#endif
 	
 	if (hModule == NULL)
 		lang2paramerror (cantconnecttodllerror, bsfunctionname, fsname (fs));
@@ -2304,32 +2112,16 @@ static Handle doloadlibrary (const ptrfilespec fs, boolean flforce) {
 
 
 static boolean dofreelibrary (Handle hModule, boolean flforce) {
-	#ifdef WIN95VERSION
-		#if (FRONTIERCOM == 1)
-			if (hModule == COMSYSModule())
-				return (COMShutdown());
-		#endif
 
-		return (FreeLibrary ((HINSTANCE) hModule));
-	#endif
-
-	#ifdef MACVERSION
 		return (CloseConnection ((CFragConnectionID *) &hModule) == noErr);
-	#endif
 	} /*dofreelibrary*/
 
 
 static boolean loaddllmodule (const ptrfilespec fs, bigstring bsprocname, tydllmoduleinfo *info) {
 	
 	boolean fl = false;
-	#ifdef WIN95VERSION
-		HRSRC frh;
-		HGLOBAL rh;
-	#endif
-	#ifdef MACVERSION
 		short resfile;
 		Handle hRes = nil;
-	#endif
 
 	/*
 	load the dll, find the module, and map its parameter info to our types.
@@ -2344,19 +2136,7 @@ static boolean loaddllmodule (const ptrfilespec fs, bigstring bsprocname, tydllm
 
 	info->pdata = NULL;
 
-	#ifdef WIN95VERSION
-		frh = FindResource ((HINSTANCE) info->moduleHandle, "ProcInfo", RT_RCDATA);
 
-		if (frh != NULL) {
-			
-			rh = LoadResource ((HINSTANCE) info->moduleHandle, frh);
-
-			if (rh != NULL)
-				info->pdata = LockResource (rh);
-			}
-	#endif
-
-	#ifdef MACVERSION
 		resfile = FSpOpenResFile (fs, fsRdPerm);
 
 		if (ResError() == noErr) {
@@ -2374,7 +2154,6 @@ static boolean loaddllmodule (const ptrfilespec fs, bigstring bsprocname, tydllm
 			
 			CloseResFile (resfile);
 			}
-	#endif
 	
 	if (info->pdata == NULL) {
 		
@@ -2392,9 +2171,7 @@ static boolean loaddllmodule (const ptrfilespec fs, bigstring bsprocname, tydllm
 	
 	exit:
 	
-	#ifdef MACVERSION
 		disposehandle (hRes);
-	#endif
 	
 	return (fl);
 	} /*loaddllmodule*/
@@ -2409,24 +2186,11 @@ static boolean langcalldll (tydllmoduleinfo *dllinfo, tydllparamblock *dllcall) 
 
 	releasethreadglobals ();
 
-	#ifdef WIN95VERSION
-		fl = (*(dllinfo->procAddress)) (dllcall, dllcallbacks);
-	#endif
 
-	#ifdef MACVERSION
-		#if TARGET_API_MAC_CARBON == 1
 			//Code change by Timothy Paustian Friday, June 16, 2000 1:13:28 PM
 			//Changed to Opaque call for Carbon - we don't need UPPs in Carbon.
 			//fl = (*(tyDLLEXTROUTINE) (dllinfo->moduleUPP)) (dllcall, dllcallbacks); // call it
 			fl = (*(dllinfo->procAddress)) (dllcall, dllcallbacks); // call it
-		#else
-			#if GENERATINGCFM
-				fl = CallUniversalProc (dllinfo->moduleUPP, uppdllcallProcInfo, dllcall, dllcallbacks);
-			#else
-				fl = (*(tyDLLEXTROUTINE) (dllinfo->moduleUPP)) (dllcall, dllcallbacks); // call it
-			#endif
-		#endif
-	#endif
 
 	dofreelibrary (dllinfo->moduleHandle, false);  /*okay we used it, now release it.*/
 
@@ -2535,60 +2299,6 @@ void fillcalltable (XDLLProcTable *pt) {
 	} /*fillcalltable*/
 
 
-#if 0
-
-void smashcalltable (XDLLProcTable *pt) {
-
-	#if defined(MACVERSION) && TARGET_RT_MAC_MACHO
-
-		disposecfmfuncptr (pt->xMemAlloc);
-		disposecfmfuncptr (pt->xMemResize);
-		disposecfmfuncptr (pt->xMemLock);
-		disposecfmfuncptr (pt->xMemUnlock);
-		disposecfmfuncptr (pt->xMemFree);
-		disposecfmfuncptr (pt->xMemGetSize);
-
-		disposecfmfuncptr (pt->xOdbGetCurrentRoot);
-		disposecfmfuncptr (pt->xOdbNewFile);
-		disposecfmfuncptr (pt->xOdbOpenFile);
-		disposecfmfuncptr (pt->xOdbSaveFile);
-		disposecfmfuncptr (pt->xOdbCloseFile);
-		disposecfmfuncptr (pt->xOdbDefined);
-		disposecfmfuncptr (pt->xOdbDelete);
-		disposecfmfuncptr (pt->xOdbGetType);
-		disposecfmfuncptr (pt->xOdbCountItems);
-		disposecfmfuncptr (pt->xOdbGetNthItem);
-		disposecfmfuncptr (pt->xOdbGetValue);
-		disposecfmfuncptr (pt->xOdbSetValue);
-		disposecfmfuncptr (pt->xOdbNewTable);
-		disposecfmfuncptr (pt->xOdbGetModDate);
-		disposecfmfuncptr (pt->xOdbDisposeValue);
-		disposecfmfuncptr (pt->xOdbGetError);
-
-		disposecfmfuncptr (pt->xDoScript);
-		disposecfmfuncptr (pt->xDoScriptText);
-
-		disposecfmfuncptr (pt->xOdbNewListValue);
-		disposecfmfuncptr (pt->xOdbGetListCount);
-		disposecfmfuncptr (pt->xOdbDeleteListValue);
-		disposecfmfuncptr (pt->xOdbSetListValue);
-		disposecfmfuncptr (pt->xOdbGetListValue);
-		disposecfmfuncptr (pt->xOdbAddListValue);
-
-		disposecfmfuncptr (pt->xInvoke);
-		disposecfmfuncptr (pt->xCoerce);
-		
-		disposecfmfuncptr (pt->xCallScript);
-		disposecfmfuncptr (pt->xCallScriptText);
-		
-		disposecfmfuncptr (pt->xThreadYield);
-		disposecfmfuncptr (pt->xThreadSleep);
-
-	#endif
-	
-	} /*smashcalltable*/
-
-#endif
 
 
 boolean dllisloadedverb (hdltreenode hparam1, tyvaluerecord *vreturned) {
@@ -2830,11 +2540,7 @@ boolean dllcallverb (hdltreenode hparam1, tyvaluerecord *vreturned) {
 		{
 		bigstring errmsg;
 		
-		#ifdef MACVERSION
 			copystring (dllcall.errormessage, errmsg);
-		#else
-			copyctopstring (dllcall.errormessage, errmsg);
-		#endif
 		
 		langerrormessage (errmsg);
 		}

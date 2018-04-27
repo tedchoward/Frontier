@@ -28,14 +28,12 @@
 #ifndef osacomponentinclude
 #define osacomponentinclude
 
-#ifdef MACVERSION
 #ifndef __COMPONENTS__
 	#include <Components.h>
 #endif
 
 #ifndef __OSA__
 	#include <OSA.h>
-#endif
 #endif
 
 /*globals*/

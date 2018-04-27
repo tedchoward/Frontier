@@ -28,9 +28,6 @@
 #include "frontier.h"
 #include "standard.h"
 
-#ifdef WIN95VERSION
-#include "WinLand.h"
-#endif
 
 #include "cursor.h"
 #include "dialogs.h"
@@ -654,7 +651,6 @@ typedef struct typopupkindinfo {
 #pragma options align=reset
 
 
-#ifdef MACVERSION
 static typopupkindinfo *zoominfoptr;
 
 static boolean tablekindhitroutine (DialogPtr pdialog, short itemhit) {
@@ -693,73 +689,7 @@ static boolean tablekindhitroutine (DialogPtr pdialog, short itemhit) {
 
 	return (true);
 	} /*tablekindhitroutine*/
-#endif
 
-#ifdef WIN95VERSION
-LRESULT CALLBACK tablekindDialogCallback(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam) {
-	
-	typopupkindinfo * p;
-
-	switch (message) {
-		
-		case WM_INITDIALOG:
-			centerdialog (hwnd);
-
-			p = (typopupkindinfo *) lParam;
-
-			SetWindowLong (hwnd, DWL_USER, lParam); 
-
-			CheckRadioButton (hwnd, IDC_RADIO1, IDC_RADIO6, IDC_RADIO1 + p->zoomkind);
-
-			SendDlgItemMessage (hwnd, IDC_EDIT1, EM_SETLIMITTEXT, (WPARAM) sizeof(bigstring) - 2, 0);
-			SetDlgItemText (hwnd, IDC_EDIT1, stringbaseaddress (p->bstitle));
-			SendDlgItemMessage (hwnd, IDC_EDIT1, EM_SETSEL, (WPARAM) (INT) 0, (LPARAM) (INT) -1);
-
-			SetFocus (GetDlgItem (hwnd, IDC_EDIT1));
-			return (false);
-
-		case WM_COMMAND:
-			p = (typopupkindinfo *) GetWindowLong (hwnd, DWL_USER);
-
-			switch (LOWORD(wParam))
-				{
-				case IDOK:
-					GetDlgItemText (hwnd, IDC_EDIT1, stringbaseaddress(p->bstitle), sizeof(bigstring) - 2);
-					setstringlength (p->bstitle, strlen(stringbaseaddress(p->bstitle)));
-
-					p->flkindok = true;
-
-				    EndDialog (hwnd, TRUE);
-					return TRUE;
-
-				case IDCANCEL:
-					p->flkindok = false;
-
-				    EndDialog (hwnd, FALSE);
-				    return TRUE;
-
-				case IDC_RADIO1:
-				case IDC_RADIO2:
-				case IDC_RADIO3:
-				case IDC_RADIO4:
-				case IDC_RADIO5:
-				case IDC_RADIO6:
-					if (HIWORD(wParam) == BN_CLICKED) {
-						p->zoomkind = LOWORD(wParam) - IDC_RADIO1;
-						}
-					break;
-
-				default:
-					break;
-				}
-
-		default:
-			break;
-		}
-
-	return FALSE;
-	} /*tablekindDialogCallback*/
-#endif
 
 //RAB: 1/21/98 This dialog shows the user the current title and
 //		allows that to be changed and to select a kind for the item
@@ -770,7 +700,6 @@ LRESULT CALLBACK tablekindDialogCallback(HWND hwnd, UINT message, WPARAM wParam,
 //		The procedure returns true if everything worked and the
 //		user presses ok, otherwise it returns false.
 static boolean showpopupkinddialog (typopupkindinfo * pki) {
-#ifdef MACVERSION
 	zoominfoptr = pki;
 
 	if (!customdialog (newvaluedialogid, 1, &tablekindhitroutine))
@@ -780,24 +709,7 @@ static boolean showpopupkinddialog (typopupkindinfo * pki) {
 		return (false);
 
 	return (true);
-#endif
 
-#ifdef WIN95VERSION
-	int res;
-
-	nullterminate (pki->bstitle);
-
-	releasethreadglobals ();
-
-	res = DialogBoxParam (hInst, MAKEINTRESOURCE (IDD_DIALOGTABLEENTRY), hwndMDIClient, (DLGPROC)tablekindDialogCallback, (LPARAM) pki);
-	
-	grabthreadglobals ();
-
-	if (res > 0)
-		return (true);
-	
-	return (false);
-#endif
 	} /*showpopupkinddialog*/
 
 
@@ -967,20 +879,8 @@ static void localtoscreenrect (WindowPtr w, Rect *r) {
 	convert the rectangle inside w to global coordinates on the desktop.
 	*/
 
-#ifdef MACVERSION
 	localtoglobalrect (w, r);
-#endif
 
-#ifdef WIN95VERSION
-	POINT winpt;
-	
-	winpt.x = (*r).left;
-	winpt.y = (*r).top;
-	
-	ClientToScreen (w, &winpt);
-	
-	offsetrect (r, (short)(winpt.x - (*r).left), (short) (winpt.y - (*r).top));
-#endif
 	} /*localtoscreenrect*/
 
 
@@ -1002,25 +902,7 @@ boolean tableclienttitlepopuphit (Point pt, hdlexternalvariable hvariable) {
 	bigstring bs;
 	short ctpixels;
 
-#ifdef MACVERSION
 
-	#if TARGET_API_MAC_CARBON != 1
-	
-		//Code change by Timothy Paustian Sunday, April 30, 2000 9:18:54 PM
-		//Leave this till later, but I have a feeling these are going to be 
-		//a real pain in Mac OS X
-		//Friday, May 5, 2000 10:36:39 PM
-		//I think I know how to handle this now.
-		//Code change by Timothy Paustian Sunday, May 21, 2000 9:28:04 PM
-		//I checked this out and it seems to work just fine.
-		CGrafPtr deskport;
-		#if ACCESSOR_CALLS_ARE_FUNCTIONS == 1
-		deskport = CreateNewPort();
-		#else
-		deskport = NewPtr(sizeof(CGrafPort));
-		#endif
-	#endif
-#endif
 	
 	if (hvariable == nil) /*defensive driving*/
 		return (false);
@@ -1031,12 +913,6 @@ boolean tableclienttitlepopuphit (Point pt, hdlexternalvariable hvariable) {
 	
 	localtoglobalpoint (shellwindow, &pt);
 
-#ifdef MACVERSION	
-	#if TARGET_API_MAC_CARBON != 1
-		if (!pushdesktopport (deskport)) /*failed to open up a port on the whole desktop*/
-			return (false);
-	#endif
-#endif
 	
 	windowgettitle (shellwindow, bs);
 	
@@ -1046,15 +922,10 @@ boolean tableclienttitlepopuphit (Point pt, hdlexternalvariable hvariable) {
 	
 	r.top = r.bottom - doctitlebarheight;
 
-#ifdef MACVERSION	
 	r.left += (r.right - r.left - ctpixels) / 2;
-#endif
 	
 	r.right = r.left + ctpixels;
 	
-#ifdef WIN95VERSION
-	r.right += 24;  /* account for sysmenu and border */
-#endif
 
 	flmenubarscript = false;
 	
@@ -1089,17 +960,6 @@ boolean tableclienttitlepopuphit (Point pt, hdlexternalvariable hvariable) {
 	
 	exit:
 
-#ifdef MACVERSION
-	#if TARGET_API_MAC_CARBON != 1
-
-		popdesktopport (deskport);
-		#if ACCESSOR_CALLS_ARE_FUNCTIONS == 1
-		 DisposePort(deskport);
-		#else
-		DisposePtr(deskport);
-		#endif
-	#endif
-#endif
 
 	return (fl);
 	} /*tableclienttitlepopuphit*/

@@ -79,13 +79,8 @@ byte * dialogstrings [] = {
 	BIGSTRING ("\x02" "An"),
 	BIGSTRING ("\x07" "A newer"),
 	BIGSTRING ("\x08" "An older"),
-	#ifdef MACVERSION
 		BIGSTRING ("\x0d" " item named “"),
 		BIGSTRING ("\x22" "” already exists in this location.")
-	#else
-		BIGSTRING ("\x0d" " item named \""),
-		BIGSTRING ("\x22" "\" already exists in this location.")
-	#endif
 	};
 #pragma pack(2)
 typedef struct tydraginfo {
@@ -401,62 +396,6 @@ boolean browservalidatepaste (hdlheadrecord hscrap, hdlheadrecord hdest, tydirec
 	} /*browservalidatepaste*/
 	
 
-#if 0 /*we're not doing a folder-based clipboard, but if we did, this is how you would validate a paste*/
-
-static boolean pastecollisionvisit (hdlheadrecord hnode, ptrdraginfo draginfo) {
-	
-	bigstring fname;
-	bigstring bsnode;
-	
-	copystring (pastefname, fname);
-	
-	opgetheadstring (hnode, bsnode);
-	
-	return (browsercompareforcollision (hnode, dragmodified, bsnode, fname));
-	} /*pastecollisionvisit*/
-		
-
-static boolean validatepastecallback (bigstring fname, tyfileinfo *info, ptrdraginfo draginfo) {
-	
-	dragmodified = (*info).timemodified;
-	
-	pastefname = (char *) fname;
-	
-	return (oprecursivelyvisit ((*draginfo).hdest, 1, &pastecollisionvisit, draginfo));
-	} /*validatepastecallback*/
-	
-	
-static boolean browservalidatefolderpaste (hdlheadrecord hfolder, FSSpec *clipfolderspec) {
-	
-	/*
-	check for collisions -- if there already is a file in the target folder
-	with the same name as one of the items we're pasting, a dialog appears
-	confirming the replacement. all files that need to be deleted have their
-	tmpbits set. the caller should delete them. we don't do the deletion 
-	here so that the deletions can be undoable.
-	*/
-	
-	tydraginfo;
-	
-	if ((**hfolder).headlinkleft == hfolder) {
-		
-		alertdialog (BIGSTRING ("\x32" "Can’t paste at the top level of a browser outline."));
-		
-		return (false);
-		}
-	
-	draginfo.hdest = hfolder;
-	
-	draginfo.ctcollisions = draginfo.collisiontype = 0;
-	
-	opcleartmpbits ();
-	
-	folderloop (clipfolderspec, false, &validatepastecallback, &draginfo);
-		
-	return (browsercollisiondialog (hfolder, BIGSTRING ("\x07" "pasting")));
-	} /*browservalidatefolderpaste*/
-
-#endif
 
 
 static ptrstring pcommand;

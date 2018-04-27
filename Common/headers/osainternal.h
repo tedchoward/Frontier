@@ -102,7 +102,6 @@ enum {
 //Code change by Timothy Paustian Friday, June 16, 2000 1:32:41 PM
 //Changed to Opaque call for Carbon
 //Had to mask out the GENERATINGCFM directive. 
-#if TARGET_API_MAC_CARBON
 	typedef GNEProcPtr GNEUPP;
 	
 	#define CallGNEProc(userRoutine, mask, theEvent)		\
@@ -130,67 +129,6 @@ enum {
 			(*(userRoutine))((theMenus))
 	#define NewMSmenuscallbackProc(userRoutine)		\
 			(MSmenuscallbackUPP)(userRoutine)
-#else
-#if GENERATINGCFM
-
-	typedef UniversalProcPtr GNEUPP;
-	
-	#define CallGNEProc(userRoutine, mask, theEvent)		\
-			CallUniversalProc((UniversalProcPtr)(userRoutine), uppGNEProcInfo, (mask), (theEvent))
-	#define NewGNEProc(userRoutine)		\
-			(GNEUPP) NewRoutineDescriptor((ProcPtr)(userRoutine), uppGNEProcInfo, GetCurrentISA())
-	
-	typedef UniversalProcPtr MSstringcallbackUPP;
-	
-	#define CallMSstringcallbackProc(userRoutine, theString)		\
-			CallUniversalProc((UniversalProcPtr)(userRoutine), uppMSstringcallbackProcInfo, (theString))
-	#define NewMSstringcallbackProc(userRoutine)		\
-			(MSstringcallbackUPP) NewRoutineDescriptor((ProcPtr)(userRoutine), uppMSstringcallbackProcInfo, GetCurrentISA())
-	
-	typedef UniversalProcPtr MSeventcallbackUPP;
-	
-	#define CallMSeventcallbackProc(userRoutine, theEvent)		\
-			CallUniversalProc((UniversalProcPtr)(userRoutine), uppMSeventcallbackProcInfo, (theEvent))
-	#define NewMSeventcallbackProc(userRoutine)		\
-			(MSeventcallbackUPP) NewRoutineDescriptor((ProcPtr)(userRoutine), uppMSeventcallbackProcInfo, GetCurrentISA())
-
-	typedef UniversalProcPtr MSmenuscallbackUPP;
-	
-	#define CallMSmenuscallbackProc(userRoutine, theMenus)		\
-			CallUniversalProc((UniversalProcPtr)(userRoutine), uppMSmenuscallbackProcInfo, (theMenus))
-	#define NewMSmenuscallbackProc(userRoutine)		\
-			(MSmenuscallbackUPP) NewRoutineDescriptor((ProcPtr)(userRoutine), uppMSmenuscallbackProcInfo, GetCurrentISA())
-#else
-
-	typedef GNEProcPtr GNEUPP;
-	
-	#define CallGNEProc(userRoutine, mask, theEvent)		\
-			(*(userRoutine))((mask), (theEvent))
-	#define NewGNEProc(userRoutine)		\
-			(GNEUPP)(userRoutine)
-	
-	typedef tyMSstringcallback MSstringcallbackUPP;
-	
-	#define CallMSstringcallbackProc(userRoutine, theString)		\
-			(*(userRoutine))((theString))
-	#define NewMSstringcallbackProc(userRoutine)		\
-			(MSstringcallbackUPP)(userRoutine)
-	
-	typedef tyMSeventcallback MSeventcallbackUPP;
-	
-	#define CallMSeventcallbackProc(userRoutine, theEvent)		\
-			(*(userRoutine))((theEvent))
-	#define NewMSeventcallbackProc(userRoutine)		\
-			(MSeventcallbackUPP)(userRoutine)
-	
-	typedef tyMSmenuscallback MSmenuscallbackUPP;
-	
-	#define CallMSmenuscallbackProc(userRoutine, theMenus)		\
-			(*(userRoutine))((theMenus))
-	#define NewMSmenuscallbackProc(userRoutine)		\
-			(MSmenuscallbackUPP)(userRoutine)
-#endif	//GENERATINGCFM
-#endif //TARGET_API_MAC_CARBON
 
 
 #pragma pack(2)
@@ -239,20 +177,6 @@ typedef struct tyrecordingstate { /*maintain info about recording in progress*/
 	Handle hrecordedtext;
 	} tyrecordingstate;
 
-#ifdef dropletcomponent
-
-typedef struct tydropletglobals { /*droplet application globals*/
-	
-	DialogPtr pmainwindow;
-	
-	MenuHandle happlemenu, hfilemenu;
-	
-	boolean flexitmainloop;
-	
-	AppleEvent initialevent;
-	} tydropletglobals;
-
-#endif
 
 typedef struct tycomponentglobals { /*a place to store your globals safely*/
 	
@@ -314,17 +238,11 @@ typedef struct tycomponentglobals { /*a place to store your globals safely*/
 	
 	tyMSglobals menusharingglobals;
 	
-	#ifdef dropletcomponent
-	
-	tydropletglobals dropletglobals;
-	
-	#endif
 	
 	tyrecordingstate recordingstate;
 	//Code change by Timothy Paustian Sunday, September 3, 2000 9:56:14 PM
 	//These are dynamic and each component needs its own set of UPPs that cannot
 	//be shared. So put them here.
-	#if TARGET_API_MAC_CARBON
 	ComponentRoutineUPP	cmpcloseUPP;
 	ComponentRoutineUPP	cmpcandoUPP;
 	ComponentRoutineUPP	cmpversionUPP;
@@ -358,7 +276,6 @@ typedef struct tycomponentglobals { /*a place to store your globals safely*/
 	ComponentRoutineUPP	osaGetSendProcUPP;
 	ComponentRoutineUPP	osaSetCreateProcUPP;
 	ComponentRoutineUPP	osaGetCreateProcUPP;
-	#endif
 	} tycomponentglobals, **hdlcomponentglobals;
 #pragma options align=reset
 

@@ -75,13 +75,11 @@ typedef struct tysearchparameters {
 	
 	long searchrefcon;
 
-#ifdef flregexpverbs
 	
 	Handle hcompiledpattern;
 	
 	Handle hovector;
 
-#endif
 	} tysearchparameters;
 #pragma options align=reset
 

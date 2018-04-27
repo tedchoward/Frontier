@@ -95,7 +95,6 @@ typedef struct tycancoonrecord { /*one of these for every cancoon file that's op
 	
 	Handle hrootvariable; /*the variable record for the root symbol table*/
 	
-	#if !flruntime
 	
 	hdlmenubarlist hmenubarlist; /*the menubar values that are active in this cancoon file*/
 	
@@ -113,7 +112,6 @@ typedef struct tycancoonrecord { /*one of these for every cancoon file that's op
 	
 	short oldwidth; /*used in the flagflip routine*/
 	
-	#ifdef version5orgreater
 		
 		Rect messagearea;
 		
@@ -121,11 +119,6 @@ typedef struct tycancoonrecord { /*one of these for every cancoon file that's op
 		
 		boolean flguestroot; // are we mounted into a host root?
 
-	#else
-		
-		short buttoncursor; /*you can move the cursor with tab and back-tab*/
-		
-	#endif
 	
 	boolean fldirty; /*anyone who changes the record should set this true*/
 	
@@ -137,7 +130,6 @@ typedef struct tycancoonrecord { /*one of these for every cancoon file that's op
 	
 	boolean flpopupdisabled; /*hide the agents popup menu?*/
 	
-	#endif
 	} tycancoonrecord, *ptrcancoonrecord, **hdlcancoonrecord;
 #pragma options align=reset
 

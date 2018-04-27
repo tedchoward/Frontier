@@ -109,14 +109,8 @@ extern boolean fwsNetEventListenStream (unsigned long, long, bigstring, unsigned
 /* get the status of a stream */
 extern boolean fwsNetEventStatusStream (unsigned long stream, bigstring status, unsigned long * bytesPending);
 
-#ifdef WIN95VERSION
-/* Process an accept pending message on a socket */
-extern boolean fwsNetEventAcceptSocket (WPARAM wParam, LPARAM lParam);
-#endif
 
-#ifdef MACVERSION
 extern boolean fwsNetEventCheckAndAcceptSocket (void);
-#endif
 
 /* Close a listen and delete associated data */
 extern boolean fwsNetEventCloseListen (unsigned long stream);

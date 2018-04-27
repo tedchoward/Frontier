@@ -100,40 +100,6 @@ typedef struct tydisklinelayout {
 	memtodiskshort (rgb.green); \
 	memtodiskshort (rgb.blue); } while (0)
 
-#if 0
-
-static boolean midcolorof (Rect r, RGBColor *rgb1, RGBColor *rgb2, RGBColor *rgbmid) {
-	
-	#ifdef MACVERSION
-		GDHandle hgd;
-		
-		*rgbmid = *rgb2;
-		
-		hgd = GetMaxDevice (&r);
-		
-		return (GetGray (hgd, rgb1, rgbmid));
-	#endif
-
-	#ifdef WIN95VERSION
-		(*rgbmid).red = ((long) (*rgb1).red + (*rgb2).red) / 2;
-		(*rgbmid).green = ((long) (*rgb1).green + (*rgb2).green) / 2;
-		(*rgbmid).blue = ((long) (*rgb1).blue + (*rgb2).blue) / 2;
-
-		return (true);
-	#endif
-	} /*midcolorof*/
-
-
-static void lightcolorof (RGBColor *rgb) {
-	
-	(*rgb).red += (65535 - (*rgb).red) / 3;
-	
-	(*rgb).green += (65535 - (*rgb).green) / 3;
-	
-	(*rgb).blue += (65535 - (*rgb).blue) / 3;
-	} /*lightcolorof*/
-
-#endif
 
 
 static void darkcolorof (RGBColor *rgb) {
@@ -277,12 +243,7 @@ static void setcomputedfields (hdltableformats hf) {
 	
 		(**hf).computedlineinfo.filenamelineheight = globalfontinfo.ascent + globalfontinfo.descent;
 		
-		#ifdef MACVERSION
 			(**hf).computedlineinfo.filenamewidth = (globalfontinfo.widMax * 31) / 2;
-		#endif
-		#ifdef WIN95VERSION
-			(**hf).computedlineinfo.filenamewidth = stringpixels (BIGSTRING ("\x02" "Wi")) * 16;
-		#endif
 
 		popstyle ();
 		}
@@ -555,30 +516,6 @@ static void getfattimestring (long modtime, bigstring bs) {
 	} /*getfattimestring*/
 	
 	
-#if 0
-
-static void getfatsizestring (tybrowserinfo *browserinfo, bigstring bs) {
-	
-	setemptystring (bs);
-		
-	if ((*browserinfo).flfolder) {
-		
-		short ctfiles = (*browserinfo).filesize;
-		
-		shorttostring (ctfiles, bs);
-		
-		pushstring (BIGSTRING ("\x05" " item"), bs);
-		
-		if (ctfiles != 1)
-			pushchar ('s', bs);
-	
-		return;
-		}
-	
-	getsizestring ((*browserinfo).filesize, bs);
-	} /*getfatsizestring*/
-
-#endif
 	
 
 static Rect rfilename, rframe, rdate;
@@ -930,13 +867,8 @@ boolean claydrawnodeicon (hdlheadrecord hnode, const Rect *iconrect, boolean fls
 	if (flselected)
 		transform = 0x4000; 
 	
-#ifdef MACVERSION
 	ploticonresource ((Rect *) iconrect, kAlignAbsoluteCenter, transform, iconnum);
-#endif
 
-#ifdef WIN95VERSION
-	ploticonresource (iconrect, 0, transform, iconnum);
-#endif
 //	opdrawheadicon (iconnum, iconrect, false);
 	
 	/*

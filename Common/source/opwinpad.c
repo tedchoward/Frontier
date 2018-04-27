@@ -25,13 +25,8 @@
 
 ******************************************************************************/
 
-#ifdef MACVERSION 
 	#include <standard.h>
-#endif
 
-#ifdef WIN95VERSION 
-	#include "standard.h"
-#endif
 
 #include "config.h"
 #include "dialogs.h"
@@ -58,11 +53,7 @@
 #include "wpengine.h"
 #include "scripts.h"
 #include "kernelverbdefs.h"
-#if MACVERSION
 	#include "osacomponent.h"
-#else
-	#define havecomponentmanager() (false)
-#endif
 
 
 
@@ -154,13 +145,11 @@ typedef struct tydebuggerrecord {
 	
 	hdlheadrecord hbarcursor; /*the headline we've most recently shown*/
 	
-#ifdef flcomponent
 	ComponentInstance servercomp; /*component that we have open for this script*/
 
 	OSType servertype; /*the component's type*/
 	
 	OSAID idscript; /*while recording, this is the id of the script*/
-#endif
 	
 	short lastindent;
 	

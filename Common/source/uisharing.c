@@ -61,23 +61,6 @@ static Boolean HaveComponentManager (void) {
 	} /*HaveComponentManager*/
 
 
-#ifndef isFrontier
-
-static Boolean isFrontProcess () {
-	
-	ProcessSerialNumber currentprocess, frontprocess;
-	Boolean fl;
-	
-	GetCurrentProcess (&currentprocess);
-	
-	GetFrontProcess (&frontprocess);
-	
-	SameProcess (&currentprocess, &frontprocess, &fl);
-	
-	return (fl);
-	} /*isFrontProcess*/
-
-#endif
 	
 
 /* 2004-10-22 aradke: Not sure if this is the right thing to do for the Mach-O build,
@@ -117,11 +100,7 @@ glue windoweventGlue (ComponentInstance comp, EventRecord *ev, tyWindowSharingGl
 	pb.ev = ev;
 	pb.comp = comp;
 	
-	#if TARGET_API_MAC_CARBON == 1
 	return CallComponentDispatch((ComponentParameters *)&pb);
-	#else	
-	return CallUniversalProc(CallComponentUPP, uppCallComponentProcInfo, &pb);
-	#endif
 		} /*windoweventGlue*/
 
 
@@ -145,11 +124,7 @@ glue windowiscardGlue (ComponentInstance comp, WindowPtr w) {
 	pb.w = w;
 	pb.comp = comp;
 	
-	#if TARGET_API_MAC_CARBON == 1
 	return CallComponentDispatch((ComponentParameters *)&pb);
-	#else	
-	return CallUniversalProc(CallComponentUPP, uppCallComponentProcInfo, &pb);
-	#endif
 	} /*windowiscardGlue*/
 	
 	
@@ -173,324 +148,10 @@ glue closewindowGlue (ComponentInstance comp, WindowPtr w) {
 	pb.w = w;
 	pb.comp = comp;
 	
-	#if TARGET_API_MAC_CARBON == 1
 	return CallComponentDispatch((ComponentParameters *)&pb);
-	#else	
-	return CallUniversalProc(CallComponentUPP, uppCallComponentProcInfo, &pb);
-	#endif
 	} /*windowiscardGlue*/
 	
 
-#ifndef isFrontier
-	
-	glue initsharedmenusGlue (ComponentInstance comp) {
-	
-		#define initsharedmenusParamSize	 (0L)
-		
-		struct initsharedmenusGluePB {
-			unsigned char	componentFlags;
-			unsigned char	componentParamSize;
-			short componentWhat;
-			ComponentInstance	comp;
-		};
-		
-		struct initsharedmenusGluePB pb;
-		
-		pb.componentFlags = 0;
-		pb.componentParamSize = initsharedmenusParamSize;
-		pb.componentWhat = msInitSharedMenusCommand;
-		pb.comp = comp;
-		
-		#if TARGET_API_MAC_CARBON == 1
-		return CallComponentDispatch((ComponentParameters *)&pb);
-		#else	
-		return CallUniversalProc(CallComponentUPP, uppCallComponentProcInfo, &pb);
-		#endif
-		} 	/*initsharedmenusGlue*/
-		
-	
-	glue sharedmenuhitGlue (ComponentInstance comp, short idmenu, short iditem, Boolean *flshareditem) {
-	
-		#define sharedmenuhitParamSize	 (sizeof (idmenu) + sizeof (iditem) + sizeof (flshareditem))
-		
-		struct sharedmenuhitGluePB {
-			unsigned char	componentFlags;
-			unsigned char	componentParamSize;
-			short componentWhat;
-			Boolean *flshareditem;
-			short iditem;
-			short idmenu;
-			ComponentInstance	comp;
-		};
-		
-		struct sharedmenuhitGluePB pb;
-		
-		pb.componentFlags = 0;
-		pb.componentParamSize = sharedmenuhitParamSize;
-		pb.componentWhat = msSharedMenuHitCommand;
-		pb.flshareditem = flshareditem;
-		pb.iditem = iditem;
-		pb.idmenu = idmenu;
-		pb.comp = comp;
-		
-		#if TARGET_API_MAC_CARBON == 1
-		return CallComponentDispatch((ComponentParameters *)&pb);
-		#else	
-		return CallUniversalProc(CallComponentUPP, uppCallComponentProcInfo, &pb);
-		#endif
-		} 	/*sharedmenuhitGlue*/
-		
-	
-	glue sharedscriptrunningGlue (ComponentInstance comp, Boolean *flrunning) {
-	
-		#define sharedscriptrunningParamSize	 (sizeof (flrunning))
-		
-		struct sharedscriptrunningGluePB {
-			unsigned char	componentFlags;
-			unsigned char	componentParamSize;
-			short componentWhat;
-			Boolean *flrunning;
-			ComponentInstance	comp;
-		};
-		
-		struct sharedscriptrunningGluePB pb;
-		
-		pb.componentFlags = 0;
-		pb.componentParamSize = sharedscriptrunningParamSize;
-		pb.componentWhat = msSharedScriptRunningCommand;
-		pb.flrunning = flrunning;
-		pb.comp = comp;
-		
-		#if TARGET_API_MAC_CARBON == 1
-		return CallComponentDispatch((ComponentParameters *)&pb);
-		#else	
-		return CallUniversalProc(CallComponentUPP, uppCallComponentProcInfo, &pb);
-		#endif
-		} 	/*sharedscriptrunningGlue*/
-		
-	
-	glue cancelsharedscriptGlue (ComponentInstance comp) {
-	
-		#define cancelsharedscriptParamSize	 (0L)
-		
-		struct cancelsharedscriptGluePB {
-			unsigned char	componentFlags;
-			unsigned char	componentParamSize;
-			short componentWhat;
-			ComponentInstance	comp;
-		};
-		
-		struct cancelsharedscriptGluePB pb;
-		
-		pb.componentFlags = 0;
-		pb.componentParamSize = cancelsharedscriptParamSize;
-		pb.componentWhat = msCancelSharedScriptCommand;
-		pb.comp = comp;
-		
-		#if TARGET_API_MAC_CARBON == 1
-		return CallComponentDispatch((ComponentParameters *)&pb);
-		#else	
-		return CallUniversalProc(CallComponentUPP, uppCallComponentProcInfo, &pb);
-		#endif
-		} 	/*cancelsharedscriptGlue*/
-		
-	
-	glue checksharedmenusGlue (ComponentInstance comp, short idinsertafter) {
-	
-		#define checksharedmenusParamSize	 (sizeof (idinsertafter))
-		
-		struct checksharedmenusGluePB {
-			unsigned char	componentFlags;
-			unsigned char	componentParamSize;
-			short componentWhat;
-			short idinsertafter;
-			ComponentInstance	comp;
-		};
-		
-		struct checksharedmenusGluePB pb;
-		
-		pb.componentFlags = 0;
-		pb.componentParamSize = checksharedmenusParamSize;
-		pb.componentWhat = msCheckSharedMenusCommand;
-		pb.idinsertafter = idinsertafter;
-		pb.comp = comp;
-		
-		#if TARGET_API_MAC_CARBON == 1
-		return CallComponentDispatch((ComponentParameters *)&pb);
-		#else	
-		return CallUniversalProc(CallComponentUPP, uppCallComponentProcInfo, &pb);
-		#endif
-		} 	/*checksharedmenusGlue*/
-		
-	
-	glue disposesharedmenusGlue (ComponentInstance comp) {
-	
-		#define disposesharedmenusParamSize	 (0L)
-		
-		struct disposesharedmenusGluePB {
-			unsigned char	componentFlags;
-			unsigned char	componentParamSize;
-			short componentWhat;
-			ComponentInstance	comp;
-		};
-		
-		struct disposesharedmenusGluePB pb;
-		
-		pb.componentFlags = 0;
-		pb.componentParamSize = disposesharedmenusParamSize;
-		pb.componentWhat = msDisposeSharedMenusCommand;
-		pb.comp = comp;
-		
-		#if TARGET_API_MAC_CARBON == 1
-		return CallComponentDispatch((ComponentParameters *)&pb);
-		#else	
-		return CallUniversalProc(CallComponentUPP, uppCallComponentProcInfo, &pb);
-		#endif
-		} 	/*disposesharedmenusGlue*/
-		
-	
-	glue issharedmenuGlue (ComponentInstance comp, short idmenu, Boolean *flsharedmenu) {
-	
-		#define issharedmenuParamSize	 (sizeof (idmenu) + sizeof (flsharedmenu))
-		
-		struct issharedmenuGluePB {
-			unsigned char	componentFlags;
-			unsigned char	componentParamSize;
-			short componentWhat;
-			Boolean *flsharedmenu;
-			short idmenu;
-			ComponentInstance	comp;
-		};
-		
-		struct issharedmenuGluePB pb;
-		
-		pb.componentFlags = 0;
-		pb.componentParamSize = issharedmenuParamSize;
-		pb.componentWhat = msIsSharedMenuCommand;
-		pb.flsharedmenu = flsharedmenu;
-		pb.idmenu = idmenu;
-		pb.comp = comp;
-		
-		#if TARGET_API_MAC_CARBON == 1
-		return CallComponentDispatch((ComponentParameters *)&pb);
-		#else	
-		return CallUniversalProc(CallComponentUPP, uppCallComponentProcInfo, &pb);
-		#endif
-		} 	/*issharedmenuGlue*/
-		
-	
-	glue enablesharedmenusGlue (ComponentInstance comp, Boolean flenable) {
-	
-		#define enablesharedmenusParamSize	 (sizeof (flenable))
-		
-		struct enablesharedmenusGluePB {
-			unsigned char	componentFlags;
-			unsigned char	componentParamSize;
-			short componentWhat;
-			Boolean flenable;
-			ComponentInstance	comp;
-		};
-		
-		struct enablesharedmenusGluePB pb;
-		
-		pb.componentFlags = 0;
-		pb.componentParamSize = enablesharedmenusParamSize;
-		pb.componentWhat = msEnableSharedMenusCommand;
-		pb.flenable = flenable;
-		pb.comp = comp;
-		
-		#if TARGET_API_MAC_CARBON == 1
-		return CallComponentDispatch((ComponentParameters *)&pb);
-		#else	
-		return CallUniversalProc(CallComponentUPP, uppCallComponentProcInfo, &pb);
-		#endif
-		} 	/*enablesharedmenusGlue*/
-		
-	
-	glue runsharedmenuitemGlue (ComponentInstance comp, short idmenu, short iditem) {
-	
-		#define runsharedmenuitemParamSize	 (sizeof (idmenu) + sizeof (iditem))
-		
-		struct runsharedmenuitemGluePB {
-			unsigned char	componentFlags;
-			unsigned char	componentParamSize;
-			short componentWhat;
-			short iditem;
-			short idmenu;
-			ComponentInstance	comp;
-		};
-		
-		struct runsharedmenuitemGluePB pb;
-		
-		pb.componentFlags = 0;
-		pb.componentParamSize = runsharedmenuitemParamSize;
-		pb.componentWhat = msRunSharedMenuItemCommand;
-		pb.iditem = iditem;
-		pb.idmenu = idmenu;
-		pb.comp = comp;
-		
-		#if TARGET_API_MAC_CARBON == 1
-		return CallComponentDispatch(&pb);
-		#else	
-		return CallUniversalProc(CallComponentUPP, uppCallComponentProcInfo, &pb);
-		#endif
-		} 	/*runsharedmenuitemGlue*/
-		
-	
-	glue setscripterrorcallbackGlue (ComponentInstance comp, ProcPtr scripterrorproc) {
-	
-		#define setscripterrorcallbackParamSize	 (sizeof (scripterrorproc))
-		
-		struct setscripterrorcallbackGluePB {
-			unsigned char	componentFlags;
-			unsigned char	componentParamSize;
-			short componentWhat;
-			ProcPtr scripterrorproc;
-			ComponentInstance	comp;
-		};
-		
-		struct setscripterrorcallbackGluePB pb;
-		
-		pb.componentFlags = 0;
-		pb.componentParamSize = setscripterrorcallbackParamSize;
-		pb.componentWhat = msSetScriptErrorCallbackCommand;
-		pb.scripterrorproc = scripterrorproc;
-		pb.comp = comp;
-		
-		#if TARGET_API_MAC_CARBON == 1
-		return CallComponentDispatch((ComponentParameters *)&pb);
-		#else	
-		return CallUniversalProc(CallComponentUPP, uppCallComponentProcInfo, &pb);
-		#endif
-		} 	/*setscripterrorcallbackGlue*/
-	
-	
-	glue stubstartGlue (ComponentInstance comp) {
-	
-		#define stubstartParamSize	 (0L)
-		
-		struct stubstartGluePB {
-			unsigned char	componentFlags;
-			unsigned char	componentParamSize;
-			short componentWhat;
-			ComponentInstance	comp;
-		};
-		
-		struct stubstartGluePB pb;
-		
-		pb.componentFlags = 0;
-		pb.componentParamSize = stubstartParamSize;
-		pb.componentWhat = wsStubStartCommand;
-		pb.comp = comp;
-		
-		#if TARGET_API_MAC_CARBON == 1
-		return CallComponentDispatch((ComponentParameters *)&pb);
-		#else	
-		return CallUniversalProc(CallComponentUPP, uppCallComponentProcInfo, &pb);
-		#endif
-		} 	/*stubstartGlue*/
-
-#endif
 
 
 glue runhandleGlue (ComponentInstance comp, Handle h, short flscriptedcard, Str255 windowname, Point pt, uisEventCallback filter) {
@@ -521,11 +182,7 @@ glue runhandleGlue (ComponentInstance comp, Handle h, short flscriptedcard, Str2
 	pb.h = h;
 	pb.comp = comp;
 	
-	#if TARGET_API_MAC_CARBON == 1
 	return CallComponentDispatch((ComponentParameters *)&pb);
-	#else	
-	return CallUniversalProc(CallComponentUPP, uppCallComponentProcInfo, &pb);
-	#endif
 	} /*runhandleGlue*/
 
 
@@ -557,140 +214,10 @@ glue runmodalhandleGlue (ComponentInstance comp, Handle h, short flscriptedcard,
 	pb.h = h;
 	pb.comp = comp;
 	
-	#if TARGET_API_MAC_CARBON == 1
 	return CallComponentDispatch((ComponentParameters *)&pb);
-	#else	
-	return CallUniversalProc(CallComponentUPP, uppCallComponentProcInfo, &pb);
-	#endif
 	} /*runmodalhandleGlue*/
 
 
-#ifndef isFrontier
-
-glue setobjectvalueGlue (ComponentInstance comp, Handle hcard, Str255 name, Handle value) {
-	
-	#define setobjectvalueParamSize	 (sizeof (hcard) + sizeof (name) + sizeof (value))
-	
-	struct setobjectvalueGluePB {
-		unsigned char	componentFlags;
-		unsigned char	componentParamSize;
-		short componentWhat;
-		Handle value;
-		unsigned char *name;
-		Handle hcard;
-		ComponentInstance	comp;
-	};
-	
-	struct setobjectvalueGluePB pb;
-	
-	pb.componentFlags = 0;
-	pb.componentParamSize = setobjectvalueParamSize;
-	pb.componentWhat = wsSetObjectValueCommand;
-	pb.value = value;
-	pb.name = name;
-	pb.hcard = hcard;
-	pb.comp = comp;
-	
-	#if TARGET_API_MAC_CARBON == 1
-	return CallComponentDispatch((ComponentParameters *)&pb);
-	#else	
-	return CallUniversalProc(CallComponentUPP, uppCallComponentProcInfo, &pb);
-	#endif
-	} /*setobjectvalueGlue*/
-	
-
-glue getobjectvalueGlue (ComponentInstance comp, Handle hcard, Str255 name, Handle *value) {
-	
-	#define getobjectvalueParamSize	 (sizeof (hcard) + sizeof (name) + sizeof (value))
-	
-	struct getobjectvalueGluePB {
-		unsigned char	componentFlags;
-		unsigned char	componentParamSize;
-		short componentWhat;
-		Handle *value;
-		unsigned char *name;
-		Handle hcard;
-		ComponentInstance	comp;
-	};
-	
-	struct getobjectvalueGluePB pb;
-	
-	pb.componentFlags = 0;
-	pb.componentParamSize = getobjectvalueParamSize;
-	pb.componentWhat = wsGetObjectValueCommand;
-	pb.value = value;
-	pb.name = name;
-	pb.hcard = hcard;
-	pb.comp = comp;
-	
-	#if TARGET_API_MAC_CARBON == 1
-	return CallComponentDispatch((ComponentParameters *)&pb);
-	#else	
-	return CallUniversalProc(CallComponentUPP, uppCallComponentProcInfo, &pb);
-	#endif
-	} /*getobjectvalueGlue*/
-	
-
-glue getobjecthandleGlue (ComponentInstance comp, Handle hcard, Str255 name, Handle *h) {
-	
-	#define getobjecthandleParamSize	 (sizeof (hcard) + sizeof (name) + sizeof (h))
-	
-	struct getobjecthandleGluePB {
-		unsigned char	componentFlags;
-		unsigned char	componentParamSize;
-		short componentWhat;
-		Handle *h;
-		unsigned char *name;
-		Handle hcard;
-		ComponentInstance	comp;
-	};
-	
-	struct getobjecthandleGluePB pb;
-	
-	pb.componentFlags = 0;
-	pb.componentParamSize = getobjecthandleParamSize;
-	pb.componentWhat = wsGetObjectHandleCommand;
-	pb.h = h;
-	pb.name = name;
-	pb.hcard = hcard;
-	pb.comp = comp;
-	
-	#if TARGET_API_MAC_CARBON == 1
-	return CallComponentDispatch((ComponentParameters *)&pb);
-	#else	
-	return CallUniversalProc(CallComponentUPP, uppCallComponentProcInfo, &pb);
-	#endif
-	} /*getobjecthandleGlue*/
-	
-
-glue recalcGlue (ComponentInstance comp, Handle h) {
-	
-	#define recalcParamSize	 (sizeof (h))
-	
-	struct recalcGluePB {
-		unsigned char	componentFlags;
-		unsigned char	componentParamSize;
-		short componentWhat;
-		Handle h;
-		ComponentInstance	comp;
-	};
-	
-	struct recalcGluePB pb;
-	
-	pb.componentFlags = 0;
-	pb.componentParamSize = recalcParamSize;
-	pb.componentWhat = wsRecalcObjectCommand;
-	pb.h = h;
-	pb.comp = comp;
-	
-	#if TARGET_API_MAC_CARBON == 1
-	return CallComponentDispatch((ComponentParameters *)&pb);
-	#else	
-	return CallUniversalProc(CallComponentUPP, uppCallComponentProcInfo, &pb);
-	#endif
-	} /*recalcGlue*/
-
-#endif
 
 
 glue editGlue (ComponentInstance comp, short editcommand) {
@@ -713,182 +240,13 @@ glue editGlue (ComponentInstance comp, short editcommand) {
 	pb.editcommand = editcommand;
 	pb.comp = comp;
 	
-	#if TARGET_API_MAC_CARBON == 1
 	return CallComponentDispatch((ComponentParameters *)&pb);
-	#else	
-	return CallUniversalProc(CallComponentUPP, uppCallComponentProcInfo, &pb);
-	#endif
 	} /*editGlue*/
 
 
-#ifndef isFrontier
-
-glue updateGlue (ComponentInstance comp, Handle h) {
-	
-	#define updateParamSize	 (sizeof (h))
-	
-	struct updateGluePB {
-		unsigned char	componentFlags;
-		unsigned char	componentParamSize;
-		short componentWhat;
-		Handle h;
-		ComponentInstance	comp;
-	};
-	
-	struct updateGluePB pb;
-	
-	pb.componentFlags = 0;
-	pb.componentParamSize = updateParamSize;
-	pb.componentWhat = wsUpdateCommand;
-	pb.h = h;
-	pb.comp = comp;
-	
-	#if TARGET_API_MAC_CARBON == 1
-	return CallComponentDispatch((ComponentParameters *) &pb);
-	#else	
-	return CallUniversalProc(CallComponentUPP, uppCallComponentProcInfo, &pb);
-	#endif
-	} /*updateGlue*/
-
-#endif
 
 
 #pragma options align=reset
-
-#elif 0 // defined (THINK_C)
-
-glue windoweventGlue (ComponentInstance comp, EventRecord *ev, tyWindowSharingGlobals *wsGlobals) 
-
-	= ComponentCallNow (wsEventHandlerCommand, sizeof (EventRecord *) + sizeof (tyWindowSharingGlobals *)); 
-	/*windoweventGlue*/
-
-
-glue windowiscardGlue (ComponentInstance comp, WindowPtr w) 
-	
-	= ComponentCallNow (wsWindowIsCardCommand, sizeof (WindowPtr)); 
-	/*windowiscardGlue*/
-	
-	
-glue closewindowGlue (ComponentInstance comp, WindowPtr w) 
-	
-	= ComponentCallNow (wsCloseWindowCommand, sizeof (WindowPtr)); 
-	/*windowiscardGlue*/
-	
-#ifndef isFrontier
-
-	glue initsharedmenusGlue (ComponentInstance)
-		
-		= ComponentCallNow (msInitSharedMenusCommand, 0L); 
-		/*initsharedmenusGlue*/
-		
-	
-	glue sharedmenuhitGlue (ComponentInstance, short, short, Boolean *)
-		
-		= ComponentCallNow (msSharedMenuHitCommand, sizeof (short) + sizeof (short) + sizeof (Boolean *)); 
-		/*sharedmenuhitGlue*/
-		
-	
-	glue sharedscriptrunningGlue (ComponentInstance, Boolean *)
-		
-		= ComponentCallNow (msSharedScriptRunningCommand, sizeof (Boolean *));
-		/*sharedscriptrunningGlue*/
-		
-	
-	glue cancelsharedscriptGlue (ComponentInstance)
-		
-		= ComponentCallNow (msCancelSharedScriptCommand, 0L); 
-		/*cancelsharedscriptGlue*/
-		
-	
-	glue checksharedmenusGlue (ComponentInstance, short)
-		
-		= ComponentCallNow (msCheckSharedMenusCommand, sizeof (short)); 
-		/*checksharedmenusGlue*/
-		
-	
-	glue disposesharedmenusGlue (ComponentInstance)
-		
-		= ComponentCallNow (msDisposeSharedMenusCommand, 0L); 
-		/*disposesharedmenusGlue*/
-		
-	
-	glue issharedmenuGlue (ComponentInstance, short, Boolean *)
-		
-		= ComponentCallNow (msIsSharedMenuCommand, sizeof (short)); 
-		/*issharedmenuGlue*/
-		
-	
-	glue enablesharedmenusGlue (ComponentInstance, Boolean)
-		
-		= ComponentCallNow (msEnableSharedMenusCommand, sizeof (Boolean)); 
-		/*enablesharedmenusGlue*/
-		
-	
-	glue runsharedmenuitemGlue (ComponentInstance, short, short)
-		
-		= ComponentCallNow (msRunSharedMenuItemCommand, sizeof (short) + sizeof (short)); 
-		/*runsharedmenuitemGlue*/
-		
-	
-	glue setscripterrorcallbackGlue (ComponentInstance, ProcPtr)
-		
-		= ComponentCallNow (msSetScriptErrorCallbackCommand, sizeof (ProcPtr)); 
-		/*setscripterrorcallbackGlue*/
-	
-	
-	glue stubstartGlue (ComponentInstance comp) 
-	
-		= ComponentCallNow (wsStubStartCommand, 0L); 
-		/*stubstartGlue*/
-
-#endif
-
-glue runhandleGlue (ComponentInstance comp, Handle h, short flscriptedcard, Str255 windowname, Point pt, uisEventCallback filter) 
-	
-	= ComponentCallNow (wsRunFromHandleCommand, sizeof (Handle) + sizeof (short) + sizeof (char *) + sizeof (Point) + sizeof (uisEventCallback)); 
-	/*runhandleGlue*/
-
-
-glue runmodalhandleGlue (ComponentInstance comp, Handle h, short flscriptedcard, Str255 windowname, Point pt, uisEventCallback filter) 
-	
-	= ComponentCallNow (wsRunModalHandleCommand, sizeof (Handle) + sizeof (short) + sizeof (char *) + sizeof (Point) + sizeof (uisEventCallback)); 
-	/*runmodalhandleGlue*/
-
-
-glue setobjectvalueGlue (ComponentInstance comp, Handle hcard, Str255 name, Handle value) 
-	
-	= ComponentCallNow (wsSetObjectValueCommand, sizeof (Handle) + sizeof (char *) + sizeof (Handle)); 
-	/*setobjectvalueGlue*/
-	
-
-glue getobjectvalueGlue (ComponentInstance comp, Handle hcard, Str255 name, Handle *value) 
-	
-	= ComponentCallNow (wsGetObjectValueCommand, sizeof (Handle) + sizeof (char *) + sizeof (Handle *)); 
-	/*getobjectvalueGlue*/
-	
-
-glue getobjecthandleGlue (ComponentInstance comp, Handle hcard, Str255 name, Handle *h) 
-	
-	= ComponentCallNow (wsGetObjectHandleCommand, sizeof (Handle) + sizeof (char *) + sizeof (Handle *)); 
-	/*getobjecthandleGlue*/
-	
-
-glue recalcGlue (ComponentInstance comp, Handle h) 
-	
-	= ComponentCallNow (wsRecalcObjectCommand, sizeof (Handle)); 
-	/*recalcGlue*/
-
-
-glue editGlue (ComponentInstance comp, short editcommand) 
-	
-	= ComponentCallNow (wsEditCommand, sizeof (short)); 
-	/*editGlue*/
-
-
-glue updateGlue (ComponentInstance comp, Handle h) 
-	
-	= ComponentCallNow (wsUpdateCommand, sizeof (Handle)); 
-	/*updateGlue*/
 
 #else
 
@@ -910,74 +268,6 @@ glue closewindowGlue (ComponentInstance comp, WindowPtr w)
 	/*windowiscardGlue*/
 	
 
-#ifndef isFrontier
-	
-	glue initsharedmenusGlue (ComponentInstance)
-		
-		ComponentCallNow (msInitSharedMenusCommand, 0L); 
-		/*initsharedmenusGlue*/
-		
-	
-	glue sharedmenuhitGlue (ComponentInstance, short, short, Boolean *)
-		
-		ComponentCallNow (msSharedMenuHitCommand, sizeof (short) + sizeof (short) + sizeof (Boolean *)); 
-		/*sharedmenuhitGlue*/
-		
-	
-	glue sharedscriptrunningGlue (ComponentInstance, Boolean *)
-		
-		ComponentCallNow (msSharedScriptRunningCommand, sizeof (Boolean *));
-		/*sharedscriptrunningGlue*/
-		
-	
-	glue cancelsharedscriptGlue (ComponentInstance)
-		
-		ComponentCallNow (msCancelSharedScriptCommand, 0L); 
-		/*cancelsharedscriptGlue*/
-		
-	
-	glue checksharedmenusGlue (ComponentInstance, short)
-		
-		ComponentCallNow (msCheckSharedMenusCommand, sizeof (short)); 
-		/*checksharedmenusGlue*/
-		
-	
-	glue disposesharedmenusGlue (ComponentInstance)
-		
-		ComponentCallNow (msDisposeSharedMenusCommand, 0L); 
-		/*disposesharedmenusGlue*/
-		
-	
-	glue issharedmenuGlue (ComponentInstance, short, Boolean *)
-		
-		ComponentCallNow (msIsSharedMenuCommand, sizeof (short)); 
-		/*issharedmenuGlue*/
-		
-	
-	glue enablesharedmenusGlue (ComponentInstance, Boolean)
-		
-		ComponentCallNow (msEnableSharedMenusCommand, sizeof (Boolean)); 
-		/*enablesharedmenusGlue*/
-		
-	
-	glue runsharedmenuitemGlue (ComponentInstance, short, short)
-		
-		ComponentCallNow (msRunSharedMenuItemCommand, sizeof (short) + sizeof (short)); 
-		/*runsharedmenuitemGlue*/
-		
-	
-	glue setscripterrorcallbackGlue (ComponentInstance, ProcPtr)
-		
-		ComponentCallNow (msSetScriptErrorCallbackCommand, sizeof (ProcPtr)); 
-		/*setscripterrorcallbackGlue*/
-	
-	
-	glue stubstartGlue (ComponentInstance comp) 
-	
-		ComponentCallNow (wsStubStartCommand, 0L); 
-		/*stubstartGlue*/
-
-#endif
 
 
 glue runhandleGlue (ComponentInstance comp, Handle h, short flscriptedcard, Str255 windowname, Point pt, uisEventCallback filter) 
@@ -1029,65 +319,6 @@ glue updateGlue (ComponentInstance comp, Handle h)
 
 #endif
 
-#ifndef isFrontier
-
-Boolean uisDisposeSharedMenus (void) { /*dispose menu array and handles it contains*/
-	
-	if (msGlobals.menuserver == 0)
-		return (false);
-		
-	return (disposesharedmenusGlue (msGlobals.menuserver) == noErr);
-	} /*uisDisposeSharedMenus*/
-
-
-Boolean uisIsSharedMenu (short idmenu) { /*return true if the indicated menu is one of the shared menus*/
-	
-	Boolean flshared;
-	
-	if (msGlobals.menuserver != 0) {
-		
-		if (issharedmenuGlue (msGlobals.menuserver, idmenu, &flshared) == noErr)
-			return (flshared);
-		}
-		
-	return (false);
-	} /*uisIsSharedMenu*/
-
-
-void uisEnableSharedMenus (Boolean flenable) { /*enables or disables the shared menus*/
-	
-	if (msGlobals.menuserver != 0)
-		enablesharedmenusGlue (msGlobals.menuserver, flenable);
-	} /*uisEnableSharedMenus*/
-
-
-Boolean uisRunSharedMenuItem (short idmenu, short iditem) {
-	 
-	/*
-	call the menu server to run the script linked to the indicated menu item.
-	*/
-	
-	if (msGlobals.menuserver == 0)
-		return (false);
-		
-	return (runsharedmenuitemGlue (msGlobals.menuserver, idmenu, iditem) == noErr);
-	} /*uisRunSharedMenuItem*/
-	
-
-Boolean uisSharedMenuHit (short idmenu, short iditem) {
-
-	Boolean flshareditem;
-	
-	if (msGlobals.menuserver == 0) 
-		return (false);
-		
-	if (sharedmenuhitGlue (msGlobals.menuserver, idmenu, iditem, &flshareditem) != noErr)
-		return (false);
-		
-	return (flshareditem); /*client handles if it wasn't a shared item*/
-	} /*uisSharedMenuHit*/
-	
-#endif
 
 Boolean uisHandleEvent (EventRecord *ev, Boolean *flcloseallwindows) {
 	
@@ -1105,21 +336,6 @@ Boolean uisHandleEvent (EventRecord *ev, Boolean *flcloseallwindows) {
 			return (true); /*we handled the event*/
 		}
 	
-	#ifndef isFrontier
-	
-	if (msGlobals.menuserver != 0) {
-		
-		switch ((*ev).what) {
-			
-			case nullEvent:
-				if (isFrontProcess ())
-					checksharedmenusGlue (msGlobals.menuserver, msGlobals.idinsertafter);
-				
-				break;
-			} /*switch*/
-		}
-	
-	#endif
 	
 	return (false); /*client app should handle the event*/
 	} /*uisHandleEvent*/
@@ -1156,12 +372,7 @@ void uisCloseAllSharedWindows (void) {
 	
 	while (w != nil) {
 		
-		#if TARGET_API_MAC_CARBON == 1
 		wnext = GetNextWindow(w);
-		#else
-		
-		wnext = (WindowPtr) (*(WindowPeek) w).nextWindow;
-		#endif
 		
 		if (uisIsSharedWindow (w))
 			uisCloseSharedWindow (w);
@@ -1170,144 +381,6 @@ void uisCloseAllSharedWindows (void) {
 		} /*while*/
 	} /*uisCloseAllSharedWindows*/
 	
-#ifndef isFrontier
-
-static Boolean IACgetbinaryparam (AppleEvent *event, OSType keyword, Handle *hbinary, OSType *binarytype, OSErr *errcode) {
-	
-	AEDesc result;
-	OSErr ec;
-	
-	*errcode = AEGetParamDesc (event, (AEKeyword) keyword, typeWildCard, &result);
-	
-	if (*errcode != noErr) 
-		return (false);
-	
-	#if TARGET_API_MAC_CARBON == 1 /*PBS 03/14/02: AE OS X fix.*/
-	
-		copydatahandle (&result, hbinary);
-		
-	#else
-	
-		*hbinary = result.dataHandle;
-	
-	#endif
-	
-	*binarytype = result.descriptorType;
-	
-	return (true);
-	} /*IACgetbinaryparam*/
-
-
-static Boolean IACgetstringparam (AppleEvent *event, OSType keyword, Str255 s, OSErr *errcode) {
-	
-	AEDesc result;
-	Handle htext;
-	long lenstring;
-	
-	*errcode = AEGetParamDesc (event, (AEKeyword) keyword, typeChar, &result);
-	
-	if (*errcode != noErr) 
-		return (false);
-	
-	#if TARGET_API_MAC_CARBON == 1 /*PBS 03/14/02: AE OS X fix.*/
-	
-		copydatahandle (&result, &htext);
-	
-	#else
-	
-		htext = result.dataHandle;
-	
-	#endif
-	
-	lenstring = GetHandleSize (htext);
-	
-	if (lenstring > 255)
-		lenstring = 255;
-		
-	s [0] = (unsigned char) lenstring;
-	
-	BlockMove (*htext, &s [1], lenstring);
-	
-	return (true);
-	} /*IACgetstringparam*/
-	
-	
-static Boolean IACgetlongparam (AppleEvent *event, OSType keyword, long *val, OSErr *errcode) {
-	
-	register OSErr ec;
-	DescType actualtype;
-	Size actualsize;
-	
-	*errcode = AEGetParamPtr (
-		
-		event, (AEKeyword) keyword, typeLongInteger, 
-		
-		&actualtype, (Ptr) val, sizeof (long), &actualsize);
-	
-	if (*errcode != noErr) 
-		return (false);
-	
-	return (true);
-	} /*IACgetlongparam*/
-	
-
-static void IACreturnboolean (AppleEvent *event, Boolean fl) {
-	
-	AEPutParamPtr (event, keyDirectObject, typeBoolean, (Ptr) &fl, sizeof (Boolean));
-	} /*IACreturnboolean*/
-
-
-static pascal OSErr handleopencardwindow (AppleEvent *event, AppleEvent *reply, long refcon) {
-
-	/*	
-	installed as an AE handler, intended to be called by scripts that
-	want to open a shared window in the application's window list.
-	
-	it's a tradeoff -- burn a little memory in every UI sharing-aware
-	app, or make the SHUI server component perform an unnatural act. the
-	problem is the component call needs a component instance. only the 
-	host app knows which instance we're talking about. the server could
-	manage its data according to ProcessSerialNumber, but this is not a
-	natural way of doing things for Mac components. not impossible, just
-	a bunch of extra code in a very hard place to debug. 3/21/93 DW
-	
-	here's a one-line script that calls this handler...
-	
-	appleEvent ('KAHL', 'SHUI', 'OPEN', '----', number ('zzzz'), 'card', scratchpad.cards.xxx, 'wtit', "Hello!")
-	*/
-	
-	OSErr ec;
-	OSType idcomponent; 
-	OSType binarytype;
-	Handle packedcard;
-	Str255 windowtitle;
-	
-	if (!IACgetlongparam (event, keyDirectObject, (long *) &idcomponent, &ec))
-		return (ec);
-
-	if (!IACgetbinaryparam (event, 'card', &packedcard, &binarytype, &ec))
-		return (ec);
-		
-	if (!IACgetstringparam (event, 'wtit', windowtitle, &ec))
-		return (ec);
-		
-	IACreturnboolean (event, uisOpenHandle (packedcard, false, windowtitle, 0, 0, nil));
-	
-	return (noErr);
-	} /*handleopencardwindow*/
-	
-	
-Boolean uisStubStart (void) {
-	
-	if (wsGlobals.windowserver == 0)
-		return (false);
-		
-	wsGlobals.errorcode = stubstartGlue (wsGlobals.windowserver);
-	
-	return (wsGlobals.errorcode == noErr);
-	} /*uisStubStart*/
-
-#endif
 
 Boolean uisOpenHandle (Handle h, Boolean flscriptedcard, Str255 windowname, short top, short pleft, uisEventCallback filter) {
 	
@@ -1376,53 +449,6 @@ Boolean uisRunModalResource (short id, Boolean flscriptedcard, Str255 windowname
 	return (uisRunModalHandle (h, flscriptedcard, windowname, top, pleft, filter));
 	} /*uisRunModalResource*/
 	
-#ifndef isFrontier
-
-Boolean uisSetObjectValue (Handle hcard, Str255 name, Handle hvalue) {
-	
-	if (wsGlobals.windowserver == 0)
-		return (false);
-		
-	return (setobjectvalueGlue (wsGlobals.windowserver, hcard, name, hvalue));
-	} /*uisSetObjectValue*/
-	
-	
-Boolean uisGetObjectValue (Handle hcard, Str255 name, Handle *hvalue) {
-	
-	if (wsGlobals.windowserver == 0)
-		return (false);
-		
-	return (getobjectvalueGlue (wsGlobals.windowserver, hcard, name, hvalue));
-	} /*uisGetObjectValue*/
-	
-	
-Boolean uisUpdate (Handle hcard) {
-	
-	if (wsGlobals.windowserver == 0)
-		return (false);
-		
-	return (updateGlue (wsGlobals.windowserver, hcard));
-	} /*uisUpdate*/
-	
-	
-Boolean uisGetObjectHandle (Handle hcard, Str255 name, Handle *hvalue) {
-	
-	if (wsGlobals.windowserver == 0)
-		return (false);
-		
-	return (getobjecthandleGlue (wsGlobals.windowserver, hcard, name, (Handle *) hvalue));
-	} /*uisGetObjectHandle*/
-	
-
-Boolean uisRecalcObject (Handle hobject) {
-	
-	if (wsGlobals.windowserver == 0)
-		return (false);
-		
-	return (recalcGlue (wsGlobals.windowserver, hobject));
-	} /*uisRecalcObject*/
-	
-#endif
 
 Boolean uisEdit (short editcommand) {
 		
@@ -1480,45 +506,14 @@ Boolean uisInit (ProcPtr pcallback, short idinsertafter, OSType idclientapp, uns
 	
 	if (flwindowsharing) {
 	
-		#ifndef isFrontier
-		
-		AEInstallEventHandler ('SHUI', 'OPEN', (EventHandlerProcPtr) &handleopencardwindow, 0, false);
-		
-		#endif
 		
 		
 		wsGlobals.windowserver = OpenDefaultComponent (wsComponentType, wsComponentSubType);
 		}
 	
-	#ifndef isFrontier
-	
-	if (flmenusharing) {
-	
-		msGlobals.menuserver = OpenDefaultComponent (msComponentType, msComponentSubType);
-	
-		msGlobals.idinsertafter = idinsertafter;
-	
-		if (msGlobals.menuserver != 0) {
-	
-			if (initsharedmenusGlue (msGlobals.menuserver) != noErr)
-				goto error;
-		
-			if (setscripterrorcallbackGlue (msGlobals.menuserver, pcallback) != noErr)
-				goto error;
-			}
-		}
-	
-	#endif
 		
 	return (true);
 	
-#ifndef isFrontier
-error:
-	
-	uisClose ();
-	
-	return (false);
-#endif
 	} /*uisInit*/
 	
 	
@@ -1527,12 +522,6 @@ void uisClose (void) {
 	if (wsGlobals.windowserver != 0)		
 		CloseComponent (wsGlobals.windowserver);
 	
-	#ifndef isFrontier
-	
-	if (msGlobals.menuserver != 0) 
-		CloseComponent (msGlobals.menuserver);
-	
-	#endif
 	} /*uisClose*/
 	
 	

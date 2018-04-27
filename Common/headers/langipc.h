@@ -141,7 +141,6 @@ extern boolean langipcinit (void);
 
 extern boolean langipcgetmenuhandle (OSType, short, Handle *); /*langipcmenus.c*/
 
-#ifdef flnewfeatures
 
 extern boolean langipcgetitemlangtext (long, short, short, Handle *, long *);
 
@@ -149,7 +148,6 @@ extern boolean langipccheckformulas (long);
 
 extern void langipcdisposemenuarray (long, Handle);
 
-#endif
 
 extern boolean langipcrunitem (long, short, short, long *);
 

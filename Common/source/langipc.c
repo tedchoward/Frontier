@@ -52,16 +52,12 @@
 #include "process.h"
 #include "processinternal.h"
 #include "byteorder.h"
-#ifdef flcomponent
 	#include <uisharing.h>
 	#include <uisinternal.h>
 	#include "osacomponent.h"
 	#include <SetUpA5.h>
-#endif
 
-#if TARGET_API_MAC_CARBON == 1 /*PBS 03/14/02: AE OS X fix.*/
 	#include "aeutils.h"
-#endif
 
 
 // Subroutine Events:
@@ -86,15 +82,9 @@ enum {
 #define bcdversion	0x05000000
 
 
-#if flruntime
-
-	#define iswho (bcdversion + isruntime)
-
-#else
 	
 	#define iswho (bcdversion + isfrontier)
 
-#endif
 	
 
 #pragma pack(2)
@@ -240,9 +230,6 @@ boolean langipcpushparam (tyvaluerecord *valparam, typaramkeyword key, hdlverbre
 	bigstring bsval;
 	AEDesc aelist;
 	
-	#if __powerc
-	extended80 x80;
-	#endif
 	
 	type = langgettypeid ((*v).valuetype);
 	
@@ -312,24 +299,9 @@ boolean langipcpushparam (tyvaluerecord *valparam, typaramkeyword key, hdlverbre
 			
 			break;
 		
-		#if __powerc
-		
-			case doublevaluetype: {
-				long double x = **(*v).data.doublevalue;
-				 
-				safeldtox80 (&x, &x80);
-				 
-				pval = &x80;
-				 
-				len = sizeof (x80);
-				 
-				break;
-				}
-		#else
 		
 			case doublevaluetype:
 			
-		#endif
 		
 		case stringvaluetype: 	/*all of these are normal, handle-based types */
 		case rectvaluetype:		/*whose langtypeid matches their AE DescType  */
@@ -337,29 +309,18 @@ boolean langipcpushparam (tyvaluerecord *valparam, typaramkeyword key, hdlverbre
 		case rgbvaluetype:
 		case filespecvaluetype:
 		case aliasvaluetype:
-	#ifndef oplanglists
-		case listvaluetype:
-		case recordvaluetype:
-	#endif
 			hval = (*v).data.stringvalue;
 			
 			break;
 		
-	#ifdef oplanglists
 		case listvaluetype:
 		case recordvaluetype:
 			if (!langipcconvertoplist (v, &aelist))
 				return (false);
 			
-			#if TARGET_API_MAC_CARBON == 1 /*PBS 03/14/02: AE OS X fix.*/
 			
 				copydatahandle (&aelist, &hval);
 				
-			#else
-			
-				hval = aelist.dataHandle;
-			
-			#endif
 			
 			disposevaluerecord (*v, false); /*override exempt, below*/
 		
@@ -367,7 +328,6 @@ boolean langipcpushparam (tyvaluerecord *valparam, typaramkeyword key, hdlverbre
 			
 			break;
 	
-	#endif
 	
 		case addressvaluetype:	/*addresses need to be sent as strings for safety*/
 			getaddresspath (*v, bsval);
@@ -454,7 +414,6 @@ static boolean langipccoerceparam (AEDesc *param, tyvaluerecord *vreturned) {
 	
 	vtype = langgetvaluetype (desctype);
 
-	#ifdef oplanglists
 		
 		if (vtype == listvaluetype || vtype == recordvaluetype) {	/*only case that actually needs AEDesc record*/
 		
@@ -465,19 +424,10 @@ static boolean langipccoerceparam (AEDesc *param, tyvaluerecord *vreturned) {
 			return (fl);
 			}
 
-	#endif
 	
-	#if TARGET_API_MAC_CARBON == 1
 		
 		copydatahandle (p, &hdata);	/*make a copy of the opaque data handle*/
 
-	#else
-	
-		hdata = (*p).dataHandle;	/*get a reference to the data handle*/
-		
-		(*p).dataHandle = nil;	/*we own the original now, make sure AE manager won't dispose*/
-
-	#endif
 	
 	AEDisposeDesc (p);
 	
@@ -524,25 +474,9 @@ static boolean langipccoerceparam (AEDesc *param, tyvaluerecord *vreturned) {
 			
 			break;
 		
-		#if __powerc
-		
-			case doublevaluetype: {
-				long double ld;
-				
-				assert (gethandlesize (hdata) == sizeof (extended80));
-				
-				safex80told (*(extended80 **) hdata, &ld);
-				
-				fl = setdoublevalue (ld, v);
-				
-				break;
-				}
-		
-		#else
 		
 			case doublevaluetype:
 		
-		#endif
 		
 		case stringvaluetype: 	/*all of these are normal, handle-based types */
 		case rectvaluetype:		/*whose langtypeid matches their AE DescType  */
@@ -550,10 +484,6 @@ static boolean langipccoerceparam (AEDesc *param, tyvaluerecord *vreturned) {
 		case rgbvaluetype:
 		case filespecvaluetype:
 		case aliasvaluetype:
-	#ifndef oplanglists
-		case listvaluetype:
-		case recordvaluetype:
-	#endif
 		case binaryvaluetype:
 			
 			fl = setheapvalue (hdata, vtype, v);	/*consumes hdata*/
@@ -688,15 +618,9 @@ boolean valuetodescriptor (tyvaluerecord *val, AEDesc *desc) {
 		case novaluetype:
 			(*desc).descriptorType = typeNull;
 			
-			#if TARGET_API_MAC_CARBON == 1 /*PBS 03/14/02: AE OS X fix.*/
 			
 				newdescnull (desc, typeNull);
 				
-			#else
-	
-				(*desc).descriptorType = typeNull;
-								
-			#endif
 
 			return (true);
 	
@@ -709,7 +633,6 @@ boolean valuetodescriptor (tyvaluerecord *val, AEDesc *desc) {
 			return (!oserror (AECreateDesc (typeid, bspath + 1, stringlength (bspath), desc)));
 			}
 		
-	#ifdef oplanglists
 		case listvaluetype:
 		case recordvaluetype:
 			if (!langipcconvertoplist (val, desc))
@@ -720,7 +643,6 @@ boolean valuetodescriptor (tyvaluerecord *val, AEDesc *desc) {
 			setnilvalue (val);
 			
 			return (true);
-	#endif
 		
 		default:
 			fl = coercetobinary (val);
@@ -1280,36 +1202,6 @@ static setglobaltransactionid (long idtransaction) {
 	} /%setglobaltransactionid%/
 */
 
-#if TARGET_API_MAC_CARBON == 0
-#if GENERATINGCFM
-
-#define BUILD_68K_ROUTINE_DESCRIPTOR(procInfo, m68kProcPtr)  \
-	{								\
-	_MixedModeMagic,				\
-	kRoutineDescriptorVersion,		\
-	kSelectorsAreNotIndexable,		\
-	0,								\
-	0,								\
-	0,								\
-	0,								\
-	{								\
-	{								\
-	(procInfo),						\
-	0,								\
-	kM68kISA,						\
-	kProcDescriptorIsAbsolute |		\
-	kUseCurrentISA,					\
-	(ProcPtr)(m68kProcPtr),			\
-	0,								\
-	0,								\
-	},								\
-	},								\
-	}
-
-static RoutineDescriptor UCMDDesc = BUILD_68K_ROUTINE_DESCRIPTOR (uppAEEventHandlerProcInfo, nil);
-
-#endif
-#endif
 
 
 static boolean langipchandletrapverb (hdlverbrecord hverb, boolean *flfoundhandler) {
@@ -1387,7 +1279,6 @@ static boolean langipchandletrapverb (hdlverbrecord hverb, boolean *flfoundhandl
 		
 		Handle h = vhandler.data.binaryvalue;
 		
-	#ifdef flcomponent
 		if (**(OSType **) h != 'UCMD') {
 			
 			/*
@@ -1398,7 +1289,6 @@ static boolean langipchandletrapverb (hdlverbrecord hverb, boolean *flfoundhandl
 			
 			return (fl);
 			}
-	#endif
 		
 		loadhandleremains (sizeof (OSType), h, &h);  //skip binarytype
 		
@@ -1419,19 +1309,9 @@ static boolean langipchandletrapverb (hdlverbrecord hverb, boolean *flfoundhandl
 		*/
 		
 		
-		#if TARGET_API_MAC_CARBON == 1
 		
 			langerrormessage ("\pUCMDs are not supported in the Carbon version.");
 			
-		#else
-		
-			#if __powerc
-				fl = !oserror (CallAEEventHandlerProc ((UniversalProcPtr) (*h), &event, &reply, 0L));
-			#else
-				fl = !oserror (CallAEEventHandlerProc ((tyeventhandler) (*h), &event, &reply, 0L));
-			#endif
-		
-		#endif
 		
 		unlockhandle ((Handle) h);
 		
@@ -1461,7 +1341,6 @@ static boolean langipchandletrapverb (hdlverbrecord hverb, boolean *flfoundhandl
 				goto exit;
 			}
 		
-		#ifdef flcomponent
 	
 			if (isosascriptnode (hcode, &osacode)) {
 				
@@ -1470,7 +1349,6 @@ static boolean langipchandletrapverb (hdlverbrecord hverb, boolean *flfoundhandl
 				goto exit;
 				}
 			
-		#endif
 		}
 	
 	if (iskernelverb (hv)) { /*special case -- kernel verb specifies context*/
@@ -1513,118 +1391,6 @@ static boolean langipchandletrapverb (hdlverbrecord hverb, boolean *flfoundhandl
 	} /*langipchandletrapverb*/
 
 
-#if TARGET_API_MAC_OS8
-
-static boolean langipcgetmenuarrayverb (hdlverbrecord hverb) {
-	
-	long id;
-	Handle h = nil; /*4.1b2 dmb*/
-	short firstmenuresource;
-	
-	if (!langipcfileopen (hverb))
-		return (false);
-	
-	if (!landgetlongparam (hverb, idmenuprogram, &id))
-		return (false);
-	
-	if (!landgetintparam (hverb, idstartingresource, &firstmenuresource))
-		return (false);
-	
-	if (!langipcgetmenuarray (id, firstmenuresource, false, &h)) {
-		
-		landreturnerror (hverb, outofmemoryerror); /*ran out of memory in menu server*/
-		
-		return (false);
-		}
-	
-	return (landreturnbinary (hverb, h));
-	} /*langipcgetmenuarrayverb*/
-
-
-static boolean langipcgetmenuhandleverb (hdlverbrecord hverb) {
-	
-	long id;
-	short ixarray;
-	Handle h;
-	
-	if (!langipcfileopen (hverb))
-		return (false);
-	
-	if (!landgetlongparam (hverb, idmenuprogram, &id))
-		return (false);
-	
-	if (!landgetintparam (hverb, idarrayindex, &ixarray))
-		return (false);
-	
-	if (!langipcgetmenuhandle (id, ixarray, &h)) {
-		
-		landreturnerror (hverb, outofmemoryerror);
-		
-		return (false);
-		}
-	
-	return (landreturnbinary (hverb, h));
-	} /*langipcgetmenuhandleverb*/
-
-
-static boolean langipcrunmenuitemverb (hdlverbrecord hverb) {
-	
-	long id;
-	short idmenu, iditem;
-	long refcon;
-	register hdlverbrecord hv = hverb;
-	
-	if (!langipcfileopen (hverb))
-		return (false);
-	
-	if (!landgetlongparam (hv, idmenuprogram, &id))
-		return (false);
-	
-	if (!landgetintparam (hv, idmenuidvalue, &idmenu))
-		return (false);
-	
-	if (!landgetintparam (hv, idmenuitemvalue, &iditem))
-		return (false);
-	
-	if (!langipcrunitem (id, idmenu, iditem, &refcon)) {
-		
-		landreturnerror (hv, outofmemoryerror);
-		
-		return (false);
-		}
-	
-	return (landreturnlong (hv, refcon));
-	} /*langipcrunmenuitemverb*/
-
-
-static boolean langipckillscriptverb (hdlverbrecord hverb) {
-	
-	/*
-	the long parameter shoud be the refcon returned by runmenuitem.  since 
-	we count count on perfect synchonization, we shouldn't assume that the 
-	process still exists, so we're using the code instead of the process 
-	handle itself.  the down side is that it won't find the process if the 
-	current process list isn't the original one.  we can make this more 
-	robust if necessary.
-	
-	7/17/92 dmb: refcon parameter uses directparamkey, not idmenuprogram
-	*/
-	
-	long refcon;
-	boolean fl;
-	
-	if (!langipcfileopen (hverb))
-		return (false);
-	
-	if (!landgetlongparam (hverb, directparamkey, &refcon))
-		return (false);
-	
-	fl = processdisposecode ((hdltreenode) refcon);
-	
-	return (landreturnboolean (hverb, fl));
-	} /*langipckillscriptverb*/
-
-#endif
 
 
 static pascal boolean langipchandleverb (hdlverbrecord hverb) {
@@ -2165,7 +1931,6 @@ void binarytodesc (Handle hbinary, AEDesc *desc) {
 	
 	register AEDesc *d = desc;
 
-	#if TARGET_API_MAC_CARBON == 1 /*PBS 03/14/02: AE OS X fix.*/	
 		
 		Handle hcopy;
 		DescType dtype;
@@ -2180,45 +1945,10 @@ void binarytodesc (Handle hbinary, AEDesc *desc) {
 		
 		disposehandle (hcopy);
 	
-	#else
-	
-		(*d).dataHandle = hbinary;
-	
-		pullfromhandle ((*d).dataHandle, 0L, sizeof (DescType), &(*d).descriptorType);
-		
-		disktomemlong ((*d).descriptorType);
-	
-	#endif
 	
 	
 	switch ((*d).descriptorType) {
 		
-	#ifndef version42orgreater
-	
-		case 'bool': {
-		
-			#if TARGET_API_MAC_CARBON == 1 /*PBS 03/14/02: AE OS X fix.*/
-			
-				Handle hcopy;
-				
-				copydatahandle (d, &hcopy);
-				
-				pullfromhandle (hcopy, 0L, 1L, nil);
-				
-				putdeschandle (d, (*d).descriptorType, hcopy);
-				
-				disposehandle (hcopy);
-			
-			#else
-	
-				pullfromhandle ((*d).dataHandle, 0L, 1L, nil);
-			
-			#endif
-			
-			break;
-			}
-	
-	#endif
 		
 		case 'char':
 			(*d).descriptorType = 'TEXT';
@@ -2262,34 +1992,7 @@ static boolean getbinarylistdesc (boolean flrecord, tyvaluerecord val, AEDescLis
 		
 		case listvaluetype:
 		case recordvaluetype:
-			#ifdef version5orgreater
 				return (langipcconvertoplist (&val, listdesc));
-			#else
-			
-				#if TARGET_API_MAC_CARBON == 1 /*PBS 03/14/02: AE OS X fix.*/
-				
-					{
-					Handle hcopy;
-					
-					copydatahandle (listdesc, &hcopy);
-					
-					if (!stealbinaryhandle (&val, &hcopy))
-						return (false);
-						
-					disposehandle (hcopy);
-					}
-				
-				#else
-				
-					if (!stealbinaryhandle (&val, &(*listdesc).dataHandle))
-						return (false);
-								
-				#endif
-					
-				(*listdesc).descriptorType = typeAERecord;
-				
-				return (true);
-			#endif
 		
 		case novaluetype:
 		case longvaluetype:
@@ -2351,10 +2054,8 @@ boolean langipcputlistitem (hdltreenode hparam1, tyvaluerecord *vreturned) {
 	if (!getlistpositionvalue (hp1, 2, &posval))
 		return (false);
 	
-	#ifdef oplanglists
 		if (posval.valuetype == stringvaluetype)
 			coercetoostype (&posval);
-	#endif
 	
 	flnextparamislast = true;
 	
@@ -2396,7 +2097,6 @@ boolean langipcputlistitem (hdltreenode hparam1, tyvaluerecord *vreturned) {
 	
 	/*don't dispose itemdesc handle -- it's in the temp stack*/
 	
-	#if TARGET_API_MAC_CARBON == 1 /*PBS 03/14/02: AE OS X fix.*/
 	
 		{
 		Handle hcopy;
@@ -2412,12 +2112,6 @@ boolean langipcputlistitem (hdltreenode hparam1, tyvaluerecord *vreturned) {
 			return (false);
 		}
 	
-	#else
-	
-		if (!setbinarysymbolval (htable, bsname, listdesc.dataHandle, listdesc.descriptorType))
-			return (false);
-	
-	#endif
 	
 	(*vreturned).data.flvalue = true;
 	
@@ -2451,10 +2145,8 @@ boolean langipcgetlistitem (hdltreenode hparam1, tyvaluerecord *vreturned) {
 	if (!getlistpositionvalue (hp1, 2, &posval))
 		return (false);
 	
-	#ifdef oplanglists
 		if (posval.valuetype == stringvaluetype)
 			coercetoostype (&posval);
-	#endif
 	
 	flnextparamislast = true;
 	
@@ -3475,15 +3167,9 @@ static boolean langipcgeterrorstring (const AppleEvent *reply, bigstring bserror
 	
 	if (AEGetParamDesc (reply, 'errs', typeChar, &desc) == noErr) {
 		
-		#if TARGET_API_MAC_CARBON == 1 /*PBS 03/14/02: AE OS X fix.*/	
 		
 			datahandletostring (&desc, bserror);
 		
-		#else
-		
-			texthandletostring (desc.dataHandle, bserror);
-		
-		#endif
 		
 		AEDisposeDesc (&desc);
 		
@@ -3666,7 +3352,6 @@ boolean langipchandlercall (hdltreenode htree, bigstring bsverb, hdltreenode hpa
 	} /*langipchandlercall*/
 
 
-#if 1
 
 /*
 static boolean handlekernelfunction (hdlverbrecord hverb) {
@@ -3805,179 +3490,7 @@ boolean langipckernelfunction (hdlhashtable htable, bigstring bsverb, hdltreenod
 	return (fl);
 	} /*langipckernelfunction*/
 
-#else
 
-static pascal OSErr handlekernelfunction (AppleEvent *event, AppleEvent *reply, long refcon) {
-	
-	/*
-	2.1b11 dmb: we're now pass the thread globals of the caller, so we can 
-	cleanly do our stuff.  also, since this isn't a fast event handler, we 
-	don't need to push/pop a fast context (and probably shouldn't)
-	*/
-	
-	AEDesc desc;
-	OSType type;
-	long size;
-	hdlhashtable htable;
-	bigstring bsverb;
-	hdlhashtable hcontext;
-	hdltreenode hparam1;
-	tyvaluerecord vreturned;
-	hdlthreadglobals hthreadglobals, hsaveglobals;
-	/*
-	tyfastverbcontext savecontext;
-	tylangcallbacks savecallbacks;
-	boolean flscriptwasrunning;
-	*/
-	OSErr err;
-	
-	/*
-	landpushfastcontext (&savecontext);
-	*/
-	
-	err = AEGetParamPtr (event, 'ktbl', typeLongInteger, &type, (Ptr) &htable, sizeof (long), &size);
-	
-	if (err != noErr)
-		goto exit;
-	
-	err = AEGetParamPtr (event, 'kvrb', typeChar, &type, (Ptr) bsverb + 1, lenbigstring, &size);
-	
-	if (err != noErr)
-		goto exit;
-	
-	setstringlength (bsverb, size);
-	
-	err = AEGetParamPtr (event, 'ctbl', typeLongInteger, &type, (Ptr) &hcontext, sizeof (long), &size);
-	
-	if (err != noErr)
-		goto exit;
-	
-	err = AEGetParamPtr (event, 'parm', typeLongInteger, &type, (Ptr) &hparam1, sizeof (long), &size);
-	
-	if (err != noErr)
-		goto exit;
-	
-	err = AEGetParamPtr (event, 'thrd', typeLongInteger, &type, (Ptr) &hthreadglobals, sizeof (hthreadglobals), &size);
-	
-	if (err != noErr)
-		goto exit;
-	
-	hsaveglobals = getcurrentthreadglobals ();
-	
-	copythreadglobals (hsaveglobals);
-	
-	swapinthreadglobals (hthreadglobals);
-	
-	langipchookfasterrors (reply);
-	
-	if (kernelfunctionvalue (htable, bsverb, hparam1, &vreturned)) {
-		
-		if (valuetodescriptor (&vreturned, &desc)) { /*consumes val*/
-			
-			AEPutParamDesc (reply, '----', &desc);
-			
-			AEDisposeDesc (&desc);
-			}
-		}
-	
-	langipcunhookfasterrors ();
-	
-	copythreadglobals (hthreadglobals);
-	
-	swapinthreadglobals (hsaveglobals);
-	
-	exit:
-	
-	/*
-	landpopfastcontext (&savecontext);
-	*/
-	
-	return (err);
-	} /*handlekernelfunction*/
-
-boolean langipckernelfunction (hdlhashtable htable, bigstring bsverb, hdltreenode hparam1, tyvaluerecord *vreturned) {
-	
-	/*
-	5/18/93 dmb: paired with handlerkernelfunction above, this routine decouples 
-	kernel functions so that they can be called from client processes via an AE.
-	
-	2.1b11 dmb: to reliably continue execution in the event handler, we need to 
-	pass the thread globals, not just the langcallbacks
-	*/
-	
-	AEDesc desc;
-	AppleEvent event = {typeNull, nil};
-	AppleEvent reply = {typeNull, nil};
-	OSErr err;
-	boolean fl = false;
-	hdlthreadglobals hthreadglobals;
-	
-	if (!newselfaddressedevent ('krnl', &event))
-		return (false);
-	
-	err = AEPutParamPtr (&event, 'ktbl', typeLongInteger, (Ptr) &htable, sizeof (long));
-	
-	if (err == noErr)
-		err = AEPutParamPtr (&event, 'kvrb', typeChar, (Ptr) bsverb + 1, stringlength (bsverb));
-	
-	if (err == noErr)
-		err = AEPutParamPtr (&event, 'ctbl', typeLongInteger, (Ptr) &currenthashtable, sizeof (long));
-	
-	if (err == noErr)
-		err = AEPutParamPtr (&event, 'parm', typeLongInteger, (Ptr) &hparam1, sizeof (long));
-	
-	/*
-	if (err == noErr)
-		err = AEPutParamPtr (&event, 'cbck', typeChar, (Ptr) &langcallbacks, sizeof (langcallbacks));
-	*/
-	
-	if (err == noErr) {
-		
-		hthreadglobals = getcurrentthreadglobals ();
-		
-		err = AEPutParamPtr (&event, 'thrd', typeLongInteger, (Ptr) &hthreadglobals, sizeof (hthreadglobals));
-		}
-	
-	if (err == noErr)
-		err = langipcsendevent (&event, &reply);
-	
-	AEDisposeDesc (&event);
-	
-	if (!oserror (err)) {
-		
-		if (AEGetParamDesc (&reply, 'errs', typeChar, &desc) == noErr) {
-			
-			bigstring bs;
-			
-			#if TARGET_API_MAC_CARBON == 1 /*PBS 03/14/02: AE OS X fix.*/
-			
-				datahandletostring (&desc, bs);
-			
-			#else
-
-				texthandletostring (desc.dataHandle, bs);
-			
-			#endif
-			
-			langerrormessage (bs);
-			}
-		else {
-			
-			err = AEGetParamDesc (&reply, '----', typeWildCard, &desc);
-			
-			if (!oserror (err))
-				fl = setdescriptorvalue (desc, vreturned);
-			}
-		}
-	
-	AEDisposeDesc (&reply);
-	
-	return (fl);
-	} /*langipckernelfunction*/
-
-#endif
-
-#if !flruntime
 
 static pascal OSErr handleshowmenunode (const AppleEvent *event, AppleEvent *reply, long refcon) {
 #pragma unused (reply, refcon)
@@ -4011,7 +3524,6 @@ static pascal OSErr handleshowmenunode (const AppleEvent *event, AppleEvent *rep
 	return (err);
 	} /*handleshowmenunode*/
 
-#endif
 
 boolean langipcshowmenunode (long hnode) {
 	
@@ -4232,11 +3744,9 @@ static pascal OSErr langipcfastgetobject (AppleEvent *event, AppleEvent *reply, 
 	tyfastverbcontext savecontext;
 	long curA5;
 	
-	#if flcomponent
 		
 		curA5 = SetUpAppA5 ();
 	
-	#endif
 	
 	landpushfastcontext (&savecontext);
 	
@@ -4248,7 +3758,6 @@ static pascal OSErr langipcfastgetobject (AppleEvent *event, AppleEvent *reply, 
 		goto exit;
 	
 	
-	#if TARGET_API_MAC_CARBON == 1 /*PBS 03/14/02: AE OS X fix.*/
 	
 		{
 		Handle hcopy;
@@ -4268,12 +3777,6 @@ static pascal OSErr langipcfastgetobject (AppleEvent *event, AppleEvent *reply, 
 			goto exit;
 		}
 	
-	#else
-	
-		if (!getpackedobject (desc.dataHandle, &desc.dataHandle)) /*consumes input handle*/
-			goto exit;
-		
-	#endif
 	
 	desc.descriptorType = 'data';
 	
@@ -4287,11 +3790,9 @@ static pascal OSErr langipcfastgetobject (AppleEvent *event, AppleEvent *reply, 
 	
 	landpopfastcontext (&savecontext);
 	
-	#if flcomponent
 		
 		RestoreA5 (curA5);
 	
-	#endif
 	
 	return (err);
 	} /*langipcfastgetobject*/
@@ -4314,11 +3815,6 @@ langipcfastsetobject (
 	tyfastverbcontext savecontext;
 	Boolean fl;
 	
-	#if flcomponent && TARGET_API_MAC_OS8
-		
-		long curA5 = SetUpAppA5 ();
-	
-	#endif
 	
 	landpushfastcontext (&savecontext);
 	
@@ -4336,7 +3832,6 @@ langipcfastsetobject (
 		goto exit;
 		}
 	
-	#if TARGET_API_MAC_CARBON == 1 /*PBS 03/14/02: AE OS X fix.*/
 	
 		{
 		Handle hcopy1, hcopy2;
@@ -4349,12 +3844,6 @@ langipcfastsetobject (
 			goto exit;
 		}
 	
-	#else
-	
-		if (!setpackedobject (desc1.dataHandle, desc2.dataHandle)) /*consumes handles*/
-			goto exit;
-	
-	#endif
 	
 	fl = true;
 	
@@ -4370,11 +3859,6 @@ langipcfastsetobject (
 	
 	landpopfastcontext (&savecontext);
 	
-	#if flcomponent && TARGET_API_MAC_OS8
-		
-		RestoreA5 (curA5);
-	
-	#endif
 	
 	return (err);
 	} /*langipcfastsetobject*/
@@ -4403,13 +3887,7 @@ langipchandlefastscript (
 	boolean fl;
 	OSErr err;
 	
-	#if flcomponent && TARGET_API_MAC_OS8
-		
-		long curA5 = SetUpThisA5 (refcon);
 	
-	#endif
-	
-	#if 1
 	
 		landpushfastcontext (&savecontext);
 		
@@ -4430,7 +3908,6 @@ langipchandlefastscript (
 		
 		setemptystring (bs);
 		
-		#if TARGET_API_MAC_CARBON == 1 /*PBS 03/14/02: AE OS X fix.*/
 		
 			{
 			Handle h;
@@ -4440,11 +3917,6 @@ langipchandlefastscript (
 			fl = langrunhandle (h, bs);
 			}
 		
-		#else
-		
-			fl = langrunhandle (script.dataHandle, bs); /*consumes dataHandle*/
-		
-		#endif
 		
 		flscriptrunning = flscriptwasrunning;
 		
@@ -4463,41 +3935,7 @@ langipchandlefastscript (
 		
 		landpopfastcontext (&savecontext);
 		
-	#else /*this code assumes that the component manger is present*/
-		
-		comp = OpenComponent (osacomponent);
-		
-		if (comp == nil)
-			err = memFullErr;
-		
-		else {
-			
-			err = AEGetKeyDesc (event, '----', typeChar, &script);
-			
-			if (err == noErr) {
-				
-				err = OSADoScript (comp, &script, kOSANullScript, typeChar, kOSANullMode, &result);
-				
-				AEDisposeDesc (&script);
-				
-				if (err == noErr) {
-					
-					err = AEPutKeyDesc (reply, '----', &result);
-					
-					AEDisposeDesc (&result);
-					}
-				}
-			
-			CloseComponent (comp);
-			}
 	
-	#endif
-	
-	#if flcomponent && TARGET_API_MAC_OS8
-		
-		RestoreA5 (curA5);
-	
-	#endif
 	
 	return (err);
 	} /*langipchandlefastscript*/
@@ -4585,42 +4023,26 @@ boolean langipcstart (void) {
 	
 	(**hg).macquitapproutine = &langipcquitapproutine;
 	
-	#ifdef flcomponent
 	
 	(**hg).eventcreatecallback = &landsystem7defaultcreate;
 	
 	(**hg).eventsendcallback = &landsystem7defaultsend;
 	
-	#endif
 	
 
 	/*
 	AEInstallEventHandler ('LAND', 'krnl', NewAEEventHandlerProc (handlekernelfunction), 0, false);
 	*/
 	
-	#if !flruntime
 	
-		#if TARGET_API_MAC_CARBON == 1
 	
 			AEInstallEventHandler ('LAND', 'show', NewAEEventHandlerUPP (handleshowmenunode), 0, false);
 		
-		#else
-
-			AEInstallEventHandler ('LAND', 'show', NewAEEventHandlerProc (handleshowmenunode), 0, false);
-		
-		#endif
 	
-	#endif
 	
-	#if TARGET_API_MAC_CARBON == 1
 
 		AEInstallEventHandler ('LAND', 'yiel', NewAEEventHandlerUPP (handleyield), 0, false);
 	
-	#else
-
-		AEInstallEventHandler ('LAND', 'yiel', NewAEEventHandlerProc (handleyield), 0, false);
-	
-	#endif
 		
 	langipcinstallfastscript ();
 	
@@ -4642,11 +4064,9 @@ boolean langipcstart (void) {
 	
 	landacceptanyverb (true); /*although we only register above two, we'll try anything*/
 	
-	#if flcomponent
 	
 	wsGlobals.windowserver = nil;
 	
-	#endif
 	
 	return (langipcmenuinit ());
 	} /*langipcstart*/
@@ -4658,28 +4078,10 @@ void langipcshutdown (void) {
 	
 	landclose ();
 	
-	#if flcomponent
 		uisClose ();
-	#endif
 	} /*langipcshutdown*/
 
 
-#if flruntime
-
-boolean langipcinit (void) {
-	
-	#ifdef flcomponent
-	
-		#if !TARGET_API_MAC_CARBON
-		RememberA5 ();
-		#endif
-	
-	#endif
-	
-	return (true);
-	} /*langipcinit*/
-
-#else
 
 static boolean langipceventhook (EventRecord *ev, WindowPtr w) {
 #pragma unused(w)
@@ -4698,20 +4100,17 @@ static boolean langipceventhook (EventRecord *ev, WindowPtr w) {
 
 boolean langipcinit (void) {
 	
-	#ifdef flcomponent
 		//Code change by Timothy Paustian Wednesday, June 14, 2000 9:02:24 PM
 		//Changed to Opaque call for Carbon
 		//we don't need this in carbon
 		#if !TARGET_CARBON
 		RememberA5 ();
 		#endif
-	#endif
 	shellpusheventhook (&langipceventhook);
 	
 	return (true);
 	} /*langipcinit*/
 
-#endif
 
 
 

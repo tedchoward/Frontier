@@ -180,9 +180,6 @@ static boolean opgettextbufferrect (hdlheadrecord hnode, Rect *rclip, Rect *rtex
 	
 	(*(**ho).getedittextrectcallback) (hnode, &rline, rtext);
 	
-	#ifdef WIN95VERSION
-		(*rtext).top += 1;
-	#endif
 	
 	return (true);
 	} /*opgettextbufferrect*/
@@ -332,12 +329,7 @@ static pascal void opedittrackclick (hdlwprecord wp, Point pt) {
 	#define opedittrackclickUPP (&opedittrackclick)
 
 #else
-	 #if TARGET_API_MAC_CARBON == 1
 		#define opedittrackclickUPP opedittrackclick
-	 #else
-	static RoutineDescriptor opedittrackclickDesc = BUILD_ROUTINE_DESCRIPTOR (uppTrackClickProcInfo, opedittrackclick);
-	#define opedittrackclickUPP (&opedittrackclickDesc)
-	#endif
 #endif
 
 
@@ -615,9 +607,6 @@ boolean opeditdrawtext (hdlheadrecord hnode, const Rect *rtext) {
 	
 	r = *rtext;
 	
-	#ifdef WIN95VERSION
-		r.top += 1;
-	#endif
 	
 	intersectrect (rclip, r, &rclip);
 	

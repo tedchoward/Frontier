@@ -78,15 +78,9 @@ typedef enum {
 
 hdldatabaserecord databasedata; /*the global database handle*/
 
-#if flruntime
-
-	#define fldatabasesaveas false
-
-#else
 
 	boolean fldatabasesaveas = false; /*only true during Save As operation*/
 
-#endif
 
 
 static hdldatabaserecord databasedestination; /*for Save As*/
@@ -420,10 +414,6 @@ static boolean dbflushheader (void) {
 		
 		fl = dbwrite ((dbaddress) 0, sizeof (tydatabaserecord), &diskrec);
 		
-		#ifdef WIN95VERSION
-			if (fl)
-				flushvolumechanges (nil, (hdlfilenum)((**databasedata).fnumdatabase));
-		#else
 		/*flush file buffers*/ {
 			IOParam pb;
 			
@@ -433,7 +423,6 @@ static boolean dbflushheader (void) {
 			
 			PBFlushFile ((ParmBlkPtr) &pb, false);
 			}
-		#endif
 
 		return (fl);
 		} /*changes made to header*/
@@ -792,59 +781,6 @@ static boolean dbwriteshadowavaillist (void) {
 		
 		assert (databytes == nodebytes || databytes == nodebytes - (long) sizeof (tyavailnodeshadow));
 
-		#if 0 //DATABASE_DEBUG //6.2b7 AR: debugging check disabled
-
-			/*verify cached version of avail list*/ {
-
-				tyavailnodeshadow diskavailrec;
-				tyavailnodeshadow memavailrec;
-				dbaddress nextavail;
-				boolean flfree;
-				long dbeof;
-				long ix = 0;
-			
-				if (!dbgeteof (&dbeof))
-					goto error;
-
-				diskavailrec.adr = (**hdb).availlist;
-
-				while (diskavailrec.adr != nildbaddress) {
-					
-					if (!dbreadavailnode (diskavailrec.adr, &flfree, &diskavailrec.size, &nextavail) ||
-						!flfree ||
-						diskavailrec.adr + diskavailrec.size > dbeof) {
-
-						diskavailrec.adr = nildbaddress;
-						
-						assert (false);
-
-						break;
-						}
-					
-					memavailrec = ((tyavailnodeshadow*)(*h)) [ix++];
-
-					assert (diskavailrec.adr == memavailrec.adr);
-					
-					assert (diskavailrec.size == memavailrec.size);
-
-					assert (ix * sizeof (tyavailnodeshadow) < databytes);
-
-					diskavailrec.adr = nextavail;
-					
-					rollbeachball ();
-					} /*while*/	
-				
-				diskavailrec.size = 0;
-
-				memavailrec = ((tyavailnodeshadow*)(*h)) [ix++];
-
-				assert (diskavailrec.adr == memavailrec.adr);
-					
-				assert (diskavailrec.size == memavailrec.size);
-
-				assert (ix * sizeof (tyavailnodeshadow) == databytes);
-				}
-		#endif
 		
 		#ifdef SWAP_BYTE_ORDER
 			/*switch byte order*/ {
@@ -964,55 +900,6 @@ static boolean dbreadshadowavaillist (void) {
 
 	openhandlestream ((Handle)h, &s);
 
-#if 0 //DATABASE_DEBUG //6.2b7 AR: debugging code disabled
-
-	/*verify cached version of avail list*/ {
-
-		tyavailnodeshadow diskavailrec;
-		tyavailnodeshadow memavailrec;
-		dbaddress nextavail;
-		boolean flfree;
-		long ix = 0;
-	
-		diskavailrec.adr = (**hdb).availlist;
-
-		while (diskavailrec.adr != nildbaddress) {
-			
-			if (!dbreadavailnode (diskavailrec.adr, &flfree, &diskavailrec.size, &nextavail) ||
-				!flfree ||
-				diskavailrec.adr + diskavailrec.size > dbeof) {
-
-				diskavailrec.adr = nildbaddress;
-				
-				assert (false);
-
-				break;
-				}
-			
-			memavailrec = ((tyavailnodeshadow*)(*s.data)) [ix++];
-
-			assert (diskavailrec.adr == memavailrec.adr);
-			
-			assert (diskavailrec.size == memavailrec.size);
-
-			assert (ix * sizeof (tyavailnodeshadow) < s.eof);
-
-			diskavailrec.adr = nextavail;
-			
-			rollbeachball ();
-			} /*while*/	
-		
-		diskavailrec.size = 0;
-
-		memavailrec = ((tyavailnodeshadow*)(*s.data)) [ix++];
-
-		assert (diskavailrec.adr == memavailrec.adr);
-			
-		assert (diskavailrec.size == memavailrec.size);
-
-		assert (ix * sizeof (tyavailnodeshadow) == s.eof);
-		}
-#endif
 		
 	(**hdb).u.extensions.availlistshadow = s;
 	
@@ -1255,38 +1142,6 @@ boolean dbrefhandle (dbaddress adr, Handle *h) {
 	} /*dbrefhandle*/
 	
 
-#if 0
-
-static boolean dbrefbytes (dbaddress adr, long ctwanted, ptrvoid pdata) {
-
-	/*
-	copy into pdata the database block located at address.  this call
-	is used when you want fewer than the "natural" number of bytes that
-	dbreference returns.
-	
-	5.0.1 dmb: added freeblock error; don't fail silently
-	*/
-	
-	long ctbytes;
-	boolean flfree;
-	tyvariance variance;
-	
-	if (!dbreadheader (adr, &flfree, &ctbytes, &variance))
-		return (false);
-		
-	if (flfree || (ctbytes < 0)) { /*referencing a free node -- probably a bad address*/
-		
-		dberror (dbfreeblockerror);
-		
-		return (false);
-		}
-	
-	ctwanted = min (ctwanted, ctbytes - (long) variance);
-	
-	return (dbread (adr + sizeheader, ctwanted, pdata));
-	} /*dbrefbytes*/
-
-#endif	
 
 
 static boolean dballocate (long databytes, ptrvoid pdata, dbaddress *paddress) {
@@ -1859,34 +1714,6 @@ static boolean dbrelease (dbaddress adr) {
 	} /*dbrelease*/
 	
 
-#if 0
-
-static boolean dbreadbytes (dbaddress adr, long offset, long ctbytes, char *pdata) {
-
-	/*
-	copy from the data part of the block at adr, at given offset into memory.
-	
-	this is useful if you want to stream a known amount of data out of a database block
-	but don't want to allocate a temporary buffer to hold it all.
-	*/
-	
-	return (dbread (adr + sizeheader + offset, ctbytes, pdata));
-	} /*dbreadbytes*/
-	
-
-static boolean dbwritebytes (dbaddress adr, long offset, long ctbytes, char *pdata) {
-
-	/*
-	copy the data from memory to the data part of the block at adr, at given offset.
-	
-	this is useful if you want to stream a known amount of data into a database block
-	but don't want to allocate a temporary buffer to hold it all.
-	*/
-	
-	return (dbwrite (adr + sizeheader + offset, ctbytes, pdata));
-	} /*dbwritebytes*/
-
-#endif
 	
 
 static boolean dbmove (ptrvoid pdata, long ctbytes, dbaddress adr) {
@@ -2454,13 +2281,8 @@ boolean dbnew (hdlfilenum fnum) {
 	
 	(**hdb).fnumdatabase = (long) fnum;
 	
-#ifdef MACVERSION
 	(**hdb).systemid = dbsystemidMac;
-#endif
 
-#ifdef WIN95VERSION
-	(**hdb).systemid = dbsystemidWin32;
-#endif
 
 	(**hdb).versionnumber = dbversionnumber;
 

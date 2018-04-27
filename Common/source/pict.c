@@ -72,17 +72,10 @@ typedef struct tydiskpictrecord {
 	} tydiskpictrecord, *ptrdiskpictrecord, **hdldiskpictrecord;
 #pragma options align=reset
 
-#ifdef MACVERSION
 	#define flbitmapupdate_mask 0x8000 /*if set, use offscreen bitmaps when updating*/
 	#define flevalexpressions_mask 0x4000 /*if set, parse all text that begins with an = sign*/
 	#define flscaletofitwindow_mask 0x2000 /*if set, scale window down to fit inside window*/
-#endif
 
-#ifdef WIN95VERSION
-	#define flbitmapupdate_mask 0x0080 /*if set, use offscreen bitmaps when updating*/
-	#define flevalexpressions_mask 0x0040 /*if set, parse all text that begins with an = sign*/
-	#define flscaletofitwindow_mask 0x0020 /*if set, scale window down to fit inside window*/
-#endif
 
 #pragma pack(2)
 typedef struct tyOLD42diskpictrecord {
@@ -119,28 +112,21 @@ hdlwindowinfo pictwindowinfo = nil;
 hdlpictrecord pictdata = nil;
 
 
-#ifdef MACVERSION
 	static CQDProcs procs; /*must be statically allocated & have room for color procs*/
 
 	static CQDProcs *porigprocs; /*need to save, call & restore*/
-#endif
 
 
 
 boolean pictgetframerect (hdlpictrecord hpict, Rect *rframe) {
 	
-#ifdef MACVERSION
 	PicHandle macpicture = (**hpict).macpicture;
 	
 	if (macpicture == nil)
 		return (false);
 	
 	*rframe = (**macpicture).picFrame;
-#endif
 
-#ifdef WIN95VERSION
-	#pragma message ("Win95: pictgetframerect not implemented")
-#endif
 
 	return (true);
 	} /*pictgetframerect*/
@@ -216,53 +202,6 @@ boolean pictunpack (Handle hpacked, long *ixload, hdlpictrecord *hpict) {
 
 	assert (sizeof (tyOLD42diskpictrecord) == sizeof (tydiskpictrecord));
 	
-#if 0 // def MACVERSION
-	short version;
-	long ix;
-	tyOLD42diskpictrecord oldheader;
-
-	ix = *ixload;
-
-	if (!loadfromhandle (hpacked, &ix, longsizeof(version), &version))
-		return (false);
-
-	if (version == 1) {
-		if (!loadfromhandle (hpacked, ixload, longsizeof (oldheader), &oldheader))
-			return (false);
-		
-		if (!loadfromhandletohandle (hpacked, ixload, oldheader.pictbytes, false, (Handle *) &macpicture))
-			return (false);
-		
-		if (!newclearhandle (longsizeof (typictrecord), (Handle *) hpict)) {
-			
-			disposehandle ((Handle) macpicture);
-			
-			return (false);
-			}
-		
-		hp = *hpict; /*copy into register*/
-		
-		recttodiskrect (&(**hp).windowrect, &oldheader.windowrect);
-		
-		(**hp).timecreated = oldheader.timecreated;
-		
-		(**hp).timelastsave = oldheader.timelastsave;
-		
-		(**hp).ctsaves = oldheader.ctsaves;
-		
-		(**hp).updateticks = oldheader.updateticks;
-		
-		(**hp).flbitmapupdate = oldheader.flbitmapupdate;
-		
-		(**hp).flevalexpressions = oldheader.flevalexpressions;
-		
-		(**hp).flscaletofitwindow = oldheader.flscaletofitwindow;
-		
-		(**hp).macpicture = macpicture;
-		
-		return (true);
-		}
-#endif
 
 	if (!loadfromhandle (hpacked, ixload, longsizeof (header), &header)) {
 	
@@ -338,78 +277,6 @@ boolean pictdisposerecord (hdlpictrecord hpict) {
 	} /*pictdisposerecord*/
 
 
-#if 0
-
-static boolean pictdebug (PicHandle macpicture) { 
-
-	Rect r, rbounds;
-	WindowPtr w;
-	
-	r = (**macpicture).picFrame;
-	
-	if (!zoomtempwindow (true, r.bottom - r.top, r.right - r.left, &w))
-		return (false);
-	
-	DrawPicture (macpicture, &r);
-	
-	waitmousebutton (true);
-	
-	closetempwindow (true, w);
-	
-	return (true);
-	} /*pictdebug*/
-	
-
-boolean pictreadfile (bigstring fname, PicHandle *macpicture) {
-	
-	register PicHandle hp = nil;
-	register long ctbytes;
-	short fnum;
-	register boolean fl;
-	
-	if (!openfile (fname, 0, &fnum))
-		return (false);
-	
-	ctbytes = filegetsize (fnum) - pictstartrealdata;
-	
-	if (ctbytes <= 0) /*error, this can't be a PICT file*/
-		goto error;
-	
-	if (!filesetposition (fnum, pictstartrealdata))
-		goto error;
-		
-	if (!newhandle (ctbytes, (Handle *) macpicture))
-		goto error;
-	
-	hp = *macpicture; /*copy into register*/
-	
-	lockhandle ((Handle) hp);
-	
-	fl = fileread (fnum, ctbytes, *hp);
-	
-	unlockhandle ((Handle) hp);
-	
-	if (!fl)
-		goto error;
-	
-	closefile (fnum);
-	
-	/*pictdebug (*macpicture);*/
-	
-	return (true);
-		
-	error:
-	
-	disposehandle ((Handle) hp); 
-	
-	closefile (fnum);
-	
-	*macpicture = nil;
-	
-	return (false);
-	} /*pictreadfile*/
-	
-#endif
 
 
 void pictresetscrollbars (void) {
@@ -604,7 +471,6 @@ static boolean picttextparse (Ptr textbuf, short ctbytes, bigstring bs) {
 	return (false);
 	} /*picttextparse*/
 
-#ifdef MACVERSION
 
 	static pascal void update_stdtext (short ctbytes, Ptr textbuf, Point numer, Point denom)  {
 	
@@ -616,15 +482,9 @@ static boolean picttextparse (Ptr textbuf, short ctbytes, bigstring bs) {
 			StdText (stringlength (bs), &bs [1], numer, denom);
 		else
 		
-			#if TARGET_API_MAC_CARBON == 1
 			
 				InvokeQDTextUPP ((short) stringlength (bs), (Ptr) &bs [1], numer, denom, (*porigprocs).textProc);
 			
-			#else
-		
-				CallQDTextProc ((*porigprocs).textProc, (short) stringlength (bs), (Ptr) &bs [1], numer, denom);
-			
-			#endif
 		} /*update_stdtext*/
 	
 	
@@ -637,43 +497,16 @@ static boolean picttextparse (Ptr textbuf, short ctbytes, bigstring bs) {
 		if (porigprocs == nil)
 			return (StdTxMeas (stringlength (bs), &bs [1], numer, denom, info));
 	
-		#if TARGET_API_MAC_CARBON == 1
 
 			return (InvokeQDTxMeasUPP ((short) stringlength (bs), (Ptr) &bs [1], numer, denom, info, (*porigprocs).txMeasProc));
 			
-		#else
-			
-			return (CallQDTxMeasProc ((*porigprocs).txMeasProc, (short) stringlength (bs), (Ptr) &bs [1], numer, denom, info));
-		
-		#endif
 		} /*update_stdtxmeas*/
 	
-	#if TARGET_API_MAC_CARBON == 1
 	#define update_stdtextUPP ((QDTextUPP) update_stdtext)
 		
 	#define update_stdtxmeasUPP ((QDTxMeasUPP) update_stdtxmeas)
-	#else
-	#if GENERATINGCFM
-		
-		static RoutineDescriptor update_stdtextDesc = BUILD_ROUTINE_DESCRIPTOR (uppQDTextProcInfo, update_stdtext);
-		
-		static RoutineDescriptor update_stdtxmeasDesc = BUILD_ROUTINE_DESCRIPTOR (uppQDTxMeasProcInfo, update_stdtxmeas);
-		
-		#define update_stdtextUPP (&update_stdtextDesc)
-		
-		#define update_stdtxmeasUPP (&update_stdtxmeasDesc)
-		
-	#else
-		
-		#define update_stdtextUPP ((QDTextUPP) update_stdtext)
-		
-		#define update_stdtxmeasUPP ((QDTxMeasUPP) update_stdtxmeas)
-		
-	#endif
-#endif//TARGET_API_MAC_CARBON
 		
 	
-#endif
 
 
 void pictupdatepatcher (void) {
@@ -682,7 +515,6 @@ void pictupdatepatcher (void) {
 	2.1b5 dmb: use CProcs to handle color windows
 	*/
 	
-#ifdef MACVERSION
 	//Code change by Timothy Paustian Sunday, April 30, 2000 9:24:15 PM
 	//Changed to Opaque call for Carbon
 	//I think we can just use a CGrafPort instead of casting to a WindowPtr
@@ -708,19 +540,11 @@ void pictupdatepatcher (void) {
 	else
 		procs = *porigprocs; /*start with current state*/
 	
-	#if 0 //def THINK_C
-	
-		procs.textProc = (QDPtr) update_stdtext; /*patch in our own procs*/
-		
-		procs.txMeasProc = (QDPtr) update_stdtxmeas;
-		
-	#else
 	
 		procs.textProc = update_stdtextUPP; /*patch in our own procs*/
 		
 		procs.txMeasProc = update_stdtxmeasUPP;
 	
-	#endif
 	//Code change by Timothy Paustian Sunday, April 30, 2000 9:28:13 PM
 	//Changed to Opaque call for Carbon
 	//This needs to be tested.
@@ -730,13 +554,11 @@ void pictupdatepatcher (void) {
 	//old code
 	(*w).grafProcs = (QDProcs *) &procs;
 	#endif
-#endif
 	} /*pictupdatepatcher*/
 
 
 void pictdepatcher (void) {
 	
-#ifdef MACVERSION
 	//Code change by Timothy Paustian Sunday, April 30, 2000 9:32:15 PM
 	//Changed to Opaque call for Carbon
 	#if ACCESSOR_CALLS_ARE_FUNCTIONS == 1
@@ -746,7 +568,6 @@ void pictdepatcher (void) {
 	//old code
 	(*getport ()).grafProcs = (QDProcs *) porigprocs;
 	#endif
-#endif
 	} /*pictdepatcher*/
 
 

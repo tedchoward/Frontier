@@ -44,26 +44,14 @@
 #define lightblueindex 2 /*another very common color*/
 
 
-#ifdef MACVERSION
 	#define blackpattern qd.black
 	#define whitepattern qd.white
 	#define graypattern qd.gray
-#endif
 
-#ifdef WIN95VERSION
-	#define blackpattern GetStockObject (BLACK_BRUSH)
-	#define whitebackground GetStockObject (WHITE_BRUSH)
-	#define buttonbackground GetStockObject (GRAY_BRUSH)
-#endif
 
-#if TARGET_API_MAC_CARBON == 1 /*7.0b53 PBS: common code -- QDFlushPortBuffer on OS X*/
 
 	#define flushwindowbuffer(w) QDFlushPortBuffer (GetWindowPort (w), nil)
 
-#else
-
-	#define flushwindowbuffer(w) /*nothing*/
-#endif
 
 extern RGBColor blackcolor, whitecolor, lightbluecolor, lightgraycolor, graycolor, darkgraycolor;
 
@@ -98,13 +86,6 @@ extern void setport (GrafPtr);
 
 extern GrafPtr getport (void);
 
-#ifdef WIN95VERSION
-	extern boolean winpushport (WindowPtr, HDC);
-
-	extern boolean winpopport (void);
-
-	extern HDC getcurrentDC (void);
-#endif
 
 extern boolean pushport (CGrafPtr);
 

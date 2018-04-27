@@ -63,9 +63,6 @@ boolean shellactivatewindow (WindowPtr w, boolean flactivate) {
 	//moved r to outside, since need for carbon call below
 	Rect r;
 	
-#ifdef WIN95VERSION
-	RECT winrect;
-#endif
 	
 	if (!isshellwindow (w)) /*chase the refcon field of the mac window*/
 		return (false);
@@ -81,7 +78,6 @@ boolean shellactivatewindow (WindowPtr w, boolean flactivate) {
 	
 	(**hinfo).flwindowactive = bitboolean (flactivate);
 
-#ifdef MACVERSION
 	#if ACCESSOR_CALLS_ARE_FUNCTIONS == 1
 	{
 	CGrafPtr	thePort;
@@ -92,13 +88,7 @@ boolean shellactivatewindow (WindowPtr w, boolean flactivate) {
 	r = w->portRect;
 	#endif
 	pushclip (r); /*make sure we can draw into whole window*/
-#endif
 	
-#ifdef WIN95VERSION
-	GetClientRect (w, &winrect);
-	winrecttorect (&winrect, &r);
-	pushclip (r);
-#endif
 
 	shelldrawbuttons (); /*if window has an attached button list, draw it*/
 	
@@ -123,11 +113,6 @@ boolean shellactivatewindow (WindowPtr w, boolean flactivate) {
 		
 		disablescrollbar (horizbar);
 	
-	#if TARGET_API_MAC_CARBON != 1
-	
-		if (isdeskaccessorywindow (getfrontwindow ())) /*DA is being activated*/
-
-	#endif	
 	
 	shellwritescrap (anyscraptype);
 		
@@ -147,10 +132,6 @@ boolean shellactivatewindow (WindowPtr w, boolean flactivate) {
 		
 		popclip ();
 
-		#ifdef WIN95VERSION
-			if (config.fleraseonresize)
-				shellupdatenow (w);
-		#endif
 		}
 	
 	shellpopglobals ();

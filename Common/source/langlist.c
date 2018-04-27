@@ -621,7 +621,6 @@ boolean coercetolist (tyvaluerecord *val, tyvaluetype type) {
 			break;
 			}
 		
-	#ifdef MACVERSION
 		case objspecvaluetype:
 		case binaryvaluetype: {
 			AEDesc vdesc, listdesc;
@@ -655,7 +654,6 @@ boolean coercetolist (tyvaluerecord *val, tyvaluetype type) {
 			
 			return (fl);
 			}
-	#endif
 		
 		case stringvaluetype:
 			

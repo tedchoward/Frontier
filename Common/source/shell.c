@@ -28,11 +28,9 @@
 #include "frontier.h"
 #include "standard.h"
   
-#ifdef MACVERSION
 #include <land.h>
 #include <SetUpA5.h>
 #include "player.h" /*7.0b4 PBS*/
-#endif
 
 #include "frontierconfig.h"
 #include "about.h"
@@ -80,24 +78,11 @@
 #include "WinSockNetEvents.h"
 #include "langdll.h" /*2004-11-29 aradke: for dllinitverbs*/
 
-#ifdef flcomponent
 	#include <uisharing.h>
 	#include "osacomponent.h"
-#endif
 
-#ifdef fliowa
-	#include "iowaverbs.h" /*3/18/92 dmb*/
-#endif
 
-#ifdef iowaRuntime
-	#include "iowainit.h"
-#endif
 
-#ifdef WIN95VERSION
-	#include "FrontierWinMain.h"
-
-	HWND findreplacewindow = NULL;
-#endif
 
 EventRecord shellevent; /*the last event received by the shell*/
 
@@ -154,22 +139,6 @@ void shellerrormessage (bigstring bs) {
 	} /*shellerrormessage*/
 
 
-#ifdef fltrialsize
-
-void shelltrialerror (short id) {
-
-	bigstring bs, bsbuy;
-	
-	getstringlist (trialsizelistnumber, id, bs);
-	
-	getstringlist (trialsizelistnumber, buyfrontierstring, bsbuy);
-	
-	pushstring (bsbuy, bs);
-	
-	shellerrormessage (bs);
-	} /*shelltrialerror*/
-
-#endif
 
 
 #ifdef fldebug
@@ -222,26 +191,17 @@ boolean shellshutdown (void) {
 	
 	shellwritescrap (anyscraptype);
 	
-	#ifdef iowaRuntime
-	
-		iowaClose ();
-	
-	#endif
 	
 	if (flipcstarted)
 		langipcshutdown ();
 	
-	#ifdef flcomponent
 		
 		osacomponentshutdown ();
 		
-	#endif
 	
-	#ifdef MACVERSION
 	
 		fwsNetEventQuit ();
 	
-	#endif
 	
 	processclose ();
 	
@@ -251,11 +211,9 @@ boolean shellshutdown (void) {
 
 	//Code change by Timothy Paustian Wednesday, July 26, 2000 9:24:46 PM
 	//added code to free action procs for scroll bars.
-	#if TARGET_API_MAC_CARBON == 1
 		shellshutdownscroll();
 		fileshutdown();
 		UnregisterAppearanceClient();
-	#endif
 
 	exittooperatingsystem (); /*doesn't return*/
 	
@@ -265,12 +223,10 @@ boolean shellshutdown (void) {
 
 boolean shellquit (void) {
 	
-	#ifdef flcomponent
 		
 		if (!osacomponentverifyshutdown ()) /*may return false if there are clients*/
 			return (false);
 	
-	#endif
 	
 	if (!shellcloseall (nil, true)) /*user hit Cancel button in save dialog*/
 		return (false);
@@ -281,18 +237,6 @@ boolean shellquit (void) {
 	} /*shellquit*/
 
 
-#if defined(MACVERSION) && TARGET_API_MAC_OS8
-static void shellhandlediskinsertion (void) {
-	//Code change by Timothy Paustian Friday, June 16, 2000 2:21:17 PM
-	//Changed to Opaque call for Carbon
-	//The system takes care of bad mounted disks, we don't need to.
-	Point pt = {0, 0};
-	
-	if (HiWord (shellevent.message) != 0)
-		DIBadMount (pt, shellevent.message);
-
-	} /*shellhandlediskinsertion*/
-#endif
 
 
 static void shellhandleevent (void) {
@@ -318,11 +262,6 @@ static void shellhandleevent (void) {
 			break;
 		
 		case mouseDown:
-	#ifdef WIN95VERSION
-		case rmouseDown:
-		case cmouseDown:
-		case wmouseDown:
-	#endif
 			//shellforcemenuadjust (); /*RAB 01/31/01: not needed, was a performance hit.*/
 			
 			floverridebeachball = true; /*beachball must be reset after user action*/
@@ -336,25 +275,6 @@ static void shellhandleevent (void) {
 			
 			break;
 
-	#ifdef WIN95VERSION
-		case menuEvt:
-			shellforcemenuadjust ();
-
-			shellpushglobals (w); /*following mouse operations assume globals are pushed*/
-			
-			shellhandlemenu (shellevent.modifiers);
-			
-			shellpopglobals ();
-			break;
-
-		case scrollEvt:
-			shellpushglobals (w); /*following mouse operations assume globals are pushed*/
-
-			winscroll ((boolean) shellevent.modifiers, shellevent.where.v, shellevent.where.h);
-			
-			shellpopglobals ();
-			break;
-	#endif
 
 		case activateEvt:
 			shellforcemenuadjust ();
@@ -381,16 +301,11 @@ static void shellhandleevent (void) {
 			
 			break;
 
-	#ifdef MACVERSION
 		case diskEvt:
 			//Code change by Timothy Paustian Friday, June 16, 2000 2:22:47 PM
 			//Changed to Opaque call for Carbon
-			#if TARGET_API_MAC_OS8
-			shellhandlediskinsertion ();
-			#endif
 
 			break;
-	#endif
 			
 		default:
 			shellcalleventhooks (&shellevent, nil); /*don't pass specific window for other events*/
@@ -450,23 +365,19 @@ void shelladjustcursor (void) {
 	
 	if (w == nil || !isshellwindow (w)) { /*not over a window, or desk accessory or special window in front*/
 		
-		#ifdef MACVERSION
 			setcursortype (cursorisarrow);
-		#endif
 		
 		return;
 		}
 	
 	flnotfrontwindow = shellwindow != w; /*not over the front shell window*/
 
-	#ifdef MACVERSION
 		if (flnotfrontwindow) {
 
 			setcursortype (cursorisarrow);
 			
 			return;
 			}
-	#endif
 	
 	if (flnotfrontwindow)
 		shellpushglobals (w);
@@ -485,9 +396,7 @@ void shelladjustcursor (void) {
 	
 	else {
 		/* Under Windows, if it is not in our content - don't changeit */
-		#ifdef MACVERSION
 			setcursortype (cursorisarrow); /*not a special cursor*/
-		#endif
 		}
 	
 	if (flnotfrontwindow) /*not over the front shell window*/
@@ -502,27 +411,6 @@ void shellidle (void) {
 	} /*shellidle*/
 
 
-#ifdef WIN95VERSION
-
-void shelldestoycaretinmainthread (void) {
-	
-	/*
-	called by wpengine.c, Paige is going to destroy the caret, but
-	we may not be in the main thread, and it doesn't work from other
-	threads.
-	*/
-	
-	if (flscriptrunning) {
-		
-		releasethreadglobals ();
-		
-		SendMessage (shellframewindow, wm_destroycaret, 0, 0);
-		
-		grabthreadglobals ();
-		}
-	} /*shelldestoycaretinmainthread*/
-
-#endif
 
 boolean shellyield (boolean flresting) {
 	
@@ -577,12 +465,7 @@ boolean shellbackgroundtask (void) {
 	else {
 		if ((tc < timenextbackground) && (timenextbackground - tc < 60)) {
 			
-			#ifdef MACVERSION
 				return (processyield ());
-			#endif
-			#ifdef WIN95VERSION
-				return (true);
-			#endif
 			}
 
 		if (tc < (timelastkeystroke + 15) && (tc > timelastkeystroke)) /*heuristic -- the user is busy typing*/
@@ -653,7 +536,6 @@ static short shellgeteventmask (void) {
 	return (everyEvent - shellblockedevents ());
 	} /*shellgeteventmask*/
 
-#ifdef MACVERSION
 static boolean shellgetevent (void) {
 	
 	/*
@@ -692,39 +574,19 @@ static boolean shellgetevent (void) {
 		
 		fl = WaitNextEvent (shellgeteventmask (), &shellevent, sleep, nil);
 		
-		#ifdef MACVERSION
 		
 			if (isplayerevent ()) /*7.0b4 PBS: QuickTime catches some events.*/
 		
 				fl = false;
 				}
-		#endif
 	
 	if (flipcstarted && !fl)
 		if (landeventfilter (&shellevent)) /*event consumed by IAC toolkit*/
 			fl = false;
 	
-	#ifdef iowaRuntime
-	
-		/*
-		if (uisHandleEvent (&shellevent, &flcloseallwindows)) // event consumed by window sharing server
-			fl = false;
-		*/
-
-		if (isModelessCardEvent (&shellevent, &flcloseallwindows)) {
-			
-			fl = false;
-			
-			if (flcloseallwindows)	// user option-clicked in close box of a card window
-				shellcloseall (nil, true);
-			}
-		
-
-	#endif
 	
 	return (fl);
 	} /*shellgetevent*/
-#endif
 
 static boolean shelleventavail (void) {
 	
@@ -808,24 +670,12 @@ boolean shelleventloop (callback breakproc) {
 	
 	boolean flbackground = false;
 
-	#ifdef WIN95VERSION
-		#define NULLTIMERID 42
-		MSG msg;
-		UINT timerID;
-
-		timerID = SetTimer (shellframewindow, NULLTIMERID, 80, NULL);
-
-		if (timerID == 0)
-			return (false);
-
-	#endif
 
 	while (true) {
 		
 		if (!(*breakproc) ()) /*caller is forcing us out of event loop*/
 			return (true);
 		
-	#ifdef MACVERSION
 		if (shellgetevent ()) { /*if true, global shellevent holds event info*/
 			
 			shellhandleevent ();
@@ -843,42 +693,7 @@ boolean shelleventloop (callback breakproc) {
 		
 		//#endif
 		
-	#endif
 
-	#ifdef WIN95VERSION
-		/*Note: GetMessage can return 3 values, TRUE, FALSE or -1 which is why we code == TRUE */
-
-		if (GetMessage (&msg, NULL, 0, 0) == TRUE) {
-
-			if (msg.message == WM_QUIT) {
-				KillTimer (shellframewindow, NULLTIMERID);
-				return (true);
-				}
-
-			if ((msg.message == WM_TIMER) && (msg.wParam == NULLTIMERID)) {
-				shellhandlenullevent (&flbackground);
-			//	continue;
-				}
-
-			if (findreplacewindow != NULL) {
-				if (IsDialogMessage (findreplacewindow, &msg) != 0) {  /* we have processed the message */
-					continue;
-					}
-				}
-
-			if ( !TranslateMDISysAccel (hwndMDIClient, &msg) &&
-				  !TranslateAccelerator (shellframewindow, hAccel, &msg)) {
-
-				TranslateMessage (&msg);
-
-				DispatchMessage (&msg);
-				}
-			}
-		else {
-			KillTimer (shellframewindow, NULLTIMERID);
-			return (false);
-			}
-	#endif
 
 		} /*while*/
 	} /*shelleventloop*/
@@ -968,9 +783,6 @@ void shellmaineventloop (void) {
 	
 	//shellpushblock (networkMask, true); /*for network toolkit; block network events%/
 	
-#if defined(MACVERSION) && TARGET_API_MAC_OS8
-	UnloadSeg (&initsegment);
-#endif
 	
 	shelleventloop (&shellmainbreakproc);
 	
@@ -1011,7 +823,6 @@ boolean shellstart (void) {
 		
 	drawmenubar (); /*don't show menubar until it is available*/
 
-	#if TARGET_API_MAC_CARBON == 1 /*OS X PBS: delete Preferences and separator menu items.*/
 	
 		{
 	
@@ -1028,19 +839,13 @@ boolean shellstart (void) {
 	
 		}
 	
-	#endif
 		
 	shelladjustmenus ();
 	
-	#ifdef MACVERSION
 	//#ifndef PIKE
 		closeabout (false, 120); /*close the about window, don't zoom, make sure two seconds have elapsed*/
 	//#endif
-	#endif
 	
-	#ifdef WIN95VERSION
-		shellopeninitialfiles ();
-	#endif
 	
 	flbackgroundtasksdisabled = false; /*ready to multitask!*/
 
@@ -1048,37 +853,6 @@ boolean shellstart (void) {
 	} /*shellstart*/
 
 
-#ifdef fltrialsize
-
-static boolean shellinitclock (void) {
-	
-	/*
-	this version expires Septermber 8, 1998
-	*/
-	
-	unsigned long now;
-	short day, month, year, hour, minute, second;
-	
-	now = timenow ();
-	
-	secondstodatetime (now, &day, &month, &year, &hour, &minute, &second);
-	
-	if (year > 1998)
-		return (false);
-	
-	/*
-	if (month > 9)
-		return (false);
-	
-	if (month == 9)
-		if (day > 7)
-			return (false);
-	*/
-
-	return (true);
-	} /*shellinitclock*/
-
-#endif
 
 
 /*
@@ -1094,24 +868,16 @@ static shelltrashresource (OSType type, short id) {
 	} /%shelltrashresource%/
 */
 
-#ifdef MACVERSION
 static pascal long shellgrowzone (Size ctbytesneeded) {
 	
 	long ctstillneeded = ctbytesneeded;
 	
-	#if TARGET_API_MAC_OS8
-	long curA5 = SetUpAppA5 ();
-	#endif
 	
 	shellcallmemoryhooks (&ctstillneeded);
 	
-	#if TARGET_API_MAC_OS8
-	RestoreA5 (curA5);
-	#endif
 		
 	return (ctbytesneeded - ctstillneeded);
 	} /*shellgrowzone*/
-#endif
 
 static boolean shellinitmemory (void) {
 	
@@ -1124,25 +890,14 @@ static boolean shellinitmemory (void) {
 	there's a Memory Manager TN that warns about this being necessary.
 	*/
 
-#ifdef MACVERSION	
 	//Code change by Timothy Paustian Friday, June 16, 2000 2:23:28 PM
 	//Changed to Opaque call for Carbon
 	//we don't need this for carbon
-	#if !TARGET_API_MAC_CARBON
-		RememberA5 ();
-	#endif
 
-	#if TARGET_API_MAC_CARBON
 
 		SetGrowZone (NewGrowZoneUPP (shellgrowzone));
 	
-	#else
 	
-		SetGrowZone (NewGrowZoneProc (shellgrowzone));
-		
-	#endif
-	
-#endif
 	
 	return (initmemory ());
 	} /*shellinitmemory*/
@@ -1170,7 +925,6 @@ boolean shellinit (void) {
 	if (!initmacintosh ())
 		return (showerrorandexit (notenoughmemorystring));
 
-	#ifdef MACVERSION	
 		//Code change by Timothy Paustian Friday, June 9, 2000 2:36:02 PM
 		//Changed because using SysEnvisons and SysEnvRec is like Really old style
 		//This was changed to Gestalt calls with two new globals see mac.c initmacintosh
@@ -1182,7 +936,6 @@ boolean shellinit (void) {
 					   FSMakeFSSpec call at some unknown time, see
 					   < http://sourceforge.net/tracker/index.php?func=detail&aid=1239991&group_id=120666&atid=687798 > */
 		
-	#endif
 
 	if (keyboardescape ()) /*check for command-period for accidental launch*/
 		return (false);
@@ -1196,9 +949,7 @@ boolean shellinit (void) {
 	
 	initfile (); /*do this before about to filegetprogramversion will work*/
 
-	#ifdef MACVERSION
 		aboutsegment ();
-	#endif	
 	
 	initquickdraw ();
 	
@@ -1214,40 +965,16 @@ boolean shellinit (void) {
 	
 	initscrollbars (); /*7.0b18 PBS*/
 	
-	#ifdef MACVERSION
 		initmouse ();
-	#endif
 	
-	#ifdef fltrialsize
 	
-	if (!shellinitclock ()) {
-		bigstring bs;
-		
-		getstringlist (trialsizelistnumber, expirationstring, bs);
-		
-		parsedialogstring (bs, "\x06" "1/1/99", nil, nil, nil, bs);
-
-		shellerrormessage (bs);
-
-		return (false);
-		}
-	
-	//alertdialog ("\x30" "This version of Frontier expires on July 1, 1998");
-	
-	#endif
-	
-	#ifdef MACVERSION
 	//#ifndef PIKE
 		openabout (true, macmemoryconfig.reserveforcode); /*show about window, do zoom -- closed by shellmaineventloop*/
 	//#endif
 	
 		FastInitialize(); /*2005-01-14 aradke: init timer, may take up to a second to callibrate*/
 	
-	#endif
 	
-	#ifdef WIN95VERSION
-	//	openabout (true, 0);
-	#endif
 	
 	initmenusystem ();
 	
@@ -1271,23 +998,14 @@ boolean shellinit (void) {
 	
 	initsearch ();
 	
-	#if TARGET_API_MAC_CARBON == 1 /*7.0b48: bitmaps off in OS X*/
 	
 		initbitmaps (false);
 		
-	#else
 	
-		initbitmaps (true);
-		
-	#endif
-	
-	#if TARGET_API_MAC_CARBON == 1
 	
 	initservices ();
 
-#endif
 
-#if isFrontier || flruntime || winhybrid
 
 	initlang (); /*init callbacks and other basic inits*/
 
@@ -1318,15 +1036,11 @@ boolean shellinit (void) {
 	
 	mysqlinitverbs (); /* 2007-04-08 gewirtz: langmysql.c */
 	
-#ifdef flregexpverbs
 	regexpinitverbs (); /* 2003-04-23 AR: langregexp.c */
-#endif
 	
-#ifdef MACVERSION /*7.0b4 PBS: initialize QuickTime verbs*/
 	
 	quicktimeinitverbs ();
 	
-#endif
 	
 	mathinitverbs (); /*2004-12-30 smd: langmath.c*/
 	
@@ -1344,16 +1058,10 @@ boolean shellinit (void) {
 	//RAB: 1/19/98 - moved print init here so that Windows will have enough setup before using the dialog.
 	shellinitprint (); /*get set up for printing*/
 
-#else
-
-	flipcstarted = langipcstart ();
-
-#endif
 
 	//Code change by Timothy Paustian Wednesday, July 26, 2000 9:23:50 PM
 	//added init code for scroll proc
 
-	#if TARGET_API_MAC_CARBON == 1
 	
 		shellinitscroll();
 		//Ok we now need to set up a timer for handling idle and network processes
@@ -1391,26 +1099,10 @@ boolean shellinit (void) {
 	/*If it fails, oh well, there's nothing to be done. So ec isn't checked.*/
 	}
     
-	#endif
 
 	fileinit();
 	return (true);
 
 	} /*shellinit*/
 
-#if 0 //TARGET_API_MAC_CARBON == 1
-static pascal void idleTimer (EventLoopTimerRef theTimer, void * userData)
-{
-	//I hate warnings, shut up the compiler
-	#pragma unused(theTimer)
-	#pragma unused(userData)
-	
-	boolean flbackground;
-	
-	fwsNetEventCheckAndAcceptSocket ();
-		
-	shellhandlenullevent (&flbackground);
-	
-}
-#endif
 

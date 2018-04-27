@@ -25,15 +25,8 @@
 
 ******************************************************************************/
 
-#if defined(MACVERSION) && (TARGET_API_MAC_CARBON == 1)
 
 boolean unixshellcall (Handle, Handle);
 
-#endif
 
 
-#ifdef WIN95VERSION
-
-boolean winshellcall (Handle, Handle, Handle, long*);
-
-#endif

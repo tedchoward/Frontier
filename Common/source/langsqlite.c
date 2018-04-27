@@ -49,19 +49,12 @@
 
 #include <sqlite3.h>
 
-#ifdef MACVERSION
 
 	#include <sys/param.h>
 
-#endif // MACVERSION
 
 #include "file.h"
 
-#ifdef WIN95VERSION
-
-	#define MAXPATHLEN 1024
-
-#endif // WIN95VERSION
 
 #endif
 
@@ -304,12 +297,6 @@ boolean sqliteopenverb ( hdltreenode hparam1, tyvaluerecord *vreturned, bigstrin
 	// 2006-10-08 DG: created
 	//
 	
-	#ifdef WIN95VERSION
-	
-		bigstring bs;
-		Handle handletext;
-	
-	#endif // WIN95VERSION
 	
 	//
 	// sqlite.open ( dbfile )
@@ -330,7 +317,6 @@ boolean sqliteopenverb ( hdltreenode hparam1, tyvaluerecord *vreturned, bigstrin
 	
 	newhandle ( MAXPATHLEN, &dbfile );
 	
-	#ifdef MACVERSION
 	
 		FSRef fsref;
 		OSStatus status;
@@ -347,19 +333,7 @@ boolean sqliteopenverb ( hdltreenode hparam1, tyvaluerecord *vreturned, bigstrin
 		
 		sethandlesize ( dbfile, len + 1 );	// include nil terminator
 	
-	#endif // MACVERSION
 	
-	#ifdef WIN95VERSION
-
-		filespectopath ( &fs, bs );
-		
-		newtexthandle ( bs, &handletext );
-		
-		convertCharset ( handletext, dbfile, BIGSTRING ( "\x0C" "Windows-1252" ), BIGSTRING ( "\x05" "utf-8" ) );
-		
-		disposehandle ( handletext );
-	
-	#endif // WIN95VERSION
 	
 	// Process the SQLite sequence
 	

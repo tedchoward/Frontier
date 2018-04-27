@@ -211,29 +211,6 @@ boolean shelldefaultsizeroutine (void) {
 	} /*shelldefaultsizeroutine*/
 
 
-#if 0
-
-static boolean shelldefaultstyleroutine (void) {
-	
-	/*
-	if the handler doesn't define a style routine, wire it into us.  we just
-	set the default style for the window and force a complete update.
-	*/
-	
-	register hdlwindowinfo hw = shellwindowinfo;
-	
-	shellsetdefaultstyle (hw); /*sets the defaultstyle field based on selectioninfo*/
-	
-	(**hw).selectioninfo.fldirty = true;
-	
-	eraserect ((**hw).contentrect);
-	
-	windowinval (shellwindow);
-	
-	return (true);
-	} /*shelldefaultstyleroutine*/
-
-#endif
 
 
 boolean shelldefaultselectioninfo (void) {
@@ -533,9 +510,6 @@ boolean shellsetglobals (WindowPtr wglobals) {
 		
 		shellundostack = nil; /*7/21/91 dmb*/
 		
-#ifdef WIN95VERSION
-		setport (NULL); // must clear port from prev globals
-#endif
 
 		return (false);
 		}
@@ -571,11 +545,7 @@ boolean shellsetglobals (WindowPtr wglobals) {
 	//Code change by Timothy Paustian Wednesday, August 23, 2000 9:08:56 PM
 	//
 	{
-	#if TARGET_API_MAC_CARBON
 	CGrafPtr thePort = GetWindowPort(w);
- 	#else
- 	GrafPtr thePort = (GrafPtr)w;
- 	#endif
 	if (getport () != thePort) /*make sure w is current port; a courtesy to the content handler*/
 		setport (thePort);
 	}

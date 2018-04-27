@@ -28,11 +28,9 @@
 #include "frontier.h"
 #include "standard.h"
 
-#ifdef MACVERSION
 
 	#include <sys/param.h>
 	
-#endif
 
 #include "filealias.h"
 #include "cursor.h"
@@ -61,7 +59,6 @@ boolean equalfilespecs ( const ptrfilespec fs1, const ptrfilespec fs2 ) {
 	// 5.0a25 dmb: until we set the volumeID to zero for all Win fsspecs, we must not compare them here
 	//
 
-	#ifdef MACVERSION
 	
 		CFStringRef cfname1, cfname2;
 		boolean flequal;
@@ -82,16 +79,7 @@ boolean equalfilespecs ( const ptrfilespec fs1, const ptrfilespec fs2 ) {
 
 		return (flequal);
 		
-	#endif
 	
-	#ifdef WIN95VERSION
-
-		// if ((*fs1).volumeID != (*fs2).volumeID)
-		//	return (false);
-		
-		return ( comparestrings ( fsname ( fs1 ), fsname ( fs2 ) ) == 0 );
-		
-	#endif
 
 	} // equalfilespecs
 
@@ -102,72 +90,26 @@ boolean filesetposition (hdlfilenum fnum, long position) {
 	5.0.2b6 dmb: report errors
 	*/
 	
-	#ifdef MACVERSION
 		return (!oserror (SetFPos (fnum, fsFromStart, position)));
-	#endif
 
-	#ifdef WIN95VERSION
-		if (SetFilePointer (fnum, position, NULL, FILE_BEGIN) == -1L) {
-			
-			winerror ();
-			
-			return (false);
-			}
-		
-		return (true);
-	#endif
 	} /*filesetposition*/
 	
 	
 boolean filegetposition (hdlfilenum fnum, long *position) {
 	
-	#ifdef MACVERSION
 		return (!oserror (GetFPos (fnum, position)));
-	#endif
 
-	#ifdef WIN95VERSION
-		*position = SetFilePointer (fnum, 0L, NULL, FILE_CURRENT);
-
-		if (*position == -1L) {
-			
-			winerror ();
-
-			return (false);
-			}
-
-		return (true);
-	#endif
 	} /*filegetposition*/
 
 
 boolean filegeteof (hdlfilenum fnum, long *position) {
 	
-	#ifdef MACVERSION
 		/*
 		6/x/91 mao
 		*/
 
 		return (!oserror (GetEOF (fnum, position)));
-	#endif
 
-	#ifdef WIN95VERSION
-		long origpos;
-
-		filegetposition (fnum, &origpos);
-
-		*position = SetFilePointer (fnum, 0L, NULL, FILE_END);
-
-		filesetposition (fnum, origpos);
-
-		if (*position == -1L) {
-			
-			winerror ();
-
-			return (false);
-			}
-
-		return (true);
-	#endif
 	} /*filegeteof*/
 
 
@@ -177,34 +119,8 @@ boolean fileseteof (hdlfilenum fnum, long position) {
 	5.0.2b6 dmb: report errors
 	*/
 	
-	#ifdef MACVERSION
 		return (!oserror (SetEOF (fnum, position)));
-	#endif
 
-	#ifdef WIN95VERSION
-		long currentPosition;
-
-		currentPosition = SetFilePointer (fnum, 0L, NULL, FILE_CURRENT);
-		
-		if (currentPosition == -1L)
-			goto error;
-		
-		if (SetFilePointer (fnum, position, NULL, FILE_BEGIN) == -1L)
-			goto error;
-		
-		if (!SetEndOfFile (fnum))
-			goto error;
-				
-		if (SetFilePointer (fnum, currentPosition, NULL, FILE_BEGIN) == -1L)
-			goto error;
-		
-		return (true);
-		
-	error:
-		winerror ();
-		
-		return (false);
-	#endif
 	} /*fileseteof*/
 
 
@@ -214,24 +130,13 @@ long filegetsize (hdlfilenum fnum) {
 	get the size of a file that's already open.
 	*/
 	
-	#ifdef MACVERSION
 		long lfilesize;
 		
 		if (GetEOF (fnum, &lfilesize) != noErr)
 			lfilesize = 0;
 		
 		return (lfilesize);
-	#endif
 
-	#ifdef WIN95VERSION
-		long lfilesize;
-
-		lfilesize = GetFileSize (fnum, NULL);
-		if (lfilesize == -1L)
-			lfilesize = 0L;
-
-		return (lfilesize);
-	#endif
 	} /*filegetsize*/
 
 
@@ -250,24 +155,9 @@ boolean filewrite (hdlfilenum fnum, long ctwrite, void *buffer) {
 
 	if (ctwrite > 0) {
 		
-		#ifdef MACVERSION
 			if (oserror (FSWrite (fnum, &ctwrite, buffer)))
 				return (false);
-		#endif
 
-		#ifdef WIN95VERSION
-			DWORD numberBytesWritten;
-
-			if (WriteFile (fnum, buffer, ctwrite, &numberBytesWritten, NULL)) {
-				
-				if ((DWORD)ctwrite == numberBytesWritten)
-					return (true);
-				}
-			
-			winerror();
-
-			return (false);
-		#endif
 		}
 	
 	return (true);
@@ -285,7 +175,6 @@ boolean filereaddata (hdlfilenum fnum, long ctread, long *ctactual, void *buffer
 	
 	if (ctread > 0) {
 		
-		#ifdef MACVERSION
 			OSErr ec = FSRead (fnum, ctactual, buffer);
 			
 			if (ec != noErr && ec != eofErr) {
@@ -294,16 +183,7 @@ boolean filereaddata (hdlfilenum fnum, long ctread, long *ctactual, void *buffer
 				
 				return (false);
 				}
-		#endif
 		
-		#ifdef WIN95VERSION
-			if (!ReadFile (fnum, buffer, ctread, ctactual, NULL)) {
-				
-				winerror ();
-				
-				return (false);
-				}
-		#endif
 		}
 	
 	return (true);
@@ -324,12 +204,7 @@ boolean fileread (hdlfilenum fnum, long ctread, void *buffer) {
 	
 	if (ctactual < ctread) {
 		
-		#ifdef MACVERSION
 			oserror (eofErr);
-		#endif
-		#ifdef WIN95VERSION
-			oserror (ERROR_HANDLE_EOF);
-		#endif
 
 		return (false);
 		}
@@ -432,7 +307,6 @@ boolean filereadhandle (hdlfilenum fnum, Handle *hreturned) {
 	} /*filereadhandle*/
 
 
-#ifdef MACVERSION	
 
 //Code change by Timothy Paustian Monday, June 19, 2000 3:15:01 PM
 //Changed to Opaque call for Carbon
@@ -445,7 +319,6 @@ static pascal void iocompletion (ParmBlkPtr pb) {
 
 #if TARGET_RT_MAC_CFM || TARGET_RT_MAC_MACHO
 
-	#if TARGET_API_MAC_CARBON
 
 		//looks like we need some kind of file UPP
 		//do we need to create a UPP, yes we do.
@@ -453,13 +326,6 @@ static pascal void iocompletion (ParmBlkPtr pb) {
 
 		#define iocompletionUPP (iocompletionDesc)
 
-	#else
-
-		static RoutineDescriptor iocompletionDesc = BUILD_ROUTINE_DESCRIPTOR (uppIOCompletionProcInfo, iocompletion);
-
-		#define iocompletionUPP (&iocompletionDesc)
-
-	#endif
 
 #else
 
@@ -467,11 +333,9 @@ static pascal void iocompletion (ParmBlkPtr pb) {
 
 #endif
 
-#endif //MACVERSION
 
 boolean flushvolumechanges (const ptrfilespec fs, hdlfilenum fnum) {
 
-	#ifdef MACVERSION
 	
 		# pragma unused(fnum)
 
@@ -496,14 +360,7 @@ boolean flushvolumechanges (const ptrfilespec fs, hdlfilenum fnum) {
 		
 		PBFlushVolAsync (pb);
 		
-	#endif	
 
-	#ifdef WIN95VERSION
-	
-		if (fnum != NULL)
-			FlushFileBuffers (fnum);
-			
-	#endif
 	
 	return (true);
 	} /*flushvolumechanges*/
@@ -511,19 +368,15 @@ boolean flushvolumechanges (const ptrfilespec fs, hdlfilenum fnum) {
 //Code change by Timothy Paustian Wednesday, July 26, 2000 10:52:49 PM
 //new routine to create UPPS for the async file saves.
 void fileinit (void) {
-	#if TARGET_API_MAC_CARBON
 	if(iocompletionDesc == nil)
 		iocompletionDesc = NewIOCompletionUPP(iocompletion);
-	#endif
 	} /*fileinit*/
 
 
 void fileshutdown(void) {
 
-	#if TARGET_API_MAC_CARBON
 	if(iocompletionDesc != nil)
 		DisposeIOCompletionUPP(iocompletionDesc);
-	#endif
 	} /*fileshutdown*/
 
 
@@ -535,7 +388,6 @@ static boolean filecreateandopen ( ptrfilespec fs, OSType creator, OSType filety
 	// 2006-09-15 creedon: for Mac, FSRef-ized
 	//
 	
-	#ifdef MACVERSION
 		
 		FSRef fsref;
 		OSErr err;
@@ -584,28 +436,7 @@ static boolean filecreateandopen ( ptrfilespec fs, OSType creator, OSType filety
 			
 		return (true);
 		
-	#endif
 
-	#ifdef WIN95VERSION
-	
-		HANDLE fref;
-
-		fref = (Handle) CreateFile (stringbaseaddress (fsname (fs)), GENERIC_READ | GENERIC_WRITE, FILE_SHARE_READ,
-													NULL, CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL, NULL);
-		*fnum = 0;
-
-		if (fref == INVALID_HANDLE_VALUE) {
-			
-			winfileerror (fs);
-
-			return (false);
-			}
-
-		*fnum = (hdlfilenum) fref;
-		
-		return (true);
-		
-	#endif
 	
 	} // filecreateandopen
 
@@ -642,7 +473,6 @@ boolean openfile ( const ptrfilespec fs, hdlfilenum *fnum, boolean flreadonly ) 
 	// FSOpen will set fnum to the existing channel
 	//
 		
-	#ifdef MACVERSION
 		
 		FSRef fsref;
 		short perm;
@@ -688,38 +518,7 @@ boolean openfile ( const ptrfilespec fs, hdlfilenum *fnum, boolean flreadonly ) 
 		
 		return (true);
 		
-	#endif
 
-	#ifdef WIN95VERSION
-	
-		HANDLE fref;
-		DWORD dAccess;
-		char fn[300];
-
-		if (flreadonly)
-			dAccess = GENERIC_READ;
-		else
-			dAccess = GENERIC_READ | GENERIC_WRITE;
-
-		copystring (fsname (fs), fn);
-
-		nullterminate (fn);
-
-		fref = (Handle) CreateFile (stringbaseaddress(fn), dAccess, FILE_SHARE_READ,
-													NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL);
-		*fnum = 0;
-
-		if (fref == INVALID_HANDLE_VALUE) {
-			
-			winfileerror (fs);
-
-			return (false);
-			}
-
-		*fnum = (hdlfilenum) fref;
-		return (true);
-		
-	#endif
 	
 	} // openfile
 
@@ -735,7 +534,6 @@ boolean closefile (hdlfilenum fnum) {
 	// name lock from the file prior to closing it.
 	//
 		
-	#ifdef MACVERSION
 	
 		OSStatus err = noErr;
 			
@@ -775,22 +573,7 @@ boolean closefile (hdlfilenum fnum) {
 		
 		return ( true );
 		
-	#endif
 
-	#ifdef WIN95VERSION
-	
-		if (fnum != 0) {
-			
-			if (!CloseHandle (fnum)) {
-				
-				winerror ();
-
-				return (false);
-				}
-			}
-		
-		return (true);
-	#endif
 	
 	} // closefile
 
@@ -805,7 +588,6 @@ boolean deletefile ( const ptrfilespec fs ) {
 	// 2.1b2 dmb: on Mac new filespec-based version
 	//
 	
-	#ifdef MACVERSION
 	
 		FSRef fsref;
 
@@ -832,40 +614,7 @@ boolean deletefile ( const ptrfilespec fs ) {
 	
 		return ( ! oserror ( FSDeleteObject ( &fsref ) ) );
 		
-	#endif
 
-	#ifdef WIN95VERSION
-	
-		char fn[300];
-		boolean fldeletefolder;
-
-		setfserrorparam (fs); // in case error message takes a filename parameter
-		
-		copystring (fsname (fs), fn);
-
-		cleanendoffilename(fn);
-
-		nullterminate (fn);
-
-		if (!fileisfolder (fs, &fldeletefolder))
-			return (false);
-
-		if (fldeletefolder) {
-			
-			if (RemoveDirectory (stringbaseaddress(fn)))
-				return (true);
-			
-			goto error;
-			}
-
-		if (DeleteFile (stringbaseaddress(fn)))
-			return (true);
-
-	error:
-		winerror ();
-
-		return (false);
-	#endif
 	
 	} // deletefile
 	
@@ -891,7 +640,6 @@ boolean fileexists ( const ptrfilespec fs, boolean *flfolder ) {
 	// 7/1/91 dmb: on Mac special case empty string so we don't try to get info about the default volume and return true.
 	//
 	
-	#ifdef MACVERSION
 	
 		FSCatalogInfo catalogInfo;
 		FSRef fsref;
@@ -918,43 +666,7 @@ boolean fileexists ( const ptrfilespec fs, boolean *flfolder ) {
 			
 		return (true);
 		
-	#endif
 	
-	#ifdef WIN95VERSION
-	
-		HANDLE ff;
-		WIN32_FIND_DATA ffd;
-		char fn[300];
-
-		*flfolder = false;
-
-		copystring (fsname (fs), fn);
-
-		/*if ends with \ get rid of it... and handle the root*/
-
-		cleanendoffilename (fn);
-
-		nullterminate (fn);
-
-		if (stringlength(fn) == 2) {
-			if (isalpha(fn[1]) && fn[2] == ':') {
-				*flfolder = true;
-				return (fileisvolume(fs));
-				}
-			}
-
-		ff = FindFirstFile (stringbaseaddress(fn), &ffd);
-
-		if (ff == INVALID_HANDLE_VALUE)
-			return (false);
-
-		*flfolder = ffd.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY?true:false;
-
-		FindClose (ff);
-		
-		return (true);
-		
-	#endif
 	
 	} // fileexists
 

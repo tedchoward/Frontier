@@ -51,9 +51,7 @@
 #include "process.h"
 #include "tablestructure.h"
 #include "tableverbs.h"
-#ifdef flcomponent
 	#include "osacomponent.h"
-#endif
 
 #include "timedate.h"
 #include "byteorder.h"	/* 2006-04-08 aradke: endianness conversion macros */
@@ -407,7 +405,6 @@ boolean getaddressvalue (tyvaluerecord val, hdlhashtable *htable, bigstring bs) 
 
 	if (*htable == (hdlhashtable) -1) { /*an unresolved address*/
 
-		#ifdef version5orgreater
 			boolean fl;
 
 			pushhashtable (roottable);
@@ -422,9 +419,6 @@ boolean getaddressvalue (tyvaluerecord val, hdlhashtable *htable, bigstring bs) 
 			
 			if (!fl)
 				return (false);
-		#else
-			*htable = nil;
-		#endif
 			}
 		
 	else {
@@ -856,10 +850,6 @@ boolean copyvaluerecord (tyvaluerecord v, tyvaluerecord *vreturned) {
 	
 	Handle x;
 	hdllistrecord hlist;
-#ifndef version5orgreater
-	bigstring bs;
-	hdlhashtable htable;
-#endif
 	
 #ifdef tmpcopydebug
 	static long ctdups = 0;
@@ -885,14 +875,6 @@ boolean copyvaluerecord (tyvaluerecord v, tyvaluerecord *vreturned) {
 	switch (v.valuetype) {
 		
 		case addressvaluetype:
-		#ifndef version5orgreater
-			initvalue (vreturned, novaluetype);
-			
-			if (!getaddressvalue (v, &htable, bs))
-				return (false);
-			
-			return (setaddressvalue (htable, bs, vreturned));
-		#endif
 		case stringvaluetype:
 		case passwordvaluetype:
 		case rectvaluetype:
@@ -903,13 +885,8 @@ boolean copyvaluerecord (tyvaluerecord v, tyvaluerecord *vreturned) {
 		case aliasvaluetype:
 		case doublevaluetype:
 		case binaryvaluetype:
-	#ifndef oplanglists
-		case listvaluetype:
-		case recordvaluetype:
-	#endif
 			initvalue (vreturned, novaluetype);
 			
-			#ifdef flnewfeatures
 				
 				if (v.fldiskval) {
 					/*
@@ -925,16 +902,9 @@ boolean copyvaluerecord (tyvaluerecord v, tyvaluerecord *vreturned) {
 					if (!copyhandle (v.data.binaryvalue, &x))
 						return (false);
 					}
-			#else
-			
-				if (!copyhandle (v.data.binaryvalue, &x))
-					return (false);
-			
-			#endif
 
 			return (setheapvalue (x, v.valuetype, vreturned));
 		
-	#ifdef oplanglists
 		case listvaluetype:
 		case recordvaluetype:
 			initvalue (vreturned, v.valuetype);
@@ -943,7 +913,6 @@ boolean copyvaluerecord (tyvaluerecord v, tyvaluerecord *vreturned) {
 				return (false);
 			
 			return (setheapvalue ((Handle) hlist, v.valuetype, vreturned));
-	#endif
 
 		case codevaluetype:
 		case externalvaluetype:
@@ -1003,10 +972,6 @@ void disposevaluerecord (tyvaluerecord val, boolean fldisk)
 		case aliasvaluetype:
 		case doublevaluetype:
 		case binaryvaluetype:
-	#ifndef oplanglists
-		case listvaluetype:
-		case recordvaluetype:
-	#endif
 			if (val.fldiskval) { /*4.0.2b1 dmb: see langhash comments for details*/
 			
 				if (fldisk) {
@@ -1025,7 +990,6 @@ void disposevaluerecord (tyvaluerecord val, boolean fldisk)
 			
 			break;
 		
-	#ifdef oplanglists
 		case listvaluetype:
 		case recordvaluetype:
 			exemptfromtmpstack (&val);
@@ -1033,7 +997,6 @@ void disposevaluerecord (tyvaluerecord val, boolean fldisk)
 			opdisposelist (val.data.listvalue);
 			
 			break;
-	#endif
 
 		case codevaluetype:
 			exemptfromtmpstack (&val);
@@ -1057,30 +1020,6 @@ void disposevaluerecord (tyvaluerecord val, boolean fldisk)
 	} /*disposevaluerecord*/
 
 
-#if 0
-
-static boolean isgarbagetype (tyvaluetype type) {
-	
-	/*
-	3.0.2b1 dmb: return true if the given type should be garbage collected 
-	during a an arithmetic operation
-	*/
-	
-	switch (type) {
-		
-		case stringvaluetype:
-		case doublevaluetype:
-		case binaryvaluetype:
-		case listvaluetype:
-		case recordvaluetype:
-			return (true);
-		
-		default:
-			return (false);
-		} /*switch*/
-	} /*isgarbagetype*/
-
-#endif
 
 
 void disposevalues (tyvaluerecord *val1, tyvaluerecord *val2) {
@@ -1118,22 +1057,14 @@ void disposevalues (tyvaluerecord *val1, tyvaluerecord *val2) {
 		
 		if ((*v1).fltmpstack) { //isgarbagetype ((*v1).valuetype)) {
 			
-		#ifdef oplanglists
 			disposevaluerecord (*v1, true);
-		#else
-			releaseheaptmp ((Handle) (*v1).data.stringvalue);
-		#endif
 			}
 	
 	if (v2 != nil)
 		
 		if ((*v2).fltmpstack) { //isgarbagetype ((*v2).valuetype)) {
 
-		#ifdef oplanglists
 			disposevaluerecord (*v2, true);
-		#else
-			releaseheaptmp ((Handle) (*v2).data.stringvalue);
-		#endif
 			}
 	
 	} /*disposevalues*/
@@ -1512,19 +1443,12 @@ static boolean stringtorgb (tyvaluerecord *val) {
 	} /*stringtorgb*/
 
 
-#if 0 //THINK_C
-
-	#define pattern(p) (p)
-
-#else
 	
 	#define pattern(p) (p.pat)
 
-#endif
 
 static boolean stringtopattern (tyvaluerecord *val) {
 	
-#ifdef MACVERSION
 	/*
 	10/14/91 dmb: implemented.
 	*/
@@ -1559,7 +1483,6 @@ static boolean stringtopattern (tyvaluerecord *val) {
 	error:
 	
 	langparamerror (patterncoerceerror, bs);
-#endif
 	
 	return (false);
 	} /*stringtopattern*/
@@ -1614,15 +1537,10 @@ static boolean rgbtostring (RGBColor rgb, bigstring bs) {
 
 
 static boolean patterntostring (Pattern pat, bigstring bs) {
-#ifdef MACVERSION
 	bytestohexstring (&pat, sizeof (Pattern), bs);
 	
 	return (true);
-#endif
 
-#ifdef WIN95VERSION
-	return (false);
-#endif
 	} /*patterntostring*/
 
 
@@ -1683,7 +1601,6 @@ boolean getaddresspath (tyvaluerecord val, bigstring bs) {
 	hdlhashtable htable;
 	bigstring bspath;
 	
-#ifdef version5orgreater
  	if (!getaddressparts (&val, &htable, bs))
 		return (false);
 
@@ -1692,10 +1609,6 @@ boolean getaddresspath (tyvaluerecord val, bigstring bs) {
 
 	if (!validhandle ((Handle) htable))
 		htable = nil;
-#else
-	if (!getaddressvalue (val, &htable, bs))
-		return (false);
-#endif
 	
 	ht = htable; /*move into register*/
 	
@@ -2093,12 +2006,10 @@ boolean coercetolong (tyvaluerecord *v) {
 			
 			break;
 
-#ifdef MACVERSION		
 		case fixedvaluetype:
 			x = (long) FixRound ((*v).data.fixedvalue);
 			
 			break;
-#endif
 			
 		case singlevaluetype:
 			f = (*v).data.singlevalue;
@@ -2657,7 +2568,6 @@ boolean coercetorgb (tyvaluerecord *v) {
 
 
 static boolean coercetopattern (tyvaluerecord *v) {
-#ifdef MACVERSION	
 	switch ((*v).valuetype) {
 		
 		case patternvaluetype:
@@ -2684,16 +2594,11 @@ static boolean coercetopattern (tyvaluerecord *v) {
 			
 			return (false);
 		} /*switch*/
-#endif
 
-#ifdef WIN95VERSION
-	return (false);
-#endif
 	} /*coercetopattern*/
 
 
 static boolean coercetofixed (tyvaluerecord *v) {
-#ifdef MACVERSION	
 	/*
 	6/29/92 dmb: added support for single & double types
 	
@@ -2753,13 +2658,7 @@ static boolean coercetofixed (tyvaluerecord *v) {
 		} /*switch*/
 	
 	return (setfixedvalue (x, v));
-#endif
 
-#ifdef WIN95VERSION
-	langparamerror (unimplementedverberror, bsfunctionname);
-
-	return (false);
-#endif
 	} /*coercetofixed*/
 
 
@@ -2908,15 +2807,9 @@ static boolean coercetodouble (tyvaluerecord *v) {
 
 			/*now convert to actual double value*/
 
-#ifdef WIN95VERSION
-			memmove (&x80, *((*v).data.doublevalue), sizeof (x80));
-
-			convertFromMacExtended (&lx, &x80);
-#else
 			x80 = (**(extended80 **) (*v).data.doublevalue);
 
 			safex80told (&x80, &lx);
-#endif
 			return (setdoublevalue (lx, v));
 		}
 #else
@@ -3043,26 +2936,13 @@ boolean coercetofilespec (tyvaluerecord *v) {
 				
 			if (equaltextidentifiers (stringbaseaddress(bs), stringbaseaddress(fileurl), stringlength(fileurl) )) {
 				
-				#ifdef WIN95VERSION
-				short ix = 0;
-				#endif
 				
 				/* Convert string to standard file string.*/
 				deletestring (bs, 1, stringlength (fileurl));
 				
 				decode (bs);
 
-				#ifdef MACVERSION
 					stringreplaceall ('/', ':', bs);
-				#endif
-				#ifdef WIN95VERSION
-					if (scanstring ('/', bs, &ix)) {
-						if (getstringcharacter(bs, ix-2) != ':')
-							midinsertstring ("\x01" ":", bs, ix);
-						}
-
-					stringreplaceall ('/', '\\', bs);
-				#endif
 				}
 			
 			if (!pathtofilespec (bs, &fs)) {
@@ -3419,10 +3299,6 @@ boolean coercetobinary (tyvaluerecord *val) {
 			
 		#endif
 		
-		#ifndef oplanglists
-			case listvaluetype:
-			case recordvaluetype:
-		#endif
 		case stringvaluetype:
 		case passwordvaluetype:
 		case rectvaluetype:
@@ -3432,7 +3308,6 @@ boolean coercetobinary (tyvaluerecord *val) {
 		case aliasvaluetype:
 			break;
 		
-		#ifdef oplanglists
 			case listvaluetype:
 			case recordvaluetype: {
 				Handle x;
@@ -3442,7 +3317,6 @@ boolean coercetobinary (tyvaluerecord *val) {
 				
 				return (setheapvalue (x, binaryvaluetype, v));
 				}
-		#endif
 		
 		case objspecvaluetype:
 			if ((*v).data.objspecvalue == nil) { /*null spec; special case*/
@@ -4733,52 +4607,6 @@ boolean getvarparam (hdltreenode hfirst, short pnum, hdlhashtable *htable, bigst
 	
 	tyvaluerecord val;
 	
-#ifndef version5orgreater
-	hdltreenode hparam;
-	boolean fl;
-	
-
-	/*dmb 8/20/91*/
-	
-	if (!getparam (hfirst, pnum, &hparam))
-		return (false);
-	
-	disablelangerror ();
-	
-	fl = langgetdottedsymbolval (hparam, htable, bsname, &val);
-	
-	enablelangerror ();
-	
-	if (fl) {
-		
-		if (val.valuetype == stringvaluetype) { /*see if string is an address*/
-			
-			hdlhashtable ht2;
-			bigstring bs2;
-			
-			disablelangerror ();
-			
-			fl = copyvaluerecord (val, &val) && stringtoaddress (&val) && getaddressvalue (val, &ht2, bs2);
-			
-			enablelangerror ();
-			
-			if (fl && (ht2 != nil) && (ht2 != currenthashtable)) { /*string was valid, non-local adr*/
-				
-				*htable = ht2;
-				
-				copystring (bs2, bsname);
-				}
-			
-			return (true);
-			}
-		
-		if (val.valuetype != addressvaluetype) /*not an address object; use it's adr*/
-			return (true);
-		}
-	else
-	
-		/*end 8/20/91*/
-#endif
 		
 		if (!getaddressparam (hfirst, pnum, &val))
 			return (false);
@@ -4979,10 +4807,8 @@ boolean getvarvalue (hdltreenode hfirst, short pnum, hdlhashtable *htable, bigst
 	if (!getvarparam (hfirst, pnum, htable, bsname))
 		return (false);
 	
-	#ifdef version5orgreater
 		if (isemptystring (bsname) && ((***htable).fllocaltable))
 			return (setnilvalue (val));
-	#endif
 	
 	return (langsymbolreference (*htable, bsname, val, hnode));
 	} /*getvarvalue*/
@@ -5336,9 +5162,6 @@ boolean setintvarparam (hdltreenode hfirst, short pnum, short n) {
 	} /*setintvarparam*/
 
 
-#if lazythis_optimization
-	static int ctlazythis = 0;
-#endif
 
 boolean idvalue (hdltreenode htree, tyvaluerecord *val) {
 	
@@ -5373,20 +5196,6 @@ boolean idvalue (hdltreenode htree, tyvaluerecord *val) {
 	
 	if (!langsearchpathlookup (bs, &htable)) {
 
-		#if lazythis_optimization
-		
-		if (equalidentifiers (bs, STR_this)) { /*PBS 05/12/01, dmb 11/14/01*/
-		
-			ctlazythis++;
-
-			if (langgetthisaddress (&htable, bs)) {
-		
-				setaddressvalue (htable, bs, val);
-			
-				return (true);
-				}
-			}
-		#endif
 		}
 	
 	if (!langsymbolreference (htable, bs, val, &hnode))
@@ -6334,12 +6143,10 @@ boolean addvalue (tyvaluerecord v1, tyvaluerecord v2, tyvaluerecord *vreturned) 
 			
 			break;
 		
-	#ifdef MACVERSION
 		case fixedvaluetype:
 			(*vreturned).data.fixedvalue = v1.data.fixedvalue + v2.data.fixedvalue;
 			
 			break;
-	#endif
 		
 		case singlevaluetype:
 			(*vreturned).data.singlevalue = v1.data.singlevalue + v2.data.singlevalue;
@@ -6352,7 +6159,6 @@ boolean addvalue (tyvaluerecord v1, tyvaluerecord v2, tyvaluerecord *vreturned) 
 			break;
 		
 		case stringvaluetype: {
-			#ifdef version5orgreater
 				fl = pushhandle (v2.data.stringvalue, v1.data.stringvalue);
 				
 				if (!fl)
@@ -6361,22 +6167,11 @@ boolean addvalue (tyvaluerecord v1, tyvaluerecord v2, tyvaluerecord *vreturned) 
 				*vreturned = v1;
 				
 				v1.valuetype = novaluetype;
-			#else
-				Handle x;
-				
-				fl = concathandles (v1.data.stringvalue, v2.data.stringvalue, &x);
-				
-				if (!fl)
-					break;
-				
-				fl = setheapvalue (x, stringvaluetype, vreturned);
-			#endif
 			
 			break;
 			}
 		
 		case binaryvaluetype: {
-			#ifdef version5orgreater
 				stripbinarytypeid (v2.data.binaryvalue);
 				
 				fl = pushhandle (v2.data.binaryvalue, v1.data.binaryvalue);
@@ -6389,20 +6184,6 @@ boolean addvalue (tyvaluerecord v1, tyvaluerecord v2, tyvaluerecord *vreturned) 
 				*vreturned = v1;
 				
 				v1.valuetype = novaluetype;
-			#else
-				Handle x;
-				
-				stripbinarytypeid (v1.data.binaryvalue);
-			
-				stripbinarytypeid (v2.data.binaryvalue);
-				
-				fl = concathandles (v1.data.binaryvalue, v2.data.binaryvalue, &x);
-				
-				if (!fl)
-					break;
-				
-				fl = setbinaryvalue (x, '\?\?\?\?', vreturned);
-			#endif
 			
 			break;
 			}
@@ -6482,12 +6263,10 @@ boolean subtractvalue (tyvaluerecord v1, tyvaluerecord v2, tyvaluerecord *vretur
 			(*vreturned).data.datevalue = v1.data.datevalue - v2.data.datevalue;
 			
 			break;
-#ifdef MACVERSION		
 		case fixedvaluetype:
 			(*vreturned).data.fixedvalue = v1.data.fixedvalue - v2.data.fixedvalue;
 			
 			break;
-#endif		
 		case singlevaluetype:
 			(*vreturned).data.singlevalue = v1.data.singlevalue - v2.data.singlevalue;
 			
@@ -6499,7 +6278,6 @@ boolean subtractvalue (tyvaluerecord v1, tyvaluerecord v2, tyvaluerecord *vretur
 			break;
 		
 		case stringvaluetype: {
-			#ifdef version5orgreater
 				long ix;
 				
 				ix = searchhandle (v1.data.stringvalue, v2.data.stringvalue, 0, longinfinity);
@@ -6510,22 +6288,6 @@ boolean subtractvalue (tyvaluerecord v1, tyvaluerecord v2, tyvaluerecord *vretur
 				*vreturned = v1;
 				
 				v1.valuetype = novaluetype;
-			#else
-				Handle x;
-				long ix;
-				
-				fl = copyhandle (v1.data.stringvalue, &x);
-				
-				if (!fl)
-					break;
-				
-				ix = searchhandle (x, v2.data.stringvalue, 0, longinfinity);
-				
-				if (ix >= 0)
-					pullfromhandle (x, ix, gethandlesize (v2.data.stringvalue), nil);
-				
-				fl = setheapvalue (x, stringvaluetype, vreturned);
-			#endif
 			
 			break;
 			
@@ -6598,12 +6360,10 @@ boolean multiplyvalue (tyvaluerecord v1, tyvaluerecord v2, tyvaluerecord *vretur
 			(*vreturned).data.datevalue = v1.data.datevalue * v2.data.datevalue;
 			
 			break;
-#ifdef MACVERSION		
 		case fixedvaluetype:
 			(*vreturned).data.fixedvalue = FixMul (v1.data.fixedvalue, v2.data.fixedvalue);
 			
 			break;
-#endif
 			
 		case singlevaluetype:
 			(*vreturned).data.singlevalue = v1.data.singlevalue * v2.data.singlevalue;
@@ -7327,10 +7087,8 @@ boolean unaryminusvalue (tyvaluerecord v1, tyvaluerecord *vreturned) {
 			(*vreturned).data.longvalue = -v1.data.longvalue;
 			
 			break;
-#ifdef MACVERSION		
 		case fixedvaluetype:
 			(*vreturned).data.fixedvalue = -v1.data.fixedvalue;
-#endif		
 		case singlevaluetype:
 			(*vreturned).data.singlevalue = -v1.data.singlevalue;
 			
@@ -7469,7 +7227,6 @@ static boolean namefunc (hdltreenode hparam1, tyvaluerecord *vreturned) {
 			if (valarray.valuetype != recordvaluetype)
 				goto exit;
 			
-			#ifdef oplanglists
 				switch (valindex.valuetype) {
 					
 					case ostypevaluetype:
@@ -7491,23 +7248,6 @@ static boolean namefunc (hdltreenode hparam1, tyvaluerecord *vreturned) {
 						
 						break;
 					}
-			#else
-				if (valindex.valuetype == ostypevaluetype)
-					key = valindex.data.ostypevalue;
-				
-				else {
-					
-					if (!coercetolong (&valindex))
-						goto exit;
-					
-					if (!langgetlistitem (&valarray, valindex.data.longvalue, &key, &valitem))
-						goto exit;
-					
-					disposevaluerecord (valitem, true);
-					}
-				
-				ostypetostring (key, bsname);
-			#endif
 			}
 		}
 	
@@ -7757,13 +7497,11 @@ boolean kernelfunctionvalue (hdlhashtable htable, bigstring bsverb, hdltreenode 
 		return (false);
 		}
 	
-#if isFrontier && (MACVERSION || RABTEMPOUT)
 	if ((**ht).flverbsrequirewindow && !infrontierprocess ()) { /*verb may need to be run in frontier process*/
 		
 		if ((*valueroutine) (val.data.tokenvalue, nil, nil, nil)) /*yup*/
 			return (langipckernelfunction (ht, bsverb, hparam1, vreturned));
 		}
-#endif	
 	setemptystring (bserror);
 	
 	if (flprofiling) {
@@ -8029,10 +7767,8 @@ static boolean binaryfunctionvalue (hdlhashnode hnode, bigstring bsname, hdltree
 		case 'UCMD':
 			break;
 		
-	#ifdef flcomponent
 		default:
 			return (evaluateosascript (&v, hparam1, bsname, vreturned));
-	#endif
 		}
 	
 	langparamerror (notfunctionerror, bsname);
@@ -8093,11 +7829,8 @@ boolean langfunctioncall (hdltreenode hcallernode, hdlhashtable htable, hdlhashn
 	register hdltreenode hname;
 	register boolean fl;
 	hdlhashtable hlocaltable;
-#if (version5orgreater && defined (flcomponent))
 	tyvaluerecord osacode;
-#endif
 	
-	#if version5orgreater	// do special case checking here, not in langrunhandlercode
 		
 		if (hcode == nil) { /*can only be a kernel call -- or an error*/
 			
@@ -8110,7 +7843,6 @@ boolean langfunctioncall (hdltreenode hcallernode, hdlhashtable htable, hdlhashn
 		if ((**(**hcode).param1).nodetype == kernelop)
 			return (kernelcall (hcode, hparam1, vreturned));
 		
-		#ifdef flcomponent
 			
 			if (isosascriptnode (hcode, &osacode)) {
 				
@@ -8127,9 +7859,7 @@ boolean langfunctioncall (hdltreenode hcallernode, hdlhashtable htable, hdlhashn
 				return (fl);
 				}
 			
-		#endif // flcomponent
 		
-	#endif // version5orgreater
 	
 	bundle { /*safely navigate to get the name of the 1st formal param*/
 		
@@ -8146,11 +7876,9 @@ boolean langfunctioncall (hdltreenode hcallernode, hdlhashtable htable, hdlhashn
 	
 	(**hlocaltable).fllocaltable = true; // 5.1.4: set now so pre-assignments know scope
 	
-	#ifdef flnewfeatures
 	
 	langseterrorcallbackline ();
 	
-	#endif
 	
 	fl = langaddfuncparams (hname, hparam1, hlocaltable);
 	
@@ -8194,7 +7922,6 @@ boolean langfunctioncall (hdltreenode hcallernode, hdlhashtable htable, hdlhashn
 	} /*langfunctioncall*/
 
 
-#if version5orgreater
 
 static boolean isentrypoint (hdltreenode hcode, bigstring bsname, bigstring bsprocname) {
 	
@@ -8296,88 +8023,8 @@ static hdltreenode langgetentrypoint (hdltreenode hcode, bigstring bsname, hdlha
 	return (hcode);
 	} /*langgetentrypoint*/
 
-#else
-
-static hdltreenode langgetentrypoint (hdltreenode hcode, bigstring bsname, hdlhashtable htable, hdlhashnode hnode) {
-
-	/*
-	skip over extra level of modularity that exists in external 
-	handle calls.
-	
-	see comment in langfunctioncall
-	
-	5/28/91 dmb: only skip level when the module name is the same as the 
-	indicated external name (the name of the script in the database).  if no 
-	name is given, no match is required
-	
-	11/25/91 dmb: use langgetidentifier to handle entrypoints that are 
-	bracketed expressions.
-	
-	2/13/92 dmb: treat entrypoint name mismatch as an error if that's all
-	there is in the module.  added htable/hnode parameters so that errors can be 
-	reported nicely
-	*/
-	
-	register hdltreenode hp1 = (**hcode).param1;
-	
-	while (hp1 && (**hp1).nodetype == noop) /*skip over comments, blank lines*/
-		hp1 = (**hp1).link;
-	
-	if (hp1 && (**hp1).nodetype == moduleop) { /*skip one level of modularity*/
-		
-		register hdltreenode hp2 = (**hp1).param2; /*should be procop*/
-		bigstring bsidentifier;
-		
-		assert (hp2 && ((**hp2).nodetype == procop));
-		
-		if (bsname == nil)
-			return (hp1);
-		
-		if (langgetidentifier ((**hp2).param1, bsidentifier)) {
-			
-			if (equalidentifiers (bsidentifier, bsname))
-				return (hp1);
-			
-			if ((**hp1).link == nil) { /*nothing left; this is a bug*/
-				
-				langpushsourcecode (htable, hnode, bsfunctionname); /*point user at bad script...*/
-				
-				langseterrorline ((**hp2).param1); /*...rather than the call to it*/
-				
-				lang2paramerror (badentrypointnameerror, bsname, bsidentifier);
-				
-				langpopsourcecode ();
-				
-				return (nil);
-				}
-			}
-		}
-	
-	return (hcode);
-	} /*langgetentrypoint*/
-
-#endif // version5orgreater
 
 
-#if 0
-
-boolean langgetlocalhandlercode (bigstring bs, hdltreenode *hcode) {
-	
-	hdlhashtable htable;
-	tyvaluerecord val;
-	
-	if (!langgetsymbolval (bs, &val)) /*not found in local chain*/
-		return (false);
-	
-	if (val.valuetype != codevaluetype) /*not a local handler*/
-		return (false);
-	
-	*hcode = val.data.codevalue;
-	
-	return (true);
-	} /*langgetlocalhandlercode*/
-
-#endif
 
 
 boolean langgetnodecode (hdlhashtable ht, bigstring bs, hdlhashnode hnode, hdltreenode *hcode) {
@@ -8625,7 +8272,6 @@ boolean langhandlercall (hdltreenode htree, hdltreenode hparam1, tyvaluerecord *
 		goto runhandler;
 		}
 	
-	#ifdef version5orgreater
 		if ((**htree).nodetype == dotop) { // 8.0.4 dmb: handle remote functions for SCNS
 			
 			if (langisremotefunction (htree))
@@ -8655,12 +8301,9 @@ boolean langhandlercall (hdltreenode htree, hdltreenode hparam1, tyvaluerecord *
 				}
 			}
 			
-	#endif
 
-	#if isFrontier && MACVERSION
 		if (langipchandlercall (htree, bsfunctionname, hparam1, vreturned)) /*3.0a*/
 			return (true);
-	#endif
 	
 	langparamerror (unknownfunctionerror, bsfunctionname);
 	
@@ -8731,7 +8374,6 @@ static boolean builtinvalue (tyfunctype token, hdltreenode hparam1, tyvaluerecor
 		case unpackfunc:
 			return (langunpackverb (hp1, v));
 			
-		#if isFrontier && (MACVERSION || RABNOTIMPEMENTED)
 
 			case appleeventfunc:
 				return (langipcmessage (hp1, normalmsg, v));
@@ -8745,7 +8387,6 @@ static boolean builtinvalue (tyfunctype token, hdltreenode hparam1, tyvaluerecor
 			case tableeventfunc:
 				return (langipctablemessage (hp1, v));
 			
-		#endif	
 
 		case objspecfunc:
 			flnextparamislast = true;
@@ -8755,7 +8396,6 @@ static boolean builtinvalue (tyfunctype token, hdltreenode hparam1, tyvaluerecor
 		case setobjspecfunc:
 			return (setobjspecverb (hp1, v));
 		
-		#ifdef MACVERSION
 
 			case gestaltfunc: {
 				OSType selector;
@@ -8771,7 +8411,6 @@ static boolean builtinvalue (tyfunctype token, hdltreenode hparam1, tyvaluerecor
 				
 				return (setlongvalue (result, v));
 				}
-		#endif
 			
 		case syscrashfunc: {
 			
@@ -8789,7 +8428,6 @@ static boolean builtinvalue (tyfunctype token, hdltreenode hparam1, tyvaluerecor
 			return (true);
 			}
 		
-		#if isFrontier && !flruntime
 		
 		case myMooffunc: {
 			short ticksbetweenframes;
@@ -8815,7 +8453,6 @@ static boolean builtinvalue (tyfunctype token, hdltreenode hparam1, tyvaluerecor
 			return (true);
 			}
 		
-		#endif
 		
 			default:
 				/* do nothing */

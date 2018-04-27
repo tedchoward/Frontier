@@ -72,14 +72,11 @@ boolean shellactivate (void) {
 	if (!activateapplication (nil)) /*bring ourselves to the front*/
 		return (false);
 	
-	#ifdef flcomponent
 	
 	if (fldisableyield)
 		return (true);
 	
-	#endif
 
-#ifdef MACVERSION
 	while (!flshellactive) { /*wait 'till we're actually in front*/
 		
 		if (flscriptrunning)
@@ -87,7 +84,6 @@ boolean shellactivate (void) {
 		else
 			shellpartialeventloop (osMask | updateMask | activMask);
 		}
-#endif
 	
 	return (true);
 } /*shellactivate*/
@@ -139,19 +135,6 @@ void shellhandlejugglerevent (void) {
 		if (fl)
 			shellactivatewindow (shellwindow, flshellactive);
 
-		#if defined(TARGET_API_MAC_OS8) && (TARGET_API_MAC_OS8 == 1)
-			/*
-			2006-04-17 aradke: convertClipboardFlag is never set on Carbon
-			*/
-			
-			if ((message & convertClipboardFlag) != 0) {
-				
-				if (flresume)
-					; /*shellreadscrap ()*/ /*12/28/90 dmb: see comment in shellreadscrap*/
-				else
-					shellwritescrap (anyscraptype);
-				}
-		#endif
 		
 		if (fl)
 			shellpopglobals ();

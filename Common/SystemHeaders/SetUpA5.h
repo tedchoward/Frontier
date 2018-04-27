@@ -47,7 +47,6 @@
 	
 //Code change by Timothy Paustian Wednesday, July 12, 2000 1:59:26 PM
 //A5 worlds have no relvance in Carbon so just define them away.
-#if TARGET_API_MAC_CARBON == 1
 
 	#define RememberA5()
 	
@@ -63,27 +62,4 @@
 	
 	#define popA5()
 
-#else
-	
-	// 2006-04-01 aradke: only used for Classic Mac OS on PPC (which we actually don't even support anymore)
-	
-	static long __appA5;	/* 2004-10-28 aradke: not used on Carbon */
-
-	#define RememberA5()	do {__appA5 = (long) LMGetCurrentA5 ();} while (0)
-
-	#define SetUpThisA5(A5)	SetA5 (A5)
-
-	#define SetUpAppA5()	SetA5 (__appA5);
-
-	//	#define SetUpCurA5()	do { savedA5 = SetA5 ((long) LMGetCurrentA5 ()); } while (0)
-
-	#define SetUpCurA5()	SetCurrentA5 ();
-
-	#define RestoreA5(savedA5)	SetA5 (savedA5)
-
-	#define pushA5()		SetUpCurA5 ()
-
-	#define popA5()			RestoreA5 ()
-
-#endif
 

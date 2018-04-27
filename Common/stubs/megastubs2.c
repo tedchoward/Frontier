@@ -28,11 +28,9 @@
 #include "frontier.h"
 #include "standard.h"
 
-#ifdef MACVERSION
 	#include <IAC.h>
 	#include <uisharing.h>
 	#include "filealias.h"
-#endif
 
 #include "bitmaps.h"
 #include "dialogs.h"
@@ -55,9 +53,7 @@
 #include "shellhooks.h"
 #include "shellprint.h"
 
-#ifdef MACVERSION
 #include "osacomponent.h"
-#endif
 
 #include "process.h"
 
@@ -195,101 +191,6 @@ void zoomwindowtocenter (Rect r, WindowPtr w) {
 void zoomsetdefaultrect (WindowPtr w, Rect r) {}
 
 
-#ifndef isFrontier
-
-// script.c
-
-boolean scriptrunsuspendscripts (void) {return true;}
-
-boolean scriptrunresumescripts (void) {return true;}
-
-
-// process.c
-
-unsigned short fldisableyield = 0;
-
-hdlprocessrecord currentprocess = nil;
-
-boolean initprocess (void) {return true;}
-
-unsigned long processstackspace (void) {
-	
-#if MACVERSION
-	return (StackSpace ());
-#endif
-
-#if WIN95VERSION
-	return (0x7fff); // 3/10/97 dmb: no equivalent measure (stackavail) under Windows
-#endif
-	} /*processstackspace*/
-
-#if winhybrid
-
-boolean debuggingcurrentprocess (void) {return false;}
-
-boolean processruntext (Handle htext) {bigstring bs; return langrunhandle (htext, bs);}
-
-boolean processisoneshot (boolean fl) {return true;}
-
-#endif
-
-boolean processagentsleep (long ctseconds) {return true;}
-
-boolean pushprocess (hdlprocessrecord hp) {return true;}
-
-boolean popprocess (void) {return true;}
-
-boolean processbusy (void) {return true;}
-
-boolean processyield (void) {return true;}
-
-boolean processdisposecode (hdltreenode hcode) {return false;}
-
-void processchecktimeouts (void) {}
-
-void processclose (void) {}
-
-void processinvalidglobals (WindowPtr w) {}
-
-boolean processrunning (void) {return true;}
-
-
-// land.c
-
-//pascal boolean landeventfilter (EventRecord *ev) {return false;}
-
-
-// lang.c
-
-boolean flscriptrunning = false;
-
-boolean langzoomobject (const bigstring bs) {return (false);}
-
-boolean initlang (void) {return true;}
-
-
-
-// langcallbacks.c
-
-boolean langbackgroundtask (boolean fl) {return true;}
-
-boolean langpartialeventloop (short mask) {
-
-	return shellpartialeventloop (mask);
-	} /*langpartialeventloop*/
-
-// langexternal.c
-
-boolean langexternalzoomfrom (tyvaluerecord val, hdlhashtable ht, bigstring bs, Rect r) {return false;}
-
-boolean langexternalwindowopen (tyvaluerecord val, hdlwindowinfo *hw) {return false;}
-
-boolean tablezoomtoname (hdlhashtable ht, bigstring bs) {return false;}
-
-boolean initscripts (void) {return true;}
-
-
-#endif // isFrontier
 
 // osacomponent.c
 
@@ -311,7 +212,6 @@ boolean langrunmodeless (hdltreenode hparam1, tyvaluerecord *vreturned) {return 
 typrocessid langipcself;
 static boolean fltoolkitinitialized = false;
 
-#ifdef MACVERSION
 
 static pascal Boolean openfilespec (ptrfilespec pfs) {
 	
@@ -376,7 +276,6 @@ boolean landeventfilter (EventRecord *ev) {
 	return (false); /*don't consume the event*/
 	} /*landeventfilter*/
 
-#endif
 
 boolean langipcinit (void) {
 	
@@ -391,7 +290,6 @@ boolean langipcstart (void) {
 	and registering the verbs that scriptrunners must implement.
 	*/
 	
-#ifdef MACVERSION
 	
 	GetCurrentProcess (&langipcself);
 	
@@ -406,7 +304,6 @@ boolean langipcstart (void) {
 
 	error:
 	
-#endif
 
 	return (true);
 	} /*langipcstart*/
@@ -418,7 +315,6 @@ void langipcshutdown () {}
 //void initsegment (void) {}
 
 
-#ifdef MACVERSION
 
 // uiSharing
 
@@ -474,34 +370,4 @@ void aboutsegment (void) {}
 boolean openabout (boolean fl, long n) {return false;}
 
 
-#endif
 
-#ifdef WIN95VERSION
-
-short dialogcountitems (DialogPtr pdialog) {return 0;}
-
-void disabledialogitem (DialogPtr pdialog, short itemnumber) {}
-	
-void enabledialogitem (DialogPtr pdialog, short itemnumber) {}
-
-void hidedialogitem (DialogPtr pdialog, short itemnumber) {}
-
-void showdialogitem (DialogPtr pdialog, short itemnumber) {}
-
-boolean customdialog (short id, short defaultitem, dialogcallback itemhitcallback) {return false;}
-
-long FreeMem (void) {
-	MEMORYSTATUS ms;
-
-	ms.dwLength = sizeof (MEMORYSTATUS);
-	GlobalMemoryStatus (&ms);
-
-	return (ms.dwAvailPageFile);
-	}
-
-void DrawPicture (Handle hpicture, const Rect *frame) {}
-
-void UpdateDialog (WindowPtr w) {}
-
-
-#endif

@@ -43,15 +43,10 @@
 #include "wpverbs.h"
 #include "cancoon.h"
 #include "command.h"
-#ifdef flcomponent
 	#include "osacomponent.h"
-#endif
 #include "odbinternal.h"
 #include "kernelverbs.h"
 #include "kernelverbdefs.h"
-#ifdef fliowa
-	#include "iowaverbs.h" /*3/18/92 dmb*/
-#endif
 
 
 static boolean ccstart (void) {
@@ -152,12 +147,10 @@ void main (void) {
 	if (!ccstart ())
 		shellquit ();
 	
-	#ifdef flcomponent
 	
 	if (!osacomponentstart ())
 		;	// don't quit if this doesn't work
 	
-	#endif
 	
 	shellmaineventloop ();
 	} /*main*/

@@ -48,11 +48,7 @@
 
 	#define wsComponentType 'SHUI'
 	
-	#ifdef iowaRuntimeInApp
-		#define wsComponentSubType 'TEST' 
-	#else	
 		#define wsComponentSubType 'WIND' 
-	#endif
 	
 	#define wsStubStartCommand 1 
 	#define wsRecalcObjectCommand 2

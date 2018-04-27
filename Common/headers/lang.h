@@ -41,9 +41,6 @@
 
 #endif
 
-#if __powerc
-	#define flfindbug 0
-#endif
 
 
 #define idconsthashresource 128
@@ -247,7 +244,6 @@ typedef enum tyvaluetype { /*use care -- these are saved on disk inside symbol t
 	
 	aliasvaluetype = 27,
 	
-	#ifdef flnewfeatures
 	
 	enumvaluetype = 28,
 	
@@ -255,7 +251,6 @@ typedef enum tyvaluetype { /*use care -- these are saved on disk inside symbol t
 	
 	recordvaluetype = 30,
 	
-	#endif
 	
 	/*
 	the following value types, outline - pictvaluetype, are never used directly.
@@ -309,12 +304,7 @@ typedef union tyvaluedata {
 	
 	unsigned long datevalue;
 	
-#ifdef MACVERSION
 	tydirection dirvalue;
-#endif
-#ifdef WIN95VERSION
-	byte dirvalue;
-#endif
 
 	OSType ostypevalue;
 	
@@ -356,15 +346,9 @@ typedef union tyvaluedata {
 	
 	OSType enumvalue;
 	
-#ifdef oplanglists
 	struct tylistrecord **listvalue;
 
 	struct tylistrecord **recordvalue;
-#else
-	Handle listvalue;
-	
-	Handle recordvalue;
-#endif
 	
 	dbaddress diskvalue;	/*4.0.2b1 dmb*/
 	} tyvaluedata;
@@ -414,13 +398,6 @@ typedef struct tyhashnode {
 	
 	struct tyhashnode **sortedlink; /*next guy in alphabetic order*/
 	
-	#ifdef fltracklocaladdresses
-	
-	struct tyhashnode **refnodelink; /*next guy in linked list of refnodes list of a hashtable*/
-	
-	struct tyhashtable **reftable; /*table referenced by an address value*/
-	
-	#endif
 	
 	tyvaluerecord val; /*the value of the identifier*/
 	
@@ -461,22 +438,15 @@ typedef struct tyhashtable {
 	
 	struct tyhashtable **prevhashtable; /*allow tables to be linked*/
 	
-	#if !flruntime
 	
 	struct tyhashtable **parenthashtable; /*allow tables to be linked, but not lexically*/
 	
-	#endif
 
 	/* The following is added 12/29/99 by RAB so that we do not have to scan all the buckets of 
 	this tables parent to get the hashnode for this table and therefore it's value record and it's name. */
 
 	hdlhashnode thistableshashnode; /*this tables hashnode referenced in it's parents hashbuckets 12/29/99 RAB*/
 	
-	#ifdef fltracklocaladdresses
-	
-	hdlhashnode refnodes; /*linked list of hash nodes containing addresses that reference an object in this table*/
-	
-	#endif
 	
 	boolean fldirty: 1; /*indicates whether anything has changed*/
 	
@@ -510,11 +480,9 @@ typedef struct tyhashtable {
 	
 	long lexicalrefcon;
 	
-	#if odbengine || !flruntime
 	
 	struct tytableformats **hashtableformats; /*place to link in a display formats record*/
 	
-	#endif
 	
 	short sortorder; /*up to the application to understand what this means*/
 	
@@ -559,13 +527,11 @@ typedef struct tyerrorrecord {
 	
 	unsigned short errorchar;
 	
-	#ifdef flnewfeatures
 	
 	unsigned long profilebase;
 	
 	unsigned long profiletotal;
 	
-	#endif
 	
 	long errorrefcon;
 	} tyerrorrecord;
@@ -670,19 +636,15 @@ typedef struct tylangcallbacks {
 	
 	langeventcallback processeventcallback;
 	
-	#ifdef flnewfeatures
 	
 	langerrormessagecallback debugerrormessagecallback;
 	
-	#endif
 	
-	#ifdef flcomponent
 	
 	callback presystemdialogcallback;
 	
 	callback postsystemdialogcallback;
 	
-	#endif
 	
 	} tylangcallbacks;
 
@@ -821,19 +783,15 @@ extern void langsymboldeleted (hdlhashtable, const bigstring);
 
 extern boolean langbackgroundtask (boolean);
 
-#ifdef flnewfeatures
 
 extern boolean langpartialeventloop (short);
 
-#endif
 
-#ifdef flcomponent
 
 extern callback langpresystemdialog (void);
 
 extern void langpostsystemdialog (void);
 
-#endif
 
 
 extern boolean datenetstandardstring (long localdate, tyvaluerecord *vreturn); /*langdate.c*/
@@ -871,13 +829,6 @@ extern boolean langerrorflush (void);
 extern boolean clearlangerrordialog (void);
 
 
-#ifdef fltracklocaladdresses
-
-extern void hashregisteraddressnode (hdlhashtable, hdlhashnode); /*langhash.c*/
-
-extern void hashunregisteraddressnode (hdlhashnode);
-
-#endif
 
 extern boolean newhashtable (hdlhashtable *); /*langhash.c*/
 

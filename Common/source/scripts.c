@@ -62,16 +62,12 @@
 #include "tableinternal.h"
 #include "tableverbs.h"
 #include "scripts.h"
-#ifdef flcomponent
 #include "osacomponent.h"
-#endif
 #include "error.h"
 
 static boolean scriptdebuggereventloop (void);
 
-#if TARGET_API_MAC_CARBON == 1 /*PBS 03/14/02: AE OS X fix.*/
 	#include "aeutils.h"
-#endif
 
 
 enum {
@@ -149,7 +145,6 @@ typedef struct tydebuggerrecord {
 	
 	hdlheadrecord hbarcursor; /*the headline we've most recently shown*/
 	
-#ifdef flcomponent
 	
 	ComponentInstance servercomp; /*component that we have open for this script*/
 	
@@ -157,7 +152,6 @@ typedef struct tydebuggerrecord {
 	
 	OSAID idscript; /*while recording, this is the id of the script*/
 	
-#endif
 	
 	short lastindent;
 	
@@ -289,11 +283,7 @@ boolean scriptbuildtree (Handle htext, long signature, hdltreenode *hcode) {
 	if (signature == typeLAND)
 		return (langbuildtree (htext, true, hcode));
 	
-#ifdef flcomponent
 	fl = osagetcode (htext, signature, false, &codeval);
-#else
-	fl = false;
-#endif
 	disposehandle (htext);
 	
 	if (!fl)
@@ -600,7 +590,6 @@ static boolean newprocessvisit (hdlhashnode hnode, ptrvoid refcon) {
 	if (!fl)
 		return (true);
 	
-	#ifdef version5orgreater
 		if (!newprocess (hcode, true, &systemscripterrorroutine, (long) hnode, &hprocess))
 			return (false);
 		
@@ -611,9 +600,6 @@ static boolean newprocessvisit (hdlhashnode hnode, ptrvoid refcon) {
 		++ctspecialprocessesrunning;
 		
 		return (true);
-	#else
-		return (addnewprocess (hcode, true, &systemscripterrorroutine, (long) hnode));
-	#endif
 	} /*newprocessvisit*/
 
 
@@ -792,7 +778,6 @@ static boolean scriptinvalbuttonsvisit (WindowPtr w, ptrvoid refcon) {
 	
 	invalwindowrect (shellwindow, r);
 	
-	#if TARGET_API_MAC_CARBON == 1
 	
 		GetPortBounds (GetWindowPort (w), &r);	
 	
@@ -802,7 +787,6 @@ static boolean scriptinvalbuttonsvisit (WindowPtr w, ptrvoid refcon) {
 		
 		popclip ();
 		
-	#endif
 		
 	shellpopglobals ();
 	
@@ -923,7 +907,6 @@ static boolean scriptinstallable (void) {
 	} /*scriptinstallable*/
 
 
-#ifdef flcomponent
 
 static boolean scriptrecordable (void) {
 	
@@ -940,7 +923,6 @@ static boolean scriptrecordable (void) {
 	return (ComponentFunctionImplemented (comp, kOSASelectStartRecording));
 	} /*scriptrecordable*/
 
-#endif
 
 static boolean scriptpushsourcerecord (tysourcerecord source) {
 	
@@ -1448,7 +1430,6 @@ static void scriptkillbutton (void) {
 	} /*scriptkillbutton*/
 
 
-#ifdef flcomponent
 
 static pascal OSErr handlerecordedtext (const AppleEvent *event, AppleEvent *reply, SInt32 refcon) {
 #pragma unused (reply, refcon)
@@ -1485,15 +1466,9 @@ static pascal OSErr handlerecordedtext (const AppleEvent *event, AppleEvent *rep
 	if (err != noErr)
 		return (err);
 	
-	#if TARGET_API_MAC_CARBON == 1 /*PBS 03/14/02: AE OS X fix.*/
 	
 		datahandletostring (&desc, bs);
 	
-	#else
-	
-		texthandletostring (desc.dataHandle, bs);
-	
-	#endif
 	
 	stringdeletechars (bs, chnul);
 	
@@ -1541,7 +1516,6 @@ static pascal OSErr handlerecordedtext (const AppleEvent *event, AppleEvent *rep
 		}
 	else
 		
-		#if TARGET_API_MAC_CARBON == 1 /*PBS 03/14/02: AE OS X fix.*/
 		
 			{
 			Handle hcopy;
@@ -1553,11 +1527,6 @@ static pascal OSErr handlerecordedtext (const AppleEvent *event, AppleEvent *rep
 			disposehandle (hcopy);
 			}
 		
-		#else
-		
-			floutline = isoutlinetext (desc.dataHandle);
-	
-		#endif
 		
 	diff = indent - (**hd).lastindent;
 	
@@ -1575,7 +1544,6 @@ static pascal OSErr handlerecordedtext (const AppleEvent *event, AppleEvent *rep
 		
 		if (floutline)
 			
-			#if TARGET_API_MAC_CARBON == 1 /*PBS 03/14/02: AE OS X fix.*/
 			
 				{
 				Handle hcopy;
@@ -1585,11 +1553,6 @@ static pascal OSErr handlerecordedtext (const AppleEvent *event, AppleEvent *rep
 				opinserthandle (hcopy, dir);
 				}
 			
-			#else
-			
-				opinserthandle (desc.dataHandle, dir);
-		
-			#endif
 			
 		else {
 			
@@ -1710,7 +1673,6 @@ static pascal OSErr handlestoprecording (const AppleEvent *event, AppleEvent *re
 	return (noErr);
 	} /*handlestoprecording*/
 
-#endif	// flcomponent
 
 static boolean scriptstringlookup (bigstring bs, hdlhashtable *htable, bigstring bsname) {
 	
@@ -1941,14 +1903,12 @@ static boolean scriptbutton (short buttonnum) {
 	
 	switch (buttonnum) {
 		
-	#ifdef flcomponent
 		case recordbutton:
 			scriptrecordbutton ();
 			
 			scriptinvalbuttons ();
 			
 			return (true);
-	#endif		
 		case runbutton:
 			if (scriptnewprocess (runbutton))
 				shellupdatenow (outlinewindow);
@@ -1993,11 +1953,9 @@ static boolean scriptbutton (short buttonnum) {
 			return (true);
 		
 		case stopbutton:
-	#ifdef flcomponent
 			if ((**hd).flrecording)
 				scriptstoprecordbutton ();
 			else
-	#endif
 			 {
 				
 				scriptstepbutton (down); /*we're going to single-step thru scripts*/
@@ -2118,11 +2076,7 @@ static boolean scriptbuttonenabled (short buttonnum) {
 	switch (x) {
 		
 		case recordbutton:
-		#ifdef flcomponent
 			return (!lflscriptrunning && scriptrecordable ());
-		#else
-			return (false);
-		#endif
 		
 		case runbutton:
 			return (!lflscriptrunning);
@@ -2192,23 +2146,16 @@ static boolean scriptbuttondisplayed (short buttonnum) {
 	
 	fldebuggingthisscript = flrunningthisscript && (**hp).fldebugging;
 	
-#ifdef flcomponent
 	if ((**hd).flrecording)
 		return ((x == recordbutton) || (x == stopbutton));
-#endif
 	
 	switch (x) {
 		
 		case recordbutton:
-		#ifndef flcomponent
-			return (false);
-		#endif
 		
-		#if TARGET_API_MAC_CARBON == 1 /*PBS 7.0b43: no record button in OS X*/
 		
 			return (false);
 		
-		#endif
 		
 		case runbutton:
 		case debugbutton:
@@ -2260,49 +2207,6 @@ static boolean scriptbuttonstatus (short buttonnum, tybuttonstatus *status) {
 	} /*scriptbuttonstatus*/
 
 
-#if 0
-
-boolean scriptkilled (void) {
-	
-	/*
-	returns true if the current running script should be killed by the
-	interpreter.  it's called back from within the interpreter.
-	
-	7/2/91 dmb: no longer check the scriptkilled debuggerdata flag here; 
-	it's handled by returning false from the debugger routine.  checking 
-	it here will wrongly terminate some other process
-	*/
-	
-	register hdldebuggerrecord hd = debuggerdata;
-	
-	/*
-	if ((**hd).flscriptkilled) {
-		
-		if (processisoneshot (false)) { /%we're running a one-shot process%/
-			
-			(**hd).flscriptkilled = false; /%consume it%/
-			
-			scriptprocesskilled ();
-			
-			return (true);
-			}
-		}
-	*/
-	
-	if (keyboardescape ()) { /*user pressed cmd-period or something like that*/
-		
-		if (processisoneshot (true)) { /*cmd-period doesn't kill background tasks*/
-			
-			keyboardclearescape (); /*consume it*/
-			
-			return (true);
-			}
-		}
-		
-	return (false);
-	} /*scriptkilled*/
-
-#endif
 
 
 static boolean scriptdebuggercallback (void) {
@@ -2929,14 +2833,6 @@ boolean scriptzoomwindow (Rect rwindow, Rect rzoom, hdlheadrecord hcursor, Windo
 	} /*scriptzoomwindow*/
 
 
-#if 0
-
-static boolean scripthaslinkedtextroutine (hdlheadrecord hnode) {
-	
-	return (false); /*no linked text for script lines*/
-	} /*scripthaslinkedtextroutine*/
-
-#endif
 
 
 static boolean optogglebreakpoint (hdlheadrecord hnode) {
@@ -3252,9 +3148,6 @@ static void scriptresize (void) {
 	
 	opresize ((**outlinewindowinfo).contentrect);
 	
-	#ifdef WIN95VERSION
-		opupdatenow ();
-	#endif
 	} /*scriptresize*/
 
 
@@ -3390,10 +3283,8 @@ static boolean scriptclose (void) {
 				else
 					scriptgobutton ();
 				
-			#ifdef flcomponent
 				if ((**hd).flrecording)
 					scriptstoprecordbutton ();
-			#endif
 			
 				(**hd).flwindowclosed = true;
 				}
@@ -3507,16 +3398,9 @@ static boolean scriptkeystroke (void) {
 
 	if (scriptinmenubar ()) { /*lives in menubar*/
 		
-		#ifdef MACVERSION
 		if (keyboardstatus.chkb == chenter)
 			
 			if (keyboardstatus.flcmdkey && keyboardstatus.flshiftkey) {
-		#endif
-		#ifdef WIN95VERSION
-		if (keyboardstatus.chkb == chbackspace)
-			
-			if (keyboardstatus.flshiftkey) {
-		#endif
 				shellbringtofront ((**outlinewindowinfo).parentwindow);
 				
 				if (keyboardstatus.floptionkey)
@@ -3581,7 +3465,6 @@ static boolean scripttitleclick (Point pt) {
 	} // scripttitleclick
 
 
-#ifdef flcomponent
 
 typedef boolean (*tyscriptvisitcallback) (OSType, bigstring, long);
 
@@ -3705,7 +3588,6 @@ static boolean scriptfillserverpopup (hdlmenu hmenu, short *checkeditem) {
 	return (true);
 	} /*scriptfillserverpopup*/
 
-#endif
 
 #define flstacktrace 0
 
@@ -3823,11 +3705,9 @@ static boolean scriptmousedown (Point pt, tyclickflags flags) {
 	Rect rmsg;
 	boolean flgeneva9 = false;
 	
-	#if TARGET_API_MAC_CARBON == 1
 	
 		flgeneva9 = true;
 		
-	#endif
 	
 	scriptgetpopuprect (&rmsg);
 	
@@ -3855,7 +3735,6 @@ static boolean scriptmousedown (Point pt, tyclickflags flags) {
 			else {
 		#endif
 		
-			#ifdef flcomponent
 				serverarray = (long *) NewPtr (sizeof (long) * 100);
 				
 				if (popupmenuhit (rmsg, flgeneva9, &scriptfillserverpopup, &scriptserverpopupselect)) {
@@ -3866,7 +3745,6 @@ static boolean scriptmousedown (Point pt, tyclickflags flags) {
 					}
 				
 				DisposePtr ((Ptr) serverarray);
-			#endif
 				}
 		#if flstacktrace
 			}
@@ -4042,21 +3920,7 @@ boolean scriptgettypename (long signature, bigstring bsname) {
 	
 	cbd.signature = signature;
 	
-#ifdef flcomponent
 	scriptvisitservers (&scriptfindsubtypevisit, (long) &cbd);
-#else
-	switch (signature) {
-		case typeLAND:
-			copystring (BIGSTRING ("\x08" "UserTalk"), bsname);
-			break;
-
-		case 'ascr':
-			copystring (BIGSTRING ("\x0B" "AppleScript"), bsname);
-			break;
-		} /* switch */
-
-	
-#endif
 	
 	return (!isemptystring (bsname));
 	} /*scriptgettypename*/
@@ -4087,7 +3951,6 @@ boolean scriptgetnametype (bigstring bsname, long *signature) {
 	matches bsname
 	*/
 	
-#ifdef flcomponent
 
 	tyfindservercallbackdata cbd;
 	
@@ -4100,18 +3963,6 @@ boolean scriptgetnametype (bigstring bsname, long *signature) {
 	*signature = cbd.signature;
 	
 	return (cbd.signature != 0);
-#else
-	if (comparestrings (bsname, BIGSTRING ("\x08" "UserTalk")) == 0) {
-		*signature = typeLAND;
-		return (true);
-	}
-	else if (comparestrings (bsname, BIGSTRING ("\x0B" "AppleScript")) == 0) {
-		*signature = 'ascr';
-		return (true);
-	}
-	else
-		return (false);
-#endif
 	} /*scriptgetnametype*/
 
 
@@ -4122,11 +3973,9 @@ static void scriptupdate (void) {
 	it doesn't exist on Windows. This was the site of a display glitch on Windows.
 	*/
 
-	#ifdef MACVERSION
 	
 		scriptupdateserverpopup ();
 	
-	#endif
 	
 	opupdate ();
 	} /*scriptupdate*/
@@ -4161,104 +4010,6 @@ static boolean scriptdirtyhook (void) {
 	} /*scriptdirtyhook*/
 
 
-#if 0
-
-static boolean opwinnewrecord (void) {
-	
-	tyvaluerecord val;
-	hdlexternalvariable hv;
-	hdloutlinerecord ho;
-	
-	if (!langexternalnewvalue (idscriptprocessor, nil, &val))
-		return (false);
-	
-	hv = (hdlexternalvariable) val.data.externalvalue;
-	
-	ho = (hdloutlinerecord) (**hv).variabledata;
-	
-	(**outlinewindowinfo).hdata = (Handle) ho;
-	
-	(**ho).outlinetype = outlineisstandalonescript;
-
-	(**ho).flwindowopen = true;
-	
-	(**ho).fldirty = true; /*needs to be saved*/
-	
-	scriptsetcallbacks (ho);
-	
-	return (true);
-	} /*opwinnewrecord*/
-
-
-static boolean opwindisposerecord (void) {
-
-	hdloutlinerecord ho = outlinedata; /*copy into local*/
-	
-	if ((ho != NULL) && ((**ho).outlinetype == outlineisstandalonescript)) {
-		
-		opdisposeoutline (ho, true);
-		
-		opsetoutline (nil);
-		
-		(**outlinewindowinfo).hdata = nil;
-		}
-
-	return true;
-	} /*opwindisposerecord*/
-
-	
-static boolean opwinloadfile (hdlfilenum fnum, short rnum) {
-	
-	Handle hpackedop;
-	hdloutlinerecord ho;
-	boolean fl;
-	long ixload = 0;
-	
-	if (!filereadhandle (fnum, &hpackedop))
-		return (false);
-	
-	fl = opunpack (hpackedop, &ixload, &ho);
-	
-	disposehandle (hpackedop);
-	
-	if (!fl)
-		return (false);
-	
-	(**outlinewindowinfo).hdata = (Handle) ho;
-	
-	(**ho).outlinetype = outlineisstandalonescript;
-
-	(**ho).flwindowopen = true;
-	
-	(**ho).fldirty = true; /*never been saved, can't be clean*/
-	
-	scriptsetcallbacks (ho);
-	
-	return (true);
-	} /*opwinloadfile*/
-
-
-static boolean opwinsavefile (hdlfilenum fnum, short rnum, boolean flsaveas) {
-	
-	Handle hpackedop = nil;
-	boolean fl;
-	
-	if (!oppack (&hpackedop))
-		return (false);
-	
-	fl = 
-		fileseteof (fnum, 0) &&
-		
-		filesetposition (fnum, 0) &&
-		
-		filewritehandle (fnum, hpackedop);
-	
-	disposehandle (hpackedop);
-	
-	return (fl);
-	} /*opwinsavefile*/
-
-#endif
 
 
 boolean scriptstart (void) {
@@ -4299,7 +4050,6 @@ boolean scriptstart (void) {
 
 	(*cb).poproutine = &oppopglobals;
 	
-#ifdef version42orgreater
 	
 	(*cb).saveroutine = ccsavespecialfile;
 	
@@ -4317,7 +4067,6 @@ boolean scriptstart (void) {
 	(*cb).childcloseroutine = &ccchildclose;
 	*/
 
-#endif
 	
 	(*cb).resetrectsroutine = &scriptresetrects;
 	
@@ -4400,23 +4149,13 @@ boolean initscripts (void) {
 	if (!newclearhandle (longsizeof (tydebuggerrecord), (Handle *) &debuggerdata)) /*all fields are cool at 0*/
 		return (false);
 	
-#ifdef flcomponent
 
-	#if TARGET_API_MAC_CARBON == 1
 	
 		AEInstallEventHandler (kOSASuite, kOSARecordedText, NewAEEventHandlerUPP (handlerecordedtext), 0, false);
 		
 		AEInstallEventHandler ('ToyS', kAENotifyStopRecording, NewAEEventHandlerUPP (handlestoprecording), 0, false);
 	
-	#else
-
-		AEInstallEventHandler (kOSASuite, kOSARecordedText, NewAEEventHandlerProc (handlerecordedtext), 0, false);
-		
-		AEInstallEventHandler ('ToyS', kAENotifyStopRecording, NewAEEventHandlerProc (handlestoprecording), 0, false);
 	
-	#endif
-	
-#endif
 	
 	return (true);
 	} /*initscripts*/

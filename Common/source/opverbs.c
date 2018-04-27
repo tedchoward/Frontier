@@ -64,11 +64,9 @@
 #include "file.h" // 2006-09-17 creedon
 
 
-#ifdef flcomponent
 
 	#include "osacomponent.h"
 	
-#endif
 
 
 #define opstringlist 159
@@ -235,43 +233,6 @@ typedef enum tyoptoken { /*verbs that are processed by op.c*/
 
 
 
-#if langexternalfind_optimization
-
-	// 11/15/01 dmb: too messy trying to add linkedcode field to tyexternalvariable, so dup here
-#pragma pack(2)
-	typedef struct tyoutlinevariable {
-		
-		unsigned short id;	/*tyexternalid*/
-		
-		unsigned short flinmemory: 1; /*if true, variabledata is in a handle, else a dbaddress*/
-		
-		unsigned short flmayaffectdisplay: 1; /*not in memory, but being displayed in a table window*/
-		
-		unsigned short flpacked: 1; /* for wp doc; it isn't being edited, so we store it packed*/
-
-		unsigned short flscript: 1; /* for outlines and scripts; they're identical, except for this bit*/
-
-		unsigned short flsystemtable: 1; /*for tables: was it created by the system, or by a user script?*/
-
-		#ifdef xmlfeatures
-			unsigned short flxml: 1; /*preserve for tables; is it an xml table?*/
-		#endif
-		
-		long variabledata; /*either a handle to data record or a dbaddress*/
-		
-		hdldatabaserecord hdatabase; // 5.0a18 dmb
-
-		dbaddress oldaddress; /*last place this variable was stored in db*/
-
-		hdlhashtable hexternaltable;
-
-		hdlhashnode hexternalnode;
-		
-		Handle linkedcode; /*you can link code into any outline, mostly for scripts though*/
-		} tyoutlinevariable, *ptroutlinevariable, **hdloutlinevariable;
-#pragma options align=reset
-
-#else
 
 #pragma pack(2)
 	typedef struct tyoutlinevariable {
@@ -294,7 +255,6 @@ typedef enum tyoptoken { /*verbs that are processed by op.c*/
 		} tyoutlinevariable, *ptroutlinevariable, **hdloutlinevariable;
 #pragma options align=reset
 
-#endif
 
 
 
@@ -319,7 +279,6 @@ static boolean opverbsetglobals (void) {
 
 
 
-#if !flruntime
 
 boolean opverbgettypestring (hdlexternalvariable hvariable, bigstring bs) {
 	
@@ -336,7 +295,6 @@ boolean opverbgettypestring (hdlexternalvariable hvariable, bigstring bs) {
 	return (true);
 	} /*opverbgettypestring*/
 
-#endif
 
 static boolean opverbdisposecode (hdloutlinevariable hvariable) {
 	
@@ -471,7 +429,6 @@ boolean opverbgetlinkedcode (hdlexternalvariable hvariable, hdltreenode *hcode) 
 	return (h != nil) ;
 	} /*opverbgetlinkedcode*/
 
-#if !flruntime
 
 static void opverbsetcallbacks (hdloutlinevariable hvariable, hdloutlinerecord houtline) {
 	
@@ -529,30 +486,11 @@ boolean opwindowopen (hdlexternalvariable hvariable, hdlwindowinfo *hinfo) {
 
 	shellfinddatawindow ((Handle) ho, hinfo); /*3/19/91 DW*/
 	
-	#ifndef version5orgreater
-		if (*hinfo == nil && (**ho).flwindowopen) {
-			
-			shellinternalerror (idopwindowopenbug, STR_ourline_windowopen_inconsistency);
-			
-			(**ho).flwindowopen = false;
-			}
-	#endif
 	
 	return ((**ho).flwindowopen);
 	} /*opwindowopen*/
 
 
-#else
-
-	#define opverbsetcallbacks(hvariable, houtline) ((void *) 0)
-
-	#define opverbcheckwindowrect(houtline) ((void *) 0)
-
-	#define opwindowopen(hvariable, hinfo) 0
-
-	#define fldatabasesaveas 0
-
-#endif
 
 static void opverbsetupoutline (hdloutlinerecord ho, hdloutlinevariable hv) {
 
@@ -925,7 +863,6 @@ boolean opverbgetlangtext (hdlexternalvariable hvariable, boolean flpretty, Hand
 	} /*opverbgetlangtext*/
 
 
-#if !flruntime
 
 boolean opverbgetsize (hdlexternalvariable hvariable, long *size) {
 	
@@ -1251,7 +1188,6 @@ boolean opverbcopyvalue (hdlexternalvariable hsource, hdlexternalvariable *hcopy
 	} /*opverbcopyvalue*/
 
 
-#endif // !flruntime
 
 
 static boolean getscriptparam (hdltreenode hfirst, short pnum, hdloutlinevariable *hv) {
@@ -1320,7 +1256,6 @@ boolean getoutlinevalue (hdltreenode hfirst, short pnum, hdloutlinerecord *houtl
 	} /*getoutlinevalue*/
 
 
-#if !flruntime
 
 boolean opverbarrayreference (hdlexternalvariable hvariable, long ix, hdlheadrecord *hnode) {
 	
@@ -1376,12 +1311,7 @@ boolean opedit (hdlexternalvariable hvariable, hdlwindowinfo hparent, ptrfilespe
 			return (true);
 			}
 		
-		#ifdef MACVERSION
 			break;
-		#else
-			if (!shellyield (false))
-				return (false);
-		#endif
 		}
 	
 	rwindow = (**ho).windowrect; // window comes up where it was last time
@@ -1415,7 +1345,6 @@ boolean opedit (hdlexternalvariable hvariable, hdlwindowinfo hparent, ptrfilespe
 	
 		(**hi).fspec = *fs;
 		
-		#ifdef MACVERSION
 		
 			FSRef fsref;
 		
@@ -1451,7 +1380,6 @@ boolean opedit (hdlexternalvariable hvariable, hdlwindowinfo hparent, ptrfilespe
 				SetWindowProxyCreatorAndType ( w, 'LAND', type, kOnSystemDisk );
 				
 				}
-		#endif
 		
 		}
 	
@@ -1822,7 +1750,6 @@ boolean opverbgetheadstring (hdlheadrecord hnode, bigstring bs) {
 	return (true);
 	} /*opverbgetheadstring*/
 
-#endif	// !flruntime
 
 
 static boolean opcodeisrunning (hdlhashnode hnode) {
@@ -1996,7 +1923,6 @@ static boolean opgetcodeverb (hdltreenode hparam1, boolean flosacode, tyvaluerec
 	
 	if (flosacode) {
 		
-		#ifdef flcomponent
 			hdloutlinevariable hv;
 			Handle htext;
 			long signature;
@@ -2026,11 +1952,6 @@ static boolean opgetcodeverb (hdltreenode hparam1, boolean flosacode, tyvaluerec
 				return (false);
 			
 			pnum = 3;
-		#else
-			langerror (nocomponentmanagererror);
-			
-			return (false);
-		#endif
 		}
 	else {
 		
@@ -2100,14 +2021,8 @@ static boolean opgetsourceverb (hdltreenode hparam1, boolean flosacode, tyvaluer
 	if (!getvarparam (hp1, 2, &htable, bsname))
 		return (false);
 	
-	#ifdef flcomponent
 		if (!osagetsource (&vcode, &signature, &vsource))
 			return (false);
-	#else
-		langerror (nocomponentmanagererror);
-		
-		return (false);
-	#endif
 	
 	if (!langexternalnewvalue (idscriptprocessor, nil, &vscript))
 		return (false);
@@ -2289,28 +2204,12 @@ static boolean opgetrefconverb (hdltreenode hparam1, hdlheadrecord hnode, tyvalu
 		setlongvalue (0, &linkedval);
 	
 	else {
-		#ifdef version5orgreater
 			
 			if (!langunpackvalue (hrefcon, &linkedval))
 				return (false);
 			
 			pushvalueontmpstack (&linkedval);
 			
-		#else
-			if (!copyhandle (hrefcon, &hrefcon)) /*handles nil*/
-				return (false);
-			
-			if (!setheapvalue (hrefcon, binaryvaluetype, &linkedval))
-				return (false);
-			
-			valuetype = langgetvaluetype (getbinarytypeid (hrefcon));
-			
-			if (langgoodbinarytype (valuetype)) { /*unpack-able*/
-				
-				if (!coercevalue (&linkedval, valuetype))
-					return (false);
-				}
-		#endif
 		}
 	
 	*v = linkedval;
@@ -2355,7 +2254,6 @@ static boolean opsetrefconverb (hdltreenode hparam1, hdlheadrecord hnode, tyvalu
 		}
 	else {
 		
-		#ifdef version5orgreater
 			
 			if (!langpackvalue (val, &hbinary, HNoNode))
 				return (false);
@@ -2366,20 +2264,6 @@ static boolean opsetrefconverb (hdltreenode hparam1, hdlheadrecord hnode, tyvalu
 			
 			fl = true;
 			
-		#else
-			
-			if (!coercetobinary (&val))
-				return (false);
-			
-			hbinary = val.data.binaryvalue; /*copy into register*/
-		
-			lockhandle (hbinary);
-			
-			fl = opsetrefcon (hnode, *hbinary, gethandlesize (hbinary));
-			
-			unlockhandle (hbinary);
-			
-		#endif
 		}
 	
 	if (fl)
@@ -3286,7 +3170,6 @@ static boolean opfunctionvalue (short token, hdltreenode hparam1, tyvaluerecord 
 	
 	switch (token) { /*these verbs don't require an open outline window*/
 		
-		#if !flruntime
 		
 		/*
 		case runfunc:
@@ -3318,7 +3201,6 @@ static boolean opfunctionvalue (short token, hdltreenode hparam1, tyvaluerecord 
 			
 			return (true);
 		
-		#endif
 		
 		case compilefunc:
 			
@@ -3407,7 +3289,6 @@ static boolean opfunctionvalue (short token, hdltreenode hparam1, tyvaluerecord 
 			
 		} /*switch*/
 	
-	#if !flruntime
 	
 	if (!langfindtargetwindow (idoutlineprocessor, &targetwindow)) { /*all other verbs require an outline window in front*/
 		
@@ -4187,7 +4068,6 @@ static boolean opfunctionvalue (short token, hdltreenode hparam1, tyvaluerecord 
 			
 	return (fl);
 	
-	#endif // !flruntime
 	
 	error:
 	
@@ -4204,15 +4084,11 @@ static boolean opinitverbs (void) {
 	} /*opinitverbs*/
 
 
-#if !flruntime
 
 static void opverbresize (void) {
 	
 	opresize ((**outlinewindowinfo).contentrect);
 	
-	#ifdef WIN95VERSION
-		opupdatenow ();
-	#endif
 	} /*opverbresize*/
 
 
@@ -4399,7 +4275,6 @@ static boolean opverbkeystroke (void) {
 	return (opkeystroke ());
 	} /*opverbkeystroke*/
 
-#endif // !flruntime
 
 
 static boolean opmenuroutine (short idmenu, short ixmenu) {
@@ -4463,7 +4338,6 @@ boolean opstart (void) {
 	
 	opinitdisplayvariables ();
 	
-	#if !flruntime
 	
 	shellpushscraphook (&opscraphook);
 	
@@ -4489,13 +4363,11 @@ boolean opstart (void) {
 
 	(*cb).poproutine = &oppopglobals;
 	
-#ifdef version42orgreater
 	
 	(*cb).disposerecordroutine = ccdisposefilerecord;
 	
 	(*cb).saveroutine = ccsavespecialfile;
 
-#endif
 	
 	(*cb).updateroutine = &opupdate;
 	
@@ -4567,7 +4439,6 @@ boolean opstart (void) {
 
 	(*cb).buttonroutine = &opbutton; /*7.1b18 PBS*/
 	
-	#endif
 	
 	return (true);
 	} /*opstart*/

@@ -963,7 +963,6 @@ boolean newcomponentglobals (Component self, long clienta5, hdlcomponentglobals 
 	
 	(**htg).applicationid = appid;
 	
-	#if version42orgreater
 		// 2/28/97 dmb: set up langcallbacks here so they'll always be in effect
 		
 		(**htg).langcallbacks.backgroundtaskcallback = &osabackgroundtask;
@@ -977,7 +976,6 @@ boolean newcomponentglobals (Component self, long clienta5, hdlcomponentglobals 
 		(**htg).langcallbacks.partialeventloopcallback = &osapartialeventloop;
 		
 		(**htg).fldisableyield = true;
-	#endif
 	
 	return (true);
 	} /*newcomponentglobals*/
@@ -1226,11 +1224,9 @@ static void osapushfastcontext (hdlcomponentglobals hglobals) {
 		
 		htg = (**hcg).clientthreadglobals;
 		
-		#if !flruntime
 		
 		(**htg).hccglobals = nil; /*want to leave them untouched*/
 		
-		#endif
 		
 		swapinthreadglobals (htg);
 		}
@@ -1323,89 +1319,6 @@ void osapostclientcallback (hdlcomponentglobals hglobals) {
 	} /*osapostclientcallback*/
 
 
-#if TARGET_API_MAC_OS8
-	
-	static UniversalProcPtr installpatch (short trapnum, GNEUPP patch) {
-		
-		UniversalProcPtr origtrap = nil;
-		
-		origtrap = NGetTrapAddress (trapnum, ToolTrap);
-		
-		NSetTrapAddress ((UniversalProcPtr) patch, trapnum, ToolTrap);
-		
-		return (origtrap);
-		} /*installpatch*/
-	
-	
-	static void removepatch (short trapnum, GNEUPP origtrap) {
-		
-		NSetTrapAddress ((UniversalProcPtr) origtrap, trapnum, ToolTrap);
-	
-		} /*removepatch*/
-
-
-static pascal Boolean osagetnextevent (short, EventRecord *);
-
-
-#if TARGET_RT_MAC_CFM
-
-	static RoutineDescriptor osagetnexteventDesc = BUILD_ROUTINE_DESCRIPTOR (uppGNEProcInfo, osagetnextevent);
-	
-	#define osagetnexteventUPP (&osagetnexteventDesc)
-	
-#else
-
-	#define osagetnexteventUPP (&osagetnextevent)
-
-#endif
-
-
-GNEUPP osainstallpatch (hdlcomponentglobals hglobals) {
-	
-	/*
-	3.0a dmb: return the original value of getnexteventproc so it can 
-	be restored in osaremovepath. this allows patching pairs to be 
-	nested, so calls to handlerunscript can be nested.
-	*/
-	
-	register hdlcomponentglobals hcg = hglobals;
-	GNEUPP origproc;
-	UniversalProcPtr origtrap;
-	
-	if ((**hcg).isHomeProcess)
-		origproc = nil;
-		
-	else {
-	
-		origtrap = installpatch (_GetNextEvent, osagetnexteventUPP);
-		
-		origproc = (**hcg).getnexteventproc;
-		
-		(**hcg).getnexteventproc = (GNEUPP) origtrap;
-		}
-	
-	return (origproc);
-	} /*osainstallpatch*/
-
-
-void osaremovepatch (hdlcomponentglobals hglobals, GNEUPP origproc) {
-#pragma unused (origproc)
-
-	register hdlcomponentglobals hcg = hglobals;
-	
-	if ((**hcg).isHomeProcess)
-		;	
-	else {
-	
-		assert ((**hcg).getnexteventproc != nil);
-		
-		removepatch (_GetNextEvent, (**hcg).getnexteventproc);
-				
-		(**hcg).getnexteventproc = origproc;
-		}
-	} /*osaremovepatch*/
-
-#else
 
 GNEUPP osainstallpatch (hdlcomponentglobals hglobals) {
 #pragma unused (hglobals)
@@ -1419,7 +1332,6 @@ void osaremovepatch (hdlcomponentglobals hglobals, GNEUPP origproc) {
 
 	} /*osaremovepatch*/
 
-#endif
 
 
 static boolean osapartialeventloop (short desiredevents) {
@@ -1607,7 +1519,6 @@ static boolean osadebugger (hdltreenode hnode) {
 	} /*osadebugger*/
 
 
-#if !flruntime
 
 static boolean osaprocessstarted (void) {
 	
@@ -1620,7 +1531,6 @@ static boolean osaprocessstarted (void) {
 	return (true);
 	} /*osaprocessstarted*/
 
-#endif
 
 
 static boolean osahandlerunscript (hdlcomponentglobals hglobals, hdltreenode hcode, 
@@ -1679,27 +1589,12 @@ static boolean osahandlerunscript (hdlcomponentglobals hglobals, hdltreenode hco
 	
 	(**hp).hcontext = hcontext;
 	
-	#if !flruntime
 		
 		(**hp).fldebugging = bitboolean (modeflags & kOSAModeDebug);
 		
 		(**hp).processstartedroutine = &osaprocessstarted;
 		
-	#endif
 	
-	#if !version42orgreater
-		langcallbacks.backgroundtaskcallback = &osabackgroundtask;
-		
-		langcallbacks.debuggercallback = &osadebugger;
-		
-		langcallbacks.pushsourcecodecallback = &scriptpushsourcecode;
-		
-		langcallbacks.popsourcecodecallback = &scriptpopsourcecode;
-		
-		langcallbacks.partialeventloopcallback = &osapartialeventloop;
-		
-		fldisableyield = true;
-	#endif
 	
 	osabackgroundtime = gettickcount () + 30;
 	
@@ -1712,17 +1607,6 @@ static boolean osahandlerunscript (hdlcomponentglobals hglobals, hdltreenode hco
 	
 	osaremovepatch (hcg, origproc);
 	
-	#if !version42orgreater
-		langcallbacks.backgroundtaskcallback = (langbooleancallback) &truenoop;
-		
-		langcallbacks.debuggercallback = (langtreenodecallback) &truenoop;
-		
-		langcallbacks.pushsourcecodecallback = (langsourcecodecallback) &truenoop;
-		
-		langcallbacks.popsourcecodecallback = (langvoidcallback) &truenoop;
-		
-		langcallbacks.partialeventloopcallback = (langshortcallback) &falsenoop;
-	#endif
 	
 	(**hp).hcode = nil; /*we don't own it*/
 	
@@ -2560,16 +2444,6 @@ static pascal OSAError osaGetCreateProc (
 	} /*osaGetCreateProc*/
 
 
-#if 0
-
-	static pascal OSAError osaSetDefaultTarget (
-				hdlcomponentglobals	hglobals,
-				const AEAddressDesc*	target) {
-		
-		return (noErr);
-		} /*osaSetDefaultTarget*/
-
-#endif
 
 
 static pascal OSAError osacompiledesc (
@@ -3801,7 +3675,6 @@ static pascal Boolean osahandleevent (
 	
 	error:
 	
-	#if version42orgreater
 	
 		if (osageterror () == errAEEventNotHandled) { // verb not handled by context
 		
@@ -3822,7 +3695,6 @@ static pascal Boolean osahandleevent (
 			
 			return (fl);
 			}
-	#endif
 		
 		return (false);
 	} /*osahandleevent*/
@@ -4747,33 +4619,6 @@ boolean isosascriptnode (hdltreenode htree, tyvaluerecord *osaval) {
 	} /*isosascriptnode*/
 
 
-#if 0 //not used
-
-boolean isosascriptvalue (const tyvaluerecord *val) {
-	
-	/*
-	enforce a strong definition of an osascriptvalue: a binary whose type
-	is 'scpt', that might be confused with a packed Frontier script
-	*/
-	
-	Handle x;
-	OSErr err;
-	OSType subtype;
-	
-	if ((*val).valuetype != binaryvaluetype)
-		return (false);
-	
-	x = (*val).data.binaryvalue;
-	
-	if (getbinarytypeid (x) != typeOSAGenericStorage) /*it might be; can't tell*/
-		return (false);
-	
-	err = OSAGetStorageType (x, &subtype);
-	
-	return (err == noErr);
-	} /*isosascriptvalue*/
-
-#endif
 
 
 static pascal OSErr osaclientactive (long refcon) {
@@ -5270,12 +5115,6 @@ static boolean servingsharedmenus (hdlcomponentglobals *hclient) {
 		if (!getprocessname (psn, bs, &flbackgroundonly)) /*must be gone*/
 			continue;
 		
-		#if flruntime
-		
-		if (iscurrentapplication (psn)) /*runtime is it's own menusharing client*/
-			continue;
-		
-		#endif
 		
 		if ((**hcg).menusharingglobals.clientid != 0) {
 		
@@ -5411,13 +5250,8 @@ boolean osacomponentstart (void) {
 	
 	initosacomponent ();
 	
-	#if !flruntime
 		initwindowsharingcomponent ();
-	#endif
 	
-	#ifdef dropletcomponent
-		initdropletcomponent ();
-	#endif
 	
 	RegisterComponentResourceFile (filegetapplicationrnum (), true); /*2.1b4*/
 	

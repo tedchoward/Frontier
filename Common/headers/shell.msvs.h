@@ -41,9 +41,6 @@
 	#endif
 #endif
 
-#ifdef WIN95VERSION
-	#define PACKFLIPPED
-#endif
 
 #undef lazythis_optimization
 #undef langexternalfind_optimization

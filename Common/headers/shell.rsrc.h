@@ -36,18 +36,9 @@
 #define preferencesfilename 5
 #define startupfilename 6
 #define nonstartupfileprompt 7
-#ifdef WIN95VERSION
-#define programversion 8
-#endif
 
 #define interfacelistnumber 130 /*misc strings that appear in UI of program*/
 
-#if flruntime
-	#define timedateseperatorstring 1
-	#define cancelbuttonstring 2
-	#define kilobytestring 3
-	#define commastring 4
-#else
 	#define scriptbuttonstring 1
 	#define zoombuttonstring 2
 	#define trychooserstring 3
@@ -68,14 +59,7 @@
 	#define saveasitemstring 18
 	#define saveacopyitemstring 19
 	#define openolddatabasestring 20
-	#ifdef WIN95VERSION
-		#define revertitemstring 21
-	#endif
-#endif
 
-#ifdef fltrialsize
-	#define trialsizelistnumber 400
-#endif
 
 #define langerrorlistnumber 131 /*strings used by langerror.c, the Error Info window*/
 #define scripticonstring 1
@@ -108,14 +92,10 @@
 
 #define alertstringlistnumber 141 /*strings that go into alerts*/
 #define baddatabaseversionstring 1
-#if flruntime
-	#define databasenotfoundstring 2
-#else
 	#define itemnametoolongstring 2
 	#define itemnameinusestring 3
 	#define reopenerrorstring 4
 	#define cantpasteherestring 5
-#endif
 #define notenoughmemorystring 6
 #define archaicsystemstring 7
 #define needthreadmanagerstring 8

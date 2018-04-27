@@ -34,41 +34,11 @@
 #define __osincludes_h__
 
 
-#ifdef WIN95VERSION
-
-	#define WIN32_LEAN_AND_MEAN 1
-	#define _WIN32_DCOM 1
-	#define CINTERFACE 1
-
-	#include <windows.h>
-
-	#include <commdlg.h>
-	#include <commctrl.h>
-	#include <windowsx.h>
-	#include <objbase.h>
-	#include <shlobj.h>
-	#include <exdisp.h>
-	#include <Shlwapi.h>
-	#include <Shellapi.h>
-	#include <tlhelp32.h>
-	#include <malloc.h>
-	#include <crtdbg.h>
-	#include <mmsystem.h>
-	#include <winsock2.h>
-	#include <mswsock.h>
-
-	#undef __cplusplus
-	#include <objbase.h>
-	#include <mlang.h>
-
-#endif /* WIN95VERSION */
 
 
-#ifdef MACVERSION
 
 	#define OTDEBUG	1	/* must define before including OpenTransport headers */
 
-	#ifdef FRONTIER_FRAMEWORK_INCLUDES /* building for Mach-O with framework-style includes */
 
 		#ifdef FRONTIER_FLAT_HEADERS /* building for Mach-O with flat header-style includes */
 
@@ -101,31 +71,6 @@
 		};
 		typedef struct StandardFileReply        StandardFileReply;
 
-	#else /*CFM*/
-
-		#define ACCESSOR_CALLS_ARE_FUNCTIONS	1
-		#define OPAQUE_TOOLBOX_STRUCTS			1
-
-		#define OTUNIXERRORS	1
-
-		#define OLDROUTINENAMES		0
-		#define OLDROUTINELOCATIONS	0
-		#define CGLUESUPPORTED		0
-
-		#define PtoCstr		p2cstr
-		#define CtoPstr		c2pstr
-		#define PtoCString	p2cstr
-		#define CtoPString	c2pstr
-
-		#define TRUE		true
-		#define FALSE		false
-
-		#include <Carbon.h>
-		#include <CFBundle.h>
-		#include <MacHelp.h>
-		#include <Movies.h>
-
-	#endif
 
 	/* cribbed from pre-OSX AppleTalk.h -- for TargetID */
 	struct EntityName {
@@ -202,103 +147,10 @@
 	typedef TargetID                        SenderID;
 	typedef SenderID *                      SenderIDPtr;
 
-	#if TARGET_API_MAC_OS8
-	
-		#define ACCESSOR_CALLS_ARE_FUNCTIONS	0
-		#define OPAQUE_TOOLBOX_STRUCTS			0
-
-		#define OTUNIXERRORS	1
-	
-		#define OLDROUTINENAMES		0
-		#define OLDROUTINELOCATIONS	0
-		#define CGLUESUPPORTED		0
-	
-		#define PtoCstr		p2cstr
-		#define CtoPstr		c2pstr
-		#define PtoCString	p2cstr
-		#define CtoPString	c2pstr
-	
-		#define TRUE		true
-		#define FALSE		false
-	
-		#include <AEObjects.h>
-		#include <AEPackObject.h>
-		#include <AERegistry.h>
-		#include <AEUserTermTypes.h>
-		#include <Aliases.h>
-		#include <AppleEvents.h>
-		#include <AppleScript.h>
-		#include <ASRegistry.h>
-		#include <Balloons.h>
-		#include <CodeFragments.h>
-		#include <ColorPicker.h>
-		#include <Components.h>
-		#include <ConditionalMacros.h>
-		#include <Controls.h>
-		//Code change by Timothy Paustian Saturday, April 29, 2000 9:29:50 PM
-		//Changed to allow Use of Universal Headers 3.3.1
-		#include <ControlDefinitions.h>
-		#include <Devices.h>
-		#include <Dialogs.h>
-		#include <DiskInit.h>
-		#include <EPPC.h>
-		#include <Events.h>
-		#include <Files.h>
-		#include <FileTypesAndCreators.h>
-		#include <FixMath.h>
-		#include <Folders.h>
-		#include <Fonts.h>
-		#include <fp.h>
-		#include <Gestalt.h>
-		#include <Icons.h>
-		#include <Lists.h>
-		#include <LowMem.h>
-		#include <MacErrors.h>
-		#include <MacTypes.h>
-		#include <MacWindows.h>
-		#include <Math64.h>
-		#include <Memory.h>
-		#include <Menus.h>
-		#include <MixedMode.h>
-		#include <Movies.h>
-		#include <Navigation.h>
-		#include <Notification.h>
-		#include <OpenTransport.h>
-		#include <OpenTptInternet.h>
-		#include <OSA.h>
-		#include <OSAComp.h>
-		#include <OSUtils.h>
-		#include <Packages.h>
-		#include <Palettes.h>
-		#include <PLStringFuncs.h>
-		#include <PPCToolbox.h>
-		#include <Printing.h>
-		#include <Processes.h>
-		#include <QDOffscreen.h>
-		#include <Quickdraw.h>
-		#include <Resources.h>
-		#include <Scrap.h>
-		//Code change by Timothy Paustian Sunday, May 7, 2000 8:37:27 PM
-		//Needed for compilation with UH 3.4
-		#include <Script.h>
-		#include <SegLoad.h>
-		#include <Sound.h> 
-		#include <StandardFile.h>
-		#include <Strings.h>
-		#include <TextEdit.h>
-		#include <TextEncodingConverter.h>
-		#include <TextUtils.h>
-		#include <Threads.h>
-		#include <ToolUtils.h>
-		#include <Traps.h>
-		#include <UnicodeConverter.h>
-
-	#endif /*TARGET_API_MAC_OS8*/
 
 	#define topLeft(r)	(((Point *) &(r))[0])
 	#define botRight(r)	(((Point *) &(r))[1])
 
-#endif /*MACVERSION*/
 
 /* common standard C headers */
 

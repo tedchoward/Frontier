@@ -2079,17 +2079,6 @@ static boolean opsetbarcursorvisit (hdlheadrecord hnode, ptrvoid refcon) {
 	} /*opsetbarcursorvisit*/
 
 
-#if 0
-
-static boolean debugmarkedvisit (hdlheadrecord hnode, long *intforrecursion) {
-	
-	if ((**hnode).flmarked)
-		++*intforrecursion;
-	
-	return (true);
-	} /*debugmarkedvisit*/
-
-#endif
 
 boolean opanymarked (void) {
 	
@@ -2467,21 +2456,6 @@ boolean opcut (void) {
 	} /*opcut*/
 
 
-#if 0
-
-static boolean opundopaste (hdlheadrecord hnode, boolean flundo) {
-
-	if (flundo) {
-	
-		opmoveto (hnode);
-
-		opdelete ();
-		}
-
-	return (true);
-	} /*opundopaste*/
-
-#endif
 
 
 boolean isoutlinetext (Handle htext) {

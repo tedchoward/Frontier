@@ -51,9 +51,6 @@
 #include "pictverbs.h"
 #include "tableverbs.h"
 #include "wpverbs.h"
-#ifdef fliowa
-	#include "iowaverbs.h" /*3/18/92 dmb*/
-#endif
 #include "tableformats.h" /*7.0b6 PBS*/
 #include "menuverbs.h" /*7.0b6 PBS*/
 #include "op.h" /*7.0b6 PBS*/
@@ -171,18 +168,6 @@ boolean langexternalvaltotable (tyvaluerecord val, hdlhashtable *htable, hdlhash
 
 boolean langexternalfindvariable (hdlexternalvariable hv, hdlhashtable *htable, bigstring bsname) {
 	
-	#if langexternalfind_optimization
-
-	if (hv != nil && (**hv).hexternaltable != nil && (**hv).hexternalnode != nil) {
-
-		*htable = (**hv).hexternaltable;
-
-		gethashkey ((**hv).hexternalnode, bsname);
-		
-		return true;
-		}
-
-	#endif
 
 	return (tablefindvariable (hv, htable, bsname));
 	} /*langexternalfindvariable*/
@@ -385,14 +370,6 @@ boolean langexternaltypestring (hdlexternalhandle h, bigstring bs) {
 			
 			break;
 		
-		#ifdef fliowa
-		
-		case idcardprocessor:
-			cardverbgettypestring (hv, bs);
-			
-			break;
-		
-		#endif
 		
 		default:
 			langgetmiscstring (unknownstring, bs);
@@ -463,14 +440,6 @@ boolean langexternalgetdisplaystring (hdlexternalhandle h, bigstring bs) {
 			
 			break;
 		
-		#ifdef fliowa
-		
-		case idcardprocessor:
-			cardverbgetdisplaystring (hv, bs);
-			
-			break;
-		
-		#endif
 		
 		default:
 			langgetmiscstring (unknownstring, bs);
@@ -509,12 +478,6 @@ static boolean langexternalvariablewindowopen (hdlexternalvariable hvariable, hd
 		case idpictprocessor:
 			return (pictwindowopen (hv, hinfo));
 		
-		#ifdef fliowa
-		
-		case idcardprocessor:
-			return (cardwindowopen (hv, hinfo));
-		
-		#endif
 		
 		} /*switch*/
 
@@ -643,12 +606,6 @@ boolean langexternalisdirty (hdlexternalhandle h) {
 		case idtableprocessor:
 			return (tableverbisdirty (hv));
 		
-		#ifdef fliowa
-		
-		case idcardprocessor:
-			return (cardverbisdirty (hv));
-		
-		#endif
 		
 		default:
 			return (false);
@@ -712,14 +669,6 @@ boolean langexternalsetdirty (hdlexternalhandle h, boolean fldirty) {
 			
 			break;
 		
-		#ifdef fliowa
-		
-		case idcardprocessor:
-			fl = cardverbsetdirty (hv, fldirty);
-			
-			break;
-		
-		#endif
 		
 		default:
 			return (false);
@@ -772,12 +721,6 @@ boolean langexternalpack (hdlexternalhandle h, Handle *hpacked, boolean *flnewdb
 		case idpictprocessor:
 			return (pictverbpack (hv, hpacked, flnewdbaddress));
 		
-		#ifdef fliowa
-		
-		case idcardprocessor:
-			return (cardverbpack (hv, hpacked));
-		
-		#endif
 		
 		default:
 			return (false);
@@ -851,15 +794,6 @@ boolean langexternalunpack (Handle hpacked, hdlexternalhandle *h) {
 			
 			break;
 		
-		#ifdef fliowa
-		
-		case idcardprocessor:
-			if (!cardverbunpack (hpacked, &ixload, &hdata))
-				goto error;
-			
-			break;
-		
-		#endif
 		
 		default:
 			goto cantunpack;
@@ -921,12 +855,6 @@ boolean langexternalmemorypack (hdlexternalhandle h, Handle *hpacked, hdlhashnod
 		case idpictprocessor:
 			return (pictverbmemorypack (hv, hpacked));
 		
-		#ifdef fliowa
-		
-		case idcardprocessor:
-			return (cardverbmemorypack (hv, hpacked));
-		
-		#endif
 		
 		default:
 			langerror (cantpackthisexternalerror);
@@ -957,19 +885,6 @@ boolean langexternalmemoryunpack (Handle hpacked, hdlexternalhandle *h) {
 	if (!loadfromhandle (hpacked, &ixload, sizeof (rec), &rec))
 		goto cantunpack;
 		
-#if 0 // def MACVERSION
-	if (rec.versionnumber == 1) {
-		tyOLD42diskexternalhandle oldrec;
-
-		ixload = 0;
-		if (!loadfromhandle (hpacked, &ixload, sizeof (oldrec), &oldrec))
-			goto cantunpack;
-
-		id = oldrec.id;
-
-		goto version1ok;
-		}
-#endif
 
 	disktomemshort (rec.versionnumber);
 //	disktomemshort (rec.id);
@@ -1020,15 +935,6 @@ boolean langexternalmemoryunpack (Handle hpacked, hdlexternalhandle *h) {
 			
 			break;
 		
-		#ifdef fliowa
-		
-		case idcardprocessor:
-			if (!cardverbmemoryunpack (hpacked, &ixload, &hdata))
-				goto error;
-			
-			break;
-		
-		#endif
 		
 		default:
 			goto cantunpack;
@@ -1924,14 +1830,6 @@ static boolean langexternaledit (hdlexternalvariable hv, hdlwindowinfo hparent, 
 			
 			break;
 		
-		#ifdef fliowa
-		
-		case idcardprocessor:
-			fl = cardedit (hv, hparent, fs, bstitle, rzoom);
-			
-			break;
-		
-		#endif
 		
 		} /*switch*/
 	
@@ -2350,14 +2248,6 @@ boolean langexternaldisposevalue (tyvaluerecord val, boolean fldisk) {
 			
 			break;
 		
-		#ifdef fliowa
-		
-		case idcardprocessor:
-			fl = cardverbdispose (hv, fldisk);
-			
-			break;
-		
-		#endif
 		
 		default:
 			fl = false;
@@ -2512,16 +2402,6 @@ boolean langexternalnewvalue (tyexternalid id, Handle hdata, tyvaluerecord *val)
 			
 			break;
 		
-		#ifdef fliowa
-		
-		case idcardprocessor:
-			updateconfigsettings (cardvaluetype, idiowaconfig);
-			
-			fl = cardverbnew (hdata, &hvariable);
-			
-			break;
-		
-		#endif
 		
 		default:
 			fl = false;
@@ -2582,12 +2462,6 @@ boolean langexternalgetvalsize (tyvaluerecord val, long *size) {
 		case idpictprocessor:
 			return (pictverbgetsize (hv, size));
 		
-		#ifdef fliowa
-		
-		case idcardprocessor:
-			return (cardverbgetsize (hv, size));
-		
-		#endif
 		
 		default:
 			return (false);
@@ -2691,17 +2565,6 @@ boolean langexternalsurfacekey (hdlexternalvariable hv) {
 			}
 		}
 	
-	#ifdef WIN95VERSION
-		if (keyboardstatus.chkb == chbackspace) {
-			
-			if (keyboardstatus.flshiftkey) {
-			
-				tableclientsurface (hv);
-				
-				return (true);
-				}
-			}
-	#endif
 
 	return (false); /*keystroke not handled*/
 	} /*langexternalsurfacekey*/
@@ -2734,12 +2597,6 @@ boolean langexternalpacktotext (hdlexternalhandle h, Handle htext) {
 		case idpictprocessor:
 			return (pictverbpacktotext (hdata, htext));
 		
-		#ifdef fliowa
-		
-		case idcardprocessor:
-			return (cardverbpacktotext (hdata, htext));
-		
-		#endif
 		
 		default:
 			return (false);
@@ -2792,12 +2649,6 @@ boolean langexternalsearch (tyvaluerecord val, boolean *flzoom) {
 		case idpictprocessor:
 			return (pictverbfind (hv, flzoom));
 		
-		#ifdef fliowa
-		
-		case idcardprocessor:
-			return (cardverbfind (hv, flzoom));
-		
-		#endif
 		
 		default:
 			return (false);
@@ -2839,12 +2690,6 @@ boolean langexternalgettimes (hdlexternalhandle h, long *timecreated, long *time
 		case idpictprocessor:
 			return (pictverbgettimes (hdata, timecreated, timemodified));
 		
-		#ifdef fliowa
-		
-		case idcardprocessor:
-			return (cardverbgettimes (hdata, timecreated, timemodified));
-		
-		#endif
 		
 		default:
 			return (false);
@@ -2876,12 +2721,6 @@ boolean langexternalsettimes (hdlexternalhandle h, long timecreated, long timemo
 		case idpictprocessor:
 			return (pictverbsettimes (hdata, timecreated, timemodified));
 		
-		#ifdef fliowa
-		
-		case idcardprocessor:
-			return (cardverbsettimes (hdata, timecreated, timemodified));
-		
-		#endif
 		
 		default:
 			return (false);
@@ -2990,22 +2829,8 @@ boolean langexternalsymbolchanged (hdlhashtable htable, const bigstring bsname, 
 
 
 boolean langexternalsymbolinserted (hdlhashtable htable, const bigstring bsname, hdlhashnode hnode) {
-#if !langexternalfind_optimization
 #	pragma unused (htable, bsname, hnode)
-#endif
 
-#if langexternalfind_optimization
-	if (	hnode != nil
-		 && hnode != HNoNode
-		 && (**hnode).val.valuetype == externalvaluetype) {
-		
-			hdlexternalvariable	hv = (hdlexternalvariable) (**hnode).val.data.externalvalue;
-
-			(**hv).hexternaltable = htable;
-
-			(**hv).hexternalnode = hnode;
-			}
-	#endif
 
 	return true;
 	} /*langexternalsymbolinserted*/

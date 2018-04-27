@@ -54,20 +54,13 @@ void setcursortype (tycursortype newcursor) {
 	*/
 
 	register tycursortype cursor = newcursor;
-	#ifdef MACVERSION
 		CursHandle hcursor;
-	#endif
-	#ifdef WIN95VERSION
-		LPTSTR idc;
-		HCURSOR hcursor;
-	#endif
 	
 	lastcursor = cursor; /*remember for next time*/
 
 	if (cursor == cursorisdirty)
 		return;
 	
-#ifdef MACVERSION	
 	if (cursor == cursorisarrow)
 		ticklastroll = 0; /*disable rolling until reinitialized*/
 
@@ -91,59 +84,13 @@ void setcursortype (tycursortype newcursor) {
 		return;
 	
 	SetCursor (*hcursor);
-#endif
 
-#ifdef WIN95VERSION
-	if (cursor < cursorisbeachball1 || cursor > cursorisbeachball4)
-		ticklastroll = 0; /*disable rolling until reinitialized*/
-	
-	switch (cursor) {
-		
-		case cursorisibeam:
-			idc = IDC_IBEAM;
-			break;
-
-		case cursoriswatch:
-			idc = IDC_WAIT;
-			break;
-
-		case cursorisverticalrails:
-			idc = IDC_SIZEWE;
-			break;
-
-		case cursorishorizontalrails:
-			idc = IDC_SIZENS;
-			break;
-
-		case cursorisarrow:
-			idc = IDC_ARROW;
-			break;
-
-		default:
-			hcursor = LoadCursor (shellinstance, MAKEINTRESOURCE (cursor));
-			
-			if (hcursor != NULL) {
-				
-				SetCursor (hcursor);
-				
-				return;
-				}
-
-			idc = IDC_ARROW;
-			break;
-		}
-
-	
-	SetCursor (LoadCursor (NULL, idc));
-#endif
 
 	} /*setcursortype*/
 
 
 void obscurecursor (void) {
-#ifdef MACVERSION	
 	ObscureCursor ();
-#endif
 	} /*obscurecursor*/
 
 
@@ -156,16 +103,10 @@ static boolean rollingtimerexpired (void) {
 	
 	tc = gettickcount ();
 
-#ifdef WIN95VERSION
-	if ((ticklastroll + 30) > tc) /*7.0b20 PBS: don't let the Windows cursor change often -- it flashes*/
-		return (false);
-#endif
 
-#ifdef MACVERSION
 	
 	if ((ticklastroll + 6) > tc) /*a tenth of a second hasn't passed since last bump*/
 		return (false);
-#endif
 		
 	ticklastroll = tc; /*enough time has passed, reset the timer*/
 	
@@ -181,13 +122,7 @@ void initbeachball (tydirection dir) {
 		
 		beachballstate = cursorisbeachball4;
 		
-#ifdef MACVERSION
 		InitCursor (); /*make sure it's visible*/
-#endif
-#ifdef WIN95VERSION
-		ShowCursor(TRUE);
-		SetCursor (LoadCursor (NULL, MAKEINTRESOURCE(IDC_ARROW)));
-#endif
 		ticklastroll = gettickcount ();
 		}
 	} /*initbeachball*/
@@ -195,7 +130,6 @@ void initbeachball (tydirection dir) {
 
 void rollbeachball (void) {
 	
-	#ifdef MACVERSION
 		register tycursortype state;
 		
 		if (rollingtimerexpired ()) {
@@ -217,12 +151,7 @@ void rollbeachball (void) {
 			
 			beachballstate = state;
 			}
-	#endif
 
-	#ifdef WIN95VERSION
-		if (rollingtimerexpired ())
-			setcursortype (cursoriswatch);
-	#endif
 	} /*rollbeachball*/
 
 

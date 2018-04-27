@@ -379,7 +379,6 @@ static boolean opfindoffsetvisit (hdlheadrecord hnode, ptrvoid refcon) {
 	} /*opfindoffsetvisit*/
 
 
-#if isFrontier
 
 boolean opshowerror (long lnum, short charnum) {
 	
@@ -431,7 +430,6 @@ boolean opshowerror (long lnum, short charnum) {
 	return (true);
 	} /*opshowerror*/
 
-#endif
 
 
 boolean opsetscrap (hdlheadrecord hnode) {
@@ -810,13 +808,11 @@ boolean opmousedown (Point pt, tyclickflags flags) {
 	long i;
 	Rect r;
 
-#ifdef MACVERSION /*7.0b11 PBS: check for ctrl-clicking on Macs*/
 
 	if (keyboardstatus.ctmodifiers && keyboardstatus.flcontrolkey)
 
 		return (oprmousedown (pt, flags)); /*Call right-click routine.*/
 
-#endif
 	
 	if (!pointinrect (pt, (**ho).outlinerect))
 		return (false);
@@ -1139,7 +1135,6 @@ static boolean opmovetovisit (hdlheadrecord hnode, ptrvoid refcon) {
 	} /*opmovetovisit*/
 
 
-#ifdef version42orgreater
 
 static boolean oppartialsortedsearch (hdlheadrecord hfirst, bigstring bsname, short seek, hdlheadrecord *hnode) {
 	
@@ -1288,7 +1283,6 @@ static boolean opstructuretabkey (tydirection dir) {
 	} /*opstructuretabkey*/
 
 #endif	/*PIKE*/
-#endif	/*version42orgreater*/
 
 boolean opkeystroke (void) {
 	
@@ -1316,15 +1310,6 @@ boolean opkeystroke (void) {
 	boolean flpostcollapse = false;
 	boolean fldidsomething = false;
 	
-	#ifdef WIN95VERSION
-		if (keyboardstatus.flcmdkey) {
-			
-			if ((keyboardstatus.ctmodifiers == 1) && (dir == up || dir == down))
-				return (opscroll (oppositdirection (dir), false, 1));
-
-			floption = true;
-			}
-	#endif
 
 	opdirtyview ();
 	
@@ -1337,7 +1322,6 @@ boolean opkeystroke (void) {
 		else
 			dir = right;
 		
-		#ifdef version42orgreater
 		
 			#ifdef PIKE
 				
@@ -1355,7 +1339,6 @@ boolean opkeystroke (void) {
 
 			#endif
 
-		#endif
 		
 		if ((**ho).flreadonly)
 			return (true);
@@ -1455,7 +1438,6 @@ boolean opkeystroke (void) {
 		
 		if (isprint (chkb)) { /*switch into text mode before processing*/
 			
-			#ifdef version42orgreater
 			
 			if ((**ho).flstructuredtextkeys) {
 				
@@ -1464,7 +1446,6 @@ boolean opkeystroke (void) {
 				return (true);
 				}
 			
-			#endif
 			
 			if (opcanteditcursor ())
 				return (true);

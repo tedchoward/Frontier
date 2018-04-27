@@ -28,9 +28,7 @@
 #include "frontier.h"
 #include "standard.h"
 
-#ifdef MACVERSION
 	#include <uisharing.h>
-#endif
 
 #include "memory.h"
 #include "cursor.h"
@@ -66,7 +64,6 @@ static hdlmenu happlemenu;
 static tymenustate menustate = dirtymenus;
 
 
-#ifdef MACVERSION
 
 static boolean parammenuitem (hdlmenu hmenu, short item) {
 	
@@ -87,7 +84,6 @@ static boolean parammenuitem (hdlmenu hmenu, short item) {
 	return (true);
 	} /*parammenuitem*/
 
-#endif
 	
 	
 static boolean menudisablevisit (hdlmenu hmenu, short item) {
@@ -146,34 +142,6 @@ static boolean visitmenuitems (boolean (*visitproc) (hdlmenu, short)) {
 	} /*visitmenuitems*/
 
 
-#if 0 //TARGET_API_MAC_CARBON == 1
-
-static void setfontmenustyles (void) {
-
-	/*
-	7.0b47 PBS: set font styles for the items in the Font menu.
-	*/
-
-	short i, lastitem, idfont;
-	hdlmenu hfontmenu;
-	bigstring bsitem;
-	
-	hfontmenu = shellmenuhandle (fontmenu);
-	
-	lastitem = countmenuitems (hfontmenu);
-	
-	for (i = 1; i <= lastitem; i++) {
-	
-		getmenuitem (hfontmenu, i, bsitem);
-		
-		fontgetnumber (bsitem, &idfont);
-	
-		SetMenuItemFontID (hfontmenu, i, idfont);	
-		} /*for*/
-
-	} /*setfontmenustyles*/
-	
-#endif
 
 
 hdlmenu shellmenuhandle (short idmenu) {
@@ -219,10 +187,8 @@ boolean shelltgetmainmenu (bigstring bsmenu, hdlmenu *hmenu, short *idmenu) {
 			}
 		}
 	
-	#ifdef MACVERSION
 		if (equalstrings (bsmenu, "\pHelp")) {
 			
-			#if TARGET_API_MAC_CARBON == 1
 			//Code change by Timothy Paustian Friday, June 16, 2000 3:04:41 PM
 			//Changed to Opaque call for Carbon
 			//we will add the below code when this is implemented in carbon.
@@ -235,18 +201,7 @@ boolean shelltgetmainmenu (bigstring bsmenu, hdlmenu *hmenu, short *idmenu) {
 					return (true);
 					}
 				}
-			#else
-			
-				if (HMGetHelpMenuHandle (hmenu) == noErr && *hmenu != nil) {
-					
-					*idmenu = kHMHelpMenuID;
-					
-					return (true);
-					}
-				
-			#endif
 		}
-	#endif
 
 	return (false);
 	} /*shelltgetmainmenu*/
@@ -330,9 +285,7 @@ boolean shellinitmenus (void) {
 	
 	register short idmenu;
 	
-	#ifdef MACVERSION
 		bigstring bsprogramname; /*PBS 7.1b4: use ifdef because this variable isn't used on Windows.*/
-	#endif
 	
 	topmenustack = -1; /*no items on the menu stack*/
 	
@@ -348,10 +301,8 @@ boolean shellinitmenus (void) {
 	
 	happlemenu = shellmenuhandle (applemenu); /*set global*/
 
-#ifdef MACVERSION
 	if (!installresitems (applemenu, 'DRVR'))
 		return (false);
-#endif
 	
 	if (!installresitems (fontmenu, 'FONT'))
 		return (false);
@@ -362,7 +313,6 @@ boolean shellinitmenus (void) {
 		
 	//#endif
 	
-#ifdef MACVERSION
 	
 	getprogramname (bsprogramname);
 	
@@ -370,7 +320,6 @@ boolean shellinitmenus (void) {
 	
 	visitmenuitems (&parammenuitem); /*perform ^0, ^1... substitutions*/
 
-#endif
 
 	visitmenuitems (&menudisablevisit); /*disable all menu items*/
 	
@@ -387,7 +336,6 @@ void shellgetlastmenuid (short *id) {
 	*id = editmenu;
 	} /*shellgetlastmenuid*/
 	
-#ifdef MACVERSION
 boolean shellapplemenu (bigstring bsname) {
 	
 	/*
@@ -427,9 +375,6 @@ boolean shellapplemenu (bigstring bsname) {
 			//Code change by Timothy Paustian Friday, June 16, 2000 3:01:02 PM
 			//Changed to Opaque call for Carbon
 			//we do not need to do this for carbon
-			#if !TARGET_API_MAC_CARBON
-			OpenDeskAcc (bsorig); /*use the string as the menu manager provided it*/
-			#endif
 
 			popstyle ();    
 			
@@ -439,7 +384,6 @@ boolean shellapplemenu (bigstring bsname) {
 	
 	return (false); /*no item with a matching name*/
 	} /*shellapplemenu*/
-#endif	
 
 boolean shelleditcommand (tyeditcommand editcmd) {
 
@@ -454,13 +398,6 @@ boolean shelleditcommand (tyeditcommand editcmd) {
 	register boolean fl = false;
 
 	#ifdef PIKE
-		#ifdef WIN95VERSION
-
-			if (shellwindow == nil) /*7.0b33 PBS: defensive code for Radio/Win to prevent a crash.*/
-
-				return (false);
-
-		#endif
 	#endif
 	
 	switch (editcmd) {
@@ -970,36 +907,6 @@ static void pikesetfilemenuitemenable (short ixmenu) {
 	}/*ccpikesetfilemenuitemenable*/
 
 
-#if 0
-
-static void pikesetfilemenuitemname (short ixmenu) {
-
-	/*
-	6.2a2 AR: Call the pike.getFileMenuItemName script to determine the name
-	of the displayed name of the menu item.
-	*/
-
-	bigstring bsscript, bsitem, bsresult;
-
-	if (roottable == nil)
-		return;
-
-	getfilemenuitemidentifier (ixmenu, bsitem);
-
-	copystring (BIGSTRING ("\x1e""pike.getFileMenuItemName(\"^0\")"), bsscript);
-
-	parsedialogstring (bsscript, bsitem, nil, nil, nil, bsscript);
-
-	grabthreadglobals ();
-	
-	langrunstringnoerror (bsscript, bsresult);
-
-	releasethreadglobals ();
-	
-	setmenuitem (shellmenuhandle (filemenu), ixmenu, bsresult);
-	}/*pikesetfilemenuitemname*/
-
-#endif
 
 
 boolean pikequit () {
@@ -1446,12 +1353,6 @@ void shelladjustmenus (void) {
 		enableallmenuitems (hmenu, true);
 #endif
 
-	#ifdef WIN95VERSION
-		hmenu = shellmenuhandle (helpmenu);
-		
-		if (hmenu)
-			enableallmenuitems (hmenu, true);
-	#endif
 	
 	shelladjustundo ();
 	
@@ -1524,12 +1425,6 @@ boolean shellhandlemenu (long menucode) {
 	
 	// grabthreadglobals ();
 	
-	#ifdef WIN95VERSION
-		iditem -= idmenu;
-
-		if (idmenu == 0)
-			idmenu = editmenu;
-	#endif
 
 	if (iditem == 0)
 		goto exitmenu;
@@ -1542,7 +1437,6 @@ boolean shellhandlemenu (long menucode) {
 	
 	switch (idmenu) {
    
-		#ifdef MACVERSION
 		case applemenu: 
 			switch (iditem) {
 			
@@ -1564,20 +1458,7 @@ boolean shellhandlemenu (long menucode) {
 				} /*switch*/
 			
 			break; /*applemenu*/
-		#endif
 
-		#ifdef WIN95VERSION
-		case helpmenu: 
-			switch (iditem) {
-			
-				case aboutitem:
-					aboutcommand ();
-					
-					break;
-				} /*switch*/
-			
-			break; /*helpmenu*/
-		#endif
 
 		case filemenu: {
 		
@@ -1712,14 +1593,12 @@ boolean shellhandlemenu (long menucode) {
 		
 		case editmenu:
 		
-			#ifdef MACVERSION
 			
 				if ( iditem <= clearitem ) // standard edit menu command
 				
 					if ( uisEdit ( iditem - 1 ) ) // consumed by shared window
 						break;
 						
-			#endif // MACVERSION
 			
 			if ( iditem <= selectallitem ) {
 
@@ -2046,7 +1925,6 @@ boolean shellhandlemenu (long menucode) {
 
 				break;
 
-		#ifdef MACVERSION
 		case virtualmenu: { /*special key on the extended keyboard*/
 			
 			switch (iditem) {
@@ -2080,7 +1958,6 @@ boolean shellhandlemenu (long menucode) {
 			break;
 			} /* virtual menu */
 
-		#endif	//MACVERSION
 
 		#ifndef PIKE
 		
@@ -2093,11 +1970,6 @@ boolean shellhandlemenu (long menucode) {
 
 		#endif	//!PIKE
 
-	#ifdef WIN95VERSION
-	//	case defaultpopupmenuid:
-	//		(*winpopupselectroutine) (NULL, iditem);
-	//		break;
-	#endif
 		} /*switching*/
 	
 	exitmenu:

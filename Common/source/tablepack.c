@@ -298,38 +298,6 @@ boolean tableverbpack (hdlexternalvariable h, Handle *hpacked, boolean *flnewdba
 	if (fldatabasesaveas || (**ht).fldirty || flmustsave)
 		fl = dbsavehandle (hpackedtable, &adr);
 	
-#if 0
-	else {
-		/*
-		Unfortunately, this debugging code is bogus. The problem is that in hashpackexternal
-		we previously assigned a random value to the unused byte of the tyexternaldiskrecord.
-		*/
-		
-		Handle htemp;
-		boolean fl;
-		long ctbytes;
-		
-		fl = dbrefhandle ((**hv).oldaddress, &htemp);
-		
-		assert (fl);
-		
-		pullfromhandle (htemp, 0L, sizeof (long), &ctbytes);
-		
-		assert (ctbytes <= gethandlesize (htemp));
-		
-		sethandlesize (htemp, ctbytes);
-		
-		pullfromhandle (hpackedtable, 0L, sizeof (long), &ctbytes);
-		
-		assert (ctbytes <= gethandlesize (hpackedtable));
-		
-		sethandlesize (hpackedtable, ctbytes);
-		
-		assert (equalhandles (htemp, hpackedtable));
-		
-		disposehandle (htemp);
-		}	
-#endif
 	
 	disposehandle (hpackedtable);
 	

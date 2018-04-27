@@ -28,9 +28,6 @@
 #include "frontier.h"
 #include "standard.h"
 
-#ifdef WIN95VERSION
-	#include "FrontierWinMain.h"
-#endif
 
 #include "font.h"
 #include "memory.h"
@@ -59,13 +56,6 @@
 #define cs_iso88591		BIGSTRING( "\xA0" "iso-8859-1" )
 #define cs_macintosh	BIGSTRING( "\x09" "macintosh" )
 
-#ifdef WIN95VERSION
-	#define kTextUnsupportedEncodingErr	-8738
-	#define kTextMalformedInputErr		-8739
-	#define kTextUndefinedElementErr	-8740
-	#define kTECNoConversionPathErr		-8749
-	#define kTECPartialCharErr			-8753
-#endif
 
 byte zerostring [] = "\0"; /*use this to conserve constant space*/
 
@@ -83,10 +73,6 @@ static byte bshexprefix [] = STR_hexprefix;
 static boolean converttextencoding( Handle, Handle, const long, const long, long * );
 static boolean getTextEncodingIDFromIANA( bigstring, long * );
 
-#ifdef WIN95VERSION
-	static boolean UnicodeToAnsi(Handle, Handle, unsigned long, long *);
-	static boolean AnsiToUnicode(Handle, Handle, unsigned long, long *);
-#endif
 
 
 /* definitions */
@@ -292,11 +278,7 @@ boolean pushstring (bigstring bssource, bigstring bsdest) {
 	
 	setstringlength (bsdest, lendest + lensource);
 	
-#ifdef SPEED
 	moveleft (psource, pdest, lensource);
-#else
-	while (lensource--) *pdest++ = *psource++;
-#endif	
 	
 	return (true);
 	} /*pushstring*/
@@ -1270,21 +1252,10 @@ void copystring (const bigstring bssource, bigstring bsdest) {
 		return;
 		}
 	
-#ifdef SPEED
 	len = stringsize (bssource);
 
 	moveleft ((ptrstring) bssource, bsdest, len);
 
-#else
-	short i;
-
-	len = stringlength (bssource);
-
-	for (i = 0; i < len; i++)
-		setstringcharacter (bsdest, i, getstringcharacter (bssource, i));
-
-	setstringlength (bsdest, len);
-#endif
 
 	/*
 	len = (short) bssource [0];
@@ -1315,28 +1286,6 @@ void copyctopstring (const char *ssource, bigstring bsdest) {
 	} /*copyctopstring*/
 
 
-#ifdef WIN95VERSION
-
-void copyrezstring (const bigstring ssource, bigstring bsdest) {
-
-	/*
-	create a copy of bssource in bsdest.  copy the length byte and
-	all the characters in the source string.
-
-	3/10/97 rab:  The difference in this procedure is that the source is a C string
-	*/
-
-	if (ssource == nil) { /*special case, handled at lowest level*/
-		
-		setemptystring (bsdest);
-		
-		return;
-		}
-	
-	copyctopstring (ssource, bsdest);
-	} /*copyrezstring*/
-
-#endif
 
 
 void copyheapstring (hdlstring hsource, bigstring bsdest) {
@@ -1394,40 +1343,10 @@ void timedatestring (long ptime, bigstring bs) {
 		
 	pushstring (bstime, bs);
 
-#if 0
-	/*
-	12/12/91 dmb: include seconds so no information is lost
-	*/
-	
-	bigstring bstime;
-	
-	/*
-	if (time == 0) {
-		
-		setemptystring (bs);
-		
-		return;
-		}
-	*/
-	
-	IUDateString (ptime, shortDate, bs);
-	
-	getstringlist (interfacelistnumber, timedateseperatorstring, bstime);
-	
-	pushstring (bstime, bs);
-	
-	IUTimeString (ptime, true, bstime);
-	
-	pushstring (bstime, bs);
-#endif
 	} /*timedatestring*/
 
 
-#ifdef MACVERSION
 	static byte bsellipses [] = "\x01É";
-#else
-	static byte bsellipses [] = "\x03...";
-#endif
 
 void ellipsize (bigstring bs, short width) {
 
@@ -1687,7 +1606,6 @@ void parseparamstring (bigstring bsparse) {
 
 
 void getstringresource (short resnum, bigstring bs) {
-#ifdef MACVERSION	
 	/*
 	get a string resource, numbered resnum.  if there's an error,
 	set the string to the empty string.
@@ -1701,7 +1619,6 @@ void getstringresource (short resnum, bigstring bs) {
 		setemptystring (bs);
 	else
 		copyheapstring (hstring, bs);
-#endif
 	} /*getstringresource*/
 
 
@@ -1725,70 +1642,6 @@ void parsenumberstring (short listnum, short id, long number, bigstring bsparse)
 
 
 
-#ifdef WIN95VERSION
-boolean copyWideToPString( const wchar_t * inString, bigstring bs )
-{
-	DWORD err;
-	size_t lenOut;
-
-	lenOut = WideCharToMultiByte( 1252, 0,(wchar_t *) inString, -1, bs,
-                  255, NULL, NULL);
-	
-	if ( lenOut == 0 )
-	{
-		err = GetLastError();
-		
-		switch ( err )
-		{
-			case ERROR_INSUFFICIENT_BUFFER: /* these are the err codes it can return */
-			case ERROR_INVALID_FLAGS:       /* I'm just not yet sure how to handle them */
-			case ERROR_INVALID_PARAMETER:
-				return ( false );
-			
-			case S_OK:
-				break;
-		}
-	}
-	
-	convertcstring( bs );
-
-	return (true);
-} /* copyWideToPString */
-
-boolean copyPStringToWide( bigstring bs, long * lenResult, wchar_t * outString )
-{
-	HRESULT err;
-	size_t lenIn;
-	bigstring bsCString;
-
-	lenIn = (size_t) bs[ 0 ];
-
-	copystring( bs, bsCString );
-	convertpstring( bsCString );
-	
-	*lenResult = (long) MultiByteToWideChar( 1252, 0, bsCString, lenIn, (LPWSTR) outString, 255 );
-	
-	if ( *lenResult == 0 )
-	{
-		err = GetLastError();
-		
-		switch ( err )
-		{
-			case ERROR_INSUFFICIENT_BUFFER: /* these are the err codes it can return */
-			case ERROR_INVALID_FLAGS:       /* I'm just not yet sure how to handle them */
-			case ERROR_INVALID_PARAMETER:
-				return ( false );
-			
-			case S_OK:
-				break;
-		}
-	}
-
-	outString[ *lenResult ] = L'\0'; /* the API doesn't seem to do this consistently */
-
-	return ( true );
-}
-#endif
 
 void convertpstring (bigstring bs) {
 	
@@ -2414,85 +2267,12 @@ static void setTextEncodingConversionError( const bigstring encIn, const bigstri
 }
 
 
-#ifdef WIN95VERSION
-
-static boolean UnicodeToAnsi( Handle h, Handle hresult, unsigned long encoding, long * errCode )
-{
-	/*
-	7.0b42 PBS: convert from Unicode to Ansi. Borrowed from Microsoft sample code.
-	*/
-
-    ULONG cbAnsi, cCharacters;
- 	long lentext;
-	
-    cCharacters = wcslen((wchar_t *) *h)+1;
- 
-	cbAnsi = cCharacters * 2;
-
-	sethandlesize (hresult, cbAnsi);
-
-    // Convert to ANSI.
-    lentext = WideCharToMultiByte( encoding, 0, (wchar_t *) *h, -1, *hresult, cbAnsi, NULL, NULL);
-	
-	if ( lentext == 0 )  // report error
-	{
-		* errCode = GetLastError();
-		
-		return ( false );
-	}
-	
-	*errCode = S_OK;
-	
-	sethandlesize (hresult, lentext - 1);
-	
-	return ( true );
-	}
-
-
-static boolean AnsiToUnicode( Handle h, Handle hresult, unsigned long encoding, long * errCode )
-{
-	/*
-	7.0b42 PBS: convert from ANSI to Unicode. Borrowed from Microsoft sample code.
-	*/
-
-    ULONG cbUni, cCharacters;
-	long lentext;
-
-    cCharacters = gethandlesize (h);
-
-    // Determine number of bytes to be allocated for ANSI string. An
-    // ANSI string can have at most 2 bytes per character (for Double
-    // Byte Character Strings.)
-    cbUni = cCharacters * 4;
-
-	sethandlesize (hresult, cbUni);
-
-    // Convert to ANSI.
-    lentext = MultiByteToWideChar (encoding, 0, *h, cCharacters, (wchar_t *) *hresult, cbUni);
-	
-	if ( lentext == 0 )
-	{
-		* errCode = GetLastError();
-		
-		return ( false );
-	}
-	
-	* errCode = S_OK;
-	
-	sethandlesize( hresult, ( lentext + 1 ) * 2 );
-	((wchar_t *)(*hresult))[lentext] = L'\0';
-
-	return ( true );
-} 
-
-#endif /*end Windows character conversion routines*/
 
 
 /* convert an "internet name" for an encoding into a platform-specific id for the character set */
 
 static boolean getTextEncodingIDFromIANA( bigstring bsEncodingName, long * encodingId )
 {
-	#ifdef MACVERSION
 
 		OSStatus err;
 		TextEncoding oneEncoding;
@@ -2508,58 +2288,7 @@ static boolean getTextEncodingIDFromIANA( bigstring bsEncodingName, long * encod
 		
 		*encodingId = (long) oneEncoding;
 		
-	#endif
 
-	#ifdef WIN95VERSION
-
-		HRESULT err;
-		IMultiLanguage2 * pMultiLanguage;
-		MIMECSETINFO setInfo;
-		wchar_t ianaName[ 512 ];
-		long lenIanaName;
-
-		lowertext( (ptrbyte) (bsEncodingName + 1), (long) bsEncodingName[ 0 ] );
-
-		if ( equalstrings( bsEncodingName, BIGSTRING ("\x06" "utf-16") ) )
-		{
-			*encodingId = 1200;
-			
-			return (true);
-		}
-
-		initCOM();
-
-		err = CoCreateInstance(
-				&CLSID_CMultiLanguage, 
-				NULL,
-				CLSCTX_INPROC_SERVER,
-				&IID_IMultiLanguage2,
-				(void **) &pMultiLanguage );
-
-		if ( FAILED( err ) )
-		{
-			setTextEncodingConversionError( bsEncodingName, BIGSTRING( "" ), err );
-			
-			return ( false );
-		}
-
-		copyPStringToWide( bsEncodingName, &lenIanaName, ianaName );
-
-		err = pMultiLanguage->lpVtbl->GetCharsetInfo( pMultiLanguage, ianaName, &setInfo );
-		if ( FAILED( err ) )
-		{
-			setTextEncodingConversionError( bsEncodingName, BIGSTRING( "" ), kTextUnsupportedEncodingErr );
-			
-			pMultiLanguage->lpVtbl->Release( pMultiLanguage );
-			
-			return ( false );
-		}
-
-		*encodingId = (long)(setInfo.uiInternetEncoding);
-
-		pMultiLanguage->lpVtbl->Release( pMultiLanguage );
-
-	#endif
 	
 	return (true);
 }
@@ -2584,7 +2313,6 @@ boolean isTextEncodingAvailable( bigstring bsEncodingName )
 
 static boolean converttextencoding( Handle h, Handle hresult, const long inputcharset, const long outputcharset, long * OSStatusCode )
 {
-#ifdef MACVERSION /*Mac character conversion common routine*/
 
 	TECObjectRef converter;		
 	OSStatus status;
@@ -2651,74 +2379,7 @@ static boolean converttextencoding( Handle h, Handle hresult, const long inputch
 	
 	return (true);
 
-#endif /*end Mac character conversion routine(s)*/
 
-#ifdef WIN95VERSION
-
-	long lentext;
-	boolean flResult;
-
-	lentext = gethandlesize (h);
-	
-	switch ( inputcharset ) {
-		
-		case 1200:
-		case 0: /* utf-16le, a.k.a. "unicode" on windows, not handled as a code page. */
-
-			sethandlesize (h,lentext + 2);
-
-			(*h) [lentext] = '\0';
-			(*h) [lentext + 1] = '\0';
-
-			flResult = UnicodeToAnsi( h, hresult, outputcharset, OSStatusCode );
-
-			if ( flResult && ( (*h) [0] == '\xFF') )
-				pullfromhandle (hresult,0, 1, NULL);  /* Pop off the BOM */
-
-			break;
-
-		default: {
-
-			switch ( outputcharset ) {
-				case 1200:
-				case 0: /* utf-16le, a.k.a. "unicode" on windows, not handled as a code page */
-
-					flResult = AnsiToUnicode( h, hresult, inputcharset, OSStatusCode );
-
-					break;
-				
-				default: {
-					Handle htemp;
-
-					newemptyhandle (&htemp);
-
-					sethandlesize (h, lentext + 1);
-					(*h) [lentext] = '\0';
-
-					flResult = AnsiToUnicode (h, htemp, inputcharset, OSStatusCode );
-
-					if ( flResult && UnicodeToAnsi( htemp, hresult, outputcharset, OSStatusCode ) ) {
-						
-						if ((*hresult) [0] == '\xFF')
-							pullfromhandle (hresult, 0, 1, NULL);  /* pop BOM ? */
-						
-						} /* unicodetoansi */
-					else
-						flResult = false;
-
-					disposehandle (htemp);
-
-					} /* case default */
-
-				} /* switch outputcharset */
-
-			} /* case default */
-		
-		} /* switch inputcharset */
-	
-	return ( flResult );
-
-#endif
 	} /*converttextencoding*/
 
 
@@ -2726,19 +2387,10 @@ boolean convertCharset( Handle hString, Handle hresult, bigstring charsetIn, big
 {
 	long err;
 	
-	#ifdef MACVERSION
 		
 		TextEncoding teInputSet, teOutputSet;
 
-	#endif
 
-	#ifdef WIN95VERSION
-
-		long teInputSet, teOutputSet;
-
-		initCOM();
-
-	#endif
 	
 	if ( ! getTextEncodingIDFromIANA( charsetIn, (long *) &teInputSet ) )
 		return (false);
@@ -2763,28 +2415,7 @@ boolean utf16toansi( Handle h, Handle hresult ) {
 	7.0b42 PBS: convert from UTF-16 to iso-8859-1 character sets.
 	*/
 	
-	#ifdef WIN95VERSION
 	
-		long err;
-		long lentext = gethandlesize (h);
-
-		sethandlesize (h, lentext + 2);
-
-		(*h) [lentext] = '\0';
-
-		(*h) [lentext + 1] = '\0';
-
-		if ( ! UnicodeToAnsi (h, hresult, CP_ACP, &err) )
-		
-			goto error;
-
-		if ((*h) [0] == '\xFF')
-
-			pullfromhandle (hresult, 0, 1, NULL); /*Pop byte order mark*/
-		
-	#endif
-	
-	#ifdef MACVERSION
 		
 		long err;
 		
@@ -2792,7 +2423,6 @@ boolean utf16toansi( Handle h, Handle hresult ) {
 		
 			goto error;
 
-	#endif
 
 	return (true);
 	
@@ -2814,41 +2444,7 @@ boolean utf8toansi (Handle h, Handle hresult) {
 	
 	long err;
 	
-	#ifdef WIN95VERSION
-
-		long lentext = gethandlesize (h);
-
-		Handle htemp;
-
-		newemptyhandle (&htemp);
-
-		sethandlesize (h, lentext + 1);
-
-		(*h) [lentext] = '\0';
-
-		if ( ! AnsiToUnicode (h, htemp, CP_UTF8, &err ) ) /*Convert to UTF-16*/
-		{
-			setTextEncodingConversionError( cs_utf8, cs_utf16, err );
-			
-			return ( false );
-		}
-
-		if ( ! UnicodeToAnsi( htemp, hresult, CP_ACP, &err ) ) /*Convert from UTF-16 to ANSI*/
-		{
-			setTextEncodingConversionError( cs_utf16, cs_iso88591, err);
-			
-			return ( false );
-		}
-
-		if ((*htemp) [0] == '\xFF')
-
-			pullfromhandle (hresult, 0, 1, NULL); /*Pop byte order mark*/
-
-		disposehandle (htemp);
-		
-	#endif
 	
-	#ifdef MACVERSION
 		
 		if ( !converttextencoding( h, hresult, kCFStringEncodingUTF8, kTextEncodingWindowsLatin1, &err ) )
 		{
@@ -2857,7 +2453,6 @@ boolean utf8toansi (Handle h, Handle hresult) {
 			return (false);
 		}
 
-	#endif
 
 	return (true);
 	
@@ -2872,38 +2467,7 @@ boolean ansitoutf8 (Handle h, Handle hresult) {
 	
 	long err;
 	
-	#ifdef WIN95VERSION
-
-		Handle htemp;
-		long lentext = gethandlesize (h);
-
-		sethandlesize (h, lentext + 1);
-
-		(*h) [lentext] = '\0';
-
-		newemptyhandle (&htemp);
-
-		if ( ! AnsiToUnicode( h, htemp, CP_ACP, &err ) ) /*convert to UTF-16*/
-		{
-			setTextEncodingConversionError( cs_iso88591, cs_utf16, err );
-			
-			return ( false );
-		}
-		
-		if ( ! UnicodeToAnsi( htemp, hresult, CP_UTF8, &err ) ) /*convert from UTF-16 to UTF-8*/
-		{
-			setTextEncodingConversionError( cs_utf16, cs_utf8, err );
-			
-			return ( false );
-		}
-
-		disposehandle (htemp);
-
-		lentext = gethandlesize (hresult);
 	
-	#endif
-	
-	#ifdef MACVERSION
 	
 		if ( !converttextencoding( h, hresult, kTextEncodingWindowsLatin1, kCFStringEncodingUTF8, &err ) )
 		{
@@ -2912,7 +2476,6 @@ boolean ansitoutf8 (Handle h, Handle hresult) {
 			return ( false );
 		}
 	
-	#endif
 
 	return (true);
 	} /*ansitoutf8*/
@@ -2926,24 +2489,7 @@ boolean ansitoutf16 (Handle h, Handle hresult) {
 	
 	long err;
 	
-	#ifdef WIN95VERSION
 	
-		long lentext = gethandlesize (h);
-
-		sethandlesize (h, lentext + 1);
-
-		(*h) [lentext] = '\0';
-
-		if ( ! AnsiToUnicode( h, hresult, CP_ACP, &err ) )
-		{
-			setTextEncodingConversionError( cs_iso88591, cs_utf16, err );
-			
-			return ( false );
-		}
-	
-	#endif
-	
-	#ifdef MACVERSION
 	
 		if ( !converttextencoding( h, hresult, kTextEncodingWindowsLatin1, kTextEncodingUnicodeDefault, &err ) )
 		{
@@ -2952,7 +2498,6 @@ boolean ansitoutf16 (Handle h, Handle hresult) {
 			return ( false );
 		}
 
-	#endif
 
 	return (true);
 	} /*ansitoutf8*/
@@ -3016,19 +2561,11 @@ boolean macromantoutf8 (Handle h, Handle hresult) {
 	long err;
 	long encIn, encOut;
 	
-	#ifdef WIN95VERSION
 	
-		encIn = CP_UTF8;
-		encOut = 10000;
-	
-	#endif
-	
-	#ifdef MACVERSION
 		
 		encIn = kTextEncodingMacRoman;
 		encOut = kCFStringEncodingUTF8;
 	
-	#endif
 	
 	if ( !converttextencoding( h, hresult, encIn, encOut, &err ) )
 	{
@@ -3050,19 +2587,11 @@ boolean utf8tomacroman (Handle h, Handle hresult) {
 	long err;
 	long encIn, encOut;
 	
-	#ifdef WIN95VERSION
 	
-		encIn = CP_UTF8;
-		encOut = 10000;
-	
-	#endif
-	
-	#ifdef MACVERSION
 		
 		encIn = kCFStringEncodingUTF8;
 		encOut = kTextEncodingMacRoman;
 	
-	#endif
 	
 	if ( !converttextencoding( h, hresult, encIn, encOut, &err ) )
 	{

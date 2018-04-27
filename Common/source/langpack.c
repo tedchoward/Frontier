@@ -234,11 +234,7 @@ boolean langpackvalue (tyvaluerecord val, Handle *h, hdlhashnode hnode) {
 				long double x = **val.data.doublevalue;
 				extended80 x80;
 				 
-				#ifdef WIN95VERSION
-					convertToMacExtended (x, &x80);
-				#else
 					safeldtox80 (&x, &x80);
-				#endif		
 									 
 				fl = langpackdata (sizeof (x80), &x80, hpackedvalue);
 				
@@ -254,20 +250,11 @@ boolean langpackvalue (tyvaluerecord val, Handle *h, hdlhashnode hnode) {
 		case passwordvaluetype:
 		case patternvaluetype:
 		case objspecvaluetype:
-	#ifndef version5orgreater
-		case filespecvaluetype:
-		case aliasvaluetype:
-	#endif
-	#ifndef oplanglists
-		case listvaluetype:
-		case recordvaluetype:
-	#endif
 		case binaryvaluetype:
 			fl = langpackhandle (val.data.binaryvalue, hpackedvalue);
 			
 			break;
 		
-	#ifdef oplanglists
 		case listvaluetype:
 		case recordvaluetype:
 			fl = oppacklist (val.data.listvalue, &hdata);
@@ -280,9 +267,7 @@ boolean langpackvalue (tyvaluerecord val, Handle *h, hdlhashnode hnode) {
 			disposehandle (hdata);
 
 			break;
-	#endif
 	
-	#ifdef version5orgreater
 	
 		case filespecvaluetype:
 		case aliasvaluetype:
@@ -296,7 +281,6 @@ boolean langpackvalue (tyvaluerecord val, Handle *h, hdlhashnode hnode) {
 			disposehandle (hdata);
 			
 			break;
-	#endif
 
 		case codevaluetype:
 			fl = langpacktree (val.data.codevalue, &hdata);
@@ -669,11 +653,7 @@ unpack:
 				
 				if (fl) {
 					
-					#ifdef WIN95VERSION
-						convertFromMacExtended (&x, &x80);
-					#else
 						safex80told (&x80, &x);
-					#endif			
 					 
 					fl = setdoublevalue (x, &v);
 					
@@ -693,20 +673,10 @@ unpack:
 		case passwordvaluetype: 
 		case patternvaluetype:
 		case binaryvaluetype:
-	#ifndef version5orgreater
-		case objspecvaluetype:
-		case filespecvaluetype:
-		case aliasvaluetype:
-	#endif
-	#ifndef oplanglists
-		case listvaluetype:
-		case recordvaluetype:
-	#endif
 			fl = langunpackhandle (false, &v.data.binaryvalue, h, &ixunpack);
 			
 			break;
 		
-	#ifdef oplanglists
 		case listvaluetype:
 		case recordvaluetype:
 			fl = langunpackhandle (true, &hdata, h, &ixunpack);
@@ -717,9 +687,7 @@ unpack:
 			fl = opunpacklist (hdata, &v.data.listvalue);
 			
 			break;
-	#endif
 
-	#ifdef version5orgreater
 		case objspecvaluetype: {
 			Handle hobjspec;
 			
@@ -751,7 +719,6 @@ unpack:
 			fl = langunpackfileval (hdata, &v);
 			
 			break;
-	#endif
 
 		case codevaluetype:
 			fl = langunpackhandle (true, &hdata, h, &ixunpack);
@@ -852,23 +819,13 @@ boolean langunpackwindowverb (hdltreenode hparam1, tyvaluerecord *vreturned) {
 	
 	fs = &fspec;
 	
-	#ifdef MACVERSION
 
 		if (macfilespecisvalid(fs))
 			langexternalsetdirty ((hdlexternalhandle) val.data.externalvalue, false);
 		else
 			fs = nil;
 		
-	#endif // MACVERSION
 	
-	#ifdef WIN95VERSION
-	
-		if ( isemptystring ( fsname ( fs ) ) )
-			fs = nil;
-		else
-			langexternalsetdirty ( ( hdlexternalhandle ) val.data.externalvalue, false );
-
-	#endif // WIN95VERSION
 
 	if (!langexternalzoomfilewindow (&val, fs, true)) {
 		
@@ -884,7 +841,6 @@ boolean langunpackwindowverb (hdltreenode hparam1, tyvaluerecord *vreturned) {
 	} // langunpackwindowverb
 
 
-#if !flruntime
 
 boolean langvaluetotextscrap (tyvaluerecord val, Handle htext) {
 	
@@ -925,7 +881,6 @@ boolean langvaluetotextscrap (tyvaluerecord val, Handle htext) {
 	return (pushtexthandle (bsvalue, htext));
 	} /*langvaluetotextscrap*/
 
-#endif
 
 
 

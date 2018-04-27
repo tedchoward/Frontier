@@ -30,9 +30,7 @@
 
 #include "landinternal.h"
 
-#if TARGET_API_MAC_CARBON == 1 /*PBS 03/14/02: AE OS X fix.*/
 	#include "aeutils.h" /*PBS 03/14/02: AE OS X fix.*/
-#endif
 
 
 
@@ -111,7 +109,6 @@ pascal boolean landgetintparam (hdlverbrecord hverb, typaramkeyword key, short *
 	if (!landgetparam (hverb, key, inttype, &param)) 
 		return (false);
 	
-	#if TARGET_API_MAC_CARBON == 1 /*PBS 03/14/02: AE OS X fix.*/
 	
 		{		
 		Handle h;
@@ -123,11 +120,6 @@ pascal boolean landgetintparam (hdlverbrecord hverb, typaramkeyword key, short *
 		disposehandle (h);
 		}
 	
-	#else
-		
-		*x = **(short **) param.desc.dataHandle;
-	
-	#endif
 	
 	landdisposeparamrecord (&param);
 	
@@ -145,7 +137,6 @@ pascal boolean landgetlongparam (hdlverbrecord hverb, typaramkeyword key, long *
 		return (false);
 
 	/* kw - 2006-02-19 --- don't dereference the nil handle... */
-#if TARGET_API_MAC_CARBON == 1 /*PBS 03/14/02: AE OS X fix.*/
 
 	if (copydatahandle (&(param.desc), &theData))
 	{
@@ -159,10 +150,6 @@ pascal boolean landgetlongparam (hdlverbrecord hverb, typaramkeyword key, long *
 
 		done = true;
 	}
-#else
-	done = true;
-	*x = **(long **) param.desc.dataHandle;
-#endif
 
 	landdisposeparamrecord (&param);
 	
@@ -181,15 +168,9 @@ pascal boolean landgetstringparam (hdlverbrecord hverb, typaramkeyword key, bigs
 	if (!landgetparam (hverb, key, texttype, &param)) 
 		return (false);
 	
-	#if TARGET_API_MAC_CARBON == 1 /*PBS 03/14/02: AE OS X fix.*/
 	
 		 datahandletostring (&(param.desc), x);
 	
-	#else
-	
-		texthandletostring (param.desc.dataHandle, x);
-	
-	#endif
 	
 	landdisposeparamrecord (&param);
 	
@@ -204,15 +185,9 @@ pascal boolean landgettextparam (hdlverbrecord hverb, typaramkeyword key, Handle
 	if (!landgetparam (hverb, key, texttype, &param)) 
 		return (false);
 
-	#if TARGET_API_MAC_CARBON == 1 /*PBS 03/14/02: AE OS X fix.*/
 	
 		 copydatahandle (&(param.desc), x);
 	
-	#else
-		
-		*x = param.desc.dataHandle;
-	
-	#endif
 
 	return (true);
 	} /*landgettextparam*/

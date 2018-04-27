@@ -1055,7 +1055,6 @@ static void grabnthfield (Handle htext, long fieldnum, byte chdelim, Handle *hfi
 	} /*grabnthfield*/
 
 
-#ifdef MACVERSION
 
 static void macuppertext (byte *p, long ct) {
 	
@@ -1072,30 +1071,18 @@ static void macuppertext (byte *p, long ct) {
 
 	while (ct > infinity) {
 		
-		#if TARGET_API_MAC_CARBON == 1
 		
 			UppercaseText ((Ptr) p, infinity, smSystemScript);	
 		
-		#else
-		
-			UpperText ((Ptr) p, infinity);
-		
-		#endif
 		
 		p += infinity;
 		
 		ct -= infinity;
 		}
 	
-	#if TARGET_API_MAC_CARBON == 1
 	
 		UppercaseText ((Ptr) p, ct, smSystemScript);	
 	
-	#else
-	
-		UpperText ((Ptr) p, ct);
-	
-	#endif
 		
 	} /*macuppertext*/
 
@@ -1115,33 +1102,20 @@ static void maclowertext (byte *p, long ct) {
 	
 	while (ct > infinity) {
 		
-		#if TARGET_API_MAC_CARBON == 1
 
 			LowercaseText ((Ptr) p, infinity, smSystemScript);
 	
-		#else
-		
-			LowerText ((Ptr) p, infinity);
-		
-		#endif
 		
 		p += infinity;
 		
 		ct -= infinity;
 		}
 	
-	#if TARGET_API_MAC_CARBON == 1
 
 		LowercaseText ((Ptr) p, ct, smSystemScript);
 
-	#else
-	
-		LowerText ((Ptr) p, ct);
-	
-	#endif
 	} /*maclowertext*/
 
-#endif
 
 
 static void innercasehandle (Handle h) {
@@ -1151,11 +1125,7 @@ static void innercasehandle (Handle h) {
 
 	lockhandle (h);
 
-#if MACVERSION
 	maclowertext ((byte *) (*h), gethandlesize (h));
-#else
-	lowertext ((ptrbyte) *h, gethandlesize (h));
-#endif
 	
 	unlockhandle (h);
 
@@ -1785,11 +1755,7 @@ static boolean stringfunctionvalue (short token, hdltreenode hparam1, tyvaluerec
 			
 			lockhandle (x);
 			
-		#if MACVERSION
 			macuppertext ((byte *) (*x), gethandlesize (x));
-		#else
-			uppertext ((ptrbyte) *x, gethandlesize (x));
-		#endif
 			
 			unlockhandle (x);
 			
@@ -1809,11 +1775,7 @@ static boolean stringfunctionvalue (short token, hdltreenode hparam1, tyvaluerec
 			
 			lockhandle (x);
 		
-		#if MACVERSION
 			maclowertext ((byte *) (*x), gethandlesize (x));
-		#else
-			lowertext ((ptrbyte) *x, gethandlesize (x));
-		#endif
 			
 			unlockhandle (x);
 			
