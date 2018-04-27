@@ -3490,27 +3490,9 @@ static boolean langfunctionvalue (short token, hdltreenode hparam1, tyvaluerecor
 		
 		case netstatus: {
 		
-			#if defined(MACVERSION) && __POWERPC__
-				long stream = nil;
-				bigstring lbs;
-				
-				if (langgetparamcount (hparam1) > 0) {
-				
-					flnextparamislast = true;
-					
-					if (!getlongvalue (hparam1, 1, &stream))
-						return (false);
-					}
-				
-				if (!fwsNetEventGetStats (stream, lbs))
-					return (false);
-					
-				return (setstringvalue (lbs, v));
-			#else
 				langerror (unimplementedverberror);
 
 				return (false);
-			#endif
 			}
 
 		case netcountconnections: {

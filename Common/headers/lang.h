@@ -41,9 +41,6 @@
 
 #endif
 
-#if __powerc
-	#define flfindbug 0
-#endif
 
 
 #define idconsthashresource 128

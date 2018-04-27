@@ -342,18 +342,9 @@ void xcmdcallback (void) {
 		
 		case 0x11: { /*void ExtToStr (extended num, StringPtr str)*/
 			
-			#if __powerc
-			
-				long double x;
-				
-				safex80told ((extended80 *) args [0], &x);
-				
-				setdoublevalue (x, &val);
-			#else
 			
 				setdoublevalue (* (long double *) args [0], &val);
 			
-			#endif
 			
 			valtostring (&val, (ptrstring) args [1]);
 				
@@ -427,23 +418,11 @@ void xcmdcallback (void) {
 			break;
 		
 		case 0x0c: { /*extended StrToExt (StringPtr str)*/
-			#if __powerc
-			
-				long double x;
-				
-				stringtoval ((ptrstring) args [0], doublevaluetype, &val);
-				
-				x = **val.data.doublevalue;
-				
-				safeldtox80 (&x, (extended80 *) args [1]);
-				
-			#else
 				
 				stringtoval ((ptrstring) args [0], doublevaluetype, &val);
 				
 				*(double *) args [1] = **val.data.doublevalue;
 				
-			#endif
 			
 			break;
 			}

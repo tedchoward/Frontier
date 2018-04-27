@@ -915,13 +915,8 @@ static void intneterror (long errcode) {
 
 	#else
 	
-	#if __powerc
-		void RotateCursor (short);
-		void RotateCursor (short i) {} // for GUSI
-	#else
 		void ROTATECURSOR (short);
 		void ROTATECURSOR (short i) {} // for GUSI
-	#endif
 	
 	typedef struct tythreadqueuerecord {
 		

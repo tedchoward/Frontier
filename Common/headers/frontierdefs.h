@@ -32,9 +32,7 @@
 #ifndef __FRONTIERDEFS_H__
 #define __FRONTIERDEFS_H__
 
-#ifdef __powerc
-    #define noextended 1
-#elif defined(__GNUC__)
+#if   defined(__GNUC__)
     #define noextended 1
 #else
     #define noextended 0

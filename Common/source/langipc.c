@@ -230,9 +230,6 @@ boolean langipcpushparam (tyvaluerecord *valparam, typaramkeyword key, hdlverbre
 	bigstring bsval;
 	AEDesc aelist;
 	
-	#if __powerc
-	extended80 x80;
-	#endif
 	
 	type = langgettypeid ((*v).valuetype);
 	
@@ -302,24 +299,9 @@ boolean langipcpushparam (tyvaluerecord *valparam, typaramkeyword key, hdlverbre
 			
 			break;
 		
-		#if __powerc
-		
-			case doublevaluetype: {
-				long double x = **(*v).data.doublevalue;
-				 
-				safeldtox80 (&x, &x80);
-				 
-				pval = &x80;
-				 
-				len = sizeof (x80);
-				 
-				break;
-				}
-		#else
 		
 			case doublevaluetype:
 			
-		#endif
 		
 		case stringvaluetype: 	/*all of these are normal, handle-based types */
 		case rectvaluetype:		/*whose langtypeid matches their AE DescType  */
@@ -492,25 +474,9 @@ static boolean langipccoerceparam (AEDesc *param, tyvaluerecord *vreturned) {
 			
 			break;
 		
-		#if __powerc
-		
-			case doublevaluetype: {
-				long double ld;
-				
-				assert (gethandlesize (hdata) == sizeof (extended80));
-				
-				safex80told (*(extended80 **) hdata, &ld);
-				
-				fl = setdoublevalue (ld, v);
-				
-				break;
-				}
-		
-		#else
 		
 			case doublevaluetype:
 		
-		#endif
 		
 		case stringvaluetype: 	/*all of these are normal, handle-based types */
 		case rectvaluetype:		/*whose langtypeid matches their AE DescType  */

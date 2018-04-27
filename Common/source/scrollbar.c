@@ -537,17 +537,6 @@ boolean initscrollbars (void) {
 	7.0b18 PBS: check for 8.5 control manager on Macs -- proportional thumbs.
 	*/
 	
-	#if __powerc
-
-		OSErr err;
-		long response;
-	
-		err = Gestalt (gestaltControlMgrAttr, &response);
-	
-		if ((err == noErr) && (response & gestaltControlMgrPresent))
-			flmacproportionalthumbs = true;
-
-	#endif
 	
 	return (true);
 	} /*initscrollbars*/

@@ -738,16 +738,9 @@ static void	ccdrawabout (void) {
 	
 	ccdrawurlitem (false);
 	
-	#if __powerc
-	
-	//	ccdrawtextitem (isaitem, "\pPowerPC", normal);
-		parsedialogstring (aboutstrings [isaitem], BIGSTRING ("\x07" "PowerPC"), nil, nil, nil, bs);
-	
-	#else
 	
 		parsedialogstring (aboutstrings [isaitem], BIGSTRING ("\x05" "680x0"), nil, nil, nil, bs);
 	
-	#endif
 	
 //	ccdrawmainwindowtext (isaitem, normal, bs, leftjustified);
 	

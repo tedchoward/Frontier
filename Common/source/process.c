@@ -2641,9 +2641,6 @@ unsigned long processstackspace (void) {
 	nor GetCurrentThread returns an error, but the space returned is bogus.
 	*/
 	
-	#if __powerc
-	if (infrontierthread ())	// not in an osa client
-	#endif
 	
 		if (flcanusethreads) {
 			

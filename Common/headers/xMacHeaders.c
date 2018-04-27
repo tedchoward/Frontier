@@ -51,11 +51,9 @@
 #define TRUE		true
 #define FALSE		false
 
-#ifndef powerc
  #include <MixedMode.h>
  long GetCurrentA5(void)
   ONEWORDINLINE(0x200D);
-#endif
 
 /*
  *	Apple #include files
@@ -161,9 +159,7 @@
 	#include <Resources.h>
 //	#include <Retrace.h>
 //	#include <ROMDefs.h>
-#ifndef powerc
 //	#include <SANE.h>
-#endif
 	#include <Scrap.h>
 //	#include <Script.h>
 //	#include <SCSI.h>
