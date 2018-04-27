@@ -2153,7 +2153,6 @@ static boolean autoparagraphs (handlestream *s) {
 	} /*autoparagraphs*/
 
 
-#ifdef version5orgreater
 
 static boolean iso8859encode (handlestream *s, hdlhashtable hiso8859usermap) {
 
@@ -2177,21 +2176,6 @@ static boolean iso8859encode (handlestream *s, hdlhashtable hiso8859usermap) {
 	hdlhashnode hnode;
 
 	
-	#ifndef version5orgreater
-		hdlhashtable hiso8859usermap = nil;
-		
-		if (getsystemtablescript (iduseriso8859map, bs)) {
-			
-			pushstring (BIGSTRING ("\x08" ".[\"128\"]"), bs);	/*refer to 1st entry in table*/
-			
-			disablelangerror ();
-			
-			if (langexpandtodotparams (bs, &hiso8859usermap, bs))
-				; /*map being non-nil is our flag*/
-			
-			enablelangerror ();
-			}
-	#endif
 	
 	if (hiso8859usermap != nil)
 		pushhashtable (hiso8859usermap);
@@ -2355,75 +2339,6 @@ boolean processhtmlmacrosverb (hdltreenode hp1, tyvaluerecord *vreturned) {
 		}
 	} /*processhtmlmacrosverb*/
 
-#else
-
-boolean processhtmlmacrosverb (hdltreenode hparam1, tyvaluerecord *vreturned) {
-	
-	/*
-	5.0.2b13 dmb: create handlestream here, and use for both processtext and autoparagraphs
-	*/
-	
-	Handle htext = nil;
-	boolean flautoparagraphs, flactiveurls, claycompatibity;
-	tyvaluerecord callbackval;
-	tyaddress callback;
-	ptraddress savecallback;
-	handlestream s;
-	
-	if (!getbooleanvalue (hparam1, 2, &flautoparagraphs))
-		return (false);
-	
-	if (!getbooleanvalue (hparam1, 3, &flactiveurls))
-		return (false);
-	
-	if (!getbooleanvalue (hparam1, 4, &claycompatibity))
-		return (false);
-	
-	flnextparamislast = true;
-	
-	
-	if (!getaddressparam (hparam1, 5, &callbackval))
-		return (false);
-	
-	if (!getaddressvalue (callbackval, &callback.ht, callback.bs))
-		return (false);
-	
-	savecallback = callbackscript;
-	
-	callbackscript = &callback;
-	
-	
-	if (!getexempttextvalue (hparam1, 1, &htext))
-		goto error;
-	
-	openhandlestream (htext, &s);
-	
-	if (!processtext (&s, flactiveurls, claycompatibity))
-		goto error;
-		
-	if (flautoparagraphs) {
-		
-		if (!autoparagraphs (&s))
-			goto error;
-		}
-	
-	closehandlestream (&s);
-	
-	callbackscript = savecallback;
-	
-	return (setheapvalue (htext, stringvaluetype, vreturned));
-	
-	error: {
-		
-		callbackscript = savecallback;
-		
-		disposehandle (htext);
-		
-		return (false);
-		}
-	} /*processhtmlmacrosverb*/
-
-#endif
 
 #pragma mark === stringOps ucmd ===
 

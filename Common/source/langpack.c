@@ -250,10 +250,6 @@ boolean langpackvalue (tyvaluerecord val, Handle *h, hdlhashnode hnode) {
 		case passwordvaluetype:
 		case patternvaluetype:
 		case objspecvaluetype:
-	#ifndef version5orgreater
-		case filespecvaluetype:
-		case aliasvaluetype:
-	#endif
 	#ifndef oplanglists
 		case listvaluetype:
 		case recordvaluetype:
@@ -278,7 +274,6 @@ boolean langpackvalue (tyvaluerecord val, Handle *h, hdlhashnode hnode) {
 			break;
 	#endif
 	
-	#ifdef version5orgreater
 	
 		case filespecvaluetype:
 		case aliasvaluetype:
@@ -292,7 +287,6 @@ boolean langpackvalue (tyvaluerecord val, Handle *h, hdlhashnode hnode) {
 			disposehandle (hdata);
 			
 			break;
-	#endif
 
 		case codevaluetype:
 			fl = langpacktree (val.data.codevalue, &hdata);
@@ -685,11 +679,6 @@ unpack:
 		case passwordvaluetype: 
 		case patternvaluetype:
 		case binaryvaluetype:
-	#ifndef version5orgreater
-		case objspecvaluetype:
-		case filespecvaluetype:
-		case aliasvaluetype:
-	#endif
 	#ifndef oplanglists
 		case listvaluetype:
 		case recordvaluetype:
@@ -711,7 +700,6 @@ unpack:
 			break;
 	#endif
 
-	#ifdef version5orgreater
 		case objspecvaluetype: {
 			Handle hobjspec;
 			
@@ -743,7 +731,6 @@ unpack:
 			fl = langunpackfileval (hdata, &v);
 			
 			break;
-	#endif
 
 		case codevaluetype:
 			fl = langunpackhandle (true, &hdata, h, &ixunpack);

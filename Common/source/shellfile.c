@@ -1197,9 +1197,6 @@ boolean shellcloseall (WindowPtr w, boolean fldialog) {
 			if (!shellclosechildwindows (hinfo))
 				return (false);
 			
-			#ifndef version5orgreater
-				shellbringtofront (hinfo);
-			#endif
 			
 			return (true);
 			}

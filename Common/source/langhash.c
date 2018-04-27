@@ -1749,7 +1749,6 @@ boolean hashresolvevalue (hdlhashtable htable, hdlhashnode hnode) {
 	register hdlhashnode hn = hnode;
 	boolean fl;
 	
-	#ifdef version5orgreater
 	if (htable == pathstable && (**hn).flunresolvedaddress) {
 
 		(**hn).flunresolvedaddress = false; /*clear now to avoid potential recursion*/
@@ -1767,39 +1766,6 @@ boolean hashresolvevalue (hdlhashtable htable, hdlhashnode hnode) {
 		if (!fl)
 			return (false);
 		}
-	#else
-	register hdlstring hstring;
-	bigstring bs;
-	if ((**hn).flunresolvedaddress) {
-
-		(**hn).flunresolvedaddress = false; /*clear now to avoid potential recursion*/
-		
-		hstring = (**hn).val.data.addressvalue;
-		
-		copyheapstring (hstring, bs);
-		
-		pushhashtable (roottable);
-		
-		disablelangerror ();
-		
-		fl = langexpandtodotparams (bs, &htable, bs);
-		
-		enablelangerror ();
-		
-		pophashtable ();
-		
-		if (!fl) {
-
-		//	(**hn).flunresolvedaddress = true; /*didn't actually resolve it*/
-			
-			return (false);
-			}
-
-		setheapstring (bs, hstring); /*now we have just the name*/
-		
-		enlargehandle ((Handle) hstring, sizeof (hdlhashtable), &htable); /*should never fail*/
-		}
-	#endif
 
 	if ((**hn).val.fldiskval) {
 		Handle hbinary;
@@ -2692,7 +2658,6 @@ static boolean hashpackvisit (bigstring bsname, hdlhashnode hnode, tyvaluerecord
 			break;
 	#endif
 
-	#ifdef version5orgreater
 		case filespecvaluetype:
 		case aliasvaluetype:
 			if (!langpackfileval (&val, &hpacked))
@@ -2706,7 +2671,6 @@ static boolean hashpackvisit (bigstring bsname, hdlhashnode hnode, tyvaluerecord
 			disposehandle (hpacked);
 			
 			break;
-	#endif
 
 		case codevaluetype:
 			if (!langpacktree (val.data.codevalue, &hpacked))
@@ -3231,7 +3195,6 @@ boolean hashunpacktable (Handle hpackedtable, boolean flmemory, hdlhashtable hta
 				break;
 		#endif
 
-		#ifdef version5orgreater
 			case filespecvaluetype:
 			case aliasvaluetype:
 
@@ -3273,7 +3236,6 @@ boolean hashunpacktable (Handle hpackedtable, boolean flmemory, hdlhashtable hta
 					goto L1;
 				
 				break;
-		#endif
 
 			case objspecvaluetype: {
 				Handle hobjspec;
@@ -3790,17 +3752,6 @@ boolean hashgetsizestring (const tyvaluerecord *val, bigstring bssize) {
 			
 			break;
 		
-		#ifndef version5orgreater
-			case addressvaluetype:
-				size = stringlength (bsvalue);
-				
-				if (size > 0) /*non-empty address; don't count the '@' character*/
-					--size;
-				
-				numbertostring (size, bssize);
-				
-				break;
-		#endif
 
 		case binaryvaluetype: {
 			register Handle h = (*val).data.binaryvalue;

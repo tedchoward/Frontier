@@ -613,7 +613,6 @@ boolean pushbinaryoperation (tytreetype op, hdltreenode hp1, hdltreenode hp2, hd
 		return (false);
 		}
 	
-	#ifdef version5orgreater
 	
 	if (op == assignop) { // look for assignment optimizations when rhs includes lhs
 		
@@ -655,7 +654,6 @@ boolean pushbinaryoperation (tytreetype op, hdltreenode hp1, hdltreenode hp2, hd
 			}
 		}
 
-	#endif
 
 	h = *hreturned; /*copy into register*/
 	

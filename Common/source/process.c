@@ -3150,9 +3150,7 @@ void processscheduler (void) {
 		return;
 		}
 	
-	#ifdef version5orgreater
 		flagentsenabled = langgetuserflag (idagentsenabledscript, flagentsenabled);
-	#endif
 	
 	if (!flagentsenabled || flagentsdisabled)
 		return;

@@ -111,17 +111,9 @@ typedef struct tywindowposition {
 	
 	Rect windowrect;
 	
-	#ifdef version5orgreater
 	
 		short unused [6];
 	
-	#else
-		
-		short vertcurrent, vertmin, vertmax;
-		
-		short horizcurrent, horizmin, horizmax;
-	
-	#endif
 	
 	long ctopens; /*the number of times the file has been opened*/
 	

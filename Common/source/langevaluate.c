@@ -1780,7 +1780,6 @@ static boolean evaltree (hdltreenode htree, tyvaluerecord *valtree) {
 				return (false);
 				}
 			
-			#ifdef version5orgreater
 				
 				*valtree = val1;
 				
@@ -1793,12 +1792,6 @@ static boolean evaltree (hdltreenode htree, tyvaluerecord *valtree) {
 						pushtmpstackvalue (valtree);
 					}
 			
-			#else
-			
-				if (!copyvaluerecord (val1, valtree))
-					return (false);
-			
-			#endif
 
 			if ((*valtree).valuetype == novaluetype) { /*return () -- no value provided*/
 				
@@ -2010,7 +2003,6 @@ boolean evaluatelist (hdltreenode hfirst, tyvaluerecord *val) {
 		
 		(**hlocals).lexicalrefcon = langgetlexicalrefcon ();
 		
-		#ifdef version5orgreater
 		if (flneedthis) {
 			#if lazythis_optimization
 				++ctdeferredthis;
@@ -2019,7 +2011,6 @@ boolean evaluatelist (hdltreenode hfirst, tyvaluerecord *val) {
 					langsetthisvalue (hlocals, hthis, bsthis);
 			#endif
 			}
-		#endif
 		
 		if (tryerror != nil) {
 			

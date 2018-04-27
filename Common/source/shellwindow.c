@@ -1682,11 +1682,6 @@ boolean newfilewindow ( const ptrfilespec fspec, hdlfilenum fnum, short rnum, bo
 	
 	*shellglobals.infoholder = hinfo;
 	
-	#ifndef version5orgreater
-		setscrollbarinfo (vertbar, wpos.vertmin, wpos.vertmax, wpos.vertcurrent);
-		
-		setscrollbarinfo (horizbar, wpos.horizmin, wpos.horizmax, wpos.horizcurrent);
-	#endif
 	
 	loaddefaultfont (w);
 	

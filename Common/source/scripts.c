@@ -598,7 +598,6 @@ static boolean newprocessvisit (hdlhashnode hnode, ptrvoid refcon) {
 	if (!fl)
 		return (true);
 	
-	#ifdef version5orgreater
 		if (!newprocess (hcode, true, &systemscripterrorroutine, (long) hnode, &hprocess))
 			return (false);
 		
@@ -609,9 +608,6 @@ static boolean newprocessvisit (hdlhashnode hnode, ptrvoid refcon) {
 		++ctspecialprocessesrunning;
 		
 		return (true);
-	#else
-		return (addnewprocess (hcode, true, &systemscripterrorroutine, (long) hnode));
-	#endif
 	} /*newprocessvisit*/
 
 

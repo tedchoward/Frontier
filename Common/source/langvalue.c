@@ -407,7 +407,6 @@ boolean getaddressvalue (tyvaluerecord val, hdlhashtable *htable, bigstring bs) 
 
 	if (*htable == (hdlhashtable) -1) { /*an unresolved address*/
 
-		#ifdef version5orgreater
 			boolean fl;
 
 			pushhashtable (roottable);
@@ -422,9 +421,6 @@ boolean getaddressvalue (tyvaluerecord val, hdlhashtable *htable, bigstring bs) 
 			
 			if (!fl)
 				return (false);
-		#else
-			*htable = nil;
-		#endif
 			}
 		
 	else {
@@ -856,10 +852,6 @@ boolean copyvaluerecord (tyvaluerecord v, tyvaluerecord *vreturned) {
 	
 	Handle x;
 	hdllistrecord hlist;
-#ifndef version5orgreater
-	bigstring bs;
-	hdlhashtable htable;
-#endif
 	
 #ifdef tmpcopydebug
 	static long ctdups = 0;
@@ -885,14 +877,6 @@ boolean copyvaluerecord (tyvaluerecord v, tyvaluerecord *vreturned) {
 	switch (v.valuetype) {
 		
 		case addressvaluetype:
-		#ifndef version5orgreater
-			initvalue (vreturned, novaluetype);
-			
-			if (!getaddressvalue (v, &htable, bs))
-				return (false);
-			
-			return (setaddressvalue (htable, bs, vreturned));
-		#endif
 		case stringvaluetype:
 		case passwordvaluetype:
 		case rectvaluetype:
@@ -1669,7 +1653,6 @@ boolean getaddresspath (tyvaluerecord val, bigstring bs) {
 	hdlhashtable htable;
 	bigstring bspath;
 	
-#ifdef version5orgreater
  	if (!getaddressparts (&val, &htable, bs))
 		return (false);
 
@@ -1678,10 +1661,6 @@ boolean getaddresspath (tyvaluerecord val, bigstring bs) {
 
 	if (!validhandle ((Handle) htable))
 		htable = nil;
-#else
-	if (!getaddressvalue (val, &htable, bs))
-		return (false);
-#endif
 	
 	ht = htable; /*move into register*/
 	
@@ -4686,52 +4665,6 @@ boolean getvarparam (hdltreenode hfirst, short pnum, hdlhashtable *htable, bigst
 	
 	tyvaluerecord val;
 	
-#ifndef version5orgreater
-	hdltreenode hparam;
-	boolean fl;
-	
-
-	/*dmb 8/20/91*/
-	
-	if (!getparam (hfirst, pnum, &hparam))
-		return (false);
-	
-	disablelangerror ();
-	
-	fl = langgetdottedsymbolval (hparam, htable, bsname, &val);
-	
-	enablelangerror ();
-	
-	if (fl) {
-		
-		if (val.valuetype == stringvaluetype) { /*see if string is an address*/
-			
-			hdlhashtable ht2;
-			bigstring bs2;
-			
-			disablelangerror ();
-			
-			fl = copyvaluerecord (val, &val) && stringtoaddress (&val) && getaddressvalue (val, &ht2, bs2);
-			
-			enablelangerror ();
-			
-			if (fl && (ht2 != nil) && (ht2 != currenthashtable)) { /*string was valid, non-local adr*/
-				
-				*htable = ht2;
-				
-				copystring (bs2, bsname);
-				}
-			
-			return (true);
-			}
-		
-		if (val.valuetype != addressvaluetype) /*not an address object; use it's adr*/
-			return (true);
-		}
-	else
-	
-		/*end 8/20/91*/
-#endif
 		
 		if (!getaddressparam (hfirst, pnum, &val))
 			return (false);
@@ -4932,10 +4865,8 @@ boolean getvarvalue (hdltreenode hfirst, short pnum, hdlhashtable *htable, bigst
 	if (!getvarparam (hfirst, pnum, htable, bsname))
 		return (false);
 	
-	#ifdef version5orgreater
 		if (isemptystring (bsname) && ((***htable).fllocaltable))
 			return (setnilvalue (val));
-	#endif
 	
 	return (langsymbolreference (*htable, bsname, val, hnode));
 	} /*getvarvalue*/
@@ -6303,7 +6234,6 @@ boolean addvalue (tyvaluerecord v1, tyvaluerecord v2, tyvaluerecord *vreturned) 
 			break;
 		
 		case stringvaluetype: {
-			#ifdef version5orgreater
 				fl = pushhandle (v2.data.stringvalue, v1.data.stringvalue);
 				
 				if (!fl)
@@ -6312,22 +6242,11 @@ boolean addvalue (tyvaluerecord v1, tyvaluerecord v2, tyvaluerecord *vreturned) 
 				*vreturned = v1;
 				
 				v1.valuetype = novaluetype;
-			#else
-				Handle x;
-				
-				fl = concathandles (v1.data.stringvalue, v2.data.stringvalue, &x);
-				
-				if (!fl)
-					break;
-				
-				fl = setheapvalue (x, stringvaluetype, vreturned);
-			#endif
 			
 			break;
 			}
 		
 		case binaryvaluetype: {
-			#ifdef version5orgreater
 				stripbinarytypeid (v2.data.binaryvalue);
 				
 				fl = pushhandle (v2.data.binaryvalue, v1.data.binaryvalue);
@@ -6340,20 +6259,6 @@ boolean addvalue (tyvaluerecord v1, tyvaluerecord v2, tyvaluerecord *vreturned) 
 				*vreturned = v1;
 				
 				v1.valuetype = novaluetype;
-			#else
-				Handle x;
-				
-				stripbinarytypeid (v1.data.binaryvalue);
-			
-				stripbinarytypeid (v2.data.binaryvalue);
-				
-				fl = concathandles (v1.data.binaryvalue, v2.data.binaryvalue, &x);
-				
-				if (!fl)
-					break;
-				
-				fl = setbinaryvalue (x, '\?\?\?\?', vreturned);
-			#endif
 			
 			break;
 			}
@@ -6448,7 +6353,6 @@ boolean subtractvalue (tyvaluerecord v1, tyvaluerecord v2, tyvaluerecord *vretur
 			break;
 		
 		case stringvaluetype: {
-			#ifdef version5orgreater
 				long ix;
 				
 				ix = searchhandle (v1.data.stringvalue, v2.data.stringvalue, 0, longinfinity);
@@ -6459,22 +6363,6 @@ boolean subtractvalue (tyvaluerecord v1, tyvaluerecord v2, tyvaluerecord *vretur
 				*vreturned = v1;
 				
 				v1.valuetype = novaluetype;
-			#else
-				Handle x;
-				long ix;
-				
-				fl = copyhandle (v1.data.stringvalue, &x);
-				
-				if (!fl)
-					break;
-				
-				ix = searchhandle (x, v2.data.stringvalue, 0, longinfinity);
-				
-				if (ix >= 0)
-					pullfromhandle (x, ix, gethandlesize (v2.data.stringvalue), nil);
-				
-				fl = setheapvalue (x, stringvaluetype, vreturned);
-			#endif
 			
 			break;
 			
@@ -8042,7 +7930,6 @@ boolean langfunctioncall (hdltreenode hcallernode, hdlhashtable htable, hdlhashn
 	tyvaluerecord osacode;
 #endif
 	
-	#if version5orgreater	// do special case checking here, not in langrunhandlercode
 		
 		if (hcode == nil) { /*can only be a kernel call -- or an error*/
 			
@@ -8074,7 +7961,6 @@ boolean langfunctioncall (hdltreenode hcallernode, hdlhashtable htable, hdlhashn
 			
 		#endif // flcomponent
 		
-	#endif // version5orgreater
 	
 	bundle { /*safely navigate to get the name of the 1st formal param*/
 		
@@ -8137,7 +8023,6 @@ boolean langfunctioncall (hdltreenode hcallernode, hdlhashtable htable, hdlhashn
 	} /*langfunctioncall*/
 
 
-#if version5orgreater
 
 static boolean isentrypoint (hdltreenode hcode, bigstring bsname, bigstring bsprocname) {
 	
@@ -8239,67 +8124,6 @@ static hdltreenode langgetentrypoint (hdltreenode hcode, bigstring bsname, hdlha
 	return (hcode);
 	} /*langgetentrypoint*/
 
-#else
-
-static hdltreenode langgetentrypoint (hdltreenode hcode, bigstring bsname, hdlhashtable htable, hdlhashnode hnode) {
-
-	/*
-	skip over extra level of modularity that exists in external 
-	handle calls.
-	
-	see comment in langfunctioncall
-	
-	5/28/91 dmb: only skip level when the module name is the same as the 
-	indicated external name (the name of the script in the database).  if no 
-	name is given, no match is required
-	
-	11/25/91 dmb: use langgetidentifier to handle entrypoints that are 
-	bracketed expressions.
-	
-	2/13/92 dmb: treat entrypoint name mismatch as an error if that's all
-	there is in the module.  added htable/hnode parameters so that errors can be 
-	reported nicely
-	*/
-	
-	register hdltreenode hp1 = (**hcode).param1;
-	
-	while (hp1 && (**hp1).nodetype == noop) /*skip over comments, blank lines*/
-		hp1 = (**hp1).link;
-	
-	if (hp1 && (**hp1).nodetype == moduleop) { /*skip one level of modularity*/
-		
-		register hdltreenode hp2 = (**hp1).param2; /*should be procop*/
-		bigstring bsidentifier;
-		
-		assert (hp2 && ((**hp2).nodetype == procop));
-		
-		if (bsname == nil)
-			return (hp1);
-		
-		if (langgetidentifier ((**hp2).param1, bsidentifier)) {
-			
-			if (equalidentifiers (bsidentifier, bsname))
-				return (hp1);
-			
-			if ((**hp1).link == nil) { /*nothing left; this is a bug*/
-				
-				langpushsourcecode (htable, hnode, bsfunctionname); /*point user at bad script...*/
-				
-				langseterrorline ((**hp2).param1); /*...rather than the call to it*/
-				
-				lang2paramerror (badentrypointnameerror, bsname, bsidentifier);
-				
-				langpopsourcecode ();
-				
-				return (nil);
-				}
-			}
-		}
-	
-	return (hcode);
-	} /*langgetentrypoint*/
-
-#endif // version5orgreater
 
 
 #if 0
@@ -8568,7 +8392,6 @@ boolean langhandlercall (hdltreenode htree, hdltreenode hparam1, tyvaluerecord *
 		goto runhandler;
 		}
 	
-	#ifdef version5orgreater
 		if ((**htree).nodetype == dotop) { // 8.0.4 dmb: handle remote functions for SCNS
 			
 			if (langisremotefunction (htree))
@@ -8598,7 +8421,6 @@ boolean langhandlercall (hdltreenode htree, hdltreenode hparam1, tyvaluerecord *
 				}
 			}
 			
-	#endif
 
 	#if isFrontier && MACVERSION
 		if (langipchandlercall (htree, bsfunctionname, hparam1, vreturned)) /*3.0a*/

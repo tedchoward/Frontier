@@ -442,18 +442,6 @@ boolean tableloadsystemtable (dbaddress adr, Handle *hvariable, hdlhashtable *ht
 	
 	ht = (hdlhashtable) (**hv).variabledata;
 	
-	#if !odbengine && !version5orgreater
-		
-	if (!linksystemtablestructure (ht)) {
-		
-		tabledisposetable (ht, false);
-		
-		disposehandle ((Handle) hv);
-		
-		return (false);
-		}
-
-	#endif
 	
 	(**hv).id = idtableprocessor; /*so we can make a value out of this variable*/
 	

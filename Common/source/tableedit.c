@@ -304,7 +304,6 @@ boolean tablegetwpedittext (hdlheadrecord hnode, boolean flunload) {
 	
 	shellblockevents (); /*don't want backgrounding during assignment*/
 	
-	#ifdef version5orgreater
 	
 		if (langrun (x, &newval) && (newval.valuetype != externalvaluetype) && !isemptystring (bstext))
 			disposehandle (htext);
@@ -332,32 +331,6 @@ boolean tablegetwpedittext (hdlheadrecord hnode, boolean flunload) {
 			if (htext != nil)
 				setheapvalue (htext, stringvaluetype, &newval);
 			}
-	#else
-	
-		if (langrun (x, &newval) && (newval.valuetype != externalvaluetype) && !isemptystring (bstext))
-			disposehandle (htext);
-		
-		else {
-			byte ch = chdoublequote;
-			
-			if (copyhandle (htext, &x)) { /*2.1b2: try again, with quotes*/
-				
-				insertinhandle (x, 0, &ch, 1);
-				
-				enlargehandle (x, 1, &ch);
-				
-				if (langrun (x, &newval) && (newval.valuetype != externalvaluetype) && !isemptystring (bstext)) {
-					
-					disposehandle (htext);
-					
-					htext = nil;
-					}
-				}
-			
-			if (htext != nil)
-				setheapvalue (htext, stringvaluetype, &newval);
-			}
-	#endif
 	
 	htext = nil; /*it's been consumed, one way or another*/
 	

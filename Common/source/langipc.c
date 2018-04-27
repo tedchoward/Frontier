@@ -2046,27 +2046,7 @@ static boolean getbinarylistdesc (boolean flrecord, tyvaluerecord val, AEDescLis
 		
 		case listvaluetype:
 		case recordvaluetype:
-			#ifdef version5orgreater
 				return (langipcconvertoplist (&val, listdesc));
-			#else
-			
-				
-					{
-					Handle hcopy;
-					
-					copydatahandle (listdesc, &hcopy);
-					
-					if (!stealbinaryhandle (&val, &hcopy))
-						return (false);
-						
-					disposehandle (hcopy);
-					}
-				
-					
-				(*listdesc).descriptorType = typeAERecord;
-				
-				return (true);
-			#endif
 		
 		case novaluetype:
 		case longvaluetype:

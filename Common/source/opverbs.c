@@ -526,14 +526,6 @@ boolean opwindowopen (hdlexternalvariable hvariable, hdlwindowinfo *hinfo) {
 
 	shellfinddatawindow ((Handle) ho, hinfo); /*3/19/91 DW*/
 	
-	#ifndef version5orgreater
-		if (*hinfo == nil && (**ho).flwindowopen) {
-			
-			shellinternalerror (idopwindowopenbug, STR_ourline_windowopen_inconsistency);
-			
-			(**ho).flwindowopen = false;
-			}
-	#endif
 	
 	return ((**ho).flwindowopen);
 	} /*opwindowopen*/
@@ -2264,28 +2256,12 @@ static boolean opgetrefconverb (hdltreenode hparam1, hdlheadrecord hnode, tyvalu
 		setlongvalue (0, &linkedval);
 	
 	else {
-		#ifdef version5orgreater
 			
 			if (!langunpackvalue (hrefcon, &linkedval))
 				return (false);
 			
 			pushvalueontmpstack (&linkedval);
 			
-		#else
-			if (!copyhandle (hrefcon, &hrefcon)) /*handles nil*/
-				return (false);
-			
-			if (!setheapvalue (hrefcon, binaryvaluetype, &linkedval))
-				return (false);
-			
-			valuetype = langgetvaluetype (getbinarytypeid (hrefcon));
-			
-			if (langgoodbinarytype (valuetype)) { /*unpack-able*/
-				
-				if (!coercevalue (&linkedval, valuetype))
-					return (false);
-				}
-		#endif
 		}
 	
 	*v = linkedval;
@@ -2330,7 +2306,6 @@ static boolean opsetrefconverb (hdltreenode hparam1, hdlheadrecord hnode, tyvalu
 		}
 	else {
 		
-		#ifdef version5orgreater
 			
 			if (!langpackvalue (val, &hbinary, HNoNode))
 				return (false);
@@ -2341,20 +2316,6 @@ static boolean opsetrefconverb (hdltreenode hparam1, hdlheadrecord hnode, tyvalu
 			
 			fl = true;
 			
-		#else
-			
-			if (!coercetobinary (&val))
-				return (false);
-			
-			hbinary = val.data.binaryvalue; /*copy into register*/
-		
-			lockhandle (hbinary);
-			
-			fl = opsetrefcon (hnode, *hbinary, gethandlesize (hbinary));
-			
-			unlockhandle (hbinary);
-			
-		#endif
 		}
 	
 	if (fl)

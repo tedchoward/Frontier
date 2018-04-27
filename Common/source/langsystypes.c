@@ -427,9 +427,6 @@ boolean getobjectmodeldisplaystring (tyvaluerecord *vitem, bigstring bsdisplay) 
 			break;
 		
 		case stringvaluetype: /*these need to be quoted*/
-	#ifndef version5orgreater
-		case addressvaluetype:
-	#endif
 		case filespecvaluetype:
 		case aliasvaluetype:
 		case datevaluetype:
@@ -438,7 +435,6 @@ boolean getobjectmodeldisplaystring (tyvaluerecord *vitem, bigstring bsdisplay) 
 			
 			break;
 		
-	#ifdef version5orgreater
 		case addressvaluetype:
 			if (!getlimitedvaluestring (v, 251, chnul, bsdisplay))
 				return (false);
@@ -449,7 +445,6 @@ boolean getobjectmodeldisplaystring (tyvaluerecord *vitem, bigstring bsdisplay) 
 				insertchar ('@', bsdisplay);
 			
 			break;
-	#endif
 		
 		case pointvaluetype: /*these should look like lists*/
 		case rectvaluetype:

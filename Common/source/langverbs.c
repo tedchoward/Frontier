@@ -1547,9 +1547,7 @@ static boolean locksemaphoreverb (hdltreenode hparam1, tyvaluerecord *vreturned)
 	long startticks = gettickcount ();
 	bigstring bsticks;
 	tyvaluerecord val;
-	#ifdef version5orgreater
 		hdllistrecord hlist;
-	#endif
 	
 	if (!getstringvalue (hparam1, 1, bssemaphorename))
 		return (false);
@@ -1574,7 +1572,6 @@ static boolean locksemaphoreverb (hdltreenode hparam1, tyvaluerecord *vreturned)
 			}
 		}
 	
-	#ifdef version5orgreater
 		if (!opnewlist (&hlist, true))
 			return (false);
 		
@@ -1590,9 +1587,6 @@ static boolean locksemaphoreverb (hdltreenode hparam1, tyvaluerecord *vreturned)
 		
 		if (!setheapvalue ((Handle) hlist, recordvaluetype, &val))
 			return (false);
-	#else
-		setdatevalue (timenow(), &val);
-	#endif
 	
 	if (!hashtableassign (semaphoretable, bssemaphorename, val))
 		return (false);
@@ -1601,12 +1595,10 @@ static boolean locksemaphoreverb (hdltreenode hparam1, tyvaluerecord *vreturned)
 	
 	return (setbooleanvalue (true, vreturned));
 	
-	#ifdef version5orgreater
 		error:
 			opdisposelist (hlist);
 			
 			return (false);
-	#endif
 	} /*locksemaphoreverb*/
 
 

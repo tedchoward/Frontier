@@ -1153,7 +1153,6 @@ boolean langsetthisvalue (hdlhashtable hlocaltable, hdlhashtable htable, bigstri
 	stack
 	*/
 	
-	#ifdef version5orgreater
 
 	tyvaluerecord val;
 	
@@ -1165,7 +1164,6 @@ boolean langsetthisvalue (hdlhashtable hlocaltable, hdlhashtable htable, bigstri
 		
 	exemptfromtmpstack (&val);
 
-	#endif
 
 	return (true);
 	} /*langsetthisvalue*/

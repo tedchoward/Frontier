@@ -1200,9 +1200,6 @@ boolean ccsetdatabase (void) {
 	and add some logic to ccsave
 	*/
 	
-	#ifndef version5orgreater
-		databasedata = (**cancoondata).hdatabase;
-	#endif
 	
 	return (true);
 	} /*ccsetdatabase*/
@@ -1226,14 +1223,12 @@ boolean ccclose (void) {
 	the main window of cancoon is closing.
 	*/
 	
-#ifdef version5orgreater
 //	hdlwindowinfo hw = cancoonwindowinfo;
 //
 //	ccsavefile ((**hw).fnum, (**hw).rnum, false, false);	//odbSaveFile (ccodb);
 
 	if ((cancoondata != nil) && (**cancoondata).flguestroot)  //defensive driving
 		return (true);
-#endif
 
 	runshutdownscripts ();
 	
@@ -1464,9 +1459,7 @@ boolean ccbackground (void) {
 
 
 boolean ccfnumchanged (hdlfilenum newfnum) {
-#ifdef version5orgreater
 #	pragma unused (newfnum)
-#endif
 
 	/*
 	part of the implementation of Save As
@@ -1474,13 +1467,7 @@ boolean ccfnumchanged (hdlfilenum newfnum) {
 	5.0a18 dmb: no, it's not. it's never called.
 	*/
 	
-	#ifdef version5orgreater
 		return (true);
-	#else
-		ccsetdatabase ();
-	
-		return (dbfnumchanged (newfnum));
-	#endif
 	} /*ccfnumchanged*/
 
 

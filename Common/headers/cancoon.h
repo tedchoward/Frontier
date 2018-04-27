@@ -112,7 +112,6 @@ typedef struct tycancoonrecord { /*one of these for every cancoon file that's op
 	
 	short oldwidth; /*used in the flagflip routine*/
 	
-	#ifdef version5orgreater
 		
 		Rect messagearea;
 		
@@ -120,11 +119,6 @@ typedef struct tycancoonrecord { /*one of these for every cancoon file that's op
 		
 		boolean flguestroot; // are we mounted into a host root?
 
-	#else
-		
-		short buttoncursor; /*you can move the cursor with tab and back-tab*/
-		
-	#endif
 	
 	boolean fldirty; /*anyone who changes the record should set this true*/
 	
