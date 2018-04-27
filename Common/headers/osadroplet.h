@@ -29,8 +29,3 @@
 
 #undef dropletcomponent
 
-#ifdef dropletcomponent
-
-extern boolean initdropletcomponent (void); /*osadroplet.c*/
-
-#endif

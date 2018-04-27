@@ -5289,9 +5289,6 @@ boolean osacomponentstart (void) {
 	
 		initwindowsharingcomponent ();
 	
-	#ifdef dropletcomponent
-		initdropletcomponent ();
-	#endif
 	
 	RegisterComponentResourceFile (filegetapplicationrnum (), true); /*2.1b4*/
 	

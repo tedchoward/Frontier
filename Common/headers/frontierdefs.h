@@ -50,7 +50,6 @@
 
 #define fldebug 1
 
-#undef dropletcomponent
 #undef fliowa
 #define threadverbs 1
 #define oplanglists 1

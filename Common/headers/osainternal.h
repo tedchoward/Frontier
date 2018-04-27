@@ -177,20 +177,6 @@ typedef struct tyrecordingstate { /*maintain info about recording in progress*/
 	Handle hrecordedtext;
 	} tyrecordingstate;
 
-#ifdef dropletcomponent
-
-typedef struct tydropletglobals { /*droplet application globals*/
-	
-	DialogPtr pmainwindow;
-	
-	MenuHandle happlemenu, hfilemenu;
-	
-	boolean flexitmainloop;
-	
-	AppleEvent initialevent;
-	} tydropletglobals;
-
-#endif
 
 typedef struct tycomponentglobals { /*a place to store your globals safely*/
 	
@@ -252,11 +238,6 @@ typedef struct tycomponentglobals { /*a place to store your globals safely*/
 	
 	tyMSglobals menusharingglobals;
 	
-	#ifdef dropletcomponent
-	
-	tydropletglobals dropletglobals;
-	
-	#endif
 	
 	tyrecordingstate recordingstate;
 	//Code change by Timothy Paustian Sunday, September 3, 2000 9:56:14 PM
