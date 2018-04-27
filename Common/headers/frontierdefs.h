@@ -50,16 +50,6 @@
 
 #define fldebug 1
 
-	#undef macBirdRuntime
-	#undef appRunsCards			/*for Applet Toolkit, Iowa Runtime is baked in*/
-	#undef iowaRuntimeInApp	/*iowa code knows it's in an app*/
-	#undef iowaRuntime			/*iowa code knows it's not compiling in Card Editor*/
-	#undef cmdPeriodKillsCard
-	#undef IOAinsideApp		/*all the IOA's are baked into the app*/
-	#undef coderesource			/*we're not running inside a code resource*/
-
-
-
 #define Rez true
 #define DeRez false
 

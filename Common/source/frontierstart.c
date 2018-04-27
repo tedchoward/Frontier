@@ -113,12 +113,6 @@ boolean frontierstart (void) {
 	if (!statsstart ())
 		return (false); 
 	
-	#ifdef iowaRuntime
-	
-	if (!langcardstart ())
-		return (false);
-
-	#endif
 	
 	if (!ccstart ())
 		return (false);

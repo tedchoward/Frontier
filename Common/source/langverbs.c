@@ -2719,20 +2719,6 @@ static boolean langfunctionvalue (short token, hdltreenode hparam1, tyvaluerecor
 			return (langrunmodeless (hparam1, v));
 		
 
-	#if macBirdRuntime
-	
-		case runcardfunc:
-			return (langruncard (hparam1, false, v));
-		
-		case runmodalcardfunc:
-			return (langruncard (hparam1, true, v));
-		
-		case ismodalcardfunc:
-			return (langismodalcard (hparam1, v));
-		
-		case setmodalcardtimeoutfunc:
-			return (langsetmodalcardtimeout (hparam1, v));
-	#endif
 	
 		case getdialogvaluefunc:
 			return (langgetdialogvalue (hparam1, v));

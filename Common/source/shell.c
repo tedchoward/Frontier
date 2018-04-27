@@ -84,9 +84,6 @@
 #endif
 
 
-#ifdef iowaRuntime
-	#include "iowainit.h"
-#endif
 
 
 EventRecord shellevent; /*the last event received by the shell*/
@@ -196,11 +193,6 @@ boolean shellshutdown (void) {
 	
 	shellwritescrap (anyscraptype);
 	
-	#ifdef iowaRuntime
-	
-		iowaClose ();
-	
-	#endif
 	
 	if (flipcstarted)
 		langipcshutdown ();
@@ -598,23 +590,6 @@ static boolean shellgetevent (void) {
 		if (landeventfilter (&shellevent)) /*event consumed by IAC toolkit*/
 			fl = false;
 	
-	#ifdef iowaRuntime
-	
-		/*
-		if (uisHandleEvent (&shellevent, &flcloseallwindows)) // event consumed by window sharing server
-			fl = false;
-		*/
-
-		if (isModelessCardEvent (&shellevent, &flcloseallwindows)) {
-			
-			fl = false;
-			
-			if (flcloseallwindows)	// user option-clicked in close box of a card window
-				shellcloseall (nil, true);
-			}
-		
-
-	#endif
 	
 	return (fl);
 	} /*shellgetevent*/
