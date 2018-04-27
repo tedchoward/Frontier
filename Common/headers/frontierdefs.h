@@ -50,7 +50,6 @@
 
 #define fldebug 1
 
-#undef fliowa
 #define threadverbs 1
 #define oplanglists 1
 #define flregexpverbs 1

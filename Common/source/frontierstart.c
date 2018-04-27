@@ -50,9 +50,6 @@
 #ifdef flcomponent
 	#include "osacomponent.h"
 #endif
-#ifdef fliowa
-	#include "iowaverbs.h" /*3/18/92 dmb*/
-#endif
 #include "frontierstart.h"
 
 

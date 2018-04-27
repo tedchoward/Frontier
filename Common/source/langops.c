@@ -142,15 +142,9 @@ static tytypeinfo typeinfo [ctvaluetypes] = {
 	
 	{'wptx', STR_wptext},
 	
-	#ifdef fliowa
-	
-	{'intf', STR_interface},
-	
-	#else
 	
 	{'head', STR_headline},
 	
-	#endif
 	
 	{'tabl', STR_table},
 	

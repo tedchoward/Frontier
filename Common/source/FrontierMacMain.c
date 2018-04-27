@@ -49,9 +49,6 @@
 #include "odbinternal.h"
 #include "kernelverbs.h"
 #include "kernelverbdefs.h"
-#ifdef fliowa
-	#include "iowaverbs.h" /*3/18/92 dmb*/
-#endif
 
 
 static boolean ccstart (void) {

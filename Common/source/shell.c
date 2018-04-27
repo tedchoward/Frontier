@@ -83,9 +83,6 @@
 	#include "osacomponent.h"
 #endif
 
-#ifdef fliowa
-	#include "iowaverbs.h" /*3/18/92 dmb*/
-#endif
 
 #ifdef iowaRuntime
 	#include "iowainit.h"

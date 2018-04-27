@@ -661,11 +661,9 @@ static boolean langinitconsttable (void) {
 			case olddoublevaluetype: /*don't define constants for these types*/
 			case externalvaluetype:
 			
-			#ifndef fliowa
 			
 			case headvaluetype:
 			
-			#endif
 			
 			case oldstringvaluetype: /*8/13*/
 			case passwordvaluetype: /*9/17*/
