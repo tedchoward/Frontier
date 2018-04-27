@@ -39,11 +39,9 @@
 #include "oplist.h"
 #include "ops.h"
 
-#ifdef flcomponent
 
 	#include "osacomponent.h"
 	
-#endif
 
 
 	#include <sys/param.h>
@@ -1859,11 +1857,9 @@ static boolean evaltree (hdltreenode htree, tyvaluerecord *valtree) {
 			return (langaddlocals (h, true));
 		*/
 		
-		#ifdef flcomponent
 		case osascriptop:
 			if (isosascriptnode (h, &val1))
 				return (evaluateosascript (&val1, nil, zerostring, valtree));
-		#endif
 		
 		default:
 			/* do nothing for procop, assignlocalop, caseitemop, casebodyop, kernelop, globalop */

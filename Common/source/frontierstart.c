@@ -47,9 +47,7 @@
 #include "wpverbs.h"
 #include "cancoon.h"
 #include "command.h"
-#ifdef flcomponent
 	#include "osacomponent.h"
-#endif
 #include "frontierstart.h"
 
 
@@ -117,7 +115,6 @@ boolean frontierstart (void) {
 	if (!ccstart ())
 		return (false);
 	
-	#ifdef flcomponent
 	
 	//#if !TARGET_API_MAC_CARBON
 	//Code change by Timothy Paustian Saturday, July 8, 2000 9:47:28 PM
@@ -127,7 +124,6 @@ boolean frontierstart (void) {
 		;	// don't quit if this doesn't work
 	//#endif
 
-	#endif
 	
 	if (!shellstart ())
 		return (false);

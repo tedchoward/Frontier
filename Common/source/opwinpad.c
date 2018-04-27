@@ -145,13 +145,11 @@ typedef struct tydebuggerrecord {
 	
 	hdlheadrecord hbarcursor; /*the headline we've most recently shown*/
 	
-#ifdef flcomponent
 	ComponentInstance servercomp; /*component that we have open for this script*/
 
 	OSType servertype; /*the component's type*/
 	
 	OSAID idscript; /*while recording, this is the id of the script*/
-#endif
 	
 	short lastindent;
 	

@@ -72,12 +72,10 @@ boolean shellactivate (void) {
 	if (!activateapplication (nil)) /*bring ourselves to the front*/
 		return (false);
 	
-	#ifdef flcomponent
 	
 	if (fldisableyield)
 		return (true);
 	
-	#endif
 
 	while (!flshellactive) { /*wait 'till we're actually in front*/
 		

@@ -1507,7 +1507,6 @@ void copythreadglobals (hdlthreadglobals hglobals) {
 	
 	(**hg).langcallbacks = langcallbacks;
 	
-	#ifdef flcomponent
 	
 	hlg = landgetglobals ();
 	
@@ -1519,7 +1518,6 @@ void copythreadglobals (hdlthreadglobals hglobals) {
 	
 	(**hg).eventsettings = (**hlg).eventsettings;
 	
-	#endif
 	
 	} /*copythreadglobals*/
 

@@ -78,10 +78,8 @@
 #include "WinSockNetEvents.h"
 #include "langdll.h" /*2004-11-29 aradke: for dllinitverbs*/
 
-#ifdef flcomponent
 	#include <uisharing.h>
 	#include "osacomponent.h"
-#endif
 
 
 
@@ -197,11 +195,9 @@ boolean shellshutdown (void) {
 	if (flipcstarted)
 		langipcshutdown ();
 	
-	#ifdef flcomponent
 		
 		osacomponentshutdown ();
 		
-	#endif
 	
 	
 		fwsNetEventQuit ();
@@ -227,12 +223,10 @@ boolean shellshutdown (void) {
 
 boolean shellquit (void) {
 	
-	#ifdef flcomponent
 		
 		if (!osacomponentverifyshutdown ()) /*may return false if there are clients*/
 			return (false);
 	
-	#endif
 	
 	if (!shellcloseall (nil, true)) /*user hit Cancel button in save dialog*/
 		return (false);

@@ -62,9 +62,7 @@
 #include "shell.rsrc.h"
 #include "timedate.h"
 #include "WinSockNetEvents.h"
-#ifdef flcomponent
 #include "osacomponent.h"
-#endif
 #include "langpython.h"
 
 #ifdef FRONTIER_PYTHON

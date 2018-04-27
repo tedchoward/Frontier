@@ -62,9 +62,7 @@
 #include "tableinternal.h"
 #include "tableverbs.h"
 #include "scripts.h"
-#ifdef flcomponent
 #include "osacomponent.h"
-#endif
 #include "error.h"
 
 static boolean scriptdebuggereventloop (void);
@@ -147,7 +145,6 @@ typedef struct tydebuggerrecord {
 	
 	hdlheadrecord hbarcursor; /*the headline we've most recently shown*/
 	
-#ifdef flcomponent
 	
 	ComponentInstance servercomp; /*component that we have open for this script*/
 	
@@ -155,7 +152,6 @@ typedef struct tydebuggerrecord {
 	
 	OSAID idscript; /*while recording, this is the id of the script*/
 	
-#endif
 	
 	short lastindent;
 	
@@ -287,11 +283,7 @@ boolean scriptbuildtree (Handle htext, long signature, hdltreenode *hcode) {
 	if (signature == typeLAND)
 		return (langbuildtree (htext, true, hcode));
 	
-#ifdef flcomponent
 	fl = osagetcode (htext, signature, false, &codeval);
-#else
-	fl = false;
-#endif
 	disposehandle (htext);
 	
 	if (!fl)
@@ -915,7 +907,6 @@ static boolean scriptinstallable (void) {
 	} /*scriptinstallable*/
 
 
-#ifdef flcomponent
 
 static boolean scriptrecordable (void) {
 	
@@ -932,7 +923,6 @@ static boolean scriptrecordable (void) {
 	return (ComponentFunctionImplemented (comp, kOSASelectStartRecording));
 	} /*scriptrecordable*/
 
-#endif
 
 static boolean scriptpushsourcerecord (tysourcerecord source) {
 	
@@ -1440,7 +1430,6 @@ static void scriptkillbutton (void) {
 	} /*scriptkillbutton*/
 
 
-#ifdef flcomponent
 
 static pascal OSErr handlerecordedtext (const AppleEvent *event, AppleEvent *reply, SInt32 refcon) {
 #pragma unused (reply, refcon)
@@ -1684,7 +1673,6 @@ static pascal OSErr handlestoprecording (const AppleEvent *event, AppleEvent *re
 	return (noErr);
 	} /*handlestoprecording*/
 
-#endif	// flcomponent
 
 static boolean scriptstringlookup (bigstring bs, hdlhashtable *htable, bigstring bsname) {
 	
@@ -1915,14 +1903,12 @@ static boolean scriptbutton (short buttonnum) {
 	
 	switch (buttonnum) {
 		
-	#ifdef flcomponent
 		case recordbutton:
 			scriptrecordbutton ();
 			
 			scriptinvalbuttons ();
 			
 			return (true);
-	#endif		
 		case runbutton:
 			if (scriptnewprocess (runbutton))
 				shellupdatenow (outlinewindow);
@@ -1967,11 +1953,9 @@ static boolean scriptbutton (short buttonnum) {
 			return (true);
 		
 		case stopbutton:
-	#ifdef flcomponent
 			if ((**hd).flrecording)
 				scriptstoprecordbutton ();
 			else
-	#endif
 			 {
 				
 				scriptstepbutton (down); /*we're going to single-step thru scripts*/
@@ -2092,11 +2076,7 @@ static boolean scriptbuttonenabled (short buttonnum) {
 	switch (x) {
 		
 		case recordbutton:
-		#ifdef flcomponent
 			return (!lflscriptrunning && scriptrecordable ());
-		#else
-			return (false);
-		#endif
 		
 		case runbutton:
 			return (!lflscriptrunning);
@@ -2166,17 +2146,12 @@ static boolean scriptbuttondisplayed (short buttonnum) {
 	
 	fldebuggingthisscript = flrunningthisscript && (**hp).fldebugging;
 	
-#ifdef flcomponent
 	if ((**hd).flrecording)
 		return ((x == recordbutton) || (x == stopbutton));
-#endif
 	
 	switch (x) {
 		
 		case recordbutton:
-		#ifndef flcomponent
-			return (false);
-		#endif
 		
 		
 			return (false);
@@ -3359,10 +3334,8 @@ static boolean scriptclose (void) {
 				else
 					scriptgobutton ();
 				
-			#ifdef flcomponent
 				if ((**hd).flrecording)
 					scriptstoprecordbutton ();
-			#endif
 			
 				(**hd).flwindowclosed = true;
 				}
@@ -3543,7 +3516,6 @@ static boolean scripttitleclick (Point pt) {
 	} // scripttitleclick
 
 
-#ifdef flcomponent
 
 typedef boolean (*tyscriptvisitcallback) (OSType, bigstring, long);
 
@@ -3667,7 +3639,6 @@ static boolean scriptfillserverpopup (hdlmenu hmenu, short *checkeditem) {
 	return (true);
 	} /*scriptfillserverpopup*/
 
-#endif
 
 #define flstacktrace 0
 
@@ -3815,7 +3786,6 @@ static boolean scriptmousedown (Point pt, tyclickflags flags) {
 			else {
 		#endif
 		
-			#ifdef flcomponent
 				serverarray = (long *) NewPtr (sizeof (long) * 100);
 				
 				if (popupmenuhit (rmsg, flgeneva9, &scriptfillserverpopup, &scriptserverpopupselect)) {
@@ -3826,7 +3796,6 @@ static boolean scriptmousedown (Point pt, tyclickflags flags) {
 					}
 				
 				DisposePtr ((Ptr) serverarray);
-			#endif
 				}
 		#if flstacktrace
 			}
@@ -4002,21 +3971,7 @@ boolean scriptgettypename (long signature, bigstring bsname) {
 	
 	cbd.signature = signature;
 	
-#ifdef flcomponent
 	scriptvisitservers (&scriptfindsubtypevisit, (long) &cbd);
-#else
-	switch (signature) {
-		case typeLAND:
-			copystring (BIGSTRING ("\x08" "UserTalk"), bsname);
-			break;
-
-		case 'ascr':
-			copystring (BIGSTRING ("\x0B" "AppleScript"), bsname);
-			break;
-		} /* switch */
-
-	
-#endif
 	
 	return (!isemptystring (bsname));
 	} /*scriptgettypename*/
@@ -4047,7 +4002,6 @@ boolean scriptgetnametype (bigstring bsname, long *signature) {
 	matches bsname
 	*/
 	
-#ifdef flcomponent
 
 	tyfindservercallbackdata cbd;
 	
@@ -4060,18 +4014,6 @@ boolean scriptgetnametype (bigstring bsname, long *signature) {
 	*signature = cbd.signature;
 	
 	return (cbd.signature != 0);
-#else
-	if (comparestrings (bsname, BIGSTRING ("\x08" "UserTalk")) == 0) {
-		*signature = typeLAND;
-		return (true);
-	}
-	else if (comparestrings (bsname, BIGSTRING ("\x0B" "AppleScript")) == 0) {
-		*signature = 'ascr';
-		return (true);
-	}
-	else
-		return (false);
-#endif
 	} /*scriptgetnametype*/
 
 
@@ -4356,7 +4298,6 @@ boolean initscripts (void) {
 	if (!newclearhandle (longsizeof (tydebuggerrecord), (Handle *) &debuggerdata)) /*all fields are cool at 0*/
 		return (false);
 	
-#ifdef flcomponent
 
 	
 		AEInstallEventHandler (kOSASuite, kOSARecordedText, NewAEEventHandlerUPP (handlerecordedtext), 0, false);
@@ -4364,7 +4305,6 @@ boolean initscripts (void) {
 		AEInstallEventHandler ('ToyS', kAENotifyStopRecording, NewAEEventHandlerUPP (handlestoprecording), 0, false);
 	
 	
-#endif
 	
 	return (true);
 	} /*initscripts*/

@@ -49,11 +49,9 @@
 #include "langinternal.h" /* 2005-09-26 creedon */
 #include "tablestructure.h" /* 2005-09-26 creedon */
 
-#ifdef flcomponent
 
 	#include <SetUpA5.h>
 
-#endif
 
 
 #define windowevents (updateMask + activMask)
@@ -336,19 +334,15 @@ DialogPtr newmodaldialog (short id, short defaultitem) {
 	
 	#endif
 	
-	#ifdef flcomponent
 	
 	appA5 = SetUpCurA5 ();
 	
-	#endif
 	
 	pdialog = GetNewDialog (id, nil, (WindowRef) -1L);
 	
-	#ifdef flcomponent
 	
 	RestoreA5 (appA5);
 	
-	#endif
 	
 	if (pdialog == nil) 
 		return (nil);
@@ -1082,18 +1076,12 @@ static short runmodaldialog (void) {
 	
 	setcursortype (cursorisarrow);
 	
-	#ifdef flcomponent
 		{
 		ProcPtr filter = (ProcPtr) modaldialogcallback;
 		
 		ModalDialog ((ModalFilterUPP) filter, &itemnumber);
 		
 		}
-	#else
-	
-		ModalDialog (&modaldialogcallback, &itemnumber);
-		
-	#endif
 	
 	return (itemnumber);
 	} /*runmodaldialog*/
@@ -1850,13 +1838,11 @@ boolean askpassword (bigstring passprompt, bigstring password) {
 
 boolean initdialogs (void) {
 	
-	#ifdef flcomponent
 		//Code change by Timothy Paustian Sunday, May 7, 2000 11:10:48 PM
 		//In Carbon this is not needed.
 		#if !TARGET_CARBON
 		RememberA5 ();
 		#endif /*for filters, callbacks*/
-	#endif
 	
 	return (true);
 	} /*dialoginit*/

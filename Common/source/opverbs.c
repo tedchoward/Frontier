@@ -64,11 +64,9 @@
 #include "file.h" // 2006-09-17 creedon
 
 
-#ifdef flcomponent
 
 	#include "osacomponent.h"
 	
-#endif
 
 
 #define opstringlist 159
@@ -1925,7 +1923,6 @@ static boolean opgetcodeverb (hdltreenode hparam1, boolean flosacode, tyvaluerec
 	
 	if (flosacode) {
 		
-		#ifdef flcomponent
 			hdloutlinevariable hv;
 			Handle htext;
 			long signature;
@@ -1955,11 +1952,6 @@ static boolean opgetcodeverb (hdltreenode hparam1, boolean flosacode, tyvaluerec
 				return (false);
 			
 			pnum = 3;
-		#else
-			langerror (nocomponentmanagererror);
-			
-			return (false);
-		#endif
 		}
 	else {
 		
@@ -2029,14 +2021,8 @@ static boolean opgetsourceverb (hdltreenode hparam1, boolean flosacode, tyvaluer
 	if (!getvarparam (hp1, 2, &htable, bsname))
 		return (false);
 	
-	#ifdef flcomponent
 		if (!osagetsource (&vcode, &signature, &vsource))
 			return (false);
-	#else
-		langerror (nocomponentmanagererror);
-		
-		return (false);
-	#endif
 	
 	if (!langexternalnewvalue (idscriptprocessor, nil, &vscript))
 		return (false);

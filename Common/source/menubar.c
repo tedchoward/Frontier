@@ -706,11 +706,9 @@ static boolean getmenutobuild (bigstring bsmenu, boolean flhierarchic, short *id
 	
 	boolean flinfrontier;
 
-	#ifdef flcomponent
 		THz savezone;
 		savezone = LMGetApplZone();
 		
-		#endif
 	
 		flinfrontier = iscurrentapplication (langipcself);
 	
@@ -730,20 +728,16 @@ static boolean getmenutobuild (bigstring bsmenu, boolean flhierarchic, short *id
 			return (false);
 		}
 	
-	#ifdef flcomponent
 		//Code change by Timothy Paustian Monday, June 26, 2000 9:29:46 PM
 		//This code makes no sense to me.
 		LMSetApplZone(LMGetApplZone());
 		
-	#endif
 	
 	*hmenu = Newmenu (*id, bsmenu);
 	
-	#ifdef flcomponent
 		LMSetApplZone(savezone);
 		
 		
-	#endif
 	
 	return (hmenu != nil);
 	} /*getmenutobuild*/

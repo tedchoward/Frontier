@@ -56,9 +56,7 @@
 #include "shell.rsrc.h"
 #include "timedate.h"
 #include "WinSockNetEvents.h"
-#ifdef flcomponent
 #include "osacomponent.h"
-#endif
 
 #include "tableverbs.h"  //6.1b8 AR: we need gettablevalue
 #include "byteorder.h"	/* 2006-04-08 aradke: endianness conversion macros */

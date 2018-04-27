@@ -169,10 +169,8 @@ boolean sfdialog ( tysfverb sfverb, bigstring bsprompt, ptrsftypelist filetypes,
 
 	boolean initfiledialog (void) {
 
-		#ifdef flcomponent
 		
 		
-		#endif
 		
 		return (true);
 		} /*initfile*/

@@ -36,7 +36,6 @@
 
 	#include "aeutils.h" /*PBS 03/14/02: AE OS X fix.*/
 
-#ifdef flcomponent
 	
 	#include <SetUpA5.h>
 	
@@ -57,7 +56,6 @@
 							short 					returnID,
 							long 					transactionID,
 							AppleEvent*				result);
-#endif
 
 
 
@@ -259,7 +257,6 @@ pascal OSErr landsetverbattr (hdlverbrecord hverb, OSType attrkey, DescType attr
 	} /*landsetverbattr*/
 
 
-#ifdef flcomponent
 
 pascal OSErr landsystem7defaultcreate ( AEEventClass theAEEventClass, AEEventID theAEEventID,
                     const AEAddressDesc *target, short returnID,
@@ -276,7 +273,6 @@ pascal OSErr landsystem7defaultsend (const AppleEvent *theAppleEvent, AppleEvent
 	return (AESend (theAppleEvent, reply, sendMode, sendPriority, timeOutInTicks, idleProc, filterProc));
 	} /*landsystem7defaultsend*/
 
-#endif
 
 
 static boolean landsystem7packverb (hdlverbrecord hverb) {
@@ -355,7 +351,6 @@ static boolean landsystem7packverb (hdlverbrecord hverb) {
 	if (errcode != noErr)
 		return (false);
 	
-	#ifdef flcomponent
 		
 		{
 		register tyeventcreatecallback cb = (**landgetglobals ()).eventcreatecallback;
@@ -367,15 +362,6 @@ static boolean landsystem7packverb (hdlverbrecord hverb) {
 				kAutoGenerateReturnID, (**hv).idtransaction, &evt);
 		}
 	
-	#else
-		
-		errcode = AECreateAppleEvent (
-				
-				(**hv).verbclass, (**hv).verbtoken, &adr, 
-				
-				kAutoGenerateReturnID, (**hv).idtransaction, &evt);
-	
-	#endif
 	
 	AEDisposeDesc (&adr);
 	
@@ -1106,7 +1092,6 @@ boolean landsystem7send (hdlverbrecord hverb, hdlverbrecord *hvalues) {
 				interaction = kAEAlwaysInteract + kAECanSwitchLayer;
 			}
 		
-		#ifdef flcomponent
 			
 			{
 			register tyeventsendcallback cb = (**hg).eventsendcallback;
@@ -1118,15 +1103,6 @@ boolean landsystem7send (hdlverbrecord hverb, hdlverbrecord *hvalues) {
 				kNoTimeOut, landsystem7idleUPP, nil);
 			}
 		
-		#else
-		
-			errcode = AESend (
-				
-				&message, &reply, mode + interaction, kAENormalPriority, 
-				
-				kNoTimeOut, landsystem7idleUPP, nil);
-		
-		#endif
 		
 		
 			DisposeAEIdleUPP (landsystem7idleUPP);
@@ -1662,10 +1638,8 @@ boolean landsystem7init (void) {
 	register hdllandglobals hg = landgetglobals ();
 	
 
-	#ifdef flcomponent
 	
 	
-	#endif
 	
 	(**hg).macnetglobals.flhavebrowsed = false;
 	

@@ -51,9 +51,7 @@
 #include "process.h"
 #include "tablestructure.h"
 #include "tableverbs.h"
-#ifdef flcomponent
 	#include "osacomponent.h"
-#endif
 
 #include "timedate.h"
 #include "byteorder.h"	/* 2006-04-08 aradke: endianness conversion macros */
@@ -7801,10 +7799,8 @@ static boolean binaryfunctionvalue (hdlhashnode hnode, bigstring bsname, hdltree
 		case 'UCMD':
 			break;
 		
-	#ifdef flcomponent
 		default:
 			return (evaluateosascript (&v, hparam1, bsname, vreturned));
-	#endif
 		}
 	
 	langparamerror (notfunctionerror, bsname);
@@ -7881,7 +7877,6 @@ boolean langfunctioncall (hdltreenode hcallernode, hdlhashtable htable, hdlhashn
 		if ((**(**hcode).param1).nodetype == kernelop)
 			return (kernelcall (hcode, hparam1, vreturned));
 		
-		#ifdef flcomponent
 			
 			if (isosascriptnode (hcode, &osacode)) {
 				
@@ -7898,7 +7893,6 @@ boolean langfunctioncall (hdltreenode hcallernode, hdlhashtable htable, hdlhashn
 				return (fl);
 				}
 			
-		#endif // flcomponent
 		
 	
 	bundle { /*safely navigate to get the name of the 1st formal param*/

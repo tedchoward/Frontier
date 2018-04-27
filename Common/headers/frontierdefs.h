@@ -32,18 +32,13 @@
 #ifndef __FRONTIERDEFS_H__
 #define __FRONTIERDEFS_H__
 
-
-
-
-	#define flcomponent 1
-	#ifdef __powerc
-		#define noextended 1
-	#elif defined(__GNUC__)
-		#define noextended 1
-	#else
-		#define noextended 0
-	#endif
-
+#ifdef __powerc
+    #define noextended 1
+#elif defined(__GNUC__)
+    #define noextended 1
+#else
+    #define noextended 0
+#endif
 
 #undef MEMTRACKER		/* define as 1 to enable tracking of memory allocations */
 #undef DATABASE_DEBUG	/* define as 1 to enable database debugging and logging code */

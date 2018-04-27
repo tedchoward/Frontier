@@ -139,7 +139,6 @@ typedef struct tythreadglobals {
 
 	unsigned long timesliceticks;
 
-	#ifdef flcomponent
 	
 	pascal OSErr (*eventcreatecallback) (AEEventClass, AEEventID, const AEAddressDesc *, short, long, AppleEvent *);
 	
@@ -149,7 +148,6 @@ typedef struct tythreadglobals {
 	
 	tymaceventsettings eventsettings; /*not just for OSA; new features*/
 	
-	#endif
 	
 	boolean flreturn;
 	

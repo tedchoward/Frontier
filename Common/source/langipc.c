@@ -52,12 +52,10 @@
 #include "process.h"
 #include "processinternal.h"
 #include "byteorder.h"
-#ifdef flcomponent
 	#include <uisharing.h>
 	#include <uisinternal.h>
 	#include "osacomponent.h"
 	#include <SetUpA5.h>
-#endif
 
 	#include "aeutils.h"
 
@@ -1315,7 +1313,6 @@ static boolean langipchandletrapverb (hdlverbrecord hverb, boolean *flfoundhandl
 		
 		Handle h = vhandler.data.binaryvalue;
 		
-	#ifdef flcomponent
 		if (**(OSType **) h != 'UCMD') {
 			
 			/*
@@ -1326,7 +1323,6 @@ static boolean langipchandletrapverb (hdlverbrecord hverb, boolean *flfoundhandl
 			
 			return (fl);
 			}
-	#endif
 		
 		loadhandleremains (sizeof (OSType), h, &h);  //skip binarytype
 		
@@ -1379,7 +1375,6 @@ static boolean langipchandletrapverb (hdlverbrecord hverb, boolean *flfoundhandl
 				goto exit;
 			}
 		
-		#ifdef flcomponent
 	
 			if (isosascriptnode (hcode, &osacode)) {
 				
@@ -1388,7 +1383,6 @@ static boolean langipchandletrapverb (hdlverbrecord hverb, boolean *flfoundhandl
 				goto exit;
 				}
 			
-		#endif
 		}
 	
 	if (iskernelverb (hv)) { /*special case -- kernel verb specifies context*/
@@ -3950,11 +3944,9 @@ static pascal OSErr langipcfastgetobject (AppleEvent *event, AppleEvent *reply, 
 	tyfastverbcontext savecontext;
 	long curA5;
 	
-	#if flcomponent
 		
 		curA5 = SetUpAppA5 ();
 	
-	#endif
 	
 	landpushfastcontext (&savecontext);
 	
@@ -3998,11 +3990,9 @@ static pascal OSErr langipcfastgetobject (AppleEvent *event, AppleEvent *reply, 
 	
 	landpopfastcontext (&savecontext);
 	
-	#if flcomponent
 		
 		RestoreA5 (curA5);
 	
-	#endif
 	
 	return (err);
 	} /*langipcfastgetobject*/
@@ -4263,13 +4253,11 @@ boolean langipcstart (void) {
 	
 	(**hg).macquitapproutine = &langipcquitapproutine;
 	
-	#ifdef flcomponent
 	
 	(**hg).eventcreatecallback = &landsystem7defaultcreate;
 	
 	(**hg).eventsendcallback = &landsystem7defaultsend;
 	
-	#endif
 	
 
 	/*
@@ -4306,11 +4294,9 @@ boolean langipcstart (void) {
 	
 	landacceptanyverb (true); /*although we only register above two, we'll try anything*/
 	
-	#if flcomponent
 	
 	wsGlobals.windowserver = nil;
 	
-	#endif
 	
 	return (langipcmenuinit ());
 	} /*langipcstart*/
@@ -4322,9 +4308,7 @@ void langipcshutdown (void) {
 	
 	landclose ();
 	
-	#if flcomponent
 		uisClose ();
-	#endif
 	} /*langipcshutdown*/
 
 
@@ -4346,14 +4330,12 @@ static boolean langipceventhook (EventRecord *ev, WindowPtr w) {
 
 boolean langipcinit (void) {
 	
-	#ifdef flcomponent
 		//Code change by Timothy Paustian Wednesday, June 14, 2000 9:02:24 PM
 		//Changed to Opaque call for Carbon
 		//we don't need this in carbon
 		#if !TARGET_CARBON
 		RememberA5 ();
 		#endif
-	#endif
 	shellpusheventhook (&langipceventhook);
 	
 	return (true);

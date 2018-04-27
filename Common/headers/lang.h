@@ -643,13 +643,11 @@ typedef struct tylangcallbacks {
 	langerrormessagecallback debugerrormessagecallback;
 	
 	
-	#ifdef flcomponent
 	
 	callback presystemdialogcallback;
 	
 	callback postsystemdialogcallback;
 	
-	#endif
 	
 	} tylangcallbacks;
 
@@ -792,13 +790,11 @@ extern boolean langbackgroundtask (boolean);
 extern boolean langpartialeventloop (short);
 
 
-#ifdef flcomponent
 
 extern callback langpresystemdialog (void);
 
 extern void langpostsystemdialog (void);
 
-#endif
 
 
 extern boolean datenetstandardstring (long localdate, tyvaluerecord *vreturn); /*langdate.c*/
