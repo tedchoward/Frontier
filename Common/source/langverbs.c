@@ -2299,7 +2299,6 @@ static boolean langfunctionvalue (short token, hdltreenode hparam1, tyvaluerecor
 			
 			flnextparamislast = true;
 			
-			#ifdef version42orgreater
 				if (!getparamvalue (hparam1, 1, &val))
 					break;
 				
@@ -2307,10 +2306,6 @@ static boolean langfunctionvalue (short token, hdltreenode hparam1, tyvaluerecor
 					break;
 				
 				x = val.data.binaryvalue;
-			#else
-				if (!getbinaryvalue (hparam1, 1, true, &x))
-					break;
-			#endif
 			
 			setostypevalue (getbinarytypeid (x), v);
 			

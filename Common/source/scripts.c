@@ -4261,7 +4261,6 @@ boolean scriptstart (void) {
 
 	(*cb).poproutine = &oppopglobals;
 	
-#ifdef version42orgreater
 	
 	(*cb).saveroutine = ccsavespecialfile;
 	
@@ -4279,7 +4278,6 @@ boolean scriptstart (void) {
 	(*cb).childcloseroutine = &ccchildclose;
 	*/
 
-#endif
 	
 	(*cb).resetrectsroutine = &scriptresetrects;
 	

@@ -2003,26 +2003,6 @@ void binarytodesc (Handle hbinary, AEDesc *desc) {
 	
 	switch ((*d).descriptorType) {
 		
-	#ifndef version42orgreater
-	
-		case 'bool': {
-		
-			
-				Handle hcopy;
-				
-				copydatahandle (d, &hcopy);
-				
-				pullfromhandle (hcopy, 0L, 1L, nil);
-				
-				putdeschandle (d, (*d).descriptorType, hcopy);
-				
-				disposehandle (hcopy);
-			
-			
-			break;
-			}
-	
-	#endif
 		
 		case 'char':
 			(*d).descriptorType = 'TEXT';

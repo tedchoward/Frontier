@@ -1137,7 +1137,6 @@ static boolean opmovetovisit (hdlheadrecord hnode, ptrvoid refcon) {
 	} /*opmovetovisit*/
 
 
-#ifdef version42orgreater
 
 static boolean oppartialsortedsearch (hdlheadrecord hfirst, bigstring bsname, short seek, hdlheadrecord *hnode) {
 	
@@ -1286,7 +1285,6 @@ static boolean opstructuretabkey (tydirection dir) {
 	} /*opstructuretabkey*/
 
 #endif	/*PIKE*/
-#endif	/*version42orgreater*/
 
 boolean opkeystroke (void) {
 	
@@ -1326,7 +1324,6 @@ boolean opkeystroke (void) {
 		else
 			dir = right;
 		
-		#ifdef version42orgreater
 		
 			#ifdef PIKE
 				
@@ -1344,7 +1341,6 @@ boolean opkeystroke (void) {
 
 			#endif
 
-		#endif
 		
 		if ((**ho).flreadonly)
 			return (true);
@@ -1444,7 +1440,6 @@ boolean opkeystroke (void) {
 		
 		if (isprint (chkb)) { /*switch into text mode before processing*/
 			
-			#ifdef version42orgreater
 			
 			if ((**ho).flstructuredtextkeys) {
 				
@@ -1453,7 +1448,6 @@ boolean opkeystroke (void) {
 				return (true);
 				}
 			
-			#endif
 			
 			if (opcanteditcursor ())
 				return (true);

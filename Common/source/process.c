@@ -1016,33 +1016,6 @@ boolean ingoodthread (void) {
 	} /*ingoodthread*/
 
 
-#ifndef version42orgreater
-
-boolean inmainthread (void) {
-	
-	/*
-	2.1a7 dmb: the main thread's true id isn't idapplicationthread, so 
-	check the id stored in the current globals record instead
-	
-	5.0b17 dmb: handle nil globals
-	*/
-	
-	return (hthreadglobals && (**hthreadglobals).idthread == idapplicationthread);
-	
-	/*
-	ThreadID id;
-	
-	if (!flcanusethreads)
-		return (true);
-	
-	if (GetCurrentThread (&id) != noErr)
-		return (true);
-	
-	return (id == idapplicationthread);
-	*/
-	} /*inmainthread*/
-
-#endif
 
 
 boolean infrontierthread (void) {

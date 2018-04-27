@@ -2018,13 +2018,11 @@ boolean wpstart (void) {
 	
 	(*cb).quitroutine = &wpshutdown;
 	
-#ifdef version42orgreater
 	
 	(*cb).disposerecordroutine = ccdisposefilerecord;
 	
 	(*cb).saveroutine = ccsavespecialfile;
 
-#endif
 	
 	(*cb).closeroutine = &wpclose;
 	

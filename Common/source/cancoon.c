@@ -1116,15 +1116,10 @@ boolean ccsavefile (ptrfilespec fs, hdlfilenum fnum, short rnum, boolean flsavea
 	if (!tablesavesystemtable ((**hc).hrootvariable, &info.adrroottable))
 		goto exit;
 	
-#ifdef version42orgreater
 	info.windowinfo [ixcancooninfo].flhidden = (**shellwindowinfo).flhidden;
 
 	if (!dbassignhandle ((**hc).hscriptstring, &info.adrscriptstring))
 		goto exit;
-#else
-	if (!dbassignheapstring (&info.adrscriptstring, (**hc).hscriptstring))
-		goto exit;
-#endif
 	
 	memtodisklong (info.adrroottable);
 	memtodisklong (info.adrscriptstring);

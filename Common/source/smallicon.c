@@ -43,12 +43,6 @@
 static hdlsmalliconbits hmiscbits;
 //static hdlsmalliconbits hleaderbits;
 
-#ifndef version42orgreater
-	#define trianglepolyheight 9 /*for popup icons*/
-	#define trianglepolywidth 5
-
-	hdlsmalliconbits hfinderbits, hdraggingbits, hcirclebits, htablebits;
-#endif
 
 
 

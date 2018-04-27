@@ -341,7 +341,6 @@ static bigstring bsdebug;
 
 static boolean flpagemillfile = false;
 
-#if version42orgreater
 
 //static ptraddress callbackscript = nil;
 
@@ -364,11 +363,6 @@ typedef struct typrocessmacrosinfo {
 	} typrocessmacrosinfo, *ptrprocessmacrosinfo;
 #pragma options align=reset
 
-#else
-
-static tyvaluerecord osaval = { binaryvaluetype };
-
-#endif
 
 
 #pragma mark === processhtmlmacros ===
@@ -387,7 +381,6 @@ static boolean htmlcallbackerror (bigstring bsmsg, ptrvoid perrorstring) {
 	} /*htmlcallbackerror*/
 
 #if 0
-#if version42orgreater
 
 static boolean frontTextScriptCall (OSType idroutine, Handle stringparam, Handle *hresult, bigstring errorstring) {
 	
@@ -475,83 +468,6 @@ static boolean frontTextScriptCall (OSType idroutine, Handle stringparam, Handle
 	return (fl);
 	} /*frontTextScriptCall*/
 
-#else
-
-static boolean frontTextScriptCall (OSType idroutine, Handle stringparam, Handle *hresult, bigstring errorstring) {
-	
-	/*
-	an interface for a script call that takes one parameter, a string,
-	and returns a text value. a common situation, and it makes it possible for
-	me to include some sample code in the toolkit.
-	
-	dmb 4.1b11: take Handle parameter, not bigstring
-	*/
-	
-	AppleEvent event, reply = {typeNull, nil};
-	AEDesc script, result;
-	boolean fl;
-	langerrormessagecallback savecallback;
-	ptrvoid saveerrorstring;
-	OSErr ec;
-	
-	*hresult = nil;
-	
-	if (!newselfaddressedevent (idroutine, &event))
-		return (false);
-	
-	
-		typeAEList (&script, typeChar, stringparam);
-	
-	
-	ec = AEPutKeyDesc (&event, 'prm1', &script);
-	
-	disposehandle (stringparam);
-	
-	if (ec != noErr)
-		goto error;
-	
-	savecallback = langcallbacks.errormessagecallback;
-	
-	saveerrorstring = langcallbacks.errormessagerefcon;
-	
-	langcallbacks.errormessagerefcon = errorstring;
-	
-	langcallbacks.errormessagecallback = &htmlcallbackerror;
-	
-	fl = evaluateosascriptevent (&osaval, &event, &reply);
-	
-	langcallbacks.errormessagerefcon = saveerrorstring;
-	
-	langcallbacks.errormessagecallback = savecallback;
-
-	if (!fl)
-		goto error;
-	
-	AEDisposeDesc (&event);	
-	
-	ec = AEGetParamDesc (&reply, keyDirectObject, typeChar, &result);
-	
-	AEDisposeDesc (&reply);	
-	
-	if (ec != noErr)
-		goto error;
-	
-	
-		copydatahandle (&result, hresult);
-		
-	
-	return (true);
-	
-	error:
-	
-	AEDisposeDesc (&event);	
-	
-	AEDisposeDesc (&reply);	
-	
-	return (false);
-	} /*frontTextScriptCall*/
-
-#endif
 #endif
 
 
@@ -2465,7 +2381,6 @@ boolean processhtmlmacrosverb (hdltreenode hparam1, tyvaluerecord *vreturned) {
 	
 	flnextparamislast = true;
 	
-	#if version42orgreater
 	
 	if (!getaddressparam (hparam1, 5, &callbackval))
 		return (false);
@@ -2477,12 +2392,6 @@ boolean processhtmlmacrosverb (hdltreenode hparam1, tyvaluerecord *vreturned) {
 	
 	callbackscript = &callback;
 	
-	#else
-	
-	if (!getbinaryvalue (hparam1, 5, true, &osaval.data.binaryvalue))
-		return (false);
-	
-	#endif
 	
 	if (!getexempttextvalue (hparam1, 1, &htext))
 		goto error;

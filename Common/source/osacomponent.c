@@ -963,7 +963,6 @@ boolean newcomponentglobals (Component self, long clienta5, hdlcomponentglobals 
 	
 	(**htg).applicationid = appid;
 	
-	#if version42orgreater
 		// 2/28/97 dmb: set up langcallbacks here so they'll always be in effect
 		
 		(**htg).langcallbacks.backgroundtaskcallback = &osabackgroundtask;
@@ -977,7 +976,6 @@ boolean newcomponentglobals (Component self, long clienta5, hdlcomponentglobals 
 		(**htg).langcallbacks.partialeventloopcallback = &osapartialeventloop;
 		
 		(**htg).fldisableyield = true;
-	#endif
 	
 	return (true);
 	} /*newcomponentglobals*/
@@ -1597,19 +1595,6 @@ static boolean osahandlerunscript (hdlcomponentglobals hglobals, hdltreenode hco
 		(**hp).processstartedroutine = &osaprocessstarted;
 		
 	
-	#if !version42orgreater
-		langcallbacks.backgroundtaskcallback = &osabackgroundtask;
-		
-		langcallbacks.debuggercallback = &osadebugger;
-		
-		langcallbacks.pushsourcecodecallback = &scriptpushsourcecode;
-		
-		langcallbacks.popsourcecodecallback = &scriptpopsourcecode;
-		
-		langcallbacks.partialeventloopcallback = &osapartialeventloop;
-		
-		fldisableyield = true;
-	#endif
 	
 	osabackgroundtime = gettickcount () + 30;
 	
@@ -1622,17 +1607,6 @@ static boolean osahandlerunscript (hdlcomponentglobals hglobals, hdltreenode hco
 	
 	osaremovepatch (hcg, origproc);
 	
-	#if !version42orgreater
-		langcallbacks.backgroundtaskcallback = (langbooleancallback) &truenoop;
-		
-		langcallbacks.debuggercallback = (langtreenodecallback) &truenoop;
-		
-		langcallbacks.pushsourcecodecallback = (langsourcecodecallback) &truenoop;
-		
-		langcallbacks.popsourcecodecallback = (langvoidcallback) &truenoop;
-		
-		langcallbacks.partialeventloopcallback = (langshortcallback) &falsenoop;
-	#endif
 	
 	(**hp).hcode = nil; /*we don't own it*/
 	
@@ -3711,7 +3685,6 @@ static pascal Boolean osahandleevent (
 	
 	error:
 	
-	#if version42orgreater
 	
 		if (osageterror () == errAEEventNotHandled) { // verb not handled by context
 		
@@ -3732,7 +3705,6 @@ static pascal Boolean osahandleevent (
 			
 			return (fl);
 			}
-	#endif
 		
 		return (false);
 	} /*osahandleevent*/

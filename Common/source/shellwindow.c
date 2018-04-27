@@ -467,103 +467,6 @@ boolean windowgetpath (WindowPtr w, bigstring bspath) {
 	} /*windowgetpath*/
 
 
-#ifndef version42orgreater
-
-// dmb 12/17/96: it's not clear that any of the resource saving
-// code should be used any more. font/size and window positioning
-// information should be stored in the op or wp data files directly.
-
-boolean shellsavewindowresource (WindowPtr wptr, ptrfilespec fspec, short rnum) {
-	
-	/*
-	save information about the window's size and position in the 
-	wpos resource in the given file.
-	*/
-	
-	register WindowPtr w = wptr;
-	hdlwindowinfo hinfo;
-	register hdlwindowinfo h;
-	tywindowposition wpos;
-	
-	if (!getwindowinfo (w, &hinfo)) /*defensive driving*/
-		return (false);
-	
-	h = hinfo; /*copy into register*/
-	
-	wpos = (**h).wpos; /*copy from window data structure*/
-	
-	getscrollbarinfo ((**h).vertscrollbar, &wpos.vertmin, &wpos.vertmax, &wpos.vertcurrent);
-	
-	getscrollbarinfo ((**h).horizscrollbar, &wpos.horizmin, &wpos.horizmax, &wpos.horizcurrent);
-	
-	wpos.configresnum = (**h).configresnum;
-	
-	getglobalwindowrect (w, &wpos.windowrect);
-	
-	wpos.flhidden = (**h).flhidden;
-	
-	(**h).wpos = wpos; /*copy it back into the window data structure*/
-	
-	return (saveresource (fspec, rnum, 'wpos', 128, nil, sizeof (wpos), &wpos));
-	} /*shellsavewindowresource*/
-
-
-boolean shellsavewindowposition (WindowPtr wptr) {
-	
-	/*
-	save information about the window's size and position in the 
-	wpos resource in the file.
-	*/
-	
-	register WindowPtr w = wptr;
-	tyfilespec fspec;
-	
-	if (windowgetfnum (w) == 0) /*no file to save window info into*/
-		return (false);
-	
-	windowgetfspec (w, &fspec);
-	
-	return (shellsavewindowresource (w, &fspec, windowgetrnum (w)));
-	} /*shellsavewindowposition*/
-
-
-boolean shellsavefontresource (WindowPtr w, ptrfilespec fspec, short rnum) {
-	
-	hdlwindowinfo hinfo;
-	register hdlwindowinfo h;
-	tysavedfont savedfont;
-	register long len;
-	
-	if (!getwindowinfo (w, &hinfo)) /*defensive driving*/
-		return (false);
-	
-	h = hinfo; /*copy into register*/
-	
-	fontgetname ((**h).defaultfont, savedfont.fontname);
-	
-	savedfont.fontsize = (**h).defaultsize;
-	
-	savedfont.fontstyle = (**h).defaultstyle;
-	
-	len = sizeof (savedfont) - sizeof (bigstring) + stringlength (savedfont.fontname) + 1;
-	
-	return (saveresource (fspec, rnum, 'styl', 128, nil, len, &savedfont));
-	} /*shellsavefontresource*/
-
-
-boolean shellsavedefaultfont (register WindowPtr w) {
-	
-	tyfilespec fspec;
-	
-	if (windowgetfnum (w) == 0) /*no file to save window info into*/
-		return (false);
-	
-	windowgetfspec (w, &fspec);
-	
-	return (shellsavefontresource (w, &fspec, windowgetrnum (w)));
-	} /*shellsavedefaultfont*/
-
-#endif	// MACVERSION
 
 
 boolean loadwindowposition (ptrfilespec fspec, short rnum, tywindowposition *wpos) {
@@ -1908,11 +1811,6 @@ boolean newchildwindow (short idtype, hdlwindowinfo hparentinfo, Rect * rwindow,
 	
 	*shellglobals.infoholder = hinfo;
 	
-	#ifndef version42orgreater
-		setscrollbarinfo (vertbar, wpos.vertmin, wpos.vertmax, wpos.vertcurrent);
-		
-		setscrollbarinfo (horizbar, wpos.horizmin, wpos.horizmax, wpos.horizcurrent);
-	#endif
 	
 	(**hinfo).rzoomfrom = *rzoom; /*so that we can zoom the window later*/
 	

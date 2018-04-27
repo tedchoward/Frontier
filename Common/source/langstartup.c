@@ -477,10 +477,8 @@ boolean inittablestructure (void) {
 			goto error;
 	#endif
 		
-	#ifdef version42orgreater
 		if (!tablenewsystemtable (internaltable, namefilewindowtable, &filewindowtable))
 			goto error;
-	#endif
 	
 	// now do the environment table
 	

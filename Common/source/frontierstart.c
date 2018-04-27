@@ -90,7 +90,6 @@ boolean frontierstart (void) {
 	if (!wpstart ())
 		return (false);
 	
-	#ifdef version42orgreater
 	
 	if (!aboutstart ())
 		return (false);
@@ -104,7 +103,6 @@ boolean frontierstart (void) {
 			return (false);
 	
 	
-	#endif
 	
 	if (!cmdstart ())
 		return (false);

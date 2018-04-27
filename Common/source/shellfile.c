@@ -477,13 +477,6 @@ static boolean shelldatabasesaveas (WindowPtr wsave, ptrfilespec fspec) {
 	if (config.flopenresfile)
 		copyallresources ((**hinfo).rnum, rnum);
 
-#ifndef version42orgreater
-
-	shellsavewindowresource (w, fspec, rnum);
-	
-	shellsavefontresource (w, fspec, rnum);
-	
-#endif
 	
 	if (!flconvertingolddatabase) { // close new file; we're really doing a "Save a Copy"
 	
@@ -884,13 +877,6 @@ boolean shellsave (WindowPtr wsave) {
 		
 		(**shellwindowinfo).flneversaved = false;
 		
-		#ifndef version42orgreater //def MACVERSION
-		
-			shellsavewindowposition (w); 
-			
-			shellsavedefaultfont (w);
-		
-		#endif
 
 		windowgetfspec (w, &fspec);
 		
@@ -972,12 +958,8 @@ boolean shellclosewindow (WindowPtr wclose) {
 	
 	hparentinfo = (**hinfo).parentwindow;
 	
-	#ifdef version42orgreater
 		if (hparentinfo == nil) // don't close -- hide
 			return (shellhidewindow (hinfo));
-	#else
-		assert (hparentinfo != nil); /*we should be part of another window's data structure*/
-	#endif
 	
 	shellpushglobals ((**hparentinfo).macwindow); /*close message goes to parent window*/
 	

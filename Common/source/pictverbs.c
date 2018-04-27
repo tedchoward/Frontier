@@ -1186,13 +1186,11 @@ boolean pictstart (void) {
 	
 	(*cb).infoholder = &pictwindowinfo; 
 	
-#ifdef version42orgreater
 	
 	(*cb).disposerecordroutine = ccdisposefilerecord;
 	
 	(*cb).saveroutine = ccsavespecialfile;
 
-#endif
 	
 	(*cb).updateroutine = &pictupdate;
 	

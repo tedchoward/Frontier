@@ -757,13 +757,11 @@ boolean tablestart (void) {
 
 	(*cb).poproutine = &oppopglobals;
 	
-#ifdef version42orgreater
 	
 	(*cb).disposerecordroutine = ccdisposefilerecord;
 	
 	(*cb).saveroutine = ccsavespecialfile;
 
-#endif
 	
 	(*cb).updateroutine = &tableverbupdate;
 	
