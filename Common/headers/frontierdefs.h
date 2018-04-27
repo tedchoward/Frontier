@@ -50,15 +50,9 @@
 
 #define fldebug 1
 
-#define Rez true
-#define DeRez false
-
 #ifndef OPMLEDITOR				/*2008-09-08 aradke: keep opml editor lean and mean*/
 	#define FRONTIER_MYSQL	1	/*include mysql database client library*/
 	#define FRONTIER_SQLITE	1	/*include sqlite database code*/
 #endif
-
-#define SystemSevenOrLater 1
-
 
 #endif /*__FRONTIERDEFS_H__*/
