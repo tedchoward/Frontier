@@ -172,7 +172,6 @@ typedef enum tyclipboardtoken { /*verbs that are processed by clipboard*/
 	} tyclipboardtoken;
 
 
-#if threadverbs
 
 typedef enum tythreadtoken {
 	
@@ -218,7 +217,6 @@ typedef enum tythreadtoken {
 	
 	} tythreadtoken;
 
-#endif
 
 
 static boolean getscrapverb (hdltreenode hparam1, tyvaluerecord *v) {

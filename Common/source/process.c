@@ -2065,15 +2065,12 @@ boolean initprocessthread (bigstring bsname) {
 	with the same bsname present in that table.
 	*/
 	
-#if threadverbs
 	tyvaluerecord val;
 	bigstring bs;
-#endif
 
 	if (!threadstartup ())
 		return (false);
 	
-#if threadverbs
 	assert (threadtable);
 
 	setlongvalue ((long) (**hthreadglobals).idthread, &val);
@@ -2108,7 +2105,6 @@ boolean initprocessthread (bigstring bsname) {
 	hashinsert (bs, val);
 	
 	pophashtable ();
-#endif
 
 	(**hthreadglobals).timestarted = gettickcount ();
 	
@@ -2136,7 +2132,6 @@ void exitprocessthread (void) {
 	for executing scripts has already been disposed of at this point.
 	*/
 	
-#if threadverbs
 	bigstring bsname;
 	
 	currentprocess = nil;	/* 91.b3 AR */
@@ -2150,7 +2145,6 @@ void exitprocessthread (void) {
 		
 		flexitingthread = false;
 		}
-#endif
 	
 	threadshutdown ();
 	} /*exitprocessthread*/

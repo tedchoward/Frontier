@@ -50,7 +50,6 @@
 
 #define fldebug 1
 
-#define threadverbs 1
 #define oplanglists 1
 #define flregexpverbs 1
 #undef lazythis_optimization

@@ -472,10 +472,8 @@ boolean inittablestructure (void) {
 	if (!tablenewsystemtable (internaltable, namesemaphoretable, &semaphoretable))
 		goto error;
 	
-	#if threadverbs
 		if (!tablenewsystemtable (internaltable, namethreadtable, &threadtable))
 			goto error;
-	#endif
 		
 		if (!tablenewsystemtable (internaltable, namefilewindowtable, &filewindowtable))
 			goto error;
