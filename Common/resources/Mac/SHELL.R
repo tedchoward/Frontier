@@ -228,13 +228,8 @@ resource 'MENU' (2, "File") {
 	enabled,
 	"File",
 	{	/* array: 14 elements */
-#ifdef version42orgreater
 		/* [1] */
 		"New", noIcon, hierarchicalMenu, "\0d135", plain,
-#else
-		/* [1] */
-		"New", noIcon, noKey, noMark, plain,
-#endif
 		/* [2] */
 		"Open…", noIcon, "O", noMark, plain,
 		/* [3] */
@@ -280,13 +275,8 @@ resource 'MENU' (412, "File") {
 	enabled,
 	"File",
 	{	/* array: 12 elements */
-#ifdef version42orgreater
 		/* [1] */
 		"New", noIcon, hierarchicalMenu, "\0d135", plain,
-#else
-		/* [1] */
-		"New", noIcon, noKey, noMark, plain,
-#endif
 		/* [2] */
 		"Open…", noIcon, "O", noMark, plain,
 		/* [3] */
@@ -840,24 +830,6 @@ resource 'STR#' (130, "Interface", locked, preload) {
 };
 
 
-#ifdef fltrialsize
-
-resource 'STR#' (400, "Trial", locked, preload) {
-	{	/* array StringArray: 4 elements */
-		/* [1] */
-		"This trial version of Frontier limits databases to 7 megabytes in size",
-		/* [2] */
-		"This is a trial version of Frontier and no more than three threads can be created",
-		/* [3] */
-		"The trial version of Frontier expired on ^0.  For more information please visit http://www.userland.com/.",
-		/* [4] */
-		". To purchase a license for the full version of Frontier, visit http://www.userland.com/.",
-		/* [5] */
-		"This trial version of Frontier does not support the use of guest databases"
-	}
-};
-
-#endif
 
 
 resource 'STR#' (131, "Error Info", locked, preload) {
@@ -3689,11 +3661,7 @@ resource 'WIND' (128, "Windoid") {
 
 resource 'WIND' (130, "Home") {
 	{76, 184, 180, 460},
-#if TARGET_API_MAC_CARBON
 	noGrowDocProc,
-#else
-	rDocProc,	/* 2004-10-20 aradke: not supported in Carbon */
-#endif
 	invisible,
 	goAway,
 	0x0,
@@ -3805,13 +3773,8 @@ resource 'cnfg' (128, "menu bar") {
 	consumefrontclicks,
 	colorwindow,
 	onethird,
-	#ifdef version42orgreater
 		'LAND',
 		'FTmb',
-	#else
-		'BigD',
-		'HOME',
-	#endif
 	129,
 	{0, 0, 140, 260},
 	4,
@@ -3821,38 +3784,6 @@ resource 'cnfg' (128, "menu bar") {
 	{110, 220, 370, 500}
 };
 
-#ifdef fliowa
-
-resource 'cnfg' (129, "Iowa") {
-	nohorizscroll,
-	novertscroll,
-	dontfloat,
-	nomessagearea,
-	dontinsetcontentrect,
-	nonewonlaunch,
-	dontopenresfile,
-	normalwindow,
-	isgrowable,
-	dontcreateonnew,
-	nowindoidscrollbars,
-	storedindatabase,
-	handlesownsave,
-	donteraseonresize,
-	consumefrontclicks,
-	colorwindow,
-	onethird,
-	'IOWA',
-	'CARD',
-	129,
-	{0, 0, 100, 150},
-	2,
-	size12,
-	plain,
-	0,
-	{100, 75, 250, 400}
-};
-
-#endif
 
 resource 'cnfg' (130, "outline") {
 	nohorizscroll,
@@ -3872,13 +3803,8 @@ resource 'cnfg' (130, "outline") {
 	consumefrontclicks,
 	colorwindow,
 	onethird,
-	#ifdef version42orgreater
 		'LAND',
 		'FTop',
-	#else
-		'BigD',
-		'OUTL',
-	#endif
 	129,
 	{0, 0, 100, 150},
 	2,
@@ -3906,13 +3832,8 @@ resource 'cnfg' (131, "script") {
 	consumefrontclicks,
 	colorwindow,
 	onehalf,
-	#ifdef version42orgreater
 		'LAND',
 		'FTsc',
-	#else
-		'BigD',
-		'STRC',
-	#endif
 	129,
 	{0, 0, 100, 150},
 	2,
@@ -3940,13 +3861,8 @@ resource 'cnfg' (132, "table") {
 	consumefrontclicks,
 	colorwindow,
 	onethird,
-	#ifdef version42orgreater
 		'LAND',
 		'FTtb',
-	#else
-		'BigD',
-		'TABL',
-	#endif
 	129,
 	{0, 0, 100, 260},
 	4,
@@ -3974,13 +3890,8 @@ resource 'cnfg' (134, "wpengine") {
 	consumefrontclicks,
 	colorwindow,
 	onethird,
-	#ifdef version42orgreater
 		'LAND',
 		'FTwp',
-	#else
-		'DBWP',
-		'WSWP',
-	#endif
 	129,
 	{0, 0, 100, 150},
 	1,
@@ -4098,11 +4009,7 @@ resource 'cnfg' (140, "stats") {
 	onehalf,
 	'BigD',
 	'STAT',
-#if	TARGET_API_MAC_CARBON
 	133,	/* normal window */
-#else
-	128,
-#endif
 	{100, 25, 175, 200},
 	2,
 	size9,
@@ -4129,13 +4036,8 @@ resource 'cnfg' (141, "PICT") {
 	consumefrontclicks,
 	colorwindow,
 	onethird,
-	#ifdef version42orgreater
 		'LAND',
 		'FTpc',
-	#else
-		'BigD',
-		'PICT',
-	#endif
 	129,
 	{0, 0, 100, 150},
 	2,
@@ -4493,7 +4395,6 @@ resource 'LAND' (0, "Owner resource")
 };
 
 
-#ifdef version5orgreater
 	resource 'vers' (1) {
 		APP_MAJOR_VERSION_BCD,
 		APP_SUBMINOR_VERSION_BCD,
@@ -4501,22 +4402,8 @@ resource 'LAND' (0, "Owner resource")
 		APP_REVISION_LEVEL,
 		verUS,
 		APP_VERSION_STRING,
-	#ifdef fltrialsize
-		"Trial "
-	#endif
 		APP_VERSION_STRING "; © " APP_COPYRIGHT "."
 	};
-#else
-	resource 'vers' (1) {
-		0x4,
-		0x10,
-		final,
-		0x0,
-		verUS,
-		"4.1",
-		"4.1; © 1992-2001, UserLand Software, Inc."
-	};
-#endif
 
 #ifdef oldTemp
 
