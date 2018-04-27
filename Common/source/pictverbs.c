@@ -73,11 +73,6 @@ typedef enum typicttoken { /*verbs that are processed by pict.c*/
 	ctpictverbs
 	} typicttoken;
 
-#if langexternalfind_optimization
-
-	typedef tyexternalvariable typictvariable, *ptrpictvariable, **hdlpictvariable;
-
-#else
 
 #pragma pack(2)
 	typedef struct typictvariable {
@@ -96,7 +91,6 @@ typedef enum typicttoken { /*verbs that are processed by pict.c*/
 		} typictvariable, *ptrpictvariable, **hdlpictvariable;
 #pragma options align=reset
 
-#endif
 
 static short errornum = 0;
 

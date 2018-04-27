@@ -168,18 +168,6 @@ boolean langexternalvaltotable (tyvaluerecord val, hdlhashtable *htable, hdlhash
 
 boolean langexternalfindvariable (hdlexternalvariable hv, hdlhashtable *htable, bigstring bsname) {
 	
-	#if langexternalfind_optimization
-
-	if (hv != nil && (**hv).hexternaltable != nil && (**hv).hexternalnode != nil) {
-
-		*htable = (**hv).hexternaltable;
-
-		gethashkey ((**hv).hexternalnode, bsname);
-		
-		return true;
-		}
-
-	#endif
 
 	return (tablefindvariable (hv, htable, bsname));
 	} /*langexternalfindvariable*/
@@ -2854,22 +2842,8 @@ boolean langexternalsymbolchanged (hdlhashtable htable, const bigstring bsname, 
 
 
 boolean langexternalsymbolinserted (hdlhashtable htable, const bigstring bsname, hdlhashnode hnode) {
-#if !langexternalfind_optimization
 #	pragma unused (htable, bsname, hnode)
-#endif
 
-#if langexternalfind_optimization
-	if (	hnode != nil
-		 && hnode != HNoNode
-		 && (**hnode).val.valuetype == externalvaluetype) {
-		
-			hdlexternalvariable	hv = (hdlexternalvariable) (**hnode).val.data.externalvalue;
-
-			(**hv).hexternaltable = htable;
-
-			(**hv).hexternalnode = hnode;
-			}
-	#endif
 
 	return true;
 	} /*langexternalsymbolinserted*/

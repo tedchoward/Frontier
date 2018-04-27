@@ -235,43 +235,6 @@ typedef enum tyoptoken { /*verbs that are processed by op.c*/
 
 
 
-#if langexternalfind_optimization
-
-	// 11/15/01 dmb: too messy trying to add linkedcode field to tyexternalvariable, so dup here
-#pragma pack(2)
-	typedef struct tyoutlinevariable {
-		
-		unsigned short id;	/*tyexternalid*/
-		
-		unsigned short flinmemory: 1; /*if true, variabledata is in a handle, else a dbaddress*/
-		
-		unsigned short flmayaffectdisplay: 1; /*not in memory, but being displayed in a table window*/
-		
-		unsigned short flpacked: 1; /* for wp doc; it isn't being edited, so we store it packed*/
-
-		unsigned short flscript: 1; /* for outlines and scripts; they're identical, except for this bit*/
-
-		unsigned short flsystemtable: 1; /*for tables: was it created by the system, or by a user script?*/
-
-		#ifdef xmlfeatures
-			unsigned short flxml: 1; /*preserve for tables; is it an xml table?*/
-		#endif
-		
-		long variabledata; /*either a handle to data record or a dbaddress*/
-		
-		hdldatabaserecord hdatabase; // 5.0a18 dmb
-
-		dbaddress oldaddress; /*last place this variable was stored in db*/
-
-		hdlhashtable hexternaltable;
-
-		hdlhashnode hexternalnode;
-		
-		Handle linkedcode; /*you can link code into any outline, mostly for scripts though*/
-		} tyoutlinevariable, *ptroutlinevariable, **hdloutlinevariable;
-#pragma options align=reset
-
-#else
 
 #pragma pack(2)
 	typedef struct tyoutlinevariable {
@@ -294,7 +257,6 @@ typedef enum tyoptoken { /*verbs that are processed by op.c*/
 		} tyoutlinevariable, *ptroutlinevariable, **hdloutlinevariable;
 #pragma options align=reset
 
-#endif
 
 
 

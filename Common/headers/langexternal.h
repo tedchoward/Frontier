@@ -146,13 +146,6 @@ typedef struct tyexternalvariable {
 
 	dbaddress oldaddress; /*last place this variable was stored in db*/
 
-#if langexternalfind_optimization
-
-	hdlhashtable hexternaltable;
-
-	hdlhashnode hexternalnode;
-
-#endif
 	} tyexternalvariable, *ptrexternalvariable, **hdlexternalvariable;
 #pragma options align=reset
 

@@ -150,11 +150,6 @@ typedef enum tywptoken { /*verbs that are processed by wp.c*/
 
 
 
-#if langexternalfind_optimization
-
-	typedef tyexternalvariable tywpvariable, *ptrwpvariable, **hdlwpvariable;
-
-#else
 
 #pragma pack(2)
 typedef struct tywpvariable {
@@ -175,7 +170,6 @@ typedef struct tywpvariable {
 	} tywpvariable, *ptrwpvariable, **hdlwpvariable;
 #pragma options align=reset
 
-#endif
 
 static short errornum = 0; /*error number exclusively for wp routines*/
 

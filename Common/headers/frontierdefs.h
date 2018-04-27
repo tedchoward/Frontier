@@ -50,7 +50,6 @@
 
 #define fldebug 1
 
-#undef langexternalfind_optimization
 #define PASCALSTRINGVERSION 1
 #define SPEED 1
 #undef fltracklocaladdresses		/*2004-12-08 aradke: disable [buggy] code for tracking deleted local addresses*/

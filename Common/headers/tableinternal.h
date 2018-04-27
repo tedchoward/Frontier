@@ -87,11 +87,6 @@ extern short tableverberrornum; /*selects an error message from a low-level rout
 #define kindcolumn 2 /*value type*/
 
 
-#if langexternalfind_optimization
-
-	typedef tyexternalvariable tytablevariable, *ptrtablevariable, **hdltablevariable;
-
-#else
 
 #pragma pack(2)
 typedef struct tytablevariable {
@@ -116,7 +111,6 @@ typedef struct tytablevariable {
 	} tytablevariable, *ptrtablevariable, **hdltablevariable;
 #pragma options align=reset
 
-#endif
 
 
 #define fixedctcols maxtablecols /*symbol tables all have this number of columns*/
