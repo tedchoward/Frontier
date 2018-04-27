@@ -44,7 +44,6 @@
 
 
 
-#if !flruntime
 
 typedef struct findnodeinfo{
 	
@@ -113,7 +112,6 @@ boolean mezoommenubarwindow (hdloutlinerecord houtline, boolean flbringtofront, 
 	return (true);
 	} /*mezoommenubarwindow*/
 
-#endif
 
 
 boolean mescripterrorroutine (long scripterrorrefcon, long lnum, short charnum, hdlhashtable *htable, bigstring bsname) {
@@ -125,11 +123,6 @@ boolean mescripterrorroutine (long scripterrorrefcon, long lnum, short charnum, 
 	4.1b3 dmb: support getting htable, bsname instead of zooming
 	*/
 	
-	#if flruntime
-	
-	return (true);
-	
-	#else
 	
 	register hdlheadrecord h = (hdlheadrecord) scripterrorrefcon;
 	register boolean fl = false;
@@ -183,7 +176,6 @@ boolean mescripterrorroutine (long scripterrorrefcon, long lnum, short charnum, 
 	
 	return (fl);
 	
-	#endif
 	} /*mescripterrorroutine*/
 
 
@@ -200,11 +192,9 @@ boolean megetnodelangtext (hdlheadrecord hnode, Handle *htext, long *signature) 
 	register boolean fl;
 	boolean fldispose = false;
 	
-	#if !flruntime
 	
 	mesetglobals (); /*be sure op, db and lang have globals set up properly*/
 	
-	#endif
 	
 	if (!meloadscriptoutline (menudata, h, &houtline, &fldispose)) 
 		return (false);
@@ -225,7 +215,6 @@ boolean megetnodelangtext (hdlheadrecord hnode, Handle *htext, long *signature) 
 	} /*megetnodelangtext*/
 
 
-#if !flruntime
 
 boolean meshownode (hdlheadrecord hnode) {
 	
@@ -261,7 +250,6 @@ static boolean meprocesscallback (void) {
 	return (true);
 	} /*meprocesscallback*/
 
-#endif
 
 
 boolean meuserselected (hdlheadrecord hnode) {
@@ -286,11 +274,9 @@ boolean meuserselected (hdlheadrecord hnode) {
 	
 	boolean fl;
 	
-	#if !flruntime
 		
 		menudata = (hdlmenurecord) (**outlinedata).outlinerefcon;
 	
-	#endif
 	
 	if (!megetnodelangtext (hnode, &htext, &signature)) 
 		return (false);
@@ -316,13 +302,11 @@ boolean meuserselected (hdlheadrecord hnode) {
 	
 	hp = hprocess; /*copy into register*/
 	
-	#if !flruntime
 		
 		(**hp).processkilledroutine = &meprocesscallback;
 		
 		shellforcemenuadjust (); /*for menu dimming*/
 		
-	#endif
 	
 	addprocess (hp);
 	

@@ -456,11 +456,9 @@ typedef struct tyhashtable {
 	
 	struct tyhashtable **prevhashtable; /*allow tables to be linked*/
 	
-	#if !flruntime
 	
 	struct tyhashtable **parenthashtable; /*allow tables to be linked, but not lexically*/
 	
-	#endif
 
 	/* The following is added 12/29/99 by RAB so that we do not have to scan all the buckets of 
 	this tables parent to get the hashnode for this table and therefore it's value record and it's name. */
@@ -505,11 +503,9 @@ typedef struct tyhashtable {
 	
 	long lexicalrefcon;
 	
-	#if odbengine || !flruntime
 	
 	struct tytableformats **hashtableformats; /*place to link in a display formats record*/
 	
-	#endif
 	
 	short sortorder; /*up to the application to understand what this means*/
 	

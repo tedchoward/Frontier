@@ -811,11 +811,6 @@ static boolean initdropletwindow (hdlcomponentglobals hcg, boolean fl2click) {
 	else
 		setdefaultitem (w, runitem);
 	
-	#if flruntime
-	
-	disabledialogitem (w, edititem); /*disable Edit button if we're Runtime*/
-	
-	#endif
 	
 	setuseritemdrawroutine (w, iconitem, &drawiconitem);
 	

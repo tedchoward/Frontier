@@ -180,7 +180,6 @@ typedef struct tywpvariable {
 static short errornum = 0; /*error number exclusively for wp routines*/
 
 
-#if !flruntime
 
 static void wpverbsetscrollbarsroutine (void) {
 
@@ -232,7 +231,6 @@ boolean wpverbgettypestring (hdlexternalvariable hvariable, bigstring bs) {
 	} /*wpverbgettypestring*/
 
 
-#endif // !flruntime
 
 static boolean newwpvariable (boolean flinmemory, boolean flpacked, long variabledata, hdlwpvariable *h) {
 
@@ -265,7 +263,6 @@ boolean wpverbdispose (hdlexternalvariable hvariable, boolean fldisk) {
 	} /*wpverbdispose*/
 
 
-#if !flruntime
 
 static void wpverbcheckwindowrect (register hdlwprecord hwp) {
 	
@@ -289,13 +286,7 @@ static void wpverbcheckwindowrect (register hdlwprecord hwp) {
 		}
 	} /*wpverbcheckwindowrect*/
 
-#else
-	
-	#define wpverbcheckwindowrect(hwp)	((void *) 0)
 
-#endif
-
-#if !flruntime
 
 boolean wpverbisdirty (hdlexternalvariable hvariable) {
 	
@@ -339,7 +330,6 @@ boolean wpverbsetdirty (hdlexternalvariable hvariable, boolean fldirty) {
 	return (true);
 	} /*wpverbsetdirty*/
 
-#endif // !flruntime
 
 
 static void wpverblinkvariable (hdlwprecord hwp, hdlwpvariable hv) {
@@ -695,7 +685,6 @@ boolean wpverbinmemory (hdlexternalvariable h) {
 	} /*wpverbinmemory*/
 
 
-#if !flruntime
 
 boolean wpverbgetsize (hdlexternalvariable hvariable, long *size) {
 	
@@ -2108,7 +2097,6 @@ boolean wpstart (void) {
 	return (true);
 	} /*wpstart*/
 
-#endif // !flruntime
 
 
 

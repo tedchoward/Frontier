@@ -176,7 +176,6 @@ boolean pictverbnew (Handle hdata, hdlexternalvariable *hvariable) {
 	} /*pictverbnew*/
 
 
-#if !flruntime
 
 static void pictverbcheckwindowrect (hdlpictrecord hpict) {
 	
@@ -201,13 +200,6 @@ static void pictverbcheckwindowrect (hdlpictrecord hpict) {
 		}
 	} /*pictverbcheckwindowrect*/
 	
-#else
-
-	#define pictverbcheckwindowrect(hpict)	((void *) 0)
-	
-	#define fldatabasesaveas 0
-
-#endif
 
 
 static boolean pictverbinmemory (hdlpictvariable hv) {
@@ -449,7 +441,6 @@ boolean pictverbpacktotext (hdlexternalvariable h, Handle htext) {
 	} /*pictverbpacktotext*/
 
 
-#if !flruntime
 
 boolean pictverbgetsize (hdlexternalvariable hvariable, long *size) {
 	
@@ -1244,7 +1235,6 @@ boolean pictstart (void) {
 	return (true);
 	} /*pictstart*/
 
-#endif // !flruntime
 
 
 

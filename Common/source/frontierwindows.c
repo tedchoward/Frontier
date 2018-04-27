@@ -99,7 +99,6 @@ void windowgettitle (WindowPtr w, bigstring bs) {
  	} /*windowgettitle*/
 	
 
-#if !flruntime
 
 void windowsettitle (WindowPtr w, bigstring bs) {
 	
@@ -159,7 +158,6 @@ boolean graywindow (WindowPtr w) {
 	return (true);
 	} /*graywindow*/
 	
-#endif
 	
 void movewindow (WindowPtr w, short h, short v) {
 
@@ -303,7 +301,6 @@ boolean getglobalwindowrect (WindowPtr w, Rect *r) {
 	} /*getglobalwindowrect*/
 
 
-#if !flruntime
 
 boolean windowsendbehind (WindowPtr w, WindowPtr wbehind) {
 	
@@ -387,7 +384,6 @@ boolean isdeskaccessorywindow (WindowPtr w) {
 
 	} /*isdeskaccessorywindow*/
 
-#endif
 
 
 void showwindow (WindowPtr w) {

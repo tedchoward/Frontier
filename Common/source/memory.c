@@ -697,7 +697,6 @@ boolean newfilledhandle (ptrvoid pdata, long size, Handle *hreturned) {
 	} /*newfilledhandle*/
 #endif
 
-#if (flruntime==0)
 #if (odbengine==0)
 static long getidealchunksize (void) {
 	
@@ -784,7 +783,6 @@ boolean newgrowinghandle (long size, Handle *h) {
 	} /*newgrowinghandle*/
 #endif
 
-#endif
 #endif
 
 
@@ -2614,7 +2612,6 @@ void disposehandlestream (handlestream *s) {
 
 
 
-#if (flruntime==0)
 #if (odbengine==0)
 boolean initmemory (void) {
 	
@@ -2627,7 +2624,6 @@ boolean initmemory (void) {
 	
 	return (getsafetycushion ());
 	} /*initmemory*/
-#endif
 #endif
 
 

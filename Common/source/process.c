@@ -1096,16 +1096,10 @@ boolean processsleep (hdlprocessthread hthread, unsigned long timeout) {
 
 	(**(hdlthreadglobals) hthread).timebeginsleep = ticks;
 
-	#if flruntime
-	
-		++ctsleepingthreads;
-	
-	#else
 		
 		if (processlist != nil)
 			++(**processlist).ctsleeping;
 		
-	#endif
 	
 	if (hthread == hthreadglobals)
 		fl = threadsleep (nil);
@@ -1187,16 +1181,10 @@ boolean processwake (hdlprocessthread hthread) {
 
 		(**(hdlthreadglobals) hthread).timebeginsleep = 0;
 		
-		#if flruntime
-		
-			--ctsleepingthreads;
-		
-		#else
 			
 			if (processlist != nil)
 				--(**processlist).ctsleeping;
 			
-		#endif
 		}
 	
 	THREADS_ASSERT_1 (fl);
@@ -1250,12 +1238,6 @@ boolean processyield (void) {
 		return (true);
 	*/
 	
-	#if flruntime
-	
-		if (flscriptresting)
-			++ctsleepingthreads;
-	
-	#else
 	
 		oldwindow = shellwindow;
 		
@@ -1264,16 +1246,9 @@ boolean processyield (void) {
 		if (flscriptresting && (processlist != nil))
 			++(**processlist).ctsleeping;
 		
-	#endif
 	
 	threadyield (flscriptresting);
 	
-	#if flruntime
-	
-		if (flscriptresting)
-			--ctsleepingthreads;
-		
-	#else
 	
 		if (flscriptresting && (processlist != nil))
 			--(**processlist).ctsleeping;
@@ -1282,7 +1257,6 @@ boolean processyield (void) {
 		
 		assert (flscriptwasrunning == flscriptrunning);
 	
-	#endif
 	
 	return (ingoodthread ());
 	} /*processyield*/
@@ -1316,11 +1290,6 @@ boolean processyieldtoagents (void) {
 	if (agentthread == nil)
 		return (true);
 	
-	#if flruntime
-	
-		fl = processyield ();
-	
-	#else
 		
 		++flagentsdisabled;
 		
@@ -1340,7 +1309,6 @@ boolean processyieldtoagents (void) {
 		
 		--flagentsdisabled;
 	
-	#endif
 	
 	return (fl);
 	} /*processyieldtoagents*/
@@ -1642,7 +1610,6 @@ void swapinthreadglobals (hdlthreadglobals hglobals) {
 	
 	langcallbacks = (**hg).langcallbacks;
 		
-	#if !flruntime
 	
 		cterrorhooks = (**hg).cterrorhooks;
 		
@@ -1666,7 +1633,6 @@ void swapinthreadglobals (hdlthreadglobals hglobals) {
 		
 		moveleft  ((**hg).outlinestack, outlinestack, sizeof (hdloutlinerecord) * ctoutlinestack);
 
-	#endif
 	
 	ctscanlines = (**hg).ctscanlines;
 
@@ -1802,12 +1768,6 @@ static pascal boolean maimprocessvisit (hdlthreadglobals hthread, long hcancoon)
 	
 	register hdlthreadglobals hg = getthreadglobals (hthread);
 	
-	#if flruntime
-		
-		if ((**hg).idthread != idapplicationthread)
-			(**hg).flthreadkilled = true;
-	
-	#else
 		
 		if (hcancoon == (long) (**hg).hccglobals) /*it's dependent; maim it*/ {
 			
@@ -1821,7 +1781,6 @@ static pascal boolean maimprocessvisit (hdlthreadglobals hthread, long hcancoon)
 //#endif
 			}
 		
-	#endif
 	
 	return (false); /*keep visiting*/
 	} /*maimprocessvisit*/
@@ -2083,7 +2042,6 @@ static void setprocesslangcallbacks (void) {
 	
 	langcallbacks.popsourcecodecallback = &processpopsourcecode;
 	
-	#if !flruntime
 	
 	langcallbacks.debuggercallback = &processdebugger;
 	
@@ -2091,7 +2049,6 @@ static void setprocesslangcallbacks (void) {
 	
 	langcallbacks.poptablecallback = &processpoptable;
 	
-	#endif
 	
 	langcallbacks.scriptkilledcallback = &processscriptkilled;
 	} /*setprocesslangcallbacks*/
@@ -2182,13 +2139,11 @@ boolean initprocessthread (bigstring bsname) {
 
 	(**hthreadglobals).timestarted = gettickcount ();
 	
-	#if !flruntime
 	
 		clearbytes (&globalsstack, sizeof (globalsstack));
 		
 		shellwindow = nil;
 		
-	#endif
 	
 	setprocesslangcallbacks ();
 	
@@ -2682,7 +2637,6 @@ boolean processnotbusy (void) {
 	running a 1-shot process, we're not busy.
 	*/
 	
-	#if !flruntime
 	
 	if (honeshotcode != nil) {
 		
@@ -2691,7 +2645,6 @@ boolean processnotbusy (void) {
 		shellforcemenuadjust ();
 		}
 	
-	#endif
 	
 	return (true);
 	} /*processnotbusy*/
@@ -2699,11 +2652,6 @@ boolean processnotbusy (void) {
 
 boolean processrunning (void) {
 	
-	#if flruntime
-	
-	return (ctprocessthreads - ctsleepingthreads > 0);
-	
-	#else
 	
 	register hdlprocesslist hlist = processlist;
 	
@@ -2712,7 +2660,6 @@ boolean processrunning (void) {
 	
 	return ((**hlist).ctrunning - (**hlist).ctsleeping > 0);
 	
-	#endif
 	
 	} /*processrunning*/
 
@@ -2774,17 +2721,9 @@ static void postthreadsmessage (void) {
 				return;
 			}
 		
-		#if flruntime
-		
-		getstringlist (alertstringlistnumber, needthreadmanagerstring, bs);
-		
-		setwindowmessage (bs);
-		
-		#else
 		
 		alertstring (needthreadmanagerstring);
 		
-		#endif
 		}
 	} /*postthreadsmessage*/
 
@@ -3400,11 +3339,9 @@ boolean initprocess (void) {
 	_profile = false;
 	*/
 	
-	#if !flruntime
 	
 		shellpushkeyboardhook (&processkeyboardhook);
 	
-	#endif
 	
 	if (!newclearhandle (sizeof (tythreadlist), (Handle *) &processthreadlist))
 		return (false);

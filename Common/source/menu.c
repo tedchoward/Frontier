@@ -528,7 +528,6 @@ void getmenuitemcommandkey (hdlmenu hmenu, short ixmenu, short *key) {
 	} /*getmenuitemcommandkey*/
 
 
-#if !flruntime	
 //Code change by Timothy Paustian Saturday, April 29, 2000 9:33:29 PM
 //Changed for UH 3.3.1 to avoid conflict with Menus.h
 boolean Insertmenuitem (hdlmenu hmenu, short ixmenu, bigstring bs) {
@@ -590,7 +589,6 @@ boolean deletelastmenuitem (hdlmenu hmenu) {
 	return (deletemenuitem (hmenu, countmenuitems (hmenu)));
 	} /*deletelastmenuitem*/
 
-#endif
 
 boolean pushmenuitem (hdlmenu hmenu, short idmenu, bigstring bs, short commandid) {
 	
@@ -644,7 +642,6 @@ boolean pushresourcemenuitems (hdlmenu hmenu, short idmenu, OSType restype) {
 	} /*pushresourcemenuitems*/
 
 
-#if !flruntime
 	
 boolean pushdottedlinemenuitem (hdlmenu hmenu) {
 	
@@ -724,7 +721,6 @@ short getnextmenuitem (hdlmenu hmenu) {
 	return (1); /*no item checked*/
 	} /*getnextmenuitem*/
 
-#endif
 
 boolean initmenusystem (void) {
 

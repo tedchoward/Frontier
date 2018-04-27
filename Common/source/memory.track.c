@@ -621,7 +621,6 @@ void movefromhandle (Handle h, ptrvoid pdest, long length) {
 		} /*newfilledhandle*/
 #endif
 
-#if (flruntime==0)
 #if (odbengine==0)
 static long getidealchunksize (void) {
 	
@@ -707,7 +706,6 @@ static long getidealchunksize (void) {
 		} /*newhandlewithroomtogrow*/
 #endif
 
-#endif
 #endif
 
 
@@ -2024,7 +2022,6 @@ void fillintarray (hdlintarray harray, short val) {
 
 	} /*fillintarray*/
 
-#if (flruntime==0)
 #if (odbengine==0)
 boolean initmemory (void) {
 	
@@ -2032,7 +2029,6 @@ boolean initmemory (void) {
 	
 	return (getsafetycushion ());
 	} /*initmemory*/
-#endif
 #endif
 
 

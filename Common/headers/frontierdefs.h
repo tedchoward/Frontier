@@ -49,7 +49,6 @@
 #undef DATABASE_DEBUG	/* define as 1 to enable database debugging and logging code */
 
 
-#undef flruntime
 #define fldebug 1
 #define flnewfeatures 1
 #define version42orgreater 1

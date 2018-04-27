@@ -983,14 +983,12 @@ boolean langcheckstackspace (void) {
 	3.0.1 dmb: use new processstackspace instead of StackSpace trap
 	*/
 	
-#if !flruntime
 	if (processstackspace () < minstackspace) {
 		
 		flstackoverflow = true; /*flag for reporting when it's safe*/
 		
 		return (false);
 		}
-#endif 	
 	return (true);
 	} /*langcheckstackspace*/
 #endif

@@ -84,15 +84,9 @@ enum {
 #define bcdversion	0x05000000
 
 
-#if flruntime
-
-	#define iswho (bcdversion + isruntime)
-
-#else
 	
 	#define iswho (bcdversion + isfrontier)
 
-#endif
 	
 
 #pragma pack(2)
@@ -3761,7 +3755,6 @@ boolean langipckernelfunction (hdlhashtable htable, bigstring bsverb, hdltreenod
 
 #endif
 
-#if !flruntime
 
 static pascal OSErr handleshowmenunode (const AppleEvent *event, AppleEvent *reply, long refcon) {
 #pragma unused (reply, refcon)
@@ -3795,7 +3788,6 @@ static pascal OSErr handleshowmenunode (const AppleEvent *event, AppleEvent *rep
 	return (err);
 	} /*handleshowmenunode*/
 
-#endif
 
 boolean langipcshowmenunode (long hnode) {
 	
@@ -4342,13 +4334,11 @@ boolean langipcstart (void) {
 	AEInstallEventHandler ('LAND', 'krnl', NewAEEventHandlerProc (handlekernelfunction), 0, false);
 	*/
 	
-	#if !flruntime
 	
 	
 			AEInstallEventHandler ('LAND', 'show', NewAEEventHandlerUPP (handleshowmenunode), 0, false);
 		
 	
-	#endif
 	
 
 		AEInstallEventHandler ('LAND', 'yiel', NewAEEventHandlerUPP (handleyield), 0, false);
@@ -4396,19 +4386,6 @@ void langipcshutdown (void) {
 	} /*langipcshutdown*/
 
 
-#if flruntime
-
-boolean langipcinit (void) {
-	
-	#ifdef flcomponent
-	
-	
-	#endif
-	
-	return (true);
-	} /*langipcinit*/
-
-#else
 
 static boolean langipceventhook (EventRecord *ev, WindowPtr w) {
 #pragma unused(w)
@@ -4440,7 +4417,6 @@ boolean langipcinit (void) {
 	return (true);
 	} /*langipcinit*/
 
-#endif
 
 
 

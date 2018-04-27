@@ -63,7 +63,6 @@ static short tablecomparenames (hdlhashnode hnode1, hdlhashnode hnode2) {
 	} /*tablecomparenames*/
 
 
-#if !flruntime
 
 static short tablecomparekinds (hdlhashnode hnode1, hdlhashnode hnode2) {
 	
@@ -164,7 +163,6 @@ static short tablecomparevalues (hdlhashtable htable, hdlhashnode hnode1, hdlhas
 		return (1);
 	} /*tablecomparevalues*/
 	
-#endif
 
 short tablecomparenodes (hdlhashtable htable, hdlhashnode hnode1, hdlhashnode hnode2) {
 	
@@ -173,11 +171,6 @@ short tablecomparenodes (hdlhashtable htable, hdlhashnode hnode1, hdlhashnode hn
 	or greater than (1). modified all routines that we call to do the same.
 	*/
 	
-	#if flruntime
-	
-		return (tablecomparenames (hnode1, hnode2));
-	
-	#else
 		
 		switch ((**htable).sortorder) {
 			
@@ -194,12 +187,10 @@ short tablecomparenodes (hdlhashtable htable, hdlhashnode hnode1, hdlhashnode hn
 				return (0);
 			} /*switch*/
 		
-	#endif
 	
 	} /*tablecomparenodes*/
 
 	
-#if !flruntime
 
 static hdlhashnode nextnodecompare;
 static langcomparenodescallback origcomparenodescallback;
@@ -235,7 +226,6 @@ void tablerestoresort (void) {
 	langcallbacks.comparenodescallback = origcomparenodescallback; /*restore*/
 	} /*tablerestoresort*/
 
-#endif
 
 
 

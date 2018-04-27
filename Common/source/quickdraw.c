@@ -260,7 +260,6 @@ boolean pushscratchport (void) {
 	} /*pushscratchport*/
 
 
-#if !flruntime
 
 boolean pushcliprgn (hdlregion rgnclip, boolean flomit) {
 
@@ -989,7 +988,6 @@ boolean issubrect (Rect r1, Rect r2) {
 	return (equalrects (r2, runion));
 	} /*issubrect*/
 
-#endif
 
 
 void globaltolocalrgn (hdlregion rgn) {
@@ -1061,7 +1059,6 @@ void localtoglobalpoint (WindowPtr w, Point *pt) {
 	} /*localtoglobalpoint*/
 	
 
-#if !flruntime
 	
 void flashrect (Rect r, short ctflashes) {
 	
@@ -1461,7 +1458,6 @@ void invertrect (Rect r) {
 
 	} /*invertrect*/	
 	
-#endif
 
 
 void setrect (Rect *rset, short top, short pleft, short bottom, short pright) {
@@ -1493,7 +1489,6 @@ boolean pointinrect (Point pt, Rect r) {
 		return (PtInRect (pt, &r));
 	} /*pointinrect*/
 
-#if !flruntime
 
 void scrollrect (Rect r, short dh, short dv) {
 	
@@ -1962,7 +1957,6 @@ static boolean getcolorfromindex (short index, RGBColor *rgb) {
 	return (true);
 	} %*getcolorfromindex*/
 
-#endif /*flruntime*/
 
 
 boolean systemhascolor (void) {

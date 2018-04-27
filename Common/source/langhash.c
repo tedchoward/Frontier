@@ -756,12 +756,10 @@ static boolean purgetablevisit (hdlhashnode hnode) {
 	if ((**ht).fldirty)
 		return (false);
 	
-	#if !flruntime
 	
 	if ((**ht).flwindowopen)
 		return (false);
 	
-	#endif
 	
 	assert (!(**ht).fllocaltable);
 	
@@ -3705,7 +3703,6 @@ boolean hashgetvaluestring (tyvaluerecord val, bigstring bs) {
 			
 			break;
 		
-		#if !flruntime
 		
 		case codevaluetype:
 			parsenumberstring (langmiscstringlist, treesizestring, langcounttreenodes (val.data.codevalue), bs);
@@ -3719,7 +3716,6 @@ boolean hashgetvaluestring (tyvaluerecord val, bigstring bs) {
 			
 			break;
 		
-		#endif
 		
 		default:
 			langgetmiscstring (unknownstring, bs);

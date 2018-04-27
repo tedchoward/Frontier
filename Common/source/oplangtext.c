@@ -392,7 +392,6 @@ boolean opgetlangtext (hdloutlinerecord houtline, boolean flpretty, Handle *htex
 	OSType signature = (**ho).outlinesignature;
 	handlestream s;
 	
-	#if !flruntime
 	
 	if ((**ho).hbuffer != nil) { /*the user is editing text, ibeam cursor mode*/
 		
@@ -403,7 +402,6 @@ boolean opgetlangtext (hdloutlinerecord houtline, boolean flpretty, Handle *htex
 		oppopoutline ();
 		}
 	
-	#endif
 	
 	setemptystring (bs);
 	

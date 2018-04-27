@@ -49,11 +49,7 @@
 #include "kernelverbs.h"
 #include "kernelverbdefs.h"
 #include "tablestructure.h"
-#if flruntime
-	#include "outpost.h"
-#else
 	#include "shellprivate.h"
-#endif
 #include "process.h"
 #include "processinternal.h"
 #include "sysshellcall.h"
@@ -136,11 +132,9 @@ typedef enum tyfrontiertoken { /*verbs that are processed by frontier*/
 	
 	filepathfunc,
 	
-	#if !flruntime
 	
 	agentsenablefunc,
 	
-	#endif
 	
 	requesttofrontfunc,
 	
@@ -728,11 +722,6 @@ static boolean frontierfunctionvalue (short token, hdltreenode hparam1, tyvaluer
 			if (!langcheckparamcount (hparam1, 0))
 				return (false);
 			
-			#if flruntime
-			
-			fs = currentfile.fspec;
-			
-			#else
 			
 			shellpushfrontrootglobals ();
 			
@@ -740,12 +729,10 @@ static boolean frontierfunctionvalue (short token, hdltreenode hparam1, tyvaluer
 			
 			shellpopglobals ();
 			
-			#endif
 			
 			return (setfilespecvalue (&fs, v));
 			}
 		
-		#if !flruntime
 		
 		case agentsenablefunc: {
 			boolean fl;
@@ -760,7 +747,6 @@ static boolean frontierfunctionvalue (short token, hdltreenode hparam1, tyvaluer
 			return (true);
 			}
 		
-		#endif
 		
 		case requesttofrontfunc: {
 			bigstring bsmessage;
@@ -780,11 +766,6 @@ static boolean frontierfunctionvalue (short token, hdltreenode hparam1, tyvaluer
 			if (!langcheckparamcount (hparam1, 0))
 				return (false);
 			
-			#if flruntime
-			
-			(*v).data.flvalue = true;
-			
-			#endif
 			
 			return (true);
 			}

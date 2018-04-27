@@ -1256,7 +1256,6 @@ static pascal void landsystem7checktimeouts (EventRecord *ev) {
 	} /*landsystem7checktimeouts*/
 
 
-#if !flruntime
 
 boolean landsystem7eventfilter (EventRecord *ev) {
 	
@@ -1282,7 +1281,6 @@ boolean landsystem7eventfilter (EventRecord *ev) {
 	return (false); /*don't consume the event*/
 	} /*landsystem7eventfilter*/
 
-#endif
 
 #if 0 // def THINK_C
 

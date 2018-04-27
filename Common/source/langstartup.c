@@ -744,11 +744,9 @@ static boolean langinitbuiltintable (void) {
 	
 	add ("syscrash", syscrashfunc);
 	
-	#if !flruntime
 	
 	add ("myMoof", myMooffunc);
 	
-	#endif
 	
 	pophashtable ();
 	

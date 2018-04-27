@@ -1226,11 +1226,9 @@ static void osapushfastcontext (hdlcomponentglobals hglobals) {
 		
 		htg = (**hcg).clientthreadglobals;
 		
-		#if !flruntime
 		
 		(**htg).hccglobals = nil; /*want to leave them untouched*/
 		
-		#endif
 		
 		swapinthreadglobals (htg);
 		}
@@ -1523,7 +1521,6 @@ static boolean osadebugger (hdltreenode hnode) {
 	} /*osadebugger*/
 
 
-#if !flruntime
 
 static boolean osaprocessstarted (void) {
 	
@@ -1536,7 +1533,6 @@ static boolean osaprocessstarted (void) {
 	return (true);
 	} /*osaprocessstarted*/
 
-#endif
 
 
 static boolean osahandlerunscript (hdlcomponentglobals hglobals, hdltreenode hcode, 
@@ -1595,13 +1591,11 @@ static boolean osahandlerunscript (hdlcomponentglobals hglobals, hdltreenode hco
 	
 	(**hp).hcontext = hcontext;
 	
-	#if !flruntime
 		
 		(**hp).fldebugging = bitboolean (modeflags & kOSAModeDebug);
 		
 		(**hp).processstartedroutine = &osaprocessstarted;
 		
-	#endif
 	
 	#if !version42orgreater
 		langcallbacks.backgroundtaskcallback = &osabackgroundtask;
@@ -5186,12 +5180,6 @@ static boolean servingsharedmenus (hdlcomponentglobals *hclient) {
 		if (!getprocessname (psn, bs, &flbackgroundonly)) /*must be gone*/
 			continue;
 		
-		#if flruntime
-		
-		if (iscurrentapplication (psn)) /*runtime is it's own menusharing client*/
-			continue;
-		
-		#endif
 		
 		if ((**hcg).menusharingglobals.clientid != 0) {
 		
@@ -5327,9 +5315,7 @@ boolean osacomponentstart (void) {
 	
 	initosacomponent ();
 	
-	#if !flruntime
 		initwindowsharingcomponent ();
-	#endif
 	
 	#ifdef dropletcomponent
 		initdropletcomponent ();

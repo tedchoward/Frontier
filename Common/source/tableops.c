@@ -70,11 +70,9 @@ boolean tablesetdebugglobals (register hdlhashtable ht, register hdlhashnode hno
 	
 	debugvariable = (hdltablevariable) (**ht).hashtablerefcon;
 	
-	#if !flruntime
 	
 	debugformats = (hdltableformats) (**ht).hashtableformats;
 	
-	#endif
 	
 	if ((**ht).hfirstsort)
 		gethashkey ((**ht).hfirstsort, debugfirstsort);
@@ -225,11 +223,9 @@ boolean findnamedtable (hdlhashtable htable, bigstring bs, hdlhashtable *hnamedt
 	if (!tablevaltotable ((**hnode).val, hnamedtable, hnode))
 		return (false);
 	
-	#if !flruntime
 	
 	(***hnamedtable).parenthashtable = htable; /*retain parental link*/
 	
-	#endif
 	
 	return (true);
 	} /*findnamedtable*/

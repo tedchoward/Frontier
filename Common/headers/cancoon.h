@@ -95,7 +95,6 @@ typedef struct tycancoonrecord { /*one of these for every cancoon file that's op
 	
 	Handle hrootvariable; /*the variable record for the root symbol table*/
 	
-	#if !flruntime
 	
 	hdlmenubarlist hmenubarlist; /*the menubar values that are active in this cancoon file*/
 	
@@ -137,7 +136,6 @@ typedef struct tycancoonrecord { /*one of these for every cancoon file that's op
 	
 	boolean flpopupdisabled; /*hide the agents popup menu?*/
 	
-	#endif
 	} tycancoonrecord, *ptrcancoonrecord, **hdlcancoonrecord;
 #pragma options align=reset
 

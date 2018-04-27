@@ -147,7 +147,6 @@ boolean delayseconds (long ct) {
 	} /*delayseconds*/
 
 
-#if !flruntime
 
 void counttickloops (long *ctloops) {
 	
@@ -197,7 +196,6 @@ void burntickloops (long ctloops) {
 		} /*while*/
 	} /*burntickloops*/
 
-#endif
 
 
 unsigned char uppercasechar (unsigned char ch) {

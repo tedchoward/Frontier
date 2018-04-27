@@ -451,7 +451,6 @@ pascal boolean landsetinteractionlevel (short level) {
 	return (true);
 	} /*landsetinteractionlevel*/
 
-#if !flruntime
 
 pascal boolean landeventfilter (EventRecord *ev) {
 	
@@ -493,7 +492,6 @@ pascal boolean landeventfilter (EventRecord *ev) {
 	*/
 	} /*landeventfilter*/
 
-#endif
 
 
 pascal boolean landclose (void) {

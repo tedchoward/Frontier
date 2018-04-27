@@ -140,7 +140,6 @@ void setglobalfontsizestyle (short fontnum, short fontsize, short fontstyle) {
 	} /*setglobalfontsizestyle*/
 
 	
-#if !flruntime
 
 boolean realfont (short fontnum, short fontsize) {
 	return (RealFont (fontnum, fontsize));
@@ -165,7 +164,6 @@ short setnamedfont (bigstring bs, short fsize, short fstyle, short defaultfont) 
 	return (fontnum); /*return the font that we are actually using*/
 	} /*setnamedfont*/
 
-#endif
 
 
 void getfontsizestyle (short *fontnum, short *fontsize, short *fontstyle) {

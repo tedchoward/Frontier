@@ -516,7 +516,6 @@ static void dialogscanspecialchars (bigstring bs) {
 		} /*for*/
 	} /*dialogscanspecialchars*/
 	
-#if !flruntime
 
 void setdialogicon (DialogPtr pdialog, short itemnumber, short iconnum) {
 	
@@ -535,7 +534,6 @@ void setdialogicon (DialogPtr pdialog, short itemnumber, short iconnum) {
 		}
 	} /*setdialogicon*/
 	
-#endif
 
 void setdialogtext (DialogPtr pdialog, short itemnumber, bigstring bs) {
 	
@@ -705,7 +703,6 @@ void dialogsetobjectrect (DialogPtr pdialog, short objectnumber, Rect r) {
 		}
 	} /*dialogsetobjectrect*/
 	
-#if !flruntime
 
 boolean dialogsetfontsize (DialogPtr pdialog, short font, short size) {
 	
@@ -747,7 +744,6 @@ boolean ptinuseritem (Point pt, DialogPtr pdialog, short item) {
 	return (pointinrect (pt, r));
 	} /*ptinuseritem*/
 	
-#endif
 
 boolean setuseritemdrawroutine (DialogPtr pdialog, short item, dialogcallback drawroutine) {
 	
@@ -1127,7 +1123,6 @@ static short runmodaldialog (void) {
 	
 #endif
 
-#if !flruntime
 
 void dialogupdate (EventRecord *event, DialogPtr pdialog) {
 	
@@ -1235,7 +1230,6 @@ boolean dialoggetselect (DialogPtr pdialog, short *startsel, short *endsel) {
 	return (true);
 	} /*dialoggetselect*/
 
-#endif
 
 boolean dialogsetselect (DialogPtr pdialog, short startsel, short endsel) {
 	

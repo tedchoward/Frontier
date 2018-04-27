@@ -86,13 +86,11 @@ typedef enum tylangtoken { /*verbs that are processed by langverbs.c*/
 		
 		disposefunc,
 		
-		#if !flruntime
 		
 		editfunc,
 		
 		closefunc,
 		
-		#endif
 		
 		timecreatedfunc,
 		
@@ -285,11 +283,9 @@ typedef enum tylangtoken { /*verbs that are processed by langverbs.c*/
 		
 		rundialogfunc,
 		
-		#if !flruntime
 		
 		runmodelessfunc,
 		
-		#endif
 		
 		runcardfunc,
 		
@@ -335,13 +331,11 @@ typedef enum tylangtoken { /*verbs that are processed by langverbs.c*/
 	
 	/*mouse*/
 		
-		#if !flruntime
 		
 		mousebuttonfunc,
 		
 		mouselocationfunc,
 		
-		#endif
 	
 	
 	/*point*/
@@ -376,7 +370,6 @@ typedef enum tylangtoken { /*verbs that are processed by langverbs.c*/
 	
 	/*target*/
 		
-		#if !flruntime
 		
 		gettargetfunc,
 		
@@ -384,7 +377,6 @@ typedef enum tylangtoken { /*verbs that are processed by langverbs.c*/
 		
 		cleartargetfunc,
 		
-		#endif
 		
 	
 	/*bit*/
@@ -622,7 +614,6 @@ static boolean presskeyverb (char ch) {
 */
 
 
-#if !flruntime
 
 static boolean langclosehiddenwindow (tyvaluerecord val) {
 	
@@ -808,7 +799,6 @@ static boolean langunsettarget (hdlhashtable htable, bigstring bsname) {
 	return (false);
 	} /*langunsettarget*/
 
-#endif
 
 
 static boolean newvaluefunc (hdltreenode hparam1, tyvaluerecord *vreturned) {
@@ -913,11 +903,9 @@ static boolean disposevaluefunc (hdltreenode hparam1, tyvaluerecord *vreturned) 
 	if (!getvarparam (hparam1, 1, &htable, bs)) /*use original hparam1, not hp1*/
 		return (false);
 	
-	#if !flruntime
 	
 	langunsettarget (htable, bs); /*make sure it's not still the target*/
 	
-	#endif
 	
 	(*vreturned).data.flvalue = hashtabledelete (htable, bs);
 	
@@ -925,7 +913,6 @@ static boolean disposevaluefunc (hdltreenode hparam1, tyvaluerecord *vreturned) 
 	} /*disposevaluefunc*/
 
 
-#if !flruntime
 
 boolean langzoomvalwindow (hdlhashtable htable, bigstring bs, tyvaluerecord val, boolean flmakevisible) {
 	
@@ -1177,7 +1164,6 @@ static boolean langsettargetfunc (hdltreenode hparam1, tyvaluerecord *vreturned)
 	return (true);
 	} /*langsettargetfunc*/
 
-#endif
 
 static boolean getuserinfofunc (hdltreenode hparam1, tyvaluerecord *vreturned) {
 	
@@ -1735,14 +1721,12 @@ static boolean langfunctionvalue (short token, hdltreenode hparam1, tyvaluerecor
 		
 		switch (token) {
 			
-			#if !flruntime
 			
 			case editfunc:
 			case gettargetfunc:
 			case settargetfunc:
 			case cleartargetfunc:
 			
-			#endif
 			
 			case msgfunc:			// 3.0.4b8 dmb
 			case runmodelessfunc:	// 4.1b3 dmb
@@ -1805,7 +1789,6 @@ static boolean langfunctionvalue (short token, hdltreenode hparam1, tyvaluerecor
 		case disposefunc:
 			return (disposevaluefunc (hparam1, v));
 		
-		#if !flruntime
 		
 		case editfunc:
 			return (editvalue (hparam1, v));
@@ -1827,7 +1810,6 @@ static boolean langfunctionvalue (short token, hdltreenode hparam1, tyvaluerecor
 			
 			return (true);
 		
-		#endif
 		
 		case booleanfunc:
 			flnextparamislast = true;
@@ -2618,7 +2600,6 @@ static boolean langfunctionvalue (short token, hdltreenode hparam1, tyvaluerecor
 			*/
 			}
 		
-		#if !flruntime
 		
 		case mousebuttonfunc:
 			if (!langcheckparamcount (hparam1, 0))
@@ -2651,7 +2632,6 @@ static boolean langfunctionvalue (short token, hdltreenode hparam1, tyvaluerecor
 			return (setpointvalue (pt, v));
 			}
 		
-		#endif
 		
 		case optionkeyfunc: case cmdkeyfunc: case shiftkeyfunc: case controlkeyfunc:
 			if (!langcheckparamcount (hparam1, 0))
@@ -2747,12 +2727,10 @@ static boolean langfunctionvalue (short token, hdltreenode hparam1, tyvaluerecor
 		case rundialogfunc:
 			return (langrundialog (hparam1, v));
 		
-		#if !flruntime
 		
 		case runmodelessfunc:
 			return (langrunmodeless (hparam1, v));
 		
-		#endif
 
 	#if macBirdRuntime
 	

@@ -99,7 +99,6 @@ typedef struct typrocessrecord {
 	} typrocessrecord, *ptrprocessrecord, **hdlprocessrecord;
 
 
-#if !flruntime
 
 typedef struct typrocesslist {
 	
@@ -114,7 +113,6 @@ typedef struct typrocesslist {
 	boolean fldisposewhenidle; /*dispose when ctrunning returns to zero?*/
 	} typrocesslist, *ptrprocesslist, **hdlprocesslist;
 
-#endif
 
 #pragma options align=reset
 
@@ -138,7 +136,6 @@ extern boolean agentsenabled (void);
 
 extern boolean agentsdisable (boolean);
 
-#if !flruntime
 
 extern boolean disposeprocesslist (hdlprocesslist);
 
@@ -146,7 +143,6 @@ extern boolean newprocesslist (hdlprocesslist *);
 
 extern void setcurrentprocesslist (hdlprocesslist);
 
-#endif
 
 extern boolean pushprocess (hdlprocessrecord);
 

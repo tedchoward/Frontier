@@ -416,7 +416,6 @@ boolean ploticon (const Rect *r, short id) {
 	} /*ploticon*/
 
 
-#if !flruntime
 
 void drawlabeledicon (const Rect *r, short resnum, bigstring bslabel, boolean flinverted) {
 	
@@ -585,7 +584,6 @@ boolean trackicon (Rect r, void (*displayiconcallback) (boolean)) {
 	return (true);
 	} /*trackicon*/
 
-#endif
 
 
 

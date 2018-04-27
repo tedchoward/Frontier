@@ -288,7 +288,6 @@ enum { /*lang misc display strings*/
 	errorstring,
 	
 	
-	#if !flruntime
 	
 	ondiskstring,
 	
@@ -304,7 +303,6 @@ enum { /*lang misc display strings*/
 	
 	enumstring,
 	
-	#endif
 	
 	
 	numberstring,

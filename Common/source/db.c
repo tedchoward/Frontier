@@ -78,15 +78,9 @@ typedef enum {
 
 hdldatabaserecord databasedata; /*the global database handle*/
 
-#if flruntime
-
-	#define fldatabasesaveas false
-
-#else
 
 	boolean fldatabasesaveas = false; /*only true during Save As operation*/
 
-#endif
 
 
 static hdldatabaserecord databasedestination; /*for Save As*/

@@ -866,7 +866,6 @@ boolean langunpackwindowverb (hdltreenode hparam1, tyvaluerecord *vreturned) {
 	} // langunpackwindowverb
 
 
-#if !flruntime
 
 boolean langvaluetotextscrap (tyvaluerecord val, Handle htext) {
 	
@@ -907,7 +906,6 @@ boolean langvaluetotextscrap (tyvaluerecord val, Handle htext) {
 	return (pushtexthandle (bsvalue, htext));
 	} /*langvaluetotextscrap*/
 
-#endif
 
 
 

@@ -133,18 +133,6 @@ typedef struct tyOLD42savedmenuinfo {
 #pragma options align=reset
 
 
-#if flruntime
-
-#pragma pack(2)
-	typedef struct tymenurecord {
-		
-		hdloutlinerecord menuoutline; /*the display of the menubar structure*/
-		
-		tysavedmenuinfo menuinfo;
-		} tymenurecord, *ptrmenurecord, **hdlmenurecord;
-#pragma options align=reset
-
-#else
 
 #pragma pack(2)
 	typedef struct tymenurecord {
@@ -201,7 +189,6 @@ typedef struct tyOLD42savedmenuinfo {
 		} tymenurecord, *ptrmenurecord, **hdlmenurecord;
 #pragma options align=reset
 	
-#endif
 
 #pragma pack(2)
 typedef struct tylinkeditem {

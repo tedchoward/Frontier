@@ -352,11 +352,9 @@ boolean tablenewsubtable (hdlhashtable htable, bigstring bsname, hdlhashtable *h
 		return (false);
 		}
 	
-	#if !flruntime
 	
 	(***hnewtable).parenthashtable = htable; /*retain parental link*/
 	
-	#endif
 	
 	return (true);
 	} /*tablenewsubtable*/

@@ -352,7 +352,6 @@ static boolean langipcsendmenumessage (tyapplicationid id, tyverbtoken message) 
 	} /*langipcsendmenumessage*/
 
 
-#if !flruntime
 
 static boolean langipcmenuprocessstarted (void) {
 	
@@ -366,7 +365,6 @@ static boolean langipcmenuprocessstarted (void) {
 	return (true);
 	} /*langipcmenuprocessstarted*/
 
-#endif
 
 
 static boolean langipcmenuprocesskilled (void) {
@@ -414,14 +412,6 @@ boolean langipcgetitemlangtext (long id, short idmenu, short iditem, Handle *hte
 	
 	pushmenubarglobals (hstack);
 	
-	#if flruntime
-		
-		if (memenuhit (idmenu, iditem, &hnode))
-			fl = megetnodelangtext (hnode, htext, signature);
-		else
-			fl = false;
-	
-	#else
 		
 		menudata = (hdlmenurecord) (**outlinedata).outlinerefcon;
 		
@@ -435,7 +425,6 @@ boolean langipcgetitemlangtext (long id, short idmenu, short iditem, Handle *hte
 		else
 			fl = false;
 		
-	#endif
 	
 	popmenubarglobals ();
 
@@ -493,25 +482,17 @@ boolean langipcrunitem (long id, short idmenu, short iditem, long *refcon) {
 	if (!langipcfindmenubarstack (id, &hstack))
 		return (false);
 	
-	#if !flruntime
 	
 	fljustshownode = optionkeydown ();
 	
 	if (fljustshownode) /*option key is down -- we'll show item instead of running it*/
 		shellactivate ();
 	
-	#endif
 	
 	pushmenubarglobals (hstack);
 	
 	newlyaddedprocess = nil; /*process manager global*/
 	
-	#if flruntime
-	
-		if (memenuhit (idmenu, iditem, &hnode))
-			fl = meuserselected (hnode);
-		
-	#else
 		
 		if (memenuhit (idmenu, iditem, &hnode)) {
 			
@@ -521,7 +502,6 @@ boolean langipcrunitem (long id, short idmenu, short iditem, long *refcon) {
 				fl = meuserselected (hnode);
 			}
 		
-	#endif
 	
 	popmenubarglobals ();
 	
@@ -535,11 +515,9 @@ boolean langipcrunitem (long id, short idmenu, short iditem, long *refcon) {
 			
 			(**hp).errormessagecallback = &langipcerrorroutine;
 			
-			#if !flruntime
 			
 				(**hp).processstartedroutine = &langipcmenuprocessstarted;
 			
-			#endif
 			
 			(**hp).processkilledroutine = &langipcmenuprocesskilled;
 			
@@ -657,7 +635,6 @@ void langipcdisposemenuarray (long id, Handle hmenusarray) {
 
 
 
-#if !flruntime
 
 static boolean langipcmenubarchanged (hdloutlinerecord houtline) {
 	
@@ -689,7 +666,6 @@ static boolean langipcmenubarchanged (hdloutlinerecord houtline) {
 	return (true);
 	} /*langipcmenubarchanged*/
 
-#endif
 
 
 static boolean notifyappvisit (hdlhashnode hnode, ptrvoid refcon) {
@@ -817,11 +793,9 @@ boolean langipcsymboldeleted (hdlhashtable htable, const bigstring bs) {
 
 boolean langipcmenuinit (void) {
 	
-	#if !flruntime
 	
 	menubarcallbacks.menubarchangedroutine = &langipcmenubarchanged;
 	
-	#endif
 	
 	return (true);
 	} /*langipcmenuinit*/

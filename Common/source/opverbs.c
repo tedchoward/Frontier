@@ -319,7 +319,6 @@ static boolean opverbsetglobals (void) {
 
 
 
-#if !flruntime
 
 boolean opverbgettypestring (hdlexternalvariable hvariable, bigstring bs) {
 	
@@ -336,7 +335,6 @@ boolean opverbgettypestring (hdlexternalvariable hvariable, bigstring bs) {
 	return (true);
 	} /*opverbgettypestring*/
 
-#endif
 
 static boolean opverbdisposecode (hdloutlinevariable hvariable) {
 	
@@ -471,7 +469,6 @@ boolean opverbgetlinkedcode (hdlexternalvariable hvariable, hdltreenode *hcode) 
 	return (h != nil) ;
 	} /*opverbgetlinkedcode*/
 
-#if !flruntime
 
 static void opverbsetcallbacks (hdloutlinevariable hvariable, hdloutlinerecord houtline) {
 	
@@ -542,17 +539,6 @@ boolean opwindowopen (hdlexternalvariable hvariable, hdlwindowinfo *hinfo) {
 	} /*opwindowopen*/
 
 
-#else
-
-	#define opverbsetcallbacks(hvariable, houtline) ((void *) 0)
-
-	#define opverbcheckwindowrect(houtline) ((void *) 0)
-
-	#define opwindowopen(hvariable, hinfo) 0
-
-	#define fldatabasesaveas 0
-
-#endif
 
 static void opverbsetupoutline (hdloutlinerecord ho, hdloutlinevariable hv) {
 
@@ -925,7 +911,6 @@ boolean opverbgetlangtext (hdlexternalvariable hvariable, boolean flpretty, Hand
 	} /*opverbgetlangtext*/
 
 
-#if !flruntime
 
 boolean opverbgetsize (hdlexternalvariable hvariable, long *size) {
 	
@@ -1251,7 +1236,6 @@ boolean opverbcopyvalue (hdlexternalvariable hsource, hdlexternalvariable *hcopy
 	} /*opverbcopyvalue*/
 
 
-#endif // !flruntime
 
 
 static boolean getscriptparam (hdltreenode hfirst, short pnum, hdloutlinevariable *hv) {
@@ -1320,7 +1304,6 @@ boolean getoutlinevalue (hdltreenode hfirst, short pnum, hdloutlinerecord *houtl
 	} /*getoutlinevalue*/
 
 
-#if !flruntime
 
 boolean opverbarrayreference (hdlexternalvariable hvariable, long ix, hdlheadrecord *hnode) {
 	
@@ -1815,7 +1798,6 @@ boolean opverbgetheadstring (hdlheadrecord hnode, bigstring bs) {
 	return (true);
 	} /*opverbgetheadstring*/
 
-#endif	// !flruntime
 
 
 static boolean opcodeisrunning (hdlhashnode hnode) {
@@ -3279,7 +3261,6 @@ static boolean opfunctionvalue (short token, hdltreenode hparam1, tyvaluerecord 
 	
 	switch (token) { /*these verbs don't require an open outline window*/
 		
-		#if !flruntime
 		
 		/*
 		case runfunc:
@@ -3311,7 +3292,6 @@ static boolean opfunctionvalue (short token, hdltreenode hparam1, tyvaluerecord 
 			
 			return (true);
 		
-		#endif
 		
 		case compilefunc:
 			
@@ -3400,7 +3380,6 @@ static boolean opfunctionvalue (short token, hdltreenode hparam1, tyvaluerecord 
 			
 		} /*switch*/
 	
-	#if !flruntime
 	
 	if (!langfindtargetwindow (idoutlineprocessor, &targetwindow)) { /*all other verbs require an outline window in front*/
 		
@@ -4180,7 +4159,6 @@ static boolean opfunctionvalue (short token, hdltreenode hparam1, tyvaluerecord 
 			
 	return (fl);
 	
-	#endif // !flruntime
 	
 	error:
 	
@@ -4197,7 +4175,6 @@ static boolean opinitverbs (void) {
 	} /*opinitverbs*/
 
 
-#if !flruntime
 
 static void opverbresize (void) {
 	
@@ -4389,7 +4366,6 @@ static boolean opverbkeystroke (void) {
 	return (opkeystroke ());
 	} /*opverbkeystroke*/
 
-#endif // !flruntime
 
 
 static boolean opmenuroutine (short idmenu, short ixmenu) {
@@ -4453,7 +4429,6 @@ boolean opstart (void) {
 	
 	opinitdisplayvariables ();
 	
-	#if !flruntime
 	
 	shellpushscraphook (&opscraphook);
 	
@@ -4557,7 +4532,6 @@ boolean opstart (void) {
 
 	(*cb).buttonroutine = &opbutton; /*7.1b18 PBS*/
 	
-	#endif
 	
 	return (true);
 	} /*opstart*/
