@@ -43,9 +43,7 @@
 #include "tableinternal.h"
 #include "shell.rsrc.h"
 #include "odbinternal.h"
-#ifdef isFrontier
 	#include "shellprivate.h"
-#endif
 #include "timedate.h"
 #include "byteorder.h"	/* 2006-04-08 aradke: endianness conversion macros */
 
@@ -62,24 +60,15 @@ typedef struct tycancoonrecord { /*one of these for every cancoon file that's op
 	
 	boolean accesssing;
 	
-	#ifdef isFrontier
 	
 	WindowPtr shellwindow;
 	
-	#endif
 	} tycancoonrecord, *ptrcancoonrecord, **hdlcancoonrecord;
 #pragma options align=reset
 
 #define cancoonversionnumber 0x03
 
 
-#ifndef isFrontier
-
-boolean fldatabasesaveas;
-
-static byte canthandlethistypeerror [] = "\x43" "This version of ODB Engine can not get or set objects of this type.";
-
-#endif
 
 
 #define ctwindowinfo 6 /*number of windowinfo records saved in each cancoon record*/
@@ -128,16 +117,6 @@ static bigstring bserror = "\0";
 
 static hdlcancoonrecord cancoonglobals = nil;
 
-#ifndef isFrontier
-
-boolean alertdialog (bigstring bs) {
-	
-	copystring (bs, bserror);
-	
-	return (true);
-	} /*alertdialog*/
-
-#endif
 
 static boolean disposecancoonrecord (hdlcancoonrecord hcancoon) {
 	
@@ -240,11 +219,6 @@ static void setcancoonglobals (hdlcancoonrecord hcancoon) {
 	
 	hdlcancoonrecord hc = hcancoon;
 	
-#ifndef isFrontier
-
-	if (hc != cancoonglobals) 
-	
-#endif
 		{
 		databasedata = (**hc).hdatabase;
 		
@@ -294,61 +268,6 @@ static boolean loadversion2cancoonfile (dbaddress adr, hdlcancoonrecord hcancoon
 	} /*loadversion2cancoonfile*/
 
 
-#ifndef isFrontier
-
-	static short tablecomparenames (hdlhashtable ht, hdlhashnode hnode1, hdlhashnode hnode2) {
-
-		bigstring bs1, bs2;
-		
-		gethashkey (hnode1, bs1);
-
-		gethashkey (hnode2, bs2);
-		
-		alllower (bs1); /*comparison is unicase*/
-		
-		alllower (bs2);
-		
-		return (comparestrings (bs1, bs2));
-		} /*tablecomparenames*/
-
-
-	static boolean odbtabledirty (hdlhashtable htable, const bigstring bsname) {
-		
-	//	hdltablediskrecord hf = (hdltablediskrecord) (**htable).hashtableformats;
-		
-	//	if (hf != nil)
-		(**htable).timelastsave = timenow (); /*modification time until saved*/
-		
-		return (true);
-		} /*tabledirty*/
-
-	static boolean odbsymbolchanged (hdlhashtable htable, const bigstring bsname, hdlhashnode hnode, boolean flvalue) {
-		
-		return (odbtabledirty (htable, bsname));
-		} /*odbsymbolchanged*/
-
-	static boolean odbsymbolunlinking (hdlhashtable ht, hdlhashnode hn) {
-
-		return (true);
-		} /*odbsymbolunlinking*/
-
-
-	static void initlangcallbacks (void) {
-
-		langcallbacks.symbolchangedcallback = &odbsymbolchanged; 
-		
-		langcallbacks.symboldeletedcallback = &odbtabledirty;
-		
-		langcallbacks.symbolinsertedcallback = &odbtabledirty;
-		
-		langcallbacks.symbolunlinkingcallback = &odbsymbolunlinking;
-		
-		langcallbacks.comparenodescallback = &tablecomparenames;
-		}  /*initlangcallbacks*/
-
-	#define odbexpandtodotparams(bs, htable, bsname) langexpandtodotparams(bs, htable, bsname)
-
-#else
 
 	static boolean odbexpandtodotparams (bigstring bs, hdlhashtable *htable, bigstring bsname) {
 		
@@ -379,7 +298,6 @@ static boolean loadversion2cancoonfile (dbaddress adr, hdlcancoonrecord hcancoon
 		return (true);
 		} /*odbexpandtodotparams*/
 
-#endif
 
 
 static boolean odbvaltotable (tyvaluerecord val, hdlhashtable *htable, hdlhashnode hnode) {
@@ -398,7 +316,6 @@ static boolean odbvaltotable (tyvaluerecord val, hdlhashtable *htable, hdlhashno
 	return (true);		
 	} /*odbvaltotable*/
 
-#ifdef isFrontier
 pascal boolean odbUpdateOdbref (WindowPtr w, odbref odb) {
 	hdlcancoonrecord hc;
 	
@@ -453,7 +370,6 @@ pascal boolean odbAccessWindow (WindowPtr w, odbref *odb) {
 	return (true);
 	} /*odbAccess*/
 
-#endif
 
 
 pascal boolean odbNewFile (hdlfilenum fnum) {
@@ -500,11 +416,6 @@ pascal boolean odbOpenFile (hdlfilenum fnum, odbref *odb, boolean flreadonly) {
 	
 	setemptystring (bserror);
 	
-	#ifndef isFrontier
-	
-		initlangcallbacks ();
-	
-	#endif
 	
 	if (!dbopenfile (fnum, flreadonly))
 		return (false);
@@ -562,14 +473,12 @@ pascal boolean odbSaveFile (odbref odb) {
 	
 	setcancoonglobals (hc);
 	
-	#ifdef isFrontier
 	
 	if ((**hc).accesssing) {
 		
 		return (shellsave ((**hc).shellwindow));
 		}
 	
-	#endif
 	
 	dbgetview (cancoonview, &adr);
 	
@@ -719,16 +628,6 @@ pascal boolean odbGetValue (odbref odb, bigstring bspath, odbValueRecord *value)
 	if (!langsymbolreference (htable, bsname, &val, &hnode))
 		return (false);
 	
-	#ifndef isFrontier
-
-	if (val.valuetype == externalvaluetype) {
-		
-		langerrormessage (canthandlethistypeerror);
-		
-		return (false);
-		}
-	
-	#endif
 	
 	if (!copyvaluerecord (val, &val))
 		return (false);
@@ -760,16 +659,6 @@ pascal boolean odbSetValue (odbref odb, bigstring bspath, odbValueRecord *value)
 	
 	setemptystring (bserror);
 	
-	#ifndef isFrontier
-	
-	if (type == externalvaluetype) {
-		
-		langerrormessage (canthandlethistypeerror);
-		
-		return (false);
-		}
-	
-	#endif
 	
 	setcancoonglobals ((hdlcancoonrecord) odb);
 	

@@ -35,30 +35,6 @@ typedef unsigned char odbBool;
 
 typedef unsigned char odbString [256];
 
-#ifndef isFrontier
-
-typedef short hdlfilenum;
-
-#ifdef WIN32
-#define Handle HANDLE
-typedef unsigned long FourCharCode;
-
-typedef FourCharCode OSType;
-
-#pragma pack(2)
-typedef struct tyPoint
-	{
-	short	v;
-	short h;
-	} Point, *PointPtr;
-#pragma options align=reset
-
-typedef RECT Rect;
-
-typedef HANDLE hdlfilenum;
-#endif
-
-#endif
 
 typedef enum odbDirection {
 	

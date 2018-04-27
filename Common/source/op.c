@@ -379,7 +379,6 @@ static boolean opfindoffsetvisit (hdlheadrecord hnode, ptrvoid refcon) {
 	} /*opfindoffsetvisit*/
 
 
-#if isFrontier
 
 boolean opshowerror (long lnum, short charnum) {
 	
@@ -431,7 +430,6 @@ boolean opshowerror (long lnum, short charnum) {
 	return (true);
 	} /*opshowerror*/
 
-#endif
 
 
 boolean opsetscrap (hdlheadrecord hnode) {

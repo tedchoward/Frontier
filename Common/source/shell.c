@@ -1040,7 +1040,6 @@ boolean shellinit (void) {
 	initservices ();
 
 
-#if isFrontier || flruntime || winhybrid
 
 	initlang (); /*init callbacks and other basic inits*/
 
@@ -1095,11 +1094,6 @@ boolean shellinit (void) {
 	//RAB: 1/19/98 - moved print init here so that Windows will have enough setup before using the dialog.
 	shellinitprint (); /*get set up for printing*/
 
-#else
-
-	flipcstarted = langipcstart ();
-
-#endif
 
 	//Code change by Timothy Paustian Wednesday, July 26, 2000 9:23:50 PM
 	//added init code for scroll proc

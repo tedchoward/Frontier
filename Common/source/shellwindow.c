@@ -1246,7 +1246,6 @@ boolean shellfindnamedwindow (const bigstring bsname, hdlwindowinfo *hinfo) {
 	} /*shellfindnamedwindow*/
 
 
-#if isFrontier
 
 boolean shellclosedatawindow (Handle hdata) {
 	
@@ -1258,7 +1257,6 @@ boolean shellclosedatawindow (Handle hdata) {
 	return (shellclosewindow ((**hinfo).macwindow));
 	} /*shellclosedatawindow*/
 
-#endif
 
 
 boolean shellfirstchildwindow (hdlwindowinfo hparent, hdlwindowinfo *hchild) {

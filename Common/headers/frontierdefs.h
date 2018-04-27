@@ -50,7 +50,6 @@
 
 #define fldebug 1
 
-#define isFrontier 1
 #undef dropletcomponent
 #undef fliowa
 #define threadverbs 1

@@ -396,32 +396,22 @@ static boolean langdialogitemhit (DialogPtr pdialog, short itemnumber) {
 	
 	if (topdialog == 1) { /*only need one event hook for all nested dialogs*/
 		
-		#if !isFrontier
-			++fldisableyield;
-		
-		#else
 			fldebugging = debuggingcurrentprocess ();
 			
 			if (!fldebugging)
 				++fldisableyield;
 			
 			shellpusheventhook (&langdialogeventhook);
-		#endif
 		}
 	
 	fl = langhandlercall (hitemhitcallback, hparam, &val);
 	
 	if (topdialog == 1) {
 	
-		#if !isFrontier
-			--fldisableyield;
-			
-		#else
 			shellpopeventhook ();
 			
 			if (!fldebugging)
 				--fldisableyield;
-		#endif
 		}
 	
 	popdialogcall ();
