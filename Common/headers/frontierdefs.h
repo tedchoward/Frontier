@@ -50,9 +50,6 @@
 
 #define fldebug 1
 
-#undef fltracklocaladdresses		/*2004-12-08 aradke: disable [buggy] code for tracking deleted local addresses*/
-
-
 	#undef macBirdRuntime
 	#undef appRunsCards			/*for Applet Toolkit, Iowa Runtime is baked in*/
 	#undef iowaRuntimeInApp	/*iowa code knows it's in an app*/

@@ -256,21 +256,6 @@ void langsymbolchanged (hdlhashtable htable, const bigstring bs, hdlhashnode hno
 	5.1.5b15 dmb: call callback first, so it can tell if table was already dirty
 	*/
 
-#ifdef fltracklocaladdresses
-
-	if (flvalue) {
-
-		hdlhashnode hn = hnode;
-		
-		if ((hn != nil && hn != HNoNode) || hashtablelookupnode (htable, bs, &hn)) {
-
-			hashunregisteraddressnode (hn);
-
-			hashregisteraddressnode (htable, hn);
-			}
-		}
-
-#endif
 
 	(*langcallbacks.symbolchangedcallback) (htable, bs, hnode, flvalue);
 	
@@ -287,9 +272,6 @@ void langsymbolprechange (hdlhashtable htable, const bigstring bs, hdlhashnode h
 
 void langsymbolinserted (hdlhashtable htable, const bigstring bsname, hdlhashnode hnode) {
 
-#ifdef fltracklocaladdresses	
-	hashregisteraddressnode (htable, hnode);
-#endif
 
 	(*langcallbacks.symbolinsertedcallback) (htable, bsname, hnode);
 

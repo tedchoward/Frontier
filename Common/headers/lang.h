@@ -401,13 +401,6 @@ typedef struct tyhashnode {
 	
 	struct tyhashnode **sortedlink; /*next guy in alphabetic order*/
 	
-	#ifdef fltracklocaladdresses
-	
-	struct tyhashnode **refnodelink; /*next guy in linked list of refnodes list of a hashtable*/
-	
-	struct tyhashtable **reftable; /*table referenced by an address value*/
-	
-	#endif
 	
 	tyvaluerecord val; /*the value of the identifier*/
 	
@@ -457,11 +450,6 @@ typedef struct tyhashtable {
 
 	hdlhashnode thistableshashnode; /*this tables hashnode referenced in it's parents hashbuckets 12/29/99 RAB*/
 	
-	#ifdef fltracklocaladdresses
-	
-	hdlhashnode refnodes; /*linked list of hash nodes containing addresses that reference an object in this table*/
-	
-	#endif
 	
 	boolean fldirty: 1; /*indicates whether anything has changed*/
 	
@@ -848,13 +836,6 @@ extern boolean langerrorflush (void);
 extern boolean clearlangerrordialog (void);
 
 
-#ifdef fltracklocaladdresses
-
-extern void hashregisteraddressnode (hdlhashtable, hdlhashnode); /*langhash.c*/
-
-extern void hashunregisteraddressnode (hdlhashnode);
-
-#endif
 
 extern boolean newhashtable (hdlhashtable *); /*langhash.c*/
 
