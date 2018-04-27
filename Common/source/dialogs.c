@@ -377,16 +377,6 @@ void disposemodaldialog (DialogPtr pdialog) {
 	
 	DisposeDialog (pdialog);
 	
-	#if 0 //ndef flruntime
-	
-		/*handle all pending activate & update events*/
-		
-		if (flscriptrunning)
-			langpartialeventloop (windowevents);
-		else
-			shellpartialeventloop (windowevents);
-	
-	#endif
 	} /*disposemodaldialog*/
 
 
@@ -1260,7 +1250,6 @@ boolean dialogselectall (DialogPtr pdialog) {
 		return 0;
 }
 
-#if 1	// !flruntime -- we can rely on the linker to omit these now
 
 short savedialog (bigstring bsfname) {
 	
@@ -1644,7 +1633,6 @@ boolean chardialog (bigstring bsprompt, short *charval) {
 		}
 	} /*chardialog*/
 
-#endif
 
 
 boolean msgdialog (bigstring bsprompt) {

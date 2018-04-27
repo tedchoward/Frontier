@@ -460,42 +460,6 @@ void xcmdcallback (void) {
 			
 			break;
 		
-		#if 0
-		
-		/*  Field Utilities  */
-		case 0x16: /*Handle GetFieldByID (Boolean cardFieldFlag, short fieldID)*/
-			newfilledhandle (zerostring, 1L, (Handle *) out);
-			
-			break;
-		
-		case 0x14: /*Handle GetFieldByName (Boolean cardFieldFlag, StringPtr fieldName)*/
-			newfilledhandle (zerostring, 1L, (Handle *) out);
-			
-			break;
-		
-		case 0x15: /*Handle GetFieldByNum (Boolean cardFieldFlag, short fieldNum)*/
-			newfilledhandle (zerostring, 1L, (Handle *) out);
-			
-			break;
-		
-		case 0x19: /*void SetFieldByID (Boolean cardFieldFlag, short fieldID, Handle fieldVal)*/
-			break;
-		
-		case 0x17: /*void SetFieldByName (Boolean cardFieldFlag, StringPtr fieldName, Handle fieldVal)*/
-			break;
-		
-		case 0x18: /*void SetFieldByNum (Boolean cardFieldFlag, short fieldNum, Handle fieldVal)*/
-			break;
-		
-		case 0x2f: /*TEHandle GetFieldTE (Boolean cardFieldFlag, short fieldID, short fieldNum, StringPtr fieldNamePtr)*/
-			*out = 0;
-			
-			break;
-															
-		case 0x30: /*void SetFieldTE (Boolean cardFieldFlag, short fieldID, short fieldNum, StringPtr fieldNamePtr, TEHandle fieldTE)*/
-			break;
-		
-		#endif
 		
 		case 0x22: /*void SendHCEvent(EventRecord *event)*/
 			

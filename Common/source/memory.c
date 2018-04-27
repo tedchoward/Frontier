@@ -216,71 +216,6 @@ static boolean resizehandle (Handle hresize, long size) {
 	} /*resizehandle*/
 
 
-#if 0
-
-heapmess (void) {
-	
-	Handle ray [1000];
-	short ixray = 0;
-	Handle h;
-	short i;
-	
-	while (true) {
-		
-		h = NewHandle (1024L);
-		
-		if (h == nil)
-			break;
-		
-		ray [ixray++] = h;
-		} /*while*/
-	
-	for (i = 0; i < ixray; i++)
-		disposehandle (ray [i]);
-	} /*heapmess*/
-
-
-boolean analyzeheap (void) {
-	
-	/*
-	get some statistics about the heap.  doesn't work in 32-bit mode.
-	*/
-	
-	register byte *pblock;
-	register long size;
-	register byte *plimit;
-	static long cthandles;
-	static long ctbytes;
-	static long avghandlesize;
-	
-	pblock = (byte *) &(*TheZone).heapData; /*point for first block in heap zone*/
-	
-	plimit = (byte *) (*TheZone).bkLim;
-	
-	cthandles = 0;
-	
-	ctbytes = 0; /*logical size of each handle*/
-	
-	while (pblock < plimit) {
-		
-		size = *(long *)pblock & 0x00ffffff;
-		
-		if (*pblock & 0x80) { /*a relocateable block*/
-			
-			ctbytes += size; /*add physical size*/
-			
-			//ctbytes -= 8 + (*pblock & 0x0f); /*subtract header & size correction*/
-			
-			++cthandles;
-			}
-		
-		pblock += size;
-		}
-	
-	avghandlesize = ctbytes / cthandles;
-	} /*analyzeheap*/
-
-#endif
 
 
 boolean haveheapspace (long size) {
@@ -1359,36 +1294,6 @@ boolean pushtexthandle (const bigstring bs, Handle htext) {
 	} /*pushtexthandle*/
 
 
-#if 0
-
-boolean pushindentedline (short level, bigstring bs, Handle htext) {
-	
-	/*
-	add a line to the indicated text buffer, indented with tab characters and
-	terminated with a carriage return.
-	
-	return false if it failed, we dispose of htext if it failed.
-	*/
-	
-	bigstring bsoutput;
-	
-	filledstring (chtab, level, bsoutput); /*put out leading tabs*/
-	
-	pushstring (bs, bsoutput); /*put out the string itself*/
-	
-	pushchar (chreturn, bsoutput); /*put out a terminating carriage return character*/
-	
-	if (!pushtexthandle (bsoutput, htext)) { /*out of memory*/
-	
-		disposehandle (htext);
-		
-		return (false);
-		}
-	
-	return (true);
-	} /*pushindentedline*/
-
-#endif
 	   
 
 #if (MEMTRACKER == 1)

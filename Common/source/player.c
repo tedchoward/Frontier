@@ -285,27 +285,6 @@ static void detachplayer (void) {
 	} /*detachplayer*/
 
 
-#if 0
-
-static boolean playersave (ptrfilespec fs, hdlfilenum fnum, short rnum, boolean flsaveas, boolean flrunnable) {
-
-	hdlwindowinfo hinfo;
-	
-	if (ccfindrootwindow (&hinfo)) {
-		
-		shellpushglobals ((**hinfo).macwindow);
-		
-		grayownedwindows (shellwindow);
-		
-		ccsavefile (fs, fnum, rnum, flsaveas, flrunnable);
-		
-		shellpopglobals ();
-		}
-	
-	return (true);
-	} /*playersave*/
-
-#endif
 
 
 static boolean playerdisposerecord (void) {
@@ -342,91 +321,6 @@ static boolean playergettargetdata (short id) {
 	} /*playergettargetdata*/
 
 	
-#if 0
-
-static boolean playersetsuperglobals (void) {
-	
-	hdlwindowinfo hinfo;
-	
-	if (ccfindrootwindow (&hinfo)) {
-		
-		shellpushglobals ((**hinfo).macwindow);
-		
-		ccsetsuperglobals ();
-		
-		shellpopglobals ();
-		}
-	
-	return (true);
-	} /*playersetsuperglobals*/
-
-
-static void playerupdate (void) {
-	
-	/*
-	*/
-	
-	if (currentmovie == nil)
-		return;
-		
-	BeginUpdate (playerwindow);
-	
-	UpdateMovie (currentmovie);
-	
-	EndUpdate (playerwindow);
-	
-	MoviesTask (nil, 0);
-	
-	MCIdle (currentcontroller);
-	} /*playerupdate*/
-
-
-static void playerfitwindowtomovie (void) {
-	
-	/*
-	7.0b4 PBS: resize the player window to fit the movie and its controller.
-	*/
-	
-	if (currentmovie == nil)
-		
-		return;
-		
-	if (currentcontroller == nil)
-	
-		return;
-	
-	SizeWindow (playerwindow, currentmovierect.right, currentmovierect.bottom, true);
-	
-	AlignWindow (playerwindow, false, nil, nil); /*position for optimal playback*/
-	} /*playerfitwindowtomovie*/
-
-
-static boolean playeropenmoviefile (FSSpec *f) {
-	
-	/*
-	7.0b4 PBS: open a movie from disk.
-	*/
-	
-	OSErr err;
-	
-	short movieresref;
-	
-	playerdisposecurrentmovie (); /*dispose the current movie*/
-	
-	err = OpenMovieFile (f, &movieresref, fsRdPerm);
-	
-	if (err != noErr)
-		
-		return (false);
-	
-	NewMovieFromFile (&currentmovie, movieresref, nil, nil, newMovieActive, nil);	
-	
-	CloseMovieFile (movieresref);
-		
-	return (true);
-	} /*playeropenmoviefile*/
-
-#endif
 
 
 static void playerdisposecurrentmovie (void) {

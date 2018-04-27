@@ -336,57 +336,6 @@ long getmousedoubleclicktime () {
 	} /*getmousedoubleclicktime*/
 
 
-#if 0
-
-void smashmouse (Point pt) {
-	
-	/*
-	reset the mouse position to the indicated Point, in global coordinates.
-	
-	downloaded from APPDEV on Compuserve, so we're not exactly sure how this
-	works.
-	*/
-	
-	register short h = pt.h, v = pt.v;
-	register short *pint;
-	register char *pchar;
-	register short maxh, maxv;
-	Rect rbounds;
-	
-	getcurrentscreenbounds (&rbounds);
-	
-	maxv = rbounds.bottom - 1;
-	
-	maxh = rbounds.right - 1;
-	
-	v = min (v, maxv); /*keep h and v within bounds of of screen*/
-	
-	v = max (v, 0);
-		
-	h = min (h, maxh);
-	
-	h = max (h, 0);
-	
-	pint = (short *) 0x828; /*point at a magic spot in memory*/
-	
-	*pint++ = v;
-	
-	*pint++ = h;
-	
-	*pint++ = v;
-	
-	*pint++ = h;
-	
-	*pint++ = v;
-	
-	*pint = h;
-	
-	pchar = (char *) 0x8ce; /*point at another magic spot*/
-
-	*pchar = 0xff;
-	} /*smashmouse*/
-
-#endif
 
 /*	
 smashmousetester (void) {

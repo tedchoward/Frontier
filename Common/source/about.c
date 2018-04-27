@@ -435,22 +435,6 @@ static short ccgetneededheight (boolean flbigwindow) {
 	} /*ccgetneededheight*/
 
 
-#if 0
-
-static boolean ccfindagentvisit (bigstring bsname, hdlhashnode hnode, tyvaluerecord val, ptrvoid refcon) {
-	
-	hdltreenode hcode;
-	
-	if (!langexternalvaltocode (val, &hcode)) /*not a scipt, or no code*/
-		return (false);
-	
-	if (hcode == (**cancoonglobals).hprimaryagent)
-		return (true);
-	
-	return (false);
-	} /*ccfindagentvisit*/
-
-#endif
 
 
 static void ccdrawagentpopup (void) {
@@ -487,17 +471,6 @@ static void ccdrawagentpopup (void) {
 	} /*ccdrawagentpopup*/
 
 
-#if 0
-
-static void cceraseagentpopup (void) {
-	
-	Rect r;
-	
-	if (ccgetagentpopuprect (&r))
-		eraserect (r);
-	} /*cceraseagentpopup*/
-
-#endif
 
 
 static void ccgetmsgrect (Rect *rmsg) {

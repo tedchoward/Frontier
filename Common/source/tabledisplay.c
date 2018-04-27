@@ -1082,13 +1082,6 @@ void browserdrawnodeicon (const Rect *r, boolean flhighlighted, hdlheadrecord hn
 	
 
 	
-#if 0
-	transform += ttLabel [browserinfo.ixlabel]; /*color it according to the file's label*/
-	
-	getgenericsystemicon (&browserinfo, &iconresnum);
-	
-	ploticonresource (&r, align, transform, iconresnum);
-#endif
 	} /*browserdrawnodeicon*/
 
 

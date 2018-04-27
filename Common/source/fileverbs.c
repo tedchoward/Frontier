@@ -290,68 +290,6 @@ typedef enum tyreztoken {
 
 
 
-#if 0
-
-static bigstring bsdefaultpath; /*see setpath*/
-
-
-static checkfordrivenum (bigstring bspath) {
-	
-	/*
-	interpret single-digit vol name as driver number
-	*/
-	
-	if ((stringlength (bspath) > 1) && (bspath [2] == chpathseparator)) {
-		
-		byte ch = bspath [1];
-		short drivenum;
-		byte bsvol [64];
-		
-		if (isnumeric (ch)) {
-			
-			drivenum = ch - '0';
-			
-			if (drivenumtovolname (drivenum, bsvol))
-				replacestring (bspath, 1, 1, bsvol);
-			}
-		}
-	} /*checkfordrivenum*/
-
-
-filecheckdefaultpath (bigstring bspath) {
-	
-	/*
-	if bspath is a partial path, add our local current path, if set.
-	
-	12/5/91 dmb: sneak in support drive number as "n:" here
-	
-	12/27/91 dmb: if bsdefaultpath isn't empty, and we have a partial path, 
-	make sure we don't double-up on colons if bspath starts with one.
-	*/
-	
-	short ix = 1;
-	
-	if (!isemptystring (bspath)) {
-		
-		if (!scanstring (chpathseparator, bspath, &ix) || (ix == 1)) { /*a partial path*/
-			
-			if (!isemptystring (bsdefaultpath)) {
-				
-				if (bspath [1] == chpathseparator) /*default path ends in one already*/
-					deletefirstchar (bspath);
-				
-				insertstring (bsdefaultpath, bspath);
-				}
-			}
-		
-		/*
-		else
-			checkfordrivenum (bspath);
-		*/
-		}
-	} /*filecheckdefaultpath*/
-
-#endif
 
 static boolean getpathvalue (hdltreenode hparam1, short pnum, ptrfilespec fspath) {
 	
@@ -2374,48 +2312,6 @@ static boolean writeverb (hdltreenode hparam1, tyvaluerecord *v) {
 	} // writeverb
 
 
-#if 0
-
-static boolean writewholefileverb (hdltreenode hparam1, tyvaluerecord *v) {
-
-	/*
-	on writeWholeFile (f, s, type = nil, creator = nil, creationdate = clock.now ()) {
-		Ç10/31/97 at 1:41:20 PM by DW -- moved from toys.writeWholeFile
-		ÇFriday, July 18, 1997 at 10:22:07 AM by PBS
-			ÇConditionalized for multiple platforms, with optional parameters.
-		file.new (f);
-		file.open (f);
-		if sys.os () == "MacOS" {
-			if type != nil {
-				file.setType (f, type)};
-			if creator != nil {
-				file.setCreator (f, creator)};
-			file.setCreated (f, creationdate)};
-		file.write (f, s);
-		file.close (f);
-		return (true)}
-	*/
-	
-	tyfilespec fs;
-	tyvaluerecord val;
-	
-	if (!getpathvalue (hparam1, 1, &fs))
-		return (false);
-	
-	flnextparamislast = true;
-	
-	if (!getbinaryparam (hparam1, 2, &val))
-		return (false);
-	
-	if (!coercetostring (&val)) //strip binary type
-		return (false);
-	
-	(*v).data.flvalue = fifwritehandle (&fs, (Handle) val.data.stringvalue);
-	
-	return (true);
-	} /*writewholefileverb*/
-
-#endif
 
 
 static boolean comparefilesverb (hdltreenode hparam1, tyvaluerecord *v) {

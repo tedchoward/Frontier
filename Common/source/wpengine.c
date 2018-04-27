@@ -1317,25 +1317,6 @@ static boolean wpapplyhtmlstyles (Handle htext, pg_ref pg, boolean flredraw) {
 	} /*wpapplyhtmlstyles*/
 
 
-#if 0
-
-static boolean wpfilterstyles (Handle htext, pg_ref pg, boolean redraw) {
-
-	/*
-	7.0b28: if this is an outline of some kind, and it's in HTML mode,
-	call the appropriate script.
-	*/
-
-	if (outlinedata == NULL)
-		return (false);
-
-	if ((**outlinedata).flhtml)
-		return (wpapplyhtmlstyles (htext, pg, redraw));
-
-	return (false);
-	} /*wpfilterstyles*/
-
-#endif
 
 
 boolean wpmeasuretext (Handle htext, Rect *r, tywpflags wpflags) {

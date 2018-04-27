@@ -378,95 +378,6 @@ static boolean htmlcallbackerror (bigstring bsmsg, ptrvoid perrorstring) {
 	return (true);
 	} /*htmlcallbackerror*/
 
-#if 0
-
-static boolean frontTextScriptCall (OSType idroutine, Handle stringparam, Handle *hresult, bigstring errorstring) {
-	
-	/*
-	an interface for a script call that takes one parameter, a string,
-	and returns a text value. a common situation, and it makes it possible for
-	me to include some sample code in the toolkit.
-	
-	dmb 4.1b11: take Handle parameter, not bigstring, which we consume
-	
-	dmb 3/18/97: non-component version
-	
-	dmb 5.0d14: save/restore perrorstring; don't disable yield
-	*/
-	
-	bigstring bsfunction;
-	hdlhashnode hnode;
-	hdltreenode hcode, hparam;
-	boolean fl = false;
-	langerrormessagecallback savecallback;
-	ptrvoid saveerrorstring;
-	tyvaluerecord vparam;
-	tyvaluerecord vresult;
-	
-	*hresult = nil;
-	
-	ostypetostring (idroutine, bsfunction);
-	
-	if (!setheapvalue (stringparam, stringvaluetype, &vparam)) // consumes stringparam
-		return (false);
-	
-	exemptfromtmpstack (&vparam); // 5.0.2b10 dmb
-	
-	if (!newconstnode (vparam, &hparam))	// consumes vparam
-		return (false);
-	
-//	if (!getaddressvalue (callbackval, &htable, bs))
-//		goto exit;
-	
-	if (!hashtablelookupnode ((*callbackscript).ht, (*callbackscript).bs, &hnode))
-		goto exit;
-	
-	if (!langgetnodecode ((*callbackscript).ht, bsfunction, hnode, &hcode)) {
-	
-		if (!fllangerror)
-			langparamerror (notfunctionerror, (*callbackscript).bs);
-		
-		goto exit;
-		}
-	
-	savecallback = langcallbacks.errormessagecallback;
-	
-	saveerrorstring = langcallbacks.errormessagerefcon;
-	
-	langcallbacks.errormessagerefcon = errorstring;
-	
-	langcallbacks.errormessagecallback = &htmlcallbackerror;
-	
-	//	++fldisableyield;
-	
-	fl = langfunctioncall (nil, (*callbackscript).ht, hnode, bsfunction, hcode, hparam, &vresult);
-	
-	//	--fldisableyield;
-	
-	if (fl)
-		fl = coercetostring (&vresult);
-	else
-		fllangerror = false;	/*we don't want to abort anything*/
-
-	if (fl) {
-		
-		exemptfromtmpstack (&vresult);
-		
-		*hresult = vresult.data.stringvalue;
-		}
-	
-	langcallbacks.errormessagerefcon = saveerrorstring;
-	
-	langcallbacks.errormessagecallback = savecallback;
-	
-	exit:
-	
-	langdisposetree (hparam);
-	
-	return (fl);
-	} /*frontTextScriptCall*/
-
-#endif
 
 
 static boolean strongcoercetostring (tyvaluerecord *val) {
@@ -548,37 +459,6 @@ static boolean getoptionalpagetablevalue (hdltreenode hp1, short n, hdlhashtable
 	} /*getoptionalpagetablevalue*/
 
 
-#if 0
-
-static boolean htmlgetpagetable (hdlhashtable *hpagetable) {
-	
-	/*
-	5.0.2 dmb: super-fast lookup of html.data.adrpagetable. we skip the 
-	normal error reporting, because we're responsible for setting this 
-	value up properly
-	*/
-	
-	hdlhashtable ht;
-	bigstring bs;
-	tyvaluerecord val;
-	hdlhashnode hnode;
-	
-	if (!langexpandtodotparams (str_adrpagetable, &ht, bs))
-		return (false);
-	
-	if (!hashtablelookup (ht, bs, &val, &hnode) || (val.valuetype != addressvaluetype))
-		return (false);
-	
-	if (!getaddressvalue (val, &ht, bs))
-		return (false);
-	
-	if (!hashtablelookup (ht, bs, &val, &hnode))
-		return (false);
-	
-	return (tablevaltotable (val, hpagetable, hnode));
-	} /*htmlgetpagetable*/
-
-#endif
 
 		
 static boolean htmlgetprefstable (hdlhashtable *huserprefs) {
@@ -1149,22 +1029,6 @@ static boolean htmlreportmacroerror (typrocessmacrosinfo *pmi, Handle macro, big
 	} /*htmlreportmacroerror*/
 
 
-#if 0
-
-static boolean isPunctuationChar (char ch) {
-	
-	/*return (ispunct (ch));*/
-	
-	if ((ch >= '!') && (ch <= '/')) 
-		return (true);
-		
-	if ((ch >= ':') && (ch <= '?'))
-		return (true);
-	
-	return (false);
-	} /*isPunctuationChar*/
-
-#endif
 	
 
 static boolean isLegalURLPunctuationChar (char ch) {
@@ -3188,33 +3052,6 @@ static boolean buildpagetableverb (hdltreenode hparam1, tyvaluerecord *vreturned
 	} /*buildpagetableverb*/
 
 
-#if 0
-
-static boolean refglossaryverb (hdltreenode hp1, tyvaluerecord *v) {
-	
-	/*
-	on refGlossary (name)
-		Ç5.0 DW -- html.buildObject sets up a global for us, html.data.adrPageTable
-			Çit points to the pagetable for the page currently being built
-			Çwe're called from inside html.processMacros, which is protected by a semaphore
-			Çif you're calling this routine directly, you must set up html.data.adrPageTable yourself.
-			Ç11/12/97 at 8:34:30 AM by DW		
-	*/
-	
-	typrocessmacrosinfo pageinfo;
-	Handle href, hresult;
-	bigstring lerrorstring;
-	handlestream s;
-	
-	// get all of the prefs and tables that we need
-	
-	if (!htmlgetpagetable (&pageinfo.hpagetable) || !htmlgetprefstable (&pageinfo.huserprefs))
-		return (false);
-	
-	return (htmlrefglossary (&pageinfo, href, lerrorstring, &hresult));
-	} /*refglossaryverb*/
-
-#endif
 
 
 #pragma mark === verbs ===
@@ -3242,55 +3079,6 @@ static boolean getprefverb (hdltreenode hp1, tyvaluerecord *v) {
 	} /*getprefverb*/
 
 
-#if 0
-
-static boolean getonedirectiveverb (hdltreenode hp1, tyvaluerecord *v) {
-	
-	/*
-	on getOneDirective (directiveName, s) { Çnew in 4.0.1
-		ÇRevised for ContentServer.
-			ÇFriday, March 13, 1998 at 9:47:37 PM by PBS
-			ÇNow case-insensitive.
-			ÇRespects directivesOnlyAtBeginning pref.
-		ÇOld code
-			Çlocal (ix = string.patternMatch (string.lower (directivename), string.lower (s)))
-			Çif ix > 0
-				Çs = string.delete (s, 1, ix + sizeof (directivename))
-				Çs = string.delete (s, string.patternmatch (cr, s), infinity)
-				Çreturn (evaluate (s))
-			Çelse
-				Çreturn ("")
-		local (value = "");
-		local (flDirectivesOnlyAtBeginning = html.getPref ("directivesOnlyAtBeginning"));
-		if typeOf (s) == outlineType {
-			flDirectivesOnlyAtBeginning = false};
-		table.assign (@s, string.replaceAll (string (s), "\n", ""));
-		if directiveName beginsWith "#" { //pop off leading # character
-			directiveName = string.mid (directiveName, 2, infinity)};
-		loop { //loop through directives
-			if sizeof (s) == 0 {
-				break};
-			local (line = string.nthField (s, "\r", 1));
-			if line beginsWith "#" {
-				local (name);
-				name = string.nthField (line, ' ', 1); //get the name of the directive
-				name = string.mid (name, 2, infinity); //pop off leading # character
-				if string.lower (name) == string.lower (directiveName) { //is this the directive asked for?
-					local (ix = string.patternMatch (" ", line));
-					value = string.mid (line, ix + 1, infinity);
-					return (evaluate (value))}}
-			else {
-				if flDirectivesOnlyAtBeginning {
-					break}};
-			s = string.delete (s, 1, sizeof (line) + 1);
-			if sizeOf (s) < 3 {
-				break}};
-		return (value)}
-	*/
-	
-	} /*getonedirectiveverb*/
-
-#endif
 
 
 static boolean htmlrundirective (typrocessmacrosinfo *pmi, Handle s, bigstring fieldname) {
@@ -3687,65 +3475,6 @@ on cleanForExport (text) { Çprepare text to leave Mac environment
 	} /*cleanforexportverb*/
 
 
-#if 0
-
-static boolean normalizenameverb (hdltreenode hp1, tyvaluerecord *v) {
-
-	/*
-	on normalizeName (name, pageTable=nil, adrObject=nil) {
-		Ç2/12/98 at 3:26:44 PM by PBS
-			ÇSupport for normalizing folder names.
-			ÇURL-encode returned name.
-			ÇSupport for normalizing a name that isn't the page being generated.
-		Ç4/13/98 PBS
-			ÇThere are three contexts in which this operates:
-				Ç1) Normalizing a name of a new page that has no prefs.
-				Ç2) Normalizing a name based on the prefs of the page being rendered.
-				Ç3) Normalizing a name based on the prefs of a remote page.
-		
-		local (flDropNonAlphas, flLowerCaseFileNames);
-		local (maxLength);
-		local (extension = "");
-		local (flFolder = false);
-		
-		if pageTable == nil and adrObject == nil { //it's a new page without prefs
-			flDropNonAlphas = html.getPref ("dropNonAlphas");
-			flLowerCaseFileNames = html.getPref ("lowerCaseFileNames");
-			maxLength = number (html.getPref ("maxFileNameLength"));
-			extension = html.getPref ("fileExtension")}
-		else { //it's an existing page with prefs
-			if pageTable == nil {
-				pageTable = @websites.["#data"]};
-			if adrObject == nil {
-				adrObject = pageTable^.adrObject};
-			if adrObject == pageTable^.adrObject { //it's the current page
-				flDropNonAlphas = html.getPref ("dropNonAlphas", pageTable);
-				flLowerCaseFileNames = html.getPref ("lowerCaseFileNames", pageTable);
-				maxLength = number (html.getPref ("maxFileNameLength", pageTable));
-				extension = html.getPref ("fileExtension", pageTable)}
-			else { //it's a remote page
-				flDropNonAlphas = html.getPagePref ("dropNonAlphas", adrObject, pageTable);
-				flLowerCaseFileNames = html.getPagePref ("lowerCaseFileNames", adrObject, pageTable);
-				maxLength = number (html.getPagePref ("maxFileNameLength", adrObject, pageTable));
-				extension = html.getPagePref ("fileExtension", adrObject, pageTable)};
-			if typeOf (adrObject^) == tableType {
-				flFolder = true}};
-		
-		if flDropNonAlphas {
-			name = string.dropNonAlphas (name)};
-		if flLowerCaseFileNames {
-			name = string.lower (name)};
-		if flFolder {
-			extension = ""};
-		maxLength = maxLength - sizeOf (extension);
-		if sizeof (name) > maxLength {
-			name = string.mid (name, 1, maxLength)};
-		return (name)}
-	*/
-	
-	} /*normalizenameverb*/
-
-#endif
 
 
 static boolean glossarypatcherverb (hdltreenode hp1, tyvaluerecord *v) {
@@ -6116,46 +5845,6 @@ static boolean webservercallresponder (tyaddress *pta, tyaddress *adrresponder, 
 		if (!langhashtablelookup (hparamtable, STR_P_RESPONSEBODY, &val, &hnode))
 			goto internal_error;
 
-#if 0		
-		if (val.valuetype == filespecvaluetype) { /* 6.2b10 AR: write the file itself to the stream */
-			
-			tyvaluerecord vserve;
-			
-			if (webservergetpref (BIGSTRING ("\x19" "flEnableDirectFileServing"), &vserve)) {
-			
-				if (!coercetoboolean (&vserve))
-					goto internal_error;
-				
-				if (vserve.data.flvalue) {
-					
-					unsigned long stream;
-					unsigned long fsize;
-					tyvaluerecord vheader;
-					tyfilespec fs = **val.data.filespecvalue;
-					
-					if (!filesize (&fs, &fsize))
-						goto internal_error;	
-
-					if (!langassignlongvalue (hresponseheaderstable, STR_P_CONTENT_LENGTH, fsize))
-						goto internal_error;	
-
-					if (!webserverbuildresponse (bscode, hresponseheaderstable, nil, &vheader))
-						goto internal_error;	
-
-					if (!langlookuplongvalue (hparamtable, STR_P_STREAM, &stream))
-						goto internal_error;	
-					
-					if (!fwsNetEventWriteFileToStream (stream, vheader.data.stringvalue, nil, &fs))
-						goto internal_error;	
-					
-					if (!setbooleanvalue (true, vreturn))
-						goto internal_error;
-					
-					goto done;
-					}
-				}
-			}
-#endif
 
 		if (!copyvaluerecord (val, &val) || !coercetostring (&val))
 			goto internal_error;
@@ -8156,46 +7845,6 @@ on draw ( adrcalendar=nil, urlprefix="", colwidth=32, rowheight=22, tableborder=
 #define dayofweektocolumn(i,f) ((((i) - ((f) - 1) + 6) % 7) + 1)
 #define columntodayofweek(i,f) ((((i) + ((f) - 1) - 1) % 7) + 1)
 
-#if 0
-
-static boolean addhandle (handlestream *s, Handle h, short cttabs) {
-
-	if (cttabs > 0) { /*indent*/
-
-		bigstring bs;
-
-		filledstring ('\t', cttabs, bs);
-
-		if (!writehandlestreamstring (s, bs))
-			return (false);
-		}
-
-	if (!writehandlestreamhandle (s, h))
-		return (false);
-
-	return (writehandlestreamchar (s, '\r'));
-	}/*addhandle*/
-
-
-static boolean addstring (handlestream *s, bigstring bstring, short cttabs) {
-
-	if (cttabs > 0) { /*indent*/
-
-		bigstring bs;
-
-		filledstring ('\t', cttabs, bs);
-
-		if (!writehandlestreamstring (s, bs))
-			return (false);
-		}
-
-	if (!writehandlestreamstring (s, bstring))
-		return (false);
-
-	return (writehandlestreamchar (s, '\r'));
-	}/*addstring*/
-
-#endif
 
 
 static boolean addclassattribute (handlestream *s, Handle hcssprefix, bigstring bsname) {

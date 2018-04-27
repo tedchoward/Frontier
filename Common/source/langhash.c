@@ -257,43 +257,6 @@ void unchainhashtable (void) {
 	} /*unchainhashtable*/
 
 
-#if 0
-
-static boolean indexhashtable_obsolete (short tablenum, hdlhashtable *htable) {
-	
-	/*
-	turn an index into a hash table.  the most-global hashtable has index 0.
-	its previous table is index 1.
-	
-	you can safely ask for the most-global one by asking for table number
-	infinity, but watch out -- we return false if we fell off the list.
-	*/
-
-	register hdlhashtable nomad = currenthashtable;
-	register hdlhashtable prevnomad = nomad;
-	register short ct = tablenum;
-	register short i;
-	
-	for (i = 1; i <= ct; i++) {
-		
-		if (nomad == nil) { /*ran out of tables, return most-global table*/
-			
-			*htable = prevnomad;
-			
-			return (false);
-			}
-		
-		prevnomad = nomad;
-		
-		nomad = (**nomad).prevhashtable;
-		} /*for*/
-		
-	*htable = nomad; 
-	
-	return (true);
-	} /*indexhashtable*/
-
-#endif
 	
 
 hdlhashtable sethashtable (hdlhashtable hset) {
@@ -2693,21 +2656,6 @@ boolean hashunpacktable (Handle hpackedtable, boolean flmemory, hdlhashtable hta
 		
 		assert (sizeof (tydisksymbolrecord) == sizeof (tyOLD42disksymbolrecord));
 		
-	#if 0 //def MACVERSION
-		tyOLD42disksymbolrecord rec42;
-		
-		if (header.version < 2) {
-			
-			if (!loadfromhandle (hrecords, &ix, sizeof (rec42), &rec42))
-				break;
-			
-			rec.ixkey = rec42.ixkey;
-			rec.valuetype = rec42.valuetype;
-			rec.version = rec42.version;
-			rec.data.longvalue = rec42.data.longvalue;
-			}
-		else
-	#endif
 			
 			if (!loadfromhandle (hrecords, &ix, sizeof (rec), &rec)) /*out of records*/
 				break;

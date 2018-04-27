@@ -169,36 +169,6 @@ void getinitialfile (short ix, bigstring fname, short *vnum) {
 
 #endif
 
-#if 0
-
-boolean installgestaltfunction (void) {
-	
-	Handle hgdef;
-	ProcPtr x;
-	
-	hgdef = GetResource ('GDEF', idgestaltfunction);
-	
-	if (hgdef == nil) /*didn't find gestalt definition function*/
-		return (false);
-	
-	x = (ProcPtr) *hgdef;
-	
-	if (NewGestalt (idgestaltselector, x) != noErr) {
-		
-		if (ReplaceGestalt (idgestaltselector, x, &x) != noErr) {
-			
-			ReleaseResource (hgdef);
-			
-			return (false);
-			}
-		}
-	
-	DetachResource (hgdef);
-	
-	return (true);
-	} /*installgestaltfunction*/
-
-#endif
 
 
 

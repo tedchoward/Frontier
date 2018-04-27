@@ -885,19 +885,6 @@ boolean langexternalmemoryunpack (Handle hpacked, hdlexternalhandle *h) {
 	if (!loadfromhandle (hpacked, &ixload, sizeof (rec), &rec))
 		goto cantunpack;
 		
-#if 0 // def MACVERSION
-	if (rec.versionnumber == 1) {
-		tyOLD42diskexternalhandle oldrec;
-
-		ixload = 0;
-		if (!loadfromhandle (hpacked, &ixload, sizeof (oldrec), &oldrec))
-			goto cantunpack;
-
-		id = oldrec.id;
-
-		goto version1ok;
-		}
-#endif
 
 	disktomemshort (rec.versionnumber);
 //	disktomemshort (rec.id);

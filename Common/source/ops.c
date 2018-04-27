@@ -710,42 +710,20 @@ void safex80told ( const extended80 *x80, long double *x ) {
 	thanks for John Baxter for investigating this and proposing this solution
 	*/
 	
-	#if 1
 		
 		*x = x80tod (x80);
 		
-	#else
-		
-		safelongdouble temp;
-		
-		x80told (x80, &temp.hi);
-		
-		*x = temp.hi;
-	
-	#endif
 } /*safex80told*/
 
 
 void safeldtox80 ( const long double *x, extended80 *x80 ) {
 
-	#if 1
 		double temp;
 		
 		temp = *x;
 		
 		dtox80 (&temp, x80);
 	
-	#else
-		
-		safelongdouble temp;
-		
-		temp.hi = *x;
-		
-		temp.lo = 0.0;
-		
-		ldtox80 (&temp.hi, x80);
-	
-	#endif
 } /*safeldtox80*/
 
 #endif

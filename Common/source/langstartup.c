@@ -544,18 +544,6 @@ static boolean langaddstringconst (bigstring bs, bigstring x) {
 	} /*langaddstringconst*/
 
 
-#if 0
-
-static boolean langaddintconst (bigstring bs, short x) {
-	
-	tyvaluerecord val;
-	
-	setintvalue (x, &val);
-	
-	return (hashinsertcstring (bs, &val));
-	} /*langaddintconst*/
-
-#endif
 	
 
 static boolean langadddirectionconst (bigstring bs, tydirection x) {

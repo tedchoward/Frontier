@@ -1343,32 +1343,6 @@ void timedatestring (long ptime, bigstring bs) {
 		
 	pushstring (bstime, bs);
 
-#if 0
-	/*
-	12/12/91 dmb: include seconds so no information is lost
-	*/
-	
-	bigstring bstime;
-	
-	/*
-	if (time == 0) {
-		
-		setemptystring (bs);
-		
-		return;
-		}
-	*/
-	
-	IUDateString (ptime, shortDate, bs);
-	
-	getstringlist (interfacelistnumber, timedateseperatorstring, bstime);
-	
-	pushstring (bstime, bs);
-	
-	IUTimeString (ptime, true, bstime);
-	
-	pushstring (bstime, bs);
-#endif
 	} /*timedatestring*/
 
 

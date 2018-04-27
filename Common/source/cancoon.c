@@ -676,42 +676,6 @@ static boolean loadversion2cancoonfile (dbaddress adr, hdlcancoonrecord hcancoon
 	} /*loadversion2cancoonfile*/
 
 
-#if 0 //def MACVERSION
-
-static boolean loadoldcancoonfile (dbaddress adr, hdlcancoonrecord hcancoon) {
-	
-	tyfilespec fs, fsold;
-	boolean fl;
-	
-	if (!msgdialog ("\50" "Convert 4.x database to 5.0? (This can take a while. A backup will be retained.)"))
-		return (false);
-	
-	if (!loadversion2cancoonfile (adr, hcancoon))
-		return (false);
-	
-	windowgetfspec (cancoonwindow, &fs);
-	
-	fsold = fs;
-	
-	pushstring ("\x04" ".v4x", fs.name);
-	
-	flconvertingolddatabase = true;
-	
-	fl = shellsaveas (cancoonwindow, &fs);
-	
-	flconvertingolddatabase = false;
-	
-	if (!fl)
-		return (false);
-	
-	oserror (FSpExchangeFiles (&fs, &fsold)); // ignore, but report error
-	
-	windowsetfspec (cancoonwindow, &fsold); // the old fspec is now the new file
-	
-	return (true);
-	} /*loadoldcancoonfile*/
-
-#endif
 
 
 boolean ccloadfile (hdlfilenum fnum, short rnum) {
@@ -1532,37 +1496,6 @@ boolean ccinexpertmode (void) {
 	} /*ccinexpertmode*/
 
 
-#if 0
-
-static boolean cctoggleexpertmode (void) {
-
-	/*
-	5.0a3 dmb: we now call Frontier.setExpertMode, not system.misc.toggleExpertMode
-	*/
-	
-	bigstring bsscript;
-	boolean flexpert;
-	ptrstring bsexpert;
-	
-	flexpert = !ccinexpertmode ();
-	
-	getsystemtablescript (idtoggleexpertmodescript, bsscript);
-	
-	bsexpert = (flexpert? bstrue : bsfalse);
-	
-	parsedialogstring (bsscript, bsexpert, nil, nil, nil, bsscript);
-	
-	langrunstringnoerror (bsscript, bsscript);
-	
-	if (ccinexpertmode () != flexpert)
-		return (false);
-	
-	shellwindowmenudirty ();
-	
-	return (true);
-	} /*cctoggleexpertmode*/
-
-#endif
 
 
 static boolean ccmenuroutine (short idmenu, short ixmenu) {

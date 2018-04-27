@@ -2207,49 +2207,6 @@ static boolean scriptbuttonstatus (short buttonnum, tybuttonstatus *status) {
 	} /*scriptbuttonstatus*/
 
 
-#if 0
-
-boolean scriptkilled (void) {
-	
-	/*
-	returns true if the current running script should be killed by the
-	interpreter.  it's called back from within the interpreter.
-	
-	7/2/91 dmb: no longer check the scriptkilled debuggerdata flag here; 
-	it's handled by returning false from the debugger routine.  checking 
-	it here will wrongly terminate some other process
-	*/
-	
-	register hdldebuggerrecord hd = debuggerdata;
-	
-	/*
-	if ((**hd).flscriptkilled) {
-		
-		if (processisoneshot (false)) { /%we're running a one-shot process%/
-			
-			(**hd).flscriptkilled = false; /%consume it%/
-			
-			scriptprocesskilled ();
-			
-			return (true);
-			}
-		}
-	*/
-	
-	if (keyboardescape ()) { /*user pressed cmd-period or something like that*/
-		
-		if (processisoneshot (true)) { /*cmd-period doesn't kill background tasks*/
-			
-			keyboardclearescape (); /*consume it*/
-			
-			return (true);
-			}
-		}
-		
-	return (false);
-	} /*scriptkilled*/
-
-#endif
 
 
 static boolean scriptdebuggercallback (void) {
@@ -2876,14 +2833,6 @@ boolean scriptzoomwindow (Rect rwindow, Rect rzoom, hdlheadrecord hcursor, Windo
 	} /*scriptzoomwindow*/
 
 
-#if 0
-
-static boolean scripthaslinkedtextroutine (hdlheadrecord hnode) {
-	
-	return (false); /*no linked text for script lines*/
-	} /*scripthaslinkedtextroutine*/
-
-#endif
 
 
 static boolean optogglebreakpoint (hdlheadrecord hnode) {
@@ -4061,104 +4010,6 @@ static boolean scriptdirtyhook (void) {
 	} /*scriptdirtyhook*/
 
 
-#if 0
-
-static boolean opwinnewrecord (void) {
-	
-	tyvaluerecord val;
-	hdlexternalvariable hv;
-	hdloutlinerecord ho;
-	
-	if (!langexternalnewvalue (idscriptprocessor, nil, &val))
-		return (false);
-	
-	hv = (hdlexternalvariable) val.data.externalvalue;
-	
-	ho = (hdloutlinerecord) (**hv).variabledata;
-	
-	(**outlinewindowinfo).hdata = (Handle) ho;
-	
-	(**ho).outlinetype = outlineisstandalonescript;
-
-	(**ho).flwindowopen = true;
-	
-	(**ho).fldirty = true; /*needs to be saved*/
-	
-	scriptsetcallbacks (ho);
-	
-	return (true);
-	} /*opwinnewrecord*/
-
-
-static boolean opwindisposerecord (void) {
-
-	hdloutlinerecord ho = outlinedata; /*copy into local*/
-	
-	if ((ho != NULL) && ((**ho).outlinetype == outlineisstandalonescript)) {
-		
-		opdisposeoutline (ho, true);
-		
-		opsetoutline (nil);
-		
-		(**outlinewindowinfo).hdata = nil;
-		}
-
-	return true;
-	} /*opwindisposerecord*/
-
-	
-static boolean opwinloadfile (hdlfilenum fnum, short rnum) {
-	
-	Handle hpackedop;
-	hdloutlinerecord ho;
-	boolean fl;
-	long ixload = 0;
-	
-	if (!filereadhandle (fnum, &hpackedop))
-		return (false);
-	
-	fl = opunpack (hpackedop, &ixload, &ho);
-	
-	disposehandle (hpackedop);
-	
-	if (!fl)
-		return (false);
-	
-	(**outlinewindowinfo).hdata = (Handle) ho;
-	
-	(**ho).outlinetype = outlineisstandalonescript;
-
-	(**ho).flwindowopen = true;
-	
-	(**ho).fldirty = true; /*never been saved, can't be clean*/
-	
-	scriptsetcallbacks (ho);
-	
-	return (true);
-	} /*opwinloadfile*/
-
-
-static boolean opwinsavefile (hdlfilenum fnum, short rnum, boolean flsaveas) {
-	
-	Handle hpackedop = nil;
-	boolean fl;
-	
-	if (!oppack (&hpackedop))
-		return (false);
-	
-	fl = 
-		fileseteof (fnum, 0) &&
-		
-		filesetposition (fnum, 0) &&
-		
-		filewritehandle (fnum, hpackedop);
-	
-	disposehandle (hpackedop);
-	
-	return (fl);
-	} /*opwinsavefile*/
-
-#endif
 
 
 boolean scriptstart (void) {

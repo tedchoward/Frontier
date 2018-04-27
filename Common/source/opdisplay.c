@@ -1315,38 +1315,6 @@ static boolean ophorizscroll (long ctpixels) {
 	} /*ophorizscroll*/
 	
 
-#if 0
-
-static long opvisiupcountpixels (hdlheadrecord nomad, long vscroll) {
-	
-	long i, ct = 0;
-	
-	for (i = 1; i <= vscroll; i++) {
-		
-		nomad = opbumpflatup (nomad, true);
-		
-		ct += opgetlineheight (nomad);	
-		} /*for*/
-		
-	return (ct);
-	} /*opvisiupcountpixels*/
-	
-	
-static long opvisidowncountpixels (hdlheadrecord nomad, long vscroll) {
-	
-	long i, ct = 0;
-	
-	for (i = 1; i <= vscroll; i++) {
-		
-		ct += opgetlineheight (nomad);
-		
-		nomad = opgetnextexpanded (nomad);
-		} /*for*/
-		
-	return (ct);
-	} /*opvisidowncountpixels*/
-
-#endif
 
 
 static boolean opvertscroll (long ctlines) {
@@ -1622,93 +1590,6 @@ boolean opscroll (tydirection dir, boolean flpage, long ctscroll) {
 	} /*opscroll*/
 
 
-#if 0
-
-static void supersmarthorizscrollsmarts (long *hscroll) {
-	
-	/*
-	new idea, DW 10/17/93. after certain very jarring operations, like
-	jumping a long distance, or switching in a different style in clay
-	basket, it's really ugly to leave the screen less than optimally
-	scrolled.
-	
-	we travel over all the lines in the window and figure out how much
-	horizontal scrolling would be necessary to make them all visible.
-	
-	we prefer to make everything off to the left visible, if there's 
-	stuff scrolled off both edges.
-	
-	we never scroll enough to make the cursor headline not visible. that
-	makes it safe to call this after making the cursor horizontally
-	visible.
-	
-	DW 4/10/95: allow for blocking this visi routine.
-	*/
-	
-	hdlheadrecord nomad = (**outlinedata).hline1;
-	Rect outlinerect = (**outlinedata).outlinerect;
-	long maxoffleft = 0, maxoffright = 0;
-	long i, ct;
-	Rect rcursor;
-	
-	return; /*10/9/95 -- feature wired off -- it's not optimal*/
-	
-	if ((**outlinedata).blocksupersmartvisi) {
-		
-		(**outlinedata).blocksupersmartvisi = false;
-		
-		return;
-		}
-	
-	ct = opgetcurrentscreenlines ();
-	
-	for (i = 0; i < ct; i++) {
-		
-		Rect r;
-		long offleft, offright;
-		
-		opgetfullrect (nomad, &r);
-		
-		offleft = outlinerect.left - r.left;
-		
-		if (offleft > maxoffleft)
-			maxoffleft = offleft;
-		
-		offright = r.right - outlinerect.right;
-		
-		if (offright > maxoffright)
-			maxoffright = offright;
-			
-		nomad = opgetnextexpanded (nomad);
-		} /*for*/
-		
-	maxoffleft = scrollquantum (maxoffleft);
-		
-	maxoffright = scrollquantum (maxoffright);
-		
-	if ((maxoffleft == 0) && (maxoffright == 0)) /*no scrolling needed, everything's visible*/
-		return;
-		
-	opgetfullrect ((**outlinedata).hbarcursor, &rcursor);
-		
-	if (maxoffleft > 0) {
-		
-		if ((rcursor.right + maxoffleft) <= outlinerect.right) { 
-
-			*hscroll = maxoffleft;
-		
-			return;
-			}
-		}
-		
-	if (maxoffright > 0) {
-		
-		if ((rcursor.left - maxoffright) >= outlinerect.left)
-			*hscroll = -maxoffright;
-		}
-	} /*supersmarthorizscrollsmarts*/
-
-#endif
 
 boolean opneedvisiscroll (hdlheadrecord hnode, long *hscroll, long *vscroll, boolean flcheckhoriz) {
 	

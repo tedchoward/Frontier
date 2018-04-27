@@ -45,20 +45,6 @@
 #include "tablestructure.h"
 
 
-#if 0 //def THINK_C
-
-pascal OSErr FollowFinderAlias (const FSSpec *fromFile, AliasHandle alias, Boolean logon, FSSpec *target, Boolean *wasChanged) = {
-                                   
-	/*
-    resolves an alias taken from a Finder alias file,
-	updating the alias record (but not the alias resource in the file) if
-	necessary.
-	*/
-	
-	0x700F, 0xA823};  /*MOVEQ #$0F,D0; _AliasDispatch;*/
-	/*FollowFinderAlias*/
-
-#endif
 	
 	
 

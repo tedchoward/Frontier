@@ -350,7 +350,6 @@ boolean newprocess (hdltreenode hcode, boolean floneshot, langerrorcallback erro
 	
 	popprocess ();
 	
-	#if 1
 	{
 	hdlhashtable htable;
 	bigstring bsname;
@@ -365,7 +364,6 @@ boolean newprocess (hdltreenode hcode, boolean floneshot, langerrorcallback erro
 
 	copystring (bsname, (**hp).bsname);
 	}
-	#endif
 
 	if (!floneshot)
 		flcreatedagentprocess = true; /*for thread error reporting*/
@@ -2805,24 +2803,8 @@ static pascal void *oneshotthreadmain (void *hprocess) {
 	register hdlprocesslist hlist = (**hp).hprocesslist;
 	bigstring bsname;
 
-	#if 0
-
-	hdlerrorstack hs = (**hp).herrorstack;
-	hdlhashtable htable;
-	
-	tyerrorrecord *pe = &(**hs).stack [(**hs).toperror - 1];
-	
-	setemptystring (bsname);
-	
-	if ((*pe).errorcallback != nil)
-		(*(*pe).errorcallback) ((*pe).errorrefcon, 0, 0, &htable, bsname);
-	
-	if (isemptystring (bsname))
-		langgetstringlist (anomynousthreadstring, bsname); 
-	#else
 
 	copystring ((**hp).bsname, bsname);
-	#endif
 
 	if (!initprocessthread (bsname)) /*must call from every thread main, before using globals*/
 		return (nil);

@@ -36,39 +36,6 @@
 
 
 
-#if 0
-
-static long xxxgetcurrentscreenlines (void) {
-	
-	/*
-	return the number of lines currently showing in the window.
-	*/
-	
-	hdlheadrecord nomad = (**outlinedata).hline1, nextnomad;
-	Rect r = (**outlinedata).outlinerect;
-	short vertpixels = r.bottom - r.top;
-	short ctpixels = 0;
-	long ctlines = 0;
-	
-	while (true) {
-		
-		ctpixels += opgetlineheight (nomad);
-		
-		if (ctpixels > vertpixels)
-			return (ctlines);
-			
-		ctlines++;
-		
-		nextnomad = opgetnextexpanded (nomad);
-		
-		if (nextnomad == nomad)
-			return (ctlines);
-			
-		nomad = nextnomad;
-		} /*while*/
-	} /*getcurrentscreenlines*/
-
-#endif
 
 
 boolean oprestorescrollposition (void) {

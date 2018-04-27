@@ -142,34 +142,6 @@ static boolean visitmenuitems (boolean (*visitproc) (hdlmenu, short)) {
 	} /*visitmenuitems*/
 
 
-#if 0 //TARGET_API_MAC_CARBON == 1
-
-static void setfontmenustyles (void) {
-
-	/*
-	7.0b47 PBS: set font styles for the items in the Font menu.
-	*/
-
-	short i, lastitem, idfont;
-	hdlmenu hfontmenu;
-	bigstring bsitem;
-	
-	hfontmenu = shellmenuhandle (fontmenu);
-	
-	lastitem = countmenuitems (hfontmenu);
-	
-	for (i = 1; i <= lastitem; i++) {
-	
-		getmenuitem (hfontmenu, i, bsitem);
-		
-		fontgetnumber (bsitem, &idfont);
-	
-		SetMenuItemFontID (hfontmenu, i, idfont);	
-		} /*for*/
-
-	} /*setfontmenustyles*/
-	
-#endif
 
 
 hdlmenu shellmenuhandle (short idmenu) {
@@ -935,36 +907,6 @@ static void pikesetfilemenuitemenable (short ixmenu) {
 	}/*ccpikesetfilemenuitemenable*/
 
 
-#if 0
-
-static void pikesetfilemenuitemname (short ixmenu) {
-
-	/*
-	6.2a2 AR: Call the pike.getFileMenuItemName script to determine the name
-	of the displayed name of the menu item.
-	*/
-
-	bigstring bsscript, bsitem, bsresult;
-
-	if (roottable == nil)
-		return;
-
-	getfilemenuitemidentifier (ixmenu, bsitem);
-
-	copystring (BIGSTRING ("\x1e""pike.getFileMenuItemName(\"^0\")"), bsscript);
-
-	parsedialogstring (bsscript, bsitem, nil, nil, nil, bsscript);
-
-	grabthreadglobals ();
-	
-	langrunstringnoerror (bsscript, bsresult);
-
-	releasethreadglobals ();
-	
-	setmenuitem (shellmenuhandle (filemenu), ixmenu, bsresult);
-	}/*pikesetfilemenuitemname*/
-
-#endif
 
 
 boolean pikequit () {

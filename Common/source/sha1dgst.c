@@ -195,7 +195,6 @@ unsigned long len;
 	 * copies it to a local array.  I should be able to do this for
 	 * the C version as well....
 	 */
-#if 1
 #if defined(B_ENDIAN) || defined(SHA1_ASM)
 	if ((((unsigned long)data)%sizeof(ULONG)) == 0)
 		{
@@ -208,7 +207,6 @@ unsigned long len;
 			len-=sw;
 			}
 		}
-#endif
 #endif
 	/* we now can process the input data in blocks of SHA_CBLOCK
 	 * chars and save the leftovers to c->data. */

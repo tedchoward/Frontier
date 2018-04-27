@@ -183,125 +183,6 @@ typedef struct typaramrecord {
 	} typaramrecord, *ptrparamrecord;
 #pragma options align=reset
 
-#if 0
-
-typedef enum typaramtype {
-	
-	booleantype = 1, /*1 == true, 0 == false*/
-	
-	charactertype = 2, /*a 1-byte unsigned character*/
-	
-	inttype = 3, /*a 2-byte signed number*/
-	
-	longtype = 4, /*a 4-byte signed number*/
-	
-	datetype = 5, /*4-bytes worth of time/date info, same format as Mac GetDateTime call*/
-	
-	floattype = 6, /*a SANE single-precision floating point number, same as singletype*/
-	
-	directiontype = 7, /*up, down, left, right, etc*/
-	
-	pointtype = 8, /*a QuickDraw Point*/
-	
-	recttype = 9, /*a QuickDraw rectangle*/
-
-	enumtype = 10, /*4-character id, a Macintosh OSType*/
-
-	stringtype = 11, /*Pascal-format string, 1-byte length indicator at head*/
-	
-	texttype = 12, /*a handle that holds a stream of ASCII characters*/
-	
-	binarytype = 13,  /*untyped binary chunk of data*/
-	
-	pathtype = 14, /*file path, separate so cross-platform coercion is possible*/
-	
-	aliastype = 15, /*a file alias, as defined by the Macintosh Alias Manager*/
-	
-	ostype = 16,  /*4-character id, a Macintosh OSType*/
-	
-	singletype = 17, /*a SANE single-precision floating point number*/
-	
-	doubletype = 18, /*a SANE double-precision floating point number*/
-	
-	rgbtype = 19, /*a Mac color, three components, red, green and blue values*/
-	
-	patterntype = 20, /*a Mac pattern, as defined by QuickDraw*/
-	
-	fixedtype = 21, /*a fixed point number, dmb: how many places to left and right of decimal?*/
-	
-	fsspectype = 22, /*a Macintosh filespec*/
-	
-	objectspectype = 23, /*a Mac object specifier, for Frontier, not fully supported in Toolkit*/
-	
-	objectdesctype = 24, /*a Mac object descriptor, for Frontier, not fully supported in Toolkit*/
-	
-	notype = 0 /*allows you to ask for a param w/o specifying its type*/
-	} typaramtype;
-
-
-typedef union typaramvalue {
-	
-	unsigned char booleanvalue;
-	
-	char charvalue;
-	
-	short intvalue;
-	
-	long longvalue;
-	
-	tydate datevalue;
-	
-	float floatvalue;
-	
-	tydirection directionvalue;
-	
-	Point pointvalue;
-	
-	Rect rectvalue;
-	
-	tyenumerator enumvalue;
-	
-	hdlbigstring stringvalue;
-	
-	Handle textvalue;
-	
-	Handle binaryvalue;
-	
-	hdlbigstring pathvalue;
-	
-	AliasHandle aliasvalue;
-
-	OSType osvalue;
-	
-	float singlevalue;
-	
-	double **doublevalue;
-	
-	RGBColor rgbvalue;
-	
-	Pattern patternvalue;
-	
-	Fixed fixedvalue;
-	
-	FSSpecHandle fsspecvalue;
-	
-	AEDesc objectspecvalue;
-	
-	AEDesc objectdescvalue;
-	} typaramvalue;
-	
-#pragma pack(2)
-typedef struct typaramrecord {
-	
-	typaramtype type; /*boolean, short, long, etc.*/
-	
-	typaramkeyword key; /*parameter id, allows optional params; order not important*/
-	
-	typaramvalue val; /*a char, long, or a handle to a more complex type*/
-	} typaramrecord, *ptrparamrecord;
-#pragma options align=reset
-
-#endif
 
 #pragma pack(2)
 typedef struct tyverbrecord {
@@ -330,13 +211,6 @@ typedef struct tyverbrecord {
 	
 	short ctparams; /*number of items in the params array*/
 	
-	#if 0 /*sys6*/
-	
-	short nextparam; /*next open slot in the params array*/
-	
-	typaramrecord params []; /*variable-length array of parameters*/
-	
-	#endif
 	
 	long landrefcon; /*for client use*/
 	} tyverbrecord, *ptrverbrecord, **hdlverbrecord;

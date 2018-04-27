@@ -897,11 +897,6 @@ static boolean filemenufunctionvalue (short token, hdltreenode hparam1, tyvaluer
 			
 			shellexitmaineventloop (); /*sets flag for next iteration*/
 			
-			#if 0  /*maybe try this out after 3.0*/
-			
-			return (false); /*kill the script*/
-			
-			#else
 			
 			processyield (); /*give it a chance to happen*/
 			
@@ -909,7 +904,6 @@ static boolean filemenufunctionvalue (short token, hdltreenode hparam1, tyvaluer
 			
 			return (true);
 			
-			#endif
 		} /*switch*/
 	
 	if (!shellpushtargetglobals ())

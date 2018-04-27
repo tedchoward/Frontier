@@ -546,34 +546,6 @@ boolean dbcloseallfiles (long refcon) {
 	} /*dbcloseallfiles*/
 
 
-#if 0
-
-static ptrfilespec fsfind;
-
-static WindowPtr wfound;
-
-static boolean odbfindfilevisit (WindowPtr w) {
-	
-	/*
-	if the filespec for the given window is the one we're looking for, 
-	select that window and stop visiting
-	*/
-	
-	tyfilespec fs;
-	
-	windowgetfspec (w, &fs);
-	
-	if (equalfilespecs (fsfind, &fs)) {
-		
-		wfound = w;
-		
-		return (false);
-		}
-	
-	return (true);
-	} /*odbfindfilevisit*/
-
-#endif
 
 
 static boolean dbnewverb (hdltreenode hparam1, tyvaluerecord *vreturned) {

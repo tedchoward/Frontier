@@ -188,17 +188,6 @@ boolean langpopsourcecode (void) {
 	} /*langpopsourcecode*/
 
 
-#if 0
-
-boolean langgetsourcecodeaddress (hdlhashtable *htable, bigstring bsname) {
-	
-	register hdlerrorstack hs = langcallbacks.scripterrorstack;
-	tyerrorrecord errorrecord = (**hs).stack [(**hs).toperror - 1];
-	
-	return ((*errorrecord.errorcallback) (errorrecord.errorrefcon, 0, 0, htable, bsname));
-	} /*langgetsourcecodeaddress*/
-
-#endif
 
 boolean langerrormessage (bigstring bs) {
 	

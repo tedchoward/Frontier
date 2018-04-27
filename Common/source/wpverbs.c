@@ -792,43 +792,6 @@ boolean wpverbsettimes (hdlexternalvariable h, long timecreated, long timemodifi
 	} /*wpverbsettimes*/
 
 
-#if 0
-
-static boolean getwpparam (hdltreenode hfirst, short pnum, hdlwpvariable *hv) {
-	
-	/*
-	the caller wants an wp doc parameter.  we only accept them as "var"
-	parameters, we just want the name of a variable that holds an wpdoc.
-	
-	this keeps lang.c from having to know too much about wpdocs, but 
-	more importantly, keeps them from being automatically copied!  could
-	be very wasteful of memory because these things can get very large.
-	
-	we return a handle to the wp record and the identifier we 
-	referenced to get the wp doc.  the string may used to name a window,
-	for example.
-	*/
-	
-	short id;
-	
-	if (!langexternalgetexternalparam (hfirst, pnum, &id, (hdlexternalvariable *) hv)) {
-		
-		errornum = namenotwperror;
-		
-		return (false);
-		}
-	
-	if (id != idwordprocessor) {
-		
-		errornum = namenotwperror;
-		
-		return (false);
-		}
-	
-	return (true);
-	} /*getwpparam*/
-
-#endif
 
 
 boolean wpwindowopen (hdlexternalvariable hvariable, hdlwindowinfo *hinfo) {

@@ -280,31 +280,10 @@ static boolean buildmenuarray (hdlmenubarstack hstack, hdlmenuarray *hmenuarray)
 	register tyruntimemenurecord *pruntime;
 	short ctmenus = (**hstack).topstack;
 	
-	#if 0 //def flnewfeatures
-	
-		/*
-		THz savezone = GetZone ();
-		
-		SetZone (ApplicationZone ());
-		
-		*hmenuarray = (hdlmenuarray) NewHandleClear (ctmenus * sizeof (tyruntimemenurecord));
-		
-		SetZone (savezone);
-		
-		if (*hmenuarray == nil) {
-		
-			memoryerror ();
-			
-			return (false);
-			}
-		*/
-		
-	#else
 		
 		if (!newclearhandle (ctmenus * sizeof (tyruntimemenurecord), (Handle *) hmenuarray))
 			return (false);
 		
-	#endif
 	
 	pstack = (**hstack).stack;
 	
@@ -531,20 +510,11 @@ boolean langipcrunitem (long id, short idmenu, short iditem, long *refcon) {
 			}
 		}
 	
-	#if 0 /*flruntime*/
-		
-		if (!fl)
-			return (false);
-		
-		addprocess (hp); /*run it*/
-		
-	#else
 		
 		newlyaddedprocess = nil; /*clean up*/
 		
 		return (fl);
 	
-	#endif
 	
 	} /*langipcrunitem*/
 

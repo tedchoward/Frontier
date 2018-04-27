@@ -354,15 +354,6 @@ pascal boolean landsendverb (hdlverbrecord hverb, typaramrecord *result, bigstri
 			
 			if (!landgetstringparam (hresult, errorstringkey, bserror)) { /*no string*/
 				
-				#if 0
-				
-				register hdllandglobals hg = landgetglobals ();
-				short ixstring = *iderror;
-				
-				if ((ixstring > 0) && (ixstring <= usercancellederror)) /*one of our errors*/
-					GetIndString (bserror, (**hg).iderrorlist, ixstring);
-				
-				#endif
 				}
 			}
 		}

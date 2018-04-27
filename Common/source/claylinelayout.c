@@ -100,31 +100,6 @@ typedef struct tydisklinelayout {
 	memtodiskshort (rgb.green); \
 	memtodiskshort (rgb.blue); } while (0)
 
-#if 0
-
-static boolean midcolorof (Rect r, RGBColor *rgb1, RGBColor *rgb2, RGBColor *rgbmid) {
-	
-		GDHandle hgd;
-		
-		*rgbmid = *rgb2;
-		
-		hgd = GetMaxDevice (&r);
-		
-		return (GetGray (hgd, rgb1, rgbmid));
-
-	} /*midcolorof*/
-
-
-static void lightcolorof (RGBColor *rgb) {
-	
-	(*rgb).red += (65535 - (*rgb).red) / 3;
-	
-	(*rgb).green += (65535 - (*rgb).green) / 3;
-	
-	(*rgb).blue += (65535 - (*rgb).blue) / 3;
-	} /*lightcolorof*/
-
-#endif
 
 
 static void darkcolorof (RGBColor *rgb) {
@@ -541,30 +516,6 @@ static void getfattimestring (long modtime, bigstring bs) {
 	} /*getfattimestring*/
 	
 	
-#if 0
-
-static void getfatsizestring (tybrowserinfo *browserinfo, bigstring bs) {
-	
-	setemptystring (bs);
-		
-	if ((*browserinfo).flfolder) {
-		
-		short ctfiles = (*browserinfo).filesize;
-		
-		shorttostring (ctfiles, bs);
-		
-		pushstring (BIGSTRING ("\x05" " item"), bs);
-		
-		if (ctfiles != 1)
-			pushchar ('s', bs);
-	
-		return;
-		}
-	
-	getsizestring ((*browserinfo).filesize, bs);
-	} /*getfatsizestring*/
-
-#endif
 	
 
 static Rect rfilename, rframe, rdate;

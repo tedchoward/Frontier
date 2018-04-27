@@ -3352,7 +3352,6 @@ boolean langipchandlercall (hdltreenode htree, bigstring bsverb, hdltreenode hpa
 	} /*langipchandlercall*/
 
 
-#if 1
 
 /*
 static boolean handlekernelfunction (hdlverbrecord hverb) {
@@ -3491,171 +3490,6 @@ boolean langipckernelfunction (hdlhashtable htable, bigstring bsverb, hdltreenod
 	return (fl);
 	} /*langipckernelfunction*/
 
-#else
-
-static pascal OSErr handlekernelfunction (AppleEvent *event, AppleEvent *reply, long refcon) {
-	
-	/*
-	2.1b11 dmb: we're now pass the thread globals of the caller, so we can 
-	cleanly do our stuff.  also, since this isn't a fast event handler, we 
-	don't need to push/pop a fast context (and probably shouldn't)
-	*/
-	
-	AEDesc desc;
-	OSType type;
-	long size;
-	hdlhashtable htable;
-	bigstring bsverb;
-	hdlhashtable hcontext;
-	hdltreenode hparam1;
-	tyvaluerecord vreturned;
-	hdlthreadglobals hthreadglobals, hsaveglobals;
-	/*
-	tyfastverbcontext savecontext;
-	tylangcallbacks savecallbacks;
-	boolean flscriptwasrunning;
-	*/
-	OSErr err;
-	
-	/*
-	landpushfastcontext (&savecontext);
-	*/
-	
-	err = AEGetParamPtr (event, 'ktbl', typeLongInteger, &type, (Ptr) &htable, sizeof (long), &size);
-	
-	if (err != noErr)
-		goto exit;
-	
-	err = AEGetParamPtr (event, 'kvrb', typeChar, &type, (Ptr) bsverb + 1, lenbigstring, &size);
-	
-	if (err != noErr)
-		goto exit;
-	
-	setstringlength (bsverb, size);
-	
-	err = AEGetParamPtr (event, 'ctbl', typeLongInteger, &type, (Ptr) &hcontext, sizeof (long), &size);
-	
-	if (err != noErr)
-		goto exit;
-	
-	err = AEGetParamPtr (event, 'parm', typeLongInteger, &type, (Ptr) &hparam1, sizeof (long), &size);
-	
-	if (err != noErr)
-		goto exit;
-	
-	err = AEGetParamPtr (event, 'thrd', typeLongInteger, &type, (Ptr) &hthreadglobals, sizeof (hthreadglobals), &size);
-	
-	if (err != noErr)
-		goto exit;
-	
-	hsaveglobals = getcurrentthreadglobals ();
-	
-	copythreadglobals (hsaveglobals);
-	
-	swapinthreadglobals (hthreadglobals);
-	
-	langipchookfasterrors (reply);
-	
-	if (kernelfunctionvalue (htable, bsverb, hparam1, &vreturned)) {
-		
-		if (valuetodescriptor (&vreturned, &desc)) { /*consumes val*/
-			
-			AEPutParamDesc (reply, '----', &desc);
-			
-			AEDisposeDesc (&desc);
-			}
-		}
-	
-	langipcunhookfasterrors ();
-	
-	copythreadglobals (hthreadglobals);
-	
-	swapinthreadglobals (hsaveglobals);
-	
-	exit:
-	
-	/*
-	landpopfastcontext (&savecontext);
-	*/
-	
-	return (err);
-	} /*handlekernelfunction*/
-
-boolean langipckernelfunction (hdlhashtable htable, bigstring bsverb, hdltreenode hparam1, tyvaluerecord *vreturned) {
-	
-	/*
-	5/18/93 dmb: paired with handlerkernelfunction above, this routine decouples 
-	kernel functions so that they can be called from client processes via an AE.
-	
-	2.1b11 dmb: to reliably continue execution in the event handler, we need to 
-	pass the thread globals, not just the langcallbacks
-	*/
-	
-	AEDesc desc;
-	AppleEvent event = {typeNull, nil};
-	AppleEvent reply = {typeNull, nil};
-	OSErr err;
-	boolean fl = false;
-	hdlthreadglobals hthreadglobals;
-	
-	if (!newselfaddressedevent ('krnl', &event))
-		return (false);
-	
-	err = AEPutParamPtr (&event, 'ktbl', typeLongInteger, (Ptr) &htable, sizeof (long));
-	
-	if (err == noErr)
-		err = AEPutParamPtr (&event, 'kvrb', typeChar, (Ptr) bsverb + 1, stringlength (bsverb));
-	
-	if (err == noErr)
-		err = AEPutParamPtr (&event, 'ctbl', typeLongInteger, (Ptr) &currenthashtable, sizeof (long));
-	
-	if (err == noErr)
-		err = AEPutParamPtr (&event, 'parm', typeLongInteger, (Ptr) &hparam1, sizeof (long));
-	
-	/*
-	if (err == noErr)
-		err = AEPutParamPtr (&event, 'cbck', typeChar, (Ptr) &langcallbacks, sizeof (langcallbacks));
-	*/
-	
-	if (err == noErr) {
-		
-		hthreadglobals = getcurrentthreadglobals ();
-		
-		err = AEPutParamPtr (&event, 'thrd', typeLongInteger, (Ptr) &hthreadglobals, sizeof (hthreadglobals));
-		}
-	
-	if (err == noErr)
-		err = langipcsendevent (&event, &reply);
-	
-	AEDisposeDesc (&event);
-	
-	if (!oserror (err)) {
-		
-		if (AEGetParamDesc (&reply, 'errs', typeChar, &desc) == noErr) {
-			
-			bigstring bs;
-			
-			
-				datahandletostring (&desc, bs);
-			
-			
-			langerrormessage (bs);
-			}
-		else {
-			
-			err = AEGetParamDesc (&reply, '----', typeWildCard, &desc);
-			
-			if (!oserror (err))
-				fl = setdescriptorvalue (desc, vreturned);
-			}
-		}
-	
-	AEDisposeDesc (&reply);
-	
-	return (fl);
-	} /*langipckernelfunction*/
-
-#endif
 
 
 static pascal OSErr handleshowmenunode (const AppleEvent *event, AppleEvent *reply, long refcon) {
@@ -4054,7 +3888,6 @@ langipchandlefastscript (
 	OSErr err;
 	
 	
-	#if 1
 	
 		landpushfastcontext (&savecontext);
 		
@@ -4102,35 +3935,6 @@ langipchandlefastscript (
 		
 		landpopfastcontext (&savecontext);
 		
-	#else /*this code assumes that the component manger is present*/
-		
-		comp = OpenComponent (osacomponent);
-		
-		if (comp == nil)
-			err = memFullErr;
-		
-		else {
-			
-			err = AEGetKeyDesc (event, '----', typeChar, &script);
-			
-			if (err == noErr) {
-				
-				err = OSADoScript (comp, &script, kOSANullScript, typeChar, kOSANullMode, &result);
-				
-				AEDisposeDesc (&script);
-				
-				if (err == noErr) {
-					
-					err = AEPutKeyDesc (reply, '----', &result);
-					
-					AEDisposeDesc (&result);
-					}
-				}
-			
-			CloseComponent (comp);
-			}
-	
-	#endif
 	
 	
 	return (err);

@@ -362,20 +362,6 @@ boolean ploticoncustom (const Rect *r, short align, short transform, bigstring b
 	} /*ploticoncustom*/
 
 
-#if 0
-
-/*7.0b9 PBS: saved version that had test code for getting a bitmap from the odb.*/
-
-boolean ploticoncustom (const Rect *r, short align, short transform) {
-	
-	/*
-	7.0b9 PBS: plot a custom icon.
-	*/
-	
-
-	} /*ploticoncustom*/
-
-#endif
 
 
 boolean ploticon (const Rect *r, short id) {

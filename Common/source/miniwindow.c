@@ -149,20 +149,6 @@ void minisetselect (short startsel, short endsel) {
 	} /*minisetselect*/
 
 
-#if 0
-
-static void minigetactivetextrect (Rect *r) {
-	
-	*r = (**minidata).textrects [(**minidata).activetextitem];
-	} /*minigetactivetextrect*/
-
-
-static void minigetactivetextitem (short *item) {
-	
-	*item = (**minidata).textitems [(**minidata).activetextitem];
-	} /*minigetactivetextitem*/
-
-#endif
 
 
 static boolean miniselectallandactivate (short newactiveitem) {
@@ -431,44 +417,6 @@ static boolean minigettargetdata (short id) {
 	} /*minigettargetdata*/
 
 
-#if 0
-
-static void minizoomtexttoicon (void) {
-	
-	Rect rfrom, rto;
-	
-	minigetactivetextrect (&rfrom);
-	
-	zerorect (&rto);
-	
-	centerrect (&rto, (**minidata).iconrect);
-	
-	localtoglobalrect (miniwindow, &rfrom);
-	
-	localtoglobalrect (miniwindow, &rto);
-	
-	zoomrect (&rfrom, &rto, true);
-	} /*minizoomtexttoicon*/
-
-
-static void minizoomicontomsg (void) {
-	
-	Rect rfrom, rto;
-	
-	rto = (**minidata).msgrect;
-	
-	zerorect (&rfrom);
-	
-	centerrect (&rfrom, (**minidata).iconrect);
-	
-	localtoglobalrect (miniwindow, &rfrom);
-	
-	localtoglobalrect (miniwindow, &rto);
-	
-	zoomrect (&rfrom, &rto, true);
-	} /*minizoomicontomsg*/
-
-#endif
 
 
 static boolean miniiconhit (boolean flanimate) {

@@ -89,11 +89,6 @@ static OSErr DetermineAliasInfo(const FSSpec* fsSpec, OSType* creator, OSType* f
 							Boolean* gotCustom, FSSpec* iconSpec, short* rsrcID, unsigned short* fdFlags);
 
 
-#if 0
-	todo:
-		different kinds of disks (servers, floppies, ...)
-		filesharing?
-#endif
 
 
 static pascal OSErr CreateAliasFile(const FSSpec* targetFile, const FSSpec* aliasFile) {

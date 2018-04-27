@@ -2299,60 +2299,6 @@ void fillcalltable (XDLLProcTable *pt) {
 	} /*fillcalltable*/
 
 
-#if 0
-
-void smashcalltable (XDLLProcTable *pt) {
-
-	#if defined(MACVERSION) && TARGET_RT_MAC_MACHO
-
-		disposecfmfuncptr (pt->xMemAlloc);
-		disposecfmfuncptr (pt->xMemResize);
-		disposecfmfuncptr (pt->xMemLock);
-		disposecfmfuncptr (pt->xMemUnlock);
-		disposecfmfuncptr (pt->xMemFree);
-		disposecfmfuncptr (pt->xMemGetSize);
-
-		disposecfmfuncptr (pt->xOdbGetCurrentRoot);
-		disposecfmfuncptr (pt->xOdbNewFile);
-		disposecfmfuncptr (pt->xOdbOpenFile);
-		disposecfmfuncptr (pt->xOdbSaveFile);
-		disposecfmfuncptr (pt->xOdbCloseFile);
-		disposecfmfuncptr (pt->xOdbDefined);
-		disposecfmfuncptr (pt->xOdbDelete);
-		disposecfmfuncptr (pt->xOdbGetType);
-		disposecfmfuncptr (pt->xOdbCountItems);
-		disposecfmfuncptr (pt->xOdbGetNthItem);
-		disposecfmfuncptr (pt->xOdbGetValue);
-		disposecfmfuncptr (pt->xOdbSetValue);
-		disposecfmfuncptr (pt->xOdbNewTable);
-		disposecfmfuncptr (pt->xOdbGetModDate);
-		disposecfmfuncptr (pt->xOdbDisposeValue);
-		disposecfmfuncptr (pt->xOdbGetError);
-
-		disposecfmfuncptr (pt->xDoScript);
-		disposecfmfuncptr (pt->xDoScriptText);
-
-		disposecfmfuncptr (pt->xOdbNewListValue);
-		disposecfmfuncptr (pt->xOdbGetListCount);
-		disposecfmfuncptr (pt->xOdbDeleteListValue);
-		disposecfmfuncptr (pt->xOdbSetListValue);
-		disposecfmfuncptr (pt->xOdbGetListValue);
-		disposecfmfuncptr (pt->xOdbAddListValue);
-
-		disposecfmfuncptr (pt->xInvoke);
-		disposecfmfuncptr (pt->xCoerce);
-		
-		disposecfmfuncptr (pt->xCallScript);
-		disposecfmfuncptr (pt->xCallScriptText);
-		
-		disposecfmfuncptr (pt->xThreadYield);
-		disposecfmfuncptr (pt->xThreadSleep);
-
-	#endif
-	
-	} /*smashcalltable*/
-
-#endif
 
 
 boolean dllisloadedverb (hdltreenode hparam1, tyvaluerecord *vreturned) {

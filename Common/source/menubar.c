@@ -905,33 +905,12 @@ boolean menewmenubar (hdloutlinerecord houtline, hdlmenubarstack *hstack) {
 	
 	register hdlmenubarstack hs;
 	
-	#if 0
-	
-		THz savezone = GetZone ();
-		
-		SetZone (ApplicationZone ());
-		
-		*hstack = (hdlmenubarstack) NewHandleClear (sizeof (tymenubarstack));
-		
-		SetZone (savezone);
-		
-		hs = *hstack; /*move into register*/
-		
-		if (hs == nil) {
-		
-			memoryerror ();
-			
-			return (false);
-			}
-		
-	#else
 		
 		if (!newclearhandle (sizeof (tymenubarstack), (Handle *) hstack))
 			return (false);
 	
 		hs = *hstack; /*move into register*/
 		
-	#endif
 	
 	(**hs).menubaroutline = houtline;
 	

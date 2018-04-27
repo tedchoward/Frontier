@@ -1020,30 +1020,6 @@ void disposevaluerecord (tyvaluerecord val, boolean fldisk)
 	} /*disposevaluerecord*/
 
 
-#if 0
-
-static boolean isgarbagetype (tyvaluetype type) {
-	
-	/*
-	3.0.2b1 dmb: return true if the given type should be garbage collected 
-	during a an arithmetic operation
-	*/
-	
-	switch (type) {
-		
-		case stringvaluetype:
-		case doublevaluetype:
-		case binaryvaluetype:
-		case listvaluetype:
-		case recordvaluetype:
-			return (true);
-		
-		default:
-			return (false);
-		} /*switch*/
-	} /*isgarbagetype*/
-
-#endif
 
 
 void disposevalues (tyvaluerecord *val1, tyvaluerecord *val2) {
@@ -1467,15 +1443,9 @@ static boolean stringtorgb (tyvaluerecord *val) {
 	} /*stringtorgb*/
 
 
-#if 0 //THINK_C
-
-	#define pattern(p) (p)
-
-#else
 	
 	#define pattern(p) (p.pat)
 
-#endif
 
 static boolean stringtopattern (tyvaluerecord *val) {
 	
@@ -8055,25 +8025,6 @@ static hdltreenode langgetentrypoint (hdltreenode hcode, bigstring bsname, hdlha
 
 
 
-#if 0
-
-boolean langgetlocalhandlercode (bigstring bs, hdltreenode *hcode) {
-	
-	hdlhashtable htable;
-	tyvaluerecord val;
-	
-	if (!langgetsymbolval (bs, &val)) /*not found in local chain*/
-		return (false);
-	
-	if (val.valuetype != codevaluetype) /*not a local handler*/
-		return (false);
-	
-	*hcode = val.data.codevalue;
-	
-	return (true);
-	} /*langgetlocalhandlercode*/
-
-#endif
 
 
 boolean langgetnodecode (hdlhashtable ht, bigstring bs, hdlhashnode hnode, hdltreenode *hcode) {

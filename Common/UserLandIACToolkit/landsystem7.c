@@ -1258,67 +1258,6 @@ boolean landsystem7eventfilter (EventRecord *ev) {
 	} /*landsystem7eventfilter*/
 
 
-#if 0 // def THINK_C
-
-	static boolean landsystem7installhandler (AEEventClass class, AEEventID id, tyeventhandler handler) {
-		
-		/*
-		little layer to make code prettier
-		*/
-		
-		OSErr errcode;
-		
-		errcode = AEInstallEventHandler (class, id, (EventHandlerProcPtr) handler, 0, false);
-		
-		return (errcode == noErr);
-		} /*landsystem7installhandler*/
-	
-	
-	pascal boolean landsystem7installfasthandler (tyverbclass class, tyverbtoken token, tyeventhandler handler) {
-		
-		OSErr errcode;
-		
-		errcode = AEInstallEventHandler (class, token, (EventHandlerProcPtr) handler, (long) CurrentA5, true);
-		
-		return (errcode == noErr);
-		} /*landsystem7installfasthandler*/
-
-	
-	boolean landsystem7addclass (tyverbclass class) {
-		
-		return (landsystem7installhandler (class, typeWildCard, (ProcPtr) &landsystem7handleevent));
-		} /*landsystem7addclass*/
-	
-	
-	boolean landsystem7addfastverb (tyverbclass class, tyverbtoken token) {
-		
-		return (landsystem7installfasthandler (class, token, &landsystem7handleevent));
-		} /*landsystem7addfastverb*/
-	
-	
-	boolean landsystem7acceptanyverb (void) {
-		
-		OSErr errcode;
-		
-		errcode = AEInstallEventHandler (typeWildCard, typeWildCard, (EventHandlerProcPtr) &landsystem7handleevent, typeWildCard, false);
-		
-		return (errcode == noErr);
-		} /*landsystem7acceptanyverb*/
-	
-	
-	pascal boolean landsystem7removefasthandler (tyverbclass class, tyverbtoken token) {
-		
-		EventHandlerProcPtr handler;
-		long refcon;
-		
-		if (AEGetEventHandler (class, token, &handler, &refcon, true) != errAEHandlerNotFound) {
-			
-			if (refcon == (long) CurrentA5) /*it's our handler*/
-				AERemoveEventHandler (class, token, handler, true);
-			}
-		} /*landsystem7removefasthandler*/
-
-#else
 
 	static boolean landsystem7installhandlerUPP (AEEventClass class, AEEventID id, AEEventHandlerUPP handler) {
 		
@@ -1417,7 +1356,6 @@ boolean landsystem7eventfilter (EventRecord *ev) {
 		return (false);
 		} /*landsystem7removefasthandler*/
 
-#endif
 
 
 pascal boolean landsystem7pushparam (AERecord *evt, typaramtype type, Handle hval, void *pval, long len, typaramkeyword key) {

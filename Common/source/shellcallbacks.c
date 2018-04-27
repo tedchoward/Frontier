@@ -211,29 +211,6 @@ boolean shelldefaultsizeroutine (void) {
 	} /*shelldefaultsizeroutine*/
 
 
-#if 0
-
-static boolean shelldefaultstyleroutine (void) {
-	
-	/*
-	if the handler doesn't define a style routine, wire it into us.  we just
-	set the default style for the window and force a complete update.
-	*/
-	
-	register hdlwindowinfo hw = shellwindowinfo;
-	
-	shellsetdefaultstyle (hw); /*sets the defaultstyle field based on selectioninfo*/
-	
-	(**hw).selectioninfo.fldirty = true;
-	
-	eraserect ((**hw).contentrect);
-	
-	windowinval (shellwindow);
-	
-	return (true);
-	} /*shelldefaultstyleroutine*/
-
-#endif
 
 
 boolean shelldefaultselectioninfo (void) {

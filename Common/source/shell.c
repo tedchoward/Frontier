@@ -1105,19 +1105,4 @@ boolean shellinit (void) {
 
 	} /*shellinit*/
 
-#if 0 //TARGET_API_MAC_CARBON == 1
-static pascal void idleTimer (EventLoopTimerRef theTimer, void * userData)
-{
-	//I hate warnings, shut up the compiler
-	#pragma unused(theTimer)
-	#pragma unused(userData)
-	
-	boolean flbackground;
-	
-	fwsNetEventCheckAndAcceptSocket ();
-		
-	shellhandlenullevent (&flbackground);
-	
-}
-#endif
 

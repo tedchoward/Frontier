@@ -2444,16 +2444,6 @@ static pascal OSAError osaGetCreateProc (
 	} /*osaGetCreateProc*/
 
 
-#if 0
-
-	static pascal OSAError osaSetDefaultTarget (
-				hdlcomponentglobals	hglobals,
-				const AEAddressDesc*	target) {
-		
-		return (noErr);
-		} /*osaSetDefaultTarget*/
-
-#endif
 
 
 static pascal OSAError osacompiledesc (
@@ -4629,33 +4619,6 @@ boolean isosascriptnode (hdltreenode htree, tyvaluerecord *osaval) {
 	} /*isosascriptnode*/
 
 
-#if 0 //not used
-
-boolean isosascriptvalue (const tyvaluerecord *val) {
-	
-	/*
-	enforce a strong definition of an osascriptvalue: a binary whose type
-	is 'scpt', that might be confused with a packed Frontier script
-	*/
-	
-	Handle x;
-	OSErr err;
-	OSType subtype;
-	
-	if ((*val).valuetype != binaryvaluetype)
-		return (false);
-	
-	x = (*val).data.binaryvalue;
-	
-	if (getbinarytypeid (x) != typeOSAGenericStorage) /*it might be; can't tell*/
-		return (false);
-	
-	err = OSAGetStorageType (x, &subtype);
-	
-	return (err == noErr);
-	} /*isosascriptvalue*/
-
-#endif
 
 
 static pascal OSErr osaclientactive (long refcon) {

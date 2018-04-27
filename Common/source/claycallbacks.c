@@ -378,23 +378,6 @@ static boolean filegetprefsspec (bigstring fname, tybrowserspec *fsprefs) {
 
 #endif
 
-#if 0 //odbbrowser
-
-static boolean xxxfilegetprefsspec (bigstring fname, tybrowserspec *fsprefs) {
-	
-	tybrowservol vnum;
-	tybrowserdir dirid;
-	
-	vnum = databasedata;	// we really should use a different record, not an fsspec
-	
-	dirid = internaltable;
-	
-	claymakespec (vnum, dirid, fname, fsprefs);
-	
-	return (true);
-	} /*filegetprefsspec*/
-
-#endif
 
 
 #if filebrowser
@@ -944,23 +927,6 @@ static void claygetfilekindstring (const tybrowserinfo *info, bigstring bs) {
 			
 			return;
 		} /*switch*/
-#if 0	
-	if (clayfindapp ((*info).filecreator, &appspec, (*info).vnum)) {
-		
-		if (stringlength (appspec.name) > 0) {
-		
-			copystring (appspec.name, bs);
-	
-			pushstring (BIGSTRING ("\x09" " document"), bs);
-		
-			return;
-			}
-		}
-	else { /*DW 9/14/93 -- add it to the cache -- avoid future delays*/
-		
-		addapptocache ((*info).filecreator, nil);
-		}
-#endif
 	
 	copystring (BIGSTRING ("\x08" "document"), bs);
 	} /*claygetfilekindstring*/
