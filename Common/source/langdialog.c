@@ -305,7 +305,6 @@ boolean langsetdialogitemvis (hdltreenode hparam1, boolean fl, tyvaluerecord *vr
 	return (true);
 	} /*langsetdialogitemvis*/
 
-#if isFrontier && !flruntime
 
 static boolean langdialogeventhook (EventRecord *ev, WindowPtr w) {
 	
@@ -362,7 +361,6 @@ static boolean langdialogeventhook (EventRecord *ev, WindowPtr w) {
 	return (false); /*ignore the event*/
 	} /*langdialogeventhook*/
 
-#endif
 
 static boolean langdialogitemhit (DialogPtr pdialog, short itemnumber) {
 	

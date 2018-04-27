@@ -183,7 +183,6 @@ void removemenu (short idmenu) {
 	} /*removemenu*/
 
 
-#if defined(MACVERSION) && !flruntime
 
 long trackmenu (Point mousept) {
 	
@@ -223,7 +222,6 @@ long trackmenu (Point mousept) {
 	return ((long) menu << 16) + (unsigned short) item;
 	} /*trackmenu*/
 
-#endif
 
 boolean sethierarchicalmenuitem (hdlmenu hmenu, short itemnumber, hdlmenu hsubmenu, short idsubmenu) {
 

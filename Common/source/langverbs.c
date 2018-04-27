@@ -2879,7 +2879,6 @@ static boolean langfunctionvalue (short token, hdltreenode hparam1, tyvaluerecor
 			return (true);
 			}
 		
-	#if isFrontier && MACVERSION
 	
 		case seteventtimeoutfunc:
 			return (langipcsettimeout (hparam1, v));
@@ -2919,7 +2918,6 @@ static boolean langfunctionvalue (short token, hdltreenode hparam1, tyvaluerecor
 		case transactioneventfunc:
 			return (langipcmessage (hparam1, transactionmsg, v));
 	
-	#endif
 		
 		case timecreatedfunc: {
 			long timecreated, timemodified;

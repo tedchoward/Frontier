@@ -7527,13 +7527,11 @@ boolean kernelfunctionvalue (hdlhashtable htable, bigstring bsverb, hdltreenode 
 		return (false);
 		}
 	
-#if isFrontier && (MACVERSION || RABTEMPOUT)
 	if ((**ht).flverbsrequirewindow && !infrontierprocess ()) { /*verb may need to be run in frontier process*/
 		
 		if ((*valueroutine) (val.data.tokenvalue, nil, nil, nil)) /*yup*/
 			return (langipckernelfunction (ht, bsverb, hparam1, vreturned));
 		}
-#endif	
 	setemptystring (bserror);
 	
 	if (flprofiling) {
@@ -7861,9 +7859,7 @@ boolean langfunctioncall (hdltreenode hcallernode, hdlhashtable htable, hdlhashn
 	register hdltreenode hname;
 	register boolean fl;
 	hdlhashtable hlocaltable;
-#if (version5orgreater && defined (flcomponent))
 	tyvaluerecord osacode;
-#endif
 	
 		
 		if (hcode == nil) { /*can only be a kernel call -- or an error*/
@@ -8355,10 +8351,8 @@ boolean langhandlercall (hdltreenode htree, hdltreenode hparam1, tyvaluerecord *
 			}
 			
 
-	#if isFrontier && MACVERSION
 		if (langipchandlercall (htree, bsfunctionname, hparam1, vreturned)) /*3.0a*/
 			return (true);
-	#endif
 	
 	langparamerror (unknownfunctionerror, bsfunctionname);
 	
@@ -8429,7 +8423,6 @@ static boolean builtinvalue (tyfunctype token, hdltreenode hparam1, tyvaluerecor
 		case unpackfunc:
 			return (langunpackverb (hp1, v));
 			
-		#if isFrontier && (MACVERSION || RABNOTIMPEMENTED)
 
 			case appleeventfunc:
 				return (langipcmessage (hp1, normalmsg, v));
@@ -8443,7 +8436,6 @@ static boolean builtinvalue (tyfunctype token, hdltreenode hparam1, tyvaluerecor
 			case tableeventfunc:
 				return (langipctablemessage (hp1, v));
 			
-		#endif	
 
 		case objspecfunc:
 			flnextparamislast = true;
@@ -8485,7 +8477,6 @@ static boolean builtinvalue (tyfunctype token, hdltreenode hparam1, tyvaluerecor
 			return (true);
 			}
 		
-		#if isFrontier && !flruntime
 		
 		case myMooffunc: {
 			short ticksbetweenframes;
@@ -8511,7 +8502,6 @@ static boolean builtinvalue (tyfunctype token, hdltreenode hparam1, tyvaluerecor
 			return (true);
 			}
 		
-		#endif
 		
 			default:
 				/* do nothing */
