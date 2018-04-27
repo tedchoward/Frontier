@@ -231,30 +231,7 @@ resource 'STR#' (139, "System Scripts", locked, preload) {
 	}
 };
 
-#ifdef flruntime
-
-resource 'STR#' (141, "alerts", purgeable) {
-	{	/* array StringArray: 7 elements */
-		/* [1] */
-		"The version number of this database file is not recognized by this version of Frontier Runtime.",
-		/* [2] */
-		"The Runtime.root file must be in the same folder as the Frontier Runtime application.",
-		/* [3] */
-		"",
-		/* [4] */
-		"",
-		/* [5] */
-		"",
-		/* [6] */
-		"Not enough memory available to run Frontier Runtime.",
-		/* [7] */
-		"Frontier Runtime requires Macintosh System 7.0 or higher.",
-		/* [8] */
-		"The Thread Manager is not installed.  Some features will be unavailable."
-	}
-};
-
-#elif defined (PIKE)
+#if   defined (PIKE)
 
 resource 'STR#' (141, "alerts", purgeable) {
 	{	/* array StringArray: 7 elements */
@@ -338,7 +315,6 @@ resource 'STR#' (158, "lang misc", locked, preload) {
 		/* [2] */
 		"error",
 		
-		#ifndef flruntime
 		
 		/* [3] */
 		"on disk",
@@ -355,7 +331,6 @@ resource 'STR#' (158, "lang misc", locked, preload) {
 		/* [9] */
 		"enum",
 		
-		#endif
 		
 		/* [10] */
 		"number",
@@ -922,44 +897,6 @@ resource 'STR#' (258, "Mac Errors", purgeable) {
 	}
 };
 
-#ifdef flruntime
-
-resource 'STR#' (259, "OP Errors", purgeable) {
-	{	/* array StringArray: 5 elements */
-		/* [1] */
-		"",
-		/* [2] */
-		"",
-		/* [3] */
-		"",
-		/* [4] */
-		"The address of a script was expected here.",
-		/* [5] */
-		""
-	}
-};
-
-resource 'STR#' (265, "Table Verb Errors", purgeable) {
-	{	/* array StringArray: 3 elements */
-		/* [1] */
-		"",
-		/* [2] */
-		"",
-		/* [3] */
-		"The address of a table was expected here."
-	}
-};
-
-resource 'STR#' (266, "Menu Verb Errors", purgeable) {
-	{	/* array StringArray: 2 elements */
-		/* [1] */
-		"",
-		/* [2] */
-		"The address of a menubar was expected here."
-	}
-};
-
-#else
 
 resource 'STR#' (259, "OP Errors", purgeable) {
 	{	/* array StringArray: 6 elements */
@@ -978,18 +915,6 @@ resource 'STR#' (259, "OP Errors", purgeable) {
 	}
 };
 
-#ifdef fliowa
-
-resource 'STR#' (261, "Iowa Errors", purgeable) {
-	{	/* array StringArray: 2 elements */
-		/* [1] */
-		"Can’t do “draw.^0” because the target window does not contain a drawing.",
-		/* [2] */
-		"The address of an drawing was expected here."
-	}
-};
-
-#endif
 
 resource 'STR#' (264, "WP Verb Errors", purgeable) {
 	{	/* array StringArray: 2 elements */
@@ -1029,7 +954,6 @@ resource 'STR#' (267, "PICT Errors", purgeable) {
 	}
 };
 
-#endif
 
 resource 'STR#' (262, "File Errors", purgeable) {
 	{	/* array StringArray: 1 elements */
