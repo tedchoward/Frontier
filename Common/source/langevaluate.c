@@ -52,7 +52,6 @@
 #define fltryerrorstackcode false
 
 
-#ifdef PASCALSTRINGVERSION
 byte bscontainername [] = "\x0a" "_container\0";
 
 static byte nametryerrorval [] = "\x08" "tryerror\0";
@@ -61,17 +60,6 @@ static byte nametryerrorval [] = "\x08" "tryerror\0";
 	static byte nametryerrorstackval [] = "\x0d" "tryerrorstack\0";
 #endif
 
-#else
-
-byte bscontainername [] = "_container";
-
-static byte nametryerrorval [] = "tryerror";
-
-#if fltryerrorstackcode
-	static byte nametryerrorstackval [] = "tryerrorstack";
-#endif
-
-#endif
 
 void langseterrorline (hdltreenode hnode) {
 	

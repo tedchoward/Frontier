@@ -1481,9 +1481,7 @@ boolean buildfilename (unsigned char * pathsource, short pathtype, unsigned char
 	memmove (stringbaseaddress(dest), pathaddr, pathlen);
 	memmove (stringbaseaddress(dest)+pathlen, fileaddr, filelen);
 	setstringlength (dest, pathlen + filelen);
-#ifdef PASCALSTRINGVERSION
 		dest [stringlength(dest) + 1] = 0;
-#endif
 	return (true);
 	}
 

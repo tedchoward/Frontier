@@ -274,7 +274,6 @@ typedef	unsigned char byte, *ptrbyte;
 							lo = conditionalshortswap (loword (x)); \
 							hi = conditionalshortswap (hiword (x));} while (0)
 
-#ifdef PASCALSTRINGVERSION
 
 #define stringbaseaddress(bs) (bs+1)
 #define setstringlength(bs,len) (bs[0]=(char)(len))
@@ -284,18 +283,7 @@ typedef	unsigned char byte, *ptrbyte;
 #define setstringcharacter(bs,pos,ch) {bs[(pos)+1] = (ch);}
 #define stringsize(bs) (stringlength (bs) + 1)
 #define lastchar(bs) (bs [stringlength (bs)])
-#endif
 
-#ifdef CSTRINGVERSION
-#define stringbaseaddress(bs) (bs)
-#define	stringlength(bs) (strlen(bs))
-#define stringsize(bs) (stringlength (bs) + 1)
-#define setstringlength(bs,len) (bs[len]=0)
-#define setstringwithchar(ch,bs) {bs[1]=0;bs[0]=ch;}
-#define getstringcharacter(bs,pos) bs[pos]
-#define setstringcharacter(bs,pos,ch) {bs[pos] = ch;}
-#define lastchar(bs) (bs [stringlength (bs)-1])
-#endif
 
 #define BIGSTRING(s) ((unsigned char *)(s))
 

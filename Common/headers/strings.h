@@ -33,11 +33,7 @@
 	#include "memory.h"
 #endif
 
-#ifdef PASCALSTRINGVERSION
 	#define nullterminate(s) do {s [stringlength(s) + 1] = '\0';} while (0)
-#else
-	#define nullterminate(s) ((void *) 0)
-#endif
 
 /*global empty string*/
 

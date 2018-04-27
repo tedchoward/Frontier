@@ -964,8 +964,6 @@ void memoryerror ()
 #endif
 
 
-#ifdef PASCALSTRINGVERSION
-#endif
 
 
 
