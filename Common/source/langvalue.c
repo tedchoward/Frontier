@@ -5194,9 +5194,6 @@ boolean setintvarparam (hdltreenode hfirst, short pnum, short n) {
 	} /*setintvarparam*/
 
 
-#if lazythis_optimization
-	static int ctlazythis = 0;
-#endif
 
 boolean idvalue (hdltreenode htree, tyvaluerecord *val) {
 	
@@ -5231,20 +5228,6 @@ boolean idvalue (hdltreenode htree, tyvaluerecord *val) {
 	
 	if (!langsearchpathlookup (bs, &htable)) {
 
-		#if lazythis_optimization
-		
-		if (equalidentifiers (bs, STR_this)) { /*PBS 05/12/01, dmb 11/14/01*/
-		
-			ctlazythis++;
-
-			if (langgetthisaddress (&htable, bs)) {
-		
-				setaddressvalue (htable, bs, val);
-			
-				return (true);
-				}
-			}
-		#endif
 		}
 	
 	if (!langsymbolreference (htable, bs, val, &hnode))

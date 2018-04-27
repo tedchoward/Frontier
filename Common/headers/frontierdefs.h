@@ -50,7 +50,6 @@
 
 #define fldebug 1
 
-#undef lazythis_optimization
 #undef langexternalfind_optimization
 #define PASCALSTRINGVERSION 1
 #define SPEED 1

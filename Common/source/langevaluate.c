@@ -1904,9 +1904,6 @@ boolean evaluatetree (hdltreenode htree, tyvaluerecord *valtree) {
 	} /*evaluatetree*/
 
 
-#if lazythis_optimization
-	static int ctdeferredthis = 0;
-#endif
 
 boolean evaluatelist (hdltreenode hfirst, tyvaluerecord *val) {
 	
@@ -1957,10 +1954,8 @@ boolean evaluatelist (hdltreenode hfirst, tyvaluerecord *val) {
 	hdlhashtable hlocals; 
 	boolean fltmpval;
 	boolean flhavelocals, flneedlocals, flneedthis;
-#if !lazythis_optimization
 	hdlhashtable hthis;
 	bigstring bsthis;
-#endif
 
 
 	setbooleanvalue (false, val); /*default returned value*/
@@ -2004,12 +1999,8 @@ boolean evaluatelist (hdltreenode hfirst, tyvaluerecord *val) {
 		(**hlocals).lexicalrefcon = langgetlexicalrefcon ();
 		
 		if (flneedthis) {
-			#if lazythis_optimization
-				++ctdeferredthis;
-			#else
 				if (langgetthisaddress (&hthis, bsthis))
 					langsetthisvalue (hlocals, hthis, bsthis);
-			#endif
 			}
 		
 		if (tryerror != nil) {
