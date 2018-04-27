@@ -118,7 +118,6 @@ static boolean cmderrorroutine (long refcon, long lnum, short charnum, hdlhashta
 	a lang error occurred; select the offending text in the quickscript window
 	*/
 	
-	#ifdef flnewfeatures
 	
 	if (bsname != nil) { /*request is for name*/
 		
@@ -127,7 +126,6 @@ static boolean cmderrorroutine (long refcon, long lnum, short charnum, hdlhashta
 		return (true);
 		}
 	
-	#endif
 	
 	if (!startcmddialog ())
 		return (false);

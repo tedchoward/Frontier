@@ -413,17 +413,11 @@ boolean landgetappcreator (OSType *creator) {
 	ProcessSerialNumber psn;
 	ProcessInfoRec info;
 	
-	#ifdef flnewfeatures
 	
 		psn.highLongOfPSN = 0;
 		
 		psn.lowLongOfPSN =  kCurrentProcess;
 
-	#else
-	
-		GetCurrentProcess (&psn);
-	
-	#endif
 	
 	info.processInfoLength = (long) sizeof (info);
 	

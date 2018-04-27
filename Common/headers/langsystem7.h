@@ -81,7 +81,6 @@ extern boolean evaluateobjspec (hdltreenode, tyvaluerecord *);
 
 extern boolean isobjspectree (hdltreenode);
 
-#ifdef flnewfeatures
 
 extern boolean filespecaddvalue (tyvaluerecord *, tyvaluerecord *, tyvaluerecord *);
 
@@ -135,6 +134,5 @@ extern boolean listdeletevalue (tyvaluerecord *, bigstring, tyvaluerecord *);
 
 extern boolean langvisitlistvalues (tyvaluerecord *, langvisitlistvaluescallback, ptrvoid); /*2003-04-28 AR*/
 
-#endif
 
 

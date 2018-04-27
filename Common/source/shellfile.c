@@ -1023,7 +1023,6 @@ boolean shellclose (WindowPtr wclose, boolean fldialog) {
 	if (w == nil) /*closing a nil window is very easy*/
 		return (true);
 
-	#ifdef flnewfeatures
 	
 	if (!isshellwindow (w)) {
 		
@@ -1033,7 +1032,6 @@ boolean shellclose (WindowPtr wclose, boolean fldialog) {
 		return (false);
 		}
 	
-	#endif
 	
 	if (!getwindowinfo (w, &hinfo))
 		return (false);

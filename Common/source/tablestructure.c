@@ -630,11 +630,9 @@ boolean cleartablestructureglobals (void) {
 	
 	menubartable = nil;
 	
-	#ifdef flnewfeatures
 	
 	objectmodeltable = nil;
 	
-	#endif
 	
 	/*these are never disposed; they're shared among all files
 	

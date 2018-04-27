@@ -1577,9 +1577,7 @@ static boolean fwsnewprocess (hdltreenode hcode, bigstring bsname, hdlprocessrec
 	
 	item.errorrefcon = 0;
 
-#ifdef flnewfeatures
 	item.profilebase = 0;		
-#endif
 	
 	(**herrorstack).stack [(**herrorstack).toperror++] = item;
 

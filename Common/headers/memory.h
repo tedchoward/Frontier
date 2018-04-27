@@ -64,9 +64,7 @@ typedef struct handlestream {
 
 	extern boolean newfilledhandle (ptrvoid, long, Handle *);
 
-	#ifdef flnewfeatures
 		extern boolean newgrowinghandle (long, Handle *);
-	#endif
 
 	extern boolean copyhandle (Handle, Handle *);
 
@@ -100,9 +98,7 @@ typedef struct handlestream {
 
 	#define newfilledhandle(ptr, sz, ph) debugnewfilledhandle(__FILE__, __LINE__, GetCurrentThreadId(), ptr, sz, ph)
 
-	#ifdef flnewfeatures
 		#define newgrowinghandle(sz, ph) debugnewgrowinghandle(__FILE__, __LINE__, GetCurrentThreadId(), sz, ph)
-	#endif
 
 	#define copyhandle(h, ph) debugcopyhandle(__FILE__, __LINE__, GetCurrentThreadId(), h, ph)
 
@@ -133,9 +129,7 @@ typedef struct handlestream {
 
 	extern boolean debugnewfilledhandle (char * filename, unsigned long linenumber, unsigned long threadid, ptrvoid, long, Handle *);
 
-	#ifdef flnewfeatures
 		extern boolean debugnewgrowinghandle (char * filename, unsigned long linenumber, unsigned long threadid, long, Handle *);
-	#endif
 
 	extern boolean debugcopyhandle (char * filename, unsigned long linenumber, unsigned long threadid, Handle, Handle *);
 
@@ -185,11 +179,9 @@ extern void clearhandle (Handle);
 
 extern void movefromhandle (Handle, ptrvoid, long);
 
-#ifdef flnewfeatures
 
 extern boolean prepareforgrowing (Handle);
 
-#endif
 
 extern short comparehandles (Handle, Handle);
 

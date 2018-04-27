@@ -909,7 +909,6 @@ boolean copyvaluerecord (tyvaluerecord v, tyvaluerecord *vreturned) {
 	#endif
 			initvalue (vreturned, novaluetype);
 			
-			#ifdef flnewfeatures
 				
 				if (v.fldiskval) {
 					/*
@@ -925,12 +924,6 @@ boolean copyvaluerecord (tyvaluerecord v, tyvaluerecord *vreturned) {
 					if (!copyhandle (v.data.binaryvalue, &x))
 						return (false);
 					}
-			#else
-			
-				if (!copyhandle (v.data.binaryvalue, &x))
-					return (false);
-			
-			#endif
 
 			return (setheapvalue (x, v.valuetype, vreturned));
 		
@@ -8098,11 +8091,9 @@ boolean langfunctioncall (hdltreenode hcallernode, hdlhashtable htable, hdlhashn
 	
 	(**hlocaltable).fllocaltable = true; // 5.1.4: set now so pre-assignments know scope
 	
-	#ifdef flnewfeatures
 	
 	langseterrorcallbackline ();
 	
-	#endif
 	
 	fl = langaddfuncparams (hname, hparam1, hlocaltable);
 	

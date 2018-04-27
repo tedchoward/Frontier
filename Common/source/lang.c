@@ -236,7 +236,6 @@ boolean langpusherrorcallback (langerrorcallback errorroutine, long errorrefcon)
 	
 	item.errorrefcon = errorrefcon;
 	
-	#ifdef flnewfeatures
 	
 	item.profilebase = 0;
 	
@@ -255,7 +254,6 @@ boolean langpusherrorcallback (langerrorcallback errorroutine, long errorrefcon)
 			}
 		}
 	
-	#endif
 	
 	(**hs).stack [(**hs).toperror++] = item;
 	
@@ -278,7 +276,6 @@ boolean langpoperrorcallback (void) {
 	
 	ixtop = --(**hs).toperror;
 	
-	#ifdef flnewfeatures
 	
 	if (hp && (**hp).flprofiling) {
 	
@@ -300,13 +297,11 @@ boolean langpoperrorcallback (void) {
 			(*pe).profilebase = getmilliseconds ();
 		}
 	
-	#endif
 	
 	return (true);
 	} /*langpoperrorcallback*/
 
 
-#ifdef flnewfeatures	// flstacktrace
 
 boolean langseterrorcallbackline (void) {
 	
@@ -328,7 +323,6 @@ boolean langseterrorcallbackline (void) {
 	return (true);
 	} /*langpoperrorcallback*/
 
-#endif
 
 
 unsigned long langgetsourceoffset (unsigned long lnum, unsigned short charnum) {

@@ -375,7 +375,6 @@ extern boolean langgetsourcecodeaddress (hdlhashtable *htable, bigstring bsname)
 extern boolean langerrormessage (bigstring);
 
 
-#ifdef flnewfeatures
 
 extern boolean langruncard (hdltreenode hparam1, boolean flmodal, tyvaluerecord *vreturned); /*langcard.c*/
 
@@ -385,7 +384,6 @@ extern boolean langsetmodalcardtimeout (hdltreenode, tyvaluerecord *);
 
 extern boolean langcardstart (void);
 
-#endif
 
 
 extern boolean langdialogrunning (void); /*langdialog.c*/

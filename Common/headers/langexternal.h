@@ -71,11 +71,9 @@ typedef enum tyexternalid { /*11/17/90 DW: order determines sort order when view
 	
 	idpictprocessor,
 	
-	#ifdef flnewfeatures
 	
 	idappleprocessor,
 	
-	#endif
 	
 	/*new types must be added at end of list, these get saved on disk*/
 	

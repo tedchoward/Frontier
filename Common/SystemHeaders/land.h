@@ -613,7 +613,6 @@ typedef struct tylandglobals {
 	
 	pascal boolean landvisitsleepingthreads (landqueuepopcallback, long);
 	
-	#ifdef flnewfeatures
 	
 	pascal boolean landsystem7geteventrecords (hdlverbrecord, AppleEvent *, AppleEvent *);
 	
@@ -629,11 +628,6 @@ typedef struct tylandglobals {
 	
 	pascal void landpopfastcontext (const tyfastverbcontext *);
 
-	#else
-	
-	pascal OSErr landsystem7callhandler (hdlverbrecord, tyeventhandler);
-	
-	#endif
 	
 	pascal OSErr landsystem7suspendevent (hdlverbrecord);
 

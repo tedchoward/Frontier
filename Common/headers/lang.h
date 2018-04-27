@@ -247,7 +247,6 @@ typedef enum tyvaluetype { /*use care -- these are saved on disk inside symbol t
 	
 	aliasvaluetype = 27,
 	
-	#ifdef flnewfeatures
 	
 	enumvaluetype = 28,
 	
@@ -255,7 +254,6 @@ typedef enum tyvaluetype { /*use care -- these are saved on disk inside symbol t
 	
 	recordvaluetype = 30,
 	
-	#endif
 	
 	/*
 	the following value types, outline - pictvaluetype, are never used directly.
@@ -550,13 +548,11 @@ typedef struct tyerrorrecord {
 	
 	unsigned short errorchar;
 	
-	#ifdef flnewfeatures
 	
 	unsigned long profilebase;
 	
 	unsigned long profiletotal;
 	
-	#endif
 	
 	long errorrefcon;
 	} tyerrorrecord;
@@ -661,11 +657,9 @@ typedef struct tylangcallbacks {
 	
 	langeventcallback processeventcallback;
 	
-	#ifdef flnewfeatures
 	
 	langerrormessagecallback debugerrormessagecallback;
 	
-	#endif
 	
 	#ifdef flcomponent
 	
@@ -812,11 +806,9 @@ extern void langsymboldeleted (hdlhashtable, const bigstring);
 
 extern boolean langbackgroundtask (boolean);
 
-#ifdef flnewfeatures
 
 extern boolean langpartialeventloop (short);
 
-#endif
 
 #ifdef flcomponent
 

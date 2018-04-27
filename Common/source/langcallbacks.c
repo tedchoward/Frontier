@@ -225,11 +225,9 @@ boolean langerrormessage (bigstring bs) {
 	
 	fllangerror = true; /*only display once for each script*/
 	
-	#ifdef flnewfeatures	// flstacktrace
 	
 	langseterrorcallbackline ();
 	
-	#endif
 	
 	if (!(*langcallbacks.debugerrormessagecallback) (bs, langcallbacks.errormessagerefcon))
 		return (false);
