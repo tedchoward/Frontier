@@ -278,11 +278,7 @@ boolean pushstring (bigstring bssource, bigstring bsdest) {
 	
 	setstringlength (bsdest, lendest + lensource);
 	
-#ifdef SPEED
 	moveleft (psource, pdest, lensource);
-#else
-	while (lensource--) *pdest++ = *psource++;
-#endif	
 	
 	return (true);
 	} /*pushstring*/
@@ -1256,21 +1252,10 @@ void copystring (const bigstring bssource, bigstring bsdest) {
 		return;
 		}
 	
-#ifdef SPEED
 	len = stringsize (bssource);
 
 	moveleft ((ptrstring) bssource, bsdest, len);
 
-#else
-	short i;
-
-	len = stringlength (bssource);
-
-	for (i = 0; i < len; i++)
-		setstringcharacter (bsdest, i, getstringcharacter (bssource, i));
-
-	setstringlength (bsdest, len);
-#endif
 
 	/*
 	len = (short) bssource [0];
