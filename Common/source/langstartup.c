@@ -241,7 +241,7 @@ static boolean initenvironment ( hdlhashtable ht ) {
 	
 		Handle hcommand, hreturn;
 		bigstring bs;
-		unsigned long x;
+		long x;
 		
 		newemptyhandle ( &hreturn );
 		

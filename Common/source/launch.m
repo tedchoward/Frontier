@@ -351,13 +351,9 @@ boolean activateapplication (bigstring bsprogram) {
 	//Changed because using SysEnvisons and SysEnvRec is like Really old style
 	//This was changed to Gestalt calls with two new globals see mac.c initmacintosh
 	
-	flsystem7 = (gSystemVersion >= 0x0700);
 	
-	if (flsystem7)
-		return (system7activate (bsprogram));
-	else
-		return (system6activate (bsprogram));
-
+    return (system7activate (bsprogram));
+	
 	} /*activateapplication*/
 
 
@@ -542,10 +538,6 @@ short countapplications (void) {
 	//Code change by Timothy Paustian Friday, June 9, 2000 2:36:02 PM
 	//Changed because using SysEnvisons and SysEnvRec is like Really old style
 	//This was changed to Gestalt calls with two new globals see mac.c initmacintosh
-	flsystem7 = (gSystemVersion >= 0x0700);
-	
-	if (!flsystem7)
-		return (0);
 	
 	initprocessvisitinfo (&info);
 	
@@ -572,10 +564,6 @@ boolean getnthapplication (short n, bigstring bsprogram) {
 	//Code change by Timothy Paustian Friday, June 9, 2000 2:36:02 PM
 	//Changed because using SysEnvisons and SysEnvRec is like Really old style
 	//This was changed to Gestalt calls with two new globals see mac.c initmacintosh
-	flsystem7 = (gSystemVersion >= 0x0700);
-	
-	if (!flsystem7)
-		return (false);
 	
 	initprocessvisitinfo (&info);
 	
@@ -644,11 +632,6 @@ boolean getapplicationfilespec (bigstring bsprogram, ptrfilespec fs) {
 		boolean flsystem7;
 		
 		clearbytes ( fs, sizeof ( *fs ) );
-
-		flsystem7 = (gSystemVersion >= 0x0700);
-		
-		if (!flsystem7)
-			return (false);
 		
 		if (bsprogram == nil) { // get path to this process
 			

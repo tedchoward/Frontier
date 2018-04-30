@@ -54,7 +54,6 @@ typedef struct tymemoryconfig {
 
 /*globals*/
 
-extern long	gSystemVersion;
 extern boolean	gHasColorQD;
 extern boolean	gCanUseNavServ;
 

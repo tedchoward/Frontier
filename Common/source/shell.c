@@ -929,9 +929,6 @@ boolean shellinit (void) {
 		//Changed because using SysEnvisons and SysEnvRec is like Really old style
 		//This was changed to Gestalt calls with two new globals see mac.c initmacintosh
 	
-		if (gSystemVersion < 0x0700)
-			return (showerrorandexit (archaicsystemstring));
-		
 		initfsdefault (); /* 2005-07-18 creedon, karstenw - init fsdefault here, don't leave it up to an
 					   FSMakeFSSpec call at some unknown time, see
 					   < http://sourceforge.net/tracker/index.php?func=detail&aid=1239991&group_id=120666&atid=687798 > */

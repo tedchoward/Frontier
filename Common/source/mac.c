@@ -36,7 +36,6 @@
 #include "error.h"
 #define kNumberOfMasters 128
 
-long	gSystemVersion;
 boolean	gHasColorQD;
 boolean gCanUseNavServ;
 
@@ -109,11 +108,8 @@ boolean initmacintosh (void) {
 	
 	{	
 		long quickDrawFeatures;
-		OSErr theErr = Gestalt(gestaltSystemVersion, &gSystemVersion);
-		if(oserror(theErr))
-			ExitToShell();
-
-		theErr = Gestalt(gestaltQuickdrawFeatures, &quickDrawFeatures);
+		
+		OSErr theErr = Gestalt(gestaltQuickdrawFeatures, &quickDrawFeatures);
 		
 		if(oserror(theErr))
 			ExitToShell();
