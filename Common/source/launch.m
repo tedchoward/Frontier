@@ -31,7 +31,7 @@
 
 	#include <land.h>
 	#include "mac.h"
-
+#import <Foundation/Foundation.h>
 
 #include "error.h"
 #include "memory.h"
@@ -653,39 +653,24 @@ boolean getapplicationfilespec (bigstring bsprogram, ptrfilespec fs) {
 		if (bsprogram == nil) { // get path to this process
 			
 			#if TARGET_RT_MAC_MACHO
-			
-				CFBundleRef mybundleref;
-				CFURLRef myurlref;
-				FSRef fsref;
-				boolean res;
-				
-				mybundleref = CFBundleGetMainBundle();
-				
-                if (mybundleref == NULL) {
-                    fprintf(stderr, "mybundleref == NULL");
-					return (false);
-                }
-				
-				myurlref = CFBundleCopyBundleURL(mybundleref);
-				
-                if (myurlref == NULL) {
-                    fprintf(stderr, "myurlref == NULL");
-					return (false);
+            
+                NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
+                NSBundle *mybundle = [NSBundle mainBundle];
+                NSURL *myurl = [mybundle bundleURL];
+                NSLog(@"bundle url = %@", [myurl absoluteString]);
+            
+                FSRef fsref;
+            
+                boolean res = CFURLGetFSRef((CFURLRef) myurl, &fsref);
+                OSErr err = noErr;
+            
+                if (res) {
+                    err = macmakefilespec(&fsref, fs);
                 }
             
-                CFStringRef urlStr = CFURLGetString(myurlref);
-                const char *urlCstring = CFStringGetCStringPtr(urlStr, kCFStringEncodingMacRoman);
-                fprintf(stderr, "bundle url = '%s'\n", urlCstring);
-
-				res = CFURLGetFSRef ( myurlref, &fsref );
-				
-				CFRelease(myurlref);
-				
-				if (!res)
-					return (false);
-				
-				return ( macmakefilespec ( &fsref, fs ) == noErr );
-				
+                [pool release];
+            
+                return (res && noErr == err);
 			#else
 			
 				ProcessInfoRec processinfo;
