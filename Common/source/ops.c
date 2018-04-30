@@ -301,7 +301,6 @@ boolean stringtoshort (bigstring bs, short *shortval) {
 	#define Decimal decimal
 	#define DecForm decform
 	
-	#ifndef THINK_C
 	
 	/*
 	3.0.4 dmb: make these work with Metrowerks fp.h
@@ -337,7 +336,6 @@ boolean stringtoshort (bigstring bs, short *shortval) {
 		convertcstring (s);
 		} /*num2str*/
 	
-	#endif
 	
 	
 	boolean stringtofloat (bigstring bs, double *pfloat) {

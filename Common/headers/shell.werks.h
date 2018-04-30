@@ -37,11 +37,9 @@
 
 
 
-	#ifndef THINK_C
 		#include "shellheaders.h"
 		#pragma once on
 		#pragma syspath_once on
-	#endif
 
 
 

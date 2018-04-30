@@ -1711,15 +1711,9 @@ static boolean hashquicksort (hdlhashtable htable) {
 		
 		pushhashtable (ht);
 		
-		#ifdef THINK_C
-		
-			qsort (*hlist, ctitems, sizeof (hdlhashnode), (__cmp_func) &hashcompare);
-		
-		#else
 		
 			qsort (*hlist, ctitems, sizeof (hdlhashnode), &hashcompare);
 		
-		#endif
 		
 		pophashtable ();
 		}

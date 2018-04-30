@@ -61,11 +61,9 @@ enum { /*ipcmessageflags*/
 
 /*globals*/
 
-#ifndef THINK_C
 
 	extern typrocessid langipcself;
 
-#endif
 
 
 /*prototypes*/

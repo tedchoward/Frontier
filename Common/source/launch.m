@@ -635,7 +635,6 @@ boolean getapplicationfilespec (bigstring bsprogram, ptrfilespec fs) {
 		
 		if (bsprogram == nil) { // get path to this process
 			
-			#if TARGET_RT_MAC_MACHO
             
                 NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
                 NSBundle *mybundle = [NSBundle mainBundle];
@@ -654,27 +653,6 @@ boolean getapplicationfilespec (bigstring bsprogram, ptrfilespec fs) {
                 [pool release];
             
                 return (res && noErr == err);
-			#else
-			
-				ProcessInfoRec processinfo;
-				ProcessSerialNumber psn;
-				
-				processinfo.processInfoLength = sizeof (processinfo);
-				
-				processinfo.processName = nil; // place to store process name
-				
-				processinfo.processAppSpec = fs; // place to store process filespec
-				
-				psn.highLongOfPSN = 0;
-				
-				psn.lowLongOfPSN = kCurrentProcess;
-				
-				if (GetProcessInformation (&psn, &processinfo) != noErr)
-					return (false);
-				
-				return (true);
-				
-			#endif
 			
 			}
 		
@@ -714,13 +692,7 @@ boolean executeresource (ResType type, short id, bigstring bsname) {
 	
 	lockhandle (hcode);
 	
-	#if THINK_C
-	
-	CallPascal (*hcode);
-	
-	//Code change by Timothy Paustian Sunday, May 7, 2000 11:18:54 PM
-	//we can just call the routine directly. I think.
-	#elif TARGET_RT_MAC_CFM
+	#if   TARGET_RT_MAC_CFM
 	
 		(*(pascal void (*) (void)) hcode) ();
 		

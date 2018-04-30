@@ -35,11 +35,9 @@
 	#endif
 #endif
 
-	#ifndef THINK_C
 		#include "carbonheaders.h"
 		#pragma once on
 		#pragma syspath_once on
-	#endif
 
 
 #undef fltrialsize

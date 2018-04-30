@@ -38,15 +38,9 @@ typedef struct tystack {
 
 	short elemsize;
 	
-	#if THINK_C
-		
-		byte stack [];
-	
-	#else
 			
 		byte stack [1];
 	
-	#endif	
 	} tystack, *ptrstack, **hdlstack;
 
 
@@ -93,15 +87,9 @@ typedef struct tyundostack {
 	
 	long globaldata;
 	
-	#if THINK_C
-		
-		tyundorecord undostep [];
-	
-	#else
 	
 		tyundorecord undostep [1];
 		
-	#endif
 	} tyundostack, *ptrundostack, **hdlundostack;
 #pragma options align=reset
 

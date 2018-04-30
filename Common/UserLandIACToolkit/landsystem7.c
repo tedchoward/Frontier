@@ -547,18 +547,9 @@ static pascal OSErr landsystem7handleevent (AppleEvent *message, AppleEvent *rep
 	
 	if (flsystemevent) {
 		
-		#if THINK_C
-			
-			asm {
-				move.l	a5,-(a7)
-				move.l	refcon,a5
-				}
-			
-		#else
 			
 			curA5 = SetUpAppA5 ();
 		
-		#endif
 		
 		landpushfastcontext (&savecontext);
 		}
@@ -615,17 +606,9 @@ static pascal OSErr landsystem7handleevent (AppleEvent *message, AppleEvent *rep
 			
 			landpopfastcontext (&savecontext);
 			
-			#if THINK_C
-			
-				asm {
-					move.l	(a7)+,a5
-					}
-			
-			#else
 			
 				RestoreA5 (curA5);
 			
-			#endif
 			}
 		
 		return (errcode);

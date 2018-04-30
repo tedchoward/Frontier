@@ -136,50 +136,6 @@ boolean equalidentifiers (const bigstring bs1, const bigstring bs2) {
 	} /*equalidentifiers*/
 
 
-#ifdef THINK_C
-
-short comparestrings (bigstring bs1, bigstring bs2) {
-
-	/*
-	3/31/93 dmb: asm pascal string comparison, based on strncmp
-	*/
-	
-	asm {
-			movem.l	d3-d4,-(sp)		;  save registers
-			
-			moveq	#0,d0			;  D0.L = result
-			movea.l	bs1,a0			;  A0 = bs1
-			movea.l	bs2,a1			;  A1 = bs2
-			
-			moveq	#0,d1
-			move.b	(a0)+,d1		;  D1 = len1
-			moveq	#0,d2
-			move.b	(a1)+,d2		;  D2 = len2
-			
-			move.l	d1,d3			;  D3 = len1
-			cmp.l	d2,d3
-			ble.s	@1
-			move.l	d2,d3			;  D3 = min (len1, len2)
-			
-	@1		subq.l	#1,d3
-	@2		bmi.s	@3
-			move.b	(a0)+,d4
-			cmp.b	(a1)+,d4
-			beq.s	@1
-			
-			bra.s	@4
-	@3		cmp.l	d2,d1
-			beq.s	@9
-			
-	@4		bhi.s	@5
-			subq.l	#2,d0
-	@5		addq.l	#1,d0
-	
-	@9		movem.l	(sp)+,d3-d4		;  restore registers
-		}
-	} /*comparestrings*/
-
-#else
 
 short comparestrings (bigstring bs1, bigstring bs2) {
 
@@ -222,7 +178,6 @@ short comparestrings (bigstring bs1, bigstring bs2) {
 	return (IUCompString (bs1, bs2));
 	} #*comparestrings*/
 
-#endif
 
 
 short compareidentifiers (bigstring bs1, bigstring bs2) {

@@ -781,18 +781,9 @@ static pascal ComponentResult osaRunSharedMenuItem (hdlcomponentglobals hglobals
 			
 			clienta5 = osapreclientcallback (hcg);
 			
-			#ifdef THINK_C
-				
-				asm {
-					move.l	a5,-(a7)
-					move.l	clienta5,a5
-					}
-			
-			#else
 			
 				appA5 = SetUpCurA5 ();	// SetUpThisA5 (clienta5);	// 4.0b5: was: SetUpCurA5 ();
 			
-			#endif
 			
 			err = OSADoScript (comp, &desc, kOSANullScript, typeChar, kOSANullMode, &result);
 			
@@ -865,22 +856,11 @@ static pascal ComponentResult osaRunSharedMenuItem (hdlcomponentglobals hglobals
 		else {
 			clienta5 = osapreclientcallback (hcg);
 			
-			#ifdef THINK_C
-			
-			asm {
-				move.l	a5,-(a7)
-				move.l	clienta5,a5
-				}
-				
-				(*(tyMSstringcallback)MSglobals.scripterrorcallback) (bserror);
-			
-			#else
 			
 				appA5 = SetUpCurA5 ();	// SetUpThisA5 (clienta5);	// 4.0b5: was: SetUpCurA5 ();
 				
 				CallMSstringcallbackProc (MSglobals.scripterrorcallback, bserror);
 				
-			#endif
 			
 			RestoreA5 (appA5);
 			
@@ -1400,20 +1380,10 @@ static pascal ComponentResult menusharingdispatch (register ComponentParameters 
 				
 				selfa5 = GetComponentRefcon (self);
 				
-				#ifdef THINK_C
-					
-					asm {
-						move.l	a5,clienta5
-						move.l	a5,-(a7)
-						move.l	selfa5,a5
-						}
-					
-				#else
 				
 					clienta5 = SetUpAppA5 ();
 					
 
-				#endif
 				
 				
 				
