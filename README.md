@@ -9,11 +9,9 @@ to run this software.*
 - Download the OPML Editor distribution flle from: [static.tedchoward.com][opml-dl]
   - This image contains the root database file (`opml.root`) and other files
     necessary to run the OPML Editor.
-- Double-click `OPML.dmg`. This mounts the "disk image".
 - Drag the `OPML` folder to `/Applications`
 - Download an OPML Editor application binary (`OPML.app.zip`) from the
   [GitHub Releases Page][dev].
-- Double-click `OPML.app.zip`. This extracts `OPML.app`
 - Drag `OPML.app` to `/Applications/OPML`
 - `CTRL`-click `OPML.app` to view the context menu, and click *Open* in the
   context menu.
