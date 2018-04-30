@@ -20,11 +20,13 @@ to run this software.*
 
 ### The `develop` branch
 
+- More experimental builds
 - Latest Release: [OPML Editor v10.2d4][dev].
 - Builds and runs in Xcode 9 on macOS 10.13, but requires the 10.6 sdk.
 
 ### The `master` branch
 
+- More "stable" builds
 - Latest Release: [OPML Editor v10.1b21][mas].
 - Builds in Xcode 4 on Mac OS X 10.6, but requires the 10.4 sdk.
 - Runs on macOS 10.13
