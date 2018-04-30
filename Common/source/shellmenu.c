@@ -936,7 +936,7 @@ boolean pikequit () {
 
 	releasethreadglobals ();
 
-	return (bsresult == bsfalse);
+    return comparestrings(bsresult, bsfalse) == 0;
 	} /*pikequit*/
 
 #endif

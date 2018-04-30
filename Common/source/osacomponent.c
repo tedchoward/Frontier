@@ -76,7 +76,7 @@ static boolean osabackgroundtask (boolean);
 
 static boolean osadebugger (hdltreenode);
 
-static boolean osapartialeventloop (short);
+static boolean osapartialeventloop (UInt16);
 
 static pascal OSErr osaclientactive (long refcon);
 
@@ -1334,7 +1334,7 @@ void osaremovepatch (hdlcomponentglobals hglobals, GNEUPP origproc) {
 
 
 
-static boolean osapartialeventloop (short desiredevents) {
+static boolean osapartialeventloop (UInt16 desiredevents) {
 	
 	/*
 	2.1b8 dmb: we can't call waitnextevent on behalf of the client, because 

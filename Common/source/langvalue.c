@@ -3337,10 +3337,6 @@ boolean coercetobinary (tyvaluerecord *val) {
 				
 				return (setheapvalue (x, binaryvaluetype, v));
 				}
-			
-			langerror (cantcoercetobinaryerror);
-			
-			return (false);
 		} /*switch*/
 	
 	memtodisklong (typeid);

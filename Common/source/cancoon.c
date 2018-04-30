@@ -1690,7 +1690,7 @@ static boolean ccrestoreglobals (void) {
 	} /*ccrestoreglobals*/
 
 
-static boolean ccpartialeventloop (short desiredevents) {
+static boolean ccpartialeventloop (UInt16 desiredevents) {
 	
 	/*
 	3/23/93 dmb: don't use ccsave/restoreglobals, 'cause we don't want to restore

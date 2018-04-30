@@ -1856,7 +1856,7 @@ boolean xmlcompile (Handle htext, xmladdress *xmladr) {
 	xmltoken token = {0}, lookaheadtoken = {0}, closetoken = {0};
 	bigstring bstoken;
 	boolean reuselookahead = false;
-	hdlhashtable namespaces;
+	hdlhashtable namespaces = NULL;
 	boolean fl = false; //success?
 	//hdlhashtable newitemtable;
 	hdlhashtable nomadtable;

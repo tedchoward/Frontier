@@ -636,7 +636,7 @@ boolean aliastostring (Handle halias, bigstring bs) {
 		
 		err = FSFollowFinderAlias (nil, h, false, &fsref, &flchanged);
 		
-		if ((err == noErr) /* || (err == fnfErr) */ ) {
+		if (err == noErr) {
 		
 			tyfilespec fs;
 			

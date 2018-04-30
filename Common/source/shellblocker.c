@@ -36,27 +36,27 @@
 
 #define ctblocks 5 /*we can remember blocked events up to 5 levels deep*/
 
-static short topblocks = 0;
+static UInt16 topblocks = 0;
 
-static short blockstack [ctblocks];
+static UInt16 blockstack [ctblocks];
 
-static short blockedevents = 0;
+static UInt16 blockedevents = 0;
 
 
 
-short shellblockedevents (void) {
+UInt16 shellblockedevents (void) {
 	
 	return (blockedevents);
 	} /*shellblockedevents*/
 
 
-boolean shellblocked (short mask) {
+boolean shellblocked (UInt16 mask) {
 	
 	return ((blockedevents & mask) != 0);
 	} /*shellblocked*/
 
 
-boolean shellpushblock (short mask, boolean flblock) {
+boolean shellpushblock (UInt16 mask, boolean flblock) {
 	
 	if (topblocks >= ctblocks)
 		return (false);
@@ -84,7 +84,7 @@ boolean shellpopblock (void) {
 	
 
 
-static short shelleventsdisable = 0;
+static UInt16 shelleventsdisable = 0;
 
 
 boolean shelleventsblocked (void) {

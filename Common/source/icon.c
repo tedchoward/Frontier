@@ -73,7 +73,7 @@ boolean ploticonfromodb (const Rect *r, short align, short transform, bigstring 
 	//bigstring bsadricon = "\psystem.verbs.builtins.Frontier.tools.data.nodeTypes.link.icon.mac";
 	
 
-	IconRef iconRef;
+    IconRef iconRef = NULL;
 	IconFamilyHandle iconHand;
 	SInt32 theSize;
 	OSStatus theErr;

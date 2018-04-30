@@ -3742,11 +3742,6 @@ static pascal OSErr langipcfastgetobject (AppleEvent *event, AppleEvent *reply, 
 	OSErr err;
 	AEDesc desc;
 	tyfastverbcontext savecontext;
-	long curA5;
-	
-		
-		curA5 = SetUpAppA5 ();
-	
 	
 	landpushfastcontext (&savecontext);
 	

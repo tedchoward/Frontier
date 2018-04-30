@@ -369,7 +369,7 @@ boolean getsearchparams (void) {
 	
 	if ( getbooleansearchparam ( ixcasesensitive, &fl ) ) {
 	
-		flcasechanged = ( ! fl != searchparams.flunicase );
+		flcasechanged = ( ! (fl != searchparams.flunicase) );
 		
 		if ( flcasechanged )
 			flupdateregexp = true;

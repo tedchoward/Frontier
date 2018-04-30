@@ -610,7 +610,7 @@ boolean getmachinename (bigstring bsname) {
 					
 				if ( isemptystring ( bsext ) || ( stringlength ( bsext ) > 4 ) ) // no extension
 				
-					stringtoostype ( "\x04" "????", &( *info ).filetype );
+					stringtoostype ( BIGSTRING("\x04" "????"), &( *info ).filetype );
 				else
 					stringtoostype ( bsext, &( *info ).filetype );
 					
@@ -977,7 +977,7 @@ boolean filesize (const ptrfilespec fs, long *size) {
 	if (!filegetinfo (fs, &info))
 		return (false);
 	
-	*size = info.sizedatafork + info.sizeresourcefork;
+	*size = (SInt32) (info.sizedatafork + info.sizeresourcefork);
 	
 	return (true);
 	} /*filesize*/

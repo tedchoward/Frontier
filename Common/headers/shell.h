@@ -546,7 +546,7 @@ extern boolean shelleventloop (callback);
 
 extern boolean shellshorteventloop (void);
 
-extern boolean shellpartialeventloop (short);
+extern boolean shellpartialeventloop (UInt16);
 
 extern void shellexitmaineventloop (void);
 
@@ -560,11 +560,11 @@ extern boolean shellstart (void);
 extern boolean shellactivatewindow (WindowPtr, boolean); /*shellactivate.c*/
 
 
-extern short shellblockedevents (void); /*shellblocker.c*/
+extern UInt16 shellblockedevents (void); /*shellblocker.c*/
 
-extern boolean shellblocked (short);
+extern boolean shellblocked (UInt16);
 
-extern boolean shellpushblock (short, boolean);
+extern boolean shellpushblock (UInt16, boolean);
 
 extern boolean shellpopblock (void);
 

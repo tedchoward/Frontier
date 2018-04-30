@@ -281,7 +281,7 @@ void langsymboldeleted (hdlhashtable htable, const bigstring bsname) {
 	} /*langsymboldeleted*/
 
 
-boolean langpartialeventloop (short desiredevents) {
+boolean langpartialeventloop (UInt16 desiredevents) {
 	
 	return ((*langcallbacks.partialeventloopcallback) (desiredevents));
 	} /*langpartialeventloop*/

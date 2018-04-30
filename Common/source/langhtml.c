@@ -2594,7 +2594,7 @@ static boolean read_2_bytes(hdlfilenum file_ref, unsigned short * b) {
 static boolean first_marker(hdlfilenum file_ref, unsigned char * c) {
 
     boolean           result = noErr;
-    unsigned char   c1,c2;
+    unsigned char   c1,c2 = '\0';
     long            count;
     
     count = 1;
@@ -7008,7 +7008,7 @@ static boolean mrcalendargetdayaddressdive (short num, tyaddress *adr, boolean f
 	while (stringlength ((*adr).bs) < 2)
 		insertchar ('0', (*adr).bs);
 	
-	if (!langtablelookup ((*adr).ht, (*adr).bs, &(*adr).ht) && flcreate && idtype != nil) {
+	if (!langtablelookup ((*adr).ht, (*adr).bs, &(*adr).ht) && flcreate && idtype != 0) {
 
 		tyvaluetype type = langgetvaluetype (idtype);
 		
@@ -8930,24 +8930,40 @@ static boolean issafeidentifier (hdltreenode hnode, hdlhashtable hmacrostable) {
 
 static boolean issafefieldop (hdltreenode hnode, hdlhashtable hmacrostable) {
 
-	//assert ((**hnode).nodetype == fieldop); /*why would you call us if it's not?*/
+	//assert ((**hnode).nodetype == fieldop); /*why would you call us if it's not?*/ node = 
+    hdltreenode param1 = (*hnode)->param1;
+    tytreetype nodeType = (*param1)->nodetype;
+    
+    if (nodeType == identifierop) {
+        return true;
+    }
+    
+    if (nodeType == constop) {
+        return issafeconstop(hnode);
+    }
+    
+    if (!issafestatement((*hnode)->param2, hmacrostable)) {
+        return false;
+    }
+    
+    return (!(**hnode).param3 && !(**hnode).param4); /*params are supposed to be nil*/
 		
-	switch ((**(**hnode).param1).nodetype) {
-
-		case identifierop:
-			return (true);
-		
-		case constop:
-			return (issafeconstop (hnode));
-
-		default:
-			return (false);
-		}/*switch*/
-
-	if (!issafestatement ((**hnode).param2, hmacrostable)) /*named parameter*/
-		return (false);
-			
-	return (!(**hnode).param3 && !(**hnode).param4); /*params are supposed to be nil*/
+//    switch ((**(**hnode).param1).nodetype) {
+//
+//        case identifierop:
+//            return (true);
+//
+//        case constop:
+//            return (issafeconstop (hnode));
+//
+//        default:
+//            return (false);
+//        }/*switch*/
+//
+//    if (!issafestatement ((**hnode).param2, hmacrostable)) /*named parameter*/
+//        return (false);
+//
+//    return (!(**hnode).param3 && !(**hnode).param4); /*params are supposed to be nil*/
 	}/*issafefieldop*/
 
 

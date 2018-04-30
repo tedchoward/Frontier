@@ -527,7 +527,7 @@ static boolean shellnormalsaveas (WindowPtr wsave, ptrfilespec fspec, boolean fl
 	
 	register WindowPtr w = wsave;
 	hdlfilenum fnum;
-	short rnum;
+	short rnum = -1;
 	tyfilespec fs;
 	OSType filetype = config.filetype;
 	OSType type;
@@ -796,7 +796,7 @@ boolean shellnew (void) {
 	getuntitledfilename ( bsname );
 	
 	
-		pushstring ( "\x05"".root", bsname );
+		pushstring ( BIGSTRING("\x05"".root"), bsname );
 				
 		bigstringtofsname ( bsname, &fspec.name );
 

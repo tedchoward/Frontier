@@ -1331,8 +1331,7 @@ boolean opkeystroke (void) {
 				It should be outlineistable.
 				This issue needs to be revisited.*/
 
-				if ((**ho).flstructuredtextkeys && 
-					((**ho).outlinetype == outlineistable) || ((**ho).outlinetype == 0)) {
+                if (((**ho).flstructuredtextkeys && ((**ho).outlinetype == outlineistable)) || ((**ho).outlinetype == 0)) {
 	
 					return (opstructuretabkey (dir));
 					} /*if*/

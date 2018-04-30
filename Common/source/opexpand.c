@@ -262,12 +262,6 @@ boolean opexpand (hdlheadrecord hnode, short level, boolean flmaycreatesubs) {
 			}
 		}
 	
-	if (false) { /*dmb: it's slower to do just the icon because of the irregular region*/
-	
-		opgeticonrect (hnode, &linerect, &iconrect); /*icon might have changed to reflect expansion*/
-	
-		invalrect (iconrect); /*the icon changes, avoid flash, don't inval the whole line*/
-		}
 	//else
 	//	opinvalnode (hnode);
 	

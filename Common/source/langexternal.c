@@ -2048,31 +2048,31 @@ boolean langexternalzoomfilewindow (const tyvaluerecord *val, ptrfilespec fs, bo
 
 			case idtableprocessor:
 			
-				pushstring ( "\x04" "fttb", bsfileextension );
+				pushstring ( BIGSTRING("\x04" "fttb"), bsfileextension );
 				
 				break;
 			
 			case idoutlineprocessor:
 			
-				pushstring ( "\x04" "ftop", bsfileextension );
+				pushstring ( BIGSTRING("\x04" "ftop"), bsfileextension );
 				
 				break;
 			
 			case idscriptprocessor:
 			
-				pushstring ( "\x04" "ftsc", bsfileextension );
+				pushstring ( BIGSTRING("\x04" "ftsc"), bsfileextension );
 				
 				break;
 			
 			case idwordprocessor:
 			
-				pushstring ( "\x04" "ftwp", bsfileextension );
+				pushstring ( BIGSTRING("\x04" "ftwp"), bsfileextension );
 				
 				break;
 			
 			case idmenuprocessor:
 			
-				pushstring ( "\x04" "ftmb", bsfileextension );
+				pushstring ( BIGSTRING("\x04" "ftmb"), bsfileextension );
 				
 				break;
 			

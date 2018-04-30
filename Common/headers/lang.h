@@ -575,7 +575,7 @@ typedef boolean (*langerrormessagecallback)(bigstring, ptrvoid);
 
 typedef boolean (*langverbcallback) (hdltreenode, tyvaluerecord *);
 
-typedef boolean (*langshortcallback) (short);
+typedef boolean (*langshortcallback) (UInt16);
 
 typedef boolean (*langeventcallback) (EventRecord *);
 
@@ -784,7 +784,7 @@ extern void langsymboldeleted (hdlhashtable, const bigstring);
 extern boolean langbackgroundtask (boolean);
 
 
-extern boolean langpartialeventloop (short);
+extern boolean langpartialeventloop (UInt16);
 
 
 

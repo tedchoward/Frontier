@@ -643,7 +643,7 @@ static void * getstudydata (Handle hcp) {
 	until the memory manager relocates our block of memory.
 	*/
 	
-	return ((void *) (((**((tycompiledpattern**)hcp)).study_size != nil) ? ((char *) *hcp + ((**((tycompiledpattern**)hcp)).study_offset)) : nil));
+	return ((void *) (((**((tycompiledpattern**)hcp)).study_size != 0) ? ((char *) *hcp + ((**((tycompiledpattern**)hcp)).study_offset)) : nil));
 	} /*getstudydata*/
 
 

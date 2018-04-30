@@ -106,109 +106,12 @@ void zoomrect (Rect *rfrom, Rect *rto, boolean flzoomup) {
 	menubar.
 	
 	12/27/91 dmb: don't do zoomrect if frontier isn't the frontmost app
+     
+    12/20/2005 kw: killing zoomrects
 	*/
-	register short i;
-	Fixed factor;
-	Rect rect1, rect2, rect3, rect4;
-	//Code change by Timothy Paustian Friday, May 5, 2000 10:27:35 PM
-	//Changed to Opaque call for Carbon
-	//can't use GrafPorts, have to use the ptrs
-	//This stuff isn't called in the PPC OT version
-	CGrafPtr deskport;
 
+	return;
 
-	return;		// kw - 2005-12-20 - killing zoomrects
-#if ACCESSOR_CALLS_ARE_FUNCTIONS == 1
-	deskport = CreateNewPort();
-#else
-	deskport = NewPtr(sizeof(CGrafPort));
-#endif
-	
-	
-	if (!shellisactive ()) /*we're not front app*/
-		return;
-	
-	if (!pushdesktopport (deskport)) /*failed to open up a port on the whole desktop*/
-		return;
-	
-	if ((*rfrom).top == -1) /*caller wants us to use the default rect*/
-		rfrom = &rdefaultzoomfrom;
-	
-	/*
-	constraintodesktop (rfrom); 
-	
-	constraintodesktop (rto);
-	*/
-	
-	pushpen ();
-	
-	setgraypen ();
-	
-	PenMode (patCopy);// (patXor);
-	
-	if (flzoomup) {
-	
-		rect1 = *rfrom;
-		
-		factor = FixRatio (zoomratio.h, zoomratio.v);
-		
-		zoomfract = FixRatio (541, 10000);
-		}
-	else {
-		rect1 = *rto;
-		
-		factor = FixRatio (zoomratio.v, zoomratio.h);
-		
-		zoomfract = zoomfixer;
-		}
-		
-	rect2 = rect1;
-	
-	rect3 = rect1;
-	
-	framerect (rect1);
-	
-	for (i = 1; i <= zoomsteps; i++) {
-		
-		burntickloops (ctzoomdelayloops);
-		
-		rect4.left = zoomblend ((*rfrom).left, (*rto).left);
-		
-		rect4.right = zoomblend ((*rfrom).right, (*rto).right);
-		
-		rect4.top = zoomblend ((*rfrom).top, (*rto).top);
-		
-		rect4.bottom = zoomblend ((*rfrom).bottom, (*rto).bottom);
-		
-		framerect (rect4);
-		
-		framerect (rect1);
-		
-		rect1 = rect2;
-		
-		rect2 = rect3;
-		
-		rect3 = rect4;
-		 
-		zoomfract = FixMul (zoomfract,factor);
-		} /*for*/
-		
-	framerect (rect1);
-	
-	framerect (rect2);
-	
-	framerect (rect3);
-	
-	poppen ();
-	
-	popdesktopport (deskport); //July 4, 2000 AR: was a pointer to deskport
-	//Code change by Timothy Paustian Sunday, May 21, 2000 9:33:21 PM
-	//Not called in the PPC OT version.
-	#if ACCESSOR_CALLS_ARE_FUNCTIONS == 1
-	//DisposePort(deskport); /*popdesktopport disposes deskport -- site of crashing bug.*/
-	#else
-	DisposePtr(deskport);
-	#endif
 	} /*zoomrect*/
 	
 	

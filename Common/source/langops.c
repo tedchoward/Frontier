@@ -533,26 +533,13 @@ boolean langsetsymbolval (const bigstring bs, tyvaluerecord val) {
 	hdlhashtable htable;
 	hdlhashnode hnode;
 	
-	if (false && langgetuserflag (idrequiredeclarationsscript, false)) {
 	
-		if (langfindsymbol (bs, &htable, &hnode) || (htable != nil)) { /*name is defined, or with statement set table*/
-			
-			return (hashtableassign (htable, bs, val));
-			}
-		
-		langparamerror (unknownidentifiererror, bs);
-		
-		return (false);
-		}
-	else {
-	
-		if (langfindsymbol (bs, &htable, &hnode) || (htable != nil)) { /*name is defined, or with statement set table*/
-			
-			return (hashtableassign (htable, bs, val));
-			}
-		
-		return (hashassign (bs, val));
-		}
+    if (langfindsymbol (bs, &htable, &hnode) || (htable != nil)) { /*name is defined, or with statement set table*/
+        
+        return (hashtableassign (htable, bs, val));
+        }
+    
+    return (hashassign (bs, val));
 	} /*langsetsymbolval*/
 
 

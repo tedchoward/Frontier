@@ -490,7 +490,7 @@ static void wpverbunload (hdlwpvariable hv) {
 	else
 		wpdisposerecord ((hdlwprecord) variabledata);
 	
-	if ((**hv).oldaddress == nil) // 5.0d3 dmb
+	if ((**hv).oldaddress == 0) // 5.0d3 dmb
 		disposehandle ((Handle) hv);
 	else
 		wpverbondisk (hv, (**hv).oldaddress);
@@ -1684,7 +1684,7 @@ static boolean dosearch (boolean flfromtop, boolean flwrap, boolean *fltempload)
 	*/
 	
 	register boolean fl;
-	long startsel, endsel;
+	long startsel, endsel = -1;
 	long origendsel = 0, searchstart;
 	short diff;
 	boolean flwrapped = false;

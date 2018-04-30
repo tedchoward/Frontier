@@ -1019,8 +1019,6 @@ boolean browsertextchanged (hdlheadrecord hnode, bigstring origname) {
 //	if (clayprefs.addonnamechange)
 //		addnodetohistorymenu (hnode);
 	
-	if (false) //!(**hnode).tmpbit) /*special for find & replace, see findsetheadstring in clayfind.c*/
-		browserinsertagain (hnode);
 	
 	browserloadnode ((**hnode).headlinkleft); /*mod date changed*/
 	

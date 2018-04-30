@@ -288,15 +288,12 @@ static pascal OSErr handleselectwindow (const AppleEvent *event, AppleEvent *rep
 	OSType type;
 	long size;
 	WindowPtr w;
-	long curA5;
 	
 	err = AEGetParamPtr (event, '----', typeLongInteger, &type, (Ptr) &w, sizeof (w), &size);
 	
 	if (err == noErr) {
 		
 		SelectWindow (w);
-		
-		curA5 = SetUpAppA5 ();
 		
 		shellwindowmenudirty ();
 		
@@ -438,14 +435,12 @@ static pascal ComponentResult windowsharingdispatch (register ComponentParameter
 			hdlcomponentglobals hglobals;
 			Component self = (Component) (*params).params [0];
 			long selfa5;
-			long clienta5;
 			
 			selfa5 = GetComponentRefcon (self);
 			
-			clienta5 = SetUpAppA5 ();
 			
 
-			if (newcomponentglobals (self, clienta5, &hglobals))
+			if (newcomponentglobals (self, 0, &hglobals))
 				SetComponentInstanceStorage ((ComponentInstance) self, (Handle) hglobals);
 			else
 				result = memFullErr;

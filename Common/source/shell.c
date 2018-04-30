@@ -731,7 +731,7 @@ boolean shellshorteventloop (void) {
 	} /*shellshorteventloop*/
 
 
-boolean shellpartialeventloop (short desiredevents) {
+boolean shellpartialeventloop (UInt16 desiredevents) {
 	
 	/*
 	handle all activate and update events, as long as events are available.

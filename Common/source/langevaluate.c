@@ -744,10 +744,6 @@ static long langgetlexicalrefcon (void) {
 		return (-1);
 		}
 	else {
-
-		
-			if ((**hs).stack == nil)
-				return (-1);
 				
 			if ((**hs).toperror < 1)
 				return (-1);

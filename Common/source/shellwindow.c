@@ -394,7 +394,7 @@ short windowgetvnum (WindowPtr w) {
 		return (0);
 	
 	
-		SInt16 vnum;
+		SInt16 vnum = -1;
 	
 		FSCatalogInfo catalogInfo;
 		

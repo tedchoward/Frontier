@@ -265,7 +265,7 @@ static OSErr	OpenAllForks		  (	const FSRef			*dest,
 static OSErr	WriteFork			  (	const SInt16		srcRefNum,
 										const SInt16		destRefNum,
 										const CopyParams	*params,
-										const SInt64		forkSize );
+										const ByteCount		forkSize );
 
 static UInt32	CalcBufferSizeForVol  (	const GetVolParmsInfoBuffer *volParms,
 										UInt32				volParmsSize );
@@ -1319,11 +1319,11 @@ static OSErr OpenAllForks(	const FSRef		*dest,
 static OSErr WriteFork(	const SInt16		srcRefNum,
 						const SInt16		destRefNum,
 						const CopyParams	*params,
-						const SInt64		forkSize )
+						const ByteCount		forkSize )
 {
-	UInt64			bytesRemaining;
-	UInt64			bytesToReadThisTime;
-	UInt64			bytesToWriteThisTime;
+	ByteCount		bytesRemaining;
+	ByteCount		bytesToReadThisTime;
+	ByteCount		bytesToWriteThisTime;
 	OSErr			err;
 	
 

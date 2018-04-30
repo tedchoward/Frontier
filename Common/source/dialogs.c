@@ -325,7 +325,6 @@ DialogPtr newmodaldialog (short id, short defaultitem) {
 	*/
 	
 	register DialogPtr pdialog;
-	long appA5;
 	
 	#ifdef fldebug
 	
@@ -334,8 +333,6 @@ DialogPtr newmodaldialog (short id, short defaultitem) {
 	
 	#endif
 	
-	
-	appA5 = SetUpCurA5 ();
 	
 	
 	pdialog = GetNewDialog (id, nil, (WindowRef) -1L);

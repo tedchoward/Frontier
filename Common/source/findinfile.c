@@ -384,7 +384,7 @@ boolean fifcomparefiles (const ptrfilespec fs1, const ptrfilespec fs2) {
 	Handle hbuffer1 = nil, hbuffer2 = nil;
 	long ctbytes1, ctbytes2;
 	boolean flreturned = false;
-	hdlopenfile hfile1, hfile2;
+    hdlopenfile hfile1, hfile2 = NULL;
 	
 	if (!fileopener (fs1, &hfile1, &fnum1))
 		goto exit;

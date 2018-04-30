@@ -147,7 +147,7 @@ typedef struct tyfileinfo { // flattens interface for getting file information
 	
 	OSType filecreator, filetype; // the creator ID and file type
 	
-	long timecreated, timemodified, timeaccessed; // the creation and modification date for the file
+	unsigned long timecreated, timemodified, timeaccessed; // the creation and modification date for the file
 	
 	unsigned long long sizedataforkhigh, sizedatafork, sizeresourcefork; // the size of the file's two forks
 	

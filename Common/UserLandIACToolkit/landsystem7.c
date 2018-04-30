@@ -539,17 +539,12 @@ static pascal OSErr landsystem7handleevent (AppleEvent *message, AppleEvent *rep
 	OSErr errcode;
 	boolean flsystemevent;
 	tyfastverbcontext savecontext;
-	long curA5;
 	
 	assert (refcon != -1);
 	
 	flsystemevent = (refcon != 0) && (refcon != typeWildCard);
 	
 	if (flsystemevent) {
-		
-			
-			curA5 = SetUpAppA5 ();
-		
 		
 		landpushfastcontext (&savecontext);
 		}

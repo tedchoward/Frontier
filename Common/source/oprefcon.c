@@ -94,7 +94,7 @@ boolean opgetrefcon (hdlheadrecord hnode, ptrvoid pdata, long lendata) {
 	with zeros).  many callers expect this.
 	*/
 	
-	Handle hrefcon;
+	Handle hrefcon = NULL;
 	long lenrefcon;
 
 	// kw - 2006-01-19 - after crash - was "Handle hrefcon = (**hnode).hrefcon;"

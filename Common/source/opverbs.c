@@ -1364,7 +1364,7 @@ boolean opedit (hdlexternalvariable hvariable, hdlwindowinfo hparent, ptrfilespe
 					
 					alllower ( bs );
 					
-					if ( equalstrings ( bs, "\x04" "ftds" ) )
+					if ( equalstrings ( bs, BIGSTRING("\x04" "ftds") ) )
 						type = 'FTds';
 					
 					if ( iteminfo.filetype == 'FTds' )

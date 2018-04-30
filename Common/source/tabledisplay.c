@@ -682,10 +682,7 @@ boolean tablepushnodestyle (hdlheadrecord hnode) {
 	if (isclaydisplay (hf))
 		return (claypushnodestyle (hnode));
 	
-	if (false) // (**hf).filenamebold)
-		style = bold;
-	else
-		style = 0;
+    style = 0;
 	
 	browsergetrefcon (hnode, &info);
 
