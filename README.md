@@ -32,4 +32,4 @@ to run this software.*
 [opml-dl]: http://static.tedchoward.com/frontier/opml-editor/OPML.dmg
 [mas]: https://github.com/tedchoward/Frontier/releases/tag/v10.1b21
 [dev]:https://github.com/tedchoward/Frontier/releases/tag/10.2d4
-[app-translocation]: https://weblog.rogueamoeba.com/2016/06/29/sierra-and-gatekeeper-path-randomization/
+[app-translocation]: https://github.com/tedchoward/Frontier/issues/9
