@@ -661,13 +661,21 @@ boolean getapplicationfilespec (bigstring bsprogram, ptrfilespec fs) {
 				
 				mybundleref = CFBundleGetMainBundle();
 				
-				if (mybundleref == NULL)
+                if (mybundleref == NULL) {
+                    fprintf(stderr, "mybundleref == NULL");
 					return (false);
+                }
 				
 				myurlref = CFBundleCopyBundleURL(mybundleref);
 				
-				if (myurlref == NULL)
+                if (myurlref == NULL) {
+                    fprintf(stderr, "myurlref == NULL");
 					return (false);
+                }
+            
+                CFStringRef urlStr = CFURLGetString(myurlref);
+                const char *urlCstring = CFStringGetCStringPtr(urlStr, kCFStringEncodingMacRoman);
+                fprintf(stderr, "bundle url = '%s'\n", urlCstring);
 
 				res = CFURLGetFSRef ( myurlref, &fsref );
 				
