@@ -317,7 +317,6 @@ static pascal void iocompletion (ParmBlkPtr pb) {
 	} /*iocompletion*/
 
 
-#if TARGET_RT_MAC_CFM || TARGET_RT_MAC_MACHO
 
 
 		//looks like we need some kind of file UPP
@@ -327,11 +326,6 @@ static pascal void iocompletion (ParmBlkPtr pb) {
 		#define iocompletionUPP (iocompletionDesc)
 
 
-#else
-
-	static IOCompletionUPP iocompletionUPP = &iocompletion;
-
-#endif
 
 
 boolean flushvolumechanges (const ptrfilespec fs, hdlfilenum fnum) {

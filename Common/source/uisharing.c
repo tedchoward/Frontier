@@ -66,7 +66,6 @@ static Boolean HaveComponentManager (void) {
 /* 2004-10-22 aradke: Not sure if this is the right thing to do for the Mach-O build,
 		but at least it makes the link errors for _editGlue etc. go away
 */
-#if TARGET_RT_MAC_CFM || TARGET_RT_MAC_MACHO
 
 enum {
 	uppCallComponentProcInfo = kPascalStackBased
@@ -248,76 +247,6 @@ glue editGlue (ComponentInstance comp, short editcommand) {
 
 #pragma options align=reset
 
-#else
-
-glue windoweventGlue (ComponentInstance comp, EventRecord *ev, tyWindowSharingGlobals *wsGlobals) 
-	
-	ComponentCallNow (wsEventHandlerCommand, sizeof (EventRecord *) + sizeof (tyWindowSharingGlobals *)); 
-	/*windoweventGlue*/
-
-
-glue windowiscardGlue (ComponentInstance comp, WindowPtr w) 
-	
-	ComponentCallNow (wsWindowIsCardCommand, sizeof (WindowPtr)); 
-	/*windowiscardGlue*/
-	
-	
-glue closewindowGlue (ComponentInstance comp, WindowPtr w) 
-	
-	ComponentCallNow (wsCloseWindowCommand, sizeof (WindowPtr)); 
-	/*windowiscardGlue*/
-	
-
-
-
-glue runhandleGlue (ComponentInstance comp, Handle h, short flscriptedcard, Str255 windowname, Point pt, uisEventCallback filter) 
-	
-	ComponentCallNow (wsRunFromHandleCommand, sizeof (Handle) + sizeof (short) + sizeof (char *) + sizeof (Point) + sizeof (uisEventCallback)); 
-	/*runhandleGlue*/
-
-
-glue runmodalhandleGlue (ComponentInstance comp, Handle h, short flscriptedcard, Str255 windowname, Point pt, uisEventCallback filter) 
-	
-	ComponentCallNow (wsRunModalHandleCommand, sizeof (Handle) + sizeof (short) + sizeof (char *) + sizeof (Point) + sizeof (uisEventCallback)); 
-	/*runmodalhandleGlue*/
-
-
-glue setobjectvalueGlue (ComponentInstance comp, Handle hcard, Str255 name, Handle value) 
-	
-	ComponentCallNow (wsSetObjectValueCommand, sizeof (Handle) + sizeof (char *) + sizeof (Handle)); 
-	/*setobjectvalueGlue*/
-	
-
-glue getobjectvalueGlue (ComponentInstance comp, Handle hcard, Str255 name, Handle *value) 
-	
-	ComponentCallNow (wsGetObjectValueCommand, sizeof (Handle) + sizeof (char *) + sizeof (Handle *)); 
-	/*getobjectvalueGlue*/
-	
-
-glue getobjecthandleGlue (ComponentInstance comp, Handle hcard, Str255 name, Handle *h) 
-	
-	ComponentCallNow (wsGetObjectHandleCommand, sizeof (Handle) + sizeof (char *) + sizeof (Handle *)); 
-	/*getobjecthandleGlue*/
-	
-
-glue recalcGlue (ComponentInstance comp, Handle h) 
-	
-	ComponentCallNow (wsRecalcObjectCommand, sizeof (Handle)); 
-	/*recalcGlue*/
-
-
-glue editGlue (ComponentInstance comp, short editcommand) 
-	
-	ComponentCallNow (wsEditCommand, sizeof (short)); 
-	/*editGlue*/
-
-
-glue updateGlue (ComponentInstance comp, Handle h) 
-	
-	ComponentCallNow (wsUpdateCommand, sizeof (Handle)); 
-	/*updateGlue*/
-
-#endif
 
 
 Boolean uisHandleEvent (EventRecord *ev, Boolean *flcloseallwindows) {

@@ -65,9 +65,7 @@
 #include "kernelverbdefs.h"
 #include "langdll.h"
 
-#if defined(MACVERSION) && TARGET_RT_MAC_MACHO
 #include "CallMachOFrameWork.h"
-#endif
 
 #define NEW_DLL_INTERFACE 1 /* 2002-11-03 AR: defined to enable new DLL interface */
 //#undef NEW_DLL_INTERFACE
@@ -1023,9 +1021,7 @@ static void freeprocinfobuckets (tydllinfohandle hdll) {
 		
 			hnext = (**h).hashlink;
 			
-			#if defined(MACVERSION) && TARGET_RT_MAC_MACHO
 				disposemachofuncptr ((void *) (**h).procaddress);	
-			#endif
 
 			disposehandle ((Handle) h);
 			
@@ -1638,11 +1634,9 @@ static boolean lookupprocaddress (tydllinfohandle hdll, typrocinfohandle hprocin
 		
 		err = FindSymbol ((**hdll).hdllsyshandle, (**hprocinfo).bsprocname, (Ptr*) &(**hprocinfo).procaddress, &procclass); 
 
-		#if   TARGET_RT_MAC_MACHO
 			if (err == noErr) {
 				(**hprocinfo).procaddress = convertcfmtomachofuncptr ((**hprocinfo).procaddress);
 				}
-		#endif
 
 
 	return ((**hprocinfo).procaddress != nil);
@@ -1820,9 +1814,7 @@ static boolean callvolatile (hdltreenode hparam1, const ptrfilespec fs, bigstrin
 	
 	/* Dispose proc info here because we didn't ask for the hash table to be built */
 	
-#if defined(MACVERSION) && TARGET_RT_MAC_MACHO
 	disposemachofuncptr ((void*) (**hprocinfo).procaddress);
-#endif
 	
 	disposehandle ((Handle) hprocinfo);
 
@@ -2204,7 +2196,6 @@ static boolean langcalldll (tydllmoduleinfo *dllinfo, tydllparamblock *dllcall) 
 
 void fillcalltable (XDLLProcTable *pt) {
 
-	#if defined(MACVERSION) && TARGET_RT_MAC_MACHO
 
 		pt->xMemAlloc = convertmachotocfmfuncptr (&extfrontierAlloc);
 		pt->xMemResize = convertmachotocfmfuncptr (&extfrontierReAlloc);
@@ -2249,52 +2240,6 @@ void fillcalltable (XDLLProcTable *pt) {
 		pt->xThreadYield = convertmachotocfmfuncptr (&extThreadYield);
 		pt->xThreadSleep = convertmachotocfmfuncptr (&extThreadSleep);
 
-	#else
-
-		pt->xMemAlloc = &extfrontierAlloc;
-		pt->xMemResize = &extfrontierReAlloc;
-		pt->xMemLock = &extfrontierLock;
-		pt->xMemUnlock = &extfrontierUnlock;
-		pt->xMemFree = &extfrontierFree;
-		pt->xMemGetSize = &extfrontierSize;
-
-		pt->xOdbGetCurrentRoot = &extOdbGetCurrentRoot;
-		pt->xOdbNewFile = &extOdbNewFile;
-		pt->xOdbOpenFile = &extOdbOpenFile;
-		pt->xOdbSaveFile = &extOdbSaveFile;
-		pt->xOdbCloseFile = &extOdbCloseFile;
-		pt->xOdbDefined = &extOdbDefined;
-		pt->xOdbDelete = &extOdbDelete;
-		pt->xOdbGetType = &extOdbGetType;
-		pt->xOdbCountItems = &extOdbCountItems;
-		pt->xOdbGetNthItem = &extOdbGetNthItem;
-		pt->xOdbGetValue = &extOdbGetValue;
-		pt->xOdbSetValue = &extOdbSetValue;
-		pt->xOdbNewTable = &extOdbNewTable;
-		pt->xOdbGetModDate = &extOdbGetModDate;
-		pt->xOdbDisposeValue = &extOdbDisposeValue;
-		pt->xOdbGetError = &extOdbGetError;
-
-		pt->xDoScript = &extDoScript;
-		pt->xDoScriptText = &extDoScriptText;
-
-		pt->xOdbNewListValue = &extOdbNewListValue;
-		pt->xOdbGetListCount = &extOdbGetListCount;
-		pt->xOdbDeleteListValue = &extOdbDeleteListValue;
-		pt->xOdbSetListValue = &extOdbSetListValue;
-		pt->xOdbGetListValue = &extOdbGetListValue;
-		pt->xOdbAddListValue = &extOdbAddListValue;
-
-		pt->xInvoke = &extInvoke;
-		pt->xCoerce = &extCoerce;
-		
-		pt->xCallScript = &extCallScript;
-		pt->xCallScriptText = &extCallScriptText;
-		
-		pt->xThreadYield = &extThreadYield;
-		pt->xThreadSleep = &extThreadSleep;
-
-	#endif
 
 	} /*fillcalltable*/
 

@@ -307,7 +307,6 @@ static pascal OSErr handleselectwindow (const AppleEvent *event, AppleEvent *rep
 	} /*handleselectwindow*/
 
 
-#if TARGET_RT_MAC_CFM || TARGET_RT_MAC_MACHO
 
 	/* proc infos for building routine descriptors and universal procedure pointers */
 
@@ -375,21 +374,8 @@ static pascal OSErr handleselectwindow (const AppleEvent *event, AppleEvent *rep
 		#define windowopencommandUPP (windowopencommandDesc)
 
 
-#else
-
-	/* For Mac 68k (non-CFM) just use function pointers */
-	
-	#define windowcandofunctionUPP	((ComponentFunctionUPP) windowcandofunction)
-	#define handlewindoweventcommandUPP	((ComponentFunctionUPP) handlewindoweventcommand)
-	#define windowiscardcommandUPP	((ComponentFunctionUPP) windowiscardcommand)
-	#define closewindowcommandUPP	((ComponentFunctionUPP) closewindowcommand)
-	#define windoweditcommandUPP	((ComponentFunctionUPP) windoweditcommand)
-	#define windowopencommandUPP	((ComponentFunctionUPP) windowopencommand)
-
-#endif
 
 
-#if TARGET_RT_MAC_CFM || TARGET_RT_MAC_MACHO
 
 
 		//Code change by Timothy Paustian Friday, July 21, 2000 11:41:07 PM
@@ -399,11 +385,6 @@ static pascal OSErr handleselectwindow (const AppleEvent *event, AppleEvent *rep
 		#define handleselectwindowUPP (handleselectwindowDesc)
 
 
-#else
-
-	#define handleselectwindowUPP handleselectwindow
-
-#endif
 
 
 static boolean installwindowsharinghandlers (void) {
