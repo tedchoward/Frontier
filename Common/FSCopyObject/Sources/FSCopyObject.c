@@ -47,9 +47,6 @@
 
 #include "FSCopyObject.h"
 #include "GenLinkedList.h"
-#if !TARGET_API_MAC_OSX
-//#include <UnicodeConverter.h>
-#endif
 #include <stddef.h>
 #include <string.h>
 

@@ -49,9 +49,7 @@
 extern "C" {
 #endif
 
-#if TARGET_API_MAC_OSX || defined( __APPLE_CC__ )
 #include	<CoreServices/CoreServices.h>
-#endif
 
 /* This is a quick, simple and generic linked list implementation.  I tried		*/
 /* to setup the code so that you could use any linked list implementation you	*/

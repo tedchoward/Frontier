@@ -49,9 +49,7 @@
 extern "C" {
 #endif
 
-#if TARGET_API_MAC_OSX || defined( __APPLE_CC__ )
 #include	<CoreServices/CoreServices.h>
-#endif
 
 #define DEBUG  1	/* set to zero if you don't want debug spew */
 
