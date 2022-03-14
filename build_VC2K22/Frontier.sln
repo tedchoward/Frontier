@@ -1,0 +1,31 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.1.32228.430
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Frontier", "Frontier.vcxproj", "{D834EFC1-8805-4046-9A49-F9925A0808EF}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Frontier_Debug|Win32 = Frontier_Debug|Win32
+		Frontier_Release|Win32 = Frontier_Release|Win32
+		OPML_Debug|Win32 = OPML_Debug|Win32
+		OPML_Release|Win32 = OPML_Release|Win32
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{D834EFC1-8805-4046-9A49-F9925A0808EF}.Frontier_Debug|Win32.ActiveCfg = Frontier_Debug|Win32
+		{D834EFC1-8805-4046-9A49-F9925A0808EF}.Frontier_Debug|Win32.Build.0 = Frontier_Debug|Win32
+		{D834EFC1-8805-4046-9A49-F9925A0808EF}.Frontier_Release|Win32.ActiveCfg = Frontier_Release|Win32
+		{D834EFC1-8805-4046-9A49-F9925A0808EF}.Frontier_Release|Win32.Build.0 = Frontier_Release|Win32
+		{D834EFC1-8805-4046-9A49-F9925A0808EF}.OPML_Debug|Win32.ActiveCfg = OPML_Debug|Win32
+		{D834EFC1-8805-4046-9A49-F9925A0808EF}.OPML_Debug|Win32.Build.0 = OPML_Debug|Win32
+		{D834EFC1-8805-4046-9A49-F9925A0808EF}.OPML_Release|Win32.ActiveCfg = OPML_Release|Win32
+		{D834EFC1-8805-4046-9A49-F9925A0808EF}.OPML_Release|Win32.Build.0 = OPML_Release|Win32
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {4B153278-E243-456D-9983-D61A8B2FE90B}
+	EndGlobalSection
+EndGlobal
