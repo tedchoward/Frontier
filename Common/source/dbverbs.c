@@ -43,7 +43,7 @@
 #include "file.h"
 #include "resources.h"
 #include "scrap.h"
-#include "strings.h"
+#include "frontier_strings.h"
 #include "launch.h"
 #include "notify.h"
 #include "shell.h"

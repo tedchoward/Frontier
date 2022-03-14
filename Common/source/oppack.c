@@ -31,7 +31,7 @@
 #include "memory.h"
 #include "font.h"
 #include "quickdraw.h"
-#include "strings.h"
+#include "frontier_strings.h"
 #include "ops.h"
 #include "op.h"
 #include "opinternal.h"

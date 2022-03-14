@@ -28,7 +28,7 @@
 #include "frontier.h"
 #include "standard.h"
 
-#include "strings.h"
+#include "frontier_strings.h"
 #include "lang.h"
 #include "langinternal.h"
 #include "shell.h"

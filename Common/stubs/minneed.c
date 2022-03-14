@@ -30,7 +30,7 @@
 
 #include "memory.h"
 #include "quickdraw.h"
-#include "strings.h"
+#include "frontier_strings.h"
 #include "ops.h"
 #include "resources.h"
 #include "shell.rsrc.h"
@@ -722,11 +722,11 @@ void commentdelete (byte chdelim, bigstring bs) {
 			chendstring = '"';
 			}
 		
-		else if (ch == (byte) 'Ò') {
+		else if (ch == (byte) 'ï¿½') {
 			
 			flinstring = true;
 			
-			chendstring = 'Ó';
+			chendstring = 'ï¿½';
 			}
 		
 		else if (ch == (byte) '\'') {

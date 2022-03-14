@@ -34,7 +34,7 @@
 #include "bitmaps.h"
 #include "kb.h"
 #include "smallicon.h"
-#include "strings.h"
+#include "frontier_strings.h"
 #include "frontierwindows.h"
 #include "ops.h"
 #include "textdisplay.h"

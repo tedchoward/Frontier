@@ -35,7 +35,7 @@
 #include "kb.h"
 #include "font.h"
 #include "resources.h"
-#include "strings.h"
+#include "frontier_strings.h"
 #include "threads.h"
 #include "ops.h"
 #include "lang.h"

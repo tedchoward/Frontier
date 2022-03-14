@@ -30,7 +30,7 @@
 
 #include "cursor.h"
 #include "memory.h"
-#include "strings.h"
+#include "frontier_strings.h"
 #include "shell.h"
 #include "langinternal.h"
 #include "tableinternal.h"

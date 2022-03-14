@@ -40,7 +40,7 @@ quickdraw.c -- code which builds on top of basic quickdraw operations.
 #include "font.h"
 #include "memory.h"
 #include "ops.h"
-#include "strings.h"
+#include "frontier_strings.h"
 #include "quickdraw.h"
 #include "frontierwindows.h"
 #include "shell.h"

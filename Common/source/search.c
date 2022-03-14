@@ -30,7 +30,7 @@
 
 #include "memory.h"
 #include "cursor.h"
-#include "strings.h"
+#include "frontier_strings.h"
 #include "search.h"
 
 #include "langregexp.h"

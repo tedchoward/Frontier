@@ -31,7 +31,7 @@
 #include "error.h"
 #include "memory.h"
 #include "fileloop.h"
-#include "strings.h"
+#include "frontier_strings.h"
 #include "lang.h"
 #include "langinternal.h"
 #include "langexternal.h"
@@ -443,7 +443,7 @@ static boolean evaluateforinloop (hdltreenode hloop, tyvaluerecord vlist, tyvalu
 
 #if 0 /*support for fileloop file filtering*/
 
-#include "strings.h"
+#include "frontier_strings.h"
 #include "tableverbs.h"
 
 

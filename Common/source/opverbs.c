@@ -30,7 +30,7 @@
 
 #include "frontierconfig.h"
 #include "memory.h"
-#include "strings.h"
+#include "frontier_strings.h"
 #include "quickdraw.h"
 #include "font.h"
 #include "cursor.h"

@@ -36,7 +36,7 @@
 #include "icon.h"
 
 #include "shellprint.h"
-#include "strings.h" /*7.0b9 PBS*/
+#include "frontier_strings.h" /*7.0b9 PBS*/
 #include "file.h" /*7.0b9 PBS*/
 #include "resources.h" /*7.0b9 PBS*/
 #include "launch.h" /*7.0b9 PBS*/

@@ -34,7 +34,7 @@
 #include "memory.h"
 #include "file.h"
 #include "quickdraw.h"
-#include "strings.h"
+#include "frontier_strings.h"
 #include "kb.h"
 #include "mouse.h"
 #include "ops.h"

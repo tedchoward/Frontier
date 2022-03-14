@@ -34,7 +34,7 @@
 
 #include "error.h"
 #include "memory.h"
-#include "strings.h"
+#include "frontier_strings.h"
 #include "ops.h"
 #include "langinternal.h"
 #include "shell.h"

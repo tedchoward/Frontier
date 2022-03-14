@@ -36,7 +36,7 @@
 #include "error.h"
 #include "menu.h"
 #include "memory.h"
-#include "strings.h"
+#include "frontier_strings.h"
 #include "threads.h"
 
 

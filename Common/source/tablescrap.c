@@ -32,7 +32,7 @@
 #include "dialogs.h"
 #include "kb.h"
 #include "scrap.h"
-#include "strings.h"
+#include "frontier_strings.h"
 #include "shell.rsrc.h"
 #include "shellundo.h"
 #include "lang.h"

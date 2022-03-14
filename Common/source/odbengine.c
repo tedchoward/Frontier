@@ -35,7 +35,7 @@
 #include "resources.h"
 #include "ops.h"
 #include "quickdraw.h"
-#include "strings.h"
+#include "frontier_strings.h"
 #include "langexternal.h"
 #include "langinternal.h"
 #include "langipc.h"

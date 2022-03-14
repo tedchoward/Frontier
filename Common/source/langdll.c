@@ -47,7 +47,7 @@
 #include "quickdraw.h"
 #include "resources.h"
 #include "sounds.h"
-#include "strings.h"
+#include "frontier_strings.h"
 #include "frontierwindows.h"
 #include "cancoon.h"
 #include "shell.h"

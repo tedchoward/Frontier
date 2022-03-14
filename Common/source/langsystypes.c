@@ -29,7 +29,7 @@
 #include "standard.h"
 
 #include "memory.h"
-#include "strings.h"
+#include "frontier_strings.h"
 #include "ops.h"
 #include "error.h"
 #include "file.h"
@@ -47,7 +47,7 @@
 #endif
 
 #ifdef MACVERSION
-	static byte bsellipses [] = "\x01É";
+	static byte bsellipses [] = "\x01ï¿½";
 #else
 	static byte bsellipses [] = "\x03...";
 #endif
@@ -2175,7 +2175,7 @@ static boolean objtostring (AEDesc *objdesc, boolean fldisposeobj, DescType exam
 		
 		if (!insertstring (bsitem, bsobj)) {
 			
-			insertchar ('É', bsobj);
+			insertchar ('ï¿½', bsobj);
 			
 			break;
 			}

@@ -31,7 +31,7 @@
 #include "memory.h"
 #include "quickdraw.h"
 #include "scrap.h"
-#include "strings.h"
+#include "frontier_strings.h"
 #include "smallicon.h"
 #include "cursor.h"
 #include "kb.h"

@@ -66,7 +66,7 @@
 #define ixaboutinfo 4 
 #define ixpaletteinfo 5 
 
- 
+#pragma pack(2) 
 typedef struct tycancoonwindowinfo { /*lives both in memory and on disk*/	
 	
 	diskrect windowrect;
@@ -139,7 +139,7 @@ typedef struct tycancoonrecord { /*one of these for every cancoon file that's op
 	
 	#endif
 	} tycancoonrecord, *ptrcancoonrecord, **hdlcancoonrecord;
-
+#pragma options align=reset
 
 /*the one "superglobal" variable*/
 

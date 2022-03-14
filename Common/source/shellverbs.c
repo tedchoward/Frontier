@@ -38,7 +38,7 @@
 #include "notify.h"
 #include "ops.h"
 #include "search.h"
-#include "strings.h"
+#include "frontier_strings.h"
 #include "frontierwindows.h"
 #include "shell.h"
 #include "shellmenu.h"

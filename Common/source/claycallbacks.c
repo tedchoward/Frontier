@@ -36,7 +36,7 @@
 #include "kb.h"
 #include "memory.h"
 #include "ops.h"
-#include "strings.h"
+#include "frontier_strings.h"
 #include "opinternal.h"
 #include "claybrowserstruc.h"
 #include "claybrowserexpand.h"

@@ -38,7 +38,7 @@ typedef enum tyiconsize {
 	verysmallsizeicon = 3
 	} tyiconsize;
 	
-	
+#pragma pack(2)	
 typedef struct tylinelayout {
 	
 	boolean flinitted; //if true, the other fields in this record been set
@@ -77,7 +77,7 @@ typedef struct tycomputedlineinfo { /*computed fields that depend on a linelayou
 	
 	short datewidth; /*number of pixels reserved for the date*/
 	} tycomputedlineinfo;
-
+#pragma options align=reset
 
 #define str_claydisplay		(BIGSTRING ("\x0b" "claydisplay"))
 #define str_realicons		(BIGSTRING ("\x09" "realicons"))

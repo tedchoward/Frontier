@@ -42,7 +42,7 @@
 
 
 typedef struct tythreadglobals **hdlprocessthread;		// it's a hdlthreadglobals really; we're avoiding dependencies
-
+#pragma pack(2)
 typedef struct typrocessrecord { 
 	
 	struct typrocessrecord **hnextprocess; /*nil-terminated list*/
@@ -116,6 +116,7 @@ typedef struct typrocesslist {
 
 #endif
 
+#pragma options align=reset
 
 
 /*globals*/

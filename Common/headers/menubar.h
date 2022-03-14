@@ -48,7 +48,7 @@
 
 #define ctmenubarstack 50 /*maximum number of menus stacked in each menubar outline*/
 
-
+#pragma pack(2)
 typedef struct tymenubarstackelement {
 
 	hdlmenu hmenu; /*the menu data structure itself*/
@@ -109,6 +109,7 @@ typedef struct tymenubarcallbacks {
 	
 	menubarcmdkeycallback getcmdkeyroutine;
 	} tymenubarcallbacks;
+#pragma options align=reset
 
 
 /*globals*/

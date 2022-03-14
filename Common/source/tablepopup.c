@@ -41,7 +41,7 @@
 #include "popup.h"
 #include "quickdraw.h"
 #include "resources.h"
-#include "strings.h"
+#include "frontier_strings.h"
 #include "threads.h"
 #include "frontierwindows.h"
 #include "shellhooks.h"

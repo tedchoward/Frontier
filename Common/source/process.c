@@ -40,7 +40,7 @@
 #include "launch.h"
 #include "kb.h"
 #include "ops.h"
-#include "strings.h"
+#include "frontier_strings.h"
 #include "threads.h"
 #include "timedate.h"
 

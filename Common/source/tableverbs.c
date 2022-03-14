@@ -31,7 +31,7 @@
 #include "file.h"
 #include "memory.h"
 #include "resources.h"
-#include "strings.h"
+#include "frontier_strings.h"
 #include "shell.h"
 #include "opinternal.h"
 #include "oplist.h"

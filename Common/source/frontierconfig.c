@@ -32,7 +32,7 @@
 #include "quickdraw.h"
 #include "font.h"
 #include "resources.h"
-#include "strings.h"
+#include "frontier_strings.h"
 #include "dialogs.h"
 #include "shell.rsrc.h"
 #include "frontierconfig.h"

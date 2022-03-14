@@ -40,7 +40,7 @@
 #include "quickdraw.h"
 #include "scrap.h"
 #include "search.h"
-#include "strings.h"
+#include "frontier_strings.h"
 #include "frontierwindows.h"
 #include "db.h"
 #include "shell.h"

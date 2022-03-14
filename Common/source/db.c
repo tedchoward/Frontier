@@ -34,7 +34,7 @@
 #include "error.h"
 #include "file.h"
 #include "resources.h"
-#include "strings.h"
+#include "frontier_strings.h"
 #include "shell.h"
 #include "db.h"
 #include "dbinternal.h"

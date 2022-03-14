@@ -35,7 +35,7 @@
 #include "quickdraw.h"
 #include "dialogs.h"
 #include "ops.h"
-#include "strings.h"
+#include "frontier_strings.h"
 #include "lang.h"
 #include "langinternal.h"
 #include "langexternal.h"

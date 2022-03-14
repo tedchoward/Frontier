@@ -39,7 +39,7 @@
 #include "menu.h"
 #include "resources.h"
 #include "sounds.h"
-#include "strings.h"
+#include "frontier_strings.h"
 #include "popup.h"
 #include "quickdraw.h"
 #include "frontierwindows.h"
@@ -1203,12 +1203,12 @@ void shelladjustmenus (void) {
 		
 		shellsetmenuitemstring (hmenu, saveitem, savedatabaseitemstring); // "Save Database");
 		
-		// shellsetmenuitemstring (hmenu, saveasitem, saveacopyitemstring); // "Save a CopyÉ");
+		// shellsetmenuitemstring (hmenu, saveasitem, saveacopyitemstring); // "Save a Copyï¿½");
 		}
 	else {
 		shellsetmenuitemstring (hmenu, saveitem, saveitemstring); // "\x07" "Save");
 		
-		// shellsetmenuitemstring (hmenu, saveasitem, saveasitemstring); // "\x07" "Save AsÉ");
+		// shellsetmenuitemstring (hmenu, saveasitem, saveasitemstring); // "\x07" "Save Asï¿½");
 		}
 	
 	setmenuitemenable (hmenu, saveasitem, flwindow || hrootinfo);

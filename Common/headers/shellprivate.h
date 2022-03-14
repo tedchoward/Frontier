@@ -43,13 +43,14 @@ handlers are not supposed to include this file.
 
 #define ctglobals 32 /*we can remember globals up to ctglobals levels deep*/
 
-
+#pragma pack(2)
 typedef struct tyglobalsstack {
 	
 	short top;
 	
 	WindowPtr stack [ctglobals];
 	} tyglobalsstack;
+#pragma options align=reset
 
 
 typedef enum tymenustate {

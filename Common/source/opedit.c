@@ -32,7 +32,7 @@
 #include "font.h"
 #include "mouse.h"
 #include "quickdraw.h"
-#include "strings.h"
+#include "frontier_strings.h"
 #include "scrap.h"
 #include "kb.h"
 #include "op.h"

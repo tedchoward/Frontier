@@ -35,7 +35,7 @@
 #include "launch.h"
 #include "quickdraw.h"
 #include "search.h"
-#include "strings.h"
+#include "frontier_strings.h"
 #include "frontierwindows.h"
 #include "frontierconfig.h"
 #include "scrollbar.h"

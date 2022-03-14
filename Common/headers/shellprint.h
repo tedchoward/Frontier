@@ -27,7 +27,7 @@
 
 #define shellprintinclude /*so other includes can tell if we've been loaded*/
 
-
+#pragma pack(2)
 typedef struct typrintinfo {
 	
 	/*the margins we're enforcing to calculate paperrect*/
@@ -72,6 +72,7 @@ typedef struct typrintinfo {
 
 	#endif
 	} typrintinfo;
+#pragma options align=reset
 
 
 extern typrintinfo shellprintinfo;

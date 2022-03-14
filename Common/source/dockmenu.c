@@ -35,7 +35,7 @@ Broken out from FrontierWinMain.c
 #include "standard.h"
 
 #include "menu.h"
-#include "strings.h"
+#include "frontier_strings.h"
 #include "cancoon.h"
 #include "launch.h"
 #include "tablestructure.h"

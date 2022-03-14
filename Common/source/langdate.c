@@ -32,7 +32,7 @@
 #include "frontierconfig.h"
 #include "error.h"
 #include "ops.h"
-#include "strings.h"
+#include "frontier_strings.h"
 #include "frontierwindows.h"
 #include "shell.h"
 #include "shellhooks.h"
@@ -314,10 +314,10 @@ boolean datedayofweektostring (long ix, tyvaluerecord *vreturn) {
 
 /*
 on versionLessThan (vs1, vs2) {
-	Ç1/6/98 by DW
-		Çfixed this case:
-			Çdate.versionLessThan ("2.0b9", "2.0")
-				Çtrue
+	ï¿½1/6/98 by DW
+		ï¿½fixed this case:
+			ï¿½date.versionLessThan ("2.0b9", "2.0")
+				ï¿½true
 	on explodeVersion (s, adrtable) {
 		new (tableType, adrtable);
 		adrtable^.mainVersionNum = 0;

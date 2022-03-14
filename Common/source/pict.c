@@ -36,7 +36,7 @@
 #include "ops.h"
 #include "resources.h"
 #include "scrollbar.h"
-#include "strings.h"
+#include "frontier_strings.h"
 #include "frontierwindows.h"
 #include "zoom.h"
 #include "shell.h"

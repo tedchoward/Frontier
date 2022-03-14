@@ -34,7 +34,7 @@
 #include "resources.h"
 #include "scrap.h"
 #include "search.h"
-#include "strings.h"
+#include "frontier_strings.h"
 #include "shell.h"
 #include "shellprint.h"
 #include "shellundo.h"

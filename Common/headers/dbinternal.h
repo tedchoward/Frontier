@@ -64,7 +64,7 @@ typedef enum {
 
 typedef long tyvariance;
 
-
+#pragma pack(2)
 typedef struct tysizefreeword {
 	
 //	unsigned long flfree: 1;
@@ -97,7 +97,7 @@ typedef struct availnodeshadow {
 	long size;
 	// next record in this array is the next free block
 	} tyavailnodeshadow, ** hdlavaillistshadow;
-
+#pragma options align=reset
 
 /*prototypes*/
 

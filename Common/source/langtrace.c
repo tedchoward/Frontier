@@ -30,7 +30,7 @@
 
 #include "kb.h"
 #include "mouse.h"
-#include "strings.h"
+#include "frontier_strings.h"
 #include "shell.h"
 #include "langinternal.h"
 

@@ -37,7 +37,7 @@
 #include "mouse.h"
 #include "scrollbar.h"
 #include "sounds.h"
-#include "strings.h"
+#include "frontier_strings.h"
 #include "shell.h"
 #include "shellbuttons.h"
 #include "shellprivate.h"

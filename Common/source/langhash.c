@@ -30,7 +30,7 @@
 
 #include "error.h"
 #include "memory.h"
-#include "strings.h"
+#include "frontier_strings.h"
 #include "font.h"
 #include "ops.h"
 #include "quickdraw.h"
@@ -2798,7 +2798,7 @@ static boolean hashpackvisit (bigstring bsname, hdlhashnode hnode, tyvaluerecord
 	
 	languntraperrors (savecallback, saverefcon, false);
 	
-	return (false); /*keep going, kind of backwardsÉ*/
+	return (false); /*keep going, kind of backwardsï¿½*/
 	
 	error:
 	

@@ -34,7 +34,7 @@
 #include "ops.h"
 #include "quickdraw.h"
 #include "resources.h"
-#include "strings.h"
+#include "frontier_strings.h"
 #include "shell.h"
 #include "shellprivate.h"
 #include "shellundo.h"

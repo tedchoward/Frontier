@@ -30,7 +30,7 @@
 
 #include "memory.h"
 #include "quickdraw.h"
-#include "strings.h"
+#include "frontier_strings.h"
 #include "kb.h"
 #include "menu.h"
 #include "ops.h"

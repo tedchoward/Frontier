@@ -34,7 +34,7 @@
 #include "quickdraw.h"
 #include "ops.h"
 #include "smallicon.h"
-#include "strings.h"
+#include "frontier_strings.h"
 #include "shell.rsrc.h"
 #include "opdraggingmove.h"
 #include "opdisplay.h"

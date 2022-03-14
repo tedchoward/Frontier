@@ -39,7 +39,7 @@
 #include "ops.h"
 #include "quickdraw.h"
 #include "resources.h"
-#include "strings.h"
+#include "frontier_strings.h"
 #include "search.h"
 #include "zoom.h"
 #include "shell.h"

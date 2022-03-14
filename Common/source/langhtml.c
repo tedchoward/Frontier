@@ -39,7 +39,7 @@
 #include "memory.h"
 #include "ops.h"
 #include "resources.h"
-#include "strings.h"
+#include "frontier_strings.h"
 #include "lang.h"
 #include "langipc.h"
 #include "langinternal.h"

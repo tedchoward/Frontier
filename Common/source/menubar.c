@@ -39,7 +39,7 @@
 #include "launch.h"
 #include "menu.h"
 #include "ops.h"
-#include "strings.h"
+#include "frontier_strings.h"
 #include "shellmenu.h"
 #include "menubar.h"
 #include "process.h"

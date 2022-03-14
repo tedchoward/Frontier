@@ -33,7 +33,7 @@
 #include "fileloop.h"
 #include "kb.h"
 #include "memory.h"
-#include "strings.h"
+#include "frontier_strings.h"
 #include "shellundo.h"
 
 #include "op.h"

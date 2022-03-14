@@ -30,7 +30,7 @@
 
 #include "memory.h"
 #include "quickdraw.h"
-#include "strings.h"
+#include "frontier_strings.h"
 #include "db.h"
 #include "langexternal.h"
 #include "tablestructure.h"

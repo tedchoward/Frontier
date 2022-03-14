@@ -32,6 +32,7 @@
 
 /*global search/sort settings*/
 
+#pragma pack(2)
 typedef struct tysearchparameters {
 	
 	boolean flfirsttime: 1;
@@ -82,7 +83,7 @@ typedef struct tysearchparameters {
 
 #endif
 	} tysearchparameters;
-
+#pragma options align=reset
 
 extern tysearchparameters searchparams; /*set this global to influence searching process*/
 

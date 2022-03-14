@@ -31,7 +31,7 @@
 #include "font.h"
 #include "quickdraw.h"
 #include "memory.h"
-#include "strings.h"
+#include "frontier_strings.h"
 #include "textedit.h"
 
 

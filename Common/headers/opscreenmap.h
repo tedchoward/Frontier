@@ -27,7 +27,7 @@
 
 #define opscreenmapinclude
 
-
+#pragma pack(2)
 typedef struct tymapelement {
 	
 	hdlheadrecord hnode;
@@ -48,7 +48,7 @@ typedef struct tyscreenmap {
 	
 	tymapelement map [];
 	} tyscreenmap, *ptrscreenmap, **hdlscreenmap;
-
+#pragma options align=reset
 
 boolean opnewscreenmap (hdlscreenmap *);
 

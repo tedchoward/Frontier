@@ -40,7 +40,7 @@
 #include "popup.h"
 #include "quickdraw.h"
 #include "scrap.h"
-#include "strings.h"
+#include "frontier_strings.h"
 #include "windowlayout.h"
 #include "frontierwindows.h"
 #include "zoom.h"

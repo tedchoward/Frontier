@@ -45,7 +45,7 @@
 #include "memory.h"
 #include "mouse.h"
 #include "quickdraw.h"
-#include "strings.h"
+#include "frontier_strings.h"
 #include "ops.h"
 #include "file.h"
 #include "resources.h"

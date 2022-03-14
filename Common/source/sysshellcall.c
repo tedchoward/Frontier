@@ -29,7 +29,7 @@
 #include "standard.h"
 
 #include "memory.h"
-#include "strings.h"
+#include "frontier_strings.h"
 #include "threads.h"
 #include "error.h"
 #include "langinternal.h" /*for error strings*/

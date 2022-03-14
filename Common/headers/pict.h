@@ -32,7 +32,7 @@
 #define picterrorstring 5
 
 
-
+#pragma pack(2)
 typedef struct typictrecord {
 	
 	PicHandle macpicture; /*the structure that's passed off to DrawPicture*/
@@ -62,7 +62,8 @@ typedef struct typictrecord {
 	boolean flscaletofitwindow: 1; /*if true, scale window down to fit inside window*/
 	
 	} typictrecord, *ptrpictrecord, **hdlpictrecord;
-	
+#pragma options align=reset
+
 	
 extern WindowPtr pictwindow;
 

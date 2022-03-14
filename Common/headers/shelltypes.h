@@ -36,6 +36,7 @@
 
 typedef char diskfontstring [diskfontnamelength + 1];
 
+#pragma pack(2)
 typedef struct diskrect {
 	
 	short top;
@@ -210,6 +211,8 @@ typedef struct tybuttonstatus {
 	#define fsname( fs ) ( fs ) -> fullSpecifier
 
 	#endif // WIN95VERSION
+
+#pragma options align=reset
 
 #endif
 
