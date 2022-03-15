@@ -51,12 +51,14 @@
 #include "tableverbs.h"
 
 
+#pragma pack(2)
 typedef struct tytablescrap {
 
 	Handle hpacked;
 	
 	bigstring bspath;
 	} tytablescrap, *ptrtablescrap, **hdltablescrap;
+#pragma options align=reset
 
 
 #if 0

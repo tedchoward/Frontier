@@ -1651,6 +1651,7 @@ static boolean stringtoobjspec (tyvaluerecord *val) {
 static boolean objtostring (AEDesc *, boolean, DescType, AEDesc *, bigstring); /*forward*/
 
 
+#pragma pack(2)
 typedef struct tyobjspecitem { /*data within special object specifier structures*/
 	
 	AEKeyword key;
@@ -1661,6 +1662,7 @@ typedef struct tyobjspecitem { /*data within special object specifier structures
 	
 	/*data follows*/
 	} tyobjspecitem;
+#pragma options align=reset
 
 
 static boolean getobjspeckeydesc (AEDesc *objdata, OSType desiredkey, AEDesc *keydata) {

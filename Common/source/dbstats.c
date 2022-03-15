@@ -74,7 +74,7 @@ enum { /*statsmessage indexes*/
 	idavailshadowoutofsynch
 	};
 
-
+#pragma pack(2)
 typedef struct tystatsrecord {
 	
 	boolean flstatscomputed;
@@ -97,7 +97,8 @@ typedef struct tystatsrecord {
 
 	short statslineheight;
 	} tystatsrecord, *ptrstatsrecord, **hdlstatsrecord;
-	
+#pragma options align=reset
+
 
 static WindowPtr statswindow = nil;
 

@@ -504,7 +504,9 @@ static boolean initCharsetsTable (hdlhashtable cSetsTable)
 	long ccpInfo;
 	bigstring ianaName, displayName;
 
+#ifdef FRONTIERCOM
 	initCOM();
+#endif
 
 	err = CoCreateInstance(
 			&CLSID_CMultiLanguage, 

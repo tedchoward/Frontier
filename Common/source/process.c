@@ -113,11 +113,12 @@ static void _leavecriticalprocesssection (void) {
 
 #endif
 
-
+#pragma pack(2)
 typedef struct tythreadlist {
 	
 	hdlthreadglobals hfirst;
 	} tythreadlist, **hdlthreadlist;
+#pragma options align=reset
 
 
 static hdlthreadlist processthreadlist;
@@ -1388,7 +1389,7 @@ void disposethreadglobals (hdlthreadglobals hglobals) {
 	
 	if (hg == hthreadglobals) {
 
-		#ifdef WIN95VERSION
+		#ifdef FRONTIERCOM
 			if ( flcominitialized )
 				shutdownCOM();
 		#endif

@@ -2526,8 +2526,9 @@ static boolean getTextEncodingIDFromIANA( bigstring bsEncodingName, long * encod
 			
 			return (true);
 		}
-
+#ifdef FRONTIERCOM
 		initCOM();
+#endif
 
 		err = CoCreateInstance(
 				&CLSID_CMultiLanguage, 
@@ -2735,8 +2736,9 @@ boolean convertCharset( Handle hString, Handle hresult, bigstring charsetIn, big
 	#ifdef WIN95VERSION
 
 		long teInputSet, teOutputSet;
-
+#ifdef FRONTIERCOM
 		initCOM();
+#endif
 
 	#endif
 	

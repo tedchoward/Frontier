@@ -46,25 +46,26 @@
 #include "process.h" /*7.0b8 PBS: check to see if we're debugging*/
 
 
-
+#pragma pack(2)
 typedef struct tycopyinfo {
 	
 	hdlheadrecord hnode;
 	
 	short level;
 	} tycopyinfo, *ptrcopyinfo;
-
+#pragma options align=reset
 
 static hdlscreenmap hundomap; /*temporary screen map shared by opbefore/afterundo*/
 
 
-
+#pragma pack(2)
 typedef struct tydepositinfo {
 
 	hdlheadrecord hpre, hdeposit;
 	
 	tydirection dir;
 	} tydepositinfo, *ptrdepositinfo, **hdldepositinfo;
+#pragma options align=reset
 
 
 void opstartinternalchange (void) {
@@ -1402,13 +1403,14 @@ static boolean opdefaultcanmove (hdlheadrecord hnode, tydirection dir) {
 	} /%opdefaultcanmove%/
 */
 
-
+#pragma pack(2)
 typedef struct tymoveinfo {
 	
 	hdlheadrecord hpre;
 	
 	tydirection dir;
 	} tymoveinfo;
+#pragma options align=reset
 
 
 static boolean opvalidatecanmove (hdlheadrecord hnode, ptrvoid refcon) {

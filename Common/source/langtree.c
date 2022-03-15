@@ -35,7 +35,7 @@
 #include "tablestructure.h"
 #include "byteorder.h"	/* 2006-04-08 aradke: endianness conversion macros */
 
-
+#pragma pack(2)
 typedef struct tydisktreenode {
 
 #ifdef SWAP_BYTE_ORDER
@@ -66,6 +66,7 @@ typedef struct tydisktreenode {
 	byte haslink; //is there another node linked to this one?
 	*/
 	} tydisktreenode, *ptrdisktreenode, **hdldisktreenode;
+#pragma options align=reset
 
 typedef enum tydisktreenodeparaminfo {
 
@@ -88,7 +89,7 @@ typedef enum tydisktreenodeparaminfo {
 #endif
 	} tydisktreenodeparaminfo;
 
-
+#pragma pack(2)
 typedef struct tydisktreerec {
 	
 	short version;
@@ -132,7 +133,7 @@ typedef struct tyOLD42disktreenode {
 	
 	byte unused : 7; /*a little room for expansion*/
 	} tyOLD42disktreenode, *ptrOLD42disktreenode, **hdlOLD42disktreenode;
-
+#pragma options align=reset
 
 #ifdef fldebug
 
@@ -146,13 +147,14 @@ typedef struct tyOLD42disktreenode {
 
 #define treenodeblocksize 1024
 
-
+#pragma pack(2)
 typedef struct tytreenodeblock {
 	
 	ptrtreenode pnode; // points to next field, simulating handle
 	
 	tytreenode node;
 	} tytreenodeblock, *ptrtreenodeblock;
+#pragma options align=reset
 
 
 #ifdef WIN95VERSION

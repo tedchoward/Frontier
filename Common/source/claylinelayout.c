@@ -46,7 +46,7 @@
 //#include "clayicons.h"
 #include "byteorder.h"	/* 2006-04-08 aradke: endianness conversion macros */
 
-
+#pragma pack(2)
 typedef struct tydisklinelayout {
 	
 	short recordsize;
@@ -73,7 +73,7 @@ typedef struct tydisklinelayout {
 	
 	short filenamefontsize, othertextfontsize;
 	} tydisklinelayout;
-
+#pragma options align=reset
 
 #define fldisplaydebug false
 

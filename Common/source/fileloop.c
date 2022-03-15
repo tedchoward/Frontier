@@ -38,7 +38,7 @@
 
 #ifdef MACVERSION
 
-
+#pragma pack(2)
 	typedef struct tyfilelooprecord {
 		
 		short vnum; /*the volume we're looping through*/
@@ -49,12 +49,13 @@
 		
 		hdllistrecord hfilelist; /*a list of filenames to be looped over*/
 		} tyfilelooprecord, *ptrfilelooprecord, **hdlfilelooprecord;
+#pragma options align=reset
 
 #endif // MACVERSION
 
 
 #ifdef WIN95VERSION
-
+#pragma pack(2)
 	typedef struct tyfindloopinfo
 		{
 		tyfilespec fs;
@@ -63,6 +64,7 @@
 		boolean doingDrives;
 		short drivenum;
 		} findloopinfo;
+#pragma options align=reset
 
 #endif // WIN95VERSION
 

@@ -59,13 +59,14 @@ static hdlheadrecord hfirstmoved;
 
 static boolean opredocopy (hdlheadrecord hnode, boolean flundo); /*forward*/
 
-
+#pragma pack(2)
 typedef struct tydraginfo {
 	
 	hdlheadrecord hnode;
 	
 	tydirection dir;
 	} tydraginfo, *ptrdraginfo;
+#pragma options align=reset
 
 
 #if false

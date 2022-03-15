@@ -77,7 +77,7 @@ static tyfunctype functiontoken; /*use this if string is empty*/
 
 static boolean fllocaldotparamsonly = false; /*set to inhibit searchpathvisit in langgetdotparams*/
 
-
+#pragma pack(2)
 typedef struct tyfastflagsvaluerecord {
 	
 	tyvaluetype valuetype;
@@ -86,6 +86,7 @@ typedef struct tyfastflagsvaluerecord {
 	
 	tyvaluedata data;
 	} tyfastflagsvaluerecord;
+#pragma options align=reset
 
 
 boolean langsymbolreference (hdlhashtable htable, bigstring bs, tyvaluerecord *val, hdlhashnode * hnode) {
@@ -5636,7 +5637,7 @@ static boolean tablearrayvalue (tyvaluerecord *varray, bigstring bsname, tyvalue
 
 #define maxarraystack 7
 
-
+#pragma pack(2)
 typedef struct tyarrayspec {
 	
 	tyvaluerecord varray; /*the array containing the retrieved value (which may itself be an array)*/
@@ -5651,7 +5652,7 @@ typedef struct tyarraystack {
 	
 	tyarrayspec element [maxarraystack];
 	} tyarraystack;
-
+#pragma options align=reset
 
 
 static boolean parsearrayreference (hdltreenode htree, tyarraystack *pstack, hdlhashtable *htable, bigstring bsname, tyvaluerecord *val) {

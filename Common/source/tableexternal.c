@@ -727,7 +727,7 @@ boolean tablezoomfromhead (hdlheadrecord hnode) {
 	return (true);
 	} /*tablezoomfromhead*/
 
-
+#pragma pack(2)
 typedef struct tysymbolchangedinfo {
 	
 	hdlhashtable htable;
@@ -753,6 +753,7 @@ typedef struct tyfinddatabaseinfo {
 
 	WindowPtr w;
 	} tyfinddatabaseinfo;
+#pragma options align=reset
 
 
 static boolean finddatabasevisit (WindowPtr w, ptrvoid refcon) {

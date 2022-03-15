@@ -87,7 +87,7 @@ byte * dialogstrings [] = {
 		BIGSTRING ("\x22" "\" already exists in this location.")
 	#endif
 	};
-
+#pragma pack(2)
 typedef struct tydraginfo {
 
 	long ctcollisions;
@@ -106,7 +106,7 @@ typedef struct tydraginfo {
 
 	hdlheadrecord hcompare;
 	} tydraginfo, *ptrdraginfo;
-
+#pragma options align=reset
 
 boolean browservalidatedrag (hdlheadrecord hsource, hdlheadrecord hdest, tydirection dir) {
 #pragma unused (hsource)

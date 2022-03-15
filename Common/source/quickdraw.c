@@ -116,11 +116,12 @@ RGBColor darkgreencolor = {0, 32767, 0};
 
 #endif
 
-
+#pragma pack(2)
 typedef struct tystylerecord  {
 	
 	short fnum, fsize, fstyle;
 	} tystylerecord;
+#pragma options align=reset
 
 
 #define ctports 20 /*we can remember ports up to 5 levels deep*/

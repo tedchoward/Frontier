@@ -97,7 +97,7 @@
 	#define ctprocinfohashbuckets 29 /* should be a prime number */
 
 	typedef struct typrocinfostruct *typrocinfoptr, **typrocinfohandle; /* forward declaration */
-	
+#pragma pack(2)	
 	typedef struct typrocinfostruct {
 	
 		typrocinfohandle hashlink;					/* handle linking to next node in hash bucket */
@@ -140,7 +140,8 @@
 		typrocinfohandle hashbucket[ctprocinfohashbuckets];		/* array of hash buckets for procinfo structs */
 		
 		} tydllinfostruct;
-	
+#pragma options align=reset
+
 	/* static variables */
 	
 	static tydllinfohandle loadeddlls; /* linked list of currently loaded stay-resident DLLs */
@@ -149,6 +150,7 @@
 
 #else
 
+#pragma pack(2)
 	typedef struct tydllmoduleinfo {
 		
 		long ctparams;
@@ -169,6 +171,7 @@
 
 		tyDLLEXTROUTINE procAddress;
 		} tydllmoduleinfo;
+#pragma options align=reset
 
 #endif /* NEW_DLL_INTERFACE */
 

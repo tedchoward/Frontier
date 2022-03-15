@@ -365,6 +365,7 @@ static boolean flpagemillfile = false;
 
 //static ptraddress callbackscript = nil;
 
+#pragma pack(2)
 typedef struct typrocessmacrosinfo {
 
 	hdlhashtable hpagetable;
@@ -381,6 +382,7 @@ typedef struct typrocessmacrosinfo {
 	boolean flclaycompatibility;
 	boolean flisofilter;
 	} typrocessmacrosinfo, *ptrprocessmacrosinfo;
+#pragma options align=reset
 
 #else
 

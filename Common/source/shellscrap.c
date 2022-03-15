@@ -38,7 +38,7 @@
 
 
 
-
+#pragma pack(2)
 typedef struct tyscraprecord {
 
 	short count; /*for comparison to toolbox scrapcount*/
@@ -57,6 +57,7 @@ typedef struct tyscraprecord {
 	
 	shellexportscrapcallback exportroutine;
 	} tyscraprecord;
+#pragma options align=reset
 
 
 tyscraprecord shellscrap;

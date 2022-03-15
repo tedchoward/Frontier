@@ -67,6 +67,7 @@ Broken out from FrontierWinMain.c
 
 #ifdef MACVERSION
 
+#pragma pack(2)
 	typedef struct typopupinfo {
 
 		hdlmenu hmenu;
@@ -80,7 +81,7 @@ Broken out from FrontierWinMain.c
 		
 		short currstackitem;
 		} tydockmenustack, *ptrdockmenustack, **hdldockmenustack;
-
+#pragma options align=reset
 
 	tydockmenustack dockmenustack;
 
