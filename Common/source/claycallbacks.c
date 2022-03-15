@@ -36,7 +36,7 @@
 #include "kb.h"
 #include "memory.h"
 #include "ops.h"
-#include "strings.h"
+#include "frontier_strings.h"
 #include "opinternal.h"
 #include "claybrowserstruc.h"
 #include "claybrowserexpand.h"
@@ -548,13 +548,14 @@ void fileinfotobrowserinfo (tyfileinfo *fileinfo, tybrowserinfo *browserinfo) {
 
 #if filebrowser
 
-
+#pragma pack(2)
 typedef struct tycallbackinfo {
 	
 	tyclayfileloopcallback callback;
 	
 	long refcon;
 	} tycallbackinfo;
+#pragma options align=reset
 
 
 static boolean clayfolderexpandvisit (bigstring bsitem, tyfileinfo *info, long refcon) {
@@ -585,6 +586,7 @@ boolean clayfolderloop (const tybrowserspec *pfs, boolean flreverse, tyclayfilel
 
 #if odbbrowser
 
+#pragma pack(2)
 typedef struct tycallbackinfo {
 	
 	hdldatabaserecord hdatabase;
@@ -595,7 +597,7 @@ typedef struct tycallbackinfo {
 	
 	long refcon;
 	} tycallbackinfo;
-
+#pragma options align=reset
 
 static boolean clayfolderloopvisit (bigstring bsname, hdlhashnode hnode, tyvaluerecord val, ptrvoid refcon) {
 #pragma unused(hnode, val)

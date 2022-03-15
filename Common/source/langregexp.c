@@ -34,7 +34,7 @@
 #include "memory.h"
 #include "ops.h"
 #include "resources.h"
-#include "strings.h"
+#include "frontier_strings.h"
 #include "lang.h"
 #include "langinternal.h"
 #include "langexternal.h"
@@ -595,7 +595,7 @@ typedef enum tyreplacementtoken { /*identifies parts of a replacement string*/
 
 	} tyreplacementtoken;
 
-
+#pragma pack(2)
 typedef struct tycompiledpattern { /*internal representation of a compiled pattern*/
 
 	OSType type; 			/*type of binary object, required to be 'PCRE'*/
@@ -697,6 +697,7 @@ typedef struct tygreplistinfo {
 	
 	ptrstring bserrorptr;
 	} tygreplistinfo;
+#pragma options align=reset
 
 
 typedef boolean (*tyreplscanliteralcallback) (int ix, int len, bigstring bserror, void *refcon);

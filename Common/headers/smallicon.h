@@ -111,7 +111,7 @@ typedef char smalliconbits [32];
 
 typedef smalliconbits *ptrsmalliconbits, **hdlsmalliconbits;
 
-
+#pragma pack(2)
 typedef struct tysmalliconspec { /*bundle all the plotting parameters into a record*/
 	
 	hdlsmalliconbits hbits; /*if nil, use iconlist*/
@@ -128,6 +128,7 @@ typedef struct tysmalliconspec { /*bundle all the plotting parameters into a rec
 	
 	boolean flclearwhatsthere: 1;
 	} tysmalliconspec;
+#pragma options align=reset
 
 /*prototypes*/
 

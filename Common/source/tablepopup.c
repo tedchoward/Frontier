@@ -41,7 +41,7 @@
 #include "popup.h"
 #include "quickdraw.h"
 #include "resources.h"
-#include "strings.h"
+#include "frontier_strings.h"
 #include "threads.h"
 #include "frontierwindows.h"
 #include "shellhooks.h"
@@ -78,13 +78,14 @@
 #define firstefptype outlinevaluetype
 
 
-
+#pragma pack(2)
 typedef struct tykindmenuinfo {
 	
 	//byte *bsitem; /*the text of the menu item*/
 	
 	tyvaluetype type; /*the associated value type*/
 	} tykindmenuinfo;
+#pragma options align=reset
 
 
 static tykindmenuinfo kindmenuinfo [] = { /*menu contents, in menu order*/
@@ -645,12 +646,13 @@ boolean tablesetitemname (hdlhashtable ht, bigstring bsname, hdlheadrecord headn
 	} /*tablesetitemname*/
 
 
-
+#pragma pack(2)
 typedef struct typopupkindinfo {
 	bigstring bstitle;
 	short zoomkind;
 	boolean flkindok;
 	} typopupkindinfo;
+#pragma options align=reset
 
 
 #ifdef MACVERSION
@@ -824,13 +826,14 @@ boolean tablepopupkinddialog (void) {
 	return (tablekindpopupselect (nil, (short)(pki.zoomkind + ixfirstefptype)));
 	} /*tablepopupkinddialog*/
 
-
+#pragma pack(2)
 typedef struct tyancestor {
 	
 	hdlhashtable htable;
 	
 	hdlhashnode hnode;
 	} tyancestor, tyancestry [];
+#pragma options align=reset
 
 
 typedef tyancestry *ptrancestry, **hdlancestry;

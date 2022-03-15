@@ -32,7 +32,7 @@
 #include "dialogs.h"
 #include "kb.h"
 #include "scrap.h"
-#include "strings.h"
+#include "frontier_strings.h"
 #include "shell.rsrc.h"
 #include "shellundo.h"
 #include "lang.h"
@@ -51,12 +51,14 @@
 #include "tableverbs.h"
 
 
+#pragma pack(2)
 typedef struct tytablescrap {
 
 	Handle hpacked;
 	
 	bigstring bspath;
 	} tytablescrap, *ptrtablescrap, **hdltablescrap;
+#pragma options align=reset
 
 
 #if 0

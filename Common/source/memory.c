@@ -32,7 +32,7 @@
 #include "memory.h"
 #include "ops.h"
 #include "shellhooks.h"
-#include "strings.h"
+#include "frontier_strings.h"
 #include "byteorder.h"	/* 2006-04-08 aradke: endianness conversion macros */
 
 

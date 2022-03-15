@@ -43,7 +43,7 @@
 #include "file.h"
 #include "resources.h"
 #include "scrap.h"
-#include "strings.h"
+#include "frontier_strings.h"
 #include "launch.h"
 #include "notify.h"
 #include "shell.h"
@@ -392,7 +392,7 @@ so the odb calls mess with out global data. so we need to protect it.
 
 #endif
 
-
+#pragma pack(2)
 typedef struct tyodblistrecord {
 	
 	struct tyodblistrecord **hnext;
@@ -406,7 +406,7 @@ typedef struct tyodblistrecord {
 	odbref odb;
 	
 	} tyodbrecord, *ptrodbrecord, **hdlodbrecord;
-
+#pragma options align=reset
 
 static hdlodbrecord hodblist = nil;
 

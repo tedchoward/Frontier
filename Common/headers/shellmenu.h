@@ -304,11 +304,13 @@
 					+ (lasthiermenu - firsthiermenu) / hiermenuincrement \
 					+ 2)
 
+#pragma pack(2)
 typedef struct tymenuinfo {
 	
 	short idmenu; /*the resource id / menu id of this menu*/
 	hdlmenu macmenu; /*a handle to the menu manager's data structure for the menu*/
 	} tymenuinfo;
+#pragma options align=reset
 
 extern tymenuinfo menustack [ctmenustack];
 

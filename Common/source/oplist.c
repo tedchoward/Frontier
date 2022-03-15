@@ -29,7 +29,7 @@
 #include "standard.h"
 
 #include "memory.h"
-#include "strings.h"
+#include "frontier_strings.h"
 #include "resources.h"
 #include "op.h"
 #include "opinternal.h"
@@ -53,7 +53,7 @@ goals.  so here goes!
 
 #define oplistversionnumber 1
 
-
+#pragma pack(2)
 typedef struct tylistrecord {
 	
 	struct tyoutlinerecord ** houtline; /*the list is stored in an outline*/
@@ -84,7 +84,7 @@ typedef struct tydisklistrecord {
 	
 	/*packed outline record is stored at end of this record*/
 	} tydisklistrecord;
-
+#pragma options align=reset
 
 static hdllistrecord hcurrentlist = nil;
 

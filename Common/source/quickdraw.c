@@ -40,7 +40,7 @@ quickdraw.c -- code which builds on top of basic quickdraw operations.
 #include "font.h"
 #include "memory.h"
 #include "ops.h"
-#include "strings.h"
+#include "frontier_strings.h"
 #include "quickdraw.h"
 #include "frontierwindows.h"
 #include "shell.h"
@@ -116,11 +116,12 @@ RGBColor darkgreencolor = {0, 32767, 0};
 
 #endif
 
-
+#pragma pack(2)
 typedef struct tystylerecord  {
 	
 	short fnum, fsize, fstyle;
 	} tystylerecord;
+#pragma options align=reset
 
 
 #define ctports 20 /*we can remember ports up to 5 levels deep*/

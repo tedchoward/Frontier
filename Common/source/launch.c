@@ -37,7 +37,7 @@
 
 #include "error.h"
 #include "memory.h"
-#include "strings.h"
+#include "frontier_strings.h"
 #include "file.h"
 #include "launch.h"
 #include "threads.h"
@@ -48,6 +48,7 @@
 
 #ifdef MACVERSION
 
+#pragma pack(2)
 typedef struct typrocessvisitinfo { /*2002-11-14 AR: for providing context to visitprocesses callbacks*/
 	OSType idprocess;
 	short ctprocesses;
@@ -56,7 +57,8 @@ typedef struct typrocessvisitinfo { /*2002-11-14 AR: for providing context to vi
 	typrocessid *psnprocess;
 	ptrfilespec fsprocess;
 	} typrocessvisitinfo;
-	
+#pragma options align=reset
+
 typedef struct typrocessvisitinfo *typrocessvisitinfoptr;
 
 #define initprocessvisitinfo(x) \

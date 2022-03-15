@@ -38,7 +38,7 @@ Not too big, kind of sexy, and certainly better than nothing!
 
 #include "versions.h" /*9.1b3 JES*/
 #include "quickdraw.h"
-#include "strings.h"
+#include "frontier_strings.h"
 #include "bitmaps.h"
 #include "cursor.h"
 #include "dialogs.h"
@@ -82,7 +82,7 @@ Not too big, kind of sexy, and certainly better than nothing!
 
 static long aboutopenticks; /*so we can tell how long it's been up*/
 
-
+#pragma pack(2)
 typedef struct tyaboutrecord {
 
 	Rect messagearea;
@@ -98,6 +98,7 @@ typedef struct tyaboutrecord {
 	long refcon;
 	
 	} tyaboutrecord, *ptraboutrecord, **hdlaboutrecord;
+#pragma options align=reset
 
 
 static hdlaboutrecord aboutdata = nil;

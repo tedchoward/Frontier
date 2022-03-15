@@ -42,7 +42,7 @@
 #include "search.h"
 #include "smallicon.h"
 #include "sounds.h"
-#include "strings.h"
+#include "frontier_strings.h"
 #include "textedit.h"
 #include "frontierwindows.h"
 #include "windowlayout.h"

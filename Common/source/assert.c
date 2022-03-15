@@ -35,7 +35,7 @@
 #ifdef MACVERSION
 
 	#include "memory.h"
-	#include "strings.h"
+	#include "frontier_strings.h"
 	#include "ops.h"
 	#include "shell.h"
 

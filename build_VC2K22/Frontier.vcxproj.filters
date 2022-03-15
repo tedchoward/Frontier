@@ -1,0 +1,1248 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{616b9f72-dd7f-4c6c-94c9-f4cab20ab64c}</UniqueIdentifier>
+      <Extensions>cpp;c;cxx;rc;def;r;odl;hpj;bat;for;f90</Extensions>
+    </Filter>
+    <Filter Include="Source Files\file">
+      <UniqueIdentifier>{9ffacc0e-478f-4fd6-ab3c-2a3535469bdf}</UniqueIdentifier>
+      <Extensions>.c</Extensions>
+    </Filter>
+    <Filter Include="Source Files\pcre">
+      <UniqueIdentifier>{8762a662-ceb6-4eda-9883-ace961c0c08b}</UniqueIdentifier>
+      <Extensions>.c</Extensions>
+    </Filter>
+    <Filter Include="Source Files\pict">
+      <UniqueIdentifier>{7b81c12c-f4f3-4383-9ecc-7343b1662c48}</UniqueIdentifier>
+      <Extensions>.c</Extensions>
+    </Filter>
+    <Filter Include="Source Files\stubs_win">
+      <UniqueIdentifier>{0f668e44-55e7-4b55-8334-83639949a6e4}</UniqueIdentifier>
+      <Extensions>.c</Extensions>
+    </Filter>
+    <Filter Include="Source Files\tool">
+      <UniqueIdentifier>{2a269e9a-5221-4550-9043-489c1a9e388e}</UniqueIdentifier>
+      <Extensions>.c</Extensions>
+    </Filter>
+    <Filter Include="Source Files\_cancoon">
+      <UniqueIdentifier>{f87a4b84-91cb-43aa-b683-f3e9c2e6b296}</UniqueIdentifier>
+      <Extensions>.c</Extensions>
+    </Filter>
+    <Filter Include="Source Files\_clay">
+      <UniqueIdentifier>{ac3af3f1-0b00-4f9e-b83a-22e814b21699}</UniqueIdentifier>
+      <Extensions>.c</Extensions>
+    </Filter>
+    <Filter Include="Source Files\_db">
+      <UniqueIdentifier>{2b720f31-11bd-4e36-b1a1-6951d4eb1f81}</UniqueIdentifier>
+      <Extensions>.c</Extensions>
+    </Filter>
+    <Filter Include="Source Files\_lang">
+      <UniqueIdentifier>{a80379d1-248f-4f4f-877a-2bd560740c59}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\_menubar">
+      <UniqueIdentifier>{e5abbd01-2da9-451e-adde-3e21cec1de29}</UniqueIdentifier>
+      <Extensions>.c</Extensions>
+    </Filter>
+    <Filter Include="Source Files\_op">
+      <UniqueIdentifier>{f3627118-3092-4701-b1f7-cd2bf887590b}</UniqueIdentifier>
+      <Extensions>.c</Extensions>
+    </Filter>
+    <Filter Include="Source Files\_shell">
+      <UniqueIdentifier>{216d802d-70c4-4728-be3a-57e03a113ba9}</UniqueIdentifier>
+      <Extensions>.c</Extensions>
+    </Filter>
+    <Filter Include="Source Files\_string">
+      <UniqueIdentifier>{2ec88af9-cba3-49b6-810f-f37410a2d314}</UniqueIdentifier>
+      <Extensions>.c</Extensions>
+    </Filter>
+    <Filter Include="Source Files\_table">
+      <UniqueIdentifier>{f3f47427-a2f7-4180-8637-4c4a97673f1e}</UniqueIdentifier>
+      <Extensions>.c</Extensions>
+    </Filter>
+    <Filter Include="Source Files\_wp">
+      <UniqueIdentifier>{41aa76a1-0c42-4970-81c4-3349dda28336}</UniqueIdentifier>
+      <Extensions>.c</Extensions>
+    </Filter>
+    <Filter Include="Source Files\SQLite3">
+      <UniqueIdentifier>{aef72661-81b0-4a49-8f5e-9d84725fb317}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Resource Files">
+      <UniqueIdentifier>{47b779f5-0c6e-47a8-ba45-75c4707f6116}</UniqueIdentifier>
+      <Extensions>.rc,.bmp,.ico,.cur</Extensions>
+    </Filter>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{85dfe752-4117-4471-92a9-155d856ed58d}</UniqueIdentifier>
+      <Extensions>.h</Extensions>
+    </Filter>
+    <Filter Include="Header Files\SQLite3">
+      <UniqueIdentifier>{12288a69-7317-430e-9e7b-c976399d3fee}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\MySQL">
+      <UniqueIdentifier>{503e3703-74b2-48e0-b54d-963fb3e0573d}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\Common\source\FrontierWinMain.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Common\source\file.c">
+      <Filter>Source Files\file</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Common\source\filedialog.c">
+      <Filter>Source Files\file</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Common\source\fileloop.c">
+      <Filter>Source Files\file</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Common\source\filemp3.c">
+      <Filter>Source Files\file</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Common\source\fileops.c">
+      <Filter>Source Files\file</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Common\source\filepath.c">
+      <Filter>Source Files\file</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Common\source\fileverbs.c">
+      <Filter>Source Files\file</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Common\source\findinfile.c">
+      <Filter>Source Files\file</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Common\source\resources.c">
+      <Filter>Source Files\file</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Common\PCRE\chartables.c">
+      <Filter>Source Files\pcre</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Common\PCRE\get.c">
+      <Filter>Source Files\pcre</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Common\PCRE\pcre.c">
+      <Filter>Source Files\pcre</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Common\PCRE\study.c">
+      <Filter>Source Files\pcre</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Common\source\pict.c">
+      <Filter>Source Files\pict</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Common\source\pictverbs.c">
+      <Filter>Source Files\pict</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Common\stubs\megastubs.c">
+      <Filter>Source Files\stubs_win</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Common\stubs\megastubs2.c">
+      <Filter>Source Files\stubs_win</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Common\stubs\minneed.c">
+      <Filter>Source Files\stubs_win</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Common\source\about.c">
+      <Filter>Source Files\tool</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Common\source\assert.c">
+      <Filter>Source Files\tool</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Common\source\base64.c">
+      <Filter>Source Files\tool</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Common\source\cursor.c">
+      <Filter>Source Files\tool</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Common\source\dockmenu.c">
+      <Filter>Source Files\tool</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Common\source\error.c">
+      <Filter>Source Files\tool</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Common\source\font.c">
+      <Filter>Source Files\tool</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Common\source\frontierconfig.c">
+      <Filter>Source Files\tool</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Common\source\frontierdebug.c">
+      <Filter>Source Files\tool</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Common\source\frontierstart.c">
+      <Filter>Source Files\tool</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Common\source\frontierwindows.c">
+      <Filter>Source Files\tool</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Common\source\htmlcontrol.c">
+      <Filter>Source Files\tool</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Common\source\icon.c">
+      <Filter>Source Files\tool</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Common\source\kb.c">
+      <Filter>Source Files\tool</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Common\source\launch.c">
+      <Filter>Source Files\tool</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Common\source\main.c">
+      <Filter>Source Files\tool</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Common\source\md5.c">
+      <Filter>Source Files\tool</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Common\source\memory.c">
+      <Filter>Source Files\tool</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Common\source\menu.c">
+      <Filter>Source Files\tool</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Common\source\mouse.c">
+      <Filter>Source Files\tool</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Common\source\notify.c">
+      <Filter>Source Files\tool</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Common\source\ops.c">
+      <Filter>Source Files\tool</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Common\source\popup.c">
+      <Filter>Source Files\tool</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Common\source\process.c">
+      <Filter>Source Files\tool</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Common\source\quickdraw.c">
+      <Filter>Source Files\tool</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Common\source\scrap.c">
+      <Filter>Source Files\tool</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Common\source\scripts.c">
+      <Filter>Source Files\tool</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Common\source\scrollbar.c">
+      <Filter>Source Files\tool</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Common\source\search.c">
+      <Filter>Source Files\tool</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Common\source\serialnumber.c">
+      <Filter>Source Files\tool</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Common\source\sha1dgst.c">
+      <Filter>Source Files\tool</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Common\source\smallicon.c">
+      <Filter>Source Files\tool</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Common\source\sounds.c">
+      <Filter>Source Files\tool</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Common\source\sysshellcall.c">
+      <Filter>Source Files\tool</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Common\source\textedit.c">
+      <Filter>Source Files\tool</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Common\source\threads.c">
+      <Filter>Source Files\tool</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Common\source\timedate.c">
+      <Filter>Source Files\tool</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Common\source\whirlpool.c">
+      <Filter>Source Files\tool</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Common\source\winregistry.c">
+      <Filter>Source Files\tool</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Common\source\cancoon.c">
+      <Filter>Source Files\_cancoon</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Common\source\cancoonpopup.c">
+      <Filter>Source Files\_cancoon</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Common\source\cancoonverbs.c">
+      <Filter>Source Files\_cancoon</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Common\source\cancoonwindow.c">
+      <Filter>Source Files\_cancoon</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Common\source\command.c">
+      <Filter>Source Files\_cancoon</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Common\source\miniwindow.c">
+      <Filter>Source Files\_cancoon</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Common\source\claybrowserexpand.c">
+      <Filter>Source Files\_clay</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Common\source\claybrowserstruc.c">
+      <Filter>Source Files\_clay</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Common\source\claybrowservalidate.c">
+      <Filter>Source Files\_clay</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Common\source\claycallbacks.c">
+      <Filter>Source Files\_clay</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Common\source\claylinelayout.c">
+      <Filter>Source Files\_clay</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Common\source\db.c">
+      <Filter>Source Files\_db</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Common\source\dbstats.c">
+      <Filter>Source Files\_db</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Common\source\dbverbs.c">
+      <Filter>Source Files\_db</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Common\source\odbengine.c">
+      <Filter>Source Files\_db</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Common\source\lang.c">
+      <Filter>Source Files\_lang</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Common\source\langcallbacks.c">
+      <Filter>Source Files\_lang</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Common\source\langcrypt.c">
+      <Filter>Source Files\_lang</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Common\source\langdate.c">
+      <Filter>Source Files\_lang</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Common\source\langdll.c">
+      <Filter>Source Files\_lang</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Common\source\langerror.c">
+      <Filter>Source Files\_lang</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Common\source\langerrorwindow.c">
+      <Filter>Source Files\_lang</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Common\source\langevaluate.c">
+      <Filter>Source Files\_lang</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Common\source\langexternal.c">
+      <Filter>Source Files\_lang</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Common\source\langhash.c">
+      <Filter>Source Files\_lang</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Common\source\langhtml.c">
+      <Filter>Source Files\_lang</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Common\source\langlist.c">
+      <Filter>Source Files\_lang</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Common\source\langmath.c">
+      <Filter>Source Files\_lang</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Common\source\langmysql.c">
+      <Filter>Source Files\_lang</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Common\source\langops.c">
+      <Filter>Source Files\_lang</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Common\source\langpack.c">
+      <Filter>Source Files\_lang</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Common\source\langparser.c">
+      <Filter>Source Files\_lang</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Common\source\langpython.c">
+      <Filter>Source Files\_lang</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Common\source\langregexp.c">
+      <Filter>Source Files\_lang</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Common\source\langscan.c">
+      <Filter>Source Files\_lang</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Common\source\langsqlite.c">
+      <Filter>Source Files\_lang</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Common\source\langstartup.c">
+      <Filter>Source Files\_lang</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Common\source\langsystypes.c">
+      <Filter>Source Files\_lang</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Common\source\langtmpstack.c">
+      <Filter>Source Files\_lang</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Common\source\langtrace.c">
+      <Filter>Source Files\_lang</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Common\source\langtree.c">
+      <Filter>Source Files\_lang</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Common\source\langvalue.c">
+      <Filter>Source Files\_lang</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Common\source\langverbs.c">
+      <Filter>Source Files\_lang</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Common\source\langwinipc.c">
+      <Filter>Source Files\_lang</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Common\source\langxml.c">
+      <Filter>Source Files\_lang</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Common\source\WinSockNetEvents.c">
+      <Filter>Source Files\_lang</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Common\source\menubar.c">
+      <Filter>Source Files\_menubar</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Common\source\menueditor.c">
+      <Filter>Source Files\_menubar</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Common\source\menufind.c">
+      <Filter>Source Files\_menubar</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Common\source\menupack.c">
+      <Filter>Source Files\_menubar</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Common\source\menuresize.c">
+      <Filter>Source Files\_menubar</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Common\source\menuverbs.c">
+      <Filter>Source Files\_menubar</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Common\source\meprograms.c">
+      <Filter>Source Files\_menubar</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Common\source\op.c">
+      <Filter>Source Files\_op</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Common\source\opbuttons.c">
+      <Filter>Source Files\_op</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Common\source\opdisplay.c">
+      <Filter>Source Files\_op</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Common\source\opdraggingmove.c">
+      <Filter>Source Files\_op</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Common\source\opedit.c">
+      <Filter>Source Files\_op</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Common\source\opexpand.c">
+      <Filter>Source Files\_op</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Common\source\ophoist.c">
+      <Filter>Source Files\_op</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Common\source\opicons.c">
+      <Filter>Source Files\_op</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Common\source\opinit.c">
+      <Filter>Source Files\_op</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Common\source\oplangtext.c">
+      <Filter>Source Files\_op</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Common\source\oplineheight.c">
+      <Filter>Source Files\_op</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Common\source\oplist.c">
+      <Filter>Source Files\_op</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Common\source\opops.c">
+      <Filter>Source Files\_op</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Common\source\oppack.c">
+      <Filter>Source Files\_op</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Common\source\oppopup.c">
+      <Filter>Source Files\_op</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Common\source\opprint.c">
+      <Filter>Source Files\_op</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Common\source\oprefcon.c">
+      <Filter>Source Files\_op</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Common\source\opscreenmap.c">
+      <Filter>Source Files\_op</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Common\source\opscrollbar.c">
+      <Filter>Source Files\_op</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Common\source\opstructure.c">
+      <Filter>Source Files\_op</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Common\source\opvalidate.c">
+      <Filter>Source Files\_op</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Common\source\opverbs.c">
+      <Filter>Source Files\_op</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Common\source\opvisit.c">
+      <Filter>Source Files\_op</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Common\source\opxml.c">
+      <Filter>Source Files\_op</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Common\source\textdisplay.c">
+      <Filter>Source Files\_op</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Common\source\shell.c">
+      <Filter>Source Files\_shell</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Common\source\shellactivate.c">
+      <Filter>Source Files\_shell</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Common\source\shellblocker.c">
+      <Filter>Source Files\_shell</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Common\source\shellbuttons.c">
+      <Filter>Source Files\_shell</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Common\source\shellcallbacks.c">
+      <Filter>Source Files\_shell</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Common\source\shellfile.c">
+      <Filter>Source Files\_shell</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Common\source\shellhooks.c">
+      <Filter>Source Files\_shell</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Common\source\shelljuggler.c">
+      <Filter>Source Files\_shell</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Common\source\shellkb.c">
+      <Filter>Source Files\_shell</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Common\source\shellmenu.c">
+      <Filter>Source Files\_shell</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Common\source\shellmouse.c">
+      <Filter>Source Files\_shell</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Common\source\shellops.c">
+      <Filter>Source Files\_shell</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Common\source\shellprint.c">
+      <Filter>Source Files\_shell</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Common\source\shellscrap.c">
+      <Filter>Source Files\_shell</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Common\source\shellscroll.c">
+      <Filter>Source Files\_shell</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Common\source\shellsysverbs.c">
+      <Filter>Source Files\_shell</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Common\source\shellundo.c">
+      <Filter>Source Files\_shell</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Common\source\shellupdate.c">
+      <Filter>Source Files\_shell</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Common\source\shellverbs.c">
+      <Filter>Source Files\_shell</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Common\source\shellwindow.c">
+      <Filter>Source Files\_shell</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Common\source\shellwindowmenu.c">
+      <Filter>Source Files\_shell</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Common\source\shellwindowverbs.c">
+      <Filter>Source Files\_shell</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Common\source\strings.c">
+      <Filter>Source Files\_string</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Common\source\stringverbs.c">
+      <Filter>Source Files\_string</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Common\source\tablecompare.c">
+      <Filter>Source Files\_table</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Common\source\tabledisplay.c">
+      <Filter>Source Files\_table</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Common\source\tableedit.c">
+      <Filter>Source Files\_table</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Common\source\tableexternal.c">
+      <Filter>Source Files\_table</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Common\source\tablefind.c">
+      <Filter>Source Files\_table</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Common\source\tableformats.c">
+      <Filter>Source Files\_table</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Common\source\tableops.c">
+      <Filter>Source Files\_table</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Common\source\tablepack.c">
+      <Filter>Source Files\_table</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Common\source\tablepopup.c">
+      <Filter>Source Files\_table</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Common\source\tablerunbutton.c">
+      <Filter>Source Files\_table</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Common\source\tablescrap.c">
+      <Filter>Source Files\_table</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Common\source\tablestructure.c">
+      <Filter>Source Files\_table</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Common\source\tablevalidate.c">
+      <Filter>Source Files\_table</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Common\source\tableverbs.c">
+      <Filter>Source Files\_table</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Common\source\tablewindow.c">
+      <Filter>Source Files\_table</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Common\source\wpengine.c">
+      <Filter>Source Files\_wp</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Common\source\wpverbs.c">
+      <Filter>Source Files\_wp</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Common\sqlite3\alter.c">
+      <Filter>Source Files\SQLite3</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Common\sqlite3\analyze.c">
+      <Filter>Source Files\SQLite3</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Common\sqlite3\attach.c">
+      <Filter>Source Files\SQLite3</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Common\sqlite3\auth.c">
+      <Filter>Source Files\SQLite3</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Common\sqlite3\btree.c">
+      <Filter>Source Files\SQLite3</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Common\sqlite3\build.c">
+      <Filter>Source Files\SQLite3</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Common\sqlite3\callback.c">
+      <Filter>Source Files\SQLite3</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Common\sqlite3\complete.c">
+      <Filter>Source Files\SQLite3</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Common\sqlite3\date.c">
+      <Filter>Source Files\SQLite3</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Common\sqlite3\delete.c">
+      <Filter>Source Files\SQLite3</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Common\sqlite3\expr.c">
+      <Filter>Source Files\SQLite3</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Common\sqlite3\func.c">
+      <Filter>Source Files\SQLite3</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Common\sqlite3\hash.c">
+      <Filter>Source Files\SQLite3</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Common\sqlite3\insert.c">
+      <Filter>Source Files\SQLite3</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Common\sqlite3\legacy.c">
+      <Filter>Source Files\SQLite3</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Common\sqlite3\loadext.c">
+      <Filter>Source Files\SQLite3</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Common\sqlite3\main.c">
+      <Filter>Source Files\SQLite3</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Common\sqlite3\opcodes.c">
+      <Filter>Source Files\SQLite3</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Common\sqlite3\os.c">
+      <Filter>Source Files\SQLite3</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Common\sqlite3\os_os2.c">
+      <Filter>Source Files\SQLite3</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Common\sqlite3\os_unix.c">
+      <Filter>Source Files\SQLite3</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Common\sqlite3\os_win.c">
+      <Filter>Source Files\SQLite3</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Common\sqlite3\pager.c">
+      <Filter>Source Files\SQLite3</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Common\sqlite3\parse.c">
+      <Filter>Source Files\SQLite3</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Common\sqlite3\pragma.c">
+      <Filter>Source Files\SQLite3</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Common\sqlite3\prepare.c">
+      <Filter>Source Files\SQLite3</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Common\sqlite3\printf.c">
+      <Filter>Source Files\SQLite3</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Common\sqlite3\random.c">
+      <Filter>Source Files\SQLite3</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Common\sqlite3\select.c">
+      <Filter>Source Files\SQLite3</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Common\sqlite3\table.c">
+      <Filter>Source Files\SQLite3</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Common\sqlite3\tokenize.c">
+      <Filter>Source Files\SQLite3</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Common\sqlite3\trigger.c">
+      <Filter>Source Files\SQLite3</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Common\sqlite3\update.c">
+      <Filter>Source Files\SQLite3</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Common\sqlite3\utf.c">
+      <Filter>Source Files\SQLite3</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Common\sqlite3\util.c">
+      <Filter>Source Files\SQLite3</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Common\sqlite3\vacuum.c">
+      <Filter>Source Files\SQLite3</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Common\sqlite3\vdbe.c">
+      <Filter>Source Files\SQLite3</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Common\sqlite3\vdbeapi.c">
+      <Filter>Source Files\SQLite3</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Common\sqlite3\vdbeaux.c">
+      <Filter>Source Files\SQLite3</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Common\sqlite3\vdbefifo.c">
+      <Filter>Source Files\SQLite3</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Common\sqlite3\vdbemem.c">
+      <Filter>Source Files\SQLite3</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Common\sqlite3\vtab.c">
+      <Filter>Source Files\SQLite3</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Common\sqlite3\where.c">
+      <Filter>Source Files\SQLite3</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="..\Common\resources\Win32\WinLand.rc">
+      <Filter>Resource Files</Filter>
+    </ResourceCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\Common\headers\about.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Common\headers\BASE64.H">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Common\headers\bitmaps.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Common\headers\byteorder.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Common\headers\cancoon.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Common\headers\cancooninternal.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Common\headers\claybrowser.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Common\headers\claybrowserexpand.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Common\headers\claybrowserstruc.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Common\headers\claybrowservalidate.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Common\headers\claycallbacks.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Common\headers\claylinelayout.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Common\headers\command.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Common\headers\cursor.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Common\headers\db.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Common\headers\dbinternal.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Common\headers\dialogs.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Common\headers\dockmenu.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Common\headers\error.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Common\headers\FDllCall.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Common\headers\file.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Common\headers\filealias.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Common\headers\fileloop.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Common\headers\filesystem7.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Common\headers\font.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Common\headers\frontier.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Common\headers\frontierconfig.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Common\headers\frontierdebug.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Common\headers\frontierdefs.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Common\headers\frontierstart.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Common\headers\frontierwindows.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Common\headers\FrontierWinMain.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Common\headers\htmlcontrol.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Common\headers\icon.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Common\headers\iowaverbs.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Common\headers\kb.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Common\headers\kernelverbdefs.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Common\headers\kernelverbs.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Common\headers\lang.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Common\headers\langcrypt.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Common\headers\langdll.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Common\headers\langexternal.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Common\headers\langhtml.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Common\headers\langinternal.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Common\headers\langipc.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Common\headers\langmath.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Common\headers\langmysql.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Common\headers\langparser.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Common\headers\langpython.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Common\headers\langregexp.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Common\headers\langsqlite.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Common\headers\langsystem7.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Common\headers\langtokens.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Common\headers\langwinipc.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Common\headers\langxcmd.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Common\headers\langxml.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Common\headers\launch.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Common\headers\mac.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Common\headers\macconv.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Common\headers\md5.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Common\headers\memory.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Common\headers\menu.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Common\headers\menubar.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Common\headers\menueditor.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Common\headers\menuinternal.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Common\headers\menuverbs.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Common\headers\meprograms.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Common\headers\miniwindow.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Common\headers\mouse.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Common\headers\notify.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Common\headers\odbinternal.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Common\headers\op.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Common\headers\opbuttons.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Common\headers\opdisplay.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Common\headers\opdraggingmove.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Common\headers\opicons.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Common\headers\opinternal.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Common\headers\oplineheight.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Common\headers\oplist.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Common\headers\ops.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Common\headers\opscreenmap.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Common\headers\opverbs.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Common\headers\opxml.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Common\headers\osacomponent.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Common\headers\osincludes.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Common\PCRE\pcre.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Common\PCRE\pcre_config.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Common\PCRE\pcre_internal.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Common\headers\pict.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Common\headers\pictverbs.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Common\headers\popup.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Common\headers\process.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Common\headers\processinternal.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Common\headers\quickdraw.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Common\headers\resources.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Common\headers\scrap.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Common\headers\scripts.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Common\headers\scrollbar.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Common\headers\search.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Common\headers\serialnumber.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Common\headers\services.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Common\headers\sha.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Common\headers\sha_locl.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Common\headers\shell.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Common\headers\shell.msvs.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Common\headers\shell.rsrc.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Common\headers\shellbuttons.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Common\headers\shellhooks.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Common\headers\shellmenu.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Common\headers\shellprint.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Common\headers\shellprivate.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Common\headers\shelltypes.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Common\headers\shellundo.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Common\headers\smallicon.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Common\headers\sounds.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Common\SystemHeaders\standard.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Common\headers\stdwin.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Common\headers\stringdefs.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Common\headers\frontier_strings.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Common\headers\sysshellcall.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Common\headers\tabledisplay.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Common\headers\tableformats.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Common\headers\tableinternal.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Common\headers\tablestructure.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Common\headers\tableverbs.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Common\headers\textdisplay.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Common\headers\textedit.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Common\headers\threads.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Common\headers\timedate.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Common\headers\versions.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Common\headers\whirlpool.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Common\headers\windowlayout.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Common\headers\WinLand.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Common\headers\winregistry.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Common\headers\WinSockNetEvents.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Common\headers\wpengine.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Common\headers\wpinternal.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Common\headers\wpverbs.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Common\SystemHeaders\WSE.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Common\headers\yytab.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Common\headers\zoom.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <CustomBuild Include="..\Common\sqlite3\btree.h">
+      <Filter>Header Files\SQLite3</Filter>
+    </CustomBuild>
+    <CustomBuild Include="..\Common\sqlite3\hash.h">
+      <Filter>Header Files\SQLite3</Filter>
+    </CustomBuild>
+    <CustomBuild Include="..\Common\sqlite3\keywordhash.h">
+      <Filter>Header Files\SQLite3</Filter>
+    </CustomBuild>
+    <CustomBuild Include="..\Common\sqlite3\opcodes.h">
+      <Filter>Header Files\SQLite3</Filter>
+    </CustomBuild>
+    <CustomBuild Include="..\Common\sqlite3\os.h">
+      <Filter>Header Files\SQLite3</Filter>
+    </CustomBuild>
+    <CustomBuild Include="..\Common\sqlite3\os_common.h">
+      <Filter>Header Files\SQLite3</Filter>
+    </CustomBuild>
+    <CustomBuild Include="..\Common\sqlite3\pager.h">
+      <Filter>Header Files\SQLite3</Filter>
+    </CustomBuild>
+    <CustomBuild Include="..\Common\sqlite3\parse.h">
+      <Filter>Header Files\SQLite3</Filter>
+    </CustomBuild>
+    <CustomBuild Include="..\Common\sqlite3\sqlite3.h">
+      <Filter>Header Files\SQLite3</Filter>
+    </CustomBuild>
+    <CustomBuild Include="..\Common\sqlite3\sqlite3ext.h">
+      <Filter>Header Files\SQLite3</Filter>
+    </CustomBuild>
+    <CustomBuild Include="..\Common\sqlite3\sqliteInt.h">
+      <Filter>Header Files\SQLite3</Filter>
+    </CustomBuild>
+    <CustomBuild Include="..\Common\sqlite3\vdbe.h">
+      <Filter>Header Files\SQLite3</Filter>
+    </CustomBuild>
+    <CustomBuild Include="..\Common\sqlite3\vdbeInt.h">
+      <Filter>Header Files\SQLite3</Filter>
+    </CustomBuild>
+    <CustomBuild Include="..\Common\MySQL\win32\include\config-win.h">
+      <Filter>Header Files\MySQL</Filter>
+    </CustomBuild>
+    <CustomBuild Include="..\Common\MySQL\win32\include\my_alloc.h">
+      <Filter>Header Files\MySQL</Filter>
+    </CustomBuild>
+    <CustomBuild Include="..\Common\MySQL\win32\include\my_dbug.h">
+      <Filter>Header Files\MySQL</Filter>
+    </CustomBuild>
+    <CustomBuild Include="..\Common\MySQL\win32\include\my_global.h">
+      <Filter>Header Files\MySQL</Filter>
+    </CustomBuild>
+    <CustomBuild Include="..\Common\MySQL\win32\include\my_list.h">
+      <Filter>Header Files\MySQL</Filter>
+    </CustomBuild>
+    <CustomBuild Include="..\Common\MySQL\win32\include\mysql.h">
+      <Filter>Header Files\MySQL</Filter>
+    </CustomBuild>
+    <CustomBuild Include="..\Common\MySQL\win32\include\mysql_com.h">
+      <Filter>Header Files\MySQL</Filter>
+    </CustomBuild>
+    <CustomBuild Include="..\Common\MySQL\win32\include\mysql_time.h">
+      <Filter>Header Files\MySQL</Filter>
+    </CustomBuild>
+    <CustomBuild Include="..\Common\MySQL\win32\include\mysql_version.h">
+      <Filter>Header Files\MySQL</Filter>
+    </CustomBuild>
+    <CustomBuild Include="..\Common\MySQL\win32\include\typelib.h">
+      <Filter>Header Files\MySQL</Filter>
+    </CustomBuild>
+  </ItemGroup>
+</Project>

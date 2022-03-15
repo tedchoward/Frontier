@@ -29,7 +29,7 @@
 #include "standard.h"
 
 #include "error.h"
-#include "strings.h"
+#include "frontier_strings.h"
 #include "sounds.h"
 
 #define squareWaveSynth 1

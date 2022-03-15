@@ -33,7 +33,7 @@
 #include "op.h" /*7.0b16 PBS*/
 #include "opicons.h"
 #include "opdisplay.h"
-#include "strings.h" /*7.0b9 PBS*/
+#include "frontier_strings.h" /*7.0b9 PBS*/
 #include "tablestructure.h"
 
 #define canexpandicon 475

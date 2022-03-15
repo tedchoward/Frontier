@@ -29,7 +29,7 @@
 #include "standard.h"
 
 #include "memory.h"
-#include "strings.h"
+#include "frontier_strings.h"
 #include "error.h"
 #include "lang.h"
 #include "langinternal.h"
@@ -1248,11 +1248,12 @@ boolean listdeletevalue (tyvaluerecord *vlist, bigstring bsname, register tyvalu
 	return (fl);
 	} /*listdeletevalue*/
 
-
+#pragma pack(2)
 typedef struct tylangvisitlistinfo {
 	ptrvoid refcon;
 	langvisitlistvaluescallback visit;
 	} tylangvisitlistinfo;
+#pragma options align=reset
 
 
 static boolean langvisitlistvaluesvisit (Handle hdata, ptrstring bskey, ptrvoid refcon) {

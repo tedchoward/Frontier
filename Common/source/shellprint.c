@@ -33,7 +33,7 @@
 #include "error.h"
 #include "kb.h"
 #include "quickdraw.h"
-#include "strings.h"
+#include "frontier_strings.h"
 #include "shell.h"
 #include "shellprivate.h"
 #include "shell.rsrc.h"

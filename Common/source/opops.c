@@ -29,7 +29,7 @@
 #include "standard.h"
 
 #include "memory.h"
-#include "strings.h"
+#include "frontier_strings.h"
 #include "quickdraw.h"
 #include "bitmaps.h"
 #include "ops.h"
@@ -43,7 +43,7 @@
 #include "process.h"
 
 
-
+#pragma pack(2)
 typedef struct tyscanrecord { /*information for contains/find/search recursive scans*/
 	
 	hdlheadrecord hnodelookfor;
@@ -56,7 +56,7 @@ typedef struct tyscanrecord { /*information for contains/find/search recursive s
 	
 	boolean flfoundit;
 	} tyscanrecord, *ptrscanrecord;
-
+#pragma options align=reset
 
 
 

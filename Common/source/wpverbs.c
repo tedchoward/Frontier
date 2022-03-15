@@ -39,7 +39,7 @@
 #include "ops.h"
 #include "quickdraw.h"
 #include "resources.h"
-#include "strings.h"
+#include "frontier_strings.h"
 #include "search.h"
 #include "zoom.h"
 #include "shell.h"
@@ -156,6 +156,7 @@ typedef enum tywptoken { /*verbs that are processed by wp.c*/
 
 #else
 	
+#pragma pack(2)
 typedef struct tywpvariable {
 	
 	unsigned short id; /*tyexternalid: managed by langexternal.c*/
@@ -172,6 +173,7 @@ typedef struct tywpvariable {
 
 	dbaddress oldaddress; /*last place this wp doc was stored in db*/
 	} tywpvariable, *ptrwpvariable, **hdlwpvariable;
+#pragma options align=reset
 
 #endif
 

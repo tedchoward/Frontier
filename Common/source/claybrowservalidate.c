@@ -30,7 +30,7 @@
 
 #include "dialogs.h"
 #include "error.h"
-#include "strings.h"
+#include "frontier_strings.h"
 #include "opinternal.h"
 #include "claybrowserstruc.h"
 #include "claybrowservalidate.h"
@@ -80,14 +80,14 @@ byte * dialogstrings [] = {
 	BIGSTRING ("\x07" "A newer"),
 	BIGSTRING ("\x08" "An older"),
 	#ifdef MACVERSION
-		BIGSTRING ("\x0d" " item named Ò"),
-		BIGSTRING ("\x22" "Ó already exists in this location.")
+		BIGSTRING ("\x0d" " item named ï¿½"),
+		BIGSTRING ("\x22" "ï¿½ already exists in this location.")
 	#else
 		BIGSTRING ("\x0d" " item named \""),
 		BIGSTRING ("\x22" "\" already exists in this location.")
 	#endif
 	};
-
+#pragma pack(2)
 typedef struct tydraginfo {
 
 	long ctcollisions;
@@ -106,7 +106,7 @@ typedef struct tydraginfo {
 
 	hdlheadrecord hcompare;
 	} tydraginfo, *ptrdraginfo;
-
+#pragma options align=reset
 
 boolean browservalidatedrag (hdlheadrecord hsource, hdlheadrecord hdest, tydirection dir) {
 #pragma unused (hsource)
@@ -385,7 +385,7 @@ boolean browservalidatepaste (hdlheadrecord hscrap, hdlheadrecord hdest, tydirec
 	
 	if (hfolder == hdest) {
 		
-		alertdialog (BIGSTRING ("\x32" "CanÕt paste at the top level of a browser outline."));
+		alertdialog (BIGSTRING ("\x32" "Canï¿½t paste at the top level of a browser outline."));
 		
 		return (false);
 		}
@@ -440,7 +440,7 @@ static boolean browservalidatefolderpaste (hdlheadrecord hfolder, FSSpec *clipfo
 	
 	if ((**hfolder).headlinkleft == hfolder) {
 		
-		alertdialog (BIGSTRING ("\x32" "CanÕt paste at the top level of a browser outline."));
+		alertdialog (BIGSTRING ("\x32" "Canï¿½t paste at the top level of a browser outline."));
 		
 		return (false);
 		}
@@ -477,15 +477,15 @@ static boolean compareforcopyvisit (hdlheadrecord hnode, ptrvoid refcon) {
 	if (!equalidentifiers (bsnode, bs)) 
 		return (true);
 	
-	copystring (BIGSTRING ("\x06" "CanÕt "), bs);
+	copystring (BIGSTRING ("\x06" "Canï¿½t "), bs);
 	
 	pushstring (pcommand, bs);
 	
-	pushstring (BIGSTRING ("\x35" " because there are two or more selected items named Ò"), bs);
+	pushstring (BIGSTRING ("\x35" " because there are two or more selected items named ï¿½"), bs);
 	
 	pushstring (bsnode, bs);
 	
-	pushstring (BIGSTRING ("\x02" "Ó."), bs);
+	pushstring (BIGSTRING ("\x02" "ï¿½."), bs);
 	
 	alertdialog (bs);
 	

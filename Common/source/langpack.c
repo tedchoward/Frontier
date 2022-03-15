@@ -29,7 +29,7 @@
 #include "standard.h"
 
 #include "memory.h"
-#include "strings.h"
+#include "frontier_strings.h"
 #include "cursor.h"
 #include "ops.h"
 #include "quickdraw.h"
@@ -49,6 +49,7 @@
 #define signaturestring (ptrstring) "\x12" "packed binary data"
 
 
+#pragma pack(2)
 typedef struct tyoldpackedvalue {
 	
 	byte sigbytes [ctsigbytes]; /*a signature -- keeps errors from causing crashes*/
@@ -65,6 +66,7 @@ typedef struct typackedvalue {
 	
 	/*depending on type, any number of bytes following contain the value data*/
 	} typackedvalue, *ptrpackedvalue, **hdlpackedvalue;
+#pragma options align=reset
 
 /*
 

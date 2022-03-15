@@ -29,7 +29,7 @@
 #include "standard.h"
 
 #include "kb.h"
-#include "strings.h"
+#include "frontier_strings.h"
 #include "frontierwindows.h"
 #include "lang.h"
 #include "langexternal.h"

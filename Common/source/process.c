@@ -40,7 +40,7 @@
 #include "launch.h"
 #include "kb.h"
 #include "ops.h"
-#include "strings.h"
+#include "frontier_strings.h"
 #include "threads.h"
 #include "timedate.h"
 
@@ -113,11 +113,12 @@ static void _leavecriticalprocesssection (void) {
 
 #endif
 
-
+#pragma pack(2)
 typedef struct tythreadlist {
 	
 	hdlthreadglobals hfirst;
 	} tythreadlist, **hdlthreadlist;
+#pragma options align=reset
 
 
 static hdlthreadlist processthreadlist;
@@ -1388,7 +1389,7 @@ void disposethreadglobals (hdlthreadglobals hglobals) {
 	
 	if (hg == hthreadglobals) {
 
-		#ifdef WIN95VERSION
+		#ifdef FRONTIERCOM
 			if ( flcominitialized )
 				shutdownCOM();
 		#endif

@@ -30,7 +30,7 @@
 
 #include "error.h"
 #include "memory.h"
-#include "strings.h"
+#include "frontier_strings.h"
 #include "lang.h"
 #include "winregistry.h"
 

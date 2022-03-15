@@ -31,7 +31,7 @@
 #include "memory.h"
 #include "file.h"
 #include "ops.h"
-#include "strings.h"
+#include "frontier_strings.h"
 #include "shellhooks.h"
 #include "langexternal.h"
 #include "langinternal.h"
@@ -504,7 +504,9 @@ static boolean initCharsetsTable (hdlhashtable cSetsTable)
 	long ccpInfo;
 	bigstring ianaName, displayName;
 
+#ifdef FRONTIERCOM
 	initCOM();
+#endif
 
 	err = CoCreateInstance(
 			&CLSID_CMultiLanguage, 

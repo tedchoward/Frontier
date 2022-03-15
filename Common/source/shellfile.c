@@ -35,7 +35,7 @@
 #include "launch.h"
 #include "memory.h"
 #include "resources.h"
-#include "strings.h"
+#include "frontier_strings.h"
 #include "frontierwindows.h"
 #include "zoom.h"
 #include "cancoon.h"

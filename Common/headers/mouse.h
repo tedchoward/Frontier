@@ -32,7 +32,7 @@
 #define centermousebuttonaction 2
 #define wheelmousebuttonaction 3
 
-
+#pragma pack(2)
 typedef struct tymouserecord {
 	
 	boolean fldoubleclick;
@@ -51,7 +51,8 @@ typedef struct tymouserecord {
 
 	short whichbutton;
 	} tymouserecord;
-	
+#pragma options align=reset
+
 	
 extern tymouserecord mousestatus;
 

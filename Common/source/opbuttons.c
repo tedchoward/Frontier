@@ -33,7 +33,7 @@
 #include "shell.h"
 #include "lang.h"
 #include "oplist.h"
-#include "strings.h"
+#include "frontier_strings.h"
 #include "langxml.h"
 #include "processinternal.h"
 #include "ops.h"

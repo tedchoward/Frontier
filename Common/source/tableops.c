@@ -31,7 +31,7 @@
 #include "quickdraw.h"
 #include "cursor.h"
 #include "resources.h"
-#include "strings.h"
+#include "frontier_strings.h"
 
 #ifndef odbengine
 #include "search.h"

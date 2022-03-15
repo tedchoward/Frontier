@@ -1,0 +1,2126 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Frontier_Debug|Win32">
+      <Configuration>Frontier_Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Frontier_Release|Win32">
+      <Configuration>Frontier_Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="OPML_Debug|Win32">
+      <Configuration>OPML_Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="OPML_Release|Win32">
+      <Configuration>OPML_Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <VCProjectVersion>17.0</VCProjectVersion>
+    <ProjectGuid>{D834EFC1-8805-4046-9A49-F9925A0808EF}</ProjectGuid>
+    <RootNamespace>Frontier</RootNamespace>
+    <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Frontier_Debug|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <PlatformToolset>v143</PlatformToolset>
+    <UseOfMfc>false</UseOfMfc>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Frontier_Release|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <PlatformToolset>v143</PlatformToolset>
+    <UseOfMfc>false</UseOfMfc>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='OPML_Release|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <PlatformToolset>v143</PlatformToolset>
+    <UseOfMfc>false</UseOfMfc>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='OPML_Debug|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <PlatformToolset>v143</PlatformToolset>
+    <UseOfMfc>false</UseOfMfc>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Frontier_Debug|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="$(VCTargetsPath)Microsoft.CPP.UpgradeFromVC71.props" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Frontier_Release|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="$(VCTargetsPath)Microsoft.CPP.UpgradeFromVC71.props" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='OPML_Release|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="$(VCTargetsPath)Microsoft.CPP.UpgradeFromVC71.props" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='OPML_Debug|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="$(VCTargetsPath)Microsoft.CPP.UpgradeFromVC71.props" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup>
+    <_ProjectFileVersion>17.0.32203.90</_ProjectFileVersion>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='OPML_Debug|Win32'">
+    <OutDir>$(Configuration)/\</OutDir>
+    <IntDir>_build/$(Configuration)/\</IntDir>
+    <LinkIncremental>false</LinkIncremental>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRules />
+    <CodeAnalysisRuleAssemblies />
+    <TargetName>opml</TargetName>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='OPML_Release|Win32'">
+    <OutDir>$(Configuration)/\</OutDir>
+    <IntDir>_build/$(Configuration)/\</IntDir>
+    <LinkIncremental>false</LinkIncremental>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRules />
+    <CodeAnalysisRuleAssemblies />
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Frontier_Release|Win32'">
+    <OutDir>$(Configuration)/\</OutDir>
+    <IntDir>_build/$(Configuration)/\</IntDir>
+    <LinkIncremental>false</LinkIncremental>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRules />
+    <CodeAnalysisRuleAssemblies />
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Frontier_Debug|Win32'">
+    <OutDir>$(Configuration)/\</OutDir>
+    <IntDir>_build/$(Configuration)/\</IntDir>
+    <LinkIncremental>false</LinkIncremental>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRules />
+    <CodeAnalysisRuleAssemblies />
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='OPML_Debug|Win32'">
+    <BuildLog>
+      <Path>$(IntDir)BuildLog.htm</Path>
+    </BuildLog>
+    <Midl>
+      <PreprocessorDefinitions>_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <MkTypLibCompatible>true</MkTypLibCompatible>
+      <SuppressStartupBanner>true</SuppressStartupBanner>
+      <TargetEnvironment>Win32</TargetEnvironment>
+      <TypeLibraryName>.\Debug/Frontier.tlb</TypeLibraryName>
+      <HeaderFileName />
+    </Midl>
+    <ClCompile>
+      <Optimization>Disabled</Optimization>
+      <InlineFunctionExpansion>AnySuitable</InlineFunctionExpansion>
+      <AdditionalIncludeDirectories>..\Common\headers;..\Common\SystemHeaders;..\Common\Paige\headers;..\Common\PCRE;..\Common\sqlite3;..\Common\MySQL\win32\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>_DEBUG;PIKE=1;OPMLEDITOR=1;WIN95VERSION;_WINDOWS;WIN32;WIN32_COMPILE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
+      <StructMemberAlignment>Default</StructMemberAlignment>
+      <PrecompiledHeaderOutputFile />
+      <AssemblerListingLocation>$(IntDir)</AssemblerListingLocation>
+      <ObjectFileName>$(IntDir)</ObjectFileName>
+      <ProgramDataBaseFileName>$(IntDir)</ProgramDataBaseFileName>
+      <XMLDocumentationFileName>$(IntDir)</XMLDocumentationFileName>
+      <BrowseInformation>true</BrowseInformation>
+      <BrowseInformationFile>$(IntDir)</BrowseInformationFile>
+      <WarningLevel>Level3</WarningLevel>
+      <SuppressStartupBanner>true</SuppressStartupBanner>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <CompileAs>Default</CompileAs>
+    </ClCompile>
+    <ResourceCompile>
+      <PreprocessorDefinitions>_DEBUG;PIKE=1;OPMLEDITOR=1;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <Culture>0x0409</Culture>
+      <AdditionalIncludeDirectories>..\Common\headers;..\Common\SystemHeaders;..\Common\resources\Win32\res;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <ResourceOutputFileName>$(IntDir)%(Filename).res</ResourceOutputFileName>
+    </ResourceCompile>
+    <Link>
+      <AdditionalDependencies>PaigeWinVC8CRT.lib;winmm.lib;libcmtd.lib;oldnames.lib;comctl32.lib;wininet.lib;wsock32.lib;version.lib;libvcruntimed.lib;libucrtd.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <OutputFile>$(OutDir)opml.exe</OutputFile>
+      <SuppressStartupBanner>true</SuppressStartupBanner>
+      <AdditionalLibraryDirectories>..\Common\Paige;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <ManifestFile>$(IntDir)$(TargetFileName).intermediate.manifest</ManifestFile>
+      <IgnoreAllDefaultLibraries>true</IgnoreAllDefaultLibraries>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <ProgramDatabaseFile>$(OutDir)$(TargetName).pdb</ProgramDatabaseFile>
+      <GenerateMapFile>true</GenerateMapFile>
+      <MapFileName>$(IntDir)$(TargetName).map</MapFileName>
+      <SubSystem>Windows</SubSystem>
+      <TargetMachine>MachineX86</TargetMachine>
+    </Link>
+    <Bscmake>
+      <OutputFile>$(OutDir)$(TargetName).bsc</OutputFile>
+    </Bscmake>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='OPML_Release|Win32'">
+    <BuildLog>
+      <Path>$(IntDir)BuildLog.htm</Path>
+    </BuildLog>
+    <Midl>
+      <PreprocessorDefinitions>NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <MkTypLibCompatible>true</MkTypLibCompatible>
+      <SuppressStartupBanner>true</SuppressStartupBanner>
+      <TargetEnvironment>Win32</TargetEnvironment>
+      <TypeLibraryName>.\Release/Frontier.tlb</TypeLibraryName>
+      <HeaderFileName />
+    </Midl>
+    <ClCompile>
+      <Optimization>Disabled</Optimization>
+      <InlineFunctionExpansion>AnySuitable</InlineFunctionExpansion>
+      <AdditionalIncludeDirectories>..\Common\headers;..\Common\SystemHeaders;..\Common\Paige\headers;..\Common\PCRE;..\Common\sqlite3;..\Common\MySQL\win32\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>NDEBUG;PIKE=1;OPMLEDITOR=1;WIN95VERSION;_WINDOWS;WIN32;WIN32_COMPILE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
+      <StructMemberAlignment>2Bytes</StructMemberAlignment>
+      <PrecompiledHeaderOutputFile />
+      <AssemblerListingLocation>$(IntDir)</AssemblerListingLocation>
+      <ObjectFileName>$(IntDir)</ObjectFileName>
+      <ProgramDataBaseFileName>$(IntDir)</ProgramDataBaseFileName>
+      <XMLDocumentationFileName>$(IntDir)</XMLDocumentationFileName>
+      <BrowseInformation>true</BrowseInformation>
+      <BrowseInformationFile>$(IntDir)</BrowseInformationFile>
+      <WarningLevel>Level3</WarningLevel>
+      <SuppressStartupBanner>true</SuppressStartupBanner>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <CompileAs>Default</CompileAs>
+    </ClCompile>
+    <ResourceCompile>
+      <PreprocessorDefinitions>NDEBUG;PIKE=1;OPMLEDITOR=1;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <Culture>0x0409</Culture>
+      <AdditionalIncludeDirectories>..\Common\headers;..\Common\SystemHeaders;..\Common\resources\Win32\res;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <ResourceOutputFileName>$(IntDir)%(Filename).res</ResourceOutputFileName>
+    </ResourceCompile>
+    <Link>
+      <AdditionalDependencies>PaigeWinVC8CRT.lib;winmm.lib;libcmt.lib;oldnames.lib;comctl32.lib;wininet.lib;wsock32.lib;version.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <OutputFile>$(OutDir)opml.exe</OutputFile>
+      <SuppressStartupBanner>true</SuppressStartupBanner>
+      <AdditionalLibraryDirectories>..\Common\Paige;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <ManifestFile>$(IntDir)$(TargetFileName).intermediate.manifest</ManifestFile>
+      <IgnoreAllDefaultLibraries>true</IgnoreAllDefaultLibraries>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <ProgramDatabaseFile>$(OutDir)$(TargetName).pdb</ProgramDatabaseFile>
+      <GenerateMapFile>true</GenerateMapFile>
+      <MapFileName>$(IntDir)$(TargetName).map</MapFileName>
+      <SubSystem>Windows</SubSystem>
+      <TargetMachine>MachineX86</TargetMachine>
+    </Link>
+    <Bscmake>
+      <OutputFile>$(OutDir)$(TargetName).bsc</OutputFile>
+    </Bscmake>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Frontier_Release|Win32'">
+    <BuildLog>
+      <Path>$(IntDir)BuildLog.htm</Path>
+    </BuildLog>
+    <Midl>
+      <PreprocessorDefinitions>NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <MkTypLibCompatible>true</MkTypLibCompatible>
+      <SuppressStartupBanner>true</SuppressStartupBanner>
+      <TargetEnvironment>Win32</TargetEnvironment>
+      <TypeLibraryName>.\Release/Frontier.tlb</TypeLibraryName>
+      <HeaderFileName />
+    </Midl>
+    <ClCompile>
+      <Optimization>Disabled</Optimization>
+      <InlineFunctionExpansion>AnySuitable</InlineFunctionExpansion>
+      <AdditionalIncludeDirectories>..\Common\headers;..\Common\SystemHeaders;..\Common\Paige\headers;..\Common\PCRE;..\Common\sqlite3;..\Common\MySQL\win32\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>NDEBUG;WIN95VERSION;_WINDOWS;WIN32;WIN32_COMPILE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
+      <StructMemberAlignment>2Bytes</StructMemberAlignment>
+      <PrecompiledHeaderOutputFile />
+      <AssemblerListingLocation>$(IntDir)</AssemblerListingLocation>
+      <ObjectFileName>$(IntDir)</ObjectFileName>
+      <ProgramDataBaseFileName>$(IntDir)</ProgramDataBaseFileName>
+      <XMLDocumentationFileName>$(IntDir)</XMLDocumentationFileName>
+      <BrowseInformation>true</BrowseInformation>
+      <BrowseInformationFile>$(IntDir)</BrowseInformationFile>
+      <WarningLevel>Level3</WarningLevel>
+      <SuppressStartupBanner>true</SuppressStartupBanner>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <CompileAs>Default</CompileAs>
+    </ClCompile>
+    <ResourceCompile>
+      <PreprocessorDefinitions>NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <Culture>0x0409</Culture>
+      <AdditionalIncludeDirectories>..\Common\headers;..\Common\SystemHeaders;..\Common\resources\Win32\res;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <ResourceOutputFileName>$(IntDir)%(Filename).res</ResourceOutputFileName>
+    </ResourceCompile>
+    <Link>
+      <AdditionalDependencies>PaigeWinVC8CRT.lib;winmm.lib;libcmt.lib;oldnames.lib;comctl32.lib;wininet.lib;wsock32.lib;version.lib;mysqlclient.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <OutputFile>$(OutDir)Frontier.exe</OutputFile>
+      <SuppressStartupBanner>true</SuppressStartupBanner>
+      <AdditionalLibraryDirectories>..\Common\Paige;..\Common\MySQL\win32\lib\opt;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <ManifestFile>$(IntDir)$(TargetFileName).intermediate.manifest</ManifestFile>
+      <IgnoreAllDefaultLibraries>true</IgnoreAllDefaultLibraries>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <ProgramDatabaseFile>$(OutDir)$(TargetName).pdb</ProgramDatabaseFile>
+      <GenerateMapFile>true</GenerateMapFile>
+      <MapFileName>$(IntDir)$(TargetName).map</MapFileName>
+      <SubSystem>Windows</SubSystem>
+      <TargetMachine>MachineX86</TargetMachine>
+    </Link>
+    <Bscmake>
+      <OutputFile>$(OutDir)$(TargetName).bsc</OutputFile>
+    </Bscmake>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Frontier_Debug|Win32'">
+    <BuildLog>
+      <Path>$(IntDir)BuildLog.htm</Path>
+    </BuildLog>
+    <Midl>
+      <PreprocessorDefinitions>_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <MkTypLibCompatible>true</MkTypLibCompatible>
+      <SuppressStartupBanner>true</SuppressStartupBanner>
+      <TargetEnvironment>Win32</TargetEnvironment>
+      <TypeLibraryName>.\Debug/Frontier.tlb</TypeLibraryName>
+      <HeaderFileName />
+    </Midl>
+    <ClCompile>
+      <Optimization>Disabled</Optimization>
+      <InlineFunctionExpansion>AnySuitable</InlineFunctionExpansion>
+      <AdditionalIncludeDirectories>..\Common\headers;..\Common\SystemHeaders;..\Common\Paige\headers;..\Common\PCRE;..\Common\sqlite3;..\Common\MySQL\win32\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>_DEBUG;WIN95VERSION;_WINDOWS;WIN32;WIN32_COMPILE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
+      <StructMemberAlignment>2Bytes</StructMemberAlignment>
+      <PrecompiledHeaderOutputFile />
+      <AssemblerListingLocation>$(IntDir)</AssemblerListingLocation>
+      <ObjectFileName>$(IntDir)</ObjectFileName>
+      <ProgramDataBaseFileName>$(IntDir)</ProgramDataBaseFileName>
+      <XMLDocumentationFileName>$(IntDir)</XMLDocumentationFileName>
+      <BrowseInformation>true</BrowseInformation>
+      <BrowseInformationFile>$(IntDir)</BrowseInformationFile>
+      <WarningLevel>Level3</WarningLevel>
+      <SuppressStartupBanner>true</SuppressStartupBanner>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <CompileAs>Default</CompileAs>
+    </ClCompile>
+    <ResourceCompile>
+      <PreprocessorDefinitions>_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <Culture>0x0409</Culture>
+      <AdditionalIncludeDirectories>..\Common\headers;..\Common\SystemHeaders;..\Common\resources\Win32\res;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <ResourceOutputFileName>$(IntDir)%(Filename).res</ResourceOutputFileName>
+    </ResourceCompile>
+    <Link>
+      <AdditionalDependencies>PaigeWinVC8CRT.lib;winmm.lib;libcmtd.lib;oldnames.lib;comctl32.lib;wininet.lib;wsock32.lib;version.lib;mysqlclient.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <OutputFile>$(OutDir)Frontier.exe</OutputFile>
+      <SuppressStartupBanner>true</SuppressStartupBanner>
+      <AdditionalLibraryDirectories>..\Common\Paige;..\Common\MySQL\win32\lib\debug;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <ManifestFile>$(IntDir)$(TargetFileName).intermediate.manifest</ManifestFile>
+      <IgnoreAllDefaultLibraries>true</IgnoreAllDefaultLibraries>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <ProgramDatabaseFile>$(OutDir)$(TargetName).pdb</ProgramDatabaseFile>
+      <GenerateMapFile>true</GenerateMapFile>
+      <MapFileName>$(IntDir)$(TargetName).map</MapFileName>
+      <SubSystem>Windows</SubSystem>
+      <TargetMachine>MachineX86</TargetMachine>
+    </Link>
+    <Bscmake>
+      <OutputFile>$(OutDir)$(TargetName).bsc</OutputFile>
+    </Bscmake>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClCompile Include="..\Common\PCRE\chartables.c">
+      <Optimization Condition="'$(Configuration)|$(Platform)'=='Frontier_Debug|Win32'">Disabled</Optimization>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='Frontier_Debug|Win32'">true</BrowseInformation>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='Frontier_Release|Win32'">true</BrowseInformation>
+      <Optimization Condition="'$(Configuration)|$(Platform)'=='OPML_Debug|Win32'">Disabled</Optimization>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='OPML_Debug|Win32'">true</BrowseInformation>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='OPML_Release|Win32'">true</BrowseInformation>
+    </ClCompile>
+    <ClCompile Include="..\Common\PCRE\get.c">
+      <Optimization Condition="'$(Configuration)|$(Platform)'=='Frontier_Debug|Win32'">Disabled</Optimization>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='Frontier_Debug|Win32'">true</BrowseInformation>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='Frontier_Release|Win32'">true</BrowseInformation>
+      <Optimization Condition="'$(Configuration)|$(Platform)'=='OPML_Debug|Win32'">Disabled</Optimization>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='OPML_Debug|Win32'">true</BrowseInformation>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='OPML_Release|Win32'">true</BrowseInformation>
+    </ClCompile>
+    <ClCompile Include="..\Common\PCRE\pcre.c">
+      <Optimization Condition="'$(Configuration)|$(Platform)'=='Frontier_Debug|Win32'">Disabled</Optimization>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='Frontier_Debug|Win32'">true</BrowseInformation>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='Frontier_Release|Win32'">true</BrowseInformation>
+      <Optimization Condition="'$(Configuration)|$(Platform)'=='OPML_Debug|Win32'">Disabled</Optimization>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='OPML_Debug|Win32'">true</BrowseInformation>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='OPML_Release|Win32'">true</BrowseInformation>
+    </ClCompile>
+    <ClCompile Include="..\Common\PCRE\study.c">
+      <Optimization Condition="'$(Configuration)|$(Platform)'=='Frontier_Debug|Win32'">Disabled</Optimization>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='Frontier_Debug|Win32'">true</BrowseInformation>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='Frontier_Release|Win32'">true</BrowseInformation>
+      <Optimization Condition="'$(Configuration)|$(Platform)'=='OPML_Debug|Win32'">Disabled</Optimization>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='OPML_Debug|Win32'">true</BrowseInformation>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='OPML_Release|Win32'">true</BrowseInformation>
+    </ClCompile>
+    <ClCompile Include="..\Common\source\about.c">
+      <Optimization Condition="'$(Configuration)|$(Platform)'=='Frontier_Debug|Win32'">Disabled</Optimization>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='Frontier_Debug|Win32'">true</BrowseInformation>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='Frontier_Release|Win32'">true</BrowseInformation>
+      <Optimization Condition="'$(Configuration)|$(Platform)'=='OPML_Debug|Win32'">Disabled</Optimization>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='OPML_Debug|Win32'">true</BrowseInformation>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='OPML_Release|Win32'">true</BrowseInformation>
+    </ClCompile>
+    <ClCompile Include="..\Common\source\assert.c">
+      <Optimization Condition="'$(Configuration)|$(Platform)'=='Frontier_Debug|Win32'">Disabled</Optimization>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='Frontier_Debug|Win32'">true</BrowseInformation>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='Frontier_Release|Win32'">true</BrowseInformation>
+      <Optimization Condition="'$(Configuration)|$(Platform)'=='OPML_Debug|Win32'">Disabled</Optimization>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='OPML_Debug|Win32'">true</BrowseInformation>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='OPML_Release|Win32'">true</BrowseInformation>
+    </ClCompile>
+    <ClCompile Include="..\Common\source\base64.c">
+      <Optimization Condition="'$(Configuration)|$(Platform)'=='Frontier_Debug|Win32'">Disabled</Optimization>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='Frontier_Debug|Win32'">true</BrowseInformation>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='Frontier_Release|Win32'">true</BrowseInformation>
+      <Optimization Condition="'$(Configuration)|$(Platform)'=='OPML_Debug|Win32'">Disabled</Optimization>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='OPML_Debug|Win32'">true</BrowseInformation>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='OPML_Release|Win32'">true</BrowseInformation>
+    </ClCompile>
+    <ClCompile Include="..\Common\source\cancoon.c">
+      <Optimization Condition="'$(Configuration)|$(Platform)'=='Frontier_Debug|Win32'">Disabled</Optimization>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='Frontier_Debug|Win32'">true</BrowseInformation>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='Frontier_Release|Win32'">true</BrowseInformation>
+      <Optimization Condition="'$(Configuration)|$(Platform)'=='OPML_Debug|Win32'">Disabled</Optimization>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='OPML_Debug|Win32'">true</BrowseInformation>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='OPML_Release|Win32'">true</BrowseInformation>
+    </ClCompile>
+    <ClCompile Include="..\Common\source\cancoonpopup.c">
+      <Optimization Condition="'$(Configuration)|$(Platform)'=='Frontier_Debug|Win32'">Disabled</Optimization>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='Frontier_Debug|Win32'">true</BrowseInformation>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='Frontier_Release|Win32'">true</BrowseInformation>
+      <Optimization Condition="'$(Configuration)|$(Platform)'=='OPML_Debug|Win32'">Disabled</Optimization>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='OPML_Debug|Win32'">true</BrowseInformation>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='OPML_Release|Win32'">true</BrowseInformation>
+    </ClCompile>
+    <ClCompile Include="..\Common\source\cancoonverbs.c">
+      <Optimization Condition="'$(Configuration)|$(Platform)'=='Frontier_Debug|Win32'">Disabled</Optimization>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='Frontier_Debug|Win32'">true</BrowseInformation>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='Frontier_Release|Win32'">true</BrowseInformation>
+      <Optimization Condition="'$(Configuration)|$(Platform)'=='OPML_Debug|Win32'">Disabled</Optimization>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='OPML_Debug|Win32'">true</BrowseInformation>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='OPML_Release|Win32'">true</BrowseInformation>
+    </ClCompile>
+    <ClCompile Include="..\Common\source\cancoonwindow.c">
+      <Optimization Condition="'$(Configuration)|$(Platform)'=='Frontier_Debug|Win32'">Disabled</Optimization>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='Frontier_Debug|Win32'">true</BrowseInformation>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='Frontier_Release|Win32'">true</BrowseInformation>
+      <Optimization Condition="'$(Configuration)|$(Platform)'=='OPML_Debug|Win32'">Disabled</Optimization>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='OPML_Debug|Win32'">true</BrowseInformation>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='OPML_Release|Win32'">true</BrowseInformation>
+    </ClCompile>
+    <ClCompile Include="..\Common\source\claybrowserexpand.c">
+      <Optimization Condition="'$(Configuration)|$(Platform)'=='Frontier_Debug|Win32'">Disabled</Optimization>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='Frontier_Debug|Win32'">true</BrowseInformation>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='Frontier_Release|Win32'">true</BrowseInformation>
+      <Optimization Condition="'$(Configuration)|$(Platform)'=='OPML_Debug|Win32'">Disabled</Optimization>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='OPML_Debug|Win32'">true</BrowseInformation>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='OPML_Release|Win32'">true</BrowseInformation>
+    </ClCompile>
+    <ClCompile Include="..\Common\source\claybrowserstruc.c">
+      <Optimization Condition="'$(Configuration)|$(Platform)'=='Frontier_Debug|Win32'">Disabled</Optimization>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='Frontier_Debug|Win32'">true</BrowseInformation>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='Frontier_Release|Win32'">true</BrowseInformation>
+      <Optimization Condition="'$(Configuration)|$(Platform)'=='OPML_Debug|Win32'">Disabled</Optimization>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='OPML_Debug|Win32'">true</BrowseInformation>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='OPML_Release|Win32'">true</BrowseInformation>
+    </ClCompile>
+    <ClCompile Include="..\Common\source\claybrowservalidate.c">
+      <Optimization Condition="'$(Configuration)|$(Platform)'=='Frontier_Debug|Win32'">Disabled</Optimization>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='Frontier_Debug|Win32'">true</BrowseInformation>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='Frontier_Release|Win32'">true</BrowseInformation>
+      <Optimization Condition="'$(Configuration)|$(Platform)'=='OPML_Debug|Win32'">Disabled</Optimization>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='OPML_Debug|Win32'">true</BrowseInformation>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='OPML_Release|Win32'">true</BrowseInformation>
+    </ClCompile>
+    <ClCompile Include="..\Common\source\claycallbacks.c">
+      <Optimization Condition="'$(Configuration)|$(Platform)'=='Frontier_Debug|Win32'">Disabled</Optimization>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='Frontier_Debug|Win32'">true</BrowseInformation>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='Frontier_Release|Win32'">true</BrowseInformation>
+      <Optimization Condition="'$(Configuration)|$(Platform)'=='OPML_Debug|Win32'">Disabled</Optimization>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='OPML_Debug|Win32'">true</BrowseInformation>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='OPML_Release|Win32'">true</BrowseInformation>
+    </ClCompile>
+    <ClCompile Include="..\Common\source\claylinelayout.c">
+      <Optimization Condition="'$(Configuration)|$(Platform)'=='Frontier_Debug|Win32'">Disabled</Optimization>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='Frontier_Debug|Win32'">true</BrowseInformation>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='Frontier_Release|Win32'">true</BrowseInformation>
+      <Optimization Condition="'$(Configuration)|$(Platform)'=='OPML_Debug|Win32'">Disabled</Optimization>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='OPML_Debug|Win32'">true</BrowseInformation>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='OPML_Release|Win32'">true</BrowseInformation>
+    </ClCompile>
+    <ClCompile Include="..\Common\source\command.c">
+      <Optimization Condition="'$(Configuration)|$(Platform)'=='Frontier_Debug|Win32'">Disabled</Optimization>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='Frontier_Debug|Win32'">true</BrowseInformation>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='Frontier_Release|Win32'">true</BrowseInformation>
+      <Optimization Condition="'$(Configuration)|$(Platform)'=='OPML_Debug|Win32'">Disabled</Optimization>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='OPML_Debug|Win32'">true</BrowseInformation>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='OPML_Release|Win32'">true</BrowseInformation>
+    </ClCompile>
+    <ClCompile Include="..\Common\source\cursor.c">
+      <Optimization Condition="'$(Configuration)|$(Platform)'=='Frontier_Debug|Win32'">Disabled</Optimization>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='Frontier_Debug|Win32'">true</BrowseInformation>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='Frontier_Release|Win32'">true</BrowseInformation>
+      <Optimization Condition="'$(Configuration)|$(Platform)'=='OPML_Debug|Win32'">Disabled</Optimization>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='OPML_Debug|Win32'">true</BrowseInformation>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='OPML_Release|Win32'">true</BrowseInformation>
+    </ClCompile>
+    <ClCompile Include="..\Common\source\db.c">
+      <Optimization Condition="'$(Configuration)|$(Platform)'=='Frontier_Debug|Win32'">Disabled</Optimization>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='Frontier_Debug|Win32'">true</BrowseInformation>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='Frontier_Release|Win32'">true</BrowseInformation>
+      <Optimization Condition="'$(Configuration)|$(Platform)'=='OPML_Debug|Win32'">Disabled</Optimization>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='OPML_Debug|Win32'">true</BrowseInformation>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='OPML_Release|Win32'">true</BrowseInformation>
+    </ClCompile>
+    <ClCompile Include="..\Common\source\dbstats.c">
+      <Optimization Condition="'$(Configuration)|$(Platform)'=='Frontier_Debug|Win32'">Disabled</Optimization>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='Frontier_Debug|Win32'">true</BrowseInformation>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='Frontier_Release|Win32'">true</BrowseInformation>
+      <Optimization Condition="'$(Configuration)|$(Platform)'=='OPML_Debug|Win32'">Disabled</Optimization>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='OPML_Debug|Win32'">true</BrowseInformation>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='OPML_Release|Win32'">true</BrowseInformation>
+    </ClCompile>
+    <ClCompile Include="..\Common\source\dbverbs.c">
+      <Optimization Condition="'$(Configuration)|$(Platform)'=='Frontier_Debug|Win32'">Disabled</Optimization>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='Frontier_Debug|Win32'">true</BrowseInformation>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='Frontier_Release|Win32'">true</BrowseInformation>
+      <Optimization Condition="'$(Configuration)|$(Platform)'=='OPML_Debug|Win32'">Disabled</Optimization>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='OPML_Debug|Win32'">true</BrowseInformation>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='OPML_Release|Win32'">true</BrowseInformation>
+    </ClCompile>
+    <ClCompile Include="..\Common\source\dockmenu.c">
+      <Optimization Condition="'$(Configuration)|$(Platform)'=='Frontier_Debug|Win32'">Disabled</Optimization>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='Frontier_Debug|Win32'">true</BrowseInformation>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='Frontier_Release|Win32'">true</BrowseInformation>
+      <Optimization Condition="'$(Configuration)|$(Platform)'=='OPML_Debug|Win32'">Disabled</Optimization>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='OPML_Debug|Win32'">true</BrowseInformation>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='OPML_Release|Win32'">true</BrowseInformation>
+    </ClCompile>
+    <ClCompile Include="..\Common\source\error.c">
+      <Optimization Condition="'$(Configuration)|$(Platform)'=='Frontier_Debug|Win32'">Disabled</Optimization>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='Frontier_Debug|Win32'">true</BrowseInformation>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='Frontier_Release|Win32'">true</BrowseInformation>
+      <Optimization Condition="'$(Configuration)|$(Platform)'=='OPML_Debug|Win32'">Disabled</Optimization>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='OPML_Debug|Win32'">true</BrowseInformation>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='OPML_Release|Win32'">true</BrowseInformation>
+    </ClCompile>
+    <ClCompile Include="..\Common\source\file.c">
+      <Optimization Condition="'$(Configuration)|$(Platform)'=='Frontier_Debug|Win32'">Disabled</Optimization>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='Frontier_Debug|Win32'">true</BrowseInformation>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='Frontier_Release|Win32'">true</BrowseInformation>
+      <Optimization Condition="'$(Configuration)|$(Platform)'=='OPML_Debug|Win32'">Disabled</Optimization>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='OPML_Debug|Win32'">true</BrowseInformation>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='OPML_Release|Win32'">true</BrowseInformation>
+    </ClCompile>
+    <ClCompile Include="..\Common\source\filedialog.c">
+      <Optimization Condition="'$(Configuration)|$(Platform)'=='Frontier_Debug|Win32'">Disabled</Optimization>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='Frontier_Debug|Win32'">true</BrowseInformation>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='Frontier_Release|Win32'">true</BrowseInformation>
+      <Optimization Condition="'$(Configuration)|$(Platform)'=='OPML_Debug|Win32'">Disabled</Optimization>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='OPML_Debug|Win32'">true</BrowseInformation>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='OPML_Release|Win32'">true</BrowseInformation>
+    </ClCompile>
+    <ClCompile Include="..\Common\source\fileloop.c">
+      <Optimization Condition="'$(Configuration)|$(Platform)'=='Frontier_Debug|Win32'">Disabled</Optimization>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='Frontier_Debug|Win32'">true</BrowseInformation>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='Frontier_Release|Win32'">true</BrowseInformation>
+      <Optimization Condition="'$(Configuration)|$(Platform)'=='OPML_Debug|Win32'">Disabled</Optimization>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='OPML_Debug|Win32'">true</BrowseInformation>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='OPML_Release|Win32'">true</BrowseInformation>
+    </ClCompile>
+    <ClCompile Include="..\Common\source\filemp3.c">
+      <Optimization Condition="'$(Configuration)|$(Platform)'=='Frontier_Debug|Win32'">Disabled</Optimization>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='Frontier_Debug|Win32'">true</BrowseInformation>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='Frontier_Release|Win32'">true</BrowseInformation>
+      <Optimization Condition="'$(Configuration)|$(Platform)'=='OPML_Debug|Win32'">Disabled</Optimization>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='OPML_Debug|Win32'">true</BrowseInformation>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='OPML_Release|Win32'">true</BrowseInformation>
+    </ClCompile>
+    <ClCompile Include="..\Common\source\fileops.c">
+      <Optimization Condition="'$(Configuration)|$(Platform)'=='Frontier_Debug|Win32'">Disabled</Optimization>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='Frontier_Debug|Win32'">true</BrowseInformation>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='Frontier_Release|Win32'">true</BrowseInformation>
+      <Optimization Condition="'$(Configuration)|$(Platform)'=='OPML_Debug|Win32'">Disabled</Optimization>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='OPML_Debug|Win32'">true</BrowseInformation>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='OPML_Release|Win32'">true</BrowseInformation>
+    </ClCompile>
+    <ClCompile Include="..\Common\source\filepath.c">
+      <Optimization Condition="'$(Configuration)|$(Platform)'=='Frontier_Debug|Win32'">Disabled</Optimization>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='Frontier_Debug|Win32'">true</BrowseInformation>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='Frontier_Release|Win32'">true</BrowseInformation>
+      <Optimization Condition="'$(Configuration)|$(Platform)'=='OPML_Debug|Win32'">Disabled</Optimization>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='OPML_Debug|Win32'">true</BrowseInformation>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='OPML_Release|Win32'">true</BrowseInformation>
+    </ClCompile>
+    <ClCompile Include="..\Common\source\fileverbs.c">
+      <Optimization Condition="'$(Configuration)|$(Platform)'=='Frontier_Debug|Win32'">Disabled</Optimization>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='Frontier_Debug|Win32'">true</BrowseInformation>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='Frontier_Release|Win32'">true</BrowseInformation>
+      <Optimization Condition="'$(Configuration)|$(Platform)'=='OPML_Debug|Win32'">Disabled</Optimization>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='OPML_Debug|Win32'">true</BrowseInformation>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='OPML_Release|Win32'">true</BrowseInformation>
+    </ClCompile>
+    <ClCompile Include="..\Common\source\findinfile.c">
+      <Optimization Condition="'$(Configuration)|$(Platform)'=='Frontier_Debug|Win32'">Disabled</Optimization>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='Frontier_Debug|Win32'">true</BrowseInformation>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='Frontier_Release|Win32'">true</BrowseInformation>
+      <Optimization Condition="'$(Configuration)|$(Platform)'=='OPML_Debug|Win32'">Disabled</Optimization>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='OPML_Debug|Win32'">true</BrowseInformation>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='OPML_Release|Win32'">true</BrowseInformation>
+    </ClCompile>
+    <ClCompile Include="..\Common\source\font.c">
+      <Optimization Condition="'$(Configuration)|$(Platform)'=='Frontier_Debug|Win32'">Disabled</Optimization>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='Frontier_Debug|Win32'">true</BrowseInformation>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='Frontier_Release|Win32'">true</BrowseInformation>
+      <Optimization Condition="'$(Configuration)|$(Platform)'=='OPML_Debug|Win32'">Disabled</Optimization>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='OPML_Debug|Win32'">true</BrowseInformation>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='OPML_Release|Win32'">true</BrowseInformation>
+    </ClCompile>
+    <ClCompile Include="..\Common\source\frontierconfig.c">
+      <Optimization Condition="'$(Configuration)|$(Platform)'=='Frontier_Debug|Win32'">Disabled</Optimization>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='Frontier_Debug|Win32'">true</BrowseInformation>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='Frontier_Release|Win32'">true</BrowseInformation>
+      <Optimization Condition="'$(Configuration)|$(Platform)'=='OPML_Debug|Win32'">Disabled</Optimization>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='OPML_Debug|Win32'">true</BrowseInformation>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='OPML_Release|Win32'">true</BrowseInformation>
+    </ClCompile>
+    <ClCompile Include="..\Common\source\frontierdebug.c">
+      <Optimization Condition="'$(Configuration)|$(Platform)'=='Frontier_Debug|Win32'">Disabled</Optimization>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='Frontier_Debug|Win32'">true</BrowseInformation>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='Frontier_Release|Win32'">true</BrowseInformation>
+      <Optimization Condition="'$(Configuration)|$(Platform)'=='OPML_Debug|Win32'">Disabled</Optimization>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='OPML_Debug|Win32'">true</BrowseInformation>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='OPML_Release|Win32'">true</BrowseInformation>
+    </ClCompile>
+    <ClCompile Include="..\Common\source\frontierstart.c">
+      <Optimization Condition="'$(Configuration)|$(Platform)'=='Frontier_Debug|Win32'">Disabled</Optimization>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='Frontier_Debug|Win32'">true</BrowseInformation>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='Frontier_Release|Win32'">true</BrowseInformation>
+      <Optimization Condition="'$(Configuration)|$(Platform)'=='OPML_Debug|Win32'">Disabled</Optimization>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='OPML_Debug|Win32'">true</BrowseInformation>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='OPML_Release|Win32'">true</BrowseInformation>
+    </ClCompile>
+    <ClCompile Include="..\Common\source\frontierwindows.c">
+      <Optimization Condition="'$(Configuration)|$(Platform)'=='Frontier_Debug|Win32'">Disabled</Optimization>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='Frontier_Debug|Win32'">true</BrowseInformation>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='Frontier_Release|Win32'">true</BrowseInformation>
+      <Optimization Condition="'$(Configuration)|$(Platform)'=='OPML_Debug|Win32'">Disabled</Optimization>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='OPML_Debug|Win32'">true</BrowseInformation>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='OPML_Release|Win32'">true</BrowseInformation>
+    </ClCompile>
+    <ClCompile Include="..\Common\source\FrontierWinMain.c">
+      <Optimization Condition="'$(Configuration)|$(Platform)'=='Frontier_Debug|Win32'">Disabled</Optimization>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='Frontier_Debug|Win32'">true</BrowseInformation>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='Frontier_Release|Win32'">true</BrowseInformation>
+      <Optimization Condition="'$(Configuration)|$(Platform)'=='OPML_Debug|Win32'">Disabled</Optimization>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='OPML_Debug|Win32'">true</BrowseInformation>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='OPML_Release|Win32'">true</BrowseInformation>
+    </ClCompile>
+    <ClCompile Include="..\Common\source\htmlcontrol.c">
+      <Optimization Condition="'$(Configuration)|$(Platform)'=='Frontier_Debug|Win32'">Disabled</Optimization>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='Frontier_Debug|Win32'">true</BrowseInformation>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='Frontier_Release|Win32'">true</BrowseInformation>
+      <Optimization Condition="'$(Configuration)|$(Platform)'=='OPML_Debug|Win32'">Disabled</Optimization>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='OPML_Debug|Win32'">true</BrowseInformation>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='OPML_Release|Win32'">true</BrowseInformation>
+    </ClCompile>
+    <ClCompile Include="..\Common\source\icon.c">
+      <Optimization Condition="'$(Configuration)|$(Platform)'=='Frontier_Debug|Win32'">Disabled</Optimization>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='Frontier_Debug|Win32'">true</BrowseInformation>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='Frontier_Release|Win32'">true</BrowseInformation>
+      <Optimization Condition="'$(Configuration)|$(Platform)'=='OPML_Debug|Win32'">Disabled</Optimization>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='OPML_Debug|Win32'">true</BrowseInformation>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='OPML_Release|Win32'">true</BrowseInformation>
+    </ClCompile>
+    <ClCompile Include="..\Common\source\kb.c">
+      <Optimization Condition="'$(Configuration)|$(Platform)'=='Frontier_Debug|Win32'">Disabled</Optimization>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='Frontier_Debug|Win32'">true</BrowseInformation>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='Frontier_Release|Win32'">true</BrowseInformation>
+      <Optimization Condition="'$(Configuration)|$(Platform)'=='OPML_Debug|Win32'">Disabled</Optimization>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='OPML_Debug|Win32'">true</BrowseInformation>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='OPML_Release|Win32'">true</BrowseInformation>
+    </ClCompile>
+    <ClCompile Include="..\Common\source\lang.c">
+      <Optimization Condition="'$(Configuration)|$(Platform)'=='Frontier_Debug|Win32'">Disabled</Optimization>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='Frontier_Debug|Win32'">true</BrowseInformation>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='Frontier_Release|Win32'">true</BrowseInformation>
+      <Optimization Condition="'$(Configuration)|$(Platform)'=='OPML_Debug|Win32'">Disabled</Optimization>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='OPML_Debug|Win32'">true</BrowseInformation>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='OPML_Release|Win32'">true</BrowseInformation>
+    </ClCompile>
+    <ClCompile Include="..\Common\source\langcallbacks.c">
+      <Optimization Condition="'$(Configuration)|$(Platform)'=='Frontier_Debug|Win32'">Disabled</Optimization>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='Frontier_Debug|Win32'">true</BrowseInformation>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='Frontier_Release|Win32'">true</BrowseInformation>
+      <Optimization Condition="'$(Configuration)|$(Platform)'=='OPML_Debug|Win32'">Disabled</Optimization>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='OPML_Debug|Win32'">true</BrowseInformation>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='OPML_Release|Win32'">true</BrowseInformation>
+    </ClCompile>
+    <ClCompile Include="..\Common\source\langcrypt.c" />
+    <ClCompile Include="..\Common\source\langdate.c">
+      <Optimization Condition="'$(Configuration)|$(Platform)'=='Frontier_Debug|Win32'">Disabled</Optimization>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='Frontier_Debug|Win32'">true</BrowseInformation>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='Frontier_Release|Win32'">true</BrowseInformation>
+      <Optimization Condition="'$(Configuration)|$(Platform)'=='OPML_Debug|Win32'">Disabled</Optimization>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='OPML_Debug|Win32'">true</BrowseInformation>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='OPML_Release|Win32'">true</BrowseInformation>
+    </ClCompile>
+    <ClCompile Include="..\Common\source\langdll.c">
+      <Optimization Condition="'$(Configuration)|$(Platform)'=='Frontier_Debug|Win32'">Disabled</Optimization>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='Frontier_Debug|Win32'">true</BrowseInformation>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='Frontier_Release|Win32'">true</BrowseInformation>
+      <Optimization Condition="'$(Configuration)|$(Platform)'=='OPML_Debug|Win32'">Disabled</Optimization>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='OPML_Debug|Win32'">true</BrowseInformation>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='OPML_Release|Win32'">true</BrowseInformation>
+    </ClCompile>
+    <ClCompile Include="..\Common\source\langerror.c">
+      <Optimization Condition="'$(Configuration)|$(Platform)'=='Frontier_Debug|Win32'">Disabled</Optimization>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='Frontier_Debug|Win32'">true</BrowseInformation>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='Frontier_Release|Win32'">true</BrowseInformation>
+      <Optimization Condition="'$(Configuration)|$(Platform)'=='OPML_Debug|Win32'">Disabled</Optimization>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='OPML_Debug|Win32'">true</BrowseInformation>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='OPML_Release|Win32'">true</BrowseInformation>
+    </ClCompile>
+    <ClCompile Include="..\Common\source\langerrorwindow.c">
+      <Optimization Condition="'$(Configuration)|$(Platform)'=='Frontier_Debug|Win32'">Disabled</Optimization>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='Frontier_Debug|Win32'">true</BrowseInformation>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='Frontier_Release|Win32'">true</BrowseInformation>
+      <Optimization Condition="'$(Configuration)|$(Platform)'=='OPML_Debug|Win32'">Disabled</Optimization>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='OPML_Debug|Win32'">true</BrowseInformation>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='OPML_Release|Win32'">true</BrowseInformation>
+    </ClCompile>
+    <ClCompile Include="..\Common\source\langevaluate.c">
+      <Optimization Condition="'$(Configuration)|$(Platform)'=='Frontier_Debug|Win32'">Disabled</Optimization>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='Frontier_Debug|Win32'">true</BrowseInformation>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='Frontier_Release|Win32'">true</BrowseInformation>
+      <Optimization Condition="'$(Configuration)|$(Platform)'=='OPML_Debug|Win32'">Disabled</Optimization>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='OPML_Debug|Win32'">true</BrowseInformation>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='OPML_Release|Win32'">true</BrowseInformation>
+    </ClCompile>
+    <ClCompile Include="..\Common\source\langexternal.c">
+      <Optimization Condition="'$(Configuration)|$(Platform)'=='Frontier_Debug|Win32'">Disabled</Optimization>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='Frontier_Debug|Win32'">true</BrowseInformation>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='Frontier_Release|Win32'">true</BrowseInformation>
+      <Optimization Condition="'$(Configuration)|$(Platform)'=='OPML_Debug|Win32'">Disabled</Optimization>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='OPML_Debug|Win32'">true</BrowseInformation>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='OPML_Release|Win32'">true</BrowseInformation>
+    </ClCompile>
+    <ClCompile Include="..\Common\source\langhash.c">
+      <Optimization Condition="'$(Configuration)|$(Platform)'=='Frontier_Debug|Win32'">Disabled</Optimization>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='Frontier_Debug|Win32'">true</BrowseInformation>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='Frontier_Release|Win32'">true</BrowseInformation>
+      <Optimization Condition="'$(Configuration)|$(Platform)'=='OPML_Debug|Win32'">Disabled</Optimization>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='OPML_Debug|Win32'">true</BrowseInformation>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='OPML_Release|Win32'">true</BrowseInformation>
+    </ClCompile>
+    <ClCompile Include="..\Common\source\langhtml.c">
+      <Optimization Condition="'$(Configuration)|$(Platform)'=='Frontier_Debug|Win32'">Disabled</Optimization>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='Frontier_Debug|Win32'">true</BrowseInformation>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='Frontier_Release|Win32'">true</BrowseInformation>
+      <Optimization Condition="'$(Configuration)|$(Platform)'=='OPML_Debug|Win32'">Disabled</Optimization>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='OPML_Debug|Win32'">true</BrowseInformation>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='OPML_Release|Win32'">true</BrowseInformation>
+    </ClCompile>
+    <ClCompile Include="..\Common\source\langlist.c">
+      <Optimization Condition="'$(Configuration)|$(Platform)'=='Frontier_Debug|Win32'">Disabled</Optimization>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='Frontier_Debug|Win32'">true</BrowseInformation>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='Frontier_Release|Win32'">true</BrowseInformation>
+      <Optimization Condition="'$(Configuration)|$(Platform)'=='OPML_Debug|Win32'">Disabled</Optimization>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='OPML_Debug|Win32'">true</BrowseInformation>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='OPML_Release|Win32'">true</BrowseInformation>
+    </ClCompile>
+    <ClCompile Include="..\Common\source\langmath.c">
+      <Optimization Condition="'$(Configuration)|$(Platform)'=='Frontier_Debug|Win32'">Disabled</Optimization>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='Frontier_Debug|Win32'">true</BrowseInformation>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='Frontier_Release|Win32'">true</BrowseInformation>
+      <Optimization Condition="'$(Configuration)|$(Platform)'=='OPML_Debug|Win32'">Disabled</Optimization>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='OPML_Debug|Win32'">true</BrowseInformation>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='OPML_Release|Win32'">true</BrowseInformation>
+    </ClCompile>
+    <ClCompile Include="..\Common\source\langmysql.c" />
+    <ClCompile Include="..\Common\source\langops.c">
+      <Optimization Condition="'$(Configuration)|$(Platform)'=='Frontier_Debug|Win32'">Disabled</Optimization>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='Frontier_Debug|Win32'">true</BrowseInformation>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='Frontier_Release|Win32'">true</BrowseInformation>
+      <Optimization Condition="'$(Configuration)|$(Platform)'=='OPML_Debug|Win32'">Disabled</Optimization>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='OPML_Debug|Win32'">true</BrowseInformation>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='OPML_Release|Win32'">true</BrowseInformation>
+    </ClCompile>
+    <ClCompile Include="..\Common\source\langpack.c">
+      <Optimization Condition="'$(Configuration)|$(Platform)'=='Frontier_Debug|Win32'">Disabled</Optimization>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='Frontier_Debug|Win32'">true</BrowseInformation>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='Frontier_Release|Win32'">true</BrowseInformation>
+      <Optimization Condition="'$(Configuration)|$(Platform)'=='OPML_Debug|Win32'">Disabled</Optimization>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='OPML_Debug|Win32'">true</BrowseInformation>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='OPML_Release|Win32'">true</BrowseInformation>
+    </ClCompile>
+    <ClCompile Include="..\Common\source\langparser.c">
+      <Optimization Condition="'$(Configuration)|$(Platform)'=='Frontier_Debug|Win32'">Disabled</Optimization>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='Frontier_Debug|Win32'">true</BrowseInformation>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='Frontier_Release|Win32'">true</BrowseInformation>
+      <Optimization Condition="'$(Configuration)|$(Platform)'=='OPML_Debug|Win32'">Disabled</Optimization>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='OPML_Debug|Win32'">true</BrowseInformation>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='OPML_Release|Win32'">true</BrowseInformation>
+    </ClCompile>
+    <ClCompile Include="..\Common\source\langpython.c">
+      <Optimization Condition="'$(Configuration)|$(Platform)'=='Frontier_Debug|Win32'">Disabled</Optimization>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='Frontier_Debug|Win32'">true</BrowseInformation>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='Frontier_Release|Win32'">true</BrowseInformation>
+      <Optimization Condition="'$(Configuration)|$(Platform)'=='OPML_Debug|Win32'">Disabled</Optimization>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='OPML_Debug|Win32'">true</BrowseInformation>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='OPML_Release|Win32'">true</BrowseInformation>
+    </ClCompile>
+    <ClCompile Include="..\Common\source\langregexp.c">
+      <Optimization Condition="'$(Configuration)|$(Platform)'=='Frontier_Debug|Win32'">Disabled</Optimization>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='Frontier_Debug|Win32'">true</BrowseInformation>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='Frontier_Release|Win32'">true</BrowseInformation>
+      <Optimization Condition="'$(Configuration)|$(Platform)'=='OPML_Debug|Win32'">Disabled</Optimization>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='OPML_Debug|Win32'">true</BrowseInformation>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='OPML_Release|Win32'">true</BrowseInformation>
+    </ClCompile>
+    <ClCompile Include="..\Common\source\langscan.c">
+      <Optimization Condition="'$(Configuration)|$(Platform)'=='Frontier_Debug|Win32'">Disabled</Optimization>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='Frontier_Debug|Win32'">true</BrowseInformation>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='Frontier_Release|Win32'">true</BrowseInformation>
+      <Optimization Condition="'$(Configuration)|$(Platform)'=='OPML_Debug|Win32'">Disabled</Optimization>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='OPML_Debug|Win32'">true</BrowseInformation>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='OPML_Release|Win32'">true</BrowseInformation>
+    </ClCompile>
+    <ClCompile Include="..\Common\source\langsqlite.c" />
+    <ClCompile Include="..\Common\source\langstartup.c">
+      <Optimization Condition="'$(Configuration)|$(Platform)'=='Frontier_Debug|Win32'">Disabled</Optimization>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='Frontier_Debug|Win32'">true</BrowseInformation>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='Frontier_Release|Win32'">true</BrowseInformation>
+      <Optimization Condition="'$(Configuration)|$(Platform)'=='OPML_Debug|Win32'">Disabled</Optimization>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='OPML_Debug|Win32'">true</BrowseInformation>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='OPML_Release|Win32'">true</BrowseInformation>
+    </ClCompile>
+    <ClCompile Include="..\Common\source\langsystypes.c">
+      <Optimization Condition="'$(Configuration)|$(Platform)'=='Frontier_Debug|Win32'">Disabled</Optimization>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='Frontier_Debug|Win32'">true</BrowseInformation>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='Frontier_Release|Win32'">true</BrowseInformation>
+      <Optimization Condition="'$(Configuration)|$(Platform)'=='OPML_Debug|Win32'">Disabled</Optimization>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='OPML_Debug|Win32'">true</BrowseInformation>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='OPML_Release|Win32'">true</BrowseInformation>
+    </ClCompile>
+    <ClCompile Include="..\Common\source\langtmpstack.c">
+      <Optimization Condition="'$(Configuration)|$(Platform)'=='Frontier_Debug|Win32'">Disabled</Optimization>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='Frontier_Debug|Win32'">true</BrowseInformation>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='Frontier_Release|Win32'">true</BrowseInformation>
+      <Optimization Condition="'$(Configuration)|$(Platform)'=='OPML_Debug|Win32'">Disabled</Optimization>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='OPML_Debug|Win32'">true</BrowseInformation>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='OPML_Release|Win32'">true</BrowseInformation>
+    </ClCompile>
+    <ClCompile Include="..\Common\source\langtrace.c">
+      <Optimization Condition="'$(Configuration)|$(Platform)'=='Frontier_Debug|Win32'">Disabled</Optimization>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='Frontier_Debug|Win32'">true</BrowseInformation>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='Frontier_Release|Win32'">true</BrowseInformation>
+      <Optimization Condition="'$(Configuration)|$(Platform)'=='OPML_Debug|Win32'">Disabled</Optimization>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='OPML_Debug|Win32'">true</BrowseInformation>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='OPML_Release|Win32'">true</BrowseInformation>
+    </ClCompile>
+    <ClCompile Include="..\Common\source\langtree.c">
+      <Optimization Condition="'$(Configuration)|$(Platform)'=='Frontier_Debug|Win32'">Disabled</Optimization>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='Frontier_Debug|Win32'">true</BrowseInformation>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='Frontier_Release|Win32'">true</BrowseInformation>
+      <Optimization Condition="'$(Configuration)|$(Platform)'=='OPML_Debug|Win32'">Disabled</Optimization>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='OPML_Debug|Win32'">true</BrowseInformation>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='OPML_Release|Win32'">true</BrowseInformation>
+    </ClCompile>
+    <ClCompile Include="..\Common\source\langvalue.c">
+      <Optimization Condition="'$(Configuration)|$(Platform)'=='Frontier_Debug|Win32'">Disabled</Optimization>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='Frontier_Debug|Win32'">true</BrowseInformation>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='Frontier_Release|Win32'">true</BrowseInformation>
+      <Optimization Condition="'$(Configuration)|$(Platform)'=='OPML_Debug|Win32'">Disabled</Optimization>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='OPML_Debug|Win32'">true</BrowseInformation>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='OPML_Release|Win32'">true</BrowseInformation>
+    </ClCompile>
+    <ClCompile Include="..\Common\source\langverbs.c">
+      <Optimization Condition="'$(Configuration)|$(Platform)'=='Frontier_Debug|Win32'">Disabled</Optimization>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='Frontier_Debug|Win32'">true</BrowseInformation>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='Frontier_Release|Win32'">true</BrowseInformation>
+      <Optimization Condition="'$(Configuration)|$(Platform)'=='OPML_Debug|Win32'">Disabled</Optimization>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='OPML_Debug|Win32'">true</BrowseInformation>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='OPML_Release|Win32'">true</BrowseInformation>
+    </ClCompile>
+    <ClCompile Include="..\Common\source\langwinipc.c">
+      <Optimization Condition="'$(Configuration)|$(Platform)'=='Frontier_Debug|Win32'">Disabled</Optimization>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='Frontier_Debug|Win32'">true</BrowseInformation>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='Frontier_Release|Win32'">true</BrowseInformation>
+      <Optimization Condition="'$(Configuration)|$(Platform)'=='OPML_Debug|Win32'">Disabled</Optimization>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='OPML_Debug|Win32'">true</BrowseInformation>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='OPML_Release|Win32'">true</BrowseInformation>
+    </ClCompile>
+    <ClCompile Include="..\Common\source\langxml.c">
+      <Optimization Condition="'$(Configuration)|$(Platform)'=='Frontier_Debug|Win32'">Disabled</Optimization>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='Frontier_Debug|Win32'">true</BrowseInformation>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='Frontier_Release|Win32'">true</BrowseInformation>
+      <Optimization Condition="'$(Configuration)|$(Platform)'=='OPML_Debug|Win32'">Disabled</Optimization>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='OPML_Debug|Win32'">true</BrowseInformation>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='OPML_Release|Win32'">true</BrowseInformation>
+    </ClCompile>
+    <ClCompile Include="..\Common\source\launch.c">
+      <Optimization Condition="'$(Configuration)|$(Platform)'=='Frontier_Debug|Win32'">Disabled</Optimization>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='Frontier_Debug|Win32'">true</BrowseInformation>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='Frontier_Release|Win32'">true</BrowseInformation>
+      <Optimization Condition="'$(Configuration)|$(Platform)'=='OPML_Debug|Win32'">Disabled</Optimization>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='OPML_Debug|Win32'">true</BrowseInformation>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='OPML_Release|Win32'">true</BrowseInformation>
+    </ClCompile>
+    <ClCompile Include="..\Common\source\main.c">
+      <Optimization Condition="'$(Configuration)|$(Platform)'=='Frontier_Debug|Win32'">Disabled</Optimization>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='Frontier_Debug|Win32'">true</BrowseInformation>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='Frontier_Release|Win32'">true</BrowseInformation>
+      <Optimization Condition="'$(Configuration)|$(Platform)'=='OPML_Debug|Win32'">Disabled</Optimization>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='OPML_Debug|Win32'">true</BrowseInformation>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='OPML_Release|Win32'">true</BrowseInformation>
+    </ClCompile>
+    <ClCompile Include="..\Common\source\md5.c">
+      <Optimization Condition="'$(Configuration)|$(Platform)'=='Frontier_Debug|Win32'">Disabled</Optimization>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='Frontier_Debug|Win32'">true</BrowseInformation>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='Frontier_Release|Win32'">true</BrowseInformation>
+      <Optimization Condition="'$(Configuration)|$(Platform)'=='OPML_Debug|Win32'">Disabled</Optimization>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='OPML_Debug|Win32'">true</BrowseInformation>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='OPML_Release|Win32'">true</BrowseInformation>
+    </ClCompile>
+    <ClCompile Include="..\Common\source\memory.c">
+      <Optimization Condition="'$(Configuration)|$(Platform)'=='Frontier_Debug|Win32'">Disabled</Optimization>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='Frontier_Debug|Win32'">true</BrowseInformation>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='Frontier_Release|Win32'">true</BrowseInformation>
+      <Optimization Condition="'$(Configuration)|$(Platform)'=='OPML_Debug|Win32'">Disabled</Optimization>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='OPML_Debug|Win32'">true</BrowseInformation>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='OPML_Release|Win32'">true</BrowseInformation>
+    </ClCompile>
+    <ClCompile Include="..\Common\source\menu.c">
+      <Optimization Condition="'$(Configuration)|$(Platform)'=='Frontier_Debug|Win32'">Disabled</Optimization>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='Frontier_Debug|Win32'">true</BrowseInformation>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='Frontier_Release|Win32'">true</BrowseInformation>
+      <Optimization Condition="'$(Configuration)|$(Platform)'=='OPML_Debug|Win32'">Disabled</Optimization>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='OPML_Debug|Win32'">true</BrowseInformation>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='OPML_Release|Win32'">true</BrowseInformation>
+    </ClCompile>
+    <ClCompile Include="..\Common\source\menubar.c">
+      <Optimization Condition="'$(Configuration)|$(Platform)'=='Frontier_Debug|Win32'">Disabled</Optimization>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='Frontier_Debug|Win32'">true</BrowseInformation>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='Frontier_Release|Win32'">true</BrowseInformation>
+      <Optimization Condition="'$(Configuration)|$(Platform)'=='OPML_Debug|Win32'">Disabled</Optimization>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='OPML_Debug|Win32'">true</BrowseInformation>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='OPML_Release|Win32'">true</BrowseInformation>
+    </ClCompile>
+    <ClCompile Include="..\Common\source\menueditor.c">
+      <Optimization Condition="'$(Configuration)|$(Platform)'=='Frontier_Debug|Win32'">Disabled</Optimization>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='Frontier_Debug|Win32'">true</BrowseInformation>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='Frontier_Release|Win32'">true</BrowseInformation>
+      <Optimization Condition="'$(Configuration)|$(Platform)'=='OPML_Debug|Win32'">Disabled</Optimization>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='OPML_Debug|Win32'">true</BrowseInformation>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='OPML_Release|Win32'">true</BrowseInformation>
+    </ClCompile>
+    <ClCompile Include="..\Common\source\menufind.c">
+      <Optimization Condition="'$(Configuration)|$(Platform)'=='Frontier_Debug|Win32'">Disabled</Optimization>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='Frontier_Debug|Win32'">true</BrowseInformation>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='Frontier_Release|Win32'">true</BrowseInformation>
+      <Optimization Condition="'$(Configuration)|$(Platform)'=='OPML_Debug|Win32'">Disabled</Optimization>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='OPML_Debug|Win32'">true</BrowseInformation>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='OPML_Release|Win32'">true</BrowseInformation>
+    </ClCompile>
+    <ClCompile Include="..\Common\source\menupack.c">
+      <Optimization Condition="'$(Configuration)|$(Platform)'=='Frontier_Debug|Win32'">Disabled</Optimization>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='Frontier_Debug|Win32'">true</BrowseInformation>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='Frontier_Release|Win32'">true</BrowseInformation>
+      <Optimization Condition="'$(Configuration)|$(Platform)'=='OPML_Debug|Win32'">Disabled</Optimization>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='OPML_Debug|Win32'">true</BrowseInformation>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='OPML_Release|Win32'">true</BrowseInformation>
+    </ClCompile>
+    <ClCompile Include="..\Common\source\menuresize.c">
+      <Optimization Condition="'$(Configuration)|$(Platform)'=='Frontier_Debug|Win32'">Disabled</Optimization>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='Frontier_Debug|Win32'">true</BrowseInformation>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='Frontier_Release|Win32'">true</BrowseInformation>
+      <Optimization Condition="'$(Configuration)|$(Platform)'=='OPML_Debug|Win32'">Disabled</Optimization>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='OPML_Debug|Win32'">true</BrowseInformation>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='OPML_Release|Win32'">true</BrowseInformation>
+    </ClCompile>
+    <ClCompile Include="..\Common\source\menuverbs.c">
+      <Optimization Condition="'$(Configuration)|$(Platform)'=='Frontier_Debug|Win32'">Disabled</Optimization>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='Frontier_Debug|Win32'">true</BrowseInformation>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='Frontier_Release|Win32'">true</BrowseInformation>
+      <Optimization Condition="'$(Configuration)|$(Platform)'=='OPML_Debug|Win32'">Disabled</Optimization>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='OPML_Debug|Win32'">true</BrowseInformation>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='OPML_Release|Win32'">true</BrowseInformation>
+    </ClCompile>
+    <ClCompile Include="..\Common\source\meprograms.c">
+      <Optimization Condition="'$(Configuration)|$(Platform)'=='Frontier_Debug|Win32'">Disabled</Optimization>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='Frontier_Debug|Win32'">true</BrowseInformation>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='Frontier_Release|Win32'">true</BrowseInformation>
+      <Optimization Condition="'$(Configuration)|$(Platform)'=='OPML_Debug|Win32'">Disabled</Optimization>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='OPML_Debug|Win32'">true</BrowseInformation>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='OPML_Release|Win32'">true</BrowseInformation>
+    </ClCompile>
+    <ClCompile Include="..\Common\source\miniwindow.c">
+      <Optimization Condition="'$(Configuration)|$(Platform)'=='Frontier_Debug|Win32'">Disabled</Optimization>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='Frontier_Debug|Win32'">true</BrowseInformation>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='Frontier_Release|Win32'">true</BrowseInformation>
+      <Optimization Condition="'$(Configuration)|$(Platform)'=='OPML_Debug|Win32'">Disabled</Optimization>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='OPML_Debug|Win32'">true</BrowseInformation>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='OPML_Release|Win32'">true</BrowseInformation>
+    </ClCompile>
+    <ClCompile Include="..\Common\source\mouse.c">
+      <Optimization Condition="'$(Configuration)|$(Platform)'=='Frontier_Debug|Win32'">Disabled</Optimization>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='Frontier_Debug|Win32'">true</BrowseInformation>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='Frontier_Release|Win32'">true</BrowseInformation>
+      <Optimization Condition="'$(Configuration)|$(Platform)'=='OPML_Debug|Win32'">Disabled</Optimization>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='OPML_Debug|Win32'">true</BrowseInformation>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='OPML_Release|Win32'">true</BrowseInformation>
+    </ClCompile>
+    <ClCompile Include="..\Common\source\notify.c">
+      <Optimization Condition="'$(Configuration)|$(Platform)'=='Frontier_Debug|Win32'">Disabled</Optimization>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='Frontier_Debug|Win32'">true</BrowseInformation>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='Frontier_Release|Win32'">true</BrowseInformation>
+      <Optimization Condition="'$(Configuration)|$(Platform)'=='OPML_Debug|Win32'">Disabled</Optimization>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='OPML_Debug|Win32'">true</BrowseInformation>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='OPML_Release|Win32'">true</BrowseInformation>
+    </ClCompile>
+    <ClCompile Include="..\Common\source\odbengine.c">
+      <Optimization Condition="'$(Configuration)|$(Platform)'=='Frontier_Debug|Win32'">Disabled</Optimization>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='Frontier_Debug|Win32'">true</BrowseInformation>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='Frontier_Release|Win32'">true</BrowseInformation>
+      <Optimization Condition="'$(Configuration)|$(Platform)'=='OPML_Debug|Win32'">Disabled</Optimization>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='OPML_Debug|Win32'">true</BrowseInformation>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='OPML_Release|Win32'">true</BrowseInformation>
+    </ClCompile>
+    <ClCompile Include="..\Common\source\op.c">
+      <Optimization Condition="'$(Configuration)|$(Platform)'=='Frontier_Debug|Win32'">Disabled</Optimization>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='Frontier_Debug|Win32'">true</BrowseInformation>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='Frontier_Release|Win32'">true</BrowseInformation>
+      <Optimization Condition="'$(Configuration)|$(Platform)'=='OPML_Debug|Win32'">Disabled</Optimization>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='OPML_Debug|Win32'">true</BrowseInformation>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='OPML_Release|Win32'">true</BrowseInformation>
+    </ClCompile>
+    <ClCompile Include="..\Common\source\opbuttons.c">
+      <Optimization Condition="'$(Configuration)|$(Platform)'=='Frontier_Debug|Win32'">Disabled</Optimization>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='Frontier_Debug|Win32'">true</BrowseInformation>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='Frontier_Release|Win32'">true</BrowseInformation>
+      <Optimization Condition="'$(Configuration)|$(Platform)'=='OPML_Debug|Win32'">Disabled</Optimization>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='OPML_Debug|Win32'">true</BrowseInformation>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='OPML_Release|Win32'">true</BrowseInformation>
+    </ClCompile>
+    <ClCompile Include="..\Common\source\opdisplay.c">
+      <Optimization Condition="'$(Configuration)|$(Platform)'=='Frontier_Debug|Win32'">Disabled</Optimization>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='Frontier_Debug|Win32'">true</BrowseInformation>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='Frontier_Release|Win32'">true</BrowseInformation>
+      <Optimization Condition="'$(Configuration)|$(Platform)'=='OPML_Debug|Win32'">Disabled</Optimization>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='OPML_Debug|Win32'">true</BrowseInformation>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='OPML_Release|Win32'">true</BrowseInformation>
+    </ClCompile>
+    <ClCompile Include="..\Common\source\opdraggingmove.c">
+      <Optimization Condition="'$(Configuration)|$(Platform)'=='Frontier_Debug|Win32'">Disabled</Optimization>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='Frontier_Debug|Win32'">true</BrowseInformation>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='Frontier_Release|Win32'">true</BrowseInformation>
+      <Optimization Condition="'$(Configuration)|$(Platform)'=='OPML_Debug|Win32'">Disabled</Optimization>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='OPML_Debug|Win32'">true</BrowseInformation>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='OPML_Release|Win32'">true</BrowseInformation>
+    </ClCompile>
+    <ClCompile Include="..\Common\source\opedit.c">
+      <Optimization Condition="'$(Configuration)|$(Platform)'=='Frontier_Debug|Win32'">Disabled</Optimization>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='Frontier_Debug|Win32'">true</BrowseInformation>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='Frontier_Release|Win32'">true</BrowseInformation>
+      <Optimization Condition="'$(Configuration)|$(Platform)'=='OPML_Debug|Win32'">Disabled</Optimization>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='OPML_Debug|Win32'">true</BrowseInformation>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='OPML_Release|Win32'">true</BrowseInformation>
+    </ClCompile>
+    <ClCompile Include="..\Common\source\opexpand.c">
+      <Optimization Condition="'$(Configuration)|$(Platform)'=='Frontier_Debug|Win32'">Disabled</Optimization>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='Frontier_Debug|Win32'">true</BrowseInformation>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='Frontier_Release|Win32'">true</BrowseInformation>
+      <Optimization Condition="'$(Configuration)|$(Platform)'=='OPML_Debug|Win32'">Disabled</Optimization>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='OPML_Debug|Win32'">true</BrowseInformation>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='OPML_Release|Win32'">true</BrowseInformation>
+    </ClCompile>
+    <ClCompile Include="..\Common\source\ophoist.c">
+      <Optimization Condition="'$(Configuration)|$(Platform)'=='Frontier_Debug|Win32'">Disabled</Optimization>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='Frontier_Debug|Win32'">true</BrowseInformation>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='Frontier_Release|Win32'">true</BrowseInformation>
+      <Optimization Condition="'$(Configuration)|$(Platform)'=='OPML_Debug|Win32'">Disabled</Optimization>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='OPML_Debug|Win32'">true</BrowseInformation>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='OPML_Release|Win32'">true</BrowseInformation>
+    </ClCompile>
+    <ClCompile Include="..\Common\source\opicons.c">
+      <Optimization Condition="'$(Configuration)|$(Platform)'=='Frontier_Debug|Win32'">Disabled</Optimization>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='Frontier_Debug|Win32'">true</BrowseInformation>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='Frontier_Release|Win32'">true</BrowseInformation>
+      <Optimization Condition="'$(Configuration)|$(Platform)'=='OPML_Debug|Win32'">Disabled</Optimization>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='OPML_Debug|Win32'">true</BrowseInformation>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='OPML_Release|Win32'">true</BrowseInformation>
+    </ClCompile>
+    <ClCompile Include="..\Common\source\opinit.c">
+      <Optimization Condition="'$(Configuration)|$(Platform)'=='Frontier_Debug|Win32'">Disabled</Optimization>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='Frontier_Debug|Win32'">true</BrowseInformation>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='Frontier_Release|Win32'">true</BrowseInformation>
+      <Optimization Condition="'$(Configuration)|$(Platform)'=='OPML_Debug|Win32'">Disabled</Optimization>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='OPML_Debug|Win32'">true</BrowseInformation>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='OPML_Release|Win32'">true</BrowseInformation>
+    </ClCompile>
+    <ClCompile Include="..\Common\source\oplangtext.c">
+      <Optimization Condition="'$(Configuration)|$(Platform)'=='Frontier_Debug|Win32'">Disabled</Optimization>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='Frontier_Debug|Win32'">true</BrowseInformation>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='Frontier_Release|Win32'">true</BrowseInformation>
+      <Optimization Condition="'$(Configuration)|$(Platform)'=='OPML_Debug|Win32'">Disabled</Optimization>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='OPML_Debug|Win32'">true</BrowseInformation>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='OPML_Release|Win32'">true</BrowseInformation>
+    </ClCompile>
+    <ClCompile Include="..\Common\source\oplineheight.c">
+      <Optimization Condition="'$(Configuration)|$(Platform)'=='Frontier_Debug|Win32'">Disabled</Optimization>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='Frontier_Debug|Win32'">true</BrowseInformation>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='Frontier_Release|Win32'">true</BrowseInformation>
+      <Optimization Condition="'$(Configuration)|$(Platform)'=='OPML_Debug|Win32'">Disabled</Optimization>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='OPML_Debug|Win32'">true</BrowseInformation>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='OPML_Release|Win32'">true</BrowseInformation>
+    </ClCompile>
+    <ClCompile Include="..\Common\source\oplist.c">
+      <Optimization Condition="'$(Configuration)|$(Platform)'=='Frontier_Debug|Win32'">Disabled</Optimization>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='Frontier_Debug|Win32'">true</BrowseInformation>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='Frontier_Release|Win32'">true</BrowseInformation>
+      <Optimization Condition="'$(Configuration)|$(Platform)'=='OPML_Debug|Win32'">Disabled</Optimization>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='OPML_Debug|Win32'">true</BrowseInformation>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='OPML_Release|Win32'">true</BrowseInformation>
+    </ClCompile>
+    <ClCompile Include="..\Common\source\opops.c">
+      <Optimization Condition="'$(Configuration)|$(Platform)'=='Frontier_Debug|Win32'">Disabled</Optimization>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='Frontier_Debug|Win32'">true</BrowseInformation>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='Frontier_Release|Win32'">true</BrowseInformation>
+      <Optimization Condition="'$(Configuration)|$(Platform)'=='OPML_Debug|Win32'">Disabled</Optimization>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='OPML_Debug|Win32'">true</BrowseInformation>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='OPML_Release|Win32'">true</BrowseInformation>
+    </ClCompile>
+    <ClCompile Include="..\Common\source\oppack.c">
+      <Optimization Condition="'$(Configuration)|$(Platform)'=='Frontier_Debug|Win32'">Disabled</Optimization>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='Frontier_Debug|Win32'">true</BrowseInformation>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='Frontier_Release|Win32'">true</BrowseInformation>
+      <Optimization Condition="'$(Configuration)|$(Platform)'=='OPML_Debug|Win32'">Disabled</Optimization>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='OPML_Debug|Win32'">true</BrowseInformation>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='OPML_Release|Win32'">true</BrowseInformation>
+    </ClCompile>
+    <ClCompile Include="..\Common\source\oppopup.c">
+      <Optimization Condition="'$(Configuration)|$(Platform)'=='Frontier_Debug|Win32'">Disabled</Optimization>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='Frontier_Debug|Win32'">true</BrowseInformation>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='Frontier_Release|Win32'">true</BrowseInformation>
+      <Optimization Condition="'$(Configuration)|$(Platform)'=='OPML_Debug|Win32'">Disabled</Optimization>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='OPML_Debug|Win32'">true</BrowseInformation>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='OPML_Release|Win32'">true</BrowseInformation>
+    </ClCompile>
+    <ClCompile Include="..\Common\source\opprint.c">
+      <Optimization Condition="'$(Configuration)|$(Platform)'=='Frontier_Debug|Win32'">Disabled</Optimization>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='Frontier_Debug|Win32'">true</BrowseInformation>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='Frontier_Release|Win32'">true</BrowseInformation>
+      <Optimization Condition="'$(Configuration)|$(Platform)'=='OPML_Debug|Win32'">Disabled</Optimization>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='OPML_Debug|Win32'">true</BrowseInformation>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='OPML_Release|Win32'">true</BrowseInformation>
+    </ClCompile>
+    <ClCompile Include="..\Common\source\oprefcon.c">
+      <Optimization Condition="'$(Configuration)|$(Platform)'=='Frontier_Debug|Win32'">Disabled</Optimization>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='Frontier_Debug|Win32'">true</BrowseInformation>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='Frontier_Release|Win32'">true</BrowseInformation>
+      <Optimization Condition="'$(Configuration)|$(Platform)'=='OPML_Debug|Win32'">Disabled</Optimization>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='OPML_Debug|Win32'">true</BrowseInformation>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='OPML_Release|Win32'">true</BrowseInformation>
+    </ClCompile>
+    <ClCompile Include="..\Common\source\ops.c">
+      <Optimization Condition="'$(Configuration)|$(Platform)'=='Frontier_Debug|Win32'">Disabled</Optimization>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='Frontier_Debug|Win32'">true</BrowseInformation>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='Frontier_Release|Win32'">true</BrowseInformation>
+      <Optimization Condition="'$(Configuration)|$(Platform)'=='OPML_Debug|Win32'">Disabled</Optimization>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='OPML_Debug|Win32'">true</BrowseInformation>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='OPML_Release|Win32'">true</BrowseInformation>
+    </ClCompile>
+    <ClCompile Include="..\Common\source\opscreenmap.c">
+      <Optimization Condition="'$(Configuration)|$(Platform)'=='Frontier_Debug|Win32'">Disabled</Optimization>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='Frontier_Debug|Win32'">true</BrowseInformation>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='Frontier_Release|Win32'">true</BrowseInformation>
+      <Optimization Condition="'$(Configuration)|$(Platform)'=='OPML_Debug|Win32'">Disabled</Optimization>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='OPML_Debug|Win32'">true</BrowseInformation>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='OPML_Release|Win32'">true</BrowseInformation>
+    </ClCompile>
+    <ClCompile Include="..\Common\source\opscrollbar.c">
+      <Optimization Condition="'$(Configuration)|$(Platform)'=='Frontier_Debug|Win32'">Disabled</Optimization>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='Frontier_Debug|Win32'">true</BrowseInformation>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='Frontier_Release|Win32'">true</BrowseInformation>
+      <Optimization Condition="'$(Configuration)|$(Platform)'=='OPML_Debug|Win32'">Disabled</Optimization>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='OPML_Debug|Win32'">true</BrowseInformation>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='OPML_Release|Win32'">true</BrowseInformation>
+    </ClCompile>
+    <ClCompile Include="..\Common\source\opstructure.c">
+      <Optimization Condition="'$(Configuration)|$(Platform)'=='Frontier_Debug|Win32'">Disabled</Optimization>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='Frontier_Debug|Win32'">true</BrowseInformation>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='Frontier_Release|Win32'">true</BrowseInformation>
+      <Optimization Condition="'$(Configuration)|$(Platform)'=='OPML_Debug|Win32'">Disabled</Optimization>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='OPML_Debug|Win32'">true</BrowseInformation>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='OPML_Release|Win32'">true</BrowseInformation>
+    </ClCompile>
+    <ClCompile Include="..\Common\source\opvalidate.c">
+      <Optimization Condition="'$(Configuration)|$(Platform)'=='Frontier_Debug|Win32'">Disabled</Optimization>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='Frontier_Debug|Win32'">true</BrowseInformation>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='Frontier_Release|Win32'">true</BrowseInformation>
+      <Optimization Condition="'$(Configuration)|$(Platform)'=='OPML_Debug|Win32'">Disabled</Optimization>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='OPML_Debug|Win32'">true</BrowseInformation>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='OPML_Release|Win32'">true</BrowseInformation>
+    </ClCompile>
+    <ClCompile Include="..\Common\source\opverbs.c">
+      <Optimization Condition="'$(Configuration)|$(Platform)'=='Frontier_Debug|Win32'">Disabled</Optimization>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='Frontier_Debug|Win32'">true</BrowseInformation>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='Frontier_Release|Win32'">true</BrowseInformation>
+      <Optimization Condition="'$(Configuration)|$(Platform)'=='OPML_Debug|Win32'">Disabled</Optimization>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='OPML_Debug|Win32'">true</BrowseInformation>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='OPML_Release|Win32'">true</BrowseInformation>
+    </ClCompile>
+    <ClCompile Include="..\Common\source\opvisit.c">
+      <Optimization Condition="'$(Configuration)|$(Platform)'=='Frontier_Debug|Win32'">Disabled</Optimization>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='Frontier_Debug|Win32'">true</BrowseInformation>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='Frontier_Release|Win32'">true</BrowseInformation>
+      <Optimization Condition="'$(Configuration)|$(Platform)'=='OPML_Debug|Win32'">Disabled</Optimization>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='OPML_Debug|Win32'">true</BrowseInformation>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='OPML_Release|Win32'">true</BrowseInformation>
+    </ClCompile>
+    <ClCompile Include="..\Common\source\opxml.c">
+      <Optimization Condition="'$(Configuration)|$(Platform)'=='Frontier_Debug|Win32'">Disabled</Optimization>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='Frontier_Debug|Win32'">true</BrowseInformation>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='Frontier_Release|Win32'">true</BrowseInformation>
+      <Optimization Condition="'$(Configuration)|$(Platform)'=='OPML_Debug|Win32'">Disabled</Optimization>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='OPML_Debug|Win32'">true</BrowseInformation>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='OPML_Release|Win32'">true</BrowseInformation>
+    </ClCompile>
+    <ClCompile Include="..\Common\source\pict.c">
+      <Optimization Condition="'$(Configuration)|$(Platform)'=='Frontier_Debug|Win32'">Disabled</Optimization>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='Frontier_Debug|Win32'">true</BrowseInformation>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='Frontier_Release|Win32'">true</BrowseInformation>
+      <Optimization Condition="'$(Configuration)|$(Platform)'=='OPML_Debug|Win32'">Disabled</Optimization>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='OPML_Debug|Win32'">true</BrowseInformation>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='OPML_Release|Win32'">true</BrowseInformation>
+    </ClCompile>
+    <ClCompile Include="..\Common\source\pictverbs.c">
+      <Optimization Condition="'$(Configuration)|$(Platform)'=='Frontier_Debug|Win32'">Disabled</Optimization>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='Frontier_Debug|Win32'">true</BrowseInformation>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='Frontier_Release|Win32'">true</BrowseInformation>
+      <Optimization Condition="'$(Configuration)|$(Platform)'=='OPML_Debug|Win32'">Disabled</Optimization>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='OPML_Debug|Win32'">true</BrowseInformation>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='OPML_Release|Win32'">true</BrowseInformation>
+    </ClCompile>
+    <ClCompile Include="..\Common\source\popup.c">
+      <Optimization Condition="'$(Configuration)|$(Platform)'=='Frontier_Debug|Win32'">Disabled</Optimization>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='Frontier_Debug|Win32'">true</BrowseInformation>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='Frontier_Release|Win32'">true</BrowseInformation>
+      <Optimization Condition="'$(Configuration)|$(Platform)'=='OPML_Debug|Win32'">Disabled</Optimization>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='OPML_Debug|Win32'">true</BrowseInformation>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='OPML_Release|Win32'">true</BrowseInformation>
+    </ClCompile>
+    <ClCompile Include="..\Common\source\process.c">
+      <Optimization Condition="'$(Configuration)|$(Platform)'=='Frontier_Debug|Win32'">Disabled</Optimization>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='Frontier_Debug|Win32'">true</BrowseInformation>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='Frontier_Release|Win32'">true</BrowseInformation>
+      <Optimization Condition="'$(Configuration)|$(Platform)'=='OPML_Debug|Win32'">Disabled</Optimization>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='OPML_Debug|Win32'">true</BrowseInformation>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='OPML_Release|Win32'">true</BrowseInformation>
+    </ClCompile>
+    <ClCompile Include="..\Common\source\quickdraw.c">
+      <Optimization Condition="'$(Configuration)|$(Platform)'=='Frontier_Debug|Win32'">Disabled</Optimization>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='Frontier_Debug|Win32'">true</BrowseInformation>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='Frontier_Release|Win32'">true</BrowseInformation>
+      <Optimization Condition="'$(Configuration)|$(Platform)'=='OPML_Debug|Win32'">Disabled</Optimization>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='OPML_Debug|Win32'">true</BrowseInformation>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='OPML_Release|Win32'">true</BrowseInformation>
+    </ClCompile>
+    <ClCompile Include="..\Common\source\resources.c">
+      <Optimization Condition="'$(Configuration)|$(Platform)'=='Frontier_Debug|Win32'">Disabled</Optimization>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='Frontier_Debug|Win32'">true</BrowseInformation>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='Frontier_Release|Win32'">true</BrowseInformation>
+      <Optimization Condition="'$(Configuration)|$(Platform)'=='OPML_Debug|Win32'">Disabled</Optimization>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='OPML_Debug|Win32'">true</BrowseInformation>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='OPML_Release|Win32'">true</BrowseInformation>
+    </ClCompile>
+    <ClCompile Include="..\Common\source\scrap.c">
+      <Optimization Condition="'$(Configuration)|$(Platform)'=='Frontier_Debug|Win32'">Disabled</Optimization>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='Frontier_Debug|Win32'">true</BrowseInformation>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='Frontier_Release|Win32'">true</BrowseInformation>
+      <Optimization Condition="'$(Configuration)|$(Platform)'=='OPML_Debug|Win32'">Disabled</Optimization>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='OPML_Debug|Win32'">true</BrowseInformation>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='OPML_Release|Win32'">true</BrowseInformation>
+    </ClCompile>
+    <ClCompile Include="..\Common\source\scripts.c">
+      <Optimization Condition="'$(Configuration)|$(Platform)'=='Frontier_Debug|Win32'">Disabled</Optimization>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='Frontier_Debug|Win32'">true</BrowseInformation>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='Frontier_Release|Win32'">true</BrowseInformation>
+      <Optimization Condition="'$(Configuration)|$(Platform)'=='OPML_Debug|Win32'">Disabled</Optimization>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='OPML_Debug|Win32'">true</BrowseInformation>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='OPML_Release|Win32'">true</BrowseInformation>
+    </ClCompile>
+    <ClCompile Include="..\Common\source\scrollbar.c">
+      <Optimization Condition="'$(Configuration)|$(Platform)'=='Frontier_Debug|Win32'">Disabled</Optimization>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='Frontier_Debug|Win32'">true</BrowseInformation>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='Frontier_Release|Win32'">true</BrowseInformation>
+      <Optimization Condition="'$(Configuration)|$(Platform)'=='OPML_Debug|Win32'">Disabled</Optimization>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='OPML_Debug|Win32'">true</BrowseInformation>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='OPML_Release|Win32'">true</BrowseInformation>
+    </ClCompile>
+    <ClCompile Include="..\Common\source\search.c">
+      <Optimization Condition="'$(Configuration)|$(Platform)'=='Frontier_Debug|Win32'">Disabled</Optimization>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='Frontier_Debug|Win32'">true</BrowseInformation>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='Frontier_Release|Win32'">true</BrowseInformation>
+      <Optimization Condition="'$(Configuration)|$(Platform)'=='OPML_Debug|Win32'">Disabled</Optimization>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='OPML_Debug|Win32'">true</BrowseInformation>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='OPML_Release|Win32'">true</BrowseInformation>
+    </ClCompile>
+    <ClCompile Include="..\Common\source\serialnumber.c">
+      <Optimization Condition="'$(Configuration)|$(Platform)'=='Frontier_Debug|Win32'">Disabled</Optimization>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='Frontier_Debug|Win32'">true</BrowseInformation>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='Frontier_Release|Win32'">true</BrowseInformation>
+      <Optimization Condition="'$(Configuration)|$(Platform)'=='OPML_Debug|Win32'">Disabled</Optimization>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='OPML_Debug|Win32'">true</BrowseInformation>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='OPML_Release|Win32'">true</BrowseInformation>
+    </ClCompile>
+    <ClCompile Include="..\Common\source\sha1dgst.c" />
+    <ClCompile Include="..\Common\source\shell.c">
+      <Optimization Condition="'$(Configuration)|$(Platform)'=='Frontier_Debug|Win32'">Disabled</Optimization>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='Frontier_Debug|Win32'">true</BrowseInformation>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='Frontier_Release|Win32'">true</BrowseInformation>
+      <Optimization Condition="'$(Configuration)|$(Platform)'=='OPML_Debug|Win32'">Disabled</Optimization>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='OPML_Debug|Win32'">true</BrowseInformation>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='OPML_Release|Win32'">true</BrowseInformation>
+    </ClCompile>
+    <ClCompile Include="..\Common\source\shellactivate.c">
+      <Optimization Condition="'$(Configuration)|$(Platform)'=='Frontier_Debug|Win32'">Disabled</Optimization>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='Frontier_Debug|Win32'">true</BrowseInformation>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='Frontier_Release|Win32'">true</BrowseInformation>
+      <Optimization Condition="'$(Configuration)|$(Platform)'=='OPML_Debug|Win32'">Disabled</Optimization>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='OPML_Debug|Win32'">true</BrowseInformation>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='OPML_Release|Win32'">true</BrowseInformation>
+    </ClCompile>
+    <ClCompile Include="..\Common\source\shellblocker.c">
+      <Optimization Condition="'$(Configuration)|$(Platform)'=='Frontier_Debug|Win32'">Disabled</Optimization>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='Frontier_Debug|Win32'">true</BrowseInformation>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='Frontier_Release|Win32'">true</BrowseInformation>
+      <Optimization Condition="'$(Configuration)|$(Platform)'=='OPML_Debug|Win32'">Disabled</Optimization>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='OPML_Debug|Win32'">true</BrowseInformation>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='OPML_Release|Win32'">true</BrowseInformation>
+    </ClCompile>
+    <ClCompile Include="..\Common\source\shellbuttons.c">
+      <Optimization Condition="'$(Configuration)|$(Platform)'=='Frontier_Debug|Win32'">Disabled</Optimization>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='Frontier_Debug|Win32'">true</BrowseInformation>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='Frontier_Release|Win32'">true</BrowseInformation>
+      <Optimization Condition="'$(Configuration)|$(Platform)'=='OPML_Debug|Win32'">Disabled</Optimization>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='OPML_Debug|Win32'">true</BrowseInformation>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='OPML_Release|Win32'">true</BrowseInformation>
+    </ClCompile>
+    <ClCompile Include="..\Common\source\shellcallbacks.c">
+      <Optimization Condition="'$(Configuration)|$(Platform)'=='Frontier_Debug|Win32'">Disabled</Optimization>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='Frontier_Debug|Win32'">true</BrowseInformation>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='Frontier_Release|Win32'">true</BrowseInformation>
+      <Optimization Condition="'$(Configuration)|$(Platform)'=='OPML_Debug|Win32'">Disabled</Optimization>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='OPML_Debug|Win32'">true</BrowseInformation>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='OPML_Release|Win32'">true</BrowseInformation>
+    </ClCompile>
+    <ClCompile Include="..\Common\source\shellfile.c">
+      <Optimization Condition="'$(Configuration)|$(Platform)'=='Frontier_Debug|Win32'">Disabled</Optimization>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='Frontier_Debug|Win32'">true</BrowseInformation>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='Frontier_Release|Win32'">true</BrowseInformation>
+      <Optimization Condition="'$(Configuration)|$(Platform)'=='OPML_Debug|Win32'">Disabled</Optimization>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='OPML_Debug|Win32'">true</BrowseInformation>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='OPML_Release|Win32'">true</BrowseInformation>
+    </ClCompile>
+    <ClCompile Include="..\Common\source\shellhooks.c">
+      <Optimization Condition="'$(Configuration)|$(Platform)'=='Frontier_Debug|Win32'">Disabled</Optimization>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='Frontier_Debug|Win32'">true</BrowseInformation>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='Frontier_Release|Win32'">true</BrowseInformation>
+      <Optimization Condition="'$(Configuration)|$(Platform)'=='OPML_Debug|Win32'">Disabled</Optimization>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='OPML_Debug|Win32'">true</BrowseInformation>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='OPML_Release|Win32'">true</BrowseInformation>
+    </ClCompile>
+    <ClCompile Include="..\Common\source\shelljuggler.c">
+      <Optimization Condition="'$(Configuration)|$(Platform)'=='Frontier_Debug|Win32'">Disabled</Optimization>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='Frontier_Debug|Win32'">true</BrowseInformation>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='Frontier_Release|Win32'">true</BrowseInformation>
+      <Optimization Condition="'$(Configuration)|$(Platform)'=='OPML_Debug|Win32'">Disabled</Optimization>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='OPML_Debug|Win32'">true</BrowseInformation>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='OPML_Release|Win32'">true</BrowseInformation>
+    </ClCompile>
+    <ClCompile Include="..\Common\source\shellkb.c">
+      <Optimization Condition="'$(Configuration)|$(Platform)'=='Frontier_Debug|Win32'">Disabled</Optimization>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='Frontier_Debug|Win32'">true</BrowseInformation>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='Frontier_Release|Win32'">true</BrowseInformation>
+      <Optimization Condition="'$(Configuration)|$(Platform)'=='OPML_Debug|Win32'">Disabled</Optimization>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='OPML_Debug|Win32'">true</BrowseInformation>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='OPML_Release|Win32'">true</BrowseInformation>
+    </ClCompile>
+    <ClCompile Include="..\Common\source\shellmenu.c">
+      <Optimization Condition="'$(Configuration)|$(Platform)'=='Frontier_Debug|Win32'">Disabled</Optimization>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='Frontier_Debug|Win32'">true</BrowseInformation>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='Frontier_Release|Win32'">true</BrowseInformation>
+      <Optimization Condition="'$(Configuration)|$(Platform)'=='OPML_Debug|Win32'">Disabled</Optimization>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='OPML_Debug|Win32'">true</BrowseInformation>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='OPML_Release|Win32'">true</BrowseInformation>
+    </ClCompile>
+    <ClCompile Include="..\Common\source\shellmouse.c">
+      <Optimization Condition="'$(Configuration)|$(Platform)'=='Frontier_Debug|Win32'">Disabled</Optimization>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='Frontier_Debug|Win32'">true</BrowseInformation>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='Frontier_Release|Win32'">true</BrowseInformation>
+      <Optimization Condition="'$(Configuration)|$(Platform)'=='OPML_Debug|Win32'">Disabled</Optimization>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='OPML_Debug|Win32'">true</BrowseInformation>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='OPML_Release|Win32'">true</BrowseInformation>
+    </ClCompile>
+    <ClCompile Include="..\Common\source\shellops.c">
+      <Optimization Condition="'$(Configuration)|$(Platform)'=='Frontier_Debug|Win32'">Disabled</Optimization>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='Frontier_Debug|Win32'">true</BrowseInformation>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='Frontier_Release|Win32'">true</BrowseInformation>
+      <Optimization Condition="'$(Configuration)|$(Platform)'=='OPML_Debug|Win32'">Disabled</Optimization>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='OPML_Debug|Win32'">true</BrowseInformation>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='OPML_Release|Win32'">true</BrowseInformation>
+    </ClCompile>
+    <ClCompile Include="..\Common\source\shellprint.c">
+      <Optimization Condition="'$(Configuration)|$(Platform)'=='Frontier_Debug|Win32'">Disabled</Optimization>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='Frontier_Debug|Win32'">true</BrowseInformation>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='Frontier_Release|Win32'">true</BrowseInformation>
+      <Optimization Condition="'$(Configuration)|$(Platform)'=='OPML_Debug|Win32'">Disabled</Optimization>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='OPML_Debug|Win32'">true</BrowseInformation>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='OPML_Release|Win32'">true</BrowseInformation>
+    </ClCompile>
+    <ClCompile Include="..\Common\source\shellscrap.c">
+      <Optimization Condition="'$(Configuration)|$(Platform)'=='Frontier_Debug|Win32'">Disabled</Optimization>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='Frontier_Debug|Win32'">true</BrowseInformation>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='Frontier_Release|Win32'">true</BrowseInformation>
+      <Optimization Condition="'$(Configuration)|$(Platform)'=='OPML_Debug|Win32'">Disabled</Optimization>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='OPML_Debug|Win32'">true</BrowseInformation>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='OPML_Release|Win32'">true</BrowseInformation>
+    </ClCompile>
+    <ClCompile Include="..\Common\source\shellscroll.c">
+      <Optimization Condition="'$(Configuration)|$(Platform)'=='Frontier_Debug|Win32'">Disabled</Optimization>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='Frontier_Debug|Win32'">true</BrowseInformation>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='Frontier_Release|Win32'">true</BrowseInformation>
+      <Optimization Condition="'$(Configuration)|$(Platform)'=='OPML_Debug|Win32'">Disabled</Optimization>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='OPML_Debug|Win32'">true</BrowseInformation>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='OPML_Release|Win32'">true</BrowseInformation>
+    </ClCompile>
+    <ClCompile Include="..\Common\source\shellsysverbs.c">
+      <Optimization Condition="'$(Configuration)|$(Platform)'=='Frontier_Debug|Win32'">Disabled</Optimization>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='Frontier_Debug|Win32'">true</BrowseInformation>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='Frontier_Release|Win32'">true</BrowseInformation>
+      <Optimization Condition="'$(Configuration)|$(Platform)'=='OPML_Debug|Win32'">Disabled</Optimization>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='OPML_Debug|Win32'">true</BrowseInformation>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='OPML_Release|Win32'">true</BrowseInformation>
+    </ClCompile>
+    <ClCompile Include="..\Common\source\shellundo.c">
+      <Optimization Condition="'$(Configuration)|$(Platform)'=='Frontier_Debug|Win32'">Disabled</Optimization>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='Frontier_Debug|Win32'">true</BrowseInformation>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='Frontier_Release|Win32'">true</BrowseInformation>
+      <Optimization Condition="'$(Configuration)|$(Platform)'=='OPML_Debug|Win32'">Disabled</Optimization>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='OPML_Debug|Win32'">true</BrowseInformation>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='OPML_Release|Win32'">true</BrowseInformation>
+    </ClCompile>
+    <ClCompile Include="..\Common\source\shellupdate.c">
+      <Optimization Condition="'$(Configuration)|$(Platform)'=='Frontier_Debug|Win32'">Disabled</Optimization>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='Frontier_Debug|Win32'">true</BrowseInformation>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='Frontier_Release|Win32'">true</BrowseInformation>
+      <Optimization Condition="'$(Configuration)|$(Platform)'=='OPML_Debug|Win32'">Disabled</Optimization>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='OPML_Debug|Win32'">true</BrowseInformation>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='OPML_Release|Win32'">true</BrowseInformation>
+    </ClCompile>
+    <ClCompile Include="..\Common\source\shellverbs.c">
+      <Optimization Condition="'$(Configuration)|$(Platform)'=='Frontier_Debug|Win32'">Disabled</Optimization>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='Frontier_Debug|Win32'">true</BrowseInformation>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='Frontier_Release|Win32'">true</BrowseInformation>
+      <Optimization Condition="'$(Configuration)|$(Platform)'=='OPML_Debug|Win32'">Disabled</Optimization>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='OPML_Debug|Win32'">true</BrowseInformation>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='OPML_Release|Win32'">true</BrowseInformation>
+    </ClCompile>
+    <ClCompile Include="..\Common\source\shellwindow.c">
+      <Optimization Condition="'$(Configuration)|$(Platform)'=='Frontier_Debug|Win32'">Disabled</Optimization>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='Frontier_Debug|Win32'">true</BrowseInformation>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='Frontier_Release|Win32'">true</BrowseInformation>
+      <Optimization Condition="'$(Configuration)|$(Platform)'=='OPML_Debug|Win32'">Disabled</Optimization>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='OPML_Debug|Win32'">true</BrowseInformation>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='OPML_Release|Win32'">true</BrowseInformation>
+    </ClCompile>
+    <ClCompile Include="..\Common\source\shellwindowmenu.c">
+      <Optimization Condition="'$(Configuration)|$(Platform)'=='Frontier_Debug|Win32'">Disabled</Optimization>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='Frontier_Debug|Win32'">true</BrowseInformation>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='Frontier_Release|Win32'">true</BrowseInformation>
+      <Optimization Condition="'$(Configuration)|$(Platform)'=='OPML_Debug|Win32'">Disabled</Optimization>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='OPML_Debug|Win32'">true</BrowseInformation>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='OPML_Release|Win32'">true</BrowseInformation>
+    </ClCompile>
+    <ClCompile Include="..\Common\source\shellwindowverbs.c">
+      <Optimization Condition="'$(Configuration)|$(Platform)'=='Frontier_Debug|Win32'">Disabled</Optimization>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='Frontier_Debug|Win32'">true</BrowseInformation>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='Frontier_Release|Win32'">true</BrowseInformation>
+      <Optimization Condition="'$(Configuration)|$(Platform)'=='OPML_Debug|Win32'">Disabled</Optimization>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='OPML_Debug|Win32'">true</BrowseInformation>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='OPML_Release|Win32'">true</BrowseInformation>
+    </ClCompile>
+    <ClCompile Include="..\Common\source\smallicon.c">
+      <Optimization Condition="'$(Configuration)|$(Platform)'=='Frontier_Debug|Win32'">Disabled</Optimization>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='Frontier_Debug|Win32'">true</BrowseInformation>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='Frontier_Release|Win32'">true</BrowseInformation>
+      <Optimization Condition="'$(Configuration)|$(Platform)'=='OPML_Debug|Win32'">Disabled</Optimization>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='OPML_Debug|Win32'">true</BrowseInformation>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='OPML_Release|Win32'">true</BrowseInformation>
+    </ClCompile>
+    <ClCompile Include="..\Common\source\sounds.c">
+      <Optimization Condition="'$(Configuration)|$(Platform)'=='Frontier_Debug|Win32'">Disabled</Optimization>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='Frontier_Debug|Win32'">true</BrowseInformation>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='Frontier_Release|Win32'">true</BrowseInformation>
+      <Optimization Condition="'$(Configuration)|$(Platform)'=='OPML_Debug|Win32'">Disabled</Optimization>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='OPML_Debug|Win32'">true</BrowseInformation>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='OPML_Release|Win32'">true</BrowseInformation>
+    </ClCompile>
+    <ClCompile Include="..\Common\source\strings.c">
+      <Optimization Condition="'$(Configuration)|$(Platform)'=='Frontier_Debug|Win32'">Disabled</Optimization>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='Frontier_Debug|Win32'">true</BrowseInformation>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='Frontier_Release|Win32'">true</BrowseInformation>
+      <Optimization Condition="'$(Configuration)|$(Platform)'=='OPML_Debug|Win32'">Disabled</Optimization>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='OPML_Debug|Win32'">true</BrowseInformation>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='OPML_Release|Win32'">true</BrowseInformation>
+    </ClCompile>
+    <ClCompile Include="..\Common\source\stringverbs.c">
+      <Optimization Condition="'$(Configuration)|$(Platform)'=='Frontier_Debug|Win32'">Disabled</Optimization>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='Frontier_Debug|Win32'">true</BrowseInformation>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='Frontier_Release|Win32'">true</BrowseInformation>
+      <Optimization Condition="'$(Configuration)|$(Platform)'=='OPML_Debug|Win32'">Disabled</Optimization>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='OPML_Debug|Win32'">true</BrowseInformation>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='OPML_Release|Win32'">true</BrowseInformation>
+    </ClCompile>
+    <ClCompile Include="..\Common\source\sysshellcall.c" />
+    <ClCompile Include="..\Common\source\tablecompare.c">
+      <Optimization Condition="'$(Configuration)|$(Platform)'=='Frontier_Debug|Win32'">Disabled</Optimization>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='Frontier_Debug|Win32'">true</BrowseInformation>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='Frontier_Release|Win32'">true</BrowseInformation>
+      <Optimization Condition="'$(Configuration)|$(Platform)'=='OPML_Debug|Win32'">Disabled</Optimization>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='OPML_Debug|Win32'">true</BrowseInformation>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='OPML_Release|Win32'">true</BrowseInformation>
+    </ClCompile>
+    <ClCompile Include="..\Common\source\tabledisplay.c">
+      <Optimization Condition="'$(Configuration)|$(Platform)'=='Frontier_Debug|Win32'">Disabled</Optimization>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='Frontier_Debug|Win32'">true</BrowseInformation>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='Frontier_Release|Win32'">true</BrowseInformation>
+      <Optimization Condition="'$(Configuration)|$(Platform)'=='OPML_Debug|Win32'">Disabled</Optimization>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='OPML_Debug|Win32'">true</BrowseInformation>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='OPML_Release|Win32'">true</BrowseInformation>
+    </ClCompile>
+    <ClCompile Include="..\Common\source\tableedit.c">
+      <Optimization Condition="'$(Configuration)|$(Platform)'=='Frontier_Debug|Win32'">Disabled</Optimization>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='Frontier_Debug|Win32'">true</BrowseInformation>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='Frontier_Release|Win32'">true</BrowseInformation>
+      <Optimization Condition="'$(Configuration)|$(Platform)'=='OPML_Debug|Win32'">Disabled</Optimization>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='OPML_Debug|Win32'">true</BrowseInformation>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='OPML_Release|Win32'">true</BrowseInformation>
+    </ClCompile>
+    <ClCompile Include="..\Common\source\tableexternal.c">
+      <Optimization Condition="'$(Configuration)|$(Platform)'=='Frontier_Debug|Win32'">Disabled</Optimization>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='Frontier_Debug|Win32'">true</BrowseInformation>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='Frontier_Release|Win32'">true</BrowseInformation>
+      <Optimization Condition="'$(Configuration)|$(Platform)'=='OPML_Debug|Win32'">Disabled</Optimization>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='OPML_Debug|Win32'">true</BrowseInformation>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='OPML_Release|Win32'">true</BrowseInformation>
+    </ClCompile>
+    <ClCompile Include="..\Common\source\tablefind.c">
+      <Optimization Condition="'$(Configuration)|$(Platform)'=='Frontier_Debug|Win32'">Disabled</Optimization>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='Frontier_Debug|Win32'">true</BrowseInformation>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='Frontier_Release|Win32'">true</BrowseInformation>
+      <Optimization Condition="'$(Configuration)|$(Platform)'=='OPML_Debug|Win32'">Disabled</Optimization>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='OPML_Debug|Win32'">true</BrowseInformation>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='OPML_Release|Win32'">true</BrowseInformation>
+    </ClCompile>
+    <ClCompile Include="..\Common\source\tableformats.c">
+      <Optimization Condition="'$(Configuration)|$(Platform)'=='Frontier_Debug|Win32'">Disabled</Optimization>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='Frontier_Debug|Win32'">true</BrowseInformation>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='Frontier_Release|Win32'">true</BrowseInformation>
+      <Optimization Condition="'$(Configuration)|$(Platform)'=='OPML_Debug|Win32'">Disabled</Optimization>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='OPML_Debug|Win32'">true</BrowseInformation>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='OPML_Release|Win32'">true</BrowseInformation>
+    </ClCompile>
+    <ClCompile Include="..\Common\source\tableops.c">
+      <Optimization Condition="'$(Configuration)|$(Platform)'=='Frontier_Debug|Win32'">Disabled</Optimization>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='Frontier_Debug|Win32'">true</BrowseInformation>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='Frontier_Release|Win32'">true</BrowseInformation>
+      <Optimization Condition="'$(Configuration)|$(Platform)'=='OPML_Debug|Win32'">Disabled</Optimization>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='OPML_Debug|Win32'">true</BrowseInformation>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='OPML_Release|Win32'">true</BrowseInformation>
+    </ClCompile>
+    <ClCompile Include="..\Common\source\tablepack.c">
+      <Optimization Condition="'$(Configuration)|$(Platform)'=='Frontier_Debug|Win32'">Disabled</Optimization>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='Frontier_Debug|Win32'">true</BrowseInformation>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='Frontier_Release|Win32'">true</BrowseInformation>
+      <Optimization Condition="'$(Configuration)|$(Platform)'=='OPML_Debug|Win32'">Disabled</Optimization>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='OPML_Debug|Win32'">true</BrowseInformation>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='OPML_Release|Win32'">true</BrowseInformation>
+    </ClCompile>
+    <ClCompile Include="..\Common\source\tablepopup.c">
+      <Optimization Condition="'$(Configuration)|$(Platform)'=='Frontier_Debug|Win32'">Disabled</Optimization>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='Frontier_Debug|Win32'">true</BrowseInformation>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='Frontier_Release|Win32'">true</BrowseInformation>
+      <Optimization Condition="'$(Configuration)|$(Platform)'=='OPML_Debug|Win32'">Disabled</Optimization>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='OPML_Debug|Win32'">true</BrowseInformation>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='OPML_Release|Win32'">true</BrowseInformation>
+    </ClCompile>
+    <ClCompile Include="..\Common\source\tablerunbutton.c">
+      <Optimization Condition="'$(Configuration)|$(Platform)'=='Frontier_Debug|Win32'">Disabled</Optimization>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='Frontier_Debug|Win32'">true</BrowseInformation>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='Frontier_Release|Win32'">true</BrowseInformation>
+      <Optimization Condition="'$(Configuration)|$(Platform)'=='OPML_Debug|Win32'">Disabled</Optimization>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='OPML_Debug|Win32'">true</BrowseInformation>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='OPML_Release|Win32'">true</BrowseInformation>
+    </ClCompile>
+    <ClCompile Include="..\Common\source\tablescrap.c">
+      <Optimization Condition="'$(Configuration)|$(Platform)'=='Frontier_Debug|Win32'">Disabled</Optimization>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='Frontier_Debug|Win32'">true</BrowseInformation>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='Frontier_Release|Win32'">true</BrowseInformation>
+      <Optimization Condition="'$(Configuration)|$(Platform)'=='OPML_Debug|Win32'">Disabled</Optimization>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='OPML_Debug|Win32'">true</BrowseInformation>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='OPML_Release|Win32'">true</BrowseInformation>
+    </ClCompile>
+    <ClCompile Include="..\Common\source\tablestructure.c">
+      <Optimization Condition="'$(Configuration)|$(Platform)'=='Frontier_Debug|Win32'">Disabled</Optimization>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='Frontier_Debug|Win32'">true</BrowseInformation>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='Frontier_Release|Win32'">true</BrowseInformation>
+      <Optimization Condition="'$(Configuration)|$(Platform)'=='OPML_Debug|Win32'">Disabled</Optimization>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='OPML_Debug|Win32'">true</BrowseInformation>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='OPML_Release|Win32'">true</BrowseInformation>
+    </ClCompile>
+    <ClCompile Include="..\Common\source\tablevalidate.c">
+      <Optimization Condition="'$(Configuration)|$(Platform)'=='Frontier_Debug|Win32'">Disabled</Optimization>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='Frontier_Debug|Win32'">true</BrowseInformation>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='Frontier_Release|Win32'">true</BrowseInformation>
+      <Optimization Condition="'$(Configuration)|$(Platform)'=='OPML_Debug|Win32'">Disabled</Optimization>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='OPML_Debug|Win32'">true</BrowseInformation>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='OPML_Release|Win32'">true</BrowseInformation>
+    </ClCompile>
+    <ClCompile Include="..\Common\source\tableverbs.c">
+      <Optimization Condition="'$(Configuration)|$(Platform)'=='Frontier_Debug|Win32'">Disabled</Optimization>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='Frontier_Debug|Win32'">true</BrowseInformation>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='Frontier_Release|Win32'">true</BrowseInformation>
+      <Optimization Condition="'$(Configuration)|$(Platform)'=='OPML_Debug|Win32'">Disabled</Optimization>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='OPML_Debug|Win32'">true</BrowseInformation>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='OPML_Release|Win32'">true</BrowseInformation>
+    </ClCompile>
+    <ClCompile Include="..\Common\source\tablewindow.c">
+      <Optimization Condition="'$(Configuration)|$(Platform)'=='Frontier_Debug|Win32'">Disabled</Optimization>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='Frontier_Debug|Win32'">true</BrowseInformation>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='Frontier_Release|Win32'">true</BrowseInformation>
+      <Optimization Condition="'$(Configuration)|$(Platform)'=='OPML_Debug|Win32'">Disabled</Optimization>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='OPML_Debug|Win32'">true</BrowseInformation>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='OPML_Release|Win32'">true</BrowseInformation>
+    </ClCompile>
+    <ClCompile Include="..\Common\source\textdisplay.c">
+      <Optimization Condition="'$(Configuration)|$(Platform)'=='Frontier_Debug|Win32'">Disabled</Optimization>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='Frontier_Debug|Win32'">true</BrowseInformation>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='Frontier_Release|Win32'">true</BrowseInformation>
+      <Optimization Condition="'$(Configuration)|$(Platform)'=='OPML_Debug|Win32'">Disabled</Optimization>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='OPML_Debug|Win32'">true</BrowseInformation>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='OPML_Release|Win32'">true</BrowseInformation>
+    </ClCompile>
+    <ClCompile Include="..\Common\source\textedit.c">
+      <Optimization Condition="'$(Configuration)|$(Platform)'=='Frontier_Debug|Win32'">Disabled</Optimization>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='Frontier_Debug|Win32'">true</BrowseInformation>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='Frontier_Release|Win32'">true</BrowseInformation>
+      <Optimization Condition="'$(Configuration)|$(Platform)'=='OPML_Debug|Win32'">Disabled</Optimization>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='OPML_Debug|Win32'">true</BrowseInformation>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='OPML_Release|Win32'">true</BrowseInformation>
+    </ClCompile>
+    <ClCompile Include="..\Common\source\threads.c">
+      <Optimization Condition="'$(Configuration)|$(Platform)'=='Frontier_Debug|Win32'">Disabled</Optimization>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='Frontier_Debug|Win32'">true</BrowseInformation>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='Frontier_Release|Win32'">true</BrowseInformation>
+      <Optimization Condition="'$(Configuration)|$(Platform)'=='OPML_Debug|Win32'">Disabled</Optimization>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='OPML_Debug|Win32'">true</BrowseInformation>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='OPML_Release|Win32'">true</BrowseInformation>
+    </ClCompile>
+    <ClCompile Include="..\Common\source\timedate.c">
+      <Optimization Condition="'$(Configuration)|$(Platform)'=='Frontier_Debug|Win32'">Disabled</Optimization>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='Frontier_Debug|Win32'">true</BrowseInformation>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='Frontier_Release|Win32'">true</BrowseInformation>
+      <Optimization Condition="'$(Configuration)|$(Platform)'=='OPML_Debug|Win32'">Disabled</Optimization>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='OPML_Debug|Win32'">true</BrowseInformation>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='OPML_Release|Win32'">true</BrowseInformation>
+    </ClCompile>
+    <ClCompile Include="..\Common\source\whirlpool.c" />
+    <ClCompile Include="..\Common\source\winregistry.c">
+      <Optimization Condition="'$(Configuration)|$(Platform)'=='Frontier_Debug|Win32'">Disabled</Optimization>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='Frontier_Debug|Win32'">true</BrowseInformation>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='Frontier_Release|Win32'">true</BrowseInformation>
+      <Optimization Condition="'$(Configuration)|$(Platform)'=='OPML_Debug|Win32'">Disabled</Optimization>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='OPML_Debug|Win32'">true</BrowseInformation>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='OPML_Release|Win32'">true</BrowseInformation>
+    </ClCompile>
+    <ClCompile Include="..\Common\source\WinSockNetEvents.c">
+      <Optimization Condition="'$(Configuration)|$(Platform)'=='Frontier_Debug|Win32'">Disabled</Optimization>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='Frontier_Debug|Win32'">true</BrowseInformation>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='Frontier_Release|Win32'">true</BrowseInformation>
+      <Optimization Condition="'$(Configuration)|$(Platform)'=='OPML_Debug|Win32'">Disabled</Optimization>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='OPML_Debug|Win32'">true</BrowseInformation>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='OPML_Release|Win32'">true</BrowseInformation>
+    </ClCompile>
+    <ClCompile Include="..\Common\source\wpengine.c">
+      <Optimization Condition="'$(Configuration)|$(Platform)'=='Frontier_Debug|Win32'">Disabled</Optimization>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='Frontier_Debug|Win32'">true</BrowseInformation>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='Frontier_Release|Win32'">true</BrowseInformation>
+      <Optimization Condition="'$(Configuration)|$(Platform)'=='OPML_Debug|Win32'">Disabled</Optimization>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='OPML_Debug|Win32'">true</BrowseInformation>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='OPML_Release|Win32'">true</BrowseInformation>
+    </ClCompile>
+    <ClCompile Include="..\Common\source\wpverbs.c">
+      <Optimization Condition="'$(Configuration)|$(Platform)'=='Frontier_Debug|Win32'">Disabled</Optimization>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='Frontier_Debug|Win32'">true</BrowseInformation>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='Frontier_Release|Win32'">true</BrowseInformation>
+      <Optimization Condition="'$(Configuration)|$(Platform)'=='OPML_Debug|Win32'">Disabled</Optimization>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='OPML_Debug|Win32'">true</BrowseInformation>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='OPML_Release|Win32'">true</BrowseInformation>
+    </ClCompile>
+    <ClCompile Include="..\Common\sqlite3\alter.c">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='OPML_Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='OPML_Release|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\Common\sqlite3\analyze.c">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='OPML_Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='OPML_Release|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\Common\sqlite3\attach.c">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='OPML_Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='OPML_Release|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\Common\sqlite3\auth.c">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='OPML_Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='OPML_Release|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\Common\sqlite3\btree.c">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='OPML_Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='OPML_Release|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\Common\sqlite3\build.c">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='OPML_Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='OPML_Release|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\Common\sqlite3\callback.c">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='OPML_Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='OPML_Release|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\Common\sqlite3\complete.c">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='OPML_Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='OPML_Release|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\Common\sqlite3\date.c">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='OPML_Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='OPML_Release|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\Common\sqlite3\delete.c">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='OPML_Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='OPML_Release|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\Common\sqlite3\expr.c">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='OPML_Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='OPML_Release|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\Common\sqlite3\func.c">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='OPML_Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='OPML_Release|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\Common\sqlite3\hash.c">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='OPML_Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='OPML_Release|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\Common\sqlite3\insert.c">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='OPML_Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='OPML_Release|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\Common\sqlite3\legacy.c">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='OPML_Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='OPML_Release|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\Common\sqlite3\loadext.c">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='OPML_Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='OPML_Release|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\Common\sqlite3\main.c">
+      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Frontier_Debug|Win32'">$(IntDir)%(Filename)1.obj</ObjectFileName>
+      <XMLDocumentationFileName Condition="'$(Configuration)|$(Platform)'=='Frontier_Debug|Win32'">$(IntDir)%(Filename)1.xdc</XMLDocumentationFileName>
+      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Frontier_Release|Win32'">$(IntDir)%(Filename)1.obj</ObjectFileName>
+      <XMLDocumentationFileName Condition="'$(Configuration)|$(Platform)'=='Frontier_Release|Win32'">$(IntDir)%(Filename)1.xdc</XMLDocumentationFileName>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='OPML_Debug|Win32'">true</ExcludedFromBuild>
+      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='OPML_Debug|Win32'">$(IntDir)%(Filename)1.obj</ObjectFileName>
+      <XMLDocumentationFileName Condition="'$(Configuration)|$(Platform)'=='OPML_Debug|Win32'">$(IntDir)%(Filename)1.xdc</XMLDocumentationFileName>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='OPML_Release|Win32'">true</ExcludedFromBuild>
+      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='OPML_Release|Win32'">$(IntDir)%(Filename)1.obj</ObjectFileName>
+      <XMLDocumentationFileName Condition="'$(Configuration)|$(Platform)'=='OPML_Release|Win32'">$(IntDir)%(Filename)1.xdc</XMLDocumentationFileName>
+    </ClCompile>
+    <ClCompile Include="..\Common\sqlite3\opcodes.c">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='OPML_Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='OPML_Release|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\Common\sqlite3\os.c">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='OPML_Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='OPML_Release|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\Common\sqlite3\os_os2.c">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='OPML_Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='OPML_Release|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\Common\sqlite3\os_unix.c">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='OPML_Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='OPML_Release|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\Common\sqlite3\os_win.c">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='OPML_Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='OPML_Release|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\Common\sqlite3\pager.c">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='OPML_Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='OPML_Release|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\Common\sqlite3\parse.c">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='OPML_Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='OPML_Release|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\Common\sqlite3\pragma.c">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='OPML_Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='OPML_Release|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\Common\sqlite3\prepare.c">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='OPML_Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='OPML_Release|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\Common\sqlite3\printf.c">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='OPML_Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='OPML_Release|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\Common\sqlite3\random.c">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='OPML_Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='OPML_Release|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\Common\sqlite3\select.c">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='OPML_Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='OPML_Release|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\Common\sqlite3\table.c">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='OPML_Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='OPML_Release|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\Common\sqlite3\tokenize.c">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='OPML_Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='OPML_Release|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\Common\sqlite3\trigger.c">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='OPML_Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='OPML_Release|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\Common\sqlite3\update.c">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='OPML_Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='OPML_Release|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\Common\sqlite3\utf.c">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='OPML_Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='OPML_Release|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\Common\sqlite3\util.c">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='OPML_Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='OPML_Release|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\Common\sqlite3\vacuum.c">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='OPML_Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='OPML_Release|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\Common\sqlite3\vdbe.c">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='OPML_Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='OPML_Release|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\Common\sqlite3\vdbeapi.c">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='OPML_Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='OPML_Release|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\Common\sqlite3\vdbeaux.c">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='OPML_Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='OPML_Release|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\Common\sqlite3\vdbefifo.c">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='OPML_Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='OPML_Release|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\Common\sqlite3\vdbemem.c">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='OPML_Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='OPML_Release|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\Common\sqlite3\vtab.c">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='OPML_Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='OPML_Release|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\Common\sqlite3\where.c">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='OPML_Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='OPML_Release|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\Common\stubs\megastubs.c">
+      <Optimization Condition="'$(Configuration)|$(Platform)'=='Frontier_Debug|Win32'">Disabled</Optimization>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='Frontier_Debug|Win32'">true</BrowseInformation>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='Frontier_Release|Win32'">true</BrowseInformation>
+      <Optimization Condition="'$(Configuration)|$(Platform)'=='OPML_Debug|Win32'">Disabled</Optimization>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='OPML_Debug|Win32'">true</BrowseInformation>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='OPML_Release|Win32'">true</BrowseInformation>
+    </ClCompile>
+    <ClCompile Include="..\Common\stubs\megastubs2.c">
+      <Optimization Condition="'$(Configuration)|$(Platform)'=='Frontier_Debug|Win32'">Disabled</Optimization>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='Frontier_Debug|Win32'">true</BrowseInformation>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='Frontier_Release|Win32'">true</BrowseInformation>
+      <Optimization Condition="'$(Configuration)|$(Platform)'=='OPML_Debug|Win32'">Disabled</Optimization>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='OPML_Debug|Win32'">true</BrowseInformation>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='OPML_Release|Win32'">true</BrowseInformation>
+    </ClCompile>
+    <ClCompile Include="..\Common\stubs\minneed.c">
+      <Optimization Condition="'$(Configuration)|$(Platform)'=='Frontier_Debug|Win32'">Disabled</Optimization>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='Frontier_Debug|Win32'">true</BrowseInformation>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='Frontier_Release|Win32'">true</BrowseInformation>
+      <Optimization Condition="'$(Configuration)|$(Platform)'=='OPML_Debug|Win32'">Disabled</Optimization>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='OPML_Debug|Win32'">true</BrowseInformation>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='OPML_Release|Win32'">true</BrowseInformation>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="..\Common\resources\Win32\WinLand.rc">
+      <AdditionalIncludeDirectories Condition="'$(Configuration)|$(Platform)'=='Frontier_Debug|Win32'">\My Documents\Frontier\Common\resources\Win32;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories Condition="'$(Configuration)|$(Platform)'=='Frontier_Release|Win32'">\My Documents\Frontier\Common\resources\Win32;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories Condition="'$(Configuration)|$(Platform)'=='OPML_Debug|Win32'">\My Documents\Frontier\Common\resources\Win32;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories Condition="'$(Configuration)|$(Platform)'=='OPML_Release|Win32'">\My Documents\Frontier\Common\resources\Win32;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ResourceCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\Common\headers\about.h" />
+    <ClInclude Include="..\Common\headers\BASE64.H" />
+    <ClInclude Include="..\Common\headers\bitmaps.h" />
+    <ClInclude Include="..\Common\headers\byteorder.h" />
+    <ClInclude Include="..\Common\headers\cancoon.h" />
+    <ClInclude Include="..\Common\headers\cancooninternal.h" />
+    <ClInclude Include="..\Common\headers\claybrowser.h" />
+    <ClInclude Include="..\Common\headers\claybrowserexpand.h" />
+    <ClInclude Include="..\Common\headers\claybrowserstruc.h" />
+    <ClInclude Include="..\Common\headers\claybrowservalidate.h" />
+    <ClInclude Include="..\Common\headers\claycallbacks.h" />
+    <ClInclude Include="..\Common\headers\claylinelayout.h" />
+    <ClInclude Include="..\Common\headers\command.h" />
+    <ClInclude Include="..\Common\headers\cursor.h" />
+    <ClInclude Include="..\Common\headers\db.h" />
+    <ClInclude Include="..\Common\headers\dbinternal.h" />
+    <ClInclude Include="..\Common\headers\dialogs.h" />
+    <ClInclude Include="..\Common\headers\dockmenu.h" />
+    <ClInclude Include="..\Common\headers\error.h" />
+    <ClInclude Include="..\Common\headers\FDllCall.h" />
+    <ClInclude Include="..\Common\headers\file.h" />
+    <ClInclude Include="..\Common\headers\filealias.h" />
+    <ClInclude Include="..\Common\headers\fileloop.h" />
+    <ClInclude Include="..\Common\headers\filesystem7.h" />
+    <ClInclude Include="..\Common\headers\font.h" />
+    <ClInclude Include="..\Common\headers\frontier.h" />
+    <ClInclude Include="..\Common\headers\frontierconfig.h" />
+    <ClInclude Include="..\Common\headers\frontierdebug.h" />
+    <ClInclude Include="..\Common\headers\frontierdefs.h" />
+    <ClInclude Include="..\Common\headers\frontierstart.h" />
+    <ClInclude Include="..\Common\headers\frontierwindows.h" />
+    <ClInclude Include="..\Common\headers\FrontierWinMain.h" />
+    <ClInclude Include="..\Common\headers\htmlcontrol.h" />
+    <ClInclude Include="..\Common\headers\icon.h" />
+    <ClInclude Include="..\Common\headers\iowaverbs.h" />
+    <ClInclude Include="..\Common\headers\kb.h" />
+    <ClInclude Include="..\Common\headers\kernelverbdefs.h" />
+    <ClInclude Include="..\Common\headers\kernelverbs.h" />
+    <ClInclude Include="..\Common\headers\lang.h" />
+    <ClInclude Include="..\Common\headers\langcrypt.h" />
+    <ClInclude Include="..\Common\headers\langdll.h" />
+    <ClInclude Include="..\Common\headers\langexternal.h" />
+    <ClInclude Include="..\Common\headers\langhtml.h" />
+    <ClInclude Include="..\Common\headers\langinternal.h" />
+    <ClInclude Include="..\Common\headers\langipc.h" />
+    <ClInclude Include="..\Common\headers\langmath.h" />
+    <ClInclude Include="..\Common\headers\langmysql.h" />
+    <ClInclude Include="..\Common\headers\langparser.h" />
+    <ClInclude Include="..\Common\headers\langpython.h" />
+    <ClInclude Include="..\Common\headers\langregexp.h" />
+    <ClInclude Include="..\Common\headers\langsqlite.h" />
+    <ClInclude Include="..\Common\headers\langsystem7.h" />
+    <ClInclude Include="..\Common\headers\langtokens.h" />
+    <ClInclude Include="..\Common\headers\langwinipc.h" />
+    <ClInclude Include="..\Common\headers\langxcmd.h" />
+    <ClInclude Include="..\Common\headers\langxml.h" />
+    <ClInclude Include="..\Common\headers\launch.h" />
+    <ClInclude Include="..\Common\headers\mac.h" />
+    <ClInclude Include="..\Common\headers\macconv.h" />
+    <ClInclude Include="..\Common\headers\md5.h" />
+    <ClInclude Include="..\Common\headers\memory.h" />
+    <ClInclude Include="..\Common\headers\menu.h" />
+    <ClInclude Include="..\Common\headers\menubar.h" />
+    <ClInclude Include="..\Common\headers\menueditor.h" />
+    <ClInclude Include="..\Common\headers\menuinternal.h" />
+    <ClInclude Include="..\Common\headers\menuverbs.h" />
+    <ClInclude Include="..\Common\headers\meprograms.h" />
+    <ClInclude Include="..\Common\headers\miniwindow.h" />
+    <ClInclude Include="..\Common\headers\mouse.h" />
+    <ClInclude Include="..\Common\headers\notify.h" />
+    <ClInclude Include="..\Common\headers\odbinternal.h" />
+    <ClInclude Include="..\Common\headers\op.h" />
+    <ClInclude Include="..\Common\headers\opbuttons.h" />
+    <ClInclude Include="..\Common\headers\opdisplay.h" />
+    <ClInclude Include="..\Common\headers\opdraggingmove.h" />
+    <ClInclude Include="..\Common\headers\opicons.h" />
+    <ClInclude Include="..\Common\headers\opinternal.h" />
+    <ClInclude Include="..\Common\headers\oplineheight.h" />
+    <ClInclude Include="..\Common\headers\oplist.h" />
+    <ClInclude Include="..\Common\headers\ops.h" />
+    <ClInclude Include="..\Common\headers\opscreenmap.h" />
+    <ClInclude Include="..\Common\headers\opverbs.h" />
+    <ClInclude Include="..\Common\headers\opxml.h" />
+    <ClInclude Include="..\Common\headers\osacomponent.h" />
+    <ClInclude Include="..\Common\headers\osincludes.h" />
+    <ClInclude Include="..\Common\headers\pict.h" />
+    <ClInclude Include="..\Common\headers\pictverbs.h" />
+    <ClInclude Include="..\Common\headers\popup.h" />
+    <ClInclude Include="..\Common\headers\process.h" />
+    <ClInclude Include="..\Common\headers\processinternal.h" />
+    <ClInclude Include="..\Common\headers\quickdraw.h" />
+    <ClInclude Include="..\Common\headers\resources.h" />
+    <ClInclude Include="..\Common\headers\scrap.h" />
+    <ClInclude Include="..\Common\headers\scripts.h" />
+    <ClInclude Include="..\Common\headers\scrollbar.h" />
+    <ClInclude Include="..\Common\headers\search.h" />
+    <ClInclude Include="..\Common\headers\serialnumber.h" />
+    <ClInclude Include="..\Common\headers\services.h" />
+    <ClInclude Include="..\Common\headers\sha.h" />
+    <ClInclude Include="..\Common\headers\sha_locl.h" />
+    <ClInclude Include="..\Common\headers\shell.h" />
+    <ClInclude Include="..\Common\headers\shell.msvs.h" />
+    <ClInclude Include="..\Common\headers\shell.rsrc.h" />
+    <ClInclude Include="..\Common\headers\shellbuttons.h" />
+    <ClInclude Include="..\Common\headers\shellhooks.h" />
+    <ClInclude Include="..\Common\headers\shellmenu.h" />
+    <ClInclude Include="..\Common\headers\shellprint.h" />
+    <ClInclude Include="..\Common\headers\shellprivate.h" />
+    <ClInclude Include="..\Common\headers\shelltypes.h" />
+    <ClInclude Include="..\Common\headers\shellundo.h" />
+    <ClInclude Include="..\Common\headers\smallicon.h" />
+    <ClInclude Include="..\Common\headers\sounds.h" />
+    <ClInclude Include="..\Common\headers\stdwin.h" />
+    <ClInclude Include="..\Common\headers\stringdefs.h" />
+    <ClInclude Include="..\Common\headers\frontier_strings.h" />
+    <ClInclude Include="..\Common\headers\sysshellcall.h" />
+    <ClInclude Include="..\Common\headers\tabledisplay.h" />
+    <ClInclude Include="..\Common\headers\tableformats.h" />
+    <ClInclude Include="..\Common\headers\tableinternal.h" />
+    <ClInclude Include="..\Common\headers\tablestructure.h" />
+    <ClInclude Include="..\Common\headers\tableverbs.h" />
+    <ClInclude Include="..\Common\headers\textdisplay.h" />
+    <ClInclude Include="..\Common\headers\textedit.h" />
+    <ClInclude Include="..\Common\headers\threads.h" />
+    <ClInclude Include="..\Common\headers\timedate.h" />
+    <ClInclude Include="..\Common\headers\versions.h" />
+    <ClInclude Include="..\Common\headers\whirlpool.h" />
+    <ClInclude Include="..\Common\headers\windowlayout.h" />
+    <ClInclude Include="..\Common\headers\WinLand.h" />
+    <ClInclude Include="..\Common\headers\winregistry.h" />
+    <ClInclude Include="..\Common\headers\WinSockNetEvents.h" />
+    <ClInclude Include="..\Common\headers\wpengine.h" />
+    <ClInclude Include="..\Common\headers\wpinternal.h" />
+    <ClInclude Include="..\Common\headers\wpverbs.h" />
+    <ClInclude Include="..\Common\headers\yytab.h" />
+    <ClInclude Include="..\Common\headers\zoom.h" />
+    <CustomBuild Include="..\Common\MySQL\win32\include\config-win.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='OPML_Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='OPML_Release|Win32'">true</ExcludedFromBuild>
+    </CustomBuild>
+    <CustomBuild Include="..\Common\MySQL\win32\include\mysql.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='OPML_Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='OPML_Release|Win32'">true</ExcludedFromBuild>
+    </CustomBuild>
+    <CustomBuild Include="..\Common\MySQL\win32\include\mysql_com.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='OPML_Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='OPML_Release|Win32'">true</ExcludedFromBuild>
+    </CustomBuild>
+    <CustomBuild Include="..\Common\MySQL\win32\include\mysql_time.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='OPML_Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='OPML_Release|Win32'">true</ExcludedFromBuild>
+    </CustomBuild>
+    <CustomBuild Include="..\Common\MySQL\win32\include\mysql_version.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='OPML_Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='OPML_Release|Win32'">true</ExcludedFromBuild>
+    </CustomBuild>
+    <CustomBuild Include="..\Common\MySQL\win32\include\my_alloc.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='OPML_Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='OPML_Release|Win32'">true</ExcludedFromBuild>
+    </CustomBuild>
+    <CustomBuild Include="..\Common\MySQL\win32\include\my_dbug.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='OPML_Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='OPML_Release|Win32'">true</ExcludedFromBuild>
+    </CustomBuild>
+    <CustomBuild Include="..\Common\MySQL\win32\include\my_global.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='OPML_Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='OPML_Release|Win32'">true</ExcludedFromBuild>
+    </CustomBuild>
+    <CustomBuild Include="..\Common\MySQL\win32\include\my_list.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='OPML_Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='OPML_Release|Win32'">true</ExcludedFromBuild>
+    </CustomBuild>
+    <CustomBuild Include="..\Common\MySQL\win32\include\typelib.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='OPML_Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='OPML_Release|Win32'">true</ExcludedFromBuild>
+    </CustomBuild>
+    <ClInclude Include="..\Common\PCRE\pcre.h" />
+    <ClInclude Include="..\Common\PCRE\pcre_config.h" />
+    <ClInclude Include="..\Common\PCRE\pcre_internal.h" />
+    <CustomBuild Include="..\Common\sqlite3\btree.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='OPML_Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='OPML_Release|Win32'">true</ExcludedFromBuild>
+    </CustomBuild>
+    <CustomBuild Include="..\Common\sqlite3\hash.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='OPML_Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='OPML_Release|Win32'">true</ExcludedFromBuild>
+    </CustomBuild>
+    <CustomBuild Include="..\Common\sqlite3\keywordhash.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='OPML_Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='OPML_Release|Win32'">true</ExcludedFromBuild>
+    </CustomBuild>
+    <CustomBuild Include="..\Common\sqlite3\opcodes.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='OPML_Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='OPML_Release|Win32'">true</ExcludedFromBuild>
+    </CustomBuild>
+    <CustomBuild Include="..\Common\sqlite3\os.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='OPML_Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='OPML_Release|Win32'">true</ExcludedFromBuild>
+    </CustomBuild>
+    <CustomBuild Include="..\Common\sqlite3\os_common.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='OPML_Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='OPML_Release|Win32'">true</ExcludedFromBuild>
+    </CustomBuild>
+    <CustomBuild Include="..\Common\sqlite3\pager.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='OPML_Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='OPML_Release|Win32'">true</ExcludedFromBuild>
+    </CustomBuild>
+    <CustomBuild Include="..\Common\sqlite3\parse.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='OPML_Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='OPML_Release|Win32'">true</ExcludedFromBuild>
+    </CustomBuild>
+    <CustomBuild Include="..\Common\sqlite3\sqlite3.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='OPML_Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='OPML_Release|Win32'">true</ExcludedFromBuild>
+    </CustomBuild>
+    <CustomBuild Include="..\Common\sqlite3\sqlite3ext.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='OPML_Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='OPML_Release|Win32'">true</ExcludedFromBuild>
+    </CustomBuild>
+    <CustomBuild Include="..\Common\sqlite3\sqliteInt.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='OPML_Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='OPML_Release|Win32'">true</ExcludedFromBuild>
+    </CustomBuild>
+    <CustomBuild Include="..\Common\sqlite3\vdbe.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='OPML_Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='OPML_Release|Win32'">true</ExcludedFromBuild>
+    </CustomBuild>
+    <CustomBuild Include="..\Common\sqlite3\vdbeInt.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='OPML_Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='OPML_Release|Win32'">true</ExcludedFromBuild>
+    </CustomBuild>
+    <ClInclude Include="..\Common\SystemHeaders\standard.h" />
+    <ClInclude Include="..\Common\SystemHeaders\WSE.h" />
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>

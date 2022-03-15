@@ -36,7 +36,7 @@
 #include "ops.h"
 #include "resources.h"
 #include "scrollbar.h"
-#include "strings.h"
+#include "frontier_strings.h"
 #include "frontierwindows.h"
 #include "zoom.h"
 #include "shell.h"
@@ -49,7 +49,7 @@
 
 #define pictstartrealdata 512L /*this is where the PICT is stored in a PICT file*/
 
-
+#pragma pack(2)
 typedef struct tydiskpictrecord {
 	
 	short versionnumber; /*this structure is stored on disk*/
@@ -70,6 +70,7 @@ typedef struct tydiskpictrecord {
 	
 	/*remaining bytes hold the PICT data*/
 	} tydiskpictrecord, *ptrdiskpictrecord, **hdldiskpictrecord;
+#pragma options align=reset
 
 #ifdef MACVERSION
 	#define flbitmapupdate_mask 0x8000 /*if set, use offscreen bitmaps when updating*/
@@ -83,7 +84,7 @@ typedef struct tydiskpictrecord {
 	#define flscaletofitwindow_mask 0x0020 /*if set, scale window down to fit inside window*/
 #endif
 
-
+#pragma pack(2)
 typedef struct tyOLD42diskpictrecord {
 	
 	short versionnumber; /*this structure is stored on disk*/
@@ -108,6 +109,7 @@ typedef struct tyOLD42diskpictrecord {
 	
 	/*remaining bytes hold the PICT data*/
 	} tyOLD42diskpictrecord, *ptrOLD42diskpictrecord, **hdlOLD42diskpictrecord;
+#pragma options align=reset
 
 
 WindowPtr pictwindow = nil;

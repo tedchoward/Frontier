@@ -30,7 +30,7 @@
 
 #include "memory.h"
 #include "quickdraw.h"
-#include "strings.h"
+#include "frontier_strings.h"
 #include "kb.h"
 #include "menu.h"
 #include "ops.h"
@@ -104,6 +104,7 @@ typedef enum tymenutoken { /*verbs that are processed by menueditor.c*/
 
 #else
 
+#pragma pack(2)
 typedef struct tymenuvariable { /*7.0b6 PBS: moved from menuverbs.c*/
 	
 	unsigned short id; /*tyexternalid: managed by langexternal.c*/
@@ -118,6 +119,7 @@ typedef struct tymenuvariable { /*7.0b6 PBS: moved from menuverbs.c*/
 
 	dbaddress oldaddress; /*last place this menubar doc was stored in db*/
 	} tymenuvariable, *ptrmenuvariable, **hdlmenuvariable;
+#pragma options align=reset
 
 #endif
 
@@ -1297,12 +1299,14 @@ static boolean menusetscriptverb (hdltreenode hparam1, tyvaluerecord *v) {
 	} /*menusetscriptverb*/
 
 
+#pragma pack(2)
 typedef struct tyfindinfo {
 
 	ptrstring pfind;
 
 	hdlheadrecord hfound;
 	} tyfindinfo, *ptrfindinfo;
+#pragma options align=reset
 
 
 static boolean findheadlinevisit (hdlheadrecord hnode, ptrvoid refcon) {

@@ -42,6 +42,7 @@ typedef pascal void * (*tythreadmaincallback) (tythreadmainparams);
 
 typedef void (*tythreadglobalscallback) (void *);
 
+#pragma pack(2)
 typedef struct tythreadcallbacks {
 
 	tythreadglobalscallback disposecallback;
@@ -50,6 +51,7 @@ typedef struct tythreadcallbacks {
 	
 	tythreadglobalscallback swapoutcallback;
 	} tythreadcallbacks;
+#pragma options align=reset
 
 /*globals*/
 

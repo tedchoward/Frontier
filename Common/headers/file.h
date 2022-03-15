@@ -83,13 +83,14 @@ typedef enum {
 
 #define maxsftypelist 20 /*up to ten file types for sf getfile*/
 
-
+#pragma pack(2)
 typedef struct tysftypelist { /*our version of sftypelist, includes type count*/
 	
 	short cttypes;
 	
 	OSType types [maxsftypelist];
 	} tysftypelist, *ptrsftypelist;
+#pragma options align=reset
 
 
 typedef enum tyfolderview { 
@@ -113,7 +114,7 @@ typedef enum tyfolderview {
 	viewbyversion = 8
 	} tyfolderview;
 
-
+#pragma pack(2)
 typedef struct tyfileinfo { // flattens interface for getting file information
 
 	OSErr errcode; // if there was an error retrieving info about the file, this is the error number
@@ -181,6 +182,7 @@ typedef struct tyfileinfo { // flattens interface for getting file information
 	unsigned long blocksize; // for volumes
 	
 	} tyfileinfo;
+#pragma options align=reset
 
 
 extern boolean flsupportslargevolumes; /*6.1b15 AR: fileverbs.c*/

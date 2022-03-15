@@ -35,7 +35,7 @@
 #include "resources.h"
 #include "ops.h"
 #include "quickdraw.h"
-#include "strings.h"
+#include "frontier_strings.h"
 #include "langexternal.h"
 #include "langinternal.h"
 #include "langipc.h"
@@ -49,7 +49,7 @@
 #include "timedate.h"
 #include "byteorder.h"	/* 2006-04-08 aradke: endianness conversion macros */
 
-
+#pragma pack(2)
 typedef struct tycancoonrecord { /*one of these for every cancoon file that's open*/
 
 	hdldatabaserecord hdatabase; /*db.c's record*/
@@ -68,6 +68,7 @@ typedef struct tycancoonrecord { /*one of these for every cancoon file that's op
 	
 	#endif
 	} tycancoonrecord, *ptrcancoonrecord, **hdlcancoonrecord;
+#pragma options align=reset
 
 #define cancoonversionnumber 0x03
 
@@ -82,7 +83,7 @@ static byte canthandlethistypeerror [] = "\x43" "This version of ODB Engine can 
 
 
 #define ctwindowinfo 6 /*number of windowinfo records saved in each cancoon record*/
-
+#pragma pack(2)
 typedef struct tycancoonwindowinfo { /*lives both in memory and on disk*/	
 	
 	Rect windowrect;
@@ -97,8 +98,9 @@ typedef struct tycancoonwindowinfo { /*lives both in memory and on disk*/
 	
 	char waste [10];
 	} tycancoonwindowinfo;
+#pragma options align=reset
 
-
+#pragma pack(2)
 typedef struct tyversion2cancoonrecord {
 	
 	short versionnumber;
@@ -115,6 +117,7 @@ typedef struct tyversion2cancoonrecord {
 	
 	short waste [28]; /*room to grow*/
 	} tyversion2cancoonrecord;
+#pragma options align=reset
 
 #ifdef MACVERSION
 	#define flflagdisabled_mask 0x8000 /*hide the flag?*/

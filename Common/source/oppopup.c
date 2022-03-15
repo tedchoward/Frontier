@@ -47,7 +47,7 @@ oppopup.c -- handle right-click popup menus in outlines.
 #include "meprograms.h"
 #include "tablestructure.h"
 #include "threads.h"
-#include "strings.h"
+#include "frontier_strings.h"
 #include "mouse.h"
 #include "dockmenu.h"
 #include "menu.h"
@@ -77,6 +77,7 @@ short currmenuid;
 
 #if MACVERSION
 
+#pragma pack(2)
 	typedef struct typopupinfo {
 
 		hdlmenu hmenu;
@@ -91,7 +92,7 @@ short currmenuid;
 		
 		short currstackitem;
 		} typopupmenustack, *ptrpopupmenustack, **hdlpopupmenustack;
-
+#pragma options align=reset
 
 	typopupmenustack popupmenustack;
 

@@ -77,7 +77,7 @@
 
 #define iconstart 5 /*this has got to go*/
 
-
+#pragma pack(2)
 typedef struct tyscraprecord {
 	
 	boolean fldirty; /*needs to be put into the desktop scrap*/
@@ -94,7 +94,7 @@ typedef struct tyopuserprefs {
 	
 	boolean flflatcursorkeys; /*up/down are flat*/
 	} tyopuserprefs;
-
+#pragma options align=reset
 
 typedef boolean (*opundocallback) (hdlheadrecord, boolean);
 

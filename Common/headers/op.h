@@ -69,6 +69,7 @@ typedef struct tyoutlinerecord *ptroutlinerecord, **hdloutlinerecord; /*forward 
 
 typedef struct tyheadrecord *ptrheadrecord, **hdlheadrecord;/*forward declaration*/
 
+#pragma pack(2)
 typedef struct tyheadrecord {
 	
 	struct tyheadrecord **headlinkdown, **headlinkup, **headlinkleft, **headlinkright;
@@ -449,7 +450,7 @@ typedef struct tyoutlinerecord {
 	
 	long outlinerefcon; /*for use by application*/
 	} tyoutlinerecord;
-
+#pragma options align=reset
 
 
 #define getheadstring(h,bs)	texthandletostring ((**(h)).headstring, bs)

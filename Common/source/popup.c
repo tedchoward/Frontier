@@ -34,7 +34,7 @@
 #include "menu.h"
 #include "mouse.h"
 #include "bitmaps.h"
-#include "strings.h"
+#include "frontier_strings.h"
 #include "smallicon.h"
 #include "popup.h"
 #include "frontierwindows.h"
@@ -222,7 +222,7 @@ boolean popupmenuhit (Rect r, boolean flgeneva9, fillpopupcallback fillpopuprout
 		//#if !TARGET_API_MAC_CARBON == 1
 		
 			//if (flgeneva9)
-				//markmenuitem (hmenu, checkeditem, 'Ã');
+				//markmenuitem (hmenu, checkeditem, 'ï¿½');
 			//else
 		
 		//#endif

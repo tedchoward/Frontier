@@ -30,7 +30,7 @@
 
 #include "file.h"
 #include "memory.h"
-#include "strings.h"
+#include "frontier_strings.h"
 #include "timedate.h"
 #include "resources.h"
 #include "langinternal.h"

@@ -45,7 +45,7 @@
 #include "memory.h"
 #include "mouse.h"
 #include "quickdraw.h"
-#include "strings.h"
+#include "frontier_strings.h"
 #include "ops.h"
 #include "file.h"
 #include "resources.h"
@@ -107,6 +107,7 @@ static short topwpstack = 0;
 static hdlwprecord wpstack [ctwpstack];
 
 
+#pragma pack(2)
 typedef struct tywpheader { /*format of text item header stored on disk*/
 	
 	short versionnumber; /*important, this structure is saved on disk*/
@@ -133,6 +134,7 @@ typedef struct tywpheader { /*format of text item header stored on disk*/
 	
 	char waste [52]; /*room to grow*/
 	} tywpheader;
+#pragma options align=reset
 
 #ifdef MACVERSION
 	#define floneline_mask	0x8000 /*set if this is a single-line, false otherwise*/
@@ -148,7 +150,7 @@ typedef struct tywpheader { /*format of text item header stored on disk*/
 	#define flhilitevariables_mask	0x0010 /*show visual indication of variable text?*/
 #endif
 
-
+#pragma pack(2)
 typedef struct tyOLD42wpheader { /*format of text item header stored on disk*/
 	
 	short versionnumber; /*important, this structure is saved on disk*/
@@ -206,6 +208,7 @@ typedef struct tyselectinfo { /*for undo*/
 	//	FormatHandle hformat;
 		} u;
 	} tyselectinfo, *ptrselectinfo, **hdlselectinfo;
+#pragma options align=reset
 
 
 static boolean wpinserttexthandle (pg_ref, Handle, short, boolean);

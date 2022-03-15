@@ -30,7 +30,7 @@
 
 #include "error.h"
 #include "memory.h"
-#include "strings.h"
+#include "frontier_strings.h"
 #include "ops.h"
 #include "file.h"
 #include "launch.h" // 2005-07-18 creedon

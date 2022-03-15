@@ -34,7 +34,7 @@
 #include "quickdraw.h"
 #include "ops.h"
 #include "smallicon.h"
-#include "strings.h"
+#include "frontier_strings.h"
 #include "shell.rsrc.h"
 #include "opdraggingmove.h"
 #include "opdisplay.h"
@@ -59,13 +59,14 @@ static hdlheadrecord hfirstmoved;
 
 static boolean opredocopy (hdlheadrecord hnode, boolean flundo); /*forward*/
 
-
+#pragma pack(2)
 typedef struct tydraginfo {
 	
 	hdlheadrecord hnode;
 	
 	tydirection dir;
 	} tydraginfo, *ptrdraginfo;
+#pragma options align=reset
 
 
 #if false

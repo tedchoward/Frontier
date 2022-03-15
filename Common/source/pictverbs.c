@@ -34,7 +34,7 @@
 #include "resources.h"
 #include "scrap.h"
 #include "search.h"
-#include "strings.h"
+#include "frontier_strings.h"
 #include "shell.h"
 #include "shellprint.h"
 #include "shellundo.h"
@@ -78,7 +78,8 @@ typedef enum typicttoken { /*verbs that are processed by pict.c*/
 	typedef tyexternalvariable typictvariable, *ptrpictvariable, **hdlpictvariable;
 
 #else
-	
+
+#pragma pack(2)
 	typedef struct typictvariable {
 		
 		unsigned short id; /*tyexternalid: managed by langexternal.c*/
@@ -93,6 +94,7 @@ typedef enum typicttoken { /*verbs that are processed by pict.c*/
 
 		dbaddress oldaddress; /*last place this pict was stored in db*/
 		} typictvariable, *ptrpictvariable, **hdlpictvariable;
+#pragma options align=reset
 
 #endif
 

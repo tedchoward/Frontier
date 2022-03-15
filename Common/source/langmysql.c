@@ -36,7 +36,7 @@
 #include "kernelverbs.h"
 #include "kernelverbdefs.h"
 #include "resources.h"
-#include "strings.h"
+#include "frontier_strings.h"
 #include "tablestructure.h"
 #include "lang.h"
 #include "oplist.h"

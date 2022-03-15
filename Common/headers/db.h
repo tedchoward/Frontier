@@ -48,7 +48,7 @@
 
 typedef long dbaddress, *ptrdbaddress, **hdldbaddress;
 
-
+#pragma pack(2)
 typedef struct tydatabaserecord { /*stored at offset 0 in the db file*/
 	
 
@@ -102,7 +102,7 @@ typedef struct tydatabaserecord { /*stored at offset 0 in the db file*/
 			} extensions;
 		} u;
 	} tydatabaserecord, *ptrdatabaserecord, **hdldatabaserecord;
-	
+#pragma options align=reset	
 	
 extern hdldatabaserecord databasedata; /*can be set by external user*/
 

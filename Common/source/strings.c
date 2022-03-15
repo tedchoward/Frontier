@@ -35,7 +35,7 @@
 #include "font.h"
 #include "memory.h"
 #include "quickdraw.h"
-#include "strings.h"
+#include "frontier_strings.h"
 #include "ops.h"
 #include "resources.h"
 #include "shell.rsrc.h"
@@ -1002,11 +1002,11 @@ long langcommentdelete (byte chdelim, byte *ptext, long ct) {
 			chendstring = '"';
 			}
 		
-		else if (ch == (byte) 'р') {
+		else if (ch == (byte) 'О©╫') {
 			
 			flinstring = true;
 			
-			chendstring = 'с';
+			chendstring = 'О©╫';
 			}
 		
 		else if (ch == (byte) '\'') {
@@ -1106,7 +1106,7 @@ boolean firstsentence (bigstring bs) {
 	return (false); /*no chars popped*/
 	} /*firstsentence*/
 
-/*  This is now initialized by initstrings and getlower is a macro in strings.h
+/*  This is now initialized by initstrings and getlower is a macro in frontier_strings.h
 static boolean initlowercase = false;
 char lowercasetable[256];
 
@@ -1424,7 +1424,7 @@ void timedatestring (long ptime, bigstring bs) {
 
 
 #ifdef MACVERSION
-	static byte bsellipses [] = "\x01и";
+	static byte bsellipses [] = "\x01О©╫";
 #else
 	static byte bsellipses [] = "\x03...";
 #endif
@@ -1573,7 +1573,7 @@ void parsedialogstring (const bigstring bssource, ptrstring bs0, ptrstring bs1, 
 			}
 		} /*for*/
 	
-	/***subtractstrings (bsresult, "\p рс", bsresult); #*in case there was a missing param*/
+	/***subtractstrings (bsresult, "\p О©╫О©╫", bsresult); #*in case there was a missing param*/
 	} /*parsedialogstring*/
 
 boolean parsedialoghandle (Handle hsource, Handle h0, Handle h1, Handle h2, Handle h3) {
@@ -2526,8 +2526,9 @@ static boolean getTextEncodingIDFromIANA( bigstring bsEncodingName, long * encod
 			
 			return (true);
 		}
-
+#ifdef FRONTIERCOM
 		initCOM();
+#endif
 
 		err = CoCreateInstance(
 				&CLSID_CMultiLanguage, 
@@ -2735,8 +2736,9 @@ boolean convertCharset( Handle hString, Handle hresult, bigstring charsetIn, big
 	#ifdef WIN95VERSION
 
 		long teInputSet, teOutputSet;
-
+#ifdef FRONTIERCOM
 		initCOM();
+#endif
 
 	#endif
 	

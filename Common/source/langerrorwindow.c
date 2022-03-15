@@ -41,7 +41,7 @@
 #include "resources.h"
 #include "quickdraw.h"
 #include "scrap.h"
-#include "strings.h"
+#include "frontier_strings.h"
 #include "textedit.h"
 #include "windowlayout.h"
 #include "frontierwindows.h"
@@ -53,6 +53,7 @@
 
 static void langerroractivate (boolean flactivate); /*forward*/
 
+#pragma pack(2)
 typedef struct tylangerrorrecord {
 	
 	bigstring bserror; /*the error message*/
@@ -75,7 +76,8 @@ typedef struct tylangerrorrecord {
 	
 	boolean flactive: 1; /*determines whether message is drawn as active or inactive*/
 	} tylangerrorrecord, *ptrlangerrorrecord, **hdllangerrorrecord;
-	
+#pragma options align=reset
+
 
 WindowPtr langerrorwindow = nil;
 
@@ -267,13 +269,13 @@ static void langerrordrawtext (boolean flbitmap) {
 	
 	if ((font == geneva) && (size <= 9)) { /*get rid of fancy quotes; nasty in this font*/
 		
-		stringreplaceall ('Õ', '\'', bserror); /*straighten contractions*/
+		stringreplaceall ('ï¿½', '\'', bserror); /*straighten contractions*/
 		
 		if (!stringfindchar ('"', bserror)) { /*don't already have straight quotes*/
 			
-			stringreplaceall ('Ò', '"', bserror);
+			stringreplaceall ('ï¿½', '"', bserror);
 			
-			stringreplaceall ('Ó', '"', bserror);
+			stringreplaceall ('ï¿½', '"', bserror);
 			}
 		}
 	

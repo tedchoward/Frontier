@@ -32,7 +32,7 @@
 #include "frontierdebug.h"
 #include "process.h"
 #include "processinternal.h"
-#include "strings.h"
+#include "frontier_strings.h"
 
 
 static const char debuglogname[] = "frontierdebuglog.txt";

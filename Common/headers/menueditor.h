@@ -84,6 +84,7 @@
 	#define cmdkeypopupwidth 60
 #endif
 
+#pragma pack(2)
 typedef struct tysavedmenuinfo { 
 	
 	short versionnumber; /*this structure is saved on disk*/
@@ -225,6 +226,7 @@ typedef struct tymenuiteminfo { /*linked into the refcon handle in each node*/
 	
 	tylinkeditem linkedscript;
 	} tymenuiteminfo, *ptrmenuiteminfo, **hdlmenuiteminfo;
+#pragma options align=reset
 
 
 /*globals*/

@@ -31,7 +31,7 @@
 #include "kb.h"
 #include "memory.h"
 #include "mouse.h"
-#include "strings.h"
+#include "frontier_strings.h"
 #include "resources.h"
 #include "shell.rsrc.h"
 #include "lang.h"

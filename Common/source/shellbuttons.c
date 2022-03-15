@@ -37,7 +37,7 @@
 #include "mouse.h"
 #include "scrollbar.h"
 #include "sounds.h"
-#include "strings.h"
+#include "frontier_strings.h"
 #include "shell.h"
 #include "shellbuttons.h"
 #include "shellprivate.h"
@@ -364,12 +364,14 @@ static void drawbuttonbackground (Rect r) {
 
 #if TARGET_API_MAC_CARBON == 1
 
+#pragma pack(2)
 	typedef struct tybuttoninfo {
 		
 		bigstring bslabel;
 		
 		boolean flenabled: 1;
 		} tybuttoninfo, *ptrbuttoninfo, **hdlbuttoninfo;
+#pragma options align=reset
 
 
 static void

@@ -29,7 +29,7 @@
 #include "standard.h"
 
 #include "memory.h"
-#include "strings.h"
+#include "frontier_strings.h"
 #include "ops.h"
 #include "resources.h"
 #include "timedate.h"
@@ -314,11 +314,11 @@ static boolean breakatfirstwhitespacechar (bigstring bs) {
 static boolean bettyRPCclient (bigstring server, short port, bigstring procedurename, hdltreenode hparams) {
 
 	/*
-	ÇA full-featured client for the RPC2 responder
-		ÇPrior to the release of 5.0.2 this is the only way to talk to the server from Frontier
-		ÇA beautiful client interface is coming, but even after that, this script will still have a purpose -- debugging.
-		ÇIf you call it with fldebug true, you'll get a lot of information about the XML conversation.
-		Ç4/4/98; 6:13:06 AM by DW
+	ï¿½A full-featured client for the RPC2 responder
+		ï¿½Prior to the release of 5.0.2 this is the only way to talk to the server from Frontier
+		ï¿½A beautiful client interface is coming, but even after that, this script will still have a purpose -- debugging.
+		ï¿½If you call it with fldebug true, you'll get a lot of information about the XML conversation.
+		ï¿½4/4/98; 6:13:06 AM by DW
 
 	on client (rpcServer=tcp.addressDecode (tcp.myAddress ()), rpcPort=user.inetd.config.http.port, procedureName="", adrparamlist=nil, fldebug=false) {
 		
@@ -335,7 +335,7 @@ static boolean bettyRPCclient (bigstring server, short port, bigstring procedure
 				local (item);
 				for item in adrparamlist^ {
 					add ("<param>"); indentlevel++;
-					Çadd ("<name>" + nameOf (adritem^) + "</name>")
+					ï¿½add ("<name>" + nameOf (adritem^) + "</name>")
 					add ("<value>" + xml.coercions.frontierValueToTaggedText (@item, indentlevel) + "</value>");
 					add ("</param>"); indentlevel--}};
 			add ("</params>"); indentlevel--;
@@ -1921,9 +1921,9 @@ boolean xmlcompile (Handle htext, xmladdress *xmladr) {
 	
 	/*
 	on compile (htext, adrtable) {
-		ÇAn XML compiler running in Frontier 5
-			ÇOriginal code, Dave Winer, 12/4/97
-			ÇRewritten, Dave Winer, 3/19/98
+		ï¿½An XML compiler running in Frontier 5
+			ï¿½Original code, Dave Winer, 12/4/97
+			ï¿½Rewritten, Dave Winer, 3/19/98
 		
 		5.0.2b8 dmb: coded in C
 
@@ -2173,7 +2173,7 @@ boolean xmlcompile (Handle htext, xmladdress *xmladr) {
 					scriptError (badxmltexterror, STR_wewereexpectingtag, bstoken, token.pos);
 				
 				//if sizeOf (nomad^) == 1 //has one sub-item, maybe a special name?
-				//	ÇSee //http://www.microsoft.com/standards/xml/xmldata.htm#ComplexTypes
+				//	ï¿½See //http://www.microsoft.com/standards/xml/xmldata.htm#ComplexTypes
 				//	local (adrsubitem, val, flspecialname = false, namesubitem)
 				//	adrsubitem = @nomad^ [1]
 				//	namesubitem = string.nthfield (nameof (adrsubitem^), '\t', 2)
@@ -2334,10 +2334,10 @@ static boolean xmlvaltostring (tyvaluerecord xmlval, short indentlevel, boolean 
 
 	/*
 	on valToString (val, indentlevel=0) { //http://www.microsoft.com/standards/xml/xmldata.htm#ComplexTypes
-		ÇReturn an XML-Data representation of a Frontier value
-			ÇWe only support a small subset of the types that XML-Data specifies.
-			ÇIf we get a type that's not supported, we throw an error.
-			ÇThe caller is expected to watch for this, within a try statement.
+		ï¿½Return an XML-Data representation of a Frontier value
+			ï¿½We only support a small subset of the types that XML-Data specifies.
+			ï¿½If we get a type that's not supported, we throw an error.
+			ï¿½The caller is expected to watch for this, within a try statement.
 	
 	5.1.3 dmb: don't add <string> tags to string values. it's the default type; added fltranslatestrings
 	
@@ -3531,10 +3531,10 @@ static boolean xmlvaltostringverb (hdltreenode hp1, tyvaluerecord *v) {
 	
 	/*
 	on valToString (val, indentlevel=0) { //http://www.microsoft.com/standards/xml/xmldata.htm#ComplexTypes
-		ÇReturn an XML-Data representation of a Frontier value
-			ÇWe only support a small subset of the types that XML-Data specifies.
-			ÇIf we get a type that's not supported, we throw an error.
-			ÇThe caller is expected to watch for this, within a try statement.
+		ï¿½Return an XML-Data representation of a Frontier value
+			ï¿½We only support a small subset of the types that XML-Data specifies.
+			ï¿½If we get a type that's not supported, we throw an error.
+			ï¿½The caller is expected to watch for this, within a try statement.
 	*/
 	
 	tyvaluerecord val;

@@ -30,7 +30,7 @@
 
 #include "memory.h"
 #include "ops.h"
-#include "strings.h"
+#include "frontier_strings.h"
 #include "cursor.h"
 #include "db.h"
 #include "file.h"
@@ -58,13 +58,14 @@ boolean flfindanyspecialsymbol = false; /*see langfindsymbol*/
 //short flextendedsymbolsearch = true; /*see langgetsymbolval*/
 
 
-
+#pragma pack(2)
 typedef struct tytypeinfo {
 	
 	OSType id;
 	
 	byte *bsname;
 	} tytypeinfo;
+#pragma options align=reset
 
 
 static tytypeinfo typeinfo [ctvaluetypes] = {

@@ -39,7 +39,7 @@
 #include "quickdraw.h"
 #include "process.h"
 #include "scrap.h"
-#include "strings.h"
+#include "frontier_strings.h"
 #include "opinternal.h"
 #include "oplineheight.h"
 #include "claybrowser.h"
@@ -195,11 +195,11 @@ boolean browserchecklinelength (short newlen, bigstring bs) {
 	
 	if (stringlength (bs) > 0) {
 		
-		pushstring (BIGSTRING ("\x01" "Ò"), bsalert);
+		pushstring (BIGSTRING ("\x01" "ï¿½"), bsalert);
 		
 		pushstring (bs, bsalert);
 		
-		pushstring (BIGSTRING ("\x01" "Ó"), bsalert);
+		pushstring (BIGSTRING ("\x01" "ï¿½"), bsalert);
 		}
 	
 	pushstring (BIGSTRING ("\x2e" " is too long. The maximum file name length is "), bsalert);
@@ -682,7 +682,7 @@ boolean browserpredrag (hdlheadrecord *htarget, tydirection *dragdir) {
 		opcleartmpbits ();
 		
 		#ifdef MACVERSION
-			parsedialogstring (BIGSTRING ("\x3b" "CanÕt move Ò^0Ó here because it would replace its ancestor."), bsunsafe, nil, nil, nil, bsmsg);
+			parsedialogstring (BIGSTRING ("\x3b" "Canï¿½t move ï¿½^0ï¿½ here because it would replace its ancestor."), bsunsafe, nil, nil, nil, bsmsg);
 		#else
 			parsedialogstring (BIGSTRING ("\x3b" "Can't move \"^0\" here because it would replace its ancestor."), bsunsafe, nil, nil, nil, bsmsg);
 		#endif

@@ -40,7 +40,7 @@
 #include "quickdraw.h"
 #include "scrap.h"
 #include "search.h"
-#include "strings.h"
+#include "frontier_strings.h"
 #include "frontierwindows.h"
 #include "db.h"
 #include "shell.h"
@@ -110,7 +110,7 @@ enum {
 
 #define maxnestedsources 200 /*6.1d19 AR*/
 
-
+#pragma pack(2)
 typedef struct tysourcerecord {
 	
 	WindowPtr pwindow; /*window containing running script; nil if closed or unknown*/
@@ -181,7 +181,7 @@ typedef struct tydebuggerrecord {
 	
 	long scriptrefcon; /*copied from outline refcon*/
 	} tydebuggerrecord, *ptrdebuggerrecord, **hdldebuggerrecord;
-
+#pragma options align=reset
 
 static hdldebuggerrecord debuggerdata = nil;
 
@@ -3634,6 +3634,7 @@ static boolean scriptvisitservers (tyscriptvisitcallback visit, long refcon) {
 static long *serverarray;
 
 
+#pragma pack(2)
 typedef struct tyfillservercallbackdata {
 	
 	hdlmenu hmenu;
@@ -3644,6 +3645,7 @@ typedef struct tyfillservercallbackdata {
 	
 	long signature;
 	} tyfillservercallbackdata;
+#pragma options align=reset
 
 
 static boolean scriptfillservervisit (OSType subtype, bigstring bsname, long refcon) {
@@ -3997,13 +3999,14 @@ static boolean scriptresetrects (hdlwindowinfo hinfo) {
 	return (true);
 	} /*scriptresetrects*/
 
-
+#pragma pack(2)
 typedef struct tyfindservercallbackdata {
 	
 	ptrstring pname;
 	
 	long signature;
 	} tyfindservercallbackdata;
+#pragma options align=reset
 
 
 static boolean scriptfindsubtypevisit (OSType subtype, bigstring bsname, long refcon) {

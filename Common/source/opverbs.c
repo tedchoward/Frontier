@@ -30,7 +30,7 @@
 
 #include "frontierconfig.h"
 #include "memory.h"
-#include "strings.h"
+#include "frontier_strings.h"
 #include "quickdraw.h"
 #include "font.h"
 #include "cursor.h"
@@ -238,6 +238,7 @@ typedef enum tyoptoken { /*verbs that are processed by op.c*/
 #if langexternalfind_optimization
 
 	// 11/15/01 dmb: too messy trying to add linkedcode field to tyexternalvariable, so dup here
+#pragma pack(2)
 	typedef struct tyoutlinevariable {
 		
 		unsigned short id;	/*tyexternalid*/
@@ -268,9 +269,11 @@ typedef enum tyoptoken { /*verbs that are processed by op.c*/
 		
 		Handle linkedcode; /*you can link code into any outline, mostly for scripts though*/
 		} tyoutlinevariable, *ptroutlinevariable, **hdloutlinevariable;
+#pragma options align=reset
 
 #else
-	
+
+#pragma pack(2)
 	typedef struct tyoutlinevariable {
 		
 		unsigned short id; /*tyexternalid: managed by langexternal.c*/
@@ -289,6 +292,7 @@ typedef enum tyoptoken { /*verbs that are processed by op.c*/
 		
 		Handle linkedcode; /*you can link code into any outline, mostly for scripts though*/
 		} tyoutlinevariable, *ptroutlinevariable, **hdloutlinevariable;
+#pragma options align=reset
 
 #endif
 
@@ -1628,13 +1632,14 @@ static boolean opsetlinetextverb (Handle htext) {
 	return (fl);	
 	} /*opsetlinetextverb*/
 
-
+#pragma pack(2)
 typedef struct tybitinfo {
 	
 	boolean flset;
 	
 	boolean flanychanged;
 	} tybitinfo, *ptrbitinfo;
+#pragma options align=reset
 
 
 static boolean opsetbitverb (boolean fl, opvisitcallback visit) {

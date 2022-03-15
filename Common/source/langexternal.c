@@ -32,7 +32,7 @@
 #include "cursor.h"
 #include "kb.h"
 #include "mouse.h"
-#include "strings.h"
+#include "frontier_strings.h"
 #include "db.h"
 #include "file.h"
 #include "font.h"

@@ -48,7 +48,7 @@
 #include "quickdraw.h"
 #include "resources.h"
 #include "sounds.h"
-#include "strings.h"
+#include "frontier_strings.h"
 #include "frontierwindows.h"
 #include "shell.h"
 #include "shellhooks.h"
@@ -1729,10 +1729,10 @@ static boolean locksemaphoreverb (hdltreenode hparam1, tyvaluerecord *vreturned)
 			local (adr = @semaphores.values [semaphorename])
 			local (startticks = clock.ticks ())
 			while defined (adr^)
-				sys.systemtask () Çgive up the processor
-				if (clock.ticks () - startticks) > timeoutticks  Çwaited more than timeoutticks, get out
+				sys.systemtask () ï¿½give up the processor
+				if (clock.ticks () - startticks) > timeoutticks  ï¿½waited more than timeoutticks, get out
 					scriptError ("Semaphore timer expired after " + timeoutticks + " sixtieths of a second.")
-			new (booleantype, adr) Çclaim the semaphore
+			new (booleantype, adr) ï¿½claim the semaphore
 			return (true)
 	*/
 	

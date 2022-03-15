@@ -36,7 +36,7 @@
 #endif
 
 #define cancoonversionnumber 0x03
-
+#pragma pack(2)
 typedef struct tyversion1cancoonrecord {
 	
 	short versionnumber;
@@ -75,6 +75,7 @@ typedef struct tyversion2cancoonrecord {
 	
 	short waste [28]; /*room to grow*/
 	} tyversion2cancoonrecord;
+#pragma options align=reset
 
 #ifdef MACVERSION
 	#define flflagdisabled_mask 0x8000 /*hide the flag?*/
@@ -88,6 +89,7 @@ typedef struct tyversion2cancoonrecord {
 	#define flbigwindow_mask 0x0020 /*is the flag toggled to the big window state?*/
 #endif
 
+#pragma pack(2)
 typedef struct tyOLD42version2cancoonrecord {
 	
 	short versionnumber;
@@ -110,6 +112,7 @@ typedef struct tyOLD42version2cancoonrecord {
 	
 	short waste [28]; /*room to grow*/
 	} tyOLD42version2cancoonrecord;
+#pragma options align=reset
 
 
 /*internal globals*/

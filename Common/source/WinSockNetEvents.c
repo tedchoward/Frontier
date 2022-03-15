@@ -299,7 +299,7 @@ static unsigned char * tcperrorstrings [80] = {
 #include "ops.h"
 #include "memory.h"
 #include "threads.h"
-#include "strings.h"
+#include "frontier_strings.h"
 #include "lang.h"
 #include "langinternal.h"
 #include "process.h"

@@ -31,7 +31,7 @@
 #include "PAIGE.H"
 #include "PGDEFTBL.H"
 
-#include "strings.h"
+#include "frontier_strings.h"
 #include "font.h"
 #include "quickdraw.h"
 
