@@ -209,6 +209,7 @@ endif
 # Linux-specific sources
 linux_sources = files(
   common_src + '/FrontierLinuxMain.c',
+  common_src + '/LinuxPlatform.c',
 )
 
 # IowaRuntime library sources

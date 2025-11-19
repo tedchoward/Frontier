@@ -80,19 +80,19 @@ The Linux port maintains the same architectural approach as other platform ports
 - [x] Created main entry point
 - [x] Integrated with Frontier core initialization
 
-### Phase 2: Core Window System (NEXT)
-- [ ] Implement window creation wrapper functions
-- [ ] Map GTK widgets to HWND handles
-- [ ] Create window registry system
-- [ ] Implement MDI container with GtkNotebook
-- [ ] Port window management functions
-- [ ] Handle window activation/deactivation
-
-### Phase 3: Drawing & Graphics
-- [ ] Implement Cairo drawing context wrapper
-- [ ] Port QuickDraw/GDI functions to Cairo
-- [ ] Implement drawing primitives (lines, rectangles, etc.)
-- [ ] Port text rendering
+### Phase 2: Core Window System ✓ COMPLETE
+- [x] Implement window creation wrapper functions
+- [x] Map GTK widgets to HWND handles
+- [x] Create window registry system
+- [x] Implement MDI container with GtkNotebook
+- [x] Port window management functions
+- [x] Handle window activation/deactivation
+- [x] Implement Cairo drawing context wrappers (GetDC/ReleaseDC)
+- [x] Implement menu management functions
+- [x] Implement message box dialogs
+- [x] Implement clipboard operations
+- [x] Implement timer functions
+- [x] Implement file dialogs
 - [ ] Handle image/bitmap operations
 - [ ] Implement double-buffering for smooth updates
 
