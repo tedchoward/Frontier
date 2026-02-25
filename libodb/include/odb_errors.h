@@ -6,7 +6,9 @@ typedef enum odbErrorCode {
 	ODB_ERR_NOT_IMPLEMENTED = 1,
 	ODB_ERR_INVALID_ARG = 2,
 	ODB_ERR_IO = 3,
-	ODB_ERR_INTERNAL = 4
+	ODB_ERR_INTERNAL = 4,
+	ODB_ERR_NOT_FOUND = 5,
+	ODB_ERR_UNSUPPORTED = 6
 } odbErrorCode;
 
 #endif

@@ -81,6 +81,12 @@ long gethandlesize(Handle h);
 boolean sethandlesize(Handle h, long size);
 void lockhandle(Handle h);
 void unlockhandle(Handle h);
+boolean pushhandle(Handle hsource, Handle hdest);
+boolean popfromhandle(Handle hpop, long ctpop, ptrvoid pdata);
+boolean loadfromhandle(Handle hload, long *ixload, long ctload, ptrvoid pdata);
+boolean loadfromhandletohandle(Handle hload, long *ixload, long ctload, boolean fltemp, Handle *hnew);
+boolean mergehandles(Handle h1, Handle h2, Handle *hmerged);
+boolean unmergehandles(Handle hmerged, Handle *hfirst, Handle *hsecond);
 
 boolean newheapstring(const bigstring bs, hdlstring *hstring);
 void copyheapstring(hdlstring hsource, bigstring bsdest);
@@ -96,5 +102,6 @@ boolean mergehandlestreamdata(handlestream *s, long ctreplace, ptrvoid pdata, lo
 boolean pullfromhandlestream(handlestream *s, long ctpull, void *pdata);
 Handle closehandlestream(handlestream *s);
 void disposehandlestream(handlestream *s);
+boolean writehandlestreamhandle(handlestream *s, Handle h);
 
 #endif

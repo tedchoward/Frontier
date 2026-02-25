@@ -3,6 +3,7 @@
 
 #include <stdlib.h>
 #include <string.h>
+#include <stdio.h>
 
 /*
  * Classic Handle layout:
@@ -43,6 +44,8 @@ Handle odbNewHandle(size_t size) {
 		return NULL;
 	}
 	*h = data;
+	fprintf(stderr, "odbNewHandle: size=%zu h=%p data=%p header=%p\n",
+		size, (void *)h, data, (void *)header);
 	return h;
 }
 

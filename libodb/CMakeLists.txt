@@ -8,6 +8,7 @@ add_library(libodb STATIC
 	src/odb_file_ops.c
 	src/odb_compat.c
 	src/odb_db.c
+	src/legacy/odb_legacy.c
 )
 
 set_target_properties(libodb PROPERTIES
@@ -38,3 +39,12 @@ set_target_properties(odb_tests PROPERTIES
 target_link_libraries(odb_tests PRIVATE libodb)
 target_compile_definitions(odb_tests PRIVATE ODB_TEST_FIXTURE_DIR=\"${CMAKE_SOURCE_DIR}/databases\")
 add_test(NAME odb_tests COMMAND odb_tests)
+
+add_executable(odb_internal_tests tests/test_internal.c)
+set_target_properties(odb_internal_tests PROPERTIES
+	C_STANDARD 23
+	C_STANDARD_REQUIRED YES
+)
+target_link_libraries(odb_internal_tests PRIVATE libodb)
+target_include_directories(odb_internal_tests PRIVATE ${CMAKE_CURRENT_LIST_DIR}/src)
+add_test(NAME odb_internal_tests COMMAND odb_internal_tests)
