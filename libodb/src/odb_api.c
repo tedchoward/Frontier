@@ -630,17 +630,43 @@ odbBool odbSetValue(odbRef odb, odbString bspath, odbValueRecord *value) {
 		return 0;
 	}
 	tyvaluerecord val;
-	tyvaluetype type = langexternalgetvaluetype(value->valuetype);
-	if (type == (tyvaluetype)-1) {
-		if (!setbinaryvalue(value->data.binaryvalue, value->valuetype, &val)) {
-			return 0;
+	switch (value->valuetype) {
+		case stringvaluetype: {
+			if (!value->data.stringvalue) {
+				odbSetLastError(ODB_ERR_INVALID_ARG, "invalid string handle");
+				return 0;
+			}
+			long size = gethandlesize(value->data.stringvalue);
+			if (size < 1) {
+				odbSetLastError(ODB_ERR_INVALID_ARG, "invalid string handle");
+				return 0;
+			}
+			unsigned char len = ((unsigned char *)*value->data.stringvalue)[0];
+			if ((long)len > size - 1) {
+				odbSetLastError(ODB_ERR_INVALID_ARG, "string handle must be Pascal style");
+				return 0;
+			}
+			bigstring bs;
+			copyheapstring((hdlstring)value->data.stringvalue, bs);
+			hdlstring hstring = NULL;
+			if (!newheapstring(bs, &hstring)) {
+				return 0;
+			}
+			initvalue(&val, ty_stringvaluetype);
+			val.data.stringvalue = (Handle)hstring;
+			break;
 		}
-	} else {
-		initvalue(&val, type);
-		val.data.binaryvalue = value->data.binaryvalue;
-	}
-	if (!copyvaluerecord(val, &val)) {
-		return 0;
+		case longvaluetype:
+			initvalue(&val, ty_longvaluetype);
+			val.data.longvalue = value->data.longvalue;
+			break;
+		case booleanvaluetype:
+			initvalue(&val, ty_booleanvaluetype);
+			val.data.flvalue = value->data.flvalue ? 1 : 0;
+			break;
+		default:
+			odbSetLastError(ODB_ERR_UNSUPPORTED, "unsupported value type");
+			return 0;
 	}
 	if (!hashtableassign(htable, bsname, val)) {
 		disposevaluerecord(val, true);

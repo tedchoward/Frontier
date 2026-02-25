@@ -1,5 +1,6 @@
 #include "odb_engine.h"
 #include "odb_errors.h"
+#include "odb_compat.h"
 
 #include <stdio.h>
 #include <string.h>
@@ -110,6 +111,26 @@ static int handle_to_c_string(Handle h, char *out, size_t out_size) {
 	return 1;
 }
 
+static Handle make_pascal_string_handle(const char *text) {
+	if (!text) {
+		return NULL;
+	}
+	size_t len = strlen(text);
+	if (len > 255) {
+		len = 255;
+	}
+	bigstring bs;
+	bs[0] = (unsigned char)len;
+	if (len > 0) {
+		memcpy(&bs[1], text, len);
+	}
+	hdlstring hstring = NULL;
+	if (!newheapstring(bs, &hstring)) {
+		return NULL;
+	}
+	return (Handle)hstring;
+}
+
 static void test_read_workspace_values(void) {
 	odbRef odb = NULL;
 	const char *fixture = fixture_path();
@@ -210,6 +231,64 @@ static void test_read_workspace_values(void) {
 	odbCloseFile(odb);
 }
 
+static void test_write_values(void) {
+	odbRef odb = NULL;
+	const char *fixture = fixture_path();
+	odbBool ok = odbOpenPath(fixture, &odb);
+	TEST_ASSERT(ok == 1, "open should succeed for new.root");
+	if (!ok) {
+		return;
+	}
+
+	odbString bspath;
+	odbValueRecord value;
+	char buffer[256];
+
+	odb_string_from_c(bspath, "root.workspace.firstName");
+	value.valuetype = stringvaluetype;
+	value.data.stringvalue = make_pascal_string_handle("Ada");
+	TEST_ASSERT(value.data.stringvalue != NULL, "string handle should be created");
+	ok = odbSetValue(odb, bspath, &value);
+	TEST_ASSERT(ok == 1, "odbSetValue should succeed for firstName");
+	if (value.data.stringvalue) {
+		disposehandle(value.data.stringvalue);
+	}
+	ok = odbGetValue(odb, bspath, &value);
+	TEST_ASSERT(ok == 1, "odbGetValue should succeed for updated firstName");
+	if (ok && handle_to_c_string(value.data.stringvalue, buffer, sizeof(buffer))) {
+		TEST_ASSERT(strcmp(buffer, "Ada") == 0, "firstName should be Ada");
+	}
+	if (ok) {
+		odbDisposeValue(odb, &value);
+	}
+
+	odb_string_from_c(bspath, "root.workspace.age");
+	value.valuetype = longvaluetype;
+	value.data.longvalue = 44;
+	ok = odbSetValue(odb, bspath, &value);
+	TEST_ASSERT(ok == 1, "odbSetValue should succeed for age");
+	ok = odbGetValue(odb, bspath, &value);
+	TEST_ASSERT(ok == 1, "odbGetValue should succeed for updated age");
+	if (ok) {
+		TEST_ASSERT(value.data.longvalue == 44, "age should be 44");
+		odbDisposeValue(odb, &value);
+	}
+
+	odb_string_from_c(bspath, "root.workspace.active");
+	value.valuetype = booleanvaluetype;
+	value.data.flvalue = 1;
+	ok = odbSetValue(odb, bspath, &value);
+	TEST_ASSERT(ok == 1, "odbSetValue should succeed for active");
+	ok = odbGetValue(odb, bspath, &value);
+	TEST_ASSERT(ok == 1, "odbGetValue should succeed for active");
+	if (ok) {
+		TEST_ASSERT(value.data.flvalue == 1, "active should be true");
+		odbDisposeValue(odb, &value);
+	}
+
+	odbCloseFile(odb);
+}
+
 static void test_read_errors(void) {
 	odbRef odb = NULL;
 	const char *fixture = fixture_path();
@@ -249,6 +328,7 @@ int main(void) {
 	test_open_missing_file();
 	test_open_fixture();
 	test_read_workspace_values();
+	test_write_values();
 	test_read_errors();
 	if (tests_failed) {
 		printf("%d tests failed\n", tests_failed);
