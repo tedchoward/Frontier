@@ -16,6 +16,7 @@ static void print_usage(void) {
 	printf("  odb_cli <dbpath> set <path> long <value>\n");
 	printf("  odb_cli <dbpath> set <path> bool <true|false>\n");
 	printf("  odb_cli <dbpath> newtable <path>\n");
+	printf("  odb_cli <dbpath> newfile\n");
 	printf("  odb_cli <dbpath> delete <path>\n");
 	printf("  odb_cli <dbpath> save\n");
 }
@@ -258,6 +259,10 @@ static int cmd_save(odbRef odb) {
 	return odbSaveFile(odb) ? 0 : 1;
 }
 
+static int cmd_newfile(const char *path) {
+	return odbNewPath(path) ? 0 : 1;
+}
+
 int main(int argc, char **argv) {
 	if (argc < 3) {
 		print_usage();
@@ -265,6 +270,19 @@ int main(int argc, char **argv) {
 	}
 	const char *dbpath = argv[1];
 	const char *command = argv[2];
+	if (strcmp(command, "newfile") == 0) {
+		if (argc != 3) {
+			print_usage();
+			return 1;
+		}
+		int rc = cmd_newfile(dbpath);
+		if (rc != 0) {
+			odbString err;
+			odbGetError(err);
+			printf("command failed (code=%d): %.*s\n", odbGetLastErrorCode(), err[0], err + 1);
+		}
+		return rc;
+	}
 	odbRef odb = NULL;
 	if (!odbOpenPath(dbpath, &odb)) {
 		odbString err;

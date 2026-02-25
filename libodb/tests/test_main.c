@@ -482,6 +482,37 @@ static void test_new_table_persists(void) {
 	odbCloseFile(odb);
 }
 
+static void test_new_file_creates_db(void) {
+	const char *path = "/tmp/odb_newfile_test.root";
+	odbBool ok = odbNewPath(path);
+	TEST_ASSERT(ok == 1, "odbNewPath should succeed");
+	if (!ok) {
+		return;
+	}
+
+	odbRef odb = NULL;
+	ok = odbOpenPath(path, &odb);
+	TEST_ASSERT(ok == 1, "open should succeed for new file");
+	if (!ok) {
+		return;
+	}
+
+	odbString bspath;
+	OSType type = 0;
+	int32_t count = 0;
+
+	odb_string_from_c(bspath, "root");
+	ok = odbGetType(odb, bspath, &type);
+	TEST_ASSERT(ok == 1, "odbGetType should succeed for root on new db");
+	TEST_ASSERT(type == (OSType)'tabl', "root should be a table on new db");
+
+	ok = odbCountItems(odb, bspath, &count);
+	TEST_ASSERT(ok == 1, "odbCountItems should succeed for root on new db");
+	TEST_ASSERT(count == 0, "new db root should be empty");
+
+	odbCloseFile(odb);
+}
+
 static void test_read_errors(void) {
 	odbRef odb = NULL;
 	const char *fixture = fixture_path();
@@ -525,6 +556,7 @@ int main(void) {
 	test_save_persists_values();
 	test_delete_persists();
 	test_new_table_persists();
+	test_new_file_creates_db();
 	test_read_errors();
 	if (tests_failed) {
 		printf("%d tests failed\n", tests_failed);
