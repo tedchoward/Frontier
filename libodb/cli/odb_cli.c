@@ -17,6 +17,7 @@ static void print_usage(void) {
 	printf("  odb_cli <dbpath> set <path> bool <true|false>\n");
 	printf("  odb_cli <dbpath> newtable <path>\n");
 	printf("  odb_cli <dbpath> newfile\n");
+	printf("  odb_cli <dbpath> defined <path>\n");
 	printf("  odb_cli <dbpath> delete <path>\n");
 	printf("  odb_cli <dbpath> save\n");
 }
@@ -255,6 +256,14 @@ static int cmd_delete(odbRef odb, const char *path) {
 	return odbDelete(odb, bspath) ? 0 : 1;
 }
 
+static int cmd_defined(odbRef odb, const char *path) {
+	odbString bspath;
+	odb_string_from_c(bspath, path);
+	odbBool ok = odbDefined(odb, bspath);
+	printf("%s\n", ok ? "true" : "false");
+	return ok ? 0 : 1;
+}
+
 static int cmd_save(odbRef odb) {
 	return odbSaveFile(odb) ? 0 : 1;
 }
@@ -313,6 +322,13 @@ int main(int argc, char **argv) {
 		} else {
 			const char *path = argv[3];
 			rc = cmd_newtable(odb, path);
+		}
+	} else if (strcmp(command, "defined") == 0) {
+		if (argc != 4) {
+			rc = 1;
+		} else {
+			const char *path = argv[3];
+			rc = cmd_defined(odb, path);
 		}
 	} else if (strcmp(command, "delete") == 0) {
 		if (argc != 4) {

@@ -513,6 +513,31 @@ static void test_new_file_creates_db(void) {
 	odbCloseFile(odb);
 }
 
+static void test_defined_paths(void) {
+	odbRef odb = NULL;
+	const char *fixture = fixture_path();
+	odbBool ok = odbOpenPath(fixture, &odb);
+	TEST_ASSERT(ok == 1, "open should succeed for new.root");
+	if (!ok) {
+		return;
+	}
+
+	odbString bspath;
+	odb_string_from_c(bspath, "root");
+	ok = odbDefined(odb, bspath);
+	TEST_ASSERT(ok == 1, "root should be defined");
+
+	odb_string_from_c(bspath, "root.workspace");
+	ok = odbDefined(odb, bspath);
+	TEST_ASSERT(ok == 1, "workspace should be defined");
+
+	odb_string_from_c(bspath, "root.workspace.missing");
+	ok = odbDefined(odb, bspath);
+	TEST_ASSERT(ok == 0, "missing path should not be defined");
+
+	odbCloseFile(odb);
+}
+
 static void test_read_errors(void) {
 	odbRef odb = NULL;
 	const char *fixture = fixture_path();
@@ -557,6 +582,7 @@ int main(void) {
 	test_delete_persists();
 	test_new_table_persists();
 	test_new_file_creates_db();
+	test_defined_paths();
 	test_read_errors();
 	if (tests_failed) {
 		printf("%d tests failed\n", tests_failed);
