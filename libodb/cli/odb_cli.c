@@ -1,15 +1,21 @@
 #include "odb_engine.h"
 #include "odb_errors.h"
+#include "odb_compat.h"
 
 #include <stdio.h>
 #include <string.h>
 #include <stdint.h>
 #include <inttypes.h>
+#include <stdlib.h>
 
 static void print_usage(void) {
 	printf("usage:\n");
 	printf("  odb_cli <dbpath> list <path>\n");
 	printf("  odb_cli <dbpath> get <path>\n");
+	printf("  odb_cli <dbpath> set <path> string <value>\n");
+	printf("  odb_cli <dbpath> set <path> long <value>\n");
+	printf("  odb_cli <dbpath> set <path> bool <true|false>\n");
+	printf("  odb_cli <dbpath> save\n");
 }
 
 static void odb_string_from_c(odbString out, const char *msg) {
@@ -173,14 +179,78 @@ static int cmd_get(odbRef odb, const char *path) {
 	return 0;
 }
 
+static int cmd_set(odbRef odb, int argc, char **argv) {
+	if (argc != 6) {
+		return 1;
+	}
+	const char *path = argv[3];
+	const char *type = argv[4];
+	const char *value = argv[5];
+
+	odbString bspath;
+	odb_string_from_c(bspath, path);
+	odbValueRecord rec;
+
+	if (strcmp(type, "string") == 0) {
+		size_t len = strlen(value);
+		if (len > 255) {
+			len = 255;
+		}
+		bigstring bs;
+		bs[0] = (unsigned char)len;
+		if (len > 0) {
+			memcpy(&bs[1], value, len);
+		}
+		hdlstring hstring = NULL;
+		if (!newheapstring(bs, &hstring)) {
+			return 1;
+		}
+		rec.valuetype = stringvaluetype;
+		rec.data.stringvalue = (Handle)hstring;
+		int ok = odbSetValue(odb, bspath, &rec) ? 0 : 1;
+		disposehandle((Handle)hstring);
+		return ok;
+	}
+
+	if (strcmp(type, "long") == 0) {
+		char *end = NULL;
+		long v = strtol(value, &end, 10);
+		if (!end || *end != '\0') {
+			return 1;
+		}
+		rec.valuetype = longvaluetype;
+		rec.data.longvalue = (int32_t)v;
+		return odbSetValue(odb, bspath, &rec) ? 0 : 1;
+	}
+
+	if (strcmp(type, "bool") == 0) {
+		int v = 0;
+		if (strcmp(value, "true") == 0 || strcmp(value, "1") == 0) {
+			v = 1;
+		} else if (strcmp(value, "false") == 0 || strcmp(value, "0") == 0) {
+			v = 0;
+		} else {
+			return 1;
+		}
+		rec.valuetype = booleanvaluetype;
+		rec.data.flvalue = (odbBool)v;
+		return odbSetValue(odb, bspath, &rec) ? 0 : 1;
+	}
+
+	return 1;
+}
+
+static int cmd_save(odbRef odb) {
+	return odbSaveFile(odb) ? 0 : 1;
+}
+
 int main(int argc, char **argv) {
-	if (argc != 4) {
+	if (argc < 3) {
 		print_usage();
 		return 1;
 	}
 	const char *dbpath = argv[1];
 	const char *command = argv[2];
-	const char *path = argv[3];
 	odbRef odb = NULL;
 	if (!odbOpenPath(dbpath, &odb)) {
 		odbString err;
@@ -190,12 +260,38 @@ int main(int argc, char **argv) {
 	}
 	int rc = 0;
 	if (strcmp(command, "list") == 0) {
-		rc = cmd_list(odb, path);
+		if (argc != 4) {
+			rc = 1;
+		} else {
+			const char *path = argv[3];
+			rc = cmd_list(odb, path);
+		}
 	} else if (strcmp(command, "get") == 0) {
-		rc = cmd_get(odb, path);
+		if (argc != 4) {
+			rc = 1;
+		} else {
+			const char *path = argv[3];
+			rc = cmd_get(odb, path);
+		}
+	} else if (strcmp(command, "set") == 0) {
+		rc = cmd_set(odb, argc, argv);
+	} else if (strcmp(command, "save") == 0) {
+		if (argc != 3) {
+			rc = 1;
+		} else {
+			rc = cmd_save(odb);
+		}
 	} else {
 		print_usage();
 		rc = 1;
+	}
+	if (rc != 0) {
+		print_usage();
+	}
+	if (rc == 0 && strcmp(command, "set") == 0) {
+		if (!odbSaveFile(odb)) {
+			rc = 1;
+		}
 	}
 	if (rc != 0) {
 		odbString err;

@@ -711,7 +711,9 @@ static void dbdisposeshadowavaillist (void) {
 	register hdldatabaserecord hdb = databasedata;
 	handlestream s;
 	
-	assert (hdb != nil);
+	if (hdb == nil) {
+		return;
+	}
 
 	s = (**hdb).u.extensions.availlistshadow;
 
@@ -781,8 +783,14 @@ static boolean dbwriteshadowavaillist (void) {
 			goto error;
 		
 		databytes = gethandlesize (h);
-		
-		assert (databytes == nodebytes || databytes == nodebytes - (long) sizeof (tyavailnodeshadow));
+
+		if (databytes != nodebytes && databytes != nodebytes - (long) sizeof (tyavailnodeshadow)) {
+			disposehandle(h);
+			dbrelease(adrblock);
+			adrblock = nildbaddress;
+			fl = true;
+			goto error;
+		}
 
 		
 		#ifdef SWAP_BYTE_ORDER
@@ -802,7 +810,14 @@ static boolean dbwriteshadowavaillist (void) {
 		
 		fl = dbreadheader (adrblock, &flfree, &nodebytes, &dummy);
 		
-		assert (databytes <= nodebytes);
+		if (databytes > nodebytes) {
+			unlockhandle(h);
+			disposehandle(h);
+			dbrelease(adrblock);
+			adrblock = nildbaddress;
+			fl = true;
+			goto error;
+		}
 		
 		fl = fl && dbwritedatablock (adrblock, databytes, nodebytes, *h);
 		

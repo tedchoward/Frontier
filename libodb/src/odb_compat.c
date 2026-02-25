@@ -225,12 +225,19 @@ boolean unmergehandles(Handle hmerged, Handle *hfirst, Handle *hsecond) {
 		return false;
 	}
 	memcpy(&size1, *hmerged, sizeof(size1));
+	int32_t size1_disk = size1;
 	disktomemlong(size1);
 	long total = gethandlesize(hmerged);
 	long size2 = total - (long)sizeof(int32_t) - size1;
-	if (size2 < 0) {
-		odbSetLastError(ODB_ERR_IO, "invalid merged handle");
-		return false;
+	if (size1 < 0 || size2 < 0) {
+		int32_t size1_alt = size1_disk;
+		long size2_alt = total - (long)sizeof(int32_t) - size1_alt;
+		if (size1_alt < 0 || size2_alt < 0) {
+			odbSetLastError(ODB_ERR_IO, "invalid merged handle");
+			return false;
+		}
+		size1 = size1_alt;
+		size2 = size2_alt;
 	}
 	*hfirst = NULL;
 	*hsecond = NULL;

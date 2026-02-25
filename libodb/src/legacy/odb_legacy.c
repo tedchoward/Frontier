@@ -567,7 +567,19 @@ boolean tablepacktable(hdlhashtable htable, boolean flmemory, Handle *hpacked, b
 	if (flmustsave) {
 		*flmustsave = true;
 	}
-	return hashpacktable(htable, false, hpacked, flmustsave);
+	Handle hpackedtable = NULL;
+	if (!hashpacktable(htable, false, &hpackedtable, flmustsave)) {
+		return false;
+	}
+	Handle hpackedformats = NULL;
+	if (!newemptyhandle(&hpackedformats)) {
+		disposehandle(hpackedtable);
+		return false;
+	}
+	if (!mergehandles(hpackedtable, hpackedformats, hpacked)) {
+		return false;
+	}
+	return true;
 }
 
 boolean tableunpacktable(Handle hpacked, boolean flmemory, hdlhashtable *htable) {
@@ -1176,12 +1188,10 @@ static boolean hashpackexternal(handlestream *s, hdlexternalvariable h, int32_t 
 	if (!fl) {
 		return false;
 	}
-	unsigned long ctbytes = (unsigned long)gethandlesize(hpacked);
-	unsigned long ctstore = ctbytes;
-	int32_t ctstore_disk = (int32_t)ctstore;
+	int32_t ctstore = (int32_t)gethandlesize(hpacked);
+	int32_t ctstore_disk = ctstore;
 	memtodisklong(ctstore_disk);
-	ctstore = (unsigned long)ctstore_disk;
-	if (!writehandlestream(s, &ctstore, sizeof(ctstore))) {
+	if (!writehandlestream(s, &ctstore_disk, sizeof(ctstore_disk))) {
 		disposehandle(hpacked);
 		return false;
 	}
@@ -1209,7 +1219,7 @@ static boolean hashunpackexternal(Handle hget, boolean flmemory, hdlexternalhand
 
 #pragma pack(push, 2)
 typedef struct tydiskvaluerecord {
-	long sizeflag;
+	int32_t sizeflag;
 	dbaddress adr;
 } tydiskvaluerecord;
 #pragma pack(pop)
@@ -1229,7 +1239,7 @@ static boolean hashpackscalar(handlestream *s, hdlhashnode hnode, int32_t *ix) {
 		memtodisklong(diskvalue.adr);
 		return writehandlestream(s, &diskvalue, sizeof(diskvalue));
 	}
-	long ct = (long)ctbytes;
+	int32_t ct = (int32_t)ctbytes;
 	memtodisklong(ct);
 	if (!writehandlestream(s, &ct, sizeof(ct))) {
 		return false;
@@ -1451,99 +1461,58 @@ boolean hashpacktable(hdlhashtable htable, boolean flmemory, Handle *hpackedtabl
 boolean hashunpacktable(Handle hpackedtable, boolean flmemory, hdlhashtable htable) {
 	Handle hrecords = nil;
 	Handle hstrings = nil;
-	long total = hpackedtable ? gethandlesize(hpackedtable) : 0;
-	if (total >= (long)(sizeof(int32_t) + sizeof(tydisktablerecord)) && hpackedtable && *hpackedtable) {
+	if (!unmergehandles(hpackedtable, &hrecords, &hstrings)) {
+		if (!hpackedtable || !*hpackedtable) {
+			return false;
+		}
+		long total = gethandlesize(hpackedtable);
+		if (total < (long)sizeof(int32_t) + (long)sizeof(tydisktablerecord)) {
+			return false;
+		}
 		int32_t recordbytes = 0;
 		memcpy(&recordbytes, *hpackedtable, sizeof(recordbytes));
 		disktomemlong(recordbytes);
-		if (recordbytes > 0 && recordbytes <= total - (long)sizeof(int32_t)) {
-			long stringsbytes = total - (long)sizeof(int32_t) - recordbytes;
-			if (!newhandle(recordbytes, &hrecords)) {
+		if (recordbytes <= 0 || recordbytes > total - (long)sizeof(int32_t)) {
+			return false;
+		}
+		long stringsbytes = total - (long)sizeof(int32_t) - recordbytes;
+		if (!newhandle(recordbytes, &hrecords)) {
+			return false;
+		}
+		memcpy(*hrecords, (unsigned char *)*hpackedtable + sizeof(int32_t), (size_t)recordbytes);
+		if (stringsbytes > 0) {
+			if (!newhandle(stringsbytes, &hstrings)) {
+				disposehandle(hrecords);
 				return false;
 			}
-			memcpy(*hrecords, (unsigned char *)*hpackedtable + sizeof(int32_t), (size_t)recordbytes);
-			if (stringsbytes > 0) {
-				if (!newhandle(stringsbytes, &hstrings)) {
-					disposehandle(hrecords);
-					return false;
-				}
-				memcpy(*hstrings,
-					(unsigned char *)*hpackedtable + sizeof(int32_t) + recordbytes,
-					(size_t)stringsbytes);
-			}
-			disposehandle(hpackedtable);
+			memcpy(*hstrings,
+				(unsigned char *)*hpackedtable + sizeof(int32_t) + recordbytes,
+				(size_t)stringsbytes);
 		}
-	}
-	if (!hrecords && !hstrings) {
-		if (!unmergehandles(hpackedtable, &hrecords, &hstrings)) {
-			return false;
-		}
+		disposehandle(hpackedtable);
 	}
 	long ix = 0;
-	int32_t count = 0;
-	int16_t version = 0;
-	int16_t sortorder = 0;
-	uint32_t timecreated = 0;
-	uint32_t timelastsave = 0;
-	int32_t flags = 0;
-	boolean has_count = false;
-	long peek = 0;
-	if (!loadfromhandle(hrecords, &peek, sizeof(count), &count)) {
+	tydisktablerecord header;
+	if (!loadfromhandle(hrecords, &ix, sizeof(header), &header)) {
 		disposehandle(hrecords);
 		disposehandle(hstrings);
 		return false;
 	}
-	if (!loadfromhandle(hrecords, &peek, sizeof(version), &version)) {
-		disposehandle(hrecords);
-		disposehandle(hstrings);
-		return false;
-	}
+	int16_t version = header.version;
 	disktomemshort(version);
-	if (version == tablediskversion || version == 2 || version == 1) {
-		has_count = true;
-		ix = peek;
-		if (!loadfromhandle(hrecords, &ix, sizeof(sortorder), &sortorder)
-			|| !loadfromhandle(hrecords, &ix, sizeof(timecreated), &timecreated)
-			|| !loadfromhandle(hrecords, &ix, sizeof(timelastsave), &timelastsave)
-			|| !loadfromhandle(hrecords, &ix, sizeof(flags), &flags)) {
-			disposehandle(hrecords);
-			disposehandle(hstrings);
-			return false;
-		}
-		disktomemshort(sortorder);
-		disktomemlong(timecreated);
-		disktomemlong(timelastsave);
-		disktomemlong(flags);
-		(**htable).sortorder = sortorder;
-		(**htable).timecreated = timecreated;
-		(**htable).timelastsave = timelastsave;
+	if (version > 0) {
+		disktomemshort(header.sortorder);
+		int32_t tc = (int32_t)header.timecreated;
+		int32_t ts = (int32_t)header.timelastsave;
+		disktomemlong(tc);
+		disktomemlong(ts);
+		(**htable).sortorder = header.sortorder;
+		(**htable).timecreated = (uint32_t)tc;
+		(**htable).timelastsave = (uint32_t)ts;
 	} else {
 		ix = 0;
-		tydisktablerecord header;
-		if (!loadfromhandle(hrecords, &ix, sizeof(header), &header)) {
-			disposehandle(hrecords);
-			disposehandle(hstrings);
-			return false;
-		}
-		version = header.version;
-		disktomemshort(version);
-		if (version > 0) {
-			header.version = version;
-			disktomemshort(header.sortorder);
-			int32_t tc = (int32_t)header.timecreated;
-			int32_t ts = (int32_t)header.timelastsave;
-			disktomemlong(tc);
-			disktomemlong(ts);
-			header.timecreated = (uint32_t)tc;
-			header.timelastsave = (uint32_t)ts;
-			(**htable).sortorder = header.sortorder;
-			(**htable).timecreated = header.timecreated;
-			(**htable).timelastsave = header.timelastsave;
-		} else {
-			ix = 0;
-			(**htable).timecreated = timenow();
-			(**htable).timelastsave = (**htable).timecreated;
-		}
+		(**htable).timecreated = timenow();
+		(**htable).timelastsave = (**htable).timecreated;
 	}
 	while (true) {
 		tydisksymbolrecord rec;
