@@ -379,6 +379,53 @@ static void test_save_persists_values(void) {
 	odbCloseFile(odb);
 }
 
+static void test_delete_persists(void) {
+	const char *fixture = fixture_path();
+	char path[512];
+	snprintf(path, sizeof(path), "/tmp/odb_delete_test.root");
+	TEST_ASSERT(copy_file(fixture, path) == 1, "fixture copy should succeed");
+
+	odbRef odb = NULL;
+	odbBool ok = odbOpenPath(path, &odb);
+	TEST_ASSERT(ok == 1, "open should succeed for delete test db");
+	if (!ok) {
+		return;
+	}
+
+	odbString bspath;
+	int32_t count = 0;
+
+	odb_string_from_c(bspath, "root.workspace");
+	ok = odbCountItems(odb, bspath, &count);
+	TEST_ASSERT(ok == 1, "odbCountItems should succeed before delete");
+	TEST_ASSERT(count == 3, "workspace should start with 3 items");
+
+	odb_string_from_c(bspath, "root.workspace.lastName");
+	ok = odbDelete(odb, bspath);
+	TEST_ASSERT(ok == 1, "odbDelete should succeed for lastName");
+
+	odb_string_from_c(bspath, "root.workspace");
+	ok = odbCountItems(odb, bspath, &count);
+	TEST_ASSERT(ok == 1, "odbCountItems should succeed after delete");
+	TEST_ASSERT(count == 2, "workspace should have 2 items after delete");
+
+	ok = odbSaveFile(odb);
+	TEST_ASSERT(ok == 1, "odbSaveFile should succeed after delete");
+	odbCloseFile(odb);
+
+	odb = NULL;
+	ok = odbOpenPath(path, &odb);
+	TEST_ASSERT(ok == 1, "reopen should succeed after delete save");
+	if (!ok) {
+		return;
+	}
+	odb_string_from_c(bspath, "root.workspace");
+	ok = odbCountItems(odb, bspath, &count);
+	TEST_ASSERT(ok == 1, "odbCountItems should succeed after reopen");
+	TEST_ASSERT(count == 2, "workspace should persist with 2 items");
+	odbCloseFile(odb);
+}
+
 static void test_read_errors(void) {
 	odbRef odb = NULL;
 	const char *fixture = fixture_path();
@@ -420,6 +467,7 @@ int main(void) {
 	test_read_workspace_values();
 	test_write_values();
 	test_save_persists_values();
+	test_delete_persists();
 	test_read_errors();
 	if (tests_failed) {
 		printf("%d tests failed\n", tests_failed);
