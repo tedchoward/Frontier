@@ -5,6 +5,7 @@
 #include <stdio.h>
 #include <string.h>
 #include <stdint.h>
+#include <stdlib.h>
 
 extern long gethandlesize(Handle h);
 
@@ -129,6 +130,30 @@ static Handle make_pascal_string_handle(const char *text) {
 		return NULL;
 	}
 	return (Handle)hstring;
+}
+
+static int copy_file(const char *src, const char *dst) {
+	FILE *in = fopen(src, "rb");
+	if (!in) {
+		return 0;
+	}
+	FILE *out = fopen(dst, "wb");
+	if (!out) {
+		fclose(in);
+		return 0;
+	}
+	unsigned char buffer[4096];
+	size_t read_bytes = 0;
+	while ((read_bytes = fread(buffer, 1, sizeof(buffer), in)) > 0) {
+		if (fwrite(buffer, 1, read_bytes, out) != read_bytes) {
+			fclose(in);
+			fclose(out);
+			return 0;
+		}
+	}
+	fclose(in);
+	fclose(out);
+	return 1;
 }
 
 static void test_read_workspace_values(void) {
@@ -289,6 +314,71 @@ static void test_write_values(void) {
 	odbCloseFile(odb);
 }
 
+static void test_save_persists_values(void) {
+	const char *fixture = fixture_path();
+	char path[512];
+	snprintf(path, sizeof(path), "/tmp/odb_save_test.root");
+	TEST_ASSERT(copy_file(fixture, path) == 1, "fixture copy should succeed");
+
+	odbRef odb = NULL;
+	odbBool ok = odbOpenPath(path, &odb);
+	TEST_ASSERT(ok == 1, "open should succeed for save test db");
+	if (!ok) {
+		return;
+	}
+
+	odbString bspath;
+	odbValueRecord value;
+
+	odb_string_from_c(bspath, "root.workspace.firstName");
+	value.valuetype = stringvaluetype;
+	value.data.stringvalue = make_pascal_string_handle("Ada");
+	TEST_ASSERT(value.data.stringvalue != NULL, "string handle should be created");
+	ok = odbSetValue(odb, bspath, &value);
+	TEST_ASSERT(ok == 1, "odbSetValue should succeed for firstName");
+	if (value.data.stringvalue) {
+		disposehandle(value.data.stringvalue);
+	}
+
+	odb_string_from_c(bspath, "root.workspace.age");
+	value.valuetype = longvaluetype;
+	value.data.longvalue = 44;
+	ok = odbSetValue(odb, bspath, &value);
+	TEST_ASSERT(ok == 1, "odbSetValue should succeed for age");
+
+	ok = odbSaveFile(odb);
+	TEST_ASSERT(ok == 1, "odbSaveFile should succeed");
+	odbCloseFile(odb);
+
+	odb = NULL;
+	ok = odbOpenPath(path, &odb);
+	TEST_ASSERT(ok == 1, "reopen should succeed after save");
+	if (!ok) {
+		return;
+	}
+
+	char buffer[256];
+	odb_string_from_c(bspath, "root.workspace.firstName");
+	ok = odbGetValue(odb, bspath, &value);
+	TEST_ASSERT(ok == 1, "odbGetValue should succeed for saved firstName");
+	if (ok && handle_to_c_string(value.data.stringvalue, buffer, sizeof(buffer))) {
+		TEST_ASSERT(strcmp(buffer, "Ada") == 0, "firstName should persist as Ada");
+	}
+	if (ok) {
+		odbDisposeValue(odb, &value);
+	}
+
+	odb_string_from_c(bspath, "root.workspace.age");
+	ok = odbGetValue(odb, bspath, &value);
+	TEST_ASSERT(ok == 1, "odbGetValue should succeed for saved age");
+	if (ok) {
+		TEST_ASSERT(value.data.longvalue == 44, "age should persist as 44");
+		odbDisposeValue(odb, &value);
+	}
+
+	odbCloseFile(odb);
+}
+
 static void test_read_errors(void) {
 	odbRef odb = NULL;
 	const char *fixture = fixture_path();
@@ -329,6 +419,7 @@ int main(void) {
 	test_open_fixture();
 	test_read_workspace_values();
 	test_write_values();
+	test_save_persists_values();
 	test_read_errors();
 	if (tests_failed) {
 		printf("%d tests failed\n", tests_failed);
