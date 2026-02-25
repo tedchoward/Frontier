@@ -1,8 +1,9 @@
-#include "odb_engine.h"
+#include "odb_file_internal.h"
 #include "odb_error_internal.h"
 
 #include <errno.h>
 #include <stdio.h>
+#include <stdlib.h>
 #include <string.h>
 
 #if defined(_WIN32)
@@ -10,10 +11,6 @@
 #else
 #include <unistd.h>
 #endif
-
-struct odb_file {
-	FILE *fp;
-};
 
 static odbBool odb_file_set_error(const char *prefix) {
 	char buffer[256];
@@ -99,7 +96,7 @@ odbBool odbFileSeek(hdlfilenum file, int64_t offset) {
 	return 1;
 }
 
-odbBool odbFileTellEof(hdlfilenum file, int64_t *out) {
+odbBool odbFileTell(hdlfilenum file, int64_t *out) {
 	if (!file || !file->fp || !out) {
 		odbSetLastError(ODB_ERR_INVALID_ARG, "invalid file");
 		return 0;
@@ -133,5 +130,52 @@ odbBool odbFileSetEof(hdlfilenum file, int64_t size) {
 		return odb_file_set_error("ftruncate failed");
 	}
 #endif
+	return 1;
+}
+
+odbBool odbFileGetSize(hdlfilenum file, int64_t *out) {
+	if (!file || !file->fp || !out) {
+		odbSetLastError(ODB_ERR_INVALID_ARG, "invalid file");
+		return 0;
+	}
+	int64_t current = 0;
+	if (!odbFileTell(file, &current)) {
+		return 0;
+	}
+#if defined(_WIN32)
+	if (_fseeki64(file->fp, 0, SEEK_END) != 0) {
+		return odb_file_set_error("fseek failed");
+	}
+	__int64 end = _ftelli64(file->fp);
+	if (end < 0) {
+		return odb_file_set_error("ftell failed");
+	}
+	if (_fseeki64(file->fp, current, SEEK_SET) != 0) {
+		return odb_file_set_error("fseek failed");
+	}
+#else
+	if (fseeko(file->fp, 0, SEEK_END) != 0) {
+		return odb_file_set_error("fseek failed");
+	}
+	off_t end = ftello(file->fp);
+	if (end < 0) {
+		return odb_file_set_error("ftell failed");
+	}
+	if (fseeko(file->fp, (off_t)current, SEEK_SET) != 0) {
+		return odb_file_set_error("fseek failed");
+	}
+#endif
+	*out = (int64_t)end;
+	return 1;
+}
+
+odbBool odbFileFlush(hdlfilenum file) {
+	if (!file || !file->fp) {
+		odbSetLastError(ODB_ERR_INVALID_ARG, "invalid file");
+		return 0;
+	}
+	if (fflush(file->fp) != 0) {
+		return odb_file_set_error("fflush failed");
+	}
 	return 1;
 }

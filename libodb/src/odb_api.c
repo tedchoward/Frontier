@@ -1,13 +1,20 @@
 #include "odb_engine.h"
 #include "odb_error_internal.h"
 #include "odb_errors.h"
+#include "odb_db_internal.h"
 
 #include <stdio.h>
+#include <stdlib.h>
 #include <string.h>
 
 /* Internal file helpers. */
 hdlfilenum odbFileOpen(const char *path, const char *mode);
 void odbFileClose(hdlfilenum file);
+
+struct odb_ {
+	hdlfilenum file;
+	odbBool read_only;
+};
 
 static odbBool odb_fail_not_implemented(const char *fn) {
 	char message[128];
@@ -48,24 +55,56 @@ odbBool odbNewPath(const char *path) {
 }
 
 odbBool odbNewFile(hdlfilenum file) {
-	( void )file;
-	return odb_fail_not_implemented("odbNewFile");
+	if (!file) {
+		odbSetLastError(ODB_ERR_INVALID_ARG, "invalid file");
+		return 0;
+	}
+	if (!dbnew(file)) {
+		return 0;
+	}
+	dbdispose();
+	return 1;
 }
 
 odbBool odbOpenFile(hdlfilenum file, odbRef *odb) {
-	( void )file;
-	( void )odb;
-	return odb_fail_not_implemented("odbOpenFile");
+	if (!file || !odb) {
+		odbSetLastError(ODB_ERR_INVALID_ARG, "invalid argument");
+		return 0;
+	}
+	if (!dbopenfile(file, false)) {
+		return 0;
+	}
+	struct odb_ *state = (struct odb_ *)calloc(1, sizeof(struct odb_));
+	if (!state) {
+		odbSetLastError(ODB_ERR_IO, "out of memory");
+		dbdispose();
+		return 0;
+	}
+	state->file = file;
+	state->read_only = 0;
+	*odb = state;
+	return 1;
 }
 
 odbBool odbSaveFile(odbRef odb) {
-	( void )odb;
-	return odb_fail_not_implemented("odbSaveFile");
+	if (!odb) {
+		odbSetLastError(ODB_ERR_INVALID_ARG, "invalid argument");
+		return 0;
+	}
+	return dbsave();
 }
 
 odbBool odbCloseFile(odbRef odb) {
-	( void )odb;
-	return odb_fail_not_implemented("odbCloseFile");
+	if (!odb) {
+		odbSetLastError(ODB_ERR_INVALID_ARG, "invalid argument");
+		return 0;
+	}
+	struct odb_ *state = (struct odb_ *)odb;
+	odbBool ok = dbclose();
+	dbdispose();
+	odbFileClose(state->file);
+	free(state);
+	return ok;
 }
 
 odbBool odbDefined(odbRef odb, odbString bspath) {

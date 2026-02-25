@@ -8,6 +8,7 @@ profile
 DerivedData/
 
 build/
+build_libodb/
 
 *.pbxuser
 *.mode1v3
@@ -17,3 +18,4 @@ build/
 xcuserdata
 
 build_Xcode/tools/*.a
+.cache/

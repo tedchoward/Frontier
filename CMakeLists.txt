@@ -5,4 +5,6 @@ project(Frontier LANGUAGES C)
 set(CMAKE_C_STANDARD 23)
 set(CMAKE_C_STANDARD_REQUIRED YES)
 
+enable_testing()
+
 add_subdirectory(libodb)
