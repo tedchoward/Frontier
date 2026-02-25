@@ -3,10 +3,13 @@
 
 #include <stdio.h>
 #include <string.h>
+#include <stdint.h>
+#include <inttypes.h>
 
 static void print_usage(void) {
 	printf("usage:\n");
 	printf("  odb_cli <dbpath> list <path>\n");
+	printf("  odb_cli <dbpath> get <path>\n");
 }
 
 static void odb_string_from_c(odbString out, const char *msg) {
@@ -44,6 +47,132 @@ static int cmd_list(odbRef odb, const char *path) {
 	return 0;
 }
 
+extern long gethandlesize(Handle h);
+
+static int handle_to_c_string(Handle h, char *out, size_t out_size) {
+	if (!out || out_size == 0) {
+		return 0;
+	}
+	out[0] = '\0';
+	if (!h || !*h) {
+		return 0;
+	}
+	long size = gethandlesize(h);
+	if (size <= 0) {
+		return 0;
+	}
+	unsigned char *data = *h;
+	if (size >= 4) {
+		uint32_t be = ((uint32_t)data[0] << 24) | ((uint32_t)data[1] << 16) | ((uint32_t)data[2] << 8) | (uint32_t)data[3];
+		uint32_t le = ((uint32_t)data[3] << 24) | ((uint32_t)data[2] << 16) | ((uint32_t)data[1] << 8) | (uint32_t)data[0];
+		uint32_t len = 0;
+		if (be <= (uint32_t)(size - 4)) {
+			len = be;
+		} else if (le <= (uint32_t)(size - 4)) {
+			len = le;
+		}
+		if (len > 0) {
+			if (len >= out_size) {
+				len = (uint32_t)(out_size - 1);
+			}
+			memcpy(out, data + 4, len);
+			out[len] = '\0';
+			return 1;
+		}
+	}
+	if (data[0] <= (unsigned char)(size - 1)) {
+		unsigned char len = data[0];
+		if ((size_t)len >= out_size) {
+			len = (unsigned char)(out_size - 1);
+		}
+		memcpy(out, data + 1, len);
+		out[len] = '\0';
+		return 1;
+	}
+	if ((size_t)size >= out_size) {
+		size = (long)out_size - 1;
+	}
+	memcpy(out, data, (size_t)size);
+	out[size] = '\0';
+	return 1;
+}
+
+static void print_ostype(OSType type) {
+	unsigned char t[5];
+	t[0] = (unsigned char)((type >> 24) & 0xff);
+	t[1] = (unsigned char)((type >> 16) & 0xff);
+	t[2] = (unsigned char)((type >> 8) & 0xff);
+	t[3] = (unsigned char)(type & 0xff);
+	t[4] = '\0';
+	printf("%s", t);
+}
+
+static int cmd_get(odbRef odb, const char *path) {
+	odbString bspath;
+	odb_string_from_c(bspath, path);
+	odbValueRecord value;
+	if (!odbGetValue(odb, bspath, &value)) {
+		return 1;
+	}
+	printf("type=");
+	print_ostype((OSType)value.valuetype);
+	printf(" value=");
+	switch (value.valuetype) {
+		case stringvaluetype: {
+			char buffer[1024];
+			if (handle_to_c_string(value.data.stringvalue, buffer, sizeof(buffer))) {
+				printf("%s", buffer);
+			} else {
+				printf("<string>");
+			}
+			break;
+		}
+		case longvaluetype:
+			printf("%" PRId32, value.data.longvalue);
+			break;
+		case shortvaluetype:
+			printf("%d", (int)value.data.intvalue);
+			break;
+		case booleanvaluetype:
+			printf("%s", value.data.flvalue ? "true" : "false");
+			break;
+		case singlevaluetype:
+			printf("%f", (double)value.data.singlevalue);
+			break;
+		case doublevaluetype: {
+			double d = (value.data.doublevalue && *value.data.doublevalue) ? **value.data.doublevalue : 0.0;
+			printf("%f", d);
+			break;
+		}
+		case binaryvaluetype: {
+			long size = gethandlesize(value.data.binaryvalue);
+			printf("<binary %ld bytes>", size);
+			break;
+		}
+		case externalvaluetype: {
+			long size = gethandlesize(value.data.externalvalue);
+			printf("<external %ld bytes>", size);
+			break;
+		}
+		case tablevaluetype: {
+			int32_t count = 0;
+			odbBool ok = odbCountItems(odb, bspath, &count);
+			if (ok) {
+				printf("<table %" PRId32 " items>", count);
+			} else {
+				printf("<table>");
+			}
+			break;
+		}
+		default:
+			printf("<unhandled>");
+			break;
+	}
+	printf("\n");
+	odbDisposeValue(odb, &value);
+	return 0;
+}
+
 int main(int argc, char **argv) {
 	if (argc != 4) {
 		print_usage();
@@ -62,6 +191,8 @@ int main(int argc, char **argv) {
 	int rc = 0;
 	if (strcmp(command, "list") == 0) {
 		rc = cmd_list(odb, path);
+	} else if (strcmp(command, "get") == 0) {
+		rc = cmd_get(odb, path);
 	} else {
 		print_usage();
 		rc = 1;

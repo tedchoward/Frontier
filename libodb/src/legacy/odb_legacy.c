@@ -6,7 +6,6 @@
 #include <stdlib.h>
 #include <string.h>
 #include <time.h>
-#include <stdio.h>
 
 hdlhashtable currenthashtable = nil;
 hdltablestack hashtablestack = nil;
@@ -462,8 +461,6 @@ boolean langexternalunpack(Handle hpacked, hdlexternalhandle *h) {
 		return false;
 	}
 	disktomemshort(rec.versionnumber);
-	fprintf(stderr, "langexternalunpack: version=%d id=%u\n",
-		(int)rec.versionnumber, (unsigned int)rec.id);
 	if (rec.versionnumber != externaldiskversionnumber) {
 		return false;
 	}
@@ -1198,20 +1195,14 @@ static boolean hashpackexternal(handlestream *s, hdlexternalvariable h, int32_t 
 
 static boolean hashunpackexternal(Handle hget, boolean flmemory, hdlexternalhandle *h, long ix) {
 	long ctbytes = 0;
-	fprintf(stderr, "hashunpackexternal: hget=%p size=%ld ix=%ld\n",
-		(void *)hget, hget ? gethandlesize(hget) : -1L, ix);
 	if (!loadlongfromdiskhandle(hget, &ix, &ctbytes)) {
-		fprintf(stderr, "hashunpackexternal: load length failed\n");
 		return false;
 	}
-	fprintf(stderr, "hashunpackexternal: ctbytes=%ld\n", ctbytes);
 	Handle hpacked = NULL;
 	if (!loadfromhandletohandle(hget, &ix, ctbytes, true, &hpacked)) {
-		fprintf(stderr, "hashunpackexternal: load packed failed\n");
 		return false;
 	}
 	boolean fl = flmemory ? langexternalmemoryunpack(hpacked, h) : langexternalunpack(hpacked, h);
-	fprintf(stderr, "hashunpackexternal: unpack=%d\n", fl ? 1 : 0);
 	disposehandle(hpacked);
 	return fl;
 }
@@ -1498,13 +1489,11 @@ boolean hashunpacktable(Handle hpackedtable, boolean flmemory, hdlhashtable htab
 	boolean has_count = false;
 	long peek = 0;
 	if (!loadfromhandle(hrecords, &peek, sizeof(count), &count)) {
-		fprintf(stderr, "hashunpacktable: header load failed\n");
 		disposehandle(hrecords);
 		disposehandle(hstrings);
 		return false;
 	}
 	if (!loadfromhandle(hrecords, &peek, sizeof(version), &version)) {
-		fprintf(stderr, "hashunpacktable: header load failed\n");
 		disposehandle(hrecords);
 		disposehandle(hstrings);
 		return false;
@@ -1517,7 +1506,6 @@ boolean hashunpacktable(Handle hpackedtable, boolean flmemory, hdlhashtable htab
 			|| !loadfromhandle(hrecords, &ix, sizeof(timecreated), &timecreated)
 			|| !loadfromhandle(hrecords, &ix, sizeof(timelastsave), &timelastsave)
 			|| !loadfromhandle(hrecords, &ix, sizeof(flags), &flags)) {
-			fprintf(stderr, "hashunpacktable: header load failed\n");
 			disposehandle(hrecords);
 			disposehandle(hstrings);
 			return false;
@@ -1533,7 +1521,6 @@ boolean hashunpacktable(Handle hpackedtable, boolean flmemory, hdlhashtable htab
 		ix = 0;
 		tydisktablerecord header;
 		if (!loadfromhandle(hrecords, &ix, sizeof(header), &header)) {
-			fprintf(stderr, "hashunpacktable: header load failed\n");
 			disposehandle(hrecords);
 			disposehandle(hstrings);
 			return false;
@@ -1572,7 +1559,6 @@ boolean hashunpacktable(Handle hpackedtable, boolean flmemory, hdlhashtable htab
 		disktomemlong(ixstrings);
 		bigstring bsname;
 		hashunpackstring(hstrings, bsname, rec.ixkey);
-		fprintf(stderr, "hashunpacktable: name=%.*s\n", bsname[0], bsname + 1);
 		if (isemptystring(bsname)) {
 			continue;
 		}
@@ -1639,7 +1625,6 @@ boolean hashunpacktable(Handle hpackedtable, boolean flmemory, hdlhashtable htab
 		}
 		hdlhashtable prev = sethashtable(htable);
 		hashinsert(bsname, val);
-		fprintf(stderr, "hashunpacktable: hfirstsort=%p\n", (void *)(**htable).hfirstsort);
 		sethashtable(prev);
 	}
 	disposehandle(hrecords);

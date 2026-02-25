@@ -155,7 +155,6 @@ static void clearcancoonglobals(void) {
 
 static boolean loadversion2cancoonfile(dbaddress adr, hdlcancoonrecord hcancoon) {
 	tyversion2cancoonrecord info;
-	fprintf(stderr, "loadversion2cancoonfile: begin adr=%d\n", (int)adr);
 	if (!dbreference(adr, sizeof(info), &info)) {
 		return false;
 	}
@@ -356,7 +355,6 @@ odbBool odbOpenFile(hdlfilenum file, odbRef *odb) {
 	}
 	(**hc).hdatabase = databasedata;
 	if (versionnumber != cancoonversionnumber && versionnumber != 2) {
-		fprintf(stderr, "odbOpenFile: unsupported version\n");
 		disposecancoonrecord(hc);
 		clearcancoonglobals();
 		dbdispose();

@@ -1081,7 +1081,6 @@ boolean dbreference (dbaddress adr, long maxbytes, ptrvoid pdata) {
 	boolean flfree;
 	tyvariance variance;
 	
-	fprintf(stderr, "dbreference: adr=%d maxbytes=%ld\n", (int)adr, maxbytes);
 	if (!dbreadheader (adr, &flfree, &ctbytes, &variance))
 		return (false);
 		
@@ -1135,9 +1134,6 @@ boolean dbrefhandle (dbaddress adr, Handle *h) {
 		return (false);
 	
 	hregister = *h;
-	fprintf(stderr, "dbrefhandle: h=%p hregister=%p data=%p ct=%ld\n",
-		(void *)h, (void *)hregister, hregister ? (void *)(*hregister) : NULL, ct);
-	
 	lockhandle (hregister);
 	
 	fl = dbread (a + sizeheader, ct, *hregister);
