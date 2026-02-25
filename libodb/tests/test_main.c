@@ -6,6 +6,11 @@
 #include <string.h>
 #include <stdint.h>
 #include <stdlib.h>
+#ifdef _WIN32
+#include <windows.h>
+#else
+#include <unistd.h>
+#endif
 
 extern long gethandlesize(Handle h);
 
@@ -154,6 +159,14 @@ static int copy_file(const char *src, const char *dst) {
 	fclose(in);
 	fclose(out);
 	return 1;
+}
+
+static void test_sleep_ms(unsigned int ms) {
+#ifdef _WIN32
+	Sleep(ms);
+#else
+	usleep(ms * 1000);
+#endif
 }
 
 static void test_read_workspace_values(void) {
@@ -538,6 +551,60 @@ static void test_defined_paths(void) {
 	odbCloseFile(odb);
 }
 
+static void test_moddate_updates(void) {
+	const char *fixture = fixture_path();
+	char path[512];
+	snprintf(path, sizeof(path), "/tmp/odb_moddate_test.root");
+	TEST_ASSERT(copy_file(fixture, path) == 1, "fixture copy should succeed");
+
+	odbRef odb = NULL;
+	odbBool ok = odbOpenPath(path, &odb);
+	TEST_ASSERT(ok == 1, "open should succeed for moddate test db");
+	if (!ok) {
+		return;
+	}
+
+	odbString bspath;
+	uint32_t date1 = 0;
+	uint32_t date2 = 0;
+	uint32_t date3 = 0;
+	odbValueRecord value;
+
+	odb_string_from_c(bspath, "root.workspace");
+	ok = odbGetModDate(odb, bspath, &date1);
+	TEST_ASSERT(ok == 1, "odbGetModDate should succeed before update");
+
+	test_sleep_ms(1100);
+
+	odb_string_from_c(bspath, "root.workspace.age");
+	value.valuetype = longvaluetype;
+	value.data.longvalue = 45;
+	ok = odbSetValue(odb, bspath, &value);
+	TEST_ASSERT(ok == 1, "odbSetValue should succeed for moddate update");
+
+	odb_string_from_c(bspath, "root.workspace");
+	ok = odbSaveFile(odb);
+	TEST_ASSERT(ok == 1, "odbSaveFile should succeed for moddate update");
+
+	ok = odbGetModDate(odb, bspath, &date2);
+	TEST_ASSERT(ok == 1, "odbGetModDate should succeed after update");
+	TEST_ASSERT(date2 != date1, "moddate should change after update");
+
+	odbCloseFile(odb);
+
+	odb = NULL;
+	ok = odbOpenPath(path, &odb);
+	TEST_ASSERT(ok == 1, "reopen should succeed for moddate test db");
+	if (!ok) {
+		return;
+	}
+	ok = odbGetModDate(odb, bspath, &date3);
+	TEST_ASSERT(ok == 1, "odbGetModDate should succeed after reopen");
+	TEST_ASSERT(date3 == date2, "moddate should persist after reopen");
+
+	odbCloseFile(odb);
+}
+
 static void test_read_errors(void) {
 	odbRef odb = NULL;
 	const char *fixture = fixture_path();
@@ -583,6 +650,7 @@ int main(void) {
 	test_new_table_persists();
 	test_new_file_creates_db();
 	test_defined_paths();
+	test_moddate_updates();
 	test_read_errors();
 	if (tests_failed) {
 		printf("%d tests failed\n", tests_failed);
