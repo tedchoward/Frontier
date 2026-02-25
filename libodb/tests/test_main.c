@@ -426,6 +426,62 @@ static void test_delete_persists(void) {
 	odbCloseFile(odb);
 }
 
+static void test_new_table_persists(void) {
+	const char *fixture = fixture_path();
+	char path[512];
+	snprintf(path, sizeof(path), "/tmp/odb_newtable_test.root");
+	TEST_ASSERT(copy_file(fixture, path) == 1, "fixture copy should succeed");
+
+	odbRef odb = NULL;
+	odbBool ok = odbOpenPath(path, &odb);
+	TEST_ASSERT(ok == 1, "open should succeed for newtable test db");
+	if (!ok) {
+		return;
+	}
+
+	odbString bspath;
+	odbValueRecord value;
+	int32_t count = 0;
+
+	odb_string_from_c(bspath, "root.newtable");
+	ok = odbNewTable(odb, bspath);
+	TEST_ASSERT(ok == 1, "odbNewTable should succeed for root.newtable");
+
+	ok = odbGetValue(odb, bspath, &value);
+	TEST_ASSERT(ok == 1, "odbGetValue should succeed for new table");
+	if (ok) {
+		TEST_ASSERT(value.valuetype == tablevaluetype, "new table should return tablevaluetype");
+		odbDisposeValue(odb, &value);
+	}
+
+	ok = odbCountItems(odb, bspath, &count);
+	TEST_ASSERT(ok == 1, "odbCountItems should succeed for new table");
+	TEST_ASSERT(count == 0, "new table should be empty");
+
+	ok = odbSaveFile(odb);
+	TEST_ASSERT(ok == 1, "odbSaveFile should succeed after new table");
+	odbCloseFile(odb);
+
+	odb = NULL;
+	ok = odbOpenPath(path, &odb);
+	TEST_ASSERT(ok == 1, "reopen should succeed after new table save");
+	if (!ok) {
+		return;
+	}
+
+	ok = odbGetValue(odb, bspath, &value);
+	TEST_ASSERT(ok == 1, "odbGetValue should succeed after reopen");
+	if (ok) {
+		TEST_ASSERT(value.valuetype == tablevaluetype, "new table should persist as tablevaluetype");
+		odbDisposeValue(odb, &value);
+	}
+
+	ok = odbCountItems(odb, bspath, &count);
+	TEST_ASSERT(ok == 1, "odbCountItems should succeed after reopen");
+	TEST_ASSERT(count == 0, "new table should remain empty");
+	odbCloseFile(odb);
+}
+
 static void test_read_errors(void) {
 	odbRef odb = NULL;
 	const char *fixture = fixture_path();
@@ -468,6 +524,7 @@ int main(void) {
 	test_write_values();
 	test_save_persists_values();
 	test_delete_persists();
+	test_new_table_persists();
 	test_read_errors();
 	if (tests_failed) {
 		printf("%d tests failed\n", tests_failed);

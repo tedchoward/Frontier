@@ -15,6 +15,7 @@ static void print_usage(void) {
 	printf("  odb_cli <dbpath> set <path> string <value>\n");
 	printf("  odb_cli <dbpath> set <path> long <value>\n");
 	printf("  odb_cli <dbpath> set <path> bool <true|false>\n");
+	printf("  odb_cli <dbpath> newtable <path>\n");
 	printf("  odb_cli <dbpath> delete <path>\n");
 	printf("  odb_cli <dbpath> save\n");
 }
@@ -241,6 +242,12 @@ static int cmd_set(odbRef odb, int argc, char **argv) {
 	return 1;
 }
 
+static int cmd_newtable(odbRef odb, const char *path) {
+	odbString bspath;
+	odb_string_from_c(bspath, path);
+	return odbNewTable(odb, bspath) ? 0 : 1;
+}
+
 static int cmd_delete(odbRef odb, const char *path) {
 	odbString bspath;
 	odb_string_from_c(bspath, path);
@@ -282,6 +289,13 @@ int main(int argc, char **argv) {
 		}
 	} else if (strcmp(command, "set") == 0) {
 		rc = cmd_set(odb, argc, argv);
+	} else if (strcmp(command, "newtable") == 0) {
+		if (argc != 4) {
+			rc = 1;
+		} else {
+			const char *path = argv[3];
+			rc = cmd_newtable(odb, path);
+		}
 	} else if (strcmp(command, "delete") == 0) {
 		if (argc != 4) {
 			rc = 1;
@@ -302,7 +316,7 @@ int main(int argc, char **argv) {
 	if (rc != 0) {
 		print_usage();
 	}
-	if (rc == 0 && (strcmp(command, "set") == 0 || strcmp(command, "delete") == 0)) {
+	if (rc == 0 && (strcmp(command, "set") == 0 || strcmp(command, "delete") == 0 || strcmp(command, "newtable") == 0)) {
 		if (!odbSaveFile(odb)) {
 			rc = 1;
 		}
