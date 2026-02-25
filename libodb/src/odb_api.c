@@ -704,7 +704,7 @@ odbBool odbCountItems(odbRef odb, odbString bspath, int32_t *count) {
 			return 0;
 		}
 		if (!tablevaltotable(val, &htable, hnode)) {
-			odbSetLastError(ODB_ERR_NOT_FOUND, "value not a table");
+			odbSetLastError(ODB_ERR_INVALID_ARG, "value not a table");
 			return 0;
 		}
 	}
@@ -719,6 +719,10 @@ odbBool odbCountItems(odbRef odb, odbString bspath, int32_t *count) {
 odbBool odbGetNthItem(odbRef odb, odbString bspath, int32_t n, odbString bsname) {
 	if (!odb || !bspath || !bsname) {
 		odbSetLastError(ODB_ERR_INVALID_ARG, "invalid argument");
+		return 0;
+	}
+	if (n <= 0) {
+		odbSetLastError(ODB_ERR_INVALID_ARG, "invalid item index");
 		return 0;
 	}
 	hdlcancoonrecord hc = ((struct odb_ *)odb)->hc;
@@ -737,9 +741,17 @@ odbBool odbGetNthItem(odbRef odb, odbString bspath, int32_t n, odbString bsname)
 			return 0;
 		}
 		if (!tablevaltotable(val, &htable, hnode)) {
-			odbSetLastError(ODB_ERR_NOT_FOUND, "value not a table");
+			odbSetLastError(ODB_ERR_INVALID_ARG, "value not a table");
 			return 0;
 		}
+	}
+	long ctitems = 0;
+	if (!hashcountitems(htable, &ctitems)) {
+		return 0;
+	}
+	if (n > ctitems) {
+		odbSetLastError(ODB_ERR_NOT_FOUND, "item not found");
+		return 0;
 	}
 	if (!hashgetiteminfo(htable, (long)(n - 1), bsname, nil)) {
 		odbSetLastError(ODB_ERR_NOT_FOUND, "item not found");

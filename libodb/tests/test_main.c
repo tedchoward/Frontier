@@ -3,6 +3,7 @@
 
 #include <stdio.h>
 #include <string.h>
+#include <stdint.h>
 
 extern long gethandlesize(Handle h);
 
@@ -123,7 +124,7 @@ static void test_read_workspace_values(void) {
 	OSType type = 0;
 	odbValueRecord value;
 	char buffer[256];
-	long count = 0;
+	int32_t count = 0;
 
 	odb_string_from_c(bspath, "root");
 	ok = odbCountItems(odb, bspath, &count);
@@ -165,6 +166,16 @@ static void test_read_workspace_values(void) {
 		odbDisposeValue(odb, &value);
 	}
 
+	odb_string_from_c(bspath, "Root.Workspace.FirstName");
+	ok = odbGetValue(odb, bspath, &value);
+	TEST_ASSERT(ok == 1, "case-insensitive path should resolve");
+	if (ok && handle_to_c_string(value.data.stringvalue, buffer, sizeof(buffer))) {
+		TEST_ASSERT(strcmp(buffer, "Ted") == 0, "case-insensitive firstName should be Ted");
+	}
+	if (ok) {
+		odbDisposeValue(odb, &value);
+	}
+
 	odb_string_from_c(bspath, "root.workspace.lastName");
 	ok = odbGetType(odb, bspath, &type);
 	TEST_ASSERT(ok == 1, "odbGetType should succeed for lastName");
@@ -199,10 +210,46 @@ static void test_read_workspace_values(void) {
 	odbCloseFile(odb);
 }
 
+static void test_read_errors(void) {
+	odbRef odb = NULL;
+	const char *fixture = fixture_path();
+	odbBool ok = odbOpenPath(fixture, &odb);
+	TEST_ASSERT(ok == 1, "open should succeed for new.root");
+	if (!ok) {
+		return;
+	}
+
+	odbString bspath;
+	OSType type = 0;
+	int32_t count = 0;
+	odbString bsname;
+
+	odb_string_from_c(bspath, "root.workspace.missing");
+	ok = odbGetType(odb, bspath, &type);
+	TEST_ASSERT(ok == 0, "odbGetType should fail for missing path");
+	TEST_ASSERT(odbGetLastErrorCode() == ODB_ERR_NOT_FOUND, "missing path should set NOT_FOUND");
+
+	odb_string_from_c(bspath, "root.workspace.firstName");
+	ok = odbCountItems(odb, bspath, &count);
+	TEST_ASSERT(ok == 0, "odbCountItems should fail for non-table path");
+	TEST_ASSERT(odbGetLastErrorCode() != ODB_ERR_NONE, "non-table count should set error");
+
+	odb_string_from_c(bspath, "root.workspace");
+	ok = odbGetNthItem(odb, bspath, 0, bsname);
+	TEST_ASSERT(ok == 0, "odbGetNthItem should fail for n=0");
+	TEST_ASSERT(odbGetLastErrorCode() != ODB_ERR_NONE, "n=0 should set error");
+	ok = odbGetNthItem(odb, bspath, 4, bsname);
+	TEST_ASSERT(ok == 0, "odbGetNthItem should fail for out of range");
+	TEST_ASSERT(odbGetLastErrorCode() != ODB_ERR_NONE, "out of range should set error");
+
+	odbCloseFile(odb);
+}
+
 int main(void) {
 	test_open_missing_file();
 	test_open_fixture();
 	test_read_workspace_values();
+	test_read_errors();
 	if (tests_failed) {
 		printf("%d tests failed\n", tests_failed);
 		return 1;
