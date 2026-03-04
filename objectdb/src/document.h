@@ -31,6 +31,7 @@ gboolean objectdb_document_has_unsaved_changes(const ObjectDBDocument *document)
 GPtrArray *objectdb_document_get_children(ObjectDBDocument *document, const char *parent_path, char **error_message);
 gboolean objectdb_document_set_value(ObjectDBDocument *document, const char *path, const char *text, char **updated_text, char **error_message);
 gboolean objectdb_document_create_scalar(ObjectDBDocument *document, const char *parent_path, const char *name, odbValueType type, char **full_path, char **error_message);
+gboolean objectdb_document_create_table(ObjectDBDocument *document, const char *parent_path, const char *name, char **full_path, char **error_message);
 gboolean objectdb_document_delete_entry(ObjectDBDocument *document, const char *path, char **error_message);
 gboolean objectdb_document_set_entry_type(
 	ObjectDBDocument *document,

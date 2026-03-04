@@ -1157,6 +1157,60 @@ gboolean objectdb_document_create_scalar(ObjectDBDocument *document, const char 
 	return TRUE;
 }
 
+gboolean objectdb_document_create_table(ObjectDBDocument *document, const char *parent_path, const char *name, char **full_path, char **error_message) {
+	odbString bspath;
+	char *joined_path = NULL;
+	char *trimmed_name = NULL;
+
+	if (full_path) {
+		*full_path = NULL;
+	}
+	if (error_message) {
+		*error_message = NULL;
+	}
+	if (!document || !document->odb) {
+		if (error_message) {
+			*error_message = g_strdup("No document is open");
+		}
+		return FALSE;
+	}
+	if (!parent_path || !parent_path[0]) {
+		if (error_message) {
+			*error_message = g_strdup("No table selected");
+		}
+		return FALSE;
+	}
+
+	trimmed_name = g_strdup(name ? name : "");
+	g_strstrip(trimmed_name);
+	if (!trimmed_name[0]) {
+		if (error_message) {
+			*error_message = g_strdup("Name is required");
+		}
+		g_free(trimmed_name);
+		return FALSE;
+	}
+
+	joined_path = objectdb_document_join_path(parent_path, trimmed_name);
+	objectdb_document_path_to_odb(joined_path, bspath);
+	if (!odbNewTable(document->odb, bspath)) {
+		objectdb_document_set_error(error_message);
+		g_free(joined_path);
+		g_free(trimmed_name);
+		return FALSE;
+	}
+	document->has_unsaved_changes = TRUE;
+
+	if (full_path) {
+		*full_path = joined_path;
+	} else {
+		g_free(joined_path);
+	}
+
+	g_free(trimmed_name);
+	return TRUE;
+}
+
 gboolean objectdb_document_delete_entry(ObjectDBDocument *document, const char *path, char **error_message) {
 	odbString bspath;
 

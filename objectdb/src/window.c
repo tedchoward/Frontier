@@ -127,6 +127,23 @@ static gboolean objectdb_window_resolve_target_table(
 	}
 }
 
+static void objectdb_window_append_placeholder_row(GtkTreeStore *tree_store, GtkTreeIter *parent_iter) {
+	GtkTreeIter child_iter;
+	gtk_tree_store_append(tree_store, &child_iter, parent_iter);
+	gtk_tree_store_set(
+		tree_store,
+		&child_iter,
+		OBJECTDB_MODEL_COL_NAME, "",
+		OBJECTDB_MODEL_COL_VALUE, "",
+		OBJECTDB_MODEL_COL_KIND, "",
+		OBJECTDB_MODEL_COL_PATH, "",
+		OBJECTDB_MODEL_COL_IS_TABLE, FALSE,
+		OBJECTDB_MODEL_COL_CHILDREN_LOADED, TRUE,
+		OBJECTDB_MODEL_COL_IS_PLACEHOLDER, TRUE,
+		-1
+	);
+}
+
 static void objectdb_window_table_new_scalar(GtkWidget *widget, gpointer user_data) {
 	ObjectDBWindow *window = (ObjectDBWindow *)user_data;
 	GtkTreeSelection *selection = NULL;
@@ -190,6 +207,75 @@ static void objectdb_window_table_new_scalar(GtkWidget *widget, gpointer user_da
 		);
 		objectdb_window_update_table_count(window, &table_iter);
 		g_free(kind_text);
+	}
+
+	g_free(new_full_path);
+	g_free(new_name);
+	g_free(table_path);
+}
+
+static void objectdb_window_table_new_subtable(GtkWidget *widget, gpointer user_data) {
+	(void)widget;
+	ObjectDBWindow *window = (ObjectDBWindow *)user_data;
+	GtkTreeSelection *selection = NULL;
+	GtkTreeModel *model = NULL;
+	GtkTreeIter selected_iter;
+	GtkTreeIter table_iter;
+	gboolean has_selection = FALSE;
+	gboolean children_loaded = FALSE;
+	char *table_path = NULL;
+	char *new_name = NULL;
+	char *new_full_path = NULL;
+	char *error_message = NULL;
+
+	if (!window || !window->tree_view || !window->tree_store || !objectdb_document_is_open(window->document)) {
+		return;
+	}
+
+	selection = gtk_tree_view_get_selection(GTK_TREE_VIEW(window->tree_view));
+	has_selection = gtk_tree_selection_get_selected(selection, &model, &selected_iter);
+	if (!has_selection) {
+		objectdb_window_show_error(window, "Select a destination table first");
+		return;
+	}
+
+	if (!objectdb_window_resolve_target_table(model, &selected_iter, &table_iter, &table_path, &children_loaded)) {
+		objectdb_window_show_error(window, "Could not resolve a containing table from the current selection");
+		return;
+	}
+
+	new_name = objectdb_window_prompt_for_name(window);
+	if (!new_name || !new_name[0]) {
+		g_free(new_name);
+		g_free(table_path);
+		return;
+	}
+
+	if (!objectdb_document_create_table(window->document, table_path, new_name, &new_full_path, &error_message)) {
+		objectdb_window_show_error(window, error_message ? error_message : "Failed to create table");
+		g_free(error_message);
+		g_free(new_name);
+		g_free(table_path);
+		return;
+	}
+
+	if (children_loaded) {
+		GtkTreeIter child_iter;
+		gtk_tree_store_append(window->tree_store, &child_iter, &table_iter);
+		gtk_tree_store_set(
+			window->tree_store,
+			&child_iter,
+			OBJECTDB_MODEL_COL_NAME, new_name,
+			OBJECTDB_MODEL_COL_VALUE, "on disk",
+			OBJECTDB_MODEL_COL_KIND, "table",
+			OBJECTDB_MODEL_COL_PATH, new_full_path,
+			OBJECTDB_MODEL_COL_IS_TABLE, TRUE,
+			OBJECTDB_MODEL_COL_CHILDREN_LOADED, FALSE,
+			OBJECTDB_MODEL_COL_IS_PLACEHOLDER, FALSE,
+			-1
+		);
+		objectdb_window_append_placeholder_row(window->tree_store, &child_iter);
+		objectdb_window_update_table_count(window, &table_iter);
 	}
 
 	g_free(new_full_path);
@@ -796,6 +882,10 @@ static GtkWidget *objectdb_window_create_menu_bar(ObjectDBWindow *window) {
 
 	GtkWidget *new_menu = gtk_menu_new();
 	gtk_menu_item_set_submenu(GTK_MENU_ITEM(new_item), new_menu);
+
+	GtkWidget *subtable_item = gtk_menu_item_new_with_label("Sub-Table");
+	g_signal_connect(subtable_item, "activate", G_CALLBACK(objectdb_window_table_new_subtable), window);
+	gtk_menu_shell_append(GTK_MENU_SHELL(new_menu), subtable_item);
 
 	GtkWidget *scalar_item = gtk_menu_item_new_with_label("Scalar");
 	gtk_menu_shell_append(GTK_MENU_SHELL(new_menu), scalar_item);
