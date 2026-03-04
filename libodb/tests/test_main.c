@@ -710,6 +710,53 @@ static void test_moddate_updates(void) {
 	odbCloseFile(odb);
 }
 
+static void test_quoted_path_segments(void) {
+	const char *fixture = fixture_path();
+	char path[512];
+	snprintf(path, sizeof(path), "/tmp/odb_quoted_path_test.root");
+	TEST_ASSERT(copy_file(fixture, path) == 1, "fixture copy should succeed");
+
+	odbRef odb = NULL;
+	odbBool ok = odbOpenPath(path, &odb);
+	TEST_ASSERT(ok == 1, "open should succeed for quoted path test db");
+	if (!ok) {
+		return;
+	}
+
+	odbString bspath;
+	odbValueRecord value;
+	OSType type = 0;
+
+	odb_string_from_c(bspath, "root.workspace.[\"Sample Outline 1\"]");
+	ok = odbNewTable(odb, bspath);
+	TEST_ASSERT(ok == 1, "odbNewTable should accept quoted table name");
+
+	odb_string_from_c(bspath, "root.workspace.[\"Sample Outline 1\"].[\"version.1\"]");
+	value.valuetype = longvaluetype;
+	value.data.longvalue = 7;
+	ok = odbSetValue(odb, bspath, &value);
+	TEST_ASSERT(ok == 1, "odbSetValue should accept quoted child name with dot");
+
+	ok = odbGetType(odb, bspath, &type);
+	TEST_ASSERT(ok == 1, "odbGetType should succeed for quoted child path");
+	TEST_ASSERT(type == longvaluetype, "quoted child path should be long");
+
+	ok = odbGetValue(odb, bspath, &value);
+	TEST_ASSERT(ok == 1, "odbGetValue should succeed for quoted child path");
+	if (ok) {
+		TEST_ASSERT(value.data.longvalue == 7, "quoted child long value should round-trip");
+		odbDisposeValue(odb, &value);
+	}
+
+	odb_string_from_c(bspath, "root.workspace.[\"He said \\\"hi\\\"\"]");
+	value.valuetype = longvaluetype;
+	value.data.longvalue = 11;
+	ok = odbSetValue(odb, bspath, &value);
+	TEST_ASSERT(ok == 1, "odbSetValue should accept escaped quotes in path segment");
+
+	odbCloseFile(odb);
+}
+
 static void test_read_errors(void) {
 	odbRef odb = NULL;
 	const char *fixture = fixture_path();
@@ -756,6 +803,7 @@ int main(void) {
 	test_new_file_creates_db();
 	test_defined_paths();
 	test_moddate_updates();
+	test_quoted_path_segments();
 	test_read_errors();
 	if (tests_failed) {
 		printf("%d tests failed\n", tests_failed);
