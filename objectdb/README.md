@@ -2,11 +2,9 @@
 
 `objectdb` is a GTK3-based Linux desktop browser for Frontier `.root` files built on top of `libodb`.
 
-Current status:
+User documentation:
 
-- Phase 1 scaffold only
-- Starts a GTK3 application window
-- Data browser UI not implemented yet
+- See [USER_GUIDE.md](./USER_GUIDE.md) for a full usage guide.
 
 Build via the top-level CMake project:
 
