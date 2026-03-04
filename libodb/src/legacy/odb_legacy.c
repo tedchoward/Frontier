@@ -1180,6 +1180,91 @@ static boolean hashpackbinary(handlestream *s, Handle hbinary, int32_t *ix) {
 	return writehandlestreamhandle(s, hbinary);
 }
 
+static void swap8bytes(unsigned char *p) {
+#ifdef SWAP_BYTE_ORDER
+	if (!p) {
+		return;
+	}
+	for (int i = 0; i < 4; ++i) {
+		unsigned char t = p[i];
+		p[i] = p[7 - i];
+		p[7 - i] = t;
+	}
+#else
+	(void)p;
+#endif
+}
+
+static boolean normalize_scalar_endian_for_disk(tyvaluetype type, Handle source, Handle *normalized) {
+	if (!source || !normalized) {
+		return false;
+	}
+	if (!copyhandle(source, normalized)) {
+		return false;
+	}
+	long size = gethandlesize(*normalized);
+	switch (type) {
+		case ty_rectvaluetype:
+			if (size == (long)sizeof(Rect)) {
+				Rect *r = (Rect *)**normalized;
+				memtodiskshort(r->top);
+				memtodiskshort(r->left);
+				memtodiskshort(r->bottom);
+				memtodiskshort(r->right);
+			}
+			break;
+		case ty_rgbvaluetype:
+			if (size == (long)sizeof(RGBColor)) {
+				RGBColor *c = (RGBColor *)**normalized;
+				memtodiskshort(c->red);
+				memtodiskshort(c->green);
+				memtodiskshort(c->blue);
+			}
+			break;
+		case ty_doublevaluetype:
+			if (size == (long)sizeof(double)) {
+				swap8bytes((unsigned char *)**normalized);
+			}
+			break;
+		default:
+			break;
+	}
+	return true;
+}
+
+static void normalize_scalar_endian_from_disk(tyvaluetype type, Handle hvalue) {
+	if (!hvalue) {
+		return;
+	}
+	long size = gethandlesize(hvalue);
+	switch (type) {
+		case ty_rectvaluetype:
+			if (size == (long)sizeof(Rect)) {
+				Rect *r = (Rect *)*hvalue;
+				disktomemshort(r->top);
+				disktomemshort(r->left);
+				disktomemshort(r->bottom);
+				disktomemshort(r->right);
+			}
+			break;
+		case ty_rgbvaluetype:
+			if (size == (long)sizeof(RGBColor)) {
+				RGBColor *c = (RGBColor *)*hvalue;
+				disktomemshort(c->red);
+				disktomemshort(c->green);
+				disktomemshort(c->blue);
+			}
+			break;
+		case ty_doublevaluetype:
+			if (size == (long)sizeof(double)) {
+				swap8bytes((unsigned char *)*hvalue);
+			}
+			break;
+		default:
+			break;
+	}
+}
+
 static boolean hashunpackbinary(Handle hget, Handle *hbinary, long ix) {
 	long ctbytes = 0;
 	if (!loadfromhandle(hget, &ix, sizeof(ctbytes), &ctbytes)) {
@@ -1244,6 +1329,28 @@ static boolean hashpackscalar(handlestream *s, hdlhashnode hnode, int32_t *ix) {
 	unsigned long ctbytes = (unsigned long)gethandlesize(hbinary);
 	*ix = (int32_t)s->pos;
 	if ((ctbytes > maxinlinescalarsize) && !(**hnode).val.fldiskval) {
+		tydiskvaluerecord diskvalue;
+		diskvalue.sizeflag = diskvalsizeflag;
+		diskvalue.adr = nildbaddress;
+		if (!dbassignhandle(hbinary, &diskvalue.adr)) {
+			return false;
+		}
+		memtodisklong(diskvalue.sizeflag);
+		memtodisklong(diskvalue.adr);
+		return writehandlestream(s, &diskvalue, sizeof(diskvalue));
+	}
+	int32_t ct = (int32_t)ctbytes;
+	memtodisklong(ct);
+	if (!writehandlestream(s, &ct, sizeof(ct))) {
+		return false;
+	}
+	return writehandlestreamhandle(s, hbinary);
+}
+
+static boolean hashpackscalarhandle(handlestream *s, Handle hbinary, boolean fldiskval, int32_t *ix) {
+	unsigned long ctbytes = (unsigned long)gethandlesize(hbinary);
+	*ix = (int32_t)s->pos;
+	if ((ctbytes > maxinlinescalarsize) && !fldiskval) {
 		tydiskvaluerecord diskvalue;
 		diskvalue.sizeflag = diskvalsizeflag;
 		diskvalue.adr = nildbaddress;
@@ -1349,17 +1456,31 @@ static boolean hashpackvisit(bigstring bsname, hdlhashnode hnode, tyvaluerecord 
 				return true;
 			}
 			break;
-		case ty_stringvaluetype:
-		case ty_passwordvaluetype:
-		case ty_patternvaluetype:
-		case ty_objspecvaluetype:
-		case ty_binaryvaluetype:
-		case ty_filespecvaluetype:
-		case ty_aliasvaluetype:
-			if (!hashpackscalar(&lpi->s2, hnode, &rec.data.longvalue)) {
-				return true;
+			case ty_stringvaluetype:
+			case ty_passwordvaluetype:
+			case ty_patternvaluetype:
+			case ty_objspecvaluetype:
+			case ty_binaryvaluetype:
+			case ty_filespecvaluetype:
+			case ty_aliasvaluetype:
+				if (!hashpackscalar(&lpi->s2, hnode, &rec.data.longvalue)) {
+					return true;
+				}
+				break;
+			case ty_rectvaluetype:
+			case ty_rgbvaluetype:
+			case ty_doublevaluetype: {
+				Handle hdisk = NULL;
+				if (!normalize_scalar_endian_for_disk(val.valuetype, val.data.binaryvalue, &hdisk)) {
+					return true;
+				}
+				boolean packed = hashpackscalarhandle(&lpi->s2, hdisk, val.fldiskval, &rec.data.longvalue);
+				disposehandle(hdisk);
+				if (!packed) {
+					return true;
+				}
+				break;
 			}
-			break;
 		case ty_externalvaluetype: {
 			boolean flnew = false;
 			if (!hashpackexternal(&lpi->s2, (hdlexternalvariable)val.data.externalvalue, &rec.data.longvalue, &flnew)) {
@@ -1565,17 +1686,25 @@ boolean hashunpacktable(Handle hpackedtable, boolean flmemory, hdlhashtable htab
 				setaddressvalue((hdlhashtable)-1, bsvalue, &val);
 				break;
 			}
-			case ty_stringvaluetype:
-			case ty_passwordvaluetype:
-			case ty_patternvaluetype:
-			case ty_objspecvaluetype:
-			case ty_binaryvaluetype:
-			case ty_filespecvaluetype:
-			case ty_aliasvaluetype:
-				if (!hashunpackscalar(hstrings, &val, ixstrings)) {
-					continue;
-				}
-				break;
+				case ty_stringvaluetype:
+				case ty_passwordvaluetype:
+				case ty_patternvaluetype:
+				case ty_objspecvaluetype:
+				case ty_binaryvaluetype:
+				case ty_filespecvaluetype:
+				case ty_aliasvaluetype:
+					if (!hashunpackscalar(hstrings, &val, ixstrings)) {
+						continue;
+					}
+					break;
+				case ty_rectvaluetype:
+				case ty_rgbvaluetype:
+				case ty_doublevaluetype:
+					if (!hashunpackscalar(hstrings, &val, ixstrings)) {
+						continue;
+					}
+					normalize_scalar_endian_from_disk(val.valuetype, val.data.binaryvalue);
+					break;
 			case ty_externalvaluetype:
 				if (!hashunpackexternal(hstrings, flmemory, (hdlexternalhandle *)&val.data.externalvalue, ixstrings)) {
 					continue;

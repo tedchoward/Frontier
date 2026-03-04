@@ -45,6 +45,16 @@ typedef struct odbPoint {
 	int16_t h;
 } odbPoint;
 
+typedef struct odbRGBColor {
+	uint16_t red;
+	uint16_t green;
+	uint16_t blue;
+} odbRGBColor;
+
+typedef struct odbPattern {
+	uint8_t bytes[8];
+} odbPattern;
+
 /* Handle abstraction (classic pointer-to-pointer style). */
 typedef unsigned char **Handle;
 
@@ -104,7 +114,9 @@ typedef union odbValueData {
 	odbBool flvalue;
 	unsigned char chvalue;
 	int16_t intvalue;
+	int16_t tokenvalue;
 	int32_t longvalue;
+	int32_t fixedvalue;
 	uint32_t datevalue;
 	odbDirection dirvalue;
 	OSType ostypevalue;
@@ -114,6 +126,8 @@ typedef union odbValueData {
 	Handle externalvalue;
 	odbPoint pointvalue;
 	odbRect **rectvalue;
+	odbPattern **patternvalue;
+	odbRGBColor **rgbvalue;
 	float singlevalue;
 	double **doublevalue;
 	Handle objspecvalue;

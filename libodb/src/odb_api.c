@@ -627,12 +627,24 @@ odbBool odbGetValue(odbRef odb, odbString bspath, odbValueRecord *value) {
 		case ty_binaryvaluetype:
 			value->data.binaryvalue = val.data.binaryvalue;
 			break;
+		case ty_tokenvaluetype:
+			value->data.tokenvalue = val.data.tokenvalue;
+			break;
 		case ty_pointvaluetype:
 			value->data.pointvalue.v = val.data.pointvalue.v;
 			value->data.pointvalue.h = val.data.pointvalue.h;
 			break;
 		case ty_rectvaluetype:
 			value->data.rectvalue = (odbRect **)val.data.rectvalue;
+			break;
+		case ty_patternvaluetype:
+			value->data.patternvalue = (odbPattern **)val.data.patternvalue;
+			break;
+		case ty_rgbvaluetype:
+			value->data.rgbvalue = (odbRGBColor **)val.data.rgbvalue;
+			break;
+		case ty_fixedvaluetype:
+			value->data.fixedvalue = val.data.fixedvalue;
 			break;
 		case ty_singlevaluetype:
 			value->data.singlevalue = val.data.singlevalue;
@@ -662,33 +674,37 @@ odbBool odbGetValue(odbRef odb, odbString bspath, odbValueRecord *value) {
 	return 1;
 }
 
-odbBool odbSetValue(odbRef odb, odbString bspath, odbValueRecord *value) {
-	if (!odb || !bspath || !value) {
+static odbBool odb_copy_sized_handle_arg(Handle source, long expected_size, Handle *dest, const char *errmsg) {
+	if (!source) {
+		odbSetLastError(ODB_ERR_INVALID_ARG, errmsg);
+		return 0;
+	}
+	long size = gethandlesize(source);
+	if (size != expected_size) {
+		odbSetLastError(ODB_ERR_INVALID_ARG, errmsg);
+		return 0;
+	}
+	if (!copyhandle(source, dest)) {
+		return 0;
+	}
+	return 1;
+}
+
+static odbBool odb_convert_value_record(const odbValueRecord *value, tyvaluerecord *val) {
+	if (!value || !val) {
 		odbSetLastError(ODB_ERR_INVALID_ARG, "invalid argument");
 		return 0;
 	}
-	hdlcancoonrecord hc = ((struct odb_ *)odb)->hc;
-	setcancoonglobals(hc);
-	hdlhashtable htable = nil;
-	bigstring bsname;
-	odbBool is_root = 0;
-	if (!odb_parse_path(bspath, &htable, bsname, &is_root)) {
-		return 0;
-	}
-	if (is_root) {
-		odbSetLastError(ODB_ERR_INVALID_ARG, "cannot set root table value");
-		return 0;
-	}
-	tyvaluerecord val;
+
 	switch (value->valuetype) {
 		case charvaluetype:
-			initvalue(&val, ty_charvaluetype);
-			val.data.chvalue = value->data.chvalue;
-			break;
+			initvalue(val, ty_charvaluetype);
+			val->data.chvalue = value->data.chvalue;
+			return 1;
 		case shortvaluetype:
-			initvalue(&val, ty_intvaluetype);
-			val.data.intvalue = value->data.intvalue;
-			break;
+			initvalue(val, ty_intvaluetype);
+			val->data.intvalue = value->data.intvalue;
+			return 1;
 		case stringvaluetype: {
 			if (!value->data.stringvalue) {
 				odbSetLastError(ODB_ERR_INVALID_ARG, "invalid string handle");
@@ -710,41 +726,113 @@ odbBool odbSetValue(odbRef odb, odbString bspath, odbValueRecord *value) {
 			if (!newheapstring(bs, &hstring)) {
 				return 0;
 			}
-			initvalue(&val, ty_stringvaluetype);
-			val.data.stringvalue = (Handle)hstring;
-			break;
+			initvalue(val, ty_stringvaluetype);
+			val->data.stringvalue = (Handle)hstring;
+			return 1;
 		}
 		case longvaluetype:
-			initvalue(&val, ty_longvaluetype);
-			val.data.longvalue = value->data.longvalue;
-			break;
+			initvalue(val, ty_longvaluetype);
+			val->data.longvalue = value->data.longvalue;
+			return 1;
 		case booleanvaluetype:
-			initvalue(&val, ty_booleanvaluetype);
-			val.data.flvalue = value->data.flvalue ? 1 : 0;
-			break;
+			initvalue(val, ty_booleanvaluetype);
+			val->data.flvalue = value->data.flvalue ? 1 : 0;
+			return 1;
 		case datevaluetype:
-			initvalue(&val, ty_datevaluetype);
-			val.data.datevalue = value->data.datevalue;
-			break;
+			initvalue(val, ty_datevaluetype);
+			val->data.datevalue = value->data.datevalue;
+			return 1;
 		case directionvaluetype:
-			initvalue(&val, ty_directionvaluetype);
-			val.data.dirvalue = (tydirection)value->data.dirvalue;
-			break;
+			initvalue(val, ty_directionvaluetype);
+			val->data.dirvalue = (tydirection)value->data.dirvalue;
+			return 1;
 		case string4valuetype:
-			initvalue(&val, ty_ostypevaluetype);
-			val.data.ostypevalue = value->data.ostypevalue;
-			break;
+			initvalue(val, ty_ostypevaluetype);
+			val->data.ostypevalue = value->data.ostypevalue;
+			return 1;
 		case singlevaluetype:
-			initvalue(&val, ty_singlevaluetype);
-			val.data.singlevalue = value->data.singlevalue;
-			break;
+			initvalue(val, ty_singlevaluetype);
+			val->data.singlevalue = value->data.singlevalue;
+			return 1;
 		case enumeratorvaluetype:
-			initvalue(&val, ty_enumvaluetype);
-			val.data.enumvalue = value->data.enumvalue;
-			break;
+			initvalue(val, ty_enumvaluetype);
+			val->data.enumvalue = value->data.enumvalue;
+			return 1;
+		case tokenvaluetype:
+			initvalue(val, ty_tokenvaluetype);
+			val->data.tokenvalue = value->data.tokenvalue;
+			return 1;
+		case pointvaluetype:
+			initvalue(val, ty_pointvaluetype);
+			val->data.pointvalue.v = value->data.pointvalue.v;
+			val->data.pointvalue.h = value->data.pointvalue.h;
+			return 1;
+		case rectvaluetype: {
+			Handle hrect = NULL;
+			if (!odb_copy_sized_handle_arg((Handle)value->data.rectvalue, (long)sizeof(Rect), &hrect, "invalid rect handle")) {
+				return 0;
+			}
+			initvalue(val, ty_rectvaluetype);
+			val->data.rectvalue = (Rect **)hrect;
+			return 1;
+		}
+		case patternvaluetype: {
+			Handle hpattern = NULL;
+			if (!odb_copy_sized_handle_arg((Handle)value->data.patternvalue, 8, &hpattern, "invalid pattern handle")) {
+				return 0;
+			}
+			initvalue(val, ty_patternvaluetype);
+			val->data.patternvalue = (void **)hpattern;
+			return 1;
+		}
+		case rgbvaluetype: {
+			Handle hrgb = NULL;
+			if (!odb_copy_sized_handle_arg((Handle)value->data.rgbvalue, (long)sizeof(RGBColor), &hrgb, "invalid rgb handle")) {
+				return 0;
+			}
+			initvalue(val, ty_rgbvaluetype);
+			val->data.rgbvalue = (RGBColor **)hrgb;
+			return 1;
+		}
+		case fixedvaluetype:
+			initvalue(val, ty_fixedvaluetype);
+			val->data.fixedvalue = (Fixed)value->data.fixedvalue;
+			return 1;
+		case doublevaluetype: {
+			Handle hdouble = NULL;
+			if (!odb_copy_sized_handle_arg((Handle)value->data.doublevalue, (long)sizeof(double), &hdouble, "invalid double handle")) {
+				return 0;
+			}
+			initvalue(val, ty_doublevaluetype);
+			val->data.doublevalue = (double **)hdouble;
+			return 1;
+		}
 		default:
 			odbSetLastError(ODB_ERR_UNSUPPORTED, "unsupported value type");
 			return 0;
+	}
+}
+
+odbBool odbSetValue(odbRef odb, odbString bspath, odbValueRecord *value) {
+	if (!odb || !bspath || !value) {
+		odbSetLastError(ODB_ERR_INVALID_ARG, "invalid argument");
+		return 0;
+	}
+	hdlcancoonrecord hc = ((struct odb_ *)odb)->hc;
+	setcancoonglobals(hc);
+	hdlhashtable htable = nil;
+	bigstring bsname;
+	odbBool is_root = 0;
+	if (!odb_parse_path(bspath, &htable, bsname, &is_root)) {
+		return 0;
+	}
+	if (is_root) {
+		odbSetLastError(ODB_ERR_INVALID_ARG, "cannot set root table value");
+		return 0;
+	}
+	tyvaluerecord val;
+	if (!odb_convert_value_record(value, &val)) {
+		return 0;
 	}
 	if (!hashtableassign(htable, bsname, val)) {
 		disposevaluerecord(val, true);

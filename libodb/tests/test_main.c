@@ -137,6 +137,18 @@ static Handle make_pascal_string_handle(const char *text) {
 	return (Handle)hstring;
 }
 
+static Handle make_handle_from_bytes(const void *data, size_t size) {
+	if (!data || size == 0) {
+		return NULL;
+	}
+	Handle h = NULL;
+	if (!newhandle((long)size, &h)) {
+		return NULL;
+	}
+	memcpy(*h, data, size);
+	return h;
+}
+
 static int copy_file(const char *src, const char *dst) {
 	FILE *in = fopen(src, "rb");
 	if (!in) {
@@ -432,6 +444,183 @@ static void test_write_values(void) {
 	odbCloseFile(odb);
 }
 
+static void test_write_additional_scalar_struct_values(void) {
+	odbRef odb = NULL;
+	const char *fixture = fixture_path();
+	odbBool ok = odbOpenPath(fixture, &odb);
+	TEST_ASSERT(ok == 1, "open should succeed for additional write tests");
+	if (!ok) {
+		return;
+	}
+
+	odbString bspath;
+	odbValueRecord value;
+	OSType type = 0;
+
+	odb_string_from_c(bspath, "root.workspace.sessionToken");
+	value.valuetype = tokenvaluetype;
+	value.data.tokenvalue = 1234;
+	ok = odbSetValue(odb, bspath, &value);
+	TEST_ASSERT(ok == 1, "odbSetValue should support tokenvaluetype");
+	ok = odbGetType(odb, bspath, &type);
+	TEST_ASSERT(ok == 1, "odbGetType should succeed for token");
+	TEST_ASSERT(type == tokenvaluetype, "sessionToken should be token type");
+	ok = odbGetValue(odb, bspath, &value);
+	TEST_ASSERT(ok == 1, "odbGetValue should succeed for token");
+	if (ok) {
+		TEST_ASSERT(value.data.tokenvalue == 1234, "token should round-trip");
+		odbDisposeValue(odb, &value);
+	}
+
+	odb_string_from_c(bspath, "root.workspace.origin");
+	value.valuetype = pointvaluetype;
+	value.data.pointvalue.v = 12;
+	value.data.pointvalue.h = 34;
+	ok = odbSetValue(odb, bspath, &value);
+	TEST_ASSERT(ok == 1, "odbSetValue should support pointvaluetype");
+	ok = odbGetType(odb, bspath, &type);
+	TEST_ASSERT(ok == 1, "odbGetType should succeed for point");
+	TEST_ASSERT(type == pointvaluetype, "origin should be point type");
+	ok = odbGetValue(odb, bspath, &value);
+	TEST_ASSERT(ok == 1, "odbGetValue should succeed for point");
+	if (ok) {
+		TEST_ASSERT(value.data.pointvalue.v == 12 && value.data.pointvalue.h == 34, "point should round-trip");
+		odbDisposeValue(odb, &value);
+	}
+
+	odbRect rect = {1, 2, 3, 4};
+	Handle hrect = make_handle_from_bytes(&rect, sizeof(rect));
+	TEST_ASSERT(hrect != NULL, "rect handle should be created");
+	odb_string_from_c(bspath, "root.workspace.bounds");
+	value.valuetype = rectvaluetype;
+	value.data.rectvalue = (odbRect **)hrect;
+	ok = odbSetValue(odb, bspath, &value);
+	TEST_ASSERT(ok == 1, "odbSetValue should support rectvaluetype");
+	disposehandle(hrect);
+	ok = odbGetType(odb, bspath, &type);
+	TEST_ASSERT(ok == 1, "odbGetType should succeed for rect");
+	TEST_ASSERT(type == rectvaluetype, "bounds should be rect type");
+	ok = odbGetValue(odb, bspath, &value);
+	TEST_ASSERT(ok == 1, "odbGetValue should succeed for rect");
+	if (ok) {
+		TEST_ASSERT(value.data.rectvalue && *value.data.rectvalue, "rect handle should be non-null");
+		if (value.data.rectvalue && *value.data.rectvalue) {
+			odbRect *r = *value.data.rectvalue;
+			TEST_ASSERT(r->top == 1 && r->left == 2 && r->bottom == 3 && r->right == 4, "rect should round-trip");
+		}
+		odbDisposeValue(odb, &value);
+	}
+
+	odbPattern pattern = {{0x11, 0x22, 0x33, 0x44, 0xAA, 0xBB, 0xCC, 0xDD}};
+	Handle hpattern = make_handle_from_bytes(&pattern, sizeof(pattern));
+	TEST_ASSERT(hpattern != NULL, "pattern handle should be created");
+	odb_string_from_c(bspath, "root.workspace.fillPattern");
+	value.valuetype = patternvaluetype;
+	value.data.patternvalue = (odbPattern **)hpattern;
+	ok = odbSetValue(odb, bspath, &value);
+	TEST_ASSERT(ok == 1, "odbSetValue should support patternvaluetype");
+	disposehandle(hpattern);
+	ok = odbGetType(odb, bspath, &type);
+	TEST_ASSERT(ok == 1, "odbGetType should succeed for pattern");
+	TEST_ASSERT(type == patternvaluetype, "fillPattern should be pattern type");
+	ok = odbGetValue(odb, bspath, &value);
+	TEST_ASSERT(ok == 1, "odbGetValue should succeed for pattern");
+	if (ok) {
+		TEST_ASSERT(value.data.patternvalue && *value.data.patternvalue, "pattern handle should be non-null");
+		if (value.data.patternvalue && *value.data.patternvalue) {
+			unsigned char *bytes = (unsigned char *)*value.data.patternvalue;
+			TEST_ASSERT(bytes[0] == 0x11 && bytes[7] == 0xDD, "pattern should round-trip");
+		}
+		odbDisposeValue(odb, &value);
+	}
+
+	odbRGBColor color = {0x1111, 0x2222, 0x3333};
+	Handle hrgb = make_handle_from_bytes(&color, sizeof(color));
+	TEST_ASSERT(hrgb != NULL, "rgb handle should be created");
+	odb_string_from_c(bspath, "root.workspace.themeColor");
+	value.valuetype = rgbvaluetype;
+	value.data.rgbvalue = (odbRGBColor **)hrgb;
+	ok = odbSetValue(odb, bspath, &value);
+	TEST_ASSERT(ok == 1, "odbSetValue should support rgbvaluetype");
+	disposehandle(hrgb);
+	ok = odbGetType(odb, bspath, &type);
+	TEST_ASSERT(ok == 1, "odbGetType should succeed for rgb");
+	TEST_ASSERT(type == rgbvaluetype, "themeColor should be rgb type");
+	ok = odbGetValue(odb, bspath, &value);
+	TEST_ASSERT(ok == 1, "odbGetValue should succeed for rgb");
+	if (ok) {
+		TEST_ASSERT(value.data.rgbvalue && *value.data.rgbvalue, "rgb handle should be non-null");
+		if (value.data.rgbvalue && *value.data.rgbvalue) {
+			odbRGBColor *c = *value.data.rgbvalue;
+			TEST_ASSERT(c->red == 0x1111 && c->green == 0x2222 && c->blue == 0x3333, "rgb should round-trip");
+		}
+		odbDisposeValue(odb, &value);
+	}
+
+	odb_string_from_c(bspath, "root.workspace.scale");
+	value.valuetype = fixedvaluetype;
+	value.data.fixedvalue = 0x00018000;
+	ok = odbSetValue(odb, bspath, &value);
+	TEST_ASSERT(ok == 1, "odbSetValue should support fixedvaluetype");
+	ok = odbGetType(odb, bspath, &type);
+	TEST_ASSERT(ok == 1, "odbGetType should succeed for fixed");
+	TEST_ASSERT(type == fixedvaluetype, "scale should be fixed type");
+	ok = odbGetValue(odb, bspath, &value);
+	TEST_ASSERT(ok == 1, "odbGetValue should succeed for fixed");
+	if (ok) {
+		TEST_ASSERT(value.data.fixedvalue == 0x00018000, "fixed should round-trip");
+		odbDisposeValue(odb, &value);
+	}
+
+	double input_double = 3.141592653589793;
+	Handle hdouble = make_handle_from_bytes(&input_double, sizeof(input_double));
+	TEST_ASSERT(hdouble != NULL, "double handle should be created");
+	odb_string_from_c(bspath, "root.workspace.precise");
+	value.valuetype = doublevaluetype;
+	value.data.doublevalue = (double **)hdouble;
+	ok = odbSetValue(odb, bspath, &value);
+	TEST_ASSERT(ok == 1, "odbSetValue should support doublevaluetype");
+	disposehandle(hdouble);
+	ok = odbGetType(odb, bspath, &type);
+	TEST_ASSERT(ok == 1, "odbGetType should succeed for double");
+	TEST_ASSERT(type == doublevaluetype, "precise should be double type");
+	ok = odbGetValue(odb, bspath, &value);
+	TEST_ASSERT(ok == 1, "odbGetValue should succeed for double");
+	if (ok) {
+		double d = (value.data.doublevalue && *value.data.doublevalue) ? **value.data.doublevalue : 0.0;
+		TEST_ASSERT(d > 3.1415 && d < 3.1416, "double should round-trip");
+		odbDisposeValue(odb, &value);
+	}
+
+	odb_string_from_c(bspath, "root.workspace.badRect");
+	value.valuetype = rectvaluetype;
+	value.data.rectvalue = NULL;
+	ok = odbSetValue(odb, bspath, &value);
+	TEST_ASSERT(ok == 0, "odbSetValue should reject null rect handle");
+
+	unsigned char bad_pattern[7] = {0};
+	Handle hbad_pattern = make_handle_from_bytes(bad_pattern, sizeof(bad_pattern));
+	TEST_ASSERT(hbad_pattern != NULL, "bad pattern handle should be created");
+	odb_string_from_c(bspath, "root.workspace.badPattern");
+	value.valuetype = patternvaluetype;
+	value.data.patternvalue = (odbPattern **)hbad_pattern;
+	ok = odbSetValue(odb, bspath, &value);
+	TEST_ASSERT(ok == 0, "odbSetValue should reject bad pattern handle size");
+	disposehandle(hbad_pattern);
+
+	unsigned char bad_double[4] = {0};
+	Handle hbad_double = make_handle_from_bytes(bad_double, sizeof(bad_double));
+	TEST_ASSERT(hbad_double != NULL, "bad double handle should be created");
+	odb_string_from_c(bspath, "root.workspace.badDouble");
+	value.valuetype = doublevaluetype;
+	value.data.doublevalue = (double **)hbad_double;
+	ok = odbSetValue(odb, bspath, &value);
+	TEST_ASSERT(ok == 0, "odbSetValue should reject bad double handle size");
+	disposehandle(hbad_double);
+
+	odbCloseFile(odb);
+}
+
 static void test_save_persists_values(void) {
 	const char *fixture = fixture_path();
 	char path[512];
@@ -464,6 +653,42 @@ static void test_save_persists_values(void) {
 	ok = odbSetValue(odb, bspath, &value);
 	TEST_ASSERT(ok == 1, "odbSetValue should succeed for age");
 
+	odbRect rect = {10, 20, 30, 40};
+	Handle hrect = make_handle_from_bytes(&rect, sizeof(rect));
+	TEST_ASSERT(hrect != NULL, "rect handle should be created for save test");
+	odb_string_from_c(bspath, "root.workspace.persistRect");
+	value.valuetype = rectvaluetype;
+	value.data.rectvalue = (odbRect **)hrect;
+	ok = odbSetValue(odb, bspath, &value);
+	TEST_ASSERT(ok == 1, "odbSetValue should succeed for persistRect");
+	if (hrect) {
+		disposehandle(hrect);
+	}
+
+	odbRGBColor rgb = {0x1111, 0x2222, 0x3333};
+	Handle hrgb = make_handle_from_bytes(&rgb, sizeof(rgb));
+	TEST_ASSERT(hrgb != NULL, "rgb handle should be created for save test");
+	odb_string_from_c(bspath, "root.workspace.persistRgb");
+	value.valuetype = rgbvaluetype;
+	value.data.rgbvalue = (odbRGBColor **)hrgb;
+	ok = odbSetValue(odb, bspath, &value);
+	TEST_ASSERT(ok == 1, "odbSetValue should succeed for persistRgb");
+	if (hrgb) {
+		disposehandle(hrgb);
+	}
+
+	double precise = 6.283185307179586;
+	Handle hdouble = make_handle_from_bytes(&precise, sizeof(precise));
+	TEST_ASSERT(hdouble != NULL, "double handle should be created for save test");
+	odb_string_from_c(bspath, "root.workspace.persistDouble");
+	value.valuetype = doublevaluetype;
+	value.data.doublevalue = (double **)hdouble;
+	ok = odbSetValue(odb, bspath, &value);
+	TEST_ASSERT(ok == 1, "odbSetValue should succeed for persistDouble");
+	if (hdouble) {
+		disposehandle(hdouble);
+	}
+
 	ok = odbSaveFile(odb);
 	TEST_ASSERT(ok == 1, "odbSaveFile should succeed");
 	odbCloseFile(odb);
@@ -491,6 +716,39 @@ static void test_save_persists_values(void) {
 	TEST_ASSERT(ok == 1, "odbGetValue should succeed for saved age");
 	if (ok) {
 		TEST_ASSERT(value.data.longvalue == 44, "age should persist as 44");
+		odbDisposeValue(odb, &value);
+	}
+
+	odb_string_from_c(bspath, "root.workspace.persistRect");
+	ok = odbGetValue(odb, bspath, &value);
+	TEST_ASSERT(ok == 1, "odbGetValue should succeed for saved rect");
+	if (ok) {
+		TEST_ASSERT(value.data.rectvalue && *value.data.rectvalue, "saved rect handle should be non-null");
+		if (value.data.rectvalue && *value.data.rectvalue) {
+			odbRect *r = *value.data.rectvalue;
+			TEST_ASSERT(r->top == 10 && r->left == 20 && r->bottom == 30 && r->right == 40, "saved rect should round-trip");
+		}
+		odbDisposeValue(odb, &value);
+	}
+
+	odb_string_from_c(bspath, "root.workspace.persistRgb");
+	ok = odbGetValue(odb, bspath, &value);
+	TEST_ASSERT(ok == 1, "odbGetValue should succeed for saved rgb");
+	if (ok) {
+		TEST_ASSERT(value.data.rgbvalue && *value.data.rgbvalue, "saved rgb handle should be non-null");
+		if (value.data.rgbvalue && *value.data.rgbvalue) {
+			odbRGBColor *c = *value.data.rgbvalue;
+			TEST_ASSERT(c->red == 0x1111 && c->green == 0x2222 && c->blue == 0x3333, "saved rgb should round-trip");
+		}
+		odbDisposeValue(odb, &value);
+	}
+
+	odb_string_from_c(bspath, "root.workspace.persistDouble");
+	ok = odbGetValue(odb, bspath, &value);
+	TEST_ASSERT(ok == 1, "odbGetValue should succeed for saved double");
+	if (ok) {
+		double d = (value.data.doublevalue && *value.data.doublevalue) ? **value.data.doublevalue : 0.0;
+		TEST_ASSERT(d > 6.2831 && d < 6.2832, "saved double should round-trip");
 		odbDisposeValue(odb, &value);
 	}
 
@@ -797,6 +1055,7 @@ int main(void) {
 	test_open_fixture();
 	test_read_workspace_values();
 	test_write_values();
+	test_write_additional_scalar_struct_values();
 	test_save_persists_values();
 	test_delete_persists();
 	test_new_table_persists();

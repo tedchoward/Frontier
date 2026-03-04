@@ -33,10 +33,17 @@ Currently, `odbSetValue` supports:
 - `stringvaluetype` (Pascal-style string `Handle`)
 - `longvaluetype`
 - `booleanvaluetype`
+- `tokenvaluetype`
 - `datevaluetype`
 - `directionvaluetype`
 - `string4valuetype`
+- `pointvaluetype`
+- `rectvaluetype` (expects `Handle` sized to `sizeof(odbRect)`)
+- `patternvaluetype` (expects `Handle` sized to 8 bytes)
+- `rgbvaluetype` (expects `Handle` sized to `sizeof(odbRGBColor)`)
+- `fixedvaluetype`
 - `singlevaluetype`
+- `doublevaluetype` (expects `Handle` sized to `sizeof(double)`)
 - `enumeratorvaluetype`
 
 Other types are read-only for now. Non-table externals are returned as opaque packed blobs (`externalvaluetype`).

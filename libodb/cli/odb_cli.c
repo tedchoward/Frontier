@@ -8,6 +8,7 @@
 #include <inttypes.h>
 #include <stdlib.h>
 #include <limits.h>
+#include <ctype.h>
 
 static void print_usage(void) {
 	printf("usage:\n");
@@ -21,7 +22,14 @@ static void print_usage(void) {
 	printf("  odb_cli <dbpath> set <path> date <uint32>\n");
 	printf("  odb_cli <dbpath> set <path> direction <name|number>\n");
 	printf("  odb_cli <dbpath> set <path> string4 <abcd>\n");
+	printf("  odb_cli <dbpath> set <path> token <int16>\n");
+	printf("  odb_cli <dbpath> set <path> fixed <int32>\n");
+	printf("  odb_cli <dbpath> set <path> point <v> <h>\n");
+	printf("  odb_cli <dbpath> set <path> rect <top> <left> <bottom> <right>\n");
+	printf("  odb_cli <dbpath> set <path> pattern <16-hex-digits>\n");
+	printf("  odb_cli <dbpath> set <path> rgb <red> <green> <blue>\n");
 	printf("  odb_cli <dbpath> set <path> single <value>\n");
+	printf("  odb_cli <dbpath> set <path> double <value>\n");
 	printf("  odb_cli <dbpath> set <path> enum <abcd>\n");
 	printf("  odb_cli <dbpath> newtable <path>\n");
 	printf("  odb_cli <dbpath> newfile\n");
@@ -191,6 +199,67 @@ static int parse_direction(const char *text, odbDirection *out) {
 	return 1;
 }
 
+static int parse_i16(const char *text, int16_t *out) {
+	char *end = NULL;
+	long v = strtol(text, &end, 0);
+	if (!end || *end != '\0' || v < SHRT_MIN || v > SHRT_MAX) {
+		return 0;
+	}
+	*out = (int16_t)v;
+	return 1;
+}
+
+static int parse_i32(const char *text, int32_t *out) {
+	char *end = NULL;
+	long v = strtol(text, &end, 0);
+	if (!end || *end != '\0' || v < INT32_MIN || v > INT32_MAX) {
+		return 0;
+	}
+	*out = (int32_t)v;
+	return 1;
+}
+
+static int parse_u16(const char *text, uint16_t *out) {
+	char *end = NULL;
+	unsigned long v = strtoul(text, &end, 0);
+	if (!end || *end != '\0' || v > UINT16_MAX) {
+		return 0;
+	}
+	*out = (uint16_t)v;
+	return 1;
+}
+
+static int parse_hex_pattern16(const char *text, unsigned char out[8]) {
+	if (!text || strlen(text) != 16) {
+		return 0;
+	}
+	for (int i = 0; i < 8; ++i) {
+		char hi = text[i * 2];
+		char lo = text[i * 2 + 1];
+		if (!isxdigit((unsigned char)hi) || !isxdigit((unsigned char)lo)) {
+			return 0;
+		}
+		unsigned int byte = 0;
+		if (sscanf(&text[i * 2], "%2x", &byte) != 1) {
+			return 0;
+		}
+		out[i] = (unsigned char)byte;
+	}
+	return 1;
+}
+
+static Handle make_handle_from_bytes(const void *data, size_t size) {
+	if (!data || size == 0) {
+		return NULL;
+	}
+	Handle h = NULL;
+	if (!newhandle((long)size, &h)) {
+		return NULL;
+	}
+	memcpy(*h, data, size);
+	return h;
+}
+
 static const char *direction_name(odbDirection dir) {
 	switch (dir) {
 		case nodirection:
@@ -269,6 +338,41 @@ static int cmd_get(odbRef odb, const char *path) {
 		case string4valuetype:
 			print_ostype(value.data.ostypevalue);
 			break;
+		case tokenvaluetype:
+			printf("%d", (int)value.data.tokenvalue);
+			break;
+		case fixedvaluetype:
+			printf("%" PRId32, value.data.fixedvalue);
+			break;
+		case pointvaluetype:
+			printf("%d,%d", (int)value.data.pointvalue.v, (int)value.data.pointvalue.h);
+			break;
+		case rectvaluetype:
+			if (value.data.rectvalue && *value.data.rectvalue) {
+				odbRect *r = *value.data.rectvalue;
+				printf("%d,%d,%d,%d", (int)r->top, (int)r->left, (int)r->bottom, (int)r->right);
+			} else {
+				printf("<rect>");
+			}
+			break;
+		case patternvaluetype:
+			if (value.data.patternvalue && *value.data.patternvalue) {
+				unsigned char *p = (unsigned char *)*value.data.patternvalue;
+				for (int i = 0; i < 8; ++i) {
+					printf("%02x", p[i]);
+				}
+			} else {
+				printf("<pattern>");
+			}
+			break;
+		case rgbvaluetype:
+			if (value.data.rgbvalue && *value.data.rgbvalue) {
+				odbRGBColor *c = *value.data.rgbvalue;
+				printf("%" PRIu16 ",%" PRIu16 ",%" PRIu16, c->red, c->green, c->blue);
+			} else {
+				printf("<rgb>");
+			}
+			break;
 		case singlevaluetype:
 			printf("%f", (double)value.data.singlevalue);
 			break;
@@ -310,7 +414,7 @@ static int cmd_get(odbRef odb, const char *path) {
 }
 
 static int cmd_set(odbRef odb, int argc, char **argv) {
-	if (argc != 6) {
+	if (argc < 6) {
 		return 1;
 	}
 	const char *path = argv[3];
@@ -343,6 +447,9 @@ static int cmd_set(odbRef odb, int argc, char **argv) {
 	}
 
 	if (strcmp(type, "char") == 0) {
+		if (argc != 6) {
+			return 1;
+		}
 		if (!value[0] || value[1] != '\0') {
 			return 1;
 		}
@@ -352,28 +459,35 @@ static int cmd_set(odbRef odb, int argc, char **argv) {
 	}
 
 	if (strcmp(type, "short") == 0) {
-		char *end = NULL;
-		long v = strtol(value, &end, 10);
-		if (!end || *end != '\0' || v < SHRT_MIN || v > SHRT_MAX) {
+		if (argc != 6) {
+			return 1;
+		}
+		int16_t v = 0;
+		if (!parse_i16(value, &v)) {
 			return 1;
 		}
 		rec.valuetype = shortvaluetype;
-		rec.data.intvalue = (int16_t)v;
+		rec.data.intvalue = v;
 		return odbSetValue(odb, bspath, &rec) ? 0 : 1;
 	}
 
 	if (strcmp(type, "long") == 0) {
-		char *end = NULL;
-		long v = strtol(value, &end, 10);
-		if (!end || *end != '\0') {
+		if (argc != 6) {
+			return 1;
+		}
+		int32_t v = 0;
+		if (!parse_i32(value, &v)) {
 			return 1;
 		}
 		rec.valuetype = longvaluetype;
-		rec.data.longvalue = (int32_t)v;
+		rec.data.longvalue = v;
 		return odbSetValue(odb, bspath, &rec) ? 0 : 1;
 	}
 
 	if (strcmp(type, "bool") == 0) {
+		if (argc != 6) {
+			return 1;
+		}
 		int v = 0;
 		if (strcmp(value, "true") == 0 || strcmp(value, "1") == 0) {
 			v = 1;
@@ -388,6 +502,9 @@ static int cmd_set(odbRef odb, int argc, char **argv) {
 	}
 
 	if (strcmp(type, "date") == 0) {
+		if (argc != 6) {
+			return 1;
+		}
 		char *end = NULL;
 		unsigned long v = strtoul(value, &end, 10);
 		if (!end || *end != '\0' || v > UINT32_MAX) {
@@ -399,6 +516,9 @@ static int cmd_set(odbRef odb, int argc, char **argv) {
 	}
 
 	if (strcmp(type, "direction") == 0) {
+		if (argc != 6) {
+			return 1;
+		}
 		odbDirection dir = nodirection;
 		if (!parse_direction(value, &dir)) {
 			return 1;
@@ -409,6 +529,9 @@ static int cmd_set(odbRef odb, int argc, char **argv) {
 	}
 
 	if (strcmp(type, "string4") == 0) {
+		if (argc != 6) {
+			return 1;
+		}
 		OSType code = 0;
 		if (!parse_fourcc(value, &code)) {
 			return 1;
@@ -418,7 +541,109 @@ static int cmd_set(odbRef odb, int argc, char **argv) {
 		return odbSetValue(odb, bspath, &rec) ? 0 : 1;
 	}
 
+	if (strcmp(type, "token") == 0) {
+		if (argc != 6) {
+			return 1;
+		}
+		int16_t token = 0;
+		if (!parse_i16(value, &token)) {
+			return 1;
+		}
+		rec.valuetype = tokenvaluetype;
+		rec.data.tokenvalue = token;
+		return odbSetValue(odb, bspath, &rec) ? 0 : 1;
+	}
+
+	if (strcmp(type, "fixed") == 0) {
+		if (argc != 6) {
+			return 1;
+		}
+		int32_t fixed = 0;
+		if (!parse_i32(value, &fixed)) {
+			return 1;
+		}
+		rec.valuetype = fixedvaluetype;
+		rec.data.fixedvalue = fixed;
+		return odbSetValue(odb, bspath, &rec) ? 0 : 1;
+	}
+
+	if (strcmp(type, "point") == 0) {
+		if (argc != 7) {
+			return 1;
+		}
+		int16_t v = 0;
+		int16_t h = 0;
+		if (!parse_i16(argv[5], &v) || !parse_i16(argv[6], &h)) {
+			return 1;
+		}
+		rec.valuetype = pointvaluetype;
+		rec.data.pointvalue.v = v;
+		rec.data.pointvalue.h = h;
+		return odbSetValue(odb, bspath, &rec) ? 0 : 1;
+	}
+
+	if (strcmp(type, "rect") == 0) {
+		if (argc != 9) {
+			return 1;
+		}
+		odbRect rect;
+		if (!parse_i16(argv[5], &rect.top) || !parse_i16(argv[6], &rect.left) ||
+			!parse_i16(argv[7], &rect.bottom) || !parse_i16(argv[8], &rect.right)) {
+			return 1;
+		}
+		Handle hrect = make_handle_from_bytes(&rect, sizeof(rect));
+		if (!hrect) {
+			return 1;
+		}
+		rec.valuetype = rectvaluetype;
+		rec.data.rectvalue = (odbRect **)hrect;
+		int ok = odbSetValue(odb, bspath, &rec) ? 0 : 1;
+		disposehandle(hrect);
+		return ok;
+	}
+
+	if (strcmp(type, "pattern") == 0) {
+		if (argc != 6) {
+			return 1;
+		}
+		odbPattern pattern = {{0}};
+		if (!parse_hex_pattern16(value, pattern.bytes)) {
+			return 1;
+		}
+		Handle hpattern = make_handle_from_bytes(&pattern, sizeof(pattern));
+		if (!hpattern) {
+			return 1;
+		}
+		rec.valuetype = patternvaluetype;
+		rec.data.patternvalue = (odbPattern **)hpattern;
+		int ok = odbSetValue(odb, bspath, &rec) ? 0 : 1;
+		disposehandle(hpattern);
+		return ok;
+	}
+
+	if (strcmp(type, "rgb") == 0) {
+		if (argc != 8) {
+			return 1;
+		}
+		odbRGBColor color;
+		if (!parse_u16(argv[5], &color.red) || !parse_u16(argv[6], &color.green) || !parse_u16(argv[7], &color.blue)) {
+			return 1;
+		}
+		Handle hrgb = make_handle_from_bytes(&color, sizeof(color));
+		if (!hrgb) {
+			return 1;
+		}
+		rec.valuetype = rgbvaluetype;
+		rec.data.rgbvalue = (odbRGBColor **)hrgb;
+		int ok = odbSetValue(odb, bspath, &rec) ? 0 : 1;
+		disposehandle(hrgb);
+		return ok;
+	}
+
 	if (strcmp(type, "single") == 0) {
+		if (argc != 6) {
+			return 1;
+		}
 		char *end = NULL;
 		float v = strtof(value, &end);
 		if (!end || *end != '\0') {
@@ -429,7 +654,30 @@ static int cmd_set(odbRef odb, int argc, char **argv) {
 		return odbSetValue(odb, bspath, &rec) ? 0 : 1;
 	}
 
+	if (strcmp(type, "double") == 0) {
+		if (argc != 6) {
+			return 1;
+		}
+		char *end = NULL;
+		double d = strtod(value, &end);
+		if (!end || *end != '\0') {
+			return 1;
+		}
+		Handle hdouble = make_handle_from_bytes(&d, sizeof(d));
+		if (!hdouble) {
+			return 1;
+		}
+		rec.valuetype = doublevaluetype;
+		rec.data.doublevalue = (double **)hdouble;
+		int ok = odbSetValue(odb, bspath, &rec) ? 0 : 1;
+		disposehandle(hdouble);
+		return ok;
+	}
+
 	if (strcmp(type, "enum") == 0) {
+		if (argc != 6) {
+			return 1;
+		}
 		OSType code = 0;
 		if (!parse_fourcc(value, &code)) {
 			return 1;
