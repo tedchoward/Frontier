@@ -35,7 +35,7 @@ static void objectdb_window_clear_clipboard(ObjectDBWindow *window) {
 	window->clipboard_cut = FALSE;
 }
 
-static char *objectdb_window_prompt_for_name(ObjectDBWindow *window) {
+static char *objectdb_window_prompt_for_name_with_initial(ObjectDBWindow *window, const char *title, const char *initial_name) {
 	GtkWidget *dialog = NULL;
 	GtkWidget *content = NULL;
 	GtkWidget *entry = NULL;
@@ -46,7 +46,7 @@ static char *objectdb_window_prompt_for_name(ObjectDBWindow *window) {
 	}
 
 	dialog = gtk_dialog_new_with_buttons(
-		"New Item",
+		title ? title : "New Item",
 		GTK_WINDOW(window->window),
 		GTK_DIALOG_MODAL | GTK_DIALOG_DESTROY_WITH_PARENT,
 		"_Cancel", GTK_RESPONSE_CANCEL,
@@ -56,6 +56,10 @@ static char *objectdb_window_prompt_for_name(ObjectDBWindow *window) {
 
 	content = gtk_dialog_get_content_area(GTK_DIALOG(dialog));
 	entry = gtk_entry_new();
+	if (initial_name && initial_name[0]) {
+		gtk_entry_set_text(GTK_ENTRY(entry), initial_name);
+		gtk_editable_select_region(GTK_EDITABLE(entry), 0, -1);
+	}
 	gtk_entry_set_activates_default(GTK_ENTRY(entry), TRUE);
 	gtk_box_pack_start(GTK_BOX(content), entry, TRUE, TRUE, 8);
 	gtk_widget_show_all(content);
@@ -71,6 +75,10 @@ static char *objectdb_window_prompt_for_name(ObjectDBWindow *window) {
 
 	gtk_widget_destroy(dialog);
 	return name;
+}
+
+static char *objectdb_window_prompt_for_name(ObjectDBWindow *window) {
+	return objectdb_window_prompt_for_name_with_initial(window, "New Item", NULL);
 }
 
 static void objectdb_window_update_table_count(ObjectDBWindow *window, GtkTreeIter *table_iter) {
@@ -703,6 +711,7 @@ static void objectdb_window_edit_paste(GtkWidget *widget, gpointer user_data) {
 	gboolean children_loaded = FALSE;
 	char *table_path = NULL;
 	char *error_message = NULL;
+	char *paste_name = NULL;
 	gboolean ok = FALSE;
 
 	if (!window || !window->tree_view || !window->tree_store || !objectdb_document_is_open(window->document)) {
@@ -724,26 +733,53 @@ static void objectdb_window_edit_paste(GtkWidget *widget, gpointer user_data) {
 		return;
 	}
 
-	if (window->clipboard_cut) {
-		ok = objectdb_document_move_entry(
-			window->document,
-			window->clipboard_path,
-			table_path,
-			window->clipboard_name,
-			&error_message
-		);
-	} else {
-		ok = objectdb_document_copy_entry(
-			window->document,
-			window->clipboard_path,
-			table_path,
-			window->clipboard_name,
-			&error_message
-		);
-	}
-	if (!ok) {
-		objectdb_window_show_error(window, error_message ? error_message : "Paste failed");
+	paste_name = g_strdup(window->clipboard_name);
+	while (paste_name && paste_name[0]) {
 		g_free(error_message);
+		error_message = NULL;
+
+		if (window->clipboard_cut) {
+			ok = objectdb_document_move_entry(
+				window->document,
+				window->clipboard_path,
+				table_path,
+				paste_name,
+				&error_message
+			);
+		} else {
+			ok = objectdb_document_copy_entry(
+				window->document,
+				window->clipboard_path,
+				table_path,
+				paste_name,
+				&error_message
+			);
+		}
+		if (ok) {
+			break;
+		}
+		if (error_message && strstr(error_message, "already exists")) {
+			char *replacement = objectdb_window_prompt_for_name_with_initial(window, "Name Already Exists", paste_name);
+			g_free(paste_name);
+			paste_name = replacement;
+			if (paste_name) {
+				g_strstrip(paste_name);
+				if (!paste_name[0]) {
+					g_free(paste_name);
+					paste_name = NULL;
+				}
+			}
+			continue;
+		}
+		break;
+	}
+
+	if (!ok) {
+		if (paste_name) {
+			objectdb_window_show_error(window, error_message ? error_message : "Paste failed");
+		}
+		g_free(error_message);
+		g_free(paste_name);
 		g_free(table_path);
 		return;
 	}
@@ -757,6 +793,7 @@ static void objectdb_window_edit_paste(GtkWidget *widget, gpointer user_data) {
 	}
 
 	g_free(error_message);
+	g_free(paste_name);
 	g_free(table_path);
 }
 
