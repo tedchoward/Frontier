@@ -568,6 +568,9 @@ odbBool odbGetValue(odbRef odb, odbString bspath, odbValueRecord *value) {
 		case ty_directionvaluetype:
 			value->data.dirvalue = (odbDirection)val.data.dirvalue;
 			break;
+		case ty_ostypevaluetype:
+			value->data.ostypevalue = val.data.ostypevalue;
+			break;
 		case ty_stringvaluetype:
 			value->data.stringvalue = val.data.stringvalue;
 			break;
@@ -631,6 +634,14 @@ odbBool odbSetValue(odbRef odb, odbString bspath, odbValueRecord *value) {
 	}
 	tyvaluerecord val;
 	switch (value->valuetype) {
+		case charvaluetype:
+			initvalue(&val, ty_charvaluetype);
+			val.data.chvalue = value->data.chvalue;
+			break;
+		case shortvaluetype:
+			initvalue(&val, ty_intvaluetype);
+			val.data.intvalue = value->data.intvalue;
+			break;
 		case stringvaluetype: {
 			if (!value->data.stringvalue) {
 				odbSetLastError(ODB_ERR_INVALID_ARG, "invalid string handle");
@@ -663,6 +674,26 @@ odbBool odbSetValue(odbRef odb, odbString bspath, odbValueRecord *value) {
 		case booleanvaluetype:
 			initvalue(&val, ty_booleanvaluetype);
 			val.data.flvalue = value->data.flvalue ? 1 : 0;
+			break;
+		case datevaluetype:
+			initvalue(&val, ty_datevaluetype);
+			val.data.datevalue = value->data.datevalue;
+			break;
+		case directionvaluetype:
+			initvalue(&val, ty_directionvaluetype);
+			val.data.dirvalue = (tydirection)value->data.dirvalue;
+			break;
+		case string4valuetype:
+			initvalue(&val, ty_ostypevaluetype);
+			val.data.ostypevalue = value->data.ostypevalue;
+			break;
+		case singlevaluetype:
+			initvalue(&val, ty_singlevaluetype);
+			val.data.singlevalue = value->data.singlevalue;
+			break;
+		case enumeratorvaluetype:
+			initvalue(&val, ty_enumvaluetype);
+			val.data.enumvalue = value->data.enumvalue;
 			break;
 		default:
 			odbSetLastError(ODB_ERR_UNSUPPORTED, "unsupported value type");

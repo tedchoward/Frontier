@@ -324,6 +324,111 @@ static void test_write_values(void) {
 		odbDisposeValue(odb, &value);
 	}
 
+	odb_string_from_c(bspath, "root.workspace.middleInitial");
+	value.valuetype = charvaluetype;
+	value.data.chvalue = 'Q';
+	ok = odbSetValue(odb, bspath, &value);
+	TEST_ASSERT(ok == 1, "odbSetValue should succeed for middleInitial");
+	ok = odbGetType(odb, bspath, &value.data.ostypevalue);
+	TEST_ASSERT(ok == 1, "odbGetType should succeed for middleInitial");
+	TEST_ASSERT(value.data.ostypevalue == charvaluetype, "middleInitial should be char");
+	ok = odbGetValue(odb, bspath, &value);
+	TEST_ASSERT(ok == 1, "odbGetValue should succeed for middleInitial");
+	if (ok) {
+		TEST_ASSERT(value.data.chvalue == 'Q', "middleInitial should be Q");
+		odbDisposeValue(odb, &value);
+	}
+
+	odb_string_from_c(bspath, "root.workspace.shoeSize");
+	value.valuetype = shortvaluetype;
+	value.data.intvalue = 9;
+	ok = odbSetValue(odb, bspath, &value);
+	TEST_ASSERT(ok == 1, "odbSetValue should succeed for shoeSize");
+	ok = odbGetType(odb, bspath, &value.data.ostypevalue);
+	TEST_ASSERT(ok == 1, "odbGetType should succeed for shoeSize");
+	TEST_ASSERT(value.data.ostypevalue == shortvaluetype, "shoeSize should be short");
+	ok = odbGetValue(odb, bspath, &value);
+	TEST_ASSERT(ok == 1, "odbGetValue should succeed for shoeSize");
+	if (ok) {
+		TEST_ASSERT(value.data.intvalue == 9, "shoeSize should be 9");
+		odbDisposeValue(odb, &value);
+	}
+
+	odb_string_from_c(bspath, "root.workspace.updatedAt");
+	value.valuetype = datevaluetype;
+	value.data.datevalue = 0x12345678U;
+	ok = odbSetValue(odb, bspath, &value);
+	TEST_ASSERT(ok == 1, "odbSetValue should succeed for updatedAt");
+	ok = odbGetType(odb, bspath, &value.data.ostypevalue);
+	TEST_ASSERT(ok == 1, "odbGetType should succeed for updatedAt");
+	TEST_ASSERT(value.data.ostypevalue == datevaluetype, "updatedAt should be date");
+	ok = odbGetValue(odb, bspath, &value);
+	TEST_ASSERT(ok == 1, "odbGetValue should succeed for updatedAt");
+	if (ok) {
+		TEST_ASSERT(value.data.datevalue == 0x12345678U, "updatedAt should round-trip");
+		odbDisposeValue(odb, &value);
+	}
+
+	odb_string_from_c(bspath, "root.workspace.sortOrder");
+	value.valuetype = directionvaluetype;
+	value.data.dirvalue = dir_sorted;
+	ok = odbSetValue(odb, bspath, &value);
+	TEST_ASSERT(ok == 1, "odbSetValue should succeed for sortOrder");
+	ok = odbGetType(odb, bspath, &value.data.ostypevalue);
+	TEST_ASSERT(ok == 1, "odbGetType should succeed for sortOrder");
+	TEST_ASSERT(value.data.ostypevalue == directionvaluetype, "sortOrder should be direction");
+	ok = odbGetValue(odb, bspath, &value);
+	TEST_ASSERT(ok == 1, "odbGetValue should succeed for sortOrder");
+	if (ok) {
+		TEST_ASSERT(value.data.dirvalue == dir_sorted, "sortOrder should be dir_sorted");
+		odbDisposeValue(odb, &value);
+	}
+
+	odb_string_from_c(bspath, "root.workspace.rating");
+	value.valuetype = singlevaluetype;
+	value.data.singlevalue = 4.5f;
+	ok = odbSetValue(odb, bspath, &value);
+	TEST_ASSERT(ok == 1, "odbSetValue should succeed for rating");
+	ok = odbGetType(odb, bspath, &value.data.ostypevalue);
+	TEST_ASSERT(ok == 1, "odbGetType should succeed for rating");
+	TEST_ASSERT(value.data.ostypevalue == singlevaluetype, "rating should be single");
+	ok = odbGetValue(odb, bspath, &value);
+	TEST_ASSERT(ok == 1, "odbGetValue should succeed for rating");
+	if (ok) {
+		TEST_ASSERT(value.data.singlevalue == 4.5f, "rating should be 4.5");
+		odbDisposeValue(odb, &value);
+	}
+
+	odb_string_from_c(bspath, "root.workspace.fileType");
+	value.valuetype = string4valuetype;
+	value.data.ostypevalue = ODB_FOURCC('T', 'E', 'S', 'T');
+	ok = odbSetValue(odb, bspath, &value);
+	TEST_ASSERT(ok == 1, "odbSetValue should succeed for fileType");
+	ok = odbGetType(odb, bspath, &value.data.ostypevalue);
+	TEST_ASSERT(ok == 1, "odbGetType should succeed for fileType");
+	TEST_ASSERT(value.data.ostypevalue == string4valuetype, "fileType should be string4");
+	ok = odbGetValue(odb, bspath, &value);
+	TEST_ASSERT(ok == 1, "odbGetValue should succeed for fileType");
+	if (ok) {
+		TEST_ASSERT(value.data.ostypevalue == ODB_FOURCC('T', 'E', 'S', 'T'), "fileType should round-trip");
+		odbDisposeValue(odb, &value);
+	}
+
+	odb_string_from_c(bspath, "root.workspace.status");
+	value.valuetype = enumeratorvaluetype;
+	value.data.enumvalue = ODB_FOURCC('D', 'O', 'N', 'E');
+	ok = odbSetValue(odb, bspath, &value);
+	TEST_ASSERT(ok == 1, "odbSetValue should succeed for status");
+	ok = odbGetType(odb, bspath, &value.data.ostypevalue);
+	TEST_ASSERT(ok == 1, "odbGetType should succeed for status");
+	TEST_ASSERT(value.data.ostypevalue == enumeratorvaluetype, "status should be enum");
+	ok = odbGetValue(odb, bspath, &value);
+	TEST_ASSERT(ok == 1, "odbGetValue should succeed for status");
+	if (ok) {
+		TEST_ASSERT(value.data.enumvalue == ODB_FOURCC('D', 'O', 'N', 'E'), "status should round-trip");
+		odbDisposeValue(odb, &value);
+	}
+
 	odbCloseFile(odb);
 }
 

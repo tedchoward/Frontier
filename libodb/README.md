@@ -28,9 +28,16 @@ Public entry points live in `libodb/include/odb_engine.h`. Key functions include
 
 ### Value Types
 Currently, `odbSetValue` supports:
+- `charvaluetype`
+- `shortvaluetype`
 - `stringvaluetype` (Pascal-style string `Handle`)
 - `longvaluetype`
 - `booleanvaluetype`
+- `datevaluetype`
+- `directionvaluetype`
+- `string4valuetype`
+- `singlevaluetype`
+- `enumeratorvaluetype`
 
 Other types are read-only for now. Non-table externals are returned as opaque packed blobs (`externalvaluetype`).
 

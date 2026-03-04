@@ -277,6 +277,8 @@ OSType langexternalgettypeid(tyvaluerecord val) {
 			return codevaluetype;
 		case ty_doublevaluetype:
 			return doublevaluetype;
+		case ty_ostypevaluetype:
+			return string4valuetype;
 		case ty_stringvaluetype:
 			return stringvaluetype;
 		case ty_directionvaluetype:

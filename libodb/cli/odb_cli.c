@@ -7,14 +7,22 @@
 #include <stdint.h>
 #include <inttypes.h>
 #include <stdlib.h>
+#include <limits.h>
 
 static void print_usage(void) {
 	printf("usage:\n");
 	printf("  odb_cli <dbpath> list <path>\n");
 	printf("  odb_cli <dbpath> get <path>\n");
 	printf("  odb_cli <dbpath> set <path> string <value>\n");
+	printf("  odb_cli <dbpath> set <path> char <value>\n");
+	printf("  odb_cli <dbpath> set <path> short <value>\n");
 	printf("  odb_cli <dbpath> set <path> long <value>\n");
 	printf("  odb_cli <dbpath> set <path> bool <true|false>\n");
+	printf("  odb_cli <dbpath> set <path> date <uint32>\n");
+	printf("  odb_cli <dbpath> set <path> direction <name|number>\n");
+	printf("  odb_cli <dbpath> set <path> string4 <abcd>\n");
+	printf("  odb_cli <dbpath> set <path> single <value>\n");
+	printf("  odb_cli <dbpath> set <path> enum <abcd>\n");
 	printf("  odb_cli <dbpath> newtable <path>\n");
 	printf("  odb_cli <dbpath> newfile\n");
 	printf("  odb_cli <dbpath> defined <path>\n");
@@ -118,6 +126,102 @@ static void print_ostype(OSType type) {
 	printf("%s", t);
 }
 
+static int parse_fourcc(const char *text, OSType *out) {
+	if (!text || !out || strlen(text) != 4) {
+		return 0;
+	}
+	*out = ODB_FOURCC(text[0], text[1], text[2], text[3]);
+	return 1;
+}
+
+static int parse_direction(const char *text, odbDirection *out) {
+	if (!text || !out) {
+		return 0;
+	}
+	if (strcmp(text, "up") == 0) {
+		*out = dir_up;
+		return 1;
+	}
+	if (strcmp(text, "down") == 0) {
+		*out = dir_down;
+		return 1;
+	}
+	if (strcmp(text, "left") == 0) {
+		*out = dir_left;
+		return 1;
+	}
+	if (strcmp(text, "right") == 0) {
+		*out = dir_right;
+		return 1;
+	}
+	if (strcmp(text, "flatup") == 0) {
+		*out = dir_flatup;
+		return 1;
+	}
+	if (strcmp(text, "flatdown") == 0) {
+		*out = dir_flatdown;
+		return 1;
+	}
+	if (strcmp(text, "sorted") == 0) {
+		*out = dir_sorted;
+		return 1;
+	}
+	if (strcmp(text, "pageup") == 0) {
+		*out = dir_pageup;
+		return 1;
+	}
+	if (strcmp(text, "pagedown") == 0) {
+		*out = dir_pagedown;
+		return 1;
+	}
+	if (strcmp(text, "pageleft") == 0) {
+		*out = dir_pageleft;
+		return 1;
+	}
+	if (strcmp(text, "pageright") == 0) {
+		*out = dir_pageright;
+		return 1;
+	}
+	char *end = NULL;
+	long raw = strtol(text, &end, 10);
+	if (!end || *end != '\0') {
+		return 0;
+	}
+	*out = (odbDirection)raw;
+	return 1;
+}
+
+static const char *direction_name(odbDirection dir) {
+	switch (dir) {
+		case nodirection:
+			return "none";
+		case dir_up:
+			return "up";
+		case dir_down:
+			return "down";
+		case dir_left:
+			return "left";
+		case dir_right:
+			return "right";
+		case dir_flatup:
+			return "flatup";
+		case dir_flatdown:
+			return "flatdown";
+		case dir_sorted:
+			return "sorted";
+		case dir_pageup:
+			return "pageup";
+		case dir_pagedown:
+			return "pagedown";
+		case dir_pageleft:
+			return "pageleft";
+		case dir_pageright:
+			return "pageright";
+		default:
+			return NULL;
+	}
+}
+
 static int cmd_get(odbRef odb, const char *path) {
 	odbString bspath;
 	odb_string_from_c(bspath, path);
@@ -147,8 +251,29 @@ static int cmd_get(odbRef odb, const char *path) {
 		case booleanvaluetype:
 			printf("%s", value.data.flvalue ? "true" : "false");
 			break;
+		case charvaluetype:
+			printf("%c", value.data.chvalue ? value.data.chvalue : ' ');
+			break;
+		case datevaluetype:
+			printf("%" PRIu32, value.data.datevalue);
+			break;
+		case directionvaluetype: {
+			const char *name = direction_name(value.data.dirvalue);
+			if (name) {
+				printf("%s", name);
+			} else {
+				printf("%d", (int)value.data.dirvalue);
+			}
+			break;
+		}
+		case string4valuetype:
+			print_ostype(value.data.ostypevalue);
+			break;
 		case singlevaluetype:
 			printf("%f", (double)value.data.singlevalue);
+			break;
+		case enumeratorvaluetype:
+			print_ostype(value.data.enumvalue);
 			break;
 		case doublevaluetype: {
 			double d = (value.data.doublevalue && *value.data.doublevalue) ? **value.data.doublevalue : 0.0;
@@ -217,6 +342,26 @@ static int cmd_set(odbRef odb, int argc, char **argv) {
 		return ok;
 	}
 
+	if (strcmp(type, "char") == 0) {
+		if (!value[0] || value[1] != '\0') {
+			return 1;
+		}
+		rec.valuetype = charvaluetype;
+		rec.data.chvalue = (unsigned char)value[0];
+		return odbSetValue(odb, bspath, &rec) ? 0 : 1;
+	}
+
+	if (strcmp(type, "short") == 0) {
+		char *end = NULL;
+		long v = strtol(value, &end, 10);
+		if (!end || *end != '\0' || v < SHRT_MIN || v > SHRT_MAX) {
+			return 1;
+		}
+		rec.valuetype = shortvaluetype;
+		rec.data.intvalue = (int16_t)v;
+		return odbSetValue(odb, bspath, &rec) ? 0 : 1;
+	}
+
 	if (strcmp(type, "long") == 0) {
 		char *end = NULL;
 		long v = strtol(value, &end, 10);
@@ -239,6 +384,58 @@ static int cmd_set(odbRef odb, int argc, char **argv) {
 		}
 		rec.valuetype = booleanvaluetype;
 		rec.data.flvalue = (odbBool)v;
+		return odbSetValue(odb, bspath, &rec) ? 0 : 1;
+	}
+
+	if (strcmp(type, "date") == 0) {
+		char *end = NULL;
+		unsigned long v = strtoul(value, &end, 10);
+		if (!end || *end != '\0' || v > UINT32_MAX) {
+			return 1;
+		}
+		rec.valuetype = datevaluetype;
+		rec.data.datevalue = (uint32_t)v;
+		return odbSetValue(odb, bspath, &rec) ? 0 : 1;
+	}
+
+	if (strcmp(type, "direction") == 0) {
+		odbDirection dir = nodirection;
+		if (!parse_direction(value, &dir)) {
+			return 1;
+		}
+		rec.valuetype = directionvaluetype;
+		rec.data.dirvalue = dir;
+		return odbSetValue(odb, bspath, &rec) ? 0 : 1;
+	}
+
+	if (strcmp(type, "string4") == 0) {
+		OSType code = 0;
+		if (!parse_fourcc(value, &code)) {
+			return 1;
+		}
+		rec.valuetype = string4valuetype;
+		rec.data.ostypevalue = code;
+		return odbSetValue(odb, bspath, &rec) ? 0 : 1;
+	}
+
+	if (strcmp(type, "single") == 0) {
+		char *end = NULL;
+		float v = strtof(value, &end);
+		if (!end || *end != '\0') {
+			return 1;
+		}
+		rec.valuetype = singlevaluetype;
+		rec.data.singlevalue = v;
+		return odbSetValue(odb, bspath, &rec) ? 0 : 1;
+	}
+
+	if (strcmp(type, "enum") == 0) {
+		OSType code = 0;
+		if (!parse_fourcc(value, &code)) {
+			return 1;
+		}
+		rec.valuetype = enumeratorvaluetype;
+		rec.data.enumvalue = code;
 		return odbSetValue(odb, bspath, &rec) ? 0 : 1;
 	}
 
