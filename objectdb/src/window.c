@@ -21,6 +21,7 @@ struct ObjectDBWindow {
 
 static void objectdb_window_show_error(ObjectDBWindow *window, const char *message);
 static gboolean objectdb_window_confirm_discard_or_save(ObjectDBWindow *window);
+static void objectdb_window_restore_expanded_rows(ObjectDBWindow *window, GPtrArray *expanded_paths);
 
 static void objectdb_window_clear_clipboard(ObjectDBWindow *window) {
 	if (!window) {
@@ -145,6 +146,30 @@ static void objectdb_window_collect_expanded_rows_recursive(
 	}
 }
 
+static gboolean objectdb_window_reload_preserving_expansion(ObjectDBWindow *window, char **error_message) {
+	GPtrArray *expanded_paths = NULL;
+	gboolean ok = FALSE;
+
+	if (error_message) {
+		*error_message = NULL;
+	}
+	if (!window || !window->tree_store || !window->tree_view) {
+		if (error_message) {
+			*error_message = g_strdup("Missing tree model");
+		}
+		return FALSE;
+	}
+
+	expanded_paths = g_ptr_array_new_with_free_func(g_free);
+	objectdb_window_collect_expanded_rows_recursive(window, GTK_TREE_MODEL(window->tree_store), NULL, expanded_paths);
+	ok = objectdb_tree_model_populate_root(window->tree_store, window->document, error_message);
+	if (ok) {
+		objectdb_window_restore_expanded_rows(window, expanded_paths);
+	}
+	g_ptr_array_free(expanded_paths, TRUE);
+	return ok;
+}
+
 static gint objectdb_window_compare_path_length(gconstpointer a, gconstpointer b) {
 	const char *pa = *(const char *const *)a;
 	const char *pb = *(const char *const *)b;
@@ -223,6 +248,110 @@ static void objectdb_window_restore_expanded_rows(ObjectDBWindow *window, GPtrAr
 			}
 		}
 	}
+}
+
+static void objectdb_window_name_cell_data_func(
+	GtkTreeViewColumn *tree_column,
+	GtkCellRenderer *cell,
+	GtkTreeModel *tree_model,
+	GtkTreeIter *iter,
+	gpointer data
+) {
+	(void)tree_column;
+	(void)data;
+	gboolean is_placeholder = FALSE;
+	char *logical_path = NULL;
+	gboolean editable = FALSE;
+
+	gtk_tree_model_get(
+		tree_model,
+		iter,
+		OBJECTDB_MODEL_COL_IS_PLACEHOLDER, &is_placeholder,
+		OBJECTDB_MODEL_COL_PATH, &logical_path,
+		-1
+	);
+
+	editable = (!is_placeholder && logical_path && logical_path[0] && strcmp(logical_path, "root") != 0);
+	g_object_set(cell, "editable", editable, NULL);
+	g_free(logical_path);
+}
+
+static void objectdb_window_name_edited(GtkCellRendererText *renderer, gchar *path_string, gchar *new_text, gpointer user_data) {
+	(void)renderer;
+	ObjectDBWindow *window = (ObjectDBWindow *)user_data;
+	GtkTreeModel *model = NULL;
+	GtkTreePath *tree_path = NULL;
+	GtkTreeIter iter;
+	GtkTreeIter parent_iter;
+	gboolean is_placeholder = FALSE;
+	gboolean has_parent = FALSE;
+	char *full_path = NULL;
+	char *current_name = NULL;
+	char *parent_path = NULL;
+	char *trimmed_name = NULL;
+	char *error_message = NULL;
+
+	if (!window || !window->tree_store || !objectdb_document_is_open(window->document) || !path_string || !new_text) {
+		return;
+	}
+
+	model = GTK_TREE_MODEL(window->tree_store);
+	tree_path = gtk_tree_path_new_from_string(path_string);
+	if (!tree_path) {
+		return;
+	}
+	if (!gtk_tree_model_get_iter(model, &iter, tree_path)) {
+		gtk_tree_path_free(tree_path);
+		return;
+	}
+
+	gtk_tree_model_get(
+		model,
+		&iter,
+		OBJECTDB_MODEL_COL_PATH, &full_path,
+		OBJECTDB_MODEL_COL_NAME, &current_name,
+		OBJECTDB_MODEL_COL_IS_PLACEHOLDER, &is_placeholder,
+		-1
+	);
+	if (is_placeholder || !full_path || !full_path[0] || strcmp(full_path, "root") == 0) {
+		goto cleanup;
+	}
+
+	trimmed_name = g_strdup(new_text);
+	g_strstrip(trimmed_name);
+	if (!trimmed_name[0]) {
+		objectdb_window_show_error(window, "Name is required");
+		goto cleanup;
+	}
+	if (current_name && strcmp(current_name, trimmed_name) == 0) {
+		goto cleanup;
+	}
+
+	has_parent = gtk_tree_model_iter_parent(model, &parent_iter, &iter);
+	if (has_parent) {
+		gtk_tree_model_get(model, &parent_iter, OBJECTDB_MODEL_COL_PATH, &parent_path, -1);
+	}
+	if (!parent_path || !parent_path[0]) {
+		g_free(parent_path);
+		parent_path = g_strdup("root");
+	}
+
+	if (!objectdb_document_move_entry(window->document, full_path, parent_path, trimmed_name, &error_message)) {
+		objectdb_window_show_error(window, error_message ? error_message : "Failed to rename entry");
+		goto cleanup;
+	}
+
+	if (!objectdb_window_reload_preserving_expansion(window, &error_message)) {
+		objectdb_window_show_error(window, error_message ? error_message : "Failed to refresh table view");
+	}
+
+cleanup:
+	g_free(error_message);
+	g_free(trimmed_name);
+	g_free(parent_path);
+	g_free(current_name);
+	g_free(full_path);
+	gtk_tree_path_free(tree_path);
 }
 
 static gboolean objectdb_window_resolve_target_table(
@@ -575,7 +704,6 @@ static void objectdb_window_edit_paste(GtkWidget *widget, gpointer user_data) {
 	char *table_path = NULL;
 	char *error_message = NULL;
 	gboolean ok = FALSE;
-	GPtrArray *expanded_paths = NULL;
 
 	if (!window || !window->tree_view || !window->tree_store || !objectdb_document_is_open(window->document)) {
 		return;
@@ -624,16 +752,10 @@ static void objectdb_window_edit_paste(GtkWidget *widget, gpointer user_data) {
 		objectdb_window_clear_clipboard(window);
 	}
 
-	expanded_paths = g_ptr_array_new_with_free_func(g_free);
-	objectdb_window_collect_expanded_rows_recursive(window, GTK_TREE_MODEL(window->tree_store), NULL, expanded_paths);
-
-	if (!objectdb_tree_model_populate_root(window->tree_store, window->document, &error_message)) {
+	if (!objectdb_window_reload_preserving_expansion(window, &error_message)) {
 		objectdb_window_show_error(window, error_message ? error_message : "Failed to refresh table view");
-	} else {
-		objectdb_window_restore_expanded_rows(window, expanded_paths);
 	}
 
-	g_ptr_array_free(expanded_paths, TRUE);
 	g_free(error_message);
 	g_free(table_path);
 }
@@ -876,12 +998,14 @@ static GtkWidget *objectdb_window_create_tree_view(ObjectDBWindow *window) {
 	gtk_tree_view_set_headers_visible(GTK_TREE_VIEW(tree_view), TRUE);
 
 	GtkCellRenderer *renderer = gtk_cell_renderer_text_new();
+	g_signal_connect(renderer, "edited", G_CALLBACK(objectdb_window_name_edited), window);
 	GtkTreeViewColumn *column = gtk_tree_view_column_new_with_attributes(
 		"Name",
 		renderer,
 		"text", OBJECTDB_MODEL_COL_NAME,
 		NULL
 	);
+	gtk_tree_view_column_set_cell_data_func(column, renderer, objectdb_window_name_cell_data_func, NULL, NULL);
 	gtk_tree_view_column_set_resizable(column, TRUE);
 	gtk_tree_view_column_set_sizing(column, GTK_TREE_VIEW_COLUMN_FIXED);
 	gtk_tree_view_column_set_min_width(column, 160);
