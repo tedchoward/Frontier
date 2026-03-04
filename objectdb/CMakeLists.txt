@@ -6,6 +6,7 @@ pkg_check_modules(GTK3 REQUIRED gtk+-3.0)
 add_executable(objectdb
 	src/main.c
 	src/app.c
+	src/window.c
 )
 
 set_target_properties(objectdb PROPERTIES

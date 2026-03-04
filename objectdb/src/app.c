@@ -1,15 +1,12 @@
 #include "app.h"
+#include "window.h"
 
 #include <gtk/gtk.h>
 
 static void objectdb_app_activate(GtkApplication *app, gpointer user_data) {
 	(void)user_data;
-
-	GtkWidget *window = gtk_application_window_new(app);
-	gtk_window_set_title(GTK_WINDOW(window), "ObjectDB");
-	gtk_window_set_default_size(GTK_WINDOW(window), 960, 640);
-
-	gtk_widget_show_all(window);
+	ObjectDBWindow *window = objectdb_window_new(app);
+	objectdb_window_present(window);
 }
 
 int objectdb_app_run(int argc, char **argv) {
