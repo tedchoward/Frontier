@@ -879,6 +879,122 @@ gboolean objectdb_document_set_value(ObjectDBDocument *document, const char *pat
 	return TRUE;
 }
 
+gboolean objectdb_document_create_scalar(ObjectDBDocument *document, const char *parent_path, const char *name, odbValueType type, char **full_path, char **error_message) {
+	odbString bspath;
+	odbValueRecord value;
+	char *joined_path = NULL;
+	char *trimmed_name = NULL;
+	gboolean ok = FALSE;
+
+	if (full_path) {
+		*full_path = NULL;
+	}
+	if (error_message) {
+		*error_message = NULL;
+	}
+
+	if (!document || !document->odb) {
+		if (error_message) {
+			*error_message = g_strdup("No document is open");
+		}
+		return FALSE;
+	}
+	if (!parent_path || !parent_path[0]) {
+		if (error_message) {
+			*error_message = g_strdup("No table selected");
+		}
+		return FALSE;
+	}
+
+	trimmed_name = g_strdup(name ? name : "");
+	g_strstrip(trimmed_name);
+	if (!trimmed_name[0]) {
+		if (error_message) {
+			*error_message = g_strdup("Name is required");
+		}
+		g_free(trimmed_name);
+		return FALSE;
+	}
+
+	memset(&value, 0, sizeof(value));
+	value.valuetype = type;
+
+	switch (type) {
+		case addressvaluetype:
+			value.data.addressvalue = objectdb_document_make_string_handle("");
+			if (!value.data.addressvalue) {
+				if (error_message) {
+					*error_message = g_strdup("Failed to allocate address value");
+				}
+				g_free(trimmed_name);
+				return FALSE;
+			}
+			break;
+		case booleanvaluetype:
+			value.data.flvalue = 0;
+			break;
+		case charvaluetype:
+			value.data.chvalue = '\0';
+			break;
+		case datevaluetype:
+			value.data.datevalue = 0;
+			break;
+		case directionvaluetype:
+			value.data.dirvalue = nodirection;
+			break;
+		case singlevaluetype:
+			value.data.singlevalue = 0.0f;
+			break;
+		case longvaluetype:
+			value.data.longvalue = 0;
+			break;
+		case stringvaluetype:
+			value.data.stringvalue = objectdb_document_make_string_handle("");
+			if (!value.data.stringvalue) {
+				if (error_message) {
+					*error_message = g_strdup("Failed to allocate string value");
+				}
+				g_free(trimmed_name);
+				return FALSE;
+			}
+			break;
+		default:
+			if (error_message) {
+				*error_message = g_strdup("Unsupported scalar type");
+			}
+			g_free(trimmed_name);
+			return FALSE;
+	}
+
+	joined_path = objectdb_document_join_path(parent_path, trimmed_name);
+	objectdb_document_path_to_odb(joined_path, bspath);
+
+	ok = odbSetValue(document->odb, bspath, &value);
+	objectdb_document_dispose_input_value(&value);
+	if (!ok) {
+		objectdb_document_set_error(error_message);
+		g_free(joined_path);
+		g_free(trimmed_name);
+		return FALSE;
+	}
+
+	if (!odbSaveFile(document->odb)) {
+		objectdb_document_set_error(error_message);
+		g_free(joined_path);
+		g_free(trimmed_name);
+		return FALSE;
+	}
+
+	if (full_path) {
+		*full_path = joined_path;
+	} else {
+		g_free(joined_path);
+	}
+
+	g_free(trimmed_name);
+	return TRUE;
+}
+
 void objectdb_entry_free(ObjectDBEntry *entry) {
 	if (!entry) {
 		return;

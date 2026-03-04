@@ -777,12 +777,12 @@ static boolean dbwriteshadowavaillist (void) {
 		
 		assert (adrblock != nildbaddress);
 
-		closehandlestream (&(**hdb).u.extensions.availlistshadow);
-		
-		if (!copyhandle ((**hdb).u.extensions.availlistshadow.data, &h))
-			goto error;
-		
-		databytes = gethandlesize (h);
+			if (!copyhandle ((**hdb).u.extensions.availlistshadow.data, &h))
+				goto error;
+			
+			closehandlestream (&(**hdb).u.extensions.availlistshadow);
+			
+			databytes = gethandlesize (h);
 
 		if (databytes != nodebytes && databytes != nodebytes - (long) sizeof (tyavailnodeshadow)) {
 			disposehandle(h);

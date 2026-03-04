@@ -1,6 +1,9 @@
 #include "document.h"
 #include "tree_model.h"
+#include "value_format.h"
 #include "window.h"
+
+#include <stdint.h>
 
 struct ObjectDBWindow {
 	GtkApplication *app;
@@ -9,6 +12,149 @@ struct ObjectDBWindow {
 	GtkWidget *tree_view;
 	GtkTreeStore *tree_store;
 };
+
+static void objectdb_window_show_error(ObjectDBWindow *window, const char *message);
+
+static char *objectdb_window_prompt_for_name(ObjectDBWindow *window) {
+	GtkWidget *dialog = NULL;
+	GtkWidget *content = NULL;
+	GtkWidget *entry = NULL;
+	char *name = NULL;
+
+	if (!window) {
+		return NULL;
+	}
+
+	dialog = gtk_dialog_new_with_buttons(
+		"New Item",
+		GTK_WINDOW(window->window),
+		GTK_DIALOG_MODAL | GTK_DIALOG_DESTROY_WITH_PARENT,
+		"_Cancel", GTK_RESPONSE_CANCEL,
+		"_OK", GTK_RESPONSE_OK,
+		NULL
+	);
+
+	content = gtk_dialog_get_content_area(GTK_DIALOG(dialog));
+	entry = gtk_entry_new();
+	gtk_entry_set_activates_default(GTK_ENTRY(entry), TRUE);
+	gtk_box_pack_start(GTK_BOX(content), entry, TRUE, TRUE, 8);
+	gtk_widget_show_all(content);
+	gtk_dialog_set_default_response(GTK_DIALOG(dialog), GTK_RESPONSE_OK);
+
+	if (gtk_dialog_run(GTK_DIALOG(dialog)) == GTK_RESPONSE_OK) {
+		const char *text = gtk_entry_get_text(GTK_ENTRY(entry));
+		if (text) {
+			name = g_strdup(text);
+			g_strstrip(name);
+		}
+	}
+
+	gtk_widget_destroy(dialog);
+	return name;
+}
+
+static void objectdb_window_update_table_count(ObjectDBWindow *window, GtkTreeIter *table_iter) {
+	GtkTreeModel *model = NULL;
+	int count = 0;
+	char *count_text = NULL;
+
+	if (!window || !window->tree_store || !table_iter) {
+		return;
+	}
+
+	model = GTK_TREE_MODEL(window->tree_store);
+	count = gtk_tree_model_iter_n_children(model, table_iter);
+	if (count == 1) {
+		count_text = g_strdup("1 item");
+	} else {
+		count_text = g_strdup_printf("%d items", count);
+	}
+
+	gtk_tree_store_set(window->tree_store, table_iter, OBJECTDB_MODEL_COL_VALUE, count_text, -1);
+	g_free(count_text);
+}
+
+static void objectdb_window_table_new_scalar(GtkWidget *widget, gpointer user_data) {
+	ObjectDBWindow *window = (ObjectDBWindow *)user_data;
+	GtkTreeSelection *selection = NULL;
+	GtkTreeModel *model = NULL;
+	GtkTreeIter table_iter;
+	gboolean has_selection = FALSE;
+	gboolean is_table = FALSE;
+	gboolean is_placeholder = FALSE;
+	gboolean children_loaded = FALSE;
+	char *table_path = NULL;
+	char *new_name = NULL;
+	char *new_full_path = NULL;
+	char *error_message = NULL;
+	odbValueType type = (odbValueType)(uintptr_t)g_object_get_data(G_OBJECT(widget), "odb-type");
+
+	if (!window || !window->tree_view || !window->tree_store || !objectdb_document_is_open(window->document)) {
+		return;
+	}
+
+	selection = gtk_tree_view_get_selection(GTK_TREE_VIEW(window->tree_view));
+	has_selection = gtk_tree_selection_get_selected(selection, &model, &table_iter);
+	if (!has_selection) {
+		objectdb_window_show_error(window, "Select a destination table first");
+		return;
+	}
+
+	gtk_tree_model_get(
+		model,
+		&table_iter,
+		OBJECTDB_MODEL_COL_PATH, &table_path,
+		OBJECTDB_MODEL_COL_IS_TABLE, &is_table,
+		OBJECTDB_MODEL_COL_IS_PLACEHOLDER, &is_placeholder,
+		OBJECTDB_MODEL_COL_CHILDREN_LOADED, &children_loaded,
+		-1
+	);
+
+	if (!is_table || is_placeholder || !table_path || !table_path[0]) {
+		objectdb_window_show_error(window, "Select a table row before creating a new item");
+		g_free(table_path);
+		return;
+	}
+
+	new_name = objectdb_window_prompt_for_name(window);
+	if (!new_name || !new_name[0]) {
+		g_free(new_name);
+		g_free(table_path);
+		return;
+	}
+
+	if (!objectdb_document_create_scalar(window->document, table_path, new_name, type, &new_full_path, &error_message)) {
+		objectdb_window_show_error(window, error_message ? error_message : "Failed to create value");
+		g_free(error_message);
+		g_free(new_name);
+		g_free(table_path);
+		return;
+	}
+
+	if (children_loaded) {
+		GtkTreeIter child_iter;
+		char *kind_text = objectdb_value_format_kind(type);
+		gtk_tree_store_append(window->tree_store, &child_iter, &table_iter);
+		gtk_tree_store_set(
+			window->tree_store,
+			&child_iter,
+			OBJECTDB_MODEL_COL_NAME, new_name,
+			OBJECTDB_MODEL_COL_VALUE, "",
+			OBJECTDB_MODEL_COL_KIND, kind_text ? kind_text : "",
+			OBJECTDB_MODEL_COL_PATH, new_full_path,
+			OBJECTDB_MODEL_COL_IS_TABLE, FALSE,
+			OBJECTDB_MODEL_COL_CHILDREN_LOADED, TRUE,
+			OBJECTDB_MODEL_COL_IS_PLACEHOLDER, FALSE,
+			-1
+		);
+		objectdb_window_update_table_count(window, &table_iter);
+		g_free(kind_text);
+	}
+
+	g_free(new_full_path);
+	g_free(new_name);
+	g_free(table_path);
+}
 
 static void objectdb_window_destroy(gpointer data) {
 	ObjectDBWindow *window = (ObjectDBWindow *)data;
@@ -246,6 +392,45 @@ static GtkWidget *objectdb_window_create_menu_bar(ObjectDBWindow *window) {
 	GtkWidget *quit_item = gtk_menu_item_new_with_mnemonic("_Quit");
 	g_signal_connect(quit_item, "activate", G_CALLBACK(objectdb_window_quit), window);
 	gtk_menu_shell_append(GTK_MENU_SHELL(file_menu), quit_item);
+
+	GtkWidget *table_item = gtk_menu_item_new_with_mnemonic("_Table");
+	gtk_menu_shell_append(GTK_MENU_SHELL(menu_bar), table_item);
+
+	GtkWidget *table_menu = gtk_menu_new();
+	gtk_menu_item_set_submenu(GTK_MENU_ITEM(table_item), table_menu);
+
+	GtkWidget *new_item = gtk_menu_item_new_with_mnemonic("_New");
+	gtk_menu_shell_append(GTK_MENU_SHELL(table_menu), new_item);
+
+	GtkWidget *new_menu = gtk_menu_new();
+	gtk_menu_item_set_submenu(GTK_MENU_ITEM(new_item), new_menu);
+
+	GtkWidget *scalar_item = gtk_menu_item_new_with_label("Scalar");
+	gtk_menu_shell_append(GTK_MENU_SHELL(new_menu), scalar_item);
+
+	GtkWidget *scalar_menu = gtk_menu_new();
+	gtk_menu_item_set_submenu(GTK_MENU_ITEM(scalar_item), scalar_menu);
+
+	struct {
+		const char *label;
+		odbValueType type;
+	} scalar_items[] = {
+		{"Address", addressvaluetype},
+		{"Boolean", booleanvaluetype},
+		{"Character", charvaluetype},
+		{"Date", datevaluetype},
+		{"Direction", directionvaluetype},
+		{"Float", singlevaluetype},
+		{"Long", longvaluetype},
+		{"String", stringvaluetype}
+	};
+
+	for (guint i = 0; i < G_N_ELEMENTS(scalar_items); ++i) {
+		GtkWidget *item = gtk_menu_item_new_with_label(scalar_items[i].label);
+		g_object_set_data(G_OBJECT(item), "odb-type", (gpointer)(uintptr_t)scalar_items[i].type);
+		g_signal_connect(item, "activate", G_CALLBACK(objectdb_window_table_new_scalar), window);
+		gtk_menu_shell_append(GTK_MENU_SHELL(scalar_menu), item);
+	}
 
 	return menu_bar;
 }
