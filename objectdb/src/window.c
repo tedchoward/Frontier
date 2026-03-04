@@ -13,10 +13,26 @@ struct ObjectDBWindow {
 	GtkWidget *tree_view;
 	GtkTreeStore *tree_store;
 	GtkListStore *kind_type_store;
+	gboolean clipboard_has_entry;
+	gboolean clipboard_cut;
+	char *clipboard_path;
+	char *clipboard_name;
 };
 
 static void objectdb_window_show_error(ObjectDBWindow *window, const char *message);
 static gboolean objectdb_window_confirm_discard_or_save(ObjectDBWindow *window);
+
+static void objectdb_window_clear_clipboard(ObjectDBWindow *window) {
+	if (!window) {
+		return;
+	}
+	g_free(window->clipboard_path);
+	g_free(window->clipboard_name);
+	window->clipboard_path = NULL;
+	window->clipboard_name = NULL;
+	window->clipboard_has_entry = FALSE;
+	window->clipboard_cut = FALSE;
+}
 
 static char *objectdb_window_prompt_for_name(ObjectDBWindow *window) {
 	GtkWidget *dialog = NULL;
@@ -75,6 +91,138 @@ static void objectdb_window_update_table_count(ObjectDBWindow *window, GtkTreeIt
 
 	gtk_tree_store_set(window->tree_store, table_iter, OBJECTDB_MODEL_COL_VALUE, count_text, -1);
 	g_free(count_text);
+}
+
+static void objectdb_window_collect_expanded_rows_recursive(
+	ObjectDBWindow *window,
+	GtkTreeModel *model,
+	GtkTreeIter *parent_iter,
+	GPtrArray *expanded_paths
+) {
+	GtkTreeIter iter;
+	gboolean valid = FALSE;
+
+	if (!window || !model || !expanded_paths) {
+		return;
+	}
+
+	if (parent_iter) {
+		valid = gtk_tree_model_iter_children(model, &iter, parent_iter);
+	} else {
+		valid = gtk_tree_model_get_iter_first(model, &iter);
+	}
+
+	while (valid) {
+		gboolean is_table = FALSE;
+		gboolean is_placeholder = FALSE;
+		char *logical_path = NULL;
+		GtkTreePath *tree_path = gtk_tree_model_get_path(model, &iter);
+
+		gtk_tree_model_get(
+			model,
+			&iter,
+			OBJECTDB_MODEL_COL_IS_TABLE, &is_table,
+			OBJECTDB_MODEL_COL_IS_PLACEHOLDER, &is_placeholder,
+			OBJECTDB_MODEL_COL_PATH, &logical_path,
+			-1
+		);
+
+		if (tree_path && is_table && !is_placeholder && logical_path && logical_path[0] &&
+			gtk_tree_view_row_expanded(GTK_TREE_VIEW(window->tree_view), tree_path)) {
+			g_ptr_array_add(expanded_paths, logical_path);
+		} else {
+			g_free(logical_path);
+		}
+
+		if (gtk_tree_model_iter_has_child(model, &iter)) {
+			objectdb_window_collect_expanded_rows_recursive(window, model, &iter, expanded_paths);
+		}
+
+		if (tree_path) {
+			gtk_tree_path_free(tree_path);
+		}
+		valid = gtk_tree_model_iter_next(model, &iter);
+	}
+}
+
+static gint objectdb_window_compare_path_length(gconstpointer a, gconstpointer b) {
+	const char *pa = *(const char *const *)a;
+	const char *pb = *(const char *const *)b;
+	size_t la = pa ? strlen(pa) : 0;
+	size_t lb = pb ? strlen(pb) : 0;
+	if (la < lb) {
+		return -1;
+	}
+	if (la > lb) {
+		return 1;
+	}
+	return 0;
+}
+
+static gboolean objectdb_window_find_iter_by_logical_path_recursive(
+	GtkTreeModel *model,
+	GtkTreeIter *parent_iter,
+	const char *logical_path,
+	GtkTreeIter *out_iter
+) {
+	GtkTreeIter iter;
+	gboolean valid = FALSE;
+
+	if (!model || !logical_path || !out_iter) {
+		return FALSE;
+	}
+
+	if (parent_iter) {
+		valid = gtk_tree_model_iter_children(model, &iter, parent_iter);
+	} else {
+		valid = gtk_tree_model_get_iter_first(model, &iter);
+	}
+
+	while (valid) {
+		char *row_path = NULL;
+		gboolean found = FALSE;
+
+		gtk_tree_model_get(model, &iter, OBJECTDB_MODEL_COL_PATH, &row_path, -1);
+		if (row_path && strcmp(row_path, logical_path) == 0) {
+			*out_iter = iter;
+			g_free(row_path);
+			return TRUE;
+		}
+		g_free(row_path);
+
+		if (gtk_tree_model_iter_has_child(model, &iter)) {
+			found = objectdb_window_find_iter_by_logical_path_recursive(model, &iter, logical_path, out_iter);
+			if (found) {
+				return TRUE;
+			}
+		}
+
+		valid = gtk_tree_model_iter_next(model, &iter);
+	}
+
+	return FALSE;
+}
+
+static void objectdb_window_restore_expanded_rows(ObjectDBWindow *window, GPtrArray *expanded_paths) {
+	GtkTreeModel *model = NULL;
+
+	if (!window || !window->tree_view || !window->tree_store || !expanded_paths) {
+		return;
+	}
+	model = GTK_TREE_MODEL(window->tree_store);
+	g_ptr_array_sort(expanded_paths, objectdb_window_compare_path_length);
+
+	for (guint i = 0; i < expanded_paths->len; ++i) {
+		const char *logical_path = (const char *)g_ptr_array_index(expanded_paths, i);
+		GtkTreeIter iter;
+		if (objectdb_window_find_iter_by_logical_path_recursive(model, NULL, logical_path, &iter)) {
+			GtkTreePath *tree_path = gtk_tree_model_get_path(model, &iter);
+			if (tree_path) {
+				gtk_tree_view_expand_row(GTK_TREE_VIEW(window->tree_view), tree_path, FALSE);
+				gtk_tree_path_free(tree_path);
+			}
+		}
+	}
 }
 
 static gboolean objectdb_window_resolve_target_table(
@@ -362,12 +510,141 @@ static void objectdb_window_edit_clear(GtkWidget *widget, gpointer user_data) {
 	g_free(path);
 }
 
+static gboolean objectdb_window_copy_or_cut_selection(ObjectDBWindow *window, gboolean cut_mode) {
+	GtkTreeSelection *selection = NULL;
+	GtkTreeModel *model = NULL;
+	GtkTreeIter iter;
+	gboolean has_selection = FALSE;
+	gboolean is_placeholder = FALSE;
+	char *path = NULL;
+	char *name = NULL;
+
+	if (!window || !window->tree_view || !objectdb_document_is_open(window->document)) {
+		return FALSE;
+	}
+
+	selection = gtk_tree_view_get_selection(GTK_TREE_VIEW(window->tree_view));
+	has_selection = gtk_tree_selection_get_selected(selection, &model, &iter);
+	if (!has_selection) {
+		objectdb_window_show_error(window, "Select an entry first");
+		return FALSE;
+	}
+
+	gtk_tree_model_get(
+		model,
+		&iter,
+		OBJECTDB_MODEL_COL_PATH, &path,
+		OBJECTDB_MODEL_COL_NAME, &name,
+		OBJECTDB_MODEL_COL_IS_PLACEHOLDER, &is_placeholder,
+		-1
+	);
+	if (is_placeholder || !path || !path[0] || strcmp(path, "root") == 0 || !name || !name[0]) {
+		objectdb_window_show_error(window, "Selected row cannot be copied");
+		g_free(path);
+		g_free(name);
+		return FALSE;
+	}
+
+	objectdb_window_clear_clipboard(window);
+	window->clipboard_has_entry = TRUE;
+	window->clipboard_cut = cut_mode;
+	window->clipboard_path = path;
+	window->clipboard_name = name;
+	return TRUE;
+}
+
+static void objectdb_window_edit_copy(GtkWidget *widget, gpointer user_data) {
+	(void)widget;
+	objectdb_window_copy_or_cut_selection((ObjectDBWindow *)user_data, FALSE);
+}
+
+static void objectdb_window_edit_cut(GtkWidget *widget, gpointer user_data) {
+	(void)widget;
+	objectdb_window_copy_or_cut_selection((ObjectDBWindow *)user_data, TRUE);
+}
+
+static void objectdb_window_edit_paste(GtkWidget *widget, gpointer user_data) {
+	(void)widget;
+	ObjectDBWindow *window = (ObjectDBWindow *)user_data;
+	GtkTreeSelection *selection = NULL;
+	GtkTreeModel *model = NULL;
+	GtkTreeIter selected_iter;
+	GtkTreeIter table_iter;
+	gboolean has_selection = FALSE;
+	gboolean children_loaded = FALSE;
+	char *table_path = NULL;
+	char *error_message = NULL;
+	gboolean ok = FALSE;
+	GPtrArray *expanded_paths = NULL;
+
+	if (!window || !window->tree_view || !window->tree_store || !objectdb_document_is_open(window->document)) {
+		return;
+	}
+	if (!window->clipboard_has_entry || !window->clipboard_path || !window->clipboard_name) {
+		objectdb_window_show_error(window, "Clipboard is empty");
+		return;
+	}
+
+	selection = gtk_tree_view_get_selection(GTK_TREE_VIEW(window->tree_view));
+	has_selection = gtk_tree_selection_get_selected(selection, &model, &selected_iter);
+	if (!has_selection) {
+		objectdb_window_show_error(window, "Select a destination row first");
+		return;
+	}
+	if (!objectdb_window_resolve_target_table(model, &selected_iter, &table_iter, &table_path, &children_loaded)) {
+		objectdb_window_show_error(window, "Could not resolve a containing table from the current selection");
+		return;
+	}
+
+	if (window->clipboard_cut) {
+		ok = objectdb_document_move_entry(
+			window->document,
+			window->clipboard_path,
+			table_path,
+			window->clipboard_name,
+			&error_message
+		);
+	} else {
+		ok = objectdb_document_copy_entry(
+			window->document,
+			window->clipboard_path,
+			table_path,
+			window->clipboard_name,
+			&error_message
+		);
+	}
+	if (!ok) {
+		objectdb_window_show_error(window, error_message ? error_message : "Paste failed");
+		g_free(error_message);
+		g_free(table_path);
+		return;
+	}
+
+	if (window->clipboard_cut) {
+		objectdb_window_clear_clipboard(window);
+	}
+
+	expanded_paths = g_ptr_array_new_with_free_func(g_free);
+	objectdb_window_collect_expanded_rows_recursive(window, GTK_TREE_MODEL(window->tree_store), NULL, expanded_paths);
+
+	if (!objectdb_tree_model_populate_root(window->tree_store, window->document, &error_message)) {
+		objectdb_window_show_error(window, error_message ? error_message : "Failed to refresh table view");
+	} else {
+		objectdb_window_restore_expanded_rows(window, expanded_paths);
+	}
+
+	g_ptr_array_free(expanded_paths, TRUE);
+	g_free(error_message);
+	g_free(table_path);
+}
+
 static void objectdb_window_destroy(gpointer data) {
 	ObjectDBWindow *window = (ObjectDBWindow *)data;
 	if (window->kind_type_store) {
 		g_object_unref(window->kind_type_store);
 		window->kind_type_store = NULL;
 	}
+	objectdb_window_clear_clipboard(window);
 	objectdb_document_free(window->document);
 	g_free(window);
 }
@@ -715,6 +992,7 @@ static void objectdb_window_show_open_dialog(GtkWidget *widget, gpointer user_da
 			objectdb_window_show_error(window, error_message ? error_message : "Failed to read database contents");
 			g_free(error_message);
 		} else {
+			objectdb_window_clear_clipboard(window);
 			objectdb_window_update_title(window, filename);
 		}
 
@@ -887,6 +1165,21 @@ static GtkWidget *objectdb_window_create_menu_bar(ObjectDBWindow *window) {
 
 	GtkWidget *edit_menu = gtk_menu_new();
 	gtk_menu_item_set_submenu(GTK_MENU_ITEM(edit_item), edit_menu);
+
+	GtkWidget *cut_item = gtk_menu_item_new_with_mnemonic("Cu_t");
+	g_signal_connect(cut_item, "activate", G_CALLBACK(objectdb_window_edit_cut), window);
+	gtk_menu_shell_append(GTK_MENU_SHELL(edit_menu), cut_item);
+
+	GtkWidget *copy_item = gtk_menu_item_new_with_mnemonic("_Copy");
+	g_signal_connect(copy_item, "activate", G_CALLBACK(objectdb_window_edit_copy), window);
+	gtk_menu_shell_append(GTK_MENU_SHELL(edit_menu), copy_item);
+
+	GtkWidget *paste_item = gtk_menu_item_new_with_mnemonic("_Paste");
+	g_signal_connect(paste_item, "activate", G_CALLBACK(objectdb_window_edit_paste), window);
+	gtk_menu_shell_append(GTK_MENU_SHELL(edit_menu), paste_item);
+
+	GtkWidget *edit_separator = gtk_separator_menu_item_new();
+	gtk_menu_shell_append(GTK_MENU_SHELL(edit_menu), edit_separator);
 
 	GtkWidget *clear_item = gtk_menu_item_new_with_mnemonic("_Clear");
 	g_signal_connect(clear_item, "activate", G_CALLBACK(objectdb_window_edit_clear), window);
