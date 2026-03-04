@@ -324,6 +324,30 @@ static OSType getbinarytypeid(Handle h) {
 	return ODB_FOURCC(p[0], p[1], p[2], p[3]);
 }
 
+static odbDirection odb_normalize_direction_value(int16_t raw) {
+	/* Some legacy roots store direction codes shifted by one byte (e.g. up=256). */
+	if ((raw & 0x00FF) == 0) {
+		int16_t shifted = (int16_t)((uint16_t)raw >> 8);
+		switch (shifted) {
+			case dir_up:
+			case dir_down:
+			case dir_left:
+			case dir_right:
+			case dir_flatup:
+			case dir_flatdown:
+			case dir_sorted:
+			case dir_pageup:
+			case dir_pagedown:
+			case dir_pageleft:
+			case dir_pageright:
+				return (odbDirection)shifted;
+			default:
+				break;
+		}
+	}
+	return (odbDirection)raw;
+}
+
 odbBool odbOpenPath(const char *path, odbRef *odb) {
 	if (!path || !odb) {
 		odbSetLastError(ODB_ERR_INVALID_ARG, "invalid argument");
@@ -612,7 +636,7 @@ odbBool odbGetValue(odbRef odb, odbString bspath, odbValueRecord *value) {
 			value->data.datevalue = val.data.datevalue;
 			break;
 		case ty_directionvaluetype:
-			value->data.dirvalue = (odbDirection)val.data.dirvalue;
+			value->data.dirvalue = odb_normalize_direction_value((int16_t)val.data.dirvalue);
 			break;
 		case ty_ostypevaluetype:
 			value->data.ostypevalue = val.data.ostypevalue;
@@ -785,7 +809,7 @@ static odbBool odb_convert_value_record(const odbValueRecord *value, tyvaluereco
 			return 1;
 		case directionvaluetype:
 			initvalue(val, ty_directionvaluetype);
-			val->data.dirvalue = (tydirection)value->data.dirvalue;
+			val->data.dirvalue = (tydirection)odb_normalize_direction_value((int16_t)value->data.dirvalue);
 			return 1;
 		case addressvaluetype: {
 			bigstring bs;
