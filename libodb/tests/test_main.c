@@ -201,7 +201,7 @@ static void test_read_workspace_values(void) {
 	odb_string_from_c(bspath, "root.workspace");
 	ok = odbGetType(odb, bspath, &type);
 	TEST_ASSERT(ok == 1, "odbGetType should succeed for root.workspace");
-	TEST_ASSERT(type == (OSType)'tabl', "root.workspace should be a table");
+	TEST_ASSERT(type == tablevaluetype, "root.workspace should be a table");
 	ok = odbCountItems(odb, bspath, &count);
 	TEST_ASSERT(ok == 1, "odbCountItems should succeed for root.workspace");
 	TEST_ASSERT(count == 3, "root.workspace should contain 3 items");
@@ -215,7 +215,7 @@ static void test_read_workspace_values(void) {
 	odb_string_from_c(bspath, "root.workspace.firstName");
 	ok = odbGetType(odb, bspath, &type);
 	TEST_ASSERT(ok == 1, "odbGetType should succeed for firstName");
-	TEST_ASSERT(type == (OSType)'TEXT', "firstName should be TEXT");
+	TEST_ASSERT(type == stringvaluetype, "firstName should be TEXT");
 	ok = odbGetValue(odb, bspath, &value);
 	TEST_ASSERT(ok == 1, "odbGetValue should succeed for firstName");
 	if (ok && handle_to_c_string(value.data.stringvalue, buffer, sizeof(buffer))) {
@@ -238,7 +238,7 @@ static void test_read_workspace_values(void) {
 	odb_string_from_c(bspath, "root.workspace.lastName");
 	ok = odbGetType(odb, bspath, &type);
 	TEST_ASSERT(ok == 1, "odbGetType should succeed for lastName");
-	TEST_ASSERT(type == (OSType)'TEXT', "lastName should be TEXT");
+	TEST_ASSERT(type == stringvaluetype, "lastName should be TEXT");
 	ok = odbGetValue(odb, bspath, &value);
 	TEST_ASSERT(ok == 1, "odbGetValue should succeed for lastName");
 	if (ok && handle_to_c_string(value.data.stringvalue, buffer, sizeof(buffer))) {
@@ -254,11 +254,11 @@ static void test_read_workspace_values(void) {
 	ok = odbGetValue(odb, bspath, &value);
 	TEST_ASSERT(ok == 1, "odbGetValue should succeed for age");
 	if (ok) {
-		if (type == (OSType)'long') {
+		if (type == longvaluetype) {
 			TEST_ASSERT(value.data.longvalue == 43, "age should be 43 (long)");
-		} else if (type == (OSType)'shor') {
+		} else if (type == shortvaluetype) {
 			TEST_ASSERT(value.data.intvalue == 43, "age should be 43 (short)");
-		} else if (type == (OSType)'doub') {
+		} else if (type == doublevaluetype) {
 			double d = (value.data.doublevalue && *value.data.doublevalue) ? **value.data.doublevalue : 0.0;
 			TEST_ASSERT((int)d == 43, "age should be 43 (double)");
 		} else {
@@ -517,7 +517,7 @@ static void test_new_file_creates_db(void) {
 	odb_string_from_c(bspath, "root");
 	ok = odbGetType(odb, bspath, &type);
 	TEST_ASSERT(ok == 1, "odbGetType should succeed for root on new db");
-	TEST_ASSERT(type == (OSType)'tabl', "root should be a table on new db");
+	TEST_ASSERT(type == tablevaluetype, "root should be a table on new db");
 
 	ok = odbCountItems(odb, bspath, &count);
 	TEST_ASSERT(ok == 1, "odbCountItems should succeed for root on new db");

@@ -258,127 +258,127 @@ boolean langexternalnewvalue(tyexternalid id, Handle hdata, tyvaluerecord *val) 
 OSType langexternalgettypeid(tyvaluerecord val) {
 	switch (val.valuetype) {
 		case ty_charvaluetype:
-			return (OSType)'char';
+			return charvaluetype;
 		case ty_intvaluetype:
-			return (OSType)'shor';
+			return shortvaluetype;
 		case ty_longvaluetype:
-			return (OSType)'long';
+			return longvaluetype;
 		case ty_binaryvaluetype:
-			return (OSType)'data';
+			return binaryvaluetype;
 		case ty_booleanvaluetype:
-			return (OSType)'bool';
+			return booleanvaluetype;
 		case ty_tokenvaluetype:
-			return (OSType)'tokn';
+			return tokenvaluetype;
 		case ty_datevaluetype:
-			return (OSType)'date';
+			return datevaluetype;
 		case ty_addressvaluetype:
-			return (OSType)'addr';
+			return addressvaluetype;
 		case ty_codevaluetype:
-			return (OSType)'code';
+			return codevaluetype;
 		case ty_doublevaluetype:
-			return (OSType)'doub';
+			return doublevaluetype;
 		case ty_stringvaluetype:
-			return (OSType)'TEXT';
+			return stringvaluetype;
 		case ty_directionvaluetype:
-			return (OSType)'dir ';
+			return directionvaluetype;
 		case ty_pointvaluetype:
-			return (OSType)'QDpt';
+			return pointvaluetype;
 		case ty_rectvaluetype:
-			return (OSType)'qdrt';
+			return rectvaluetype;
 		case ty_patternvaluetype:
-			return (OSType)'tptn';
+			return patternvaluetype;
 		case ty_rgbvaluetype:
-			return (OSType)'cRGB';
+			return rgbvaluetype;
 		case ty_fixedvaluetype:
-			return (OSType)'fixd';
+			return fixedvaluetype;
 		case ty_singlevaluetype:
-			return (OSType)'sing';
+			return singlevaluetype;
 		case ty_objspecvaluetype:
-			return (OSType)'obj ';
+			return objspecvaluetype;
 		case ty_filespecvaluetype:
-			return (OSType)'fss ';
+			return filespecvaluetype;
 		case ty_aliasvaluetype:
-			return (OSType)'alis';
+			return aliasvaluetype;
 		case ty_enumvaluetype:
-			return (OSType)'enum';
+			return enumeratorvaluetype;
 		case ty_listvaluetype:
-			return (OSType)'list';
+			return listvaluetype;
 		case ty_recordvaluetype:
-			return (OSType)'reco';
+			return recordvaluetype;
 		case ty_externalvaluetype: {
 			hdlexternalvariable hv = (hdlexternalvariable)val.data.externalvalue;
 			if (!hv) {
-				return (OSType)'xtrn';
+				return externalvaluetype;
 			}
 			switch ((tyexternalid)(**hv).id) {
 				case idtableprocessor:
-					return (OSType)'tabl';
+					return tablevaluetype;
 				case idscriptprocessor:
-					return (OSType)'scpt';
+					return scriptvaluetype;
 				case idmenuprocessor:
-					return (OSType)'mbar';
+					return menubarvaluetype;
 				case idoutlineprocessor:
-					return (OSType)'optx';
+					return outlinevaluetype;
 				default:
-					return (OSType)'xtrn';
+					return externalvaluetype;
 			}
 		}
 		default:
-			return (OSType)0x3F3F3F3F; // '????'
+			return unknownvaluetype;
 	}
 }
 
 tyvaluetype langexternalgetvaluetype(OSType typeid) {
 	switch (typeid) {
-		case (OSType)'char':
+		case charvaluetype:
 			return ty_charvaluetype;
-		case (OSType)'shor':
+		case shortvaluetype:
 			return ty_intvaluetype;
-		case (OSType)'long':
+		case longvaluetype:
 			return ty_longvaluetype;
-		case (OSType)'data':
+		case binaryvaluetype:
 			return ty_binaryvaluetype;
-		case (OSType)'bool':
+		case booleanvaluetype:
 			return ty_booleanvaluetype;
-		case (OSType)'tokn':
+		case tokenvaluetype:
 			return ty_tokenvaluetype;
-		case (OSType)'date':
+		case datevaluetype:
 			return ty_datevaluetype;
-		case (OSType)'addr':
+		case addressvaluetype:
 			return ty_addressvaluetype;
-		case (OSType)'code':
+		case codevaluetype:
 			return ty_codevaluetype;
-		case (OSType)'doub':
+		case doublevaluetype:
 			return ty_doublevaluetype;
-		case (OSType)'TEXT':
+		case stringvaluetype:
 			return ty_stringvaluetype;
-		case (OSType)'dir ':
+		case directionvaluetype:
 			return ty_directionvaluetype;
-		case (OSType)'QDpt':
+		case pointvaluetype:
 			return ty_pointvaluetype;
-		case (OSType)'qdrt':
+		case rectvaluetype:
 			return ty_rectvaluetype;
-		case (OSType)'tptn':
+		case patternvaluetype:
 			return ty_patternvaluetype;
-		case (OSType)'cRGB':
+		case rgbvaluetype:
 			return ty_rgbvaluetype;
-		case (OSType)'fixd':
+		case fixedvaluetype:
 			return ty_fixedvaluetype;
-		case (OSType)'sing':
+		case singlevaluetype:
 			return ty_singlevaluetype;
-		case (OSType)'obj ':
+		case objspecvaluetype:
 			return ty_objspecvaluetype;
-		case (OSType)'fss ':
+		case filespecvaluetype:
 			return ty_filespecvaluetype;
-		case (OSType)'alis':
+		case aliasvaluetype:
 			return ty_aliasvaluetype;
-		case (OSType)'enum':
+		case enumeratorvaluetype:
 			return ty_enumvaluetype;
-		case (OSType)'list':
+		case listvaluetype:
 			return ty_listvaluetype;
-		case (OSType)'reco':
+		case recordvaluetype:
 			return ty_recordvaluetype;
-		case (OSType)'tabl':
+		case tablevaluetype:
 			return ty_externalvaluetype;
 		default:
 			return (tyvaluetype)-1;
@@ -781,6 +781,14 @@ boolean pophashtable(void) {
 	return true;
 }
 
+static void dirtyhashtable(hdlhashtable htable) {
+	if (!htable) {
+		return;
+	}
+	(**htable).fldirty = true;
+	(**htable).timelastsave = timenow();
+}
+
 hdlhashtable sethashtable(hdlhashtable hset) {
 	hdlhashtable prev = currenthashtable;
 	currenthashtable = hset;
@@ -858,6 +866,7 @@ boolean hashinsertnode(hdlhashnode hnode, hdlhashtable htable) {
 	hdlhashtable prev = sethashtable(htable);
 	hashsortedinsert(hnode);
 	sethashtable(prev);
+	dirtyhashtable(htable);
 	return true;
 }
 
@@ -975,6 +984,7 @@ boolean hashtabledelete(hdlhashtable htable, bigstring bs) {
 	boolean fl = hashlocate(bs, &hnode, &hprev);
 	if (fl) {
 		disposehashnode(htable, hnode, true);
+		dirtyhashtable(htable);
 	}
 	pophashtable();
 	return fl;
@@ -1033,6 +1043,7 @@ boolean hashassign(const bigstring bs, tyvaluerecord val) {
 	/* replace */
 	disposevaluerecord((**hnode).val, true);
 	(**hnode).val = val;
+	dirtyhashtable(currenthashtable);
 	return true;
 }
 

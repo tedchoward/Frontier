@@ -28,6 +28,9 @@ typedef uint8_t odbBool;
 
 typedef uint32_t OSType;
 
+#define ODB_FOURCC(a, b, c, d) \
+	((OSType)(((uint32_t)(uint8_t)(a) << 24) | ((uint32_t)(uint8_t)(b) << 16) | ((uint32_t)(uint8_t)(c) << 8) | (uint32_t)(uint8_t)(d)))
+
 typedef unsigned char odbString[256];
 
 typedef struct odbRect {
@@ -61,40 +64,40 @@ typedef enum odbDirection {
 } odbDirection;
 
 typedef enum odbValueType {
-	unknownvaluetype = '\?\?\?\?',
-	charvaluetype = 'char',
-	shortvaluetype = 'shor',
-	longvaluetype = 'long',
-	binaryvaluetype = 'data',
-	booleanvaluetype = 'bool',
-	tokenvaluetype = 'tokn',
-	datevaluetype = 'date',
-	addressvaluetype = 'addr',
-	codevaluetype = 'code',
-	extendedvaluetype = 'exte',
-	stringvaluetype = 'TEXT',
-	externalvaluetype = 'xtrn',
-	directionvaluetype = 'dir ',
-	string4valuetype = 'type',
-	pointvaluetype = 'QDpt',
-	rectvaluetype = 'qdrt',
-	patternvaluetype = 'tptn',
-	rgbvaluetype = 'cRGB',
-	fixedvaluetype = 'fixd',
-	singlevaluetype = 'sing',
-	doublevaluetype = 'doub',
-	objspecvaluetype = 'obj ',
-	filespecvaluetype = 'fss ',
-	aliasvaluetype = 'alis',
-	enumeratorvaluetype = 'enum',
-	listvaluetype = 'list',
-	recordvaluetype = 'reco',
-	outlinevaluetype = 'optx',
-	wptextvaluetype = 'wptx',
-	tablevaluetype = 'tabl',
-	scriptvaluetype = 'scpt',
-	menubarvaluetype = 'mbar',
-	picturevaluetype = 'pict'
+	unknownvaluetype = ODB_FOURCC('?', '?', '?', '?'),
+	charvaluetype = ODB_FOURCC('c', 'h', 'a', 'r'),
+	shortvaluetype = ODB_FOURCC('s', 'h', 'o', 'r'),
+	longvaluetype = ODB_FOURCC('l', 'o', 'n', 'g'),
+	binaryvaluetype = ODB_FOURCC('d', 'a', 't', 'a'),
+	booleanvaluetype = ODB_FOURCC('b', 'o', 'o', 'l'),
+	tokenvaluetype = ODB_FOURCC('t', 'o', 'k', 'n'),
+	datevaluetype = ODB_FOURCC('d', 'a', 't', 'e'),
+	addressvaluetype = ODB_FOURCC('a', 'd', 'd', 'r'),
+	codevaluetype = ODB_FOURCC('c', 'o', 'd', 'e'),
+	extendedvaluetype = ODB_FOURCC('e', 'x', 't', 'e'),
+	stringvaluetype = ODB_FOURCC('T', 'E', 'X', 'T'),
+	externalvaluetype = ODB_FOURCC('x', 't', 'r', 'n'),
+	directionvaluetype = ODB_FOURCC('d', 'i', 'r', ' '),
+	string4valuetype = ODB_FOURCC('t', 'y', 'p', 'e'),
+	pointvaluetype = ODB_FOURCC('Q', 'D', 'p', 't'),
+	rectvaluetype = ODB_FOURCC('q', 'd', 'r', 't'),
+	patternvaluetype = ODB_FOURCC('t', 'p', 't', 'n'),
+	rgbvaluetype = ODB_FOURCC('c', 'R', 'G', 'B'),
+	fixedvaluetype = ODB_FOURCC('f', 'i', 'x', 'd'),
+	singlevaluetype = ODB_FOURCC('s', 'i', 'n', 'g'),
+	doublevaluetype = ODB_FOURCC('d', 'o', 'u', 'b'),
+	objspecvaluetype = ODB_FOURCC('o', 'b', 'j', ' '),
+	filespecvaluetype = ODB_FOURCC('f', 's', 's', ' '),
+	aliasvaluetype = ODB_FOURCC('a', 'l', 'i', 's'),
+	enumeratorvaluetype = ODB_FOURCC('e', 'n', 'u', 'm'),
+	listvaluetype = ODB_FOURCC('l', 'i', 's', 't'),
+	recordvaluetype = ODB_FOURCC('r', 'e', 'c', 'o'),
+	outlinevaluetype = ODB_FOURCC('o', 'p', 't', 'x'),
+	wptextvaluetype = ODB_FOURCC('w', 'p', 't', 'x'),
+	tablevaluetype = ODB_FOURCC('t', 'a', 'b', 'l'),
+	scriptvaluetype = ODB_FOURCC('s', 'c', 'p', 't'),
+	menubarvaluetype = ODB_FOURCC('m', 'b', 'a', 'r'),
+	picturevaluetype = ODB_FOURCC('p', 'i', 'c', 't')
 } odbValueType;
 
 typedef union odbValueData {

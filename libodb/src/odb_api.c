@@ -271,7 +271,7 @@ static boolean odb_parse_path(const odbString bspath, hdlhashtable *htable, bigs
 
 static OSType getbinarytypeid(Handle h) {
 	if (!h || gethandlesize(h) < 4) {
-		return (OSType)'data';
+		return binaryvaluetype;
 	}
 	OSType type = 0;
 	memcpy(&type, *h, sizeof(type));
@@ -477,7 +477,7 @@ odbBool odbGetType(odbRef odb, odbString bspath, OSType *type) {
 		return 0;
 	}
 	if (is_root) {
-		*type = (OSType)'tabl';
+		*type = tablevaluetype;
 		return 1;
 	}
 	tyvaluerecord val;
@@ -520,7 +520,7 @@ odbBool odbGetValue(odbRef odb, odbString bspath, odbValueRecord *value) {
 	}
 	if (val.valuetype == ty_externalvaluetype) {
 		OSType typeid = langexternalgettypeid(val);
-		if (typeid == (OSType)'tabl') {
+		if (typeid == tablevaluetype) {
 			if (!copyvaluerecord(val, &val)) {
 				return 0;
 			}
