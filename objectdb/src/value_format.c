@@ -120,6 +120,18 @@ static char *objectdb_value_format_pattern(odbPattern **pattern_handle) {
 	return g_string_free(text, FALSE);
 }
 
+static char *objectdb_value_format_external(Handle external_handle) {
+	long size = 0;
+	if (!external_handle) {
+		return g_strdup("<external>");
+	}
+	size = gethandlesize(external_handle);
+	if (size < 0) {
+		return g_strdup("<external>");
+	}
+	return g_strdup_printf("<external %ld bytes>", size);
+}
+
 static char *objectdb_value_format_date(uint32_t mac_seconds) {
 	static const uint32_t kMacEpochDelta = 2082844800U;
 	time_t unix_seconds = 0;
@@ -258,7 +270,12 @@ char *objectdb_value_format_value(odbValueType type, const odbValueRecord *value
 		case binaryvaluetype:
 			return g_strdup("<binary>");
 		case externalvaluetype:
-			return g_strdup("<external>");
+		case scriptvaluetype:
+		case menubarvaluetype:
+		case outlinevaluetype:
+		case wptextvaluetype:
+		case picturevaluetype:
+			return objectdb_value_format_external(value->data.externalvalue);
 		case doublevaluetype:
 			if (value->data.doublevalue && *value->data.doublevalue) {
 				return g_strdup_printf("%g", **value->data.doublevalue);
