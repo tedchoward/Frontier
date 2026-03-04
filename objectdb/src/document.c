@@ -1,4 +1,5 @@
 #include "document.h"
+#include "value_format.h"
 
 #include "odb_errors.h"
 
@@ -155,8 +156,12 @@ GPtrArray *objectdb_document_get_children(ObjectDBDocument *document, const char
 		ObjectDBEntry *entry = NULL;
 		char *name = NULL;
 		char *full_path = NULL;
+		char *value_text = NULL;
+		char *kind_text = NULL;
 		OSType type = 0;
 		odbString child_path;
+		odbValueRecord value;
+		gboolean have_value = FALSE;
 
 		if (!odbGetNthItem(document->odb, bspath, index, bsname)) {
 			objectdb_document_set_error(error_message);
@@ -181,8 +186,27 @@ GPtrArray *objectdb_document_get_children(ObjectDBDocument *document, const char
 		entry->full_path = full_path;
 		entry->value_type = (odbValueType)type;
 		entry->is_table = (type == tablevaluetype);
+		entry->kind_text = objectdb_value_format_kind(entry->value_type);
+
+		if (entry->is_table) {
+			entry->value_text = g_strdup("<table>");
+		} else {
+			if (!odbGetValue(document->odb, child_path, &value)) {
+				objectdb_document_set_error(error_message);
+				objectdb_entry_free(entry);
+				g_ptr_array_free(entries, TRUE);
+				return NULL;
+			}
+			have_value = TRUE;
+			value_text = objectdb_value_format_value(entry->value_type, &value);
+			entry->value_text = value_text;
+		}
 
 		g_ptr_array_add(entries, entry);
+
+		if (have_value) {
+			odbDisposeValue(document->odb, &value);
+		}
 	}
 
 	return entries;
@@ -195,5 +219,7 @@ void objectdb_entry_free(ObjectDBEntry *entry) {
 
 	g_free(entry->name);
 	g_free(entry->full_path);
+	g_free(entry->value_text);
+	g_free(entry->kind_text);
 	g_free(entry);
 }

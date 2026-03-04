@@ -1,16 +1,10 @@
+#include "document.h"
+#include "tree_model.h"
 #include "window.h"
-
-#include <string.h>
-
-enum {
-	COL_NAME = 0,
-	COL_VALUE,
-	COL_KIND,
-	COL_COUNT
-};
 
 struct ObjectDBWindow {
 	GtkApplication *app;
+	ObjectDBDocument *document;
 	GtkWidget *window;
 	GtkWidget *tree_view;
 	GtkTreeStore *tree_store;
@@ -18,7 +12,28 @@ struct ObjectDBWindow {
 
 static void objectdb_window_destroy(gpointer data) {
 	ObjectDBWindow *window = (ObjectDBWindow *)data;
+	objectdb_document_free(window->document);
 	g_free(window);
+}
+
+static void objectdb_window_show_error(ObjectDBWindow *window, const char *message) {
+	GtkWidget *dialog = NULL;
+
+	if (!window || !message) {
+		return;
+	}
+
+	dialog = gtk_message_dialog_new(
+		GTK_WINDOW(window->window),
+		GTK_DIALOG_MODAL | GTK_DIALOG_DESTROY_WITH_PARENT,
+		GTK_MESSAGE_ERROR,
+		GTK_BUTTONS_CLOSE,
+		"%s",
+		message
+	);
+
+	gtk_dialog_run(GTK_DIALOG(dialog));
+	gtk_widget_destroy(dialog);
 }
 
 static void objectdb_window_update_title(ObjectDBWindow *window, const char *path) {
@@ -37,12 +52,7 @@ static void objectdb_window_update_title(ObjectDBWindow *window, const char *pat
 }
 
 static GtkWidget *objectdb_window_create_tree_view(ObjectDBWindow *window) {
-	window->tree_store = gtk_tree_store_new(
-		COL_COUNT,
-		G_TYPE_STRING,
-		G_TYPE_STRING,
-		G_TYPE_STRING
-	);
+	window->tree_store = objectdb_tree_model_new();
 
 	GtkWidget *tree_view = gtk_tree_view_new_with_model(GTK_TREE_MODEL(window->tree_store));
 	gtk_tree_view_set_headers_visible(GTK_TREE_VIEW(tree_view), TRUE);
@@ -51,7 +61,7 @@ static GtkWidget *objectdb_window_create_tree_view(ObjectDBWindow *window) {
 	GtkTreeViewColumn *column = gtk_tree_view_column_new_with_attributes(
 		"Name",
 		renderer,
-		"text", COL_NAME,
+		"text", OBJECTDB_MODEL_COL_NAME,
 		NULL
 	);
 	gtk_tree_view_append_column(GTK_TREE_VIEW(tree_view), column);
@@ -60,7 +70,7 @@ static GtkWidget *objectdb_window_create_tree_view(ObjectDBWindow *window) {
 	column = gtk_tree_view_column_new_with_attributes(
 		"Value",
 		renderer,
-		"text", COL_VALUE,
+		"text", OBJECTDB_MODEL_COL_VALUE,
 		NULL
 	);
 	gtk_tree_view_append_column(GTK_TREE_VIEW(tree_view), column);
@@ -69,12 +79,29 @@ static GtkWidget *objectdb_window_create_tree_view(ObjectDBWindow *window) {
 	column = gtk_tree_view_column_new_with_attributes(
 		"Kind",
 		renderer,
-		"text", COL_KIND,
+		"text", OBJECTDB_MODEL_COL_KIND,
 		NULL
 	);
 	gtk_tree_view_append_column(GTK_TREE_VIEW(tree_view), column);
 
 	return tree_view;
+}
+
+static void objectdb_window_row_expanded(GtkTreeView *tree_view, GtkTreeIter *iter, GtkTreePath *path, gpointer user_data) {
+	(void)tree_view;
+	(void)path;
+
+	ObjectDBWindow *window = (ObjectDBWindow *)user_data;
+	char *error_message = NULL;
+
+	if (!window || !objectdb_document_is_open(window->document)) {
+		return;
+	}
+
+	if (!objectdb_tree_model_load_children(window->tree_store, iter, window->document, &error_message)) {
+		objectdb_window_show_error(window, error_message ? error_message : "Failed to load table contents");
+		g_free(error_message);
+	}
 }
 
 static void objectdb_window_show_open_dialog(GtkWidget *widget, gpointer user_data) {
@@ -105,7 +132,23 @@ static void objectdb_window_show_open_dialog(GtkWidget *widget, gpointer user_da
 
 	if (gtk_dialog_run(GTK_DIALOG(dialog)) == GTK_RESPONSE_ACCEPT) {
 		char *filename = gtk_file_chooser_get_filename(GTK_FILE_CHOOSER(dialog));
-		objectdb_window_update_title(window, filename);
+		char *error_message = NULL;
+
+		if (!objectdb_document_open(window->document, filename, &error_message)) {
+			objectdb_tree_model_clear(window->tree_store);
+			objectdb_window_update_title(window, NULL);
+			objectdb_window_show_error(window, error_message ? error_message : "Failed to open file");
+			g_free(error_message);
+		} else if (!objectdb_tree_model_populate_root(window->tree_store, window->document, &error_message)) {
+			objectdb_document_close(window->document);
+			objectdb_tree_model_clear(window->tree_store);
+			objectdb_window_update_title(window, NULL);
+			objectdb_window_show_error(window, error_message ? error_message : "Failed to read database contents");
+			g_free(error_message);
+		} else {
+			objectdb_window_update_title(window, filename);
+		}
+
 		g_free(filename);
 	}
 
@@ -147,6 +190,7 @@ static GtkWidget *objectdb_window_create_menu_bar(ObjectDBWindow *window) {
 ObjectDBWindow *objectdb_window_new(GtkApplication *app) {
 	ObjectDBWindow *window = g_new0(ObjectDBWindow, 1);
 	window->app = app;
+	window->document = objectdb_document_new();
 	window->window = gtk_application_window_new(app);
 
 	g_object_set_data_full(G_OBJECT(window->window), "objectdb-window", window, objectdb_window_destroy);
@@ -165,6 +209,7 @@ ObjectDBWindow *objectdb_window_new(GtkApplication *app) {
 	gtk_box_pack_start(GTK_BOX(root_box), scroller, TRUE, TRUE, 0);
 
 	window->tree_view = objectdb_window_create_tree_view(window);
+	g_signal_connect(window->tree_view, "row-expanded", G_CALLBACK(objectdb_window_row_expanded), window);
 	gtk_container_add(GTK_CONTAINER(scroller), window->tree_view);
 
 	return window;

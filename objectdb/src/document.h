@@ -10,6 +10,8 @@ typedef struct ObjectDBDocument ObjectDBDocument;
 typedef struct ObjectDBEntry {
 	char *name;
 	char *full_path;
+	char *value_text;
+	char *kind_text;
 	odbValueType value_type;
 	gboolean is_table;
 } ObjectDBEntry;

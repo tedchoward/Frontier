@@ -7,6 +7,8 @@ add_executable(objectdb
 	src/main.c
 	src/app.c
 	src/document.c
+	src/tree_model.c
+	src/value_format.c
 	src/window.c
 )
 
