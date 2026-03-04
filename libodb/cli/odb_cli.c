@@ -23,6 +23,13 @@ static void print_usage(void) {
 	printf("  odb_cli <dbpath> set <path> direction <name|number>\n");
 	printf("  odb_cli <dbpath> set <path> string4 <abcd>\n");
 	printf("  odb_cli <dbpath> set <path> token <int16>\n");
+	printf("  odb_cli <dbpath> set <path> address <value>\n");
+	printf("  odb_cli <dbpath> set <path> binary <hex-bytes>\n");
+	printf("  odb_cli <dbpath> set <path> objspec <hex-bytes>\n");
+	printf("  odb_cli <dbpath> set <path> filespec <hex-bytes>\n");
+	printf("  odb_cli <dbpath> set <path> alias <hex-bytes>\n");
+	printf("  odb_cli <dbpath> set <path> list <hex-bytes>\n");
+	printf("  odb_cli <dbpath> set <path> record <hex-bytes>\n");
 	printf("  odb_cli <dbpath> set <path> fixed <int32>\n");
 	printf("  odb_cli <dbpath> set <path> point <v> <h>\n");
 	printf("  odb_cli <dbpath> set <path> rect <top> <left> <bottom> <right>\n");
@@ -248,6 +255,65 @@ static int parse_hex_pattern16(const char *text, unsigned char out[8]) {
 	return 1;
 }
 
+static Handle parse_hex_bytes_handle(const char *text) {
+	Handle h = NULL;
+	size_t len = 0;
+	if (!text) {
+		return NULL;
+	}
+	len = strlen(text);
+	if ((len % 2) != 0) {
+		return NULL;
+	}
+	if (!newhandle((long)(len / 2), &h)) {
+		return NULL;
+	}
+	for (size_t i = 0; i < len / 2; ++i) {
+		unsigned int byte = 0;
+		char hi = text[i * 2];
+		char lo = text[i * 2 + 1];
+		if (!isxdigit((unsigned char)hi) || !isxdigit((unsigned char)lo)) {
+			disposehandle(h);
+			return NULL;
+		}
+		if (sscanf(&text[i * 2], "%2x", &byte) != 1) {
+			disposehandle(h);
+			return NULL;
+		}
+		(*h)[i] = (unsigned char)byte;
+	}
+	return h;
+}
+
+static char *format_hex_bytes(Handle h) {
+	long size = 0;
+	char *out = NULL;
+	if (!h || !*h) {
+		out = (char *)malloc(1);
+		if (out) {
+			out[0] = '\0';
+		}
+		return out;
+	}
+	size = gethandlesize(h);
+	if (size <= 0) {
+		out = (char *)malloc(1);
+		if (out) {
+			out[0] = '\0';
+		}
+		return out;
+	}
+	out = (char *)malloc((size_t)size * 2 + 1);
+	if (!out) {
+		return NULL;
+	}
+	for (long i = 0; i < size; ++i) {
+		snprintf(out + (i * 2), 3, "%02x", (unsigned char)(*h)[i]);
+	}
+	out[size * 2] = '\0';
+	return out;
+}
+
 static Handle make_handle_from_bytes(const void *data, size_t size) {
 	if (!data || size == 0) {
 		return NULL;
@@ -341,6 +407,51 @@ static int cmd_get(odbRef odb, const char *path) {
 		case tokenvaluetype:
 			printf("%d", (int)value.data.tokenvalue);
 			break;
+		case addressvaluetype: {
+			char buffer[1024];
+			if (handle_to_c_string(value.data.addressvalue, buffer, sizeof(buffer))) {
+				printf("%s", buffer);
+			} else {
+				printf("<address>");
+			}
+			break;
+		}
+		case binaryvaluetype: {
+			char *hex = format_hex_bytes(value.data.binaryvalue);
+			printf("%s", hex ? hex : "");
+			free(hex);
+			break;
+		}
+		case objspecvaluetype: {
+			char *hex = format_hex_bytes(value.data.objspecvalue);
+			printf("%s", hex ? hex : "");
+			free(hex);
+			break;
+		}
+		case filespecvaluetype: {
+			char *hex = format_hex_bytes(value.data.filespecvalue);
+			printf("%s", hex ? hex : "");
+			free(hex);
+			break;
+		}
+		case aliasvaluetype: {
+			char *hex = format_hex_bytes(value.data.aliasvalue);
+			printf("%s", hex ? hex : "");
+			free(hex);
+			break;
+		}
+		case listvaluetype: {
+			char *hex = format_hex_bytes(value.data.listvalue);
+			printf("%s", hex ? hex : "");
+			free(hex);
+			break;
+		}
+		case recordvaluetype: {
+			char *hex = format_hex_bytes(value.data.recordvalue);
+			printf("%s", hex ? hex : "");
+			free(hex);
+			break;
+		}
 		case fixedvaluetype:
 			printf("%" PRId32, value.data.fixedvalue);
 			break;
@@ -382,11 +493,6 @@ static int cmd_get(odbRef odb, const char *path) {
 		case doublevaluetype: {
 			double d = (value.data.doublevalue && *value.data.doublevalue) ? **value.data.doublevalue : 0.0;
 			printf("%f", d);
-			break;
-		}
-		case binaryvaluetype: {
-			long size = gethandlesize(value.data.binaryvalue);
-			printf("<binary %ld bytes>", size);
 			break;
 		}
 		case externalvaluetype: {
@@ -552,6 +658,66 @@ static int cmd_set(odbRef odb, int argc, char **argv) {
 		rec.valuetype = tokenvaluetype;
 		rec.data.tokenvalue = token;
 		return odbSetValue(odb, bspath, &rec) ? 0 : 1;
+	}
+
+	if (strcmp(type, "address") == 0) {
+		if (argc != 6) {
+			return 1;
+		}
+		size_t len = strlen(value);
+		if (len > 255) {
+			len = 255;
+		}
+		bigstring bs;
+		bs[0] = (unsigned char)len;
+		if (len > 0) {
+			memcpy(&bs[1], value, len);
+		}
+		hdlstring hstring = NULL;
+		if (!newheapstring(bs, &hstring)) {
+			return 1;
+		}
+		rec.valuetype = addressvaluetype;
+		rec.data.addressvalue = (Handle)hstring;
+		int ok = odbSetValue(odb, bspath, &rec) ? 0 : 1;
+		disposehandle((Handle)hstring);
+		return ok;
+	}
+
+	if (strcmp(type, "binary") == 0 || strcmp(type, "objspec") == 0 || strcmp(type, "filespec") == 0
+		|| strcmp(type, "alias") == 0 || strcmp(type, "list") == 0 || strcmp(type, "record") == 0) {
+		if (argc != 6) {
+			return 1;
+		}
+		Handle h = parse_hex_bytes_handle(value);
+		if (!h) {
+			return 1;
+		}
+		if (strcmp(type, "binary") == 0) {
+			rec.valuetype = binaryvaluetype;
+			rec.data.binaryvalue = h;
+		} else if (strcmp(type, "objspec") == 0) {
+			rec.valuetype = objspecvaluetype;
+			rec.data.objspecvalue = h;
+		} else if (strcmp(type, "filespec") == 0) {
+			rec.valuetype = filespecvaluetype;
+			rec.data.filespecvalue = h;
+		} else if (strcmp(type, "alias") == 0) {
+			rec.valuetype = aliasvaluetype;
+			rec.data.aliasvalue = h;
+		} else if (strcmp(type, "list") == 0) {
+			rec.valuetype = listvaluetype;
+			rec.data.listvalue = h;
+		} else if (strcmp(type, "record") == 0) {
+			rec.valuetype = recordvaluetype;
+			rec.data.recordvalue = h;
+		} else {
+			disposehandle(h);
+			return 1;
+		}
+		int ok = odbSetValue(odb, bspath, &rec) ? 0 : 1;
+		disposehandle(h);
+		return ok;
 	}
 
 	if (strcmp(type, "fixed") == 0) {

@@ -131,6 +131,7 @@ typedef union odbValueData {
 	float singlevalue;
 	double **doublevalue;
 	Handle objspecvalue;
+	Handle filespecvalue;
 	Handle aliasvalue;
 	OSType enumvalue;
 	Handle listvalue;

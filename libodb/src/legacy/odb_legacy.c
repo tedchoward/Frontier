@@ -1526,9 +1526,12 @@ static boolean hashpackvisit(bigstring bsname, hdlhashnode hnode, tyvaluerecord 
 			rec.data.longvalue = (int32_t)val.data.datevalue;
 			size = sizeof(long);
 			break;
-		case ty_listvaluetype:
-		case ty_recordvaluetype:
-			return true;
+			case ty_listvaluetype:
+			case ty_recordvaluetype:
+				if (!hashpackscalar(&lpi->s2, hnode, &rec.data.longvalue)) {
+					return true;
+				}
+				break;
 		default:
 			break;
 	}
@@ -1691,15 +1694,21 @@ boolean hashunpacktable(Handle hpackedtable, boolean flmemory, hdlhashtable htab
 				case ty_patternvaluetype:
 				case ty_objspecvaluetype:
 				case ty_binaryvaluetype:
-				case ty_filespecvaluetype:
-				case ty_aliasvaluetype:
-					if (!hashunpackscalar(hstrings, &val, ixstrings)) {
-						continue;
-					}
-					break;
-				case ty_rectvaluetype:
-				case ty_rgbvaluetype:
-				case ty_doublevaluetype:
+					case ty_filespecvaluetype:
+					case ty_aliasvaluetype:
+						if (!hashunpackscalar(hstrings, &val, ixstrings)) {
+							continue;
+						}
+						break;
+					case ty_listvaluetype:
+					case ty_recordvaluetype:
+						if (!hashunpackscalar(hstrings, &val, ixstrings)) {
+							continue;
+						}
+						break;
+					case ty_rectvaluetype:
+					case ty_rgbvaluetype:
+					case ty_doublevaluetype:
 					if (!hashunpackscalar(hstrings, &val, ixstrings)) {
 						continue;
 					}

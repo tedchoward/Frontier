@@ -34,6 +34,8 @@ Currently, `odbSetValue` supports:
 - `longvaluetype`
 - `booleanvaluetype`
 - `tokenvaluetype`
+- `addressvaluetype`
+- `binaryvaluetype`
 - `datevaluetype`
 - `directionvaluetype`
 - `string4valuetype`
@@ -44,6 +46,11 @@ Currently, `odbSetValue` supports:
 - `fixedvaluetype`
 - `singlevaluetype`
 - `doublevaluetype` (expects `Handle` sized to `sizeof(double)`)
+- `objspecvaluetype`
+- `filespecvaluetype`
+- `aliasvaluetype`
+- `listvaluetype`
+- `recordvaluetype`
 - `enumeratorvaluetype`
 
 Other types are read-only for now. Non-table externals are returned as opaque packed blobs (`externalvaluetype`).

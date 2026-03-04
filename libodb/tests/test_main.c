@@ -149,6 +149,17 @@ static Handle make_handle_from_bytes(const void *data, size_t size) {
 	return h;
 }
 
+static int handle_equals_bytes(Handle h, const void *data, size_t size) {
+	if (!h || !*h || !data) {
+		return 0;
+	}
+	long hsize = gethandlesize(h);
+	if (hsize != (long)size) {
+		return 0;
+	}
+	return memcmp(*h, data, size) == 0;
+}
+
 static int copy_file(const char *src, const char *dst) {
 	FILE *in = fopen(src, "rb");
 	if (!in) {
@@ -621,6 +632,169 @@ static void test_write_additional_scalar_struct_values(void) {
 	odbCloseFile(odb);
 }
 
+static void test_write_phase3_handle_types(void) {
+	odbRef odb = NULL;
+	const char *fixture = fixture_path();
+	odbBool ok = odbOpenPath(fixture, &odb);
+	TEST_ASSERT(ok == 1, "open should succeed for phase3 write tests");
+	if (!ok) {
+		return;
+	}
+
+	odbString bspath;
+	odbValueRecord value;
+	OSType type = 0;
+	char buffer[256];
+
+	unsigned char binary_bytes[] = {'d', 'a', 't', 'a', 0x00};
+	Handle hbinary = make_handle_from_bytes(binary_bytes, sizeof(binary_bytes));
+	TEST_ASSERT(hbinary != NULL, "binary handle should be created");
+	odb_string_from_c(bspath, "root.workspace.payload");
+	value.valuetype = binaryvaluetype;
+	value.data.binaryvalue = hbinary;
+	ok = odbSetValue(odb, bspath, &value);
+	TEST_ASSERT(ok == 1, "odbSetValue should support binaryvaluetype");
+	disposehandle(hbinary);
+	ok = odbGetType(odb, bspath, &type);
+	TEST_ASSERT(ok == 1, "odbGetType should succeed for binary");
+	TEST_ASSERT(type == binaryvaluetype, "payload should be binary type");
+	ok = odbGetValue(odb, bspath, &value);
+	TEST_ASSERT(ok == 1, "odbGetValue should succeed for binary");
+	if (ok) {
+		TEST_ASSERT(handle_equals_bytes(value.data.binaryvalue, binary_bytes, sizeof(binary_bytes)), "binary should round-trip");
+		odbDisposeValue(odb, &value);
+	}
+
+	Handle haddress = make_pascal_string_handle("root.workspace.firstName");
+	TEST_ASSERT(haddress != NULL, "address handle should be created");
+	odb_string_from_c(bspath, "root.workspace.ref");
+	value.valuetype = addressvaluetype;
+	value.data.addressvalue = haddress;
+	ok = odbSetValue(odb, bspath, &value);
+	TEST_ASSERT(ok == 1, "odbSetValue should support addressvaluetype");
+	disposehandle(haddress);
+	ok = odbGetType(odb, bspath, &type);
+	TEST_ASSERT(ok == 1, "odbGetType should succeed for address");
+	TEST_ASSERT(type == addressvaluetype, "ref should be address type");
+	ok = odbGetValue(odb, bspath, &value);
+	TEST_ASSERT(ok == 1, "odbGetValue should succeed for address");
+	if (ok && handle_to_c_string(value.data.addressvalue, buffer, sizeof(buffer))) {
+		TEST_ASSERT(strcmp(buffer, "root.workspace.firstName") == 0, "address should round-trip");
+	}
+	if (ok) {
+		odbDisposeValue(odb, &value);
+	}
+
+	unsigned char objspec_bytes[] = {0x01, 0x02, 0x10, 0x20, 0x30};
+	Handle hobj = make_handle_from_bytes(objspec_bytes, sizeof(objspec_bytes));
+	TEST_ASSERT(hobj != NULL, "objspec handle should be created");
+	odb_string_from_c(bspath, "root.workspace.objref");
+	value.valuetype = objspecvaluetype;
+	value.data.objspecvalue = hobj;
+	ok = odbSetValue(odb, bspath, &value);
+	TEST_ASSERT(ok == 1, "odbSetValue should support objspecvaluetype");
+	disposehandle(hobj);
+	ok = odbGetType(odb, bspath, &type);
+	TEST_ASSERT(ok == 1, "odbGetType should succeed for objspec");
+	TEST_ASSERT(type == objspecvaluetype, "objref should be objspec type");
+	ok = odbGetValue(odb, bspath, &value);
+	TEST_ASSERT(ok == 1, "odbGetValue should succeed for objspec");
+	if (ok) {
+		TEST_ASSERT(handle_equals_bytes(value.data.objspecvalue, objspec_bytes, sizeof(objspec_bytes)), "objspec should round-trip");
+		odbDisposeValue(odb, &value);
+	}
+
+	unsigned char filespec_bytes[] = {0x41, 0x42, 0x43, 0x00, 0x44, 0x45};
+	Handle hfile = make_handle_from_bytes(filespec_bytes, sizeof(filespec_bytes));
+	TEST_ASSERT(hfile != NULL, "filespec handle should be created");
+	odb_string_from_c(bspath, "root.workspace.fileRef");
+	value.valuetype = filespecvaluetype;
+	value.data.filespecvalue = hfile;
+	ok = odbSetValue(odb, bspath, &value);
+	TEST_ASSERT(ok == 1, "odbSetValue should support filespecvaluetype");
+	disposehandle(hfile);
+	ok = odbGetType(odb, bspath, &type);
+	TEST_ASSERT(ok == 1, "odbGetType should succeed for filespec");
+	TEST_ASSERT(type == filespecvaluetype, "fileRef should be filespec type");
+	ok = odbGetValue(odb, bspath, &value);
+	TEST_ASSERT(ok == 1, "odbGetValue should succeed for filespec");
+	if (ok) {
+		TEST_ASSERT(handle_equals_bytes(value.data.filespecvalue, filespec_bytes, sizeof(filespec_bytes)), "filespec should round-trip");
+		odbDisposeValue(odb, &value);
+	}
+
+	unsigned char alias_bytes[] = {0xAA, 0xBB, 0xCC, 0xDD};
+	Handle halias = make_handle_from_bytes(alias_bytes, sizeof(alias_bytes));
+	TEST_ASSERT(halias != NULL, "alias handle should be created");
+	odb_string_from_c(bspath, "root.workspace.aliasRef");
+	value.valuetype = aliasvaluetype;
+	value.data.aliasvalue = halias;
+	ok = odbSetValue(odb, bspath, &value);
+	TEST_ASSERT(ok == 1, "odbSetValue should support aliasvaluetype");
+	disposehandle(halias);
+	ok = odbGetType(odb, bspath, &type);
+	TEST_ASSERT(ok == 1, "odbGetType should succeed for alias");
+	TEST_ASSERT(type == aliasvaluetype, "aliasRef should be alias type");
+	ok = odbGetValue(odb, bspath, &value);
+	TEST_ASSERT(ok == 1, "odbGetValue should succeed for alias");
+	if (ok) {
+		TEST_ASSERT(handle_equals_bytes(value.data.aliasvalue, alias_bytes, sizeof(alias_bytes)), "alias should round-trip");
+		odbDisposeValue(odb, &value);
+	}
+
+	unsigned char list_bytes[] = {0x11, 0x22, 0x33};
+	Handle hlist = make_handle_from_bytes(list_bytes, sizeof(list_bytes));
+	TEST_ASSERT(hlist != NULL, "list handle should be created");
+	odb_string_from_c(bspath, "root.workspace.listRef");
+	value.valuetype = listvaluetype;
+	value.data.listvalue = hlist;
+	ok = odbSetValue(odb, bspath, &value);
+	TEST_ASSERT(ok == 1, "odbSetValue should support listvaluetype");
+	disposehandle(hlist);
+	ok = odbGetType(odb, bspath, &type);
+	TEST_ASSERT(ok == 1, "odbGetType should succeed for list");
+	TEST_ASSERT(type == listvaluetype, "listRef should be list type");
+	ok = odbGetValue(odb, bspath, &value);
+	TEST_ASSERT(ok == 1, "odbGetValue should succeed for list");
+	if (ok) {
+		TEST_ASSERT(handle_equals_bytes(value.data.listvalue, list_bytes, sizeof(list_bytes)), "list should round-trip");
+		odbDisposeValue(odb, &value);
+	}
+
+	unsigned char record_bytes[] = {0x44, 0x55, 0x66, 0x77};
+	Handle hrecord = make_handle_from_bytes(record_bytes, sizeof(record_bytes));
+	TEST_ASSERT(hrecord != NULL, "record handle should be created");
+	odb_string_from_c(bspath, "root.workspace.recordRef");
+	value.valuetype = recordvaluetype;
+	value.data.recordvalue = hrecord;
+	ok = odbSetValue(odb, bspath, &value);
+	TEST_ASSERT(ok == 1, "odbSetValue should support recordvaluetype");
+	disposehandle(hrecord);
+	ok = odbGetType(odb, bspath, &type);
+	TEST_ASSERT(ok == 1, "odbGetType should succeed for record");
+	TEST_ASSERT(type == recordvaluetype, "recordRef should be record type");
+	ok = odbGetValue(odb, bspath, &value);
+	TEST_ASSERT(ok == 1, "odbGetValue should succeed for record");
+	if (ok) {
+		TEST_ASSERT(handle_equals_bytes(value.data.recordvalue, record_bytes, sizeof(record_bytes)), "record should round-trip");
+		odbDisposeValue(odb, &value);
+	}
+
+	odb_string_from_c(bspath, "root.workspace.badBinary");
+	value.valuetype = binaryvaluetype;
+	value.data.binaryvalue = NULL;
+	ok = odbSetValue(odb, bspath, &value);
+	TEST_ASSERT(ok == 0, "odbSetValue should reject null binary handle");
+
+	odb_string_from_c(bspath, "root.workspace.badAddress");
+	value.valuetype = addressvaluetype;
+	value.data.addressvalue = NULL;
+	ok = odbSetValue(odb, bspath, &value);
+	TEST_ASSERT(ok == 0, "odbSetValue should reject null address handle");
+
+	odbCloseFile(odb);
+}
+
 static void test_save_persists_values(void) {
 	const char *fixture = fixture_path();
 	char path[512];
@@ -1056,6 +1230,7 @@ int main(void) {
 	test_read_workspace_values();
 	test_write_values();
 	test_write_additional_scalar_struct_values();
+	test_write_phase3_handle_types();
 	test_save_persists_values();
 	test_delete_persists();
 	test_new_table_persists();

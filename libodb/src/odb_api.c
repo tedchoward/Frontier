@@ -320,9 +320,8 @@ static OSType getbinarytypeid(Handle h) {
 	if (!h || gethandlesize(h) < 4) {
 		return binaryvaluetype;
 	}
-	OSType type = 0;
-	memcpy(&type, *h, sizeof(type));
-	return type;
+	const unsigned char *p = (const unsigned char *)*h;
+	return ODB_FOURCC(p[0], p[1], p[2], p[3]);
 }
 
 odbBool odbOpenPath(const char *path, odbRef *odb) {
@@ -627,6 +626,15 @@ odbBool odbGetValue(odbRef odb, odbString bspath, odbValueRecord *value) {
 		case ty_binaryvaluetype:
 			value->data.binaryvalue = val.data.binaryvalue;
 			break;
+		case ty_objspecvaluetype:
+			value->data.objspecvalue = val.data.objspecvalue;
+			break;
+		case ty_filespecvaluetype:
+			value->data.filespecvalue = val.data.filespecvalue;
+			break;
+		case ty_aliasvaluetype:
+			value->data.aliasvalue = val.data.aliasvalue;
+			break;
 		case ty_tokenvaluetype:
 			value->data.tokenvalue = val.data.tokenvalue;
 			break;
@@ -651,12 +659,6 @@ odbBool odbGetValue(odbRef odb, odbString bspath, odbValueRecord *value) {
 			break;
 		case ty_doublevaluetype:
 			value->data.doublevalue = val.data.doublevalue;
-			break;
-		case ty_objspecvaluetype:
-			value->data.objspecvalue = val.data.objspecvalue;
-			break;
-		case ty_aliasvaluetype:
-			value->data.aliasvalue = val.data.aliasvalue;
 			break;
 		case ty_enumvaluetype:
 			value->data.enumvalue = val.data.enumvalue;
@@ -687,6 +689,36 @@ static odbBool odb_copy_sized_handle_arg(Handle source, long expected_size, Hand
 	if (!copyhandle(source, dest)) {
 		return 0;
 	}
+	return 1;
+}
+
+static odbBool odb_copy_handle_arg(Handle source, Handle *dest, const char *errmsg) {
+	if (!source) {
+		odbSetLastError(ODB_ERR_INVALID_ARG, errmsg);
+		return 0;
+	}
+	if (!copyhandle(source, dest)) {
+		return 0;
+	}
+	return 1;
+}
+
+static odbBool odb_handle_to_bigstring(Handle source, bigstring bs, const char *errmsg) {
+	if (!source) {
+		odbSetLastError(ODB_ERR_INVALID_ARG, errmsg);
+		return 0;
+	}
+	long size = gethandlesize(source);
+	if (size < 1) {
+		odbSetLastError(ODB_ERR_INVALID_ARG, errmsg);
+		return 0;
+	}
+	unsigned char len = ((unsigned char *)*source)[0];
+	if ((long)len > size - 1) {
+		odbSetLastError(ODB_ERR_INVALID_ARG, errmsg);
+		return 0;
+	}
+	copyheapstring((hdlstring)source, bs);
 	return 1;
 }
 
@@ -734,6 +766,15 @@ static odbBool odb_convert_value_record(const odbValueRecord *value, tyvaluereco
 			initvalue(val, ty_longvaluetype);
 			val->data.longvalue = value->data.longvalue;
 			return 1;
+		case binaryvaluetype: {
+			Handle hbinary = NULL;
+			if (!odb_copy_handle_arg(value->data.binaryvalue, &hbinary, "invalid binary handle")) {
+				return 0;
+			}
+			initvalue(val, ty_binaryvaluetype);
+			val->data.binaryvalue = hbinary;
+			return 1;
+		}
 		case booleanvaluetype:
 			initvalue(val, ty_booleanvaluetype);
 			val->data.flvalue = value->data.flvalue ? 1 : 0;
@@ -746,6 +787,16 @@ static odbBool odb_convert_value_record(const odbValueRecord *value, tyvaluereco
 			initvalue(val, ty_directionvaluetype);
 			val->data.dirvalue = (tydirection)value->data.dirvalue;
 			return 1;
+		case addressvaluetype: {
+			bigstring bs;
+			if (!odb_handle_to_bigstring(value->data.addressvalue, bs, "invalid address handle")) {
+				return 0;
+			}
+			if (!setaddressvalue((hdlhashtable)-1, bs, val)) {
+				return 0;
+			}
+			return 1;
+		}
 		case string4valuetype:
 			initvalue(val, ty_ostypevaluetype);
 			val->data.ostypevalue = value->data.ostypevalue;
@@ -805,6 +856,51 @@ static odbBool odb_convert_value_record(const odbValueRecord *value, tyvaluereco
 			}
 			initvalue(val, ty_doublevaluetype);
 			val->data.doublevalue = (double **)hdouble;
+			return 1;
+		}
+		case objspecvaluetype: {
+			Handle hobj = NULL;
+			if (!odb_copy_handle_arg(value->data.objspecvalue, &hobj, "invalid objspec handle")) {
+				return 0;
+			}
+			initvalue(val, ty_objspecvaluetype);
+			val->data.objspecvalue = hobj;
+			return 1;
+		}
+		case filespecvaluetype: {
+			Handle hfile = NULL;
+			if (!odb_copy_handle_arg(value->data.filespecvalue, &hfile, "invalid filespec handle")) {
+				return 0;
+			}
+			initvalue(val, ty_filespecvaluetype);
+			val->data.filespecvalue = (hdlfilespec)hfile;
+			return 1;
+		}
+		case aliasvaluetype: {
+			Handle halias = NULL;
+			if (!odb_copy_handle_arg(value->data.aliasvalue, &halias, "invalid alias handle")) {
+				return 0;
+			}
+			initvalue(val, ty_aliasvaluetype);
+			val->data.aliasvalue = halias;
+			return 1;
+		}
+		case listvaluetype: {
+			Handle hlist = NULL;
+			if (!odb_copy_handle_arg(value->data.listvalue, &hlist, "invalid list handle")) {
+				return 0;
+			}
+			initvalue(val, ty_listvaluetype);
+			val->data.listvalue = (tylistrecord **)hlist;
+			return 1;
+		}
+		case recordvaluetype: {
+			Handle hrecord = NULL;
+			if (!odb_copy_handle_arg(value->data.recordvalue, &hrecord, "invalid record handle")) {
+				return 0;
+			}
+			initvalue(val, ty_recordvaluetype);
+			val->data.recordvalue = (tylistrecord **)hrecord;
 			return 1;
 		}
 		default:
