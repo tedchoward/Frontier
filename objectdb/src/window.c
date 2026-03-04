@@ -51,6 +51,56 @@ static void objectdb_window_update_title(ObjectDBWindow *window, const char *pat
 	g_free(basename);
 }
 
+static void objectdb_window_value_edited(GtkCellRendererText *renderer, gchar *path_string, gchar *new_text, gpointer user_data) {
+	(void)renderer;
+
+	ObjectDBWindow *window = (ObjectDBWindow *)user_data;
+	GtkTreeModel *model = NULL;
+	GtkTreePath *tree_path = NULL;
+	GtkTreeIter iter;
+	gboolean is_table = FALSE;
+	gboolean is_placeholder = FALSE;
+	char *full_path = NULL;
+	char *updated_text = NULL;
+	char *error_message = NULL;
+
+	if (!window || !window->tree_store || !objectdb_document_is_open(window->document) || !path_string) {
+		return;
+	}
+
+	model = GTK_TREE_MODEL(window->tree_store);
+	tree_path = gtk_tree_path_new_from_string(path_string);
+	if (!tree_path) {
+		return;
+	}
+	if (!gtk_tree_model_get_iter(model, &iter, tree_path)) {
+		gtk_tree_path_free(tree_path);
+		return;
+	}
+
+	gtk_tree_model_get(
+		model,
+		&iter,
+		OBJECTDB_MODEL_COL_PATH, &full_path,
+		OBJECTDB_MODEL_COL_IS_TABLE, &is_table,
+		OBJECTDB_MODEL_COL_IS_PLACEHOLDER, &is_placeholder,
+		-1
+	);
+
+	if (!is_table && !is_placeholder && full_path && full_path[0]) {
+		if (objectdb_document_set_value(window->document, full_path, new_text, &updated_text, &error_message)) {
+			gtk_tree_store_set(window->tree_store, &iter, OBJECTDB_MODEL_COL_VALUE, updated_text ? updated_text : "", -1);
+		} else {
+			objectdb_window_show_error(window, error_message ? error_message : "Failed to update value");
+		}
+	}
+
+	g_free(error_message);
+	g_free(updated_text);
+	g_free(full_path);
+	gtk_tree_path_free(tree_path);
+}
+
 static GtkWidget *objectdb_window_create_tree_view(ObjectDBWindow *window) {
 	window->tree_store = objectdb_tree_model_new();
 
@@ -70,6 +120,8 @@ static GtkWidget *objectdb_window_create_tree_view(ObjectDBWindow *window) {
 	gtk_tree_view_append_column(GTK_TREE_VIEW(tree_view), column);
 
 	renderer = gtk_cell_renderer_text_new();
+	g_object_set(renderer, "editable", TRUE, NULL);
+	g_signal_connect(renderer, "edited", G_CALLBACK(objectdb_window_value_edited), window);
 	column = gtk_tree_view_column_new_with_attributes(
 		"Value",
 		renderer,
