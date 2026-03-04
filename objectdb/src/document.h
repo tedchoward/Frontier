@@ -32,6 +32,14 @@ GPtrArray *objectdb_document_get_children(ObjectDBDocument *document, const char
 gboolean objectdb_document_set_value(ObjectDBDocument *document, const char *path, const char *text, char **updated_text, char **error_message);
 gboolean objectdb_document_create_scalar(ObjectDBDocument *document, const char *parent_path, const char *name, odbValueType type, char **full_path, char **error_message);
 gboolean objectdb_document_delete_entry(ObjectDBDocument *document, const char *path, char **error_message);
+gboolean objectdb_document_set_entry_type(
+	ObjectDBDocument *document,
+	const char *path,
+	odbValueType type,
+	char **updated_kind,
+	char **updated_value,
+	char **error_message
+);
 
 void objectdb_entry_free(ObjectDBEntry *entry);
 

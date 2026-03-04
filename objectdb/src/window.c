@@ -11,6 +11,7 @@ struct ObjectDBWindow {
 	GtkWidget *window;
 	GtkWidget *tree_view;
 	GtkTreeStore *tree_store;
+	GtkListStore *kind_type_store;
 };
 
 static void objectdb_window_show_error(ObjectDBWindow *window, const char *message);
@@ -256,6 +257,10 @@ static void objectdb_window_edit_clear(GtkWidget *widget, gpointer user_data) {
 
 static void objectdb_window_destroy(gpointer data) {
 	ObjectDBWindow *window = (ObjectDBWindow *)data;
+	if (window->kind_type_store) {
+		g_object_unref(window->kind_type_store);
+		window->kind_type_store = NULL;
+	}
 	objectdb_document_free(window->document);
 	g_free(window);
 }
@@ -345,8 +350,143 @@ static void objectdb_window_value_edited(GtkCellRendererText *renderer, gchar *p
 	gtk_tree_path_free(tree_path);
 }
 
+static gboolean objectdb_window_kind_text_to_type(const char *kind_text, odbValueType *out_type) {
+	if (!kind_text || !out_type) {
+		return FALSE;
+	}
+
+	struct {
+		const char *kind;
+		odbValueType type;
+	} kind_map[] = {
+		{"address", addressvaluetype},
+		{"bool", booleanvaluetype},
+		{"char", charvaluetype},
+		{"date", datevaluetype},
+		{"direction", directionvaluetype},
+		{"double", doublevaluetype},
+		{"enum", enumeratorvaluetype},
+		{"fixed", fixedvaluetype},
+		{"long", longvaluetype},
+		{"pattern", patternvaluetype},
+		{"point", pointvaluetype},
+		{"rect", rectvaluetype},
+		{"rgb", rgbvaluetype},
+		{"short", shortvaluetype},
+		{"single", singlevaluetype},
+		{"string", stringvaluetype},
+		{"string4", string4valuetype},
+		{"token", tokenvaluetype}
+	};
+
+	for (guint i = 0; i < G_N_ELEMENTS(kind_map); ++i) {
+		if (g_ascii_strcasecmp(kind_text, kind_map[i].kind) == 0) {
+			*out_type = kind_map[i].type;
+			return TRUE;
+		}
+	}
+
+	return FALSE;
+}
+
+static void objectdb_window_kind_cell_data_func(
+	GtkTreeViewColumn *tree_column,
+	GtkCellRenderer *cell,
+	GtkTreeModel *tree_model,
+	GtkTreeIter *iter,
+	gpointer data
+) {
+	(void)tree_column;
+	(void)data;
+	gboolean is_table = FALSE;
+	gboolean is_placeholder = FALSE;
+
+	gtk_tree_model_get(
+		tree_model,
+		iter,
+		OBJECTDB_MODEL_COL_IS_TABLE, &is_table,
+		OBJECTDB_MODEL_COL_IS_PLACEHOLDER, &is_placeholder,
+		-1
+	);
+
+	g_object_set(cell, "editable", (!is_table && !is_placeholder), NULL);
+}
+
+static void objectdb_window_kind_edited(GtkCellRendererText *renderer, gchar *path_string, gchar *new_text, gpointer user_data) {
+	(void)renderer;
+	ObjectDBWindow *window = (ObjectDBWindow *)user_data;
+	GtkTreeModel *model = NULL;
+	GtkTreePath *tree_path = NULL;
+	GtkTreeIter iter;
+	gboolean is_table = FALSE;
+	gboolean is_placeholder = FALSE;
+	char *full_path = NULL;
+	char *updated_kind = NULL;
+	char *updated_value = NULL;
+	char *error_message = NULL;
+	odbValueType type = unknownvaluetype;
+
+	if (!window || !window->tree_store || !objectdb_document_is_open(window->document) || !path_string || !new_text) {
+		return;
+	}
+	if (!objectdb_window_kind_text_to_type(new_text, &type)) {
+		return;
+	}
+
+	model = GTK_TREE_MODEL(window->tree_store);
+	tree_path = gtk_tree_path_new_from_string(path_string);
+	if (!tree_path) {
+		return;
+	}
+	if (!gtk_tree_model_get_iter(model, &iter, tree_path)) {
+		gtk_tree_path_free(tree_path);
+		return;
+	}
+
+	gtk_tree_model_get(
+		model,
+		&iter,
+		OBJECTDB_MODEL_COL_PATH, &full_path,
+		OBJECTDB_MODEL_COL_IS_TABLE, &is_table,
+		OBJECTDB_MODEL_COL_IS_PLACEHOLDER, &is_placeholder,
+		-1
+	);
+
+	if (!is_table && !is_placeholder && full_path && full_path[0]) {
+		if (objectdb_document_set_entry_type(window->document, full_path, type, &updated_kind, &updated_value, &error_message)) {
+			gtk_tree_store_set(
+				window->tree_store,
+				&iter,
+				OBJECTDB_MODEL_COL_KIND, updated_kind ? updated_kind : new_text,
+				OBJECTDB_MODEL_COL_VALUE, updated_value ? updated_value : "",
+				-1
+			);
+		} else {
+			objectdb_window_show_error(window, error_message ? error_message : "Failed to change value type");
+		}
+	}
+
+	g_free(error_message);
+	g_free(updated_kind);
+	g_free(updated_value);
+	g_free(full_path);
+	gtk_tree_path_free(tree_path);
+}
+
 static GtkWidget *objectdb_window_create_tree_view(ObjectDBWindow *window) {
 	window->tree_store = objectdb_tree_model_new();
+	window->kind_type_store = gtk_list_store_new(1, G_TYPE_STRING);
+
+	const char *kind_options[] = {
+		"address", "bool", "char", "date", "direction", "double",
+		"enum", "fixed", "long", "pattern", "point", "rect",
+		"rgb", "short", "single", "string", "string4", "token"
+	};
+	for (guint i = 0; i < G_N_ELEMENTS(kind_options); ++i) {
+		GtkTreeIter kind_iter;
+		gtk_list_store_append(window->kind_type_store, &kind_iter);
+		gtk_list_store_set(window->kind_type_store, &kind_iter, 0, kind_options[i], -1);
+	}
 
 	GtkWidget *tree_view = gtk_tree_view_new_with_model(GTK_TREE_MODEL(window->tree_store));
 	gtk_tree_view_set_headers_visible(GTK_TREE_VIEW(tree_view), TRUE);
@@ -377,13 +517,23 @@ static GtkWidget *objectdb_window_create_tree_view(ObjectDBWindow *window) {
 	gtk_tree_view_column_set_min_width(column, 220);
 	gtk_tree_view_append_column(GTK_TREE_VIEW(tree_view), column);
 
-	renderer = gtk_cell_renderer_text_new();
+	renderer = gtk_cell_renderer_combo_new();
+	g_object_set(
+		renderer,
+		"editable", TRUE,
+		"has-entry", FALSE,
+		"model", window->kind_type_store,
+		"text-column", 0,
+		NULL
+	);
+	g_signal_connect(renderer, "edited", G_CALLBACK(objectdb_window_kind_edited), window);
 	column = gtk_tree_view_column_new_with_attributes(
 		"Kind",
 		renderer,
 		"text", OBJECTDB_MODEL_COL_KIND,
 		NULL
 	);
+	gtk_tree_view_column_set_cell_data_func(column, renderer, objectdb_window_kind_cell_data_func, NULL, NULL);
 	gtk_tree_view_column_set_resizable(column, TRUE);
 	gtk_tree_view_column_set_sizing(column, GTK_TREE_VIEW_COLUMN_FIXED);
 	gtk_tree_view_column_set_min_width(column, 100);

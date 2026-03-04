@@ -656,6 +656,99 @@ static gboolean objectdb_document_build_value(odbValueType type, const char *tex
 	}
 }
 
+static gboolean objectdb_document_build_default_value(odbValueType type, odbValueRecord *value, char **error_message) {
+	Handle h = NULL;
+	double d = 0.0;
+
+	memset(value, 0, sizeof(*value));
+	value->valuetype = type;
+
+	switch (type) {
+		case stringvaluetype:
+			value->data.stringvalue = objectdb_document_make_string_handle("");
+			return value->data.stringvalue != NULL;
+		case addressvaluetype:
+			value->data.addressvalue = objectdb_document_make_string_handle("");
+			return value->data.addressvalue != NULL;
+		case longvaluetype:
+			value->data.longvalue = 0;
+			return TRUE;
+		case shortvaluetype:
+			value->data.intvalue = 0;
+			return TRUE;
+		case charvaluetype:
+			value->data.chvalue = '\0';
+			return TRUE;
+		case booleanvaluetype:
+			value->data.flvalue = 0;
+			return TRUE;
+		case datevaluetype:
+			value->data.datevalue = 0;
+			return TRUE;
+		case directionvaluetype:
+			value->data.dirvalue = nodirection;
+			return TRUE;
+		case string4valuetype:
+			value->data.ostypevalue = ODB_FOURCC(' ', ' ', ' ', ' ');
+			return TRUE;
+		case tokenvaluetype:
+			value->data.tokenvalue = 0;
+			return TRUE;
+		case fixedvaluetype:
+			value->data.fixedvalue = 0;
+			return TRUE;
+		case pointvaluetype:
+			value->data.pointvalue.v = 0;
+			value->data.pointvalue.h = 0;
+			return TRUE;
+		case rectvaluetype: {
+			odbRect rect = {0, 0, 0, 0};
+			h = objectdb_document_make_handle_from_bytes(&rect, sizeof(rect));
+			if (!h) {
+				return FALSE;
+			}
+			value->data.rectvalue = (odbRect **)h;
+			return TRUE;
+		}
+		case patternvaluetype: {
+			odbPattern pattern = {{0}};
+			h = objectdb_document_make_handle_from_bytes(&pattern, sizeof(pattern));
+			if (!h) {
+				return FALSE;
+			}
+			value->data.patternvalue = (odbPattern **)h;
+			return TRUE;
+		}
+		case rgbvaluetype: {
+			odbRGBColor rgb = {0, 0, 0};
+			h = objectdb_document_make_handle_from_bytes(&rgb, sizeof(rgb));
+			if (!h) {
+				return FALSE;
+			}
+			value->data.rgbvalue = (odbRGBColor **)h;
+			return TRUE;
+		}
+		case singlevaluetype:
+			value->data.singlevalue = 0.0f;
+			return TRUE;
+		case enumeratorvaluetype:
+			value->data.enumvalue = ODB_FOURCC(' ', ' ', ' ', ' ');
+			return TRUE;
+		case doublevaluetype:
+			h = objectdb_document_make_handle_from_bytes(&d, sizeof(d));
+			if (!h) {
+				return FALSE;
+			}
+			value->data.doublevalue = (double **)h;
+			return TRUE;
+		default:
+			if (error_message) {
+				*error_message = g_strdup("Changing to this type is not supported");
+			}
+			return FALSE;
+	}
+}
+
 static void objectdb_document_dispose_input_value(odbValueRecord *value) {
 	if (!value) {
 		return;
@@ -665,6 +758,11 @@ static void objectdb_document_dispose_input_value(odbValueRecord *value) {
 		case stringvaluetype:
 			if (value->data.stringvalue) {
 				odbDisposeHandle(value->data.stringvalue);
+			}
+			break;
+		case addressvaluetype:
+			if (value->data.addressvalue) {
+				odbDisposeHandle(value->data.addressvalue);
 			}
 			break;
 		case rectvaluetype:
@@ -1028,54 +1126,12 @@ gboolean objectdb_document_create_scalar(ObjectDBDocument *document, const char 
 		return FALSE;
 	}
 
-	memset(&value, 0, sizeof(value));
-	value.valuetype = type;
-
-	switch (type) {
-		case addressvaluetype:
-			value.data.addressvalue = objectdb_document_make_string_handle("");
-			if (!value.data.addressvalue) {
-				if (error_message) {
-					*error_message = g_strdup("Failed to allocate address value");
-				}
-				g_free(trimmed_name);
-				return FALSE;
-			}
-			break;
-		case booleanvaluetype:
-			value.data.flvalue = 0;
-			break;
-		case charvaluetype:
-			value.data.chvalue = '\0';
-			break;
-		case datevaluetype:
-			value.data.datevalue = 0;
-			break;
-		case directionvaluetype:
-			value.data.dirvalue = nodirection;
-			break;
-		case singlevaluetype:
-			value.data.singlevalue = 0.0f;
-			break;
-		case longvaluetype:
-			value.data.longvalue = 0;
-			break;
-		case stringvaluetype:
-			value.data.stringvalue = objectdb_document_make_string_handle("");
-			if (!value.data.stringvalue) {
-				if (error_message) {
-					*error_message = g_strdup("Failed to allocate string value");
-				}
-				g_free(trimmed_name);
-				return FALSE;
-			}
-			break;
-		default:
-			if (error_message) {
-				*error_message = g_strdup("Unsupported scalar type");
-			}
-			g_free(trimmed_name);
-			return FALSE;
+	if (!objectdb_document_build_default_value(type, &value, error_message)) {
+		if (error_message && *error_message == NULL) {
+			*error_message = g_strdup("Unsupported scalar type");
+		}
+		g_free(trimmed_name);
+		return FALSE;
 	}
 
 	joined_path = objectdb_document_join_path(parent_path, trimmed_name);
@@ -1127,6 +1183,67 @@ gboolean objectdb_document_delete_entry(ObjectDBDocument *document, const char *
 	}
 
 	document->has_unsaved_changes = TRUE;
+	return TRUE;
+}
+
+gboolean objectdb_document_set_entry_type(
+	ObjectDBDocument *document,
+	const char *path,
+	odbValueType type,
+	char **updated_kind,
+	char **updated_value,
+	char **error_message
+) {
+	odbString bspath;
+	odbValueRecord value;
+	odbValueRecord readback;
+
+	if (updated_kind) {
+		*updated_kind = NULL;
+	}
+	if (updated_value) {
+		*updated_value = NULL;
+	}
+	if (error_message) {
+		*error_message = NULL;
+	}
+	if (!document || !document->odb) {
+		if (error_message) {
+			*error_message = g_strdup("No document is open");
+		}
+		return FALSE;
+	}
+	if (!path || !path[0] || strcmp(path, "root") == 0) {
+		if (error_message) {
+			*error_message = g_strdup("Invalid path");
+		}
+		return FALSE;
+	}
+
+	if (!objectdb_document_build_default_value(type, &value, error_message)) {
+		return FALSE;
+	}
+
+	objectdb_document_path_to_odb(path, bspath);
+	if (!odbSetValue(document->odb, bspath, &value)) {
+		objectdb_document_dispose_input_value(&value);
+		objectdb_document_set_error(error_message);
+		return FALSE;
+	}
+	objectdb_document_dispose_input_value(&value);
+	document->has_unsaved_changes = TRUE;
+
+	if (!odbGetValue(document->odb, bspath, &readback)) {
+		objectdb_document_set_error(error_message);
+		return FALSE;
+	}
+	if (updated_kind) {
+		*updated_kind = objectdb_value_format_kind(type);
+	}
+	if (updated_value) {
+		*updated_value = objectdb_value_format_value(type, &readback);
+	}
+	odbDisposeValue(document->odb, &readback);
 	return TRUE;
 }
 
