@@ -14,6 +14,7 @@ struct ObjectDBWindow {
 };
 
 static void objectdb_window_show_error(ObjectDBWindow *window, const char *message);
+static gboolean objectdb_window_confirm_discard_or_save(ObjectDBWindow *window);
 
 static char *objectdb_window_prompt_for_name(ObjectDBWindow *window) {
 	GtkWidget *dialog = NULL;
@@ -319,6 +320,11 @@ static void objectdb_window_show_open_dialog(GtkWidget *widget, gpointer user_da
 	if (!window) {
 		return;
 	}
+	if (objectdb_document_is_open(window->document) && objectdb_document_has_unsaved_changes(window->document)) {
+		if (!objectdb_window_confirm_discard_or_save(window)) {
+			return;
+		}
+	}
 
 	GtkWidget *dialog = gtk_file_chooser_dialog_new(
 		"Open Root File",
@@ -424,7 +430,74 @@ static void objectdb_window_quit(GtkWidget *widget, gpointer user_data) {
 	if (!window) {
 		return;
 	}
+	if (objectdb_document_is_open(window->document) && objectdb_document_has_unsaved_changes(window->document)) {
+		if (!objectdb_window_confirm_discard_or_save(window)) {
+			return;
+		}
+	}
 	g_application_quit(G_APPLICATION(window->app));
+}
+
+static gboolean objectdb_window_delete_event(GtkWidget *widget, GdkEvent *event, gpointer user_data) {
+	(void)widget;
+	(void)event;
+	ObjectDBWindow *window = (ObjectDBWindow *)user_data;
+
+	if (!window) {
+		return FALSE;
+	}
+	if (!objectdb_document_is_open(window->document) || !objectdb_document_has_unsaved_changes(window->document)) {
+		return FALSE;
+	}
+	return objectdb_window_confirm_discard_or_save(window) ? FALSE : TRUE;
+}
+
+static gboolean objectdb_window_confirm_discard_or_save(ObjectDBWindow *window) {
+	GtkWidget *dialog = NULL;
+	gint response = GTK_RESPONSE_CANCEL;
+	char *basename = NULL;
+	char *message = NULL;
+	char *error_message = NULL;
+	gboolean allow = FALSE;
+
+	if (!window) {
+		return FALSE;
+	}
+
+	basename = g_path_get_basename(objectdb_document_get_path(window->document));
+	message = g_strdup_printf("Save changes to %s before closing?", basename ? basename : "current file");
+	dialog = gtk_message_dialog_new(
+		GTK_WINDOW(window->window),
+		GTK_DIALOG_MODAL | GTK_DIALOG_DESTROY_WITH_PARENT,
+		GTK_MESSAGE_WARNING,
+		GTK_BUTTONS_NONE,
+		"%s",
+		message
+	);
+	gtk_dialog_add_button(GTK_DIALOG(dialog), "_Cancel", GTK_RESPONSE_CANCEL);
+	gtk_dialog_add_button(GTK_DIALOG(dialog), "_Discard", GTK_RESPONSE_REJECT);
+	gtk_dialog_add_button(GTK_DIALOG(dialog), "_Save", GTK_RESPONSE_ACCEPT);
+	gtk_dialog_set_default_response(GTK_DIALOG(dialog), GTK_RESPONSE_ACCEPT);
+	response = gtk_dialog_run(GTK_DIALOG(dialog));
+	gtk_widget_destroy(dialog);
+
+	if (response == GTK_RESPONSE_ACCEPT) {
+		if (!objectdb_document_save(window->document, &error_message)) {
+			objectdb_window_show_error(window, error_message ? error_message : "Failed to save file");
+			allow = FALSE;
+		} else {
+			allow = TRUE;
+		}
+	} else if (response == GTK_RESPONSE_REJECT) {
+		allow = TRUE;
+	} else {
+		allow = FALSE;
+	}
+
+	g_free(error_message);
+	g_free(message);
+	g_free(basename);
+	return allow;
 }
 
 static GtkWidget *objectdb_window_create_menu_bar(ObjectDBWindow *window) {
@@ -520,6 +593,7 @@ ObjectDBWindow *objectdb_window_new(GtkApplication *app) {
 
 	window->tree_view = objectdb_window_create_tree_view(window);
 	g_signal_connect(window->tree_view, "test-expand-row", G_CALLBACK(objectdb_window_test_expand_row), window);
+	g_signal_connect(window->window, "delete-event", G_CALLBACK(objectdb_window_delete_event), window);
 	gtk_container_add(GTK_CONTAINER(scroller), window->tree_view);
 
 	return window;

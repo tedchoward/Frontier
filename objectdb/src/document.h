@@ -26,6 +26,7 @@ gboolean objectdb_document_save_as(ObjectDBDocument *document, const char *path,
 
 gboolean objectdb_document_is_open(const ObjectDBDocument *document);
 const char *objectdb_document_get_path(const ObjectDBDocument *document);
+gboolean objectdb_document_has_unsaved_changes(const ObjectDBDocument *document);
 
 GPtrArray *objectdb_document_get_children(ObjectDBDocument *document, const char *parent_path, char **error_message);
 gboolean objectdb_document_set_value(ObjectDBDocument *document, const char *path, const char *text, char **updated_text, char **error_message);

@@ -14,6 +14,7 @@
 struct ObjectDBDocument {
 	odbRef odb;
 	char *path;
+	gboolean has_unsaved_changes;
 };
 
 extern Handle odbNewHandle(size_t size);
@@ -706,6 +707,7 @@ void objectdb_document_close(ObjectDBDocument *document) {
 	}
 
 	g_clear_pointer(&document->path, g_free);
+	document->has_unsaved_changes = FALSE;
 }
 
 void objectdb_document_free(ObjectDBDocument *document) {
@@ -739,6 +741,7 @@ gboolean objectdb_document_open(ObjectDBDocument *document, const char *path, ch
 	objectdb_document_close(document);
 	document->odb = odb;
 	document->path = g_strdup(path);
+	document->has_unsaved_changes = FALSE;
 	return TRUE;
 }
 
@@ -759,6 +762,7 @@ gboolean objectdb_document_save(ObjectDBDocument *document, char **error_message
 		return FALSE;
 	}
 
+	document->has_unsaved_changes = FALSE;
 	return TRUE;
 }
 
@@ -810,6 +814,7 @@ gboolean objectdb_document_save_as(ObjectDBDocument *document, const char *path,
 	new_path = g_strdup(path);
 	g_free(document->path);
 	document->path = new_path;
+	document->has_unsaved_changes = FALSE;
 	return TRUE;
 }
 
@@ -823,6 +828,10 @@ const char *objectdb_document_get_path(const ObjectDBDocument *document) {
 	}
 
 	return document->path;
+}
+
+gboolean objectdb_document_has_unsaved_changes(const ObjectDBDocument *document) {
+	return document ? document->has_unsaved_changes : FALSE;
 }
 
 GPtrArray *objectdb_document_get_children(ObjectDBDocument *document, const char *parent_path, char **error_message) {
@@ -967,6 +976,7 @@ gboolean objectdb_document_set_value(ObjectDBDocument *document, const char *pat
 		objectdb_document_set_error(error_message);
 		return FALSE;
 	}
+	document->has_unsaved_changes = TRUE;
 
 	read_ok = odbGetValue(document->odb, bspath, &readback);
 	if (!read_ok) {
@@ -1079,6 +1089,7 @@ gboolean objectdb_document_create_scalar(ObjectDBDocument *document, const char 
 		g_free(trimmed_name);
 		return FALSE;
 	}
+	document->has_unsaved_changes = TRUE;
 
 	if (full_path) {
 		*full_path = joined_path;
