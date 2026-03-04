@@ -1101,6 +1101,35 @@ gboolean objectdb_document_create_scalar(ObjectDBDocument *document, const char 
 	return TRUE;
 }
 
+gboolean objectdb_document_delete_entry(ObjectDBDocument *document, const char *path, char **error_message) {
+	odbString bspath;
+
+	if (error_message) {
+		*error_message = NULL;
+	}
+	if (!document || !document->odb) {
+		if (error_message) {
+			*error_message = g_strdup("No document is open");
+		}
+		return FALSE;
+	}
+	if (!path || !path[0] || strcmp(path, "root") == 0) {
+		if (error_message) {
+			*error_message = g_strdup("Invalid path");
+		}
+		return FALSE;
+	}
+
+	objectdb_document_path_to_odb(path, bspath);
+	if (!odbDelete(document->odb, bspath)) {
+		objectdb_document_set_error(error_message);
+		return FALSE;
+	}
+
+	document->has_unsaved_changes = TRUE;
+	return TRUE;
+}
+
 void objectdb_entry_free(ObjectDBEntry *entry) {
 	if (!entry) {
 		return;

@@ -157,6 +157,64 @@ static void objectdb_window_table_new_scalar(GtkWidget *widget, gpointer user_da
 	g_free(table_path);
 }
 
+static void objectdb_window_edit_clear(GtkWidget *widget, gpointer user_data) {
+	(void)widget;
+	ObjectDBWindow *window = (ObjectDBWindow *)user_data;
+	GtkTreeSelection *selection = NULL;
+	GtkTreeModel *model = NULL;
+	GtkTreeIter iter;
+	GtkTreeIter parent_iter;
+	gboolean has_selection = FALSE;
+	gboolean has_parent = FALSE;
+	gboolean is_placeholder = FALSE;
+	gboolean parent_is_table = FALSE;
+	char *path = NULL;
+	char *error_message = NULL;
+
+	if (!window || !window->tree_view || !window->tree_store || !objectdb_document_is_open(window->document)) {
+		return;
+	}
+
+	selection = gtk_tree_view_get_selection(GTK_TREE_VIEW(window->tree_view));
+	has_selection = gtk_tree_selection_get_selected(selection, &model, &iter);
+	if (!has_selection) {
+		objectdb_window_show_error(window, "Select an entry to delete");
+		return;
+	}
+
+	gtk_tree_model_get(
+		model,
+		&iter,
+		OBJECTDB_MODEL_COL_PATH, &path,
+		OBJECTDB_MODEL_COL_IS_PLACEHOLDER, &is_placeholder,
+		-1
+	);
+	if (is_placeholder || !path || !path[0] || strcmp(path, "root") == 0) {
+		objectdb_window_show_error(window, "Selected row cannot be deleted");
+		g_free(path);
+		return;
+	}
+
+	if (!objectdb_document_delete_entry(window->document, path, &error_message)) {
+		objectdb_window_show_error(window, error_message ? error_message : "Failed to delete entry");
+		g_free(error_message);
+		g_free(path);
+		return;
+	}
+
+	has_parent = gtk_tree_model_iter_parent(model, &parent_iter, &iter);
+	if (has_parent) {
+		gtk_tree_model_get(model, &parent_iter, OBJECTDB_MODEL_COL_IS_TABLE, &parent_is_table, -1);
+	}
+
+	gtk_tree_store_remove(window->tree_store, &iter);
+	if (has_parent && parent_is_table) {
+		objectdb_window_update_table_count(window, &parent_iter);
+	}
+
+	g_free(path);
+}
+
 static void objectdb_window_destroy(gpointer data) {
 	ObjectDBWindow *window = (ObjectDBWindow *)data;
 	objectdb_document_free(window->document);
@@ -527,6 +585,16 @@ static GtkWidget *objectdb_window_create_menu_bar(ObjectDBWindow *window) {
 	GtkWidget *quit_item = gtk_menu_item_new_with_mnemonic("_Quit");
 	g_signal_connect(quit_item, "activate", G_CALLBACK(objectdb_window_quit), window);
 	gtk_menu_shell_append(GTK_MENU_SHELL(file_menu), quit_item);
+
+	GtkWidget *edit_item = gtk_menu_item_new_with_mnemonic("_Edit");
+	gtk_menu_shell_append(GTK_MENU_SHELL(menu_bar), edit_item);
+
+	GtkWidget *edit_menu = gtk_menu_new();
+	gtk_menu_item_set_submenu(GTK_MENU_ITEM(edit_item), edit_menu);
+
+	GtkWidget *clear_item = gtk_menu_item_new_with_mnemonic("_Clear");
+	g_signal_connect(clear_item, "activate", G_CALLBACK(objectdb_window_edit_clear), window);
+	gtk_menu_shell_append(GTK_MENU_SHELL(edit_menu), clear_item);
 
 	GtkWidget *table_item = gtk_menu_item_new_with_mnemonic("_Table");
 	gtk_menu_shell_append(GTK_MENU_SHELL(menu_bar), table_item);
