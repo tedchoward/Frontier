@@ -42,9 +42,13 @@ Currently, `odbSetValue` supports:
 Other types are read-only for now. Non-table externals are returned as opaque packed blobs (`externalvaluetype`).
 
 ## Paths & Naming
-Paths are dot-separated and case-insensitive (e.g., `root.workspace.firstName`). Each segment must be a valid identifier:
-- First character: `[A-Za-z]`
-- Remaining characters: `[A-Za-z0-9]`
+Paths are dot-separated and case-insensitive (e.g., `root.workspace.firstName`).
+
+Segments can be either:
+- Identifier-style: first character `[A-Za-z]`, remaining `[A-Za-z0-9]`
+- Quoted: `["..."]` for names containing spaces/punctuation (for example `root.workspace.["Sample Outline 1"]`)
+
+Inside quoted segments, escape `"` and `\` with backslash.
 
 ## Errors & Ownership
 - Functions return `odbBool` (1 = success, 0 = failure). Use `odbGetError` and `odbGetLastErrorCode` for diagnostics.

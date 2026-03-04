@@ -176,48 +176,95 @@ static boolean odb_parse_path(const odbString bspath, hdlhashtable *htable, bigs
 		return false;
 	}
 	char path[256];
-	memcpy(path, &bspath[1], bspath[0]);
-	path[bspath[0]] = '\0';
-
-	/* split on '.' */
+	char segments_storage[128][256];
 	char *segments[128];
 	int segcount = 0;
-	char *p = path;
-	while (*p) {
-		char *start = p;
-		while (*p && *p != '.') {
-			p++;
+	size_t pathlen = bspath[0];
+	size_t ix = 0;
+	memcpy(path, &bspath[1], pathlen);
+	path[pathlen] = '\0';
+
+	while (ix < pathlen) {
+		size_t seglen = 0;
+		char *seg = NULL;
+		if (segcount >= 128) {
+			odbSetLastError(ODB_ERR_INVALID_ARG, "path too deep");
+			return false;
 		}
-		if (p == start) {
+		if (path[ix] == '.') {
 			odbSetLastError(ODB_ERR_INVALID_ARG, "invalid path segment");
 			return false;
 		}
-		if (*p == '.') {
-			*p = '\0';
-			p++;
+		seg = segments_storage[segcount];
+		if (path[ix] == '[') {
+			boolean closed_quote = false;
+			ix++;
+			if (ix >= pathlen || path[ix] != '"') {
+				odbSetLastError(ODB_ERR_INVALID_ARG, "invalid quoted path segment");
+				return false;
+			}
+			ix++;
+			while (ix < pathlen) {
+				char c = path[ix++];
+				if (c == '\\') {
+					if (ix >= pathlen) {
+						odbSetLastError(ODB_ERR_INVALID_ARG, "invalid quoted path segment");
+						return false;
+					}
+					c = path[ix++];
+				} else if (c == '"') {
+					closed_quote = true;
+					break;
+				}
+				if (seglen >= 255) {
+					odbSetLastError(ODB_ERR_INVALID_ARG, "invalid path segment length");
+					return false;
+				}
+				seg[seglen++] = c;
+			}
+			if (!closed_quote || ix >= pathlen || path[ix] != ']') {
+				odbSetLastError(ODB_ERR_INVALID_ARG, "invalid quoted path segment");
+				return false;
+			}
+			ix++;
+		} else {
+			if (!isalpha((unsigned char)path[ix])) {
+				odbSetLastError(ODB_ERR_INVALID_ARG, "invalid path segment");
+				return false;
+			}
+			while (ix < pathlen && path[ix] != '.') {
+				if (!isalnum((unsigned char)path[ix])) {
+					odbSetLastError(ODB_ERR_INVALID_ARG, "invalid path segment");
+					return false;
+				}
+				if (seglen >= 255) {
+					odbSetLastError(ODB_ERR_INVALID_ARG, "invalid path segment length");
+					return false;
+				}
+				seg[seglen++] = path[ix++];
+			}
 		}
-		segments[segcount++] = start;
+		if (seglen == 0) {
+			odbSetLastError(ODB_ERR_INVALID_ARG, "empty path segment");
+			return false;
+		}
+		seg[seglen] = '\0';
+		segments[segcount++] = seg;
+		if (ix < pathlen) {
+			if (path[ix] != '.') {
+				odbSetLastError(ODB_ERR_INVALID_ARG, "invalid path syntax");
+				return false;
+			}
+			ix++;
+			if (ix >= pathlen) {
+				odbSetLastError(ODB_ERR_INVALID_ARG, "empty path segment");
+				return false;
+			}
+		}
 	}
 	if (segcount == 0) {
 		odbSetLastError(ODB_ERR_INVALID_ARG, "empty path");
 		return false;
-	}
-	for (int i = 0; i < segcount; ++i) {
-		const char *seg = segments[i];
-		if (!seg || !seg[0]) {
-			odbSetLastError(ODB_ERR_INVALID_ARG, "invalid path segment");
-			return false;
-		}
-		if (!isalpha((unsigned char)seg[0])) {
-			odbSetLastError(ODB_ERR_INVALID_ARG, "invalid path segment");
-			return false;
-		}
-		for (const char *ch = seg + 1; *ch; ++ch) {
-			if (!isalnum((unsigned char)*ch)) {
-				odbSetLastError(ODB_ERR_INVALID_ARG, "invalid path segment");
-				return false;
-			}
-		}
 	}
 	int index = 0;
 	if (icasecmp(segments[0], "root") == 0) {

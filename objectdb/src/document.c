@@ -50,12 +50,44 @@ static char *objectdb_document_pascal_to_c_string(const odbString input) {
 	return g_strndup((const char *)(input + 1), input[0]);
 }
 
+static gboolean objectdb_document_is_identifier_segment(const char *name) {
+	const unsigned char *p = (const unsigned char *)name;
+	if (!p || !p[0]) {
+		return FALSE;
+	}
+	if (!g_ascii_isalpha(*p)) {
+		return FALSE;
+	}
+	for (p = p + 1; *p; ++p) {
+		if (!g_ascii_isalnum(*p)) {
+			return FALSE;
+		}
+	}
+	return TRUE;
+}
+
 static char *objectdb_document_join_path(const char *parent_path, const char *name) {
+	GString *quoted = NULL;
+	const char *p = NULL;
+
 	if (!parent_path || !parent_path[0]) {
 		return g_strdup(name);
 	}
 
-	return g_strdup_printf("%s.%s", parent_path, name);
+	if (objectdb_document_is_identifier_segment(name)) {
+		return g_strdup_printf("%s.%s", parent_path, name);
+	}
+
+	quoted = g_string_new(parent_path);
+	g_string_append(quoted, ".[\"");
+	for (p = name; *p; ++p) {
+		if (*p == '"' || *p == '\\') {
+			g_string_append_c(quoted, '\\');
+		}
+		g_string_append_c(quoted, *p);
+	}
+	g_string_append(quoted, "\"]");
+	return g_string_free(quoted, FALSE);
 }
 
 ObjectDBDocument *objectdb_document_new(void) {

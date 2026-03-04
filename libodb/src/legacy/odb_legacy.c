@@ -356,6 +356,8 @@ tyvaluetype langexternalgetvaluetype(OSType typeid) {
 			return ty_stringvaluetype;
 		case directionvaluetype:
 			return ty_directionvaluetype;
+		case string4valuetype:
+			return ty_ostypevaluetype;
 		case pointvaluetype:
 			return ty_pointvaluetype;
 		case rectvaluetype:
