@@ -51,9 +51,16 @@ Currently, `odbSetValue` supports:
 - `aliasvaluetype`
 - `listvaluetype`
 - `recordvaluetype`
+- `externalvaluetype` (opaque payloads supported)
+- `tablevaluetype` (creates a new empty table at the target path)
+- `scriptvaluetype` (opaque payloads)
+- `menubarvaluetype` (opaque payloads)
+- `outlinevaluetype` (opaque payloads)
+- `wptextvaluetype` (opaque payloads)
+- `picturevaluetype` (opaque payloads)
 - `enumeratorvaluetype`
 
-Other types are read-only for now. Non-table externals are returned as opaque packed blobs (`externalvaluetype`).
+Other types are read-only for now. Non-table externals are returned as opaque payload blobs (`externalvaluetype`).
 
 ## Paths & Naming
 Paths are dot-separated and case-insensitive (e.g., `root.workspace.firstName`).

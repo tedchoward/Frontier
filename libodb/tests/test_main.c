@@ -160,6 +160,17 @@ static int handle_equals_bytes(Handle h, const void *data, size_t size) {
 	return memcmp(*h, data, size) == 0;
 }
 
+static int handle_ends_with_bytes(Handle h, const void *suffix, size_t suffix_size) {
+	if (!h || !*h || !suffix) {
+		return 0;
+	}
+	long hsize = gethandlesize(h);
+	if (hsize < (long)suffix_size) {
+		return 0;
+	}
+	return memcmp(((unsigned char *)*h) + (hsize - (long)suffix_size), suffix, suffix_size) == 0;
+}
+
 static int copy_file(const char *src, const char *dst) {
 	FILE *in = fopen(src, "rb");
 	if (!in) {
@@ -795,6 +806,107 @@ static void test_write_phase3_handle_types(void) {
 	odbCloseFile(odb);
 }
 
+static void test_write_phase4_external_types(void) {
+	odbRef odb = NULL;
+	const char *fixture = fixture_path();
+	odbBool ok = odbOpenPath(fixture, &odb);
+	TEST_ASSERT(ok == 1, "open should succeed for phase4 write tests");
+	if (!ok) {
+		return;
+	}
+
+	odbString bspath;
+	odbValueRecord value;
+	OSType type = 0;
+	int32_t count = -1;
+
+	unsigned char script_blob[] = {0x10, 0x20, 0x30, 0x40};
+	Handle hscript = make_handle_from_bytes(script_blob, sizeof(script_blob));
+	TEST_ASSERT(hscript != NULL, "script handle should be created");
+	odb_string_from_c(bspath, "root.workspace.scriptBlob");
+	value.valuetype = scriptvaluetype;
+	value.data.externalvalue = hscript;
+	ok = odbSetValue(odb, bspath, &value);
+	TEST_ASSERT(ok == 1, "odbSetValue should support scriptvaluetype");
+	disposehandle(hscript);
+	ok = odbGetType(odb, bspath, &type);
+	TEST_ASSERT(ok == 1, "odbGetType should succeed for script external");
+	TEST_ASSERT(type == scriptvaluetype, "scriptBlob should report scriptvaluetype");
+	ok = odbGetValue(odb, bspath, &value);
+	TEST_ASSERT(ok == 1, "odbGetValue should succeed for script external");
+	if (ok) {
+		TEST_ASSERT(value.valuetype == externalvaluetype, "script external should read as externalvaluetype payload");
+		TEST_ASSERT(handle_ends_with_bytes(value.data.externalvalue, script_blob, sizeof(script_blob)), "script payload should round-trip");
+		odbDisposeValue(odb, &value);
+	}
+
+	unsigned char wp_blob[] = {0x41, 0x42, 0x43};
+	Handle hwp = make_handle_from_bytes(wp_blob, sizeof(wp_blob));
+	TEST_ASSERT(hwp != NULL, "wptext handle should be created");
+	odb_string_from_c(bspath, "root.workspace.wpBlob");
+	value.valuetype = wptextvaluetype;
+	value.data.externalvalue = hwp;
+	ok = odbSetValue(odb, bspath, &value);
+	TEST_ASSERT(ok == 1, "odbSetValue should support wptextvaluetype");
+	disposehandle(hwp);
+	ok = odbGetType(odb, bspath, &type);
+	TEST_ASSERT(ok == 1, "odbGetType should succeed for wptext external");
+	TEST_ASSERT(type == wptextvaluetype, "wpBlob should report wptextvaluetype");
+
+	unsigned char pic_blob[] = {0x99, 0x88, 0x77};
+	Handle hpic = make_handle_from_bytes(pic_blob, sizeof(pic_blob));
+	TEST_ASSERT(hpic != NULL, "picture handle should be created");
+	odb_string_from_c(bspath, "root.workspace.picBlob");
+	value.valuetype = picturevaluetype;
+	value.data.externalvalue = hpic;
+	ok = odbSetValue(odb, bspath, &value);
+	TEST_ASSERT(ok == 1, "odbSetValue should support picturevaluetype");
+	disposehandle(hpic);
+	ok = odbGetType(odb, bspath, &type);
+	TEST_ASSERT(ok == 1, "odbGetType should succeed for picture external");
+	TEST_ASSERT(type == picturevaluetype, "picBlob should report picturevaluetype");
+
+	unsigned char ext_blob[] = {0x01, 0x02, 0x03, 0x04};
+	Handle hext = make_handle_from_bytes(ext_blob, sizeof(ext_blob));
+	TEST_ASSERT(hext != NULL, "external handle should be created");
+	odb_string_from_c(bspath, "root.workspace.extBlob");
+	value.valuetype = externalvaluetype;
+	value.data.externalvalue = hext;
+	ok = odbSetValue(odb, bspath, &value);
+	TEST_ASSERT(ok == 1, "odbSetValue should support externalvaluetype with opaque payload");
+	disposehandle(hext);
+	ok = odbGetType(odb, bspath, &type);
+	TEST_ASSERT(ok == 1, "odbGetType should succeed for generic external");
+	TEST_ASSERT(type == externalvaluetype, "extBlob should report externalvaluetype");
+	ok = odbGetValue(odb, bspath, &value);
+	TEST_ASSERT(ok == 1, "odbGetValue should succeed for generic external");
+	if (ok) {
+		TEST_ASSERT(value.valuetype == externalvaluetype, "generic external should read as externalvaluetype");
+		TEST_ASSERT(handle_ends_with_bytes(value.data.externalvalue, ext_blob, sizeof(ext_blob)), "generic external payload should round-trip");
+		odbDisposeValue(odb, &value);
+	}
+
+	odb_string_from_c(bspath, "root.workspace.phase4table");
+	value.valuetype = tablevaluetype;
+	value.data.externalvalue = NULL;
+	ok = odbSetValue(odb, bspath, &value);
+	TEST_ASSERT(ok == 1, "odbSetValue should support tablevaluetype");
+	ok = odbGetType(odb, bspath, &type);
+	TEST_ASSERT(ok == 1, "odbGetType should succeed for table set via odbSetValue");
+	TEST_ASSERT(type == tablevaluetype, "phase4table should report tablevaluetype");
+	ok = odbCountItems(odb, bspath, &count);
+	TEST_ASSERT(ok == 1, "odbCountItems should succeed for new table from set");
+	TEST_ASSERT(count == 0, "new table from set should be empty");
+
+	odb_string_from_c(bspath, "root.workspace.badScript");
+	value.valuetype = scriptvaluetype;
+	value.data.externalvalue = NULL;
+	ok = odbSetValue(odb, bspath, &value);
+	TEST_ASSERT(ok == 0, "odbSetValue should reject null script payload");
+
+	odbCloseFile(odb);
+}
+
 static void test_save_persists_values(void) {
 	const char *fixture = fixture_path();
 	char path[512];
@@ -1231,6 +1343,7 @@ int main(void) {
 	test_write_values();
 	test_write_additional_scalar_struct_values();
 	test_write_phase3_handle_types();
+	test_write_phase4_external_types();
 	test_save_persists_values();
 	test_delete_persists();
 	test_new_table_persists();

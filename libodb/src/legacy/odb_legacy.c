@@ -307,24 +307,28 @@ OSType langexternalgettypeid(tyvaluerecord val) {
 			return listvaluetype;
 		case ty_recordvaluetype:
 			return recordvaluetype;
-		case ty_externalvaluetype: {
-			hdlexternalvariable hv = (hdlexternalvariable)val.data.externalvalue;
-			if (!hv) {
-				return externalvaluetype;
-			}
-			switch ((tyexternalid)(**hv).id) {
-				case idtableprocessor:
-					return tablevaluetype;
-				case idscriptprocessor:
-					return scriptvaluetype;
-				case idmenuprocessor:
-					return menubarvaluetype;
-				case idoutlineprocessor:
-					return outlinevaluetype;
-				default:
+			case ty_externalvaluetype: {
+				hdlexternalvariable hv = (hdlexternalvariable)val.data.externalvalue;
+				if (!hv) {
 					return externalvaluetype;
+				}
+				switch ((tyexternalid)(**hv).id) {
+					case idtableprocessor:
+						return tablevaluetype;
+					case idscriptprocessor:
+						return scriptvaluetype;
+					case idmenuprocessor:
+						return menubarvaluetype;
+					case idoutlineprocessor:
+						return outlinevaluetype;
+					case idwordprocessor:
+						return wptextvaluetype;
+					case idpictprocessor:
+						return picturevaluetype;
+					default:
+						return externalvaluetype;
+				}
 			}
-		}
 		default:
 			return unknownvaluetype;
 	}
@@ -380,13 +384,19 @@ tyvaluetype langexternalgetvaluetype(OSType typeid) {
 			return ty_enumvaluetype;
 		case listvaluetype:
 			return ty_listvaluetype;
-		case recordvaluetype:
-			return ty_recordvaluetype;
-		case tablevaluetype:
-			return ty_externalvaluetype;
-		default:
-			return (tyvaluetype)-1;
-	}
+			case recordvaluetype:
+				return ty_recordvaluetype;
+			case tablevaluetype:
+			case scriptvaluetype:
+			case menubarvaluetype:
+			case outlinevaluetype:
+			case wptextvaluetype:
+			case picturevaluetype:
+			case externalvaluetype:
+				return ty_externalvaluetype;
+			default:
+				return (tyvaluetype)-1;
+		}
 }
 
 boolean langexternalvaltotable(tyvaluerecord val, hdlhashtable *htable, hdlhashnode hnode) {

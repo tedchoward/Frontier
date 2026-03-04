@@ -30,6 +30,12 @@ static void print_usage(void) {
 	printf("  odb_cli <dbpath> set <path> alias <hex-bytes>\n");
 	printf("  odb_cli <dbpath> set <path> list <hex-bytes>\n");
 	printf("  odb_cli <dbpath> set <path> record <hex-bytes>\n");
+	printf("  odb_cli <dbpath> set <path> external <hex-bytes>\n");
+	printf("  odb_cli <dbpath> set <path> script <hex-bytes>\n");
+	printf("  odb_cli <dbpath> set <path> menubar <hex-bytes>\n");
+	printf("  odb_cli <dbpath> set <path> outline <hex-bytes>\n");
+	printf("  odb_cli <dbpath> set <path> wptext <hex-bytes>\n");
+	printf("  odb_cli <dbpath> set <path> picture <hex-bytes>\n");
 	printf("  odb_cli <dbpath> set <path> fixed <int32>\n");
 	printf("  odb_cli <dbpath> set <path> point <v> <h>\n");
 	printf("  odb_cli <dbpath> set <path> rect <top> <left> <bottom> <right>\n");
@@ -360,14 +366,18 @@ static const char *direction_name(odbDirection dir) {
 static int cmd_get(odbRef odb, const char *path) {
 	odbString bspath;
 	odb_string_from_c(bspath, path);
+	OSType reported_type = 0;
+	if (!odbGetType(odb, bspath, &reported_type)) {
+		return 1;
+	}
 	odbValueRecord value;
 	if (!odbGetValue(odb, bspath, &value)) {
 		return 1;
 	}
 	printf("type=");
-	print_ostype((OSType)value.valuetype);
+	print_ostype(reported_type);
 	printf(" value=");
-	switch (value.valuetype) {
+	switch ((odbValueType)reported_type) {
 		case stringvaluetype: {
 			char buffer[1024];
 			if (handle_to_c_string(value.data.stringvalue, buffer, sizeof(buffer))) {
@@ -495,7 +505,12 @@ static int cmd_get(odbRef odb, const char *path) {
 			printf("%f", d);
 			break;
 		}
-		case externalvaluetype: {
+		case externalvaluetype:
+		case scriptvaluetype:
+		case menubarvaluetype:
+		case outlinevaluetype:
+		case wptextvaluetype:
+		case picturevaluetype: {
 			long size = gethandlesize(value.data.externalvalue);
 			printf("<external %ld bytes>", size);
 			break;
@@ -685,7 +700,9 @@ static int cmd_set(odbRef odb, int argc, char **argv) {
 	}
 
 	if (strcmp(type, "binary") == 0 || strcmp(type, "objspec") == 0 || strcmp(type, "filespec") == 0
-		|| strcmp(type, "alias") == 0 || strcmp(type, "list") == 0 || strcmp(type, "record") == 0) {
+		|| strcmp(type, "alias") == 0 || strcmp(type, "list") == 0 || strcmp(type, "record") == 0
+		|| strcmp(type, "external") == 0 || strcmp(type, "script") == 0 || strcmp(type, "menubar") == 0
+		|| strcmp(type, "outline") == 0 || strcmp(type, "wptext") == 0 || strcmp(type, "picture") == 0) {
 		if (argc != 6) {
 			return 1;
 		}
@@ -711,6 +728,24 @@ static int cmd_set(odbRef odb, int argc, char **argv) {
 		} else if (strcmp(type, "record") == 0) {
 			rec.valuetype = recordvaluetype;
 			rec.data.recordvalue = h;
+		} else if (strcmp(type, "external") == 0) {
+			rec.valuetype = externalvaluetype;
+			rec.data.externalvalue = h;
+		} else if (strcmp(type, "script") == 0) {
+			rec.valuetype = scriptvaluetype;
+			rec.data.externalvalue = h;
+		} else if (strcmp(type, "menubar") == 0) {
+			rec.valuetype = menubarvaluetype;
+			rec.data.externalvalue = h;
+		} else if (strcmp(type, "outline") == 0) {
+			rec.valuetype = outlinevaluetype;
+			rec.data.externalvalue = h;
+		} else if (strcmp(type, "wptext") == 0) {
+			rec.valuetype = wptextvaluetype;
+			rec.data.externalvalue = h;
+		} else if (strcmp(type, "picture") == 0) {
+			rec.valuetype = picturevaluetype;
+			rec.data.externalvalue = h;
 		} else {
 			disposehandle(h);
 			return 1;

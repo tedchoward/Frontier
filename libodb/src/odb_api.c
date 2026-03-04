@@ -746,6 +746,52 @@ static odbBool odb_handle_to_bigstring(Handle source, bigstring bs, const char *
 	return 1;
 }
 
+static odbBool odb_build_packed_external(tyexternalid id, Handle payload, Handle *hpacked, const char *errmsg) {
+	tydiskexternalhandle rec;
+	long payload_size = 0;
+	long packed_size = 0;
+	long offset = 0;
+	if (!payload || !hpacked) {
+		odbSetLastError(ODB_ERR_INVALID_ARG, errmsg);
+		return 0;
+	}
+	payload_size = gethandlesize(payload);
+	if (payload_size < 0) {
+		odbSetLastError(ODB_ERR_INVALID_ARG, errmsg);
+		return 0;
+	}
+	packed_size = (long)sizeof(rec) + payload_size;
+	if (!newhandle(packed_size, hpacked)) {
+		return 0;
+	}
+	rec.versionnumber = externaldiskversionnumber;
+	memtodiskshort(rec.versionnumber);
+	rec.id = (uint16_t)id;
+	memcpy(*(*hpacked), &rec, sizeof(rec));
+	offset = (long)sizeof(rec);
+	if (payload_size > 0) {
+		memcpy(*(*hpacked) + offset, *payload, (size_t)payload_size);
+	}
+	return 1;
+}
+
+static odbBool odb_make_external_from_payload(tyexternalid id, Handle payload, tyvaluerecord *val, const char *errmsg) {
+	Handle hpacked = NULL;
+	hdlexternalhandle hext = NULL;
+	if (!odb_build_packed_external(id, payload, &hpacked, errmsg)) {
+		return 0;
+	}
+	if (!langexternalunpack(hpacked, &hext)) {
+		disposehandle(hpacked);
+		odbSetLastError(ODB_ERR_INVALID_ARG, errmsg);
+		return 0;
+	}
+	disposehandle(hpacked);
+	initvalue(val, ty_externalvaluetype);
+	val->data.externalvalue = (Handle)hext;
+	return 1;
+}
+
 static odbBool odb_convert_value_record(const odbValueRecord *value, tyvaluerecord *val) {
 	if (!value || !val) {
 		odbSetLastError(ODB_ERR_INVALID_ARG, "invalid argument");
@@ -927,6 +973,40 @@ static odbBool odb_convert_value_record(const odbValueRecord *value, tyvaluereco
 			val->data.recordvalue = (tylistrecord **)hrecord;
 			return 1;
 		}
+		case externalvaluetype: {
+			hdlexternalhandle hext = NULL;
+			if (!value->data.externalvalue) {
+				odbSetLastError(ODB_ERR_INVALID_ARG, "invalid external handle");
+				return 0;
+			}
+			if (langexternalunpack(value->data.externalvalue, &hext)) {
+				initvalue(val, ty_externalvaluetype);
+				val->data.externalvalue = (Handle)hext;
+				return 1;
+			}
+			/* Accept raw opaque payloads as generic externals for compatibility. */
+			return odb_make_external_from_payload(idappleprocessor, value->data.externalvalue, val, "invalid external handle");
+		}
+		case tablevaluetype: {
+			hdlexternalvariable hv = nil;
+			hdlhashtable hnewtable = nil;
+			if (!tablenewtable(&hv, &hnewtable)) {
+				return 0;
+			}
+			initvalue(val, ty_externalvaluetype);
+			val->data.externalvalue = (Handle)hv;
+			return 1;
+		}
+		case scriptvaluetype:
+			return odb_make_external_from_payload(idscriptprocessor, value->data.externalvalue, val, "invalid script handle");
+		case menubarvaluetype:
+			return odb_make_external_from_payload(idmenuprocessor, value->data.externalvalue, val, "invalid menubar handle");
+		case outlinevaluetype:
+			return odb_make_external_from_payload(idoutlineprocessor, value->data.externalvalue, val, "invalid outline handle");
+		case wptextvaluetype:
+			return odb_make_external_from_payload(idwordprocessor, value->data.externalvalue, val, "invalid wptext handle");
+		case picturevaluetype:
+			return odb_make_external_from_payload(idpictprocessor, value->data.externalvalue, val, "invalid picture handle");
 		default:
 			odbSetLastError(ODB_ERR_UNSUPPORTED, "unsupported value type");
 			return 0;
