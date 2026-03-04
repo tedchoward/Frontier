@@ -1041,6 +1041,148 @@ static void test_save_persists_values(void) {
 	odbCloseFile(odb);
 }
 
+static void test_save_persists_phase4_values(void) {
+	const char *fixture = fixture_path();
+	char path[512];
+	snprintf(path, sizeof(path), "/tmp/odb_save_phase4_test.root");
+	TEST_ASSERT(copy_file(fixture, path) == 1, "fixture copy should succeed");
+
+	odbRef odb = NULL;
+	odbBool ok = odbOpenPath(path, &odb);
+	TEST_ASSERT(ok == 1, "open should succeed for phase4 persistence db");
+	if (!ok) {
+		return;
+	}
+
+	odbString bspath;
+	odbValueRecord value;
+	OSType type = 0;
+	int32_t count = -1;
+
+	unsigned char script_blob[] = {0x53, 0x43, 0x52, 0x50, 0x54};
+	Handle hscript = make_handle_from_bytes(script_blob, sizeof(script_blob));
+	TEST_ASSERT(hscript != NULL, "script handle should be created for save test");
+	odb_string_from_c(bspath, "root.workspace.persistScript");
+	value.valuetype = scriptvaluetype;
+	value.data.externalvalue = hscript;
+	ok = odbSetValue(odb, bspath, &value);
+	TEST_ASSERT(ok == 1, "odbSetValue should succeed for persistScript");
+	if (hscript) {
+		disposehandle(hscript);
+	}
+
+	unsigned char wp_blob[] = {0x57, 0x50, 0x54, 0x58};
+	Handle hwp = make_handle_from_bytes(wp_blob, sizeof(wp_blob));
+	TEST_ASSERT(hwp != NULL, "wptext handle should be created for save test");
+	odb_string_from_c(bspath, "root.workspace.persistWp");
+	value.valuetype = wptextvaluetype;
+	value.data.externalvalue = hwp;
+	ok = odbSetValue(odb, bspath, &value);
+	TEST_ASSERT(ok == 1, "odbSetValue should succeed for persistWp");
+	if (hwp) {
+		disposehandle(hwp);
+	}
+
+	unsigned char pic_blob[] = {0x50, 0x49, 0x43, 0x54};
+	Handle hpic = make_handle_from_bytes(pic_blob, sizeof(pic_blob));
+	TEST_ASSERT(hpic != NULL, "picture handle should be created for save test");
+	odb_string_from_c(bspath, "root.workspace.persistPic");
+	value.valuetype = picturevaluetype;
+	value.data.externalvalue = hpic;
+	ok = odbSetValue(odb, bspath, &value);
+	TEST_ASSERT(ok == 1, "odbSetValue should succeed for persistPic");
+	if (hpic) {
+		disposehandle(hpic);
+	}
+
+	unsigned char ext_blob[] = {0x45, 0x58, 0x54, 0x52, 0x4E};
+	Handle hext = make_handle_from_bytes(ext_blob, sizeof(ext_blob));
+	TEST_ASSERT(hext != NULL, "external handle should be created for save test");
+	odb_string_from_c(bspath, "root.workspace.persistExt");
+	value.valuetype = externalvaluetype;
+	value.data.externalvalue = hext;
+	ok = odbSetValue(odb, bspath, &value);
+	TEST_ASSERT(ok == 1, "odbSetValue should succeed for persistExt");
+	if (hext) {
+		disposehandle(hext);
+	}
+
+	odb_string_from_c(bspath, "root.workspace.persistTable");
+	value.valuetype = tablevaluetype;
+	value.data.externalvalue = NULL;
+	ok = odbSetValue(odb, bspath, &value);
+	TEST_ASSERT(ok == 1, "odbSetValue should succeed for persistTable");
+
+	ok = odbSaveFile(odb);
+	TEST_ASSERT(ok == 1, "odbSaveFile should succeed for phase4 persistence");
+	odbCloseFile(odb);
+
+	odb = NULL;
+	ok = odbOpenPath(path, &odb);
+	TEST_ASSERT(ok == 1, "reopen should succeed for phase4 persistence");
+	if (!ok) {
+		return;
+	}
+
+	odb_string_from_c(bspath, "root.workspace.persistScript");
+	ok = odbGetType(odb, bspath, &type);
+	TEST_ASSERT(ok == 1, "odbGetType should succeed for saved script");
+	TEST_ASSERT(type == scriptvaluetype, "saved script should keep scriptvaluetype");
+	ok = odbGetValue(odb, bspath, &value);
+	TEST_ASSERT(ok == 1, "odbGetValue should succeed for saved script");
+	if (ok) {
+		TEST_ASSERT(handle_ends_with_bytes(value.data.externalvalue, script_blob, sizeof(script_blob)),
+			"saved script payload should round-trip");
+		odbDisposeValue(odb, &value);
+	}
+
+	odb_string_from_c(bspath, "root.workspace.persistWp");
+	ok = odbGetType(odb, bspath, &type);
+	TEST_ASSERT(ok == 1, "odbGetType should succeed for saved wptext");
+	TEST_ASSERT(type == wptextvaluetype, "saved wptext should keep wptextvaluetype");
+	ok = odbGetValue(odb, bspath, &value);
+	TEST_ASSERT(ok == 1, "odbGetValue should succeed for saved wptext");
+	if (ok) {
+		TEST_ASSERT(handle_ends_with_bytes(value.data.externalvalue, wp_blob, sizeof(wp_blob)),
+			"saved wptext payload should round-trip");
+		odbDisposeValue(odb, &value);
+	}
+
+	odb_string_from_c(bspath, "root.workspace.persistPic");
+	ok = odbGetType(odb, bspath, &type);
+	TEST_ASSERT(ok == 1, "odbGetType should succeed for saved picture");
+	TEST_ASSERT(type == picturevaluetype, "saved picture should keep picturevaluetype");
+	ok = odbGetValue(odb, bspath, &value);
+	TEST_ASSERT(ok == 1, "odbGetValue should succeed for saved picture");
+	if (ok) {
+		TEST_ASSERT(handle_ends_with_bytes(value.data.externalvalue, pic_blob, sizeof(pic_blob)),
+			"saved picture payload should round-trip");
+		odbDisposeValue(odb, &value);
+	}
+
+	odb_string_from_c(bspath, "root.workspace.persistExt");
+	ok = odbGetType(odb, bspath, &type);
+	TEST_ASSERT(ok == 1, "odbGetType should succeed for saved external");
+	TEST_ASSERT(type == externalvaluetype, "saved external should keep externalvaluetype");
+	ok = odbGetValue(odb, bspath, &value);
+	TEST_ASSERT(ok == 1, "odbGetValue should succeed for saved external");
+	if (ok) {
+		TEST_ASSERT(handle_ends_with_bytes(value.data.externalvalue, ext_blob, sizeof(ext_blob)),
+			"saved external payload should round-trip");
+		odbDisposeValue(odb, &value);
+	}
+
+	odb_string_from_c(bspath, "root.workspace.persistTable");
+	ok = odbGetType(odb, bspath, &type);
+	TEST_ASSERT(ok == 1, "odbGetType should succeed for saved table");
+	TEST_ASSERT(type == tablevaluetype, "saved table should keep tablevaluetype");
+	ok = odbCountItems(odb, bspath, &count);
+	TEST_ASSERT(ok == 1, "odbCountItems should succeed for saved table");
+	TEST_ASSERT(count == 0, "saved table should be empty");
+
+	odbCloseFile(odb);
+}
+
 static void test_delete_persists(void) {
 	const char *fixture = fixture_path();
 	char path[512];
@@ -1345,6 +1487,7 @@ int main(void) {
 	test_write_phase3_handle_types();
 	test_write_phase4_external_types();
 	test_save_persists_values();
+	test_save_persists_phase4_values();
 	test_delete_persists();
 	test_new_table_persists();
 	test_new_file_creates_db();
