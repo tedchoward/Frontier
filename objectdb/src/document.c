@@ -98,6 +98,42 @@ static char *objectdb_document_join_path(const char *parent_path, const char *na
 	return g_string_free(quoted, FALSE);
 }
 
+static gboolean objectdb_document_copy_file(const char *source_path, const char *dest_path) {
+	FILE *source = NULL;
+	FILE *dest = NULL;
+	unsigned char buffer[4096];
+	size_t count = 0;
+	gboolean ok = TRUE;
+
+	if (!source_path || !dest_path || !source_path[0] || !dest_path[0]) {
+		return FALSE;
+	}
+
+	source = fopen(source_path, "rb");
+	if (!source) {
+		return FALSE;
+	}
+	dest = fopen(dest_path, "wb");
+	if (!dest) {
+		fclose(source);
+		return FALSE;
+	}
+
+	while ((count = fread(buffer, 1, sizeof(buffer), source)) > 0) {
+		if (fwrite(buffer, 1, count, dest) != count) {
+			ok = FALSE;
+			break;
+		}
+	}
+	if (ferror(source)) {
+		ok = FALSE;
+	}
+
+	fclose(source);
+	fclose(dest);
+	return ok;
+}
+
 static gboolean objectdb_document_parse_int32(const char *text, int32_t *out_value) {
 	char *end = NULL;
 	long value = 0;
@@ -706,6 +742,77 @@ gboolean objectdb_document_open(ObjectDBDocument *document, const char *path, ch
 	return TRUE;
 }
 
+gboolean objectdb_document_save(ObjectDBDocument *document, char **error_message) {
+	if (error_message) {
+		*error_message = NULL;
+	}
+
+	if (!document || !document->odb) {
+		if (error_message) {
+			*error_message = g_strdup("No document is open");
+		}
+		return FALSE;
+	}
+
+	if (!odbSaveFile(document->odb)) {
+		objectdb_document_set_error(error_message);
+		return FALSE;
+	}
+
+	return TRUE;
+}
+
+gboolean objectdb_document_save_as(ObjectDBDocument *document, const char *path, char **error_message) {
+	char *new_path = NULL;
+	odbRef odb = NULL;
+
+	if (error_message) {
+		*error_message = NULL;
+	}
+
+	if (!document || !document->odb || !document->path) {
+		if (error_message) {
+			*error_message = g_strdup("No document is open");
+		}
+		return FALSE;
+	}
+	if (!path || !path[0]) {
+		if (error_message) {
+			*error_message = g_strdup("Invalid file path");
+		}
+		return FALSE;
+	}
+
+	if (strcmp(document->path, path) == 0) {
+		return objectdb_document_save(document, error_message);
+	}
+
+	if (!objectdb_document_save(document, error_message)) {
+		return FALSE;
+	}
+
+	if (!objectdb_document_copy_file(document->path, path)) {
+		if (error_message) {
+			*error_message = g_strdup("Failed to write destination file");
+		}
+		return FALSE;
+	}
+
+	if (!odbOpenPath(path, &odb)) {
+		objectdb_document_set_error(error_message);
+		return FALSE;
+	}
+
+	if (document->odb) {
+		odbCloseFile(document->odb);
+	}
+	document->odb = odb;
+	new_path = g_strdup(path);
+	g_free(document->path);
+	document->path = new_path;
+	return TRUE;
+}
+
 gboolean objectdb_document_is_open(const ObjectDBDocument *document) {
 	return document && document->odb;
 }
@@ -861,11 +968,6 @@ gboolean objectdb_document_set_value(ObjectDBDocument *document, const char *pat
 		return FALSE;
 	}
 
-	if (!odbSaveFile(document->odb)) {
-		objectdb_document_set_error(error_message);
-		return FALSE;
-	}
-
 	read_ok = odbGetValue(document->odb, bspath, &readback);
 	if (!read_ok) {
 		objectdb_document_set_error(error_message);
@@ -972,13 +1074,6 @@ gboolean objectdb_document_create_scalar(ObjectDBDocument *document, const char 
 	ok = odbSetValue(document->odb, bspath, &value);
 	objectdb_document_dispose_input_value(&value);
 	if (!ok) {
-		objectdb_document_set_error(error_message);
-		g_free(joined_path);
-		g_free(trimmed_name);
-		return FALSE;
-	}
-
-	if (!odbSaveFile(document->odb)) {
 		objectdb_document_set_error(error_message);
 		g_free(joined_path);
 		g_free(trimmed_name);

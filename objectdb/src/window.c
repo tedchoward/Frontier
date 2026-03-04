@@ -364,6 +364,60 @@ static void objectdb_window_show_open_dialog(GtkWidget *widget, gpointer user_da
 	gtk_widget_destroy(dialog);
 }
 
+static void objectdb_window_save(GtkWidget *widget, gpointer user_data) {
+	(void)widget;
+	ObjectDBWindow *window = (ObjectDBWindow *)user_data;
+	char *error_message = NULL;
+
+	if (!window || !objectdb_document_is_open(window->document)) {
+		return;
+	}
+
+	if (!objectdb_document_save(window->document, &error_message)) {
+		objectdb_window_show_error(window, error_message ? error_message : "Failed to save file");
+	}
+	g_free(error_message);
+}
+
+static void objectdb_window_save_as(GtkWidget *widget, gpointer user_data) {
+	(void)widget;
+	ObjectDBWindow *window = (ObjectDBWindow *)user_data;
+	GtkWidget *dialog = NULL;
+
+	if (!window || !objectdb_document_is_open(window->document)) {
+		return;
+	}
+
+	dialog = gtk_file_chooser_dialog_new(
+		"Save Root File As",
+		GTK_WINDOW(window->window),
+		GTK_FILE_CHOOSER_ACTION_SAVE,
+		"_Cancel", GTK_RESPONSE_CANCEL,
+		"_Save", GTK_RESPONSE_ACCEPT,
+		NULL
+	);
+	gtk_file_chooser_set_do_overwrite_confirmation(GTK_FILE_CHOOSER(dialog), TRUE);
+	if (objectdb_document_get_path(window->document)) {
+		gtk_file_chooser_set_filename(GTK_FILE_CHOOSER(dialog), objectdb_document_get_path(window->document));
+	}
+
+	if (gtk_dialog_run(GTK_DIALOG(dialog)) == GTK_RESPONSE_ACCEPT) {
+		char *filename = gtk_file_chooser_get_filename(GTK_FILE_CHOOSER(dialog));
+		char *error_message = NULL;
+
+		if (!objectdb_document_save_as(window->document, filename, &error_message)) {
+			objectdb_window_show_error(window, error_message ? error_message : "Failed to save file");
+		} else {
+			objectdb_window_update_title(window, filename);
+		}
+
+		g_free(error_message);
+		g_free(filename);
+	}
+
+	gtk_widget_destroy(dialog);
+}
+
 static void objectdb_window_quit(GtkWidget *widget, gpointer user_data) {
 	(void)widget;
 	ObjectDBWindow *window = (ObjectDBWindow *)user_data;
@@ -385,6 +439,14 @@ static GtkWidget *objectdb_window_create_menu_bar(ObjectDBWindow *window) {
 	GtkWidget *open_item = gtk_menu_item_new_with_mnemonic("_Open...");
 	g_signal_connect(open_item, "activate", G_CALLBACK(objectdb_window_show_open_dialog), window);
 	gtk_menu_shell_append(GTK_MENU_SHELL(file_menu), open_item);
+
+	GtkWidget *save_item = gtk_menu_item_new_with_mnemonic("_Save");
+	g_signal_connect(save_item, "activate", G_CALLBACK(objectdb_window_save), window);
+	gtk_menu_shell_append(GTK_MENU_SHELL(file_menu), save_item);
+
+	GtkWidget *save_as_item = gtk_menu_item_new_with_mnemonic("Save _As...");
+	g_signal_connect(save_as_item, "activate", G_CALLBACK(objectdb_window_save_as), window);
+	gtk_menu_shell_append(GTK_MENU_SHELL(file_menu), save_as_item);
 
 	GtkWidget *separator = gtk_separator_menu_item_new();
 	gtk_menu_shell_append(GTK_MENU_SHELL(file_menu), separator);

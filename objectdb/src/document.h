@@ -21,6 +21,8 @@ void objectdb_document_free(ObjectDBDocument *document);
 
 gboolean objectdb_document_open(ObjectDBDocument *document, const char *path, char **error_message);
 void objectdb_document_close(ObjectDBDocument *document);
+gboolean objectdb_document_save(ObjectDBDocument *document, char **error_message);
+gboolean objectdb_document_save_as(ObjectDBDocument *document, const char *path, char **error_message);
 
 gboolean objectdb_document_is_open(const ObjectDBDocument *document);
 const char *objectdb_document_get_path(const ObjectDBDocument *document);
