@@ -4,6 +4,7 @@
 #include "window.h"
 
 #include <stdint.h>
+#include <gdk/gdkkeysyms.h>
 
 struct ObjectDBWindow {
 	GtkApplication *app;
@@ -144,8 +145,7 @@ static void objectdb_window_append_placeholder_row(GtkTreeStore *tree_store, Gtk
 	);
 }
 
-static void objectdb_window_table_new_scalar(GtkWidget *widget, gpointer user_data) {
-	ObjectDBWindow *window = (ObjectDBWindow *)user_data;
+static void objectdb_window_create_scalar_in_selection(ObjectDBWindow *window, odbValueType type) {
 	GtkTreeSelection *selection = NULL;
 	GtkTreeModel *model = NULL;
 	GtkTreeIter selected_iter;
@@ -156,7 +156,6 @@ static void objectdb_window_table_new_scalar(GtkWidget *widget, gpointer user_da
 	char *new_name = NULL;
 	char *new_full_path = NULL;
 	char *error_message = NULL;
-	odbValueType type = (odbValueType)(uintptr_t)g_object_get_data(G_OBJECT(widget), "odb-type");
 
 	if (!window || !window->tree_view || !window->tree_store || !objectdb_document_is_open(window->document)) {
 		return;
@@ -212,6 +211,12 @@ static void objectdb_window_table_new_scalar(GtkWidget *widget, gpointer user_da
 	g_free(new_full_path);
 	g_free(new_name);
 	g_free(table_path);
+}
+
+static void objectdb_window_table_new_scalar(GtkWidget *widget, gpointer user_data) {
+	ObjectDBWindow *window = (ObjectDBWindow *)user_data;
+	odbValueType type = (odbValueType)(uintptr_t)g_object_get_data(G_OBJECT(widget), "odb-type");
+	objectdb_window_create_scalar_in_selection(window, type);
 }
 
 static void objectdb_window_table_new_subtable(GtkWidget *widget, gpointer user_data) {
@@ -281,6 +286,22 @@ static void objectdb_window_table_new_subtable(GtkWidget *widget, gpointer user_
 	g_free(new_full_path);
 	g_free(new_name);
 	g_free(table_path);
+}
+
+static gboolean objectdb_window_tree_key_press(GtkWidget *widget, GdkEventKey *event, gpointer user_data) {
+	(void)widget;
+	ObjectDBWindow *window = (ObjectDBWindow *)user_data;
+
+	if (!window || !event) {
+		return FALSE;
+	}
+
+	if (event->keyval == GDK_KEY_Return || event->keyval == GDK_KEY_KP_Enter) {
+		objectdb_window_create_scalar_in_selection(window, stringvaluetype);
+		return TRUE;
+	}
+
+	return FALSE;
 }
 
 static void objectdb_window_edit_clear(GtkWidget *widget, gpointer user_data) {
@@ -940,6 +961,7 @@ ObjectDBWindow *objectdb_window_new(GtkApplication *app) {
 
 	window->tree_view = objectdb_window_create_tree_view(window);
 	g_signal_connect(window->tree_view, "test-expand-row", G_CALLBACK(objectdb_window_test_expand_row), window);
+	g_signal_connect(window->tree_view, "key-press-event", G_CALLBACK(objectdb_window_tree_key_press), window);
 	g_signal_connect(window->window, "delete-event", G_CALLBACK(objectdb_window_delete_event), window);
 	gtk_container_add(GTK_CONTAINER(scroller), window->tree_view);
 
