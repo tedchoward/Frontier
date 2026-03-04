@@ -75,14 +75,64 @@ static void objectdb_window_update_table_count(ObjectDBWindow *window, GtkTreeIt
 	g_free(count_text);
 }
 
+static gboolean objectdb_window_resolve_target_table(
+	GtkTreeModel *model,
+	GtkTreeIter *selected_iter,
+	GtkTreeIter *out_table_iter,
+	char **out_table_path,
+	gboolean *out_children_loaded
+) {
+	GtkTreeIter current;
+	gboolean is_table = FALSE;
+	gboolean is_placeholder = FALSE;
+	gboolean children_loaded = FALSE;
+	char *path = NULL;
+
+	if (!model || !selected_iter || !out_table_iter || !out_table_path || !out_children_loaded) {
+		return FALSE;
+	}
+
+	current = *selected_iter;
+	while (TRUE) {
+		g_free(path);
+		path = NULL;
+		is_table = FALSE;
+		is_placeholder = FALSE;
+		children_loaded = FALSE;
+
+		gtk_tree_model_get(
+			model,
+			&current,
+			OBJECTDB_MODEL_COL_PATH, &path,
+			OBJECTDB_MODEL_COL_IS_TABLE, &is_table,
+			OBJECTDB_MODEL_COL_IS_PLACEHOLDER, &is_placeholder,
+			OBJECTDB_MODEL_COL_CHILDREN_LOADED, &children_loaded,
+			-1
+		);
+
+		if (is_table && !is_placeholder && path && path[0]) {
+			*out_table_iter = current;
+			*out_table_path = path;
+			*out_children_loaded = children_loaded;
+			return TRUE;
+		}
+
+		GtkTreeIter parent;
+		if (!gtk_tree_model_iter_parent(model, &parent, &current)) {
+			g_free(path);
+			return FALSE;
+		}
+		current = parent;
+	}
+}
+
 static void objectdb_window_table_new_scalar(GtkWidget *widget, gpointer user_data) {
 	ObjectDBWindow *window = (ObjectDBWindow *)user_data;
 	GtkTreeSelection *selection = NULL;
 	GtkTreeModel *model = NULL;
+	GtkTreeIter selected_iter;
 	GtkTreeIter table_iter;
 	gboolean has_selection = FALSE;
-	gboolean is_table = FALSE;
-	gboolean is_placeholder = FALSE;
 	gboolean children_loaded = FALSE;
 	char *table_path = NULL;
 	char *new_name = NULL;
@@ -95,25 +145,14 @@ static void objectdb_window_table_new_scalar(GtkWidget *widget, gpointer user_da
 	}
 
 	selection = gtk_tree_view_get_selection(GTK_TREE_VIEW(window->tree_view));
-	has_selection = gtk_tree_selection_get_selected(selection, &model, &table_iter);
+	has_selection = gtk_tree_selection_get_selected(selection, &model, &selected_iter);
 	if (!has_selection) {
 		objectdb_window_show_error(window, "Select a destination table first");
 		return;
 	}
 
-	gtk_tree_model_get(
-		model,
-		&table_iter,
-		OBJECTDB_MODEL_COL_PATH, &table_path,
-		OBJECTDB_MODEL_COL_IS_TABLE, &is_table,
-		OBJECTDB_MODEL_COL_IS_PLACEHOLDER, &is_placeholder,
-		OBJECTDB_MODEL_COL_CHILDREN_LOADED, &children_loaded,
-		-1
-	);
-
-	if (!is_table || is_placeholder || !table_path || !table_path[0]) {
-		objectdb_window_show_error(window, "Select a table row before creating a new item");
-		g_free(table_path);
+	if (!objectdb_window_resolve_target_table(model, &selected_iter, &table_iter, &table_path, &children_loaded)) {
+		objectdb_window_show_error(window, "Could not resolve a containing table from the current selection");
 		return;
 	}
 
