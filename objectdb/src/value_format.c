@@ -2,6 +2,8 @@
 
 #include <glib.h>
 #include <string.h>
+#include <inttypes.h>
+#include <time.h>
 
 extern long gethandlesize(Handle h);
 
@@ -86,6 +88,67 @@ static const char *objectdb_value_format_direction_name(odbDirection dir) {
 	}
 }
 
+static char *objectdb_value_format_rect(odbRect **rect_handle) {
+	if (!rect_handle || !*rect_handle) {
+		return g_strdup("<rect>");
+	}
+	odbRect *rect = *rect_handle;
+	return g_strdup_printf("%d,%d,%d,%d", (int)rect->top, (int)rect->left, (int)rect->bottom, (int)rect->right);
+}
+
+static char *objectdb_value_format_rgb(odbRGBColor **rgb_handle) {
+	if (!rgb_handle || !*rgb_handle) {
+		return g_strdup("<rgb>");
+	}
+	odbRGBColor *rgb = *rgb_handle;
+	return g_strdup_printf("%" PRIu16 ",%" PRIu16 ",%" PRIu16, rgb->red, rgb->green, rgb->blue);
+}
+
+static char *objectdb_value_format_pattern(odbPattern **pattern_handle) {
+	GString *text = NULL;
+	unsigned char *bytes = NULL;
+
+	if (!pattern_handle || !*pattern_handle) {
+		return g_strdup("<pattern>");
+	}
+
+	bytes = (unsigned char *)*pattern_handle;
+	text = g_string_sized_new(16);
+	for (int i = 0; i < 8; ++i) {
+		g_string_append_printf(text, "%02x", bytes[i]);
+	}
+	return g_string_free(text, FALSE);
+}
+
+static char *objectdb_value_format_date(uint32_t mac_seconds) {
+	static const uint32_t kMacEpochDelta = 2082844800U;
+	time_t unix_seconds = 0;
+	struct tm local_tm;
+	char formatted[64];
+	char *hour_start = NULL;
+
+	if (mac_seconds < kMacEpochDelta) {
+		return g_strdup_printf("%u", mac_seconds);
+	}
+
+	unix_seconds = (time_t)(mac_seconds - kMacEpochDelta);
+	if (!localtime_r(&unix_seconds, &local_tm)) {
+		return g_strdup_printf("%u", mac_seconds);
+	}
+
+	if (strftime(formatted, sizeof(formatted), "%m/%d/%Y; %I:%M:%S %p", &local_tm) == 0) {
+		return g_strdup_printf("%u", mac_seconds);
+	}
+
+	/* Match requested style with non-zero-padded hour (e.g. 2:12:12 PM). */
+	hour_start = strstr(formatted, "; ");
+	if (hour_start && hour_start[2] == '0') {
+		memmove(hour_start + 2, hour_start + 3, strlen(hour_start + 3) + 1);
+	}
+
+	return g_strdup(formatted);
+}
+
 char *objectdb_value_format_kind(odbValueType type) {
 	switch (type) {
 		case tablevaluetype:
@@ -106,6 +169,18 @@ char *objectdb_value_format_kind(odbValueType type) {
 			return g_strdup("direction");
 		case string4valuetype:
 			return g_strdup("string4");
+		case tokenvaluetype:
+			return g_strdup("token");
+		case fixedvaluetype:
+			return g_strdup("fixed");
+		case pointvaluetype:
+			return g_strdup("point");
+		case rectvaluetype:
+			return g_strdup("rect");
+		case patternvaluetype:
+			return g_strdup("pattern");
+		case rgbvaluetype:
+			return g_strdup("rgb");
 		case singlevaluetype:
 			return g_strdup("single");
 		case enumeratorvaluetype:
@@ -155,7 +230,7 @@ char *objectdb_value_format_value(odbValueType type, const odbValueRecord *value
 		case booleanvaluetype:
 			return g_strdup(value->data.flvalue ? "true" : "false");
 		case datevaluetype:
-			return g_strdup_printf("%u", value->data.datevalue);
+			return objectdb_value_format_date(value->data.datevalue);
 		case directionvaluetype:
 			direction_name = objectdb_value_format_direction_name(value->data.dirvalue);
 			if (direction_name) {
@@ -164,6 +239,18 @@ char *objectdb_value_format_value(odbValueType type, const odbValueRecord *value
 			return g_strdup_printf("%d", value->data.dirvalue);
 		case string4valuetype:
 			return objectdb_value_format_fourcc(value->data.ostypevalue);
+		case tokenvaluetype:
+			return g_strdup_printf("%d", (int)value->data.tokenvalue);
+		case fixedvaluetype:
+			return g_strdup_printf("%" PRId32, value->data.fixedvalue);
+		case pointvaluetype:
+			return g_strdup_printf("%d,%d", (int)value->data.pointvalue.v, (int)value->data.pointvalue.h);
+		case rectvaluetype:
+			return objectdb_value_format_rect(value->data.rectvalue);
+		case patternvaluetype:
+			return objectdb_value_format_pattern(value->data.patternvalue);
+		case rgbvaluetype:
+			return objectdb_value_format_rgb(value->data.rgbvalue);
 		case singlevaluetype:
 			return g_strdup_printf("%g", (double)value->data.singlevalue);
 		case enumeratorvaluetype:
