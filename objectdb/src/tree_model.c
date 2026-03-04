@@ -66,6 +66,13 @@ static gboolean objectdb_tree_model_append_children(GtkTreeStore *tree_store, Gt
 	return TRUE;
 }
 
+static char *objectdb_tree_model_format_item_count(guint count) {
+	if (count == 1) {
+		return g_strdup("1 item");
+	}
+	return g_strdup_printf("%u items", count);
+}
+
 GtkTreeStore *objectdb_tree_model_new(void) {
 	return gtk_tree_store_new(
 		OBJECTDB_MODEL_COL_COUNT,
@@ -104,6 +111,8 @@ gboolean objectdb_tree_model_load_children(GtkTreeStore *tree_store, GtkTreeIter
 	gboolean is_table = FALSE;
 	gboolean children_loaded = FALSE;
 	char *path = NULL;
+	char *count_text = NULL;
+	gint child_count = 0;
 
 	if (!tree_store || !parent_iter) {
 		if (error_message) {
@@ -133,13 +142,18 @@ gboolean objectdb_tree_model_load_children(GtkTreeStore *tree_store, GtkTreeIter
 		return FALSE;
 	}
 
+	child_count = gtk_tree_model_iter_n_children(model, parent_iter);
+	count_text = objectdb_tree_model_format_item_count((guint)((child_count < 0) ? 0 : child_count));
+
 	gtk_tree_store_set(
 		tree_store,
 		parent_iter,
+		OBJECTDB_MODEL_COL_VALUE, count_text,
 		OBJECTDB_MODEL_COL_CHILDREN_LOADED, TRUE,
 		-1
 	);
 
+	g_free(count_text);
 	g_free(path);
 	return TRUE;
 }

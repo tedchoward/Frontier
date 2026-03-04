@@ -132,13 +132,15 @@ char *objectdb_value_format_kind(odbValueType type) {
 char *objectdb_value_format_value(odbValueType type, const odbValueRecord *value) {
 	const char *direction_name = NULL;
 
+	if (type == tablevaluetype) {
+		return g_strdup("on disk");
+	}
+
 	if (!value) {
 		return g_strdup("");
 	}
 
 	switch (type) {
-		case tablevaluetype:
-			return g_strdup("<table>");
 		case stringvaluetype:
 			return objectdb_value_format_pascal_string(value->data.stringvalue);
 		case longvaluetype:

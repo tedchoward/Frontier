@@ -221,7 +221,7 @@ GPtrArray *objectdb_document_get_children(ObjectDBDocument *document, const char
 		entry->kind_text = objectdb_value_format_kind(entry->value_type);
 
 		if (entry->is_table) {
-			entry->value_text = g_strdup("<table>");
+			entry->value_text = objectdb_value_format_value(entry->value_type, NULL);
 		} else {
 			if (!odbGetValue(document->odb, child_path, &value)) {
 				objectdb_document_set_error(error_message);
