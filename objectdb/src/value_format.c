@@ -3,15 +3,44 @@
 #include <glib.h>
 #include <string.h>
 
+extern long gethandlesize(Handle h);
+
 static char *objectdb_value_format_pascal_string(Handle string_handle) {
-	size_t len = 0;
+	long size = 0;
+	unsigned char *data = NULL;
 
 	if (!string_handle || !*string_handle) {
 		return g_strdup("");
 	}
 
-	len = (size_t)(*string_handle)[0];
-	return g_strndup((const char *)(*string_handle + 1), len);
+	size = gethandlesize(string_handle);
+	if (size <= 0) {
+		return g_strdup("");
+	}
+
+	data = *string_handle;
+
+	if (size >= 4) {
+		uint32_t be = ((uint32_t)data[0] << 24) | ((uint32_t)data[1] << 16) | ((uint32_t)data[2] << 8) | (uint32_t)data[3];
+		uint32_t le = ((uint32_t)data[3] << 24) | ((uint32_t)data[2] << 16) | ((uint32_t)data[1] << 8) | (uint32_t)data[0];
+		uint32_t len = 0;
+
+		if (be <= (uint32_t)(size - 4)) {
+			len = be;
+		} else if (le <= (uint32_t)(size - 4)) {
+			len = le;
+		}
+
+		if (len > 0) {
+			return g_strndup((const char *)(data + 4), len);
+		}
+	}
+
+	if (data[0] <= (unsigned char)(size - 1)) {
+		return g_strndup((const char *)(data + 1), data[0]);
+	}
+
+	return g_strndup((const char *)data, size);
 }
 
 static char *objectdb_value_format_fourcc(OSType type) {

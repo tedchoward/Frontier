@@ -64,6 +64,9 @@ static GtkWidget *objectdb_window_create_tree_view(ObjectDBWindow *window) {
 		"text", OBJECTDB_MODEL_COL_NAME,
 		NULL
 	);
+	gtk_tree_view_column_set_resizable(column, TRUE);
+	gtk_tree_view_column_set_sizing(column, GTK_TREE_VIEW_COLUMN_FIXED);
+	gtk_tree_view_column_set_min_width(column, 160);
 	gtk_tree_view_append_column(GTK_TREE_VIEW(tree_view), column);
 
 	renderer = gtk_cell_renderer_text_new();
@@ -73,6 +76,9 @@ static GtkWidget *objectdb_window_create_tree_view(ObjectDBWindow *window) {
 		"text", OBJECTDB_MODEL_COL_VALUE,
 		NULL
 	);
+	gtk_tree_view_column_set_resizable(column, TRUE);
+	gtk_tree_view_column_set_sizing(column, GTK_TREE_VIEW_COLUMN_FIXED);
+	gtk_tree_view_column_set_min_width(column, 220);
 	gtk_tree_view_append_column(GTK_TREE_VIEW(tree_view), column);
 
 	renderer = gtk_cell_renderer_text_new();
@@ -82,12 +88,15 @@ static GtkWidget *objectdb_window_create_tree_view(ObjectDBWindow *window) {
 		"text", OBJECTDB_MODEL_COL_KIND,
 		NULL
 	);
+	gtk_tree_view_column_set_resizable(column, TRUE);
+	gtk_tree_view_column_set_sizing(column, GTK_TREE_VIEW_COLUMN_FIXED);
+	gtk_tree_view_column_set_min_width(column, 100);
 	gtk_tree_view_append_column(GTK_TREE_VIEW(tree_view), column);
 
 	return tree_view;
 }
 
-static void objectdb_window_row_expanded(GtkTreeView *tree_view, GtkTreeIter *iter, GtkTreePath *path, gpointer user_data) {
+static gboolean objectdb_window_test_expand_row(GtkTreeView *tree_view, GtkTreeIter *iter, GtkTreePath *path, gpointer user_data) {
 	(void)tree_view;
 	(void)path;
 
@@ -95,13 +104,15 @@ static void objectdb_window_row_expanded(GtkTreeView *tree_view, GtkTreeIter *it
 	char *error_message = NULL;
 
 	if (!window || !objectdb_document_is_open(window->document)) {
-		return;
+		return FALSE;
 	}
 
 	if (!objectdb_tree_model_load_children(window->tree_store, iter, window->document, &error_message)) {
 		objectdb_window_show_error(window, error_message ? error_message : "Failed to load table contents");
 		g_free(error_message);
 	}
+
+	return FALSE;
 }
 
 static void objectdb_window_show_open_dialog(GtkWidget *widget, gpointer user_data) {
@@ -209,7 +220,7 @@ ObjectDBWindow *objectdb_window_new(GtkApplication *app) {
 	gtk_box_pack_start(GTK_BOX(root_box), scroller, TRUE, TRUE, 0);
 
 	window->tree_view = objectdb_window_create_tree_view(window);
-	g_signal_connect(window->tree_view, "row-expanded", G_CALLBACK(objectdb_window_row_expanded), window);
+	g_signal_connect(window->tree_view, "test-expand-row", G_CALLBACK(objectdb_window_test_expand_row), window);
 	gtk_container_add(GTK_CONTAINER(scroller), window->tree_view);
 
 	return window;
