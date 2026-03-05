@@ -41,6 +41,20 @@ gboolean objectdb_document_set_entry_type(
 	char **updated_value,
 	char **error_message
 );
+gboolean objectdb_document_copy_entry(
+	ObjectDBDocument *document,
+	const char *source_path,
+	const char *dest_parent_path,
+	const char *dest_name,
+	char **error_message
+);
+gboolean objectdb_document_move_entry(
+	ObjectDBDocument *document,
+	const char *source_path,
+	const char *dest_parent_path,
+	const char *dest_name,
+	char **error_message
+);
 
 void objectdb_entry_free(ObjectDBEntry *entry);
 

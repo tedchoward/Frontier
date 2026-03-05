@@ -1211,6 +1211,115 @@ gboolean objectdb_document_create_table(ObjectDBDocument *document, const char *
 	return TRUE;
 }
 
+static gboolean objectdb_document_is_same_or_descendant_path(const char *ancestor_path, const char *candidate_path) {
+	size_t len = 0;
+
+	if (!ancestor_path || !candidate_path) {
+		return FALSE;
+	}
+	len = strlen(ancestor_path);
+	if (strncmp(ancestor_path, candidate_path, len) != 0) {
+		return FALSE;
+	}
+	if (candidate_path[len] == '\0' || candidate_path[len] == '.') {
+		return TRUE;
+	}
+	return FALSE;
+}
+
+static gboolean objectdb_document_clone_entry_recursive(
+	ObjectDBDocument *document,
+	const char *source_path,
+	const char *dest_parent_path,
+	const char *dest_name,
+	char **error_message
+) {
+	odbString source_bs;
+	odbString dest_bs;
+	OSType source_type = 0;
+	char *dest_path = NULL;
+
+	dest_path = objectdb_document_join_path(dest_parent_path, dest_name);
+	objectdb_document_path_to_odb(dest_path, dest_bs);
+	if (odbDefined(document->odb, dest_bs)) {
+		if (error_message) {
+			*error_message = g_strdup("An entry with that name already exists in the target table");
+		}
+		g_free(dest_path);
+		return FALSE;
+	}
+
+	objectdb_document_path_to_odb(source_path, source_bs);
+	if (!odbGetType(document->odb, source_bs, &source_type)) {
+		objectdb_document_set_error(error_message);
+		g_free(dest_path);
+		return FALSE;
+	}
+
+	if (source_type == tablevaluetype) {
+		int32_t count = 0;
+
+		if (objectdb_document_is_same_or_descendant_path(source_path, dest_parent_path)) {
+			if (error_message) {
+				*error_message = g_strdup("Cannot paste a table into itself or one of its descendants");
+			}
+			g_free(dest_path);
+			return FALSE;
+		}
+
+		if (!odbNewTable(document->odb, dest_bs)) {
+			objectdb_document_set_error(error_message);
+			g_free(dest_path);
+			return FALSE;
+		}
+
+		if (!odbCountItems(document->odb, source_bs, &count)) {
+			objectdb_document_set_error(error_message);
+			g_free(dest_path);
+			return FALSE;
+		}
+
+		for (int32_t i = 1; i <= count; ++i) {
+			odbString child_bsname;
+			char *child_name = NULL;
+			char *child_source_path = NULL;
+			gboolean ok = FALSE;
+
+			if (!odbGetNthItem(document->odb, source_bs, i, child_bsname)) {
+				objectdb_document_set_error(error_message);
+				g_free(dest_path);
+				return FALSE;
+			}
+			child_name = objectdb_document_pascal_to_c_string(child_bsname);
+			child_source_path = objectdb_document_join_path(source_path, child_name);
+			ok = objectdb_document_clone_entry_recursive(document, child_source_path, dest_path, child_name, error_message);
+			g_free(child_source_path);
+			g_free(child_name);
+			if (!ok) {
+				g_free(dest_path);
+				return FALSE;
+			}
+		}
+	} else {
+		odbValueRecord value;
+		if (!odbGetValue(document->odb, source_bs, &value)) {
+			objectdb_document_set_error(error_message);
+			g_free(dest_path);
+			return FALSE;
+		}
+		if (!odbSetValue(document->odb, dest_bs, &value)) {
+			odbDisposeValue(document->odb, &value);
+			objectdb_document_set_error(error_message);
+			g_free(dest_path);
+			return FALSE;
+		}
+		odbDisposeValue(document->odb, &value);
+	}
+
+	g_free(dest_path);
+	return TRUE;
+}
+
 gboolean objectdb_document_delete_entry(ObjectDBDocument *document, const char *path, char **error_message) {
 	odbString bspath;
 
@@ -1236,6 +1345,53 @@ gboolean objectdb_document_delete_entry(ObjectDBDocument *document, const char *
 		return FALSE;
 	}
 
+	document->has_unsaved_changes = TRUE;
+	return TRUE;
+}
+
+gboolean objectdb_document_copy_entry(
+	ObjectDBDocument *document,
+	const char *source_path,
+	const char *dest_parent_path,
+	const char *dest_name,
+	char **error_message
+) {
+	if (error_message) {
+		*error_message = NULL;
+	}
+	if (!document || !document->odb) {
+		if (error_message) {
+			*error_message = g_strdup("No document is open");
+		}
+		return FALSE;
+	}
+	if (!source_path || !source_path[0] || !dest_parent_path || !dest_parent_path[0] || !dest_name || !dest_name[0]) {
+		if (error_message) {
+			*error_message = g_strdup("Invalid copy parameters");
+		}
+		return FALSE;
+	}
+
+	if (!objectdb_document_clone_entry_recursive(document, source_path, dest_parent_path, dest_name, error_message)) {
+		return FALSE;
+	}
+	document->has_unsaved_changes = TRUE;
+	return TRUE;
+}
+
+gboolean objectdb_document_move_entry(
+	ObjectDBDocument *document,
+	const char *source_path,
+	const char *dest_parent_path,
+	const char *dest_name,
+	char **error_message
+) {
+	if (!objectdb_document_copy_entry(document, source_path, dest_parent_path, dest_name, error_message)) {
+		return FALSE;
+	}
+	if (!objectdb_document_delete_entry(document, source_path, error_message)) {
+		return FALSE;
+	}
 	document->has_unsaved_changes = TRUE;
 	return TRUE;
 }
